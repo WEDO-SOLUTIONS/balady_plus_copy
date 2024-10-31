@@ -1,10 +1,15 @@
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class MapSearchSheetControls extends ConsumerWidget {
@@ -44,6 +49,13 @@ class MapSearchSheetControls extends ConsumerWidget {
       bottomPadding = 16;
     }
 
+    final visibleSearchArea = ref.watch(searchInRectProvider.select((value) => value.$2));
+
+    void _searchInArea() {
+      ref.read(searchInRectProvider.notifier).update();
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+    }
+
     return IgnorePointer(
       ignoring: hideControls,
       child: SafeArea(
@@ -80,16 +92,15 @@ class MapSearchSheetControls extends ConsumerWidget {
                           const SizedBox(height: 8),
                           ComplianceBuildingLegend(),
                           const SizedBox(height: 8),
-                          const Row(
+                          Row(
                             children: [
-                              // TODO(Sergei): uncomment when search performance is fixed
-                              // uikit.SearchInArea(
-                              //   visible: !visibleSearchArea,
-                              //   title: context.l10n.searchInThisArea,
-                              //   onTap: _searchInArea,
-                              // ),
-                              Spacer(),
-                              FollowControl(),
+                              uikit.SearchInArea(
+                                visible: !visibleSearchArea,
+                                title: context.l10n.searchInThisArea,
+                                onTap: _searchInArea,
+                              ),
+                              const Spacer(),
+                              const FollowControl(),
                             ],
                           ),
                         ],
