@@ -40,7 +40,7 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
           autostart: Autostart.once,
           onFetchCompleted: () async {
             // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-            Future.delayed(const Duration(milliseconds: 1300)).then((e) {
+            Future.delayed(const Duration(milliseconds: 1450)).then((e) {
               sl<EntryPointCubit>().hideSplash();
               Navigator.of(context).pushNamedAndRemoveUntil(
                 RouteName.bottomNavigation,
