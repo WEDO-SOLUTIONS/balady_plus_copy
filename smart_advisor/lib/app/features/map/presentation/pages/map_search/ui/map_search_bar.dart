@@ -66,6 +66,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     });
 
     return BaladySearchWithBackButton(
+      option: SearchTextBackOption(
+        text: context.l10n.cancel,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+          searcher.clear();
+          widget.onClose();
+        },
+      ),
       searchInput: BaladyInput.searchV2(
         focusNode: _focusNode,
         onChanged: (query) {

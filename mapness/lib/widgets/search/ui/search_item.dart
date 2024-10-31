@@ -147,37 +147,34 @@ class _PhotosGallery extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
-    return Padding(
-      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x),
-      child: SizedBox(
-        height: heightOfGallery.toDouble(),
-        child: ScrollConfiguration(
-          behavior: NoGlowingScrollBehavior(),
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemCount: photosUrls.length,
-            itemBuilder: (context, i) {
-              final photo = photosUrls[i];
-              return ClipRRect(
-                borderRadius: BorderRadius.circular(
-                  RadiusBorder.l,
-                ),
-                child: Image.network(
-                  photo,
-                  fit: BoxFit.cover,
-                  height: heightOfGallery.toDouble(),
-                  width: heightOfGallery.toDouble(),
-                  cacheHeight: heightOfGallery,
-                  cacheWidth: heightOfGallery,
-                ),
-              );
-            },
-            separatorBuilder: (context, index) => Spacing.$1x.widthBox,
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, top: Spacing.$3x),
+        child: SizedBox(
+          height: heightOfGallery.toDouble(),
+          child: ScrollConfiguration(
+            behavior: NoGlowingScrollBehavior(),
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: photosUrls.length,
+              itemBuilder: (context, i) {
+                final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
+                return ClipRRect(
+                  borderRadius: BorderRadius.circular(
+                    RadiusBorder.l,
+                  ),
+                  child: Image.network(
+                    photo,
+                    fit: BoxFit.cover,
+                    height: heightOfGallery.toDouble(),
+                    width: heightOfGallery.toDouble(),
+                    cacheHeight: heightOfGallery,
+                    cacheWidth: heightOfGallery,
+                  ),
+                );
+              },
+              separatorBuilder: (context, index) => Spacing.$1x.widthBox,
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
