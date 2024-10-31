@@ -16,7 +16,7 @@ final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 class AppRouter extends RootStackRouter {
   AppRouter(this.ref);
 
-  final ProviderRef ref;
+  final Ref ref;
 
   @override
   RouteType get defaultRouteType => const RouteType.cupertino();

@@ -7,7 +7,7 @@ import 'package:mapness/shared/providers/onboarding.dart';
 final class OnboardRouteGuard extends AutoRouteGuard {
   const OnboardRouteGuard(this.ref);
 
-  final ProviderRef ref;
+  final Ref ref;
 
   @override
   void onNavigation(NavigationResolver resolver, StackRouter router) {
