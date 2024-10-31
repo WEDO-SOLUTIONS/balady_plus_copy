@@ -35,8 +35,11 @@ class _PhotosGallery extends StatelessWidget {
                     cacheHeight: sizeOfGallery,
                     cacheWidth: sizeOfGallery,
                     loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
                       final valueOfLoading =
-                          (loadingProgress?.cumulativeBytesLoaded ?? 0) / (loadingProgress?.expectedTotalBytes ?? 1);
+                          (loadingProgress.cumulativeBytesLoaded) / (loadingProgress.expectedTotalBytes ?? 1);
                       return Container(
                         color: context.colorsV2.backgroundSurface3,
                         width: sizeOfGallery.toDouble(),
