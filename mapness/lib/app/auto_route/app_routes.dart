@@ -62,6 +62,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'search',
               page: SearchRoute.page,
+              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'routing_map',
