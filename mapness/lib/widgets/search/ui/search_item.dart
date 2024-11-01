@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -28,6 +29,8 @@ const prefixMapping = {
   'Coffee shop': 'كافيه',
   'Paid': 'مدفوع',
   'Place': 'مكان',
+  'Gym': 'صالة رياضية',
+  'Company': 'شركة',
 };
 
 class SearchItem extends ConsumerWidget {
@@ -61,7 +64,7 @@ class SearchItem extends ConsumerWidget {
     if (prefixMapping.containsKey(subtitle)) {
       subtitle = switch (language) {
         Language.english => subtitle,
-        Language.arabic => prefixMapping[subtitle]!,
+        Language.arabic => prefixMapping[subtitle.toCapitalized()]!,
       };
     }
 
