@@ -122,17 +122,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
-        Builder(
-          builder: (_) {
-            if (_dgisSheetController.currentExpansion == Expansion.collapsed) {
-              return const SizedBox.shrink();
-            }
-
-            return GestureDetector(
-              onPanUpdate: (_) {
-                _dgisSheetController.animateTo(Expansion.collapsed);
-              },
-            );
+        Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) {
+            _dgisSheetController.animateTo(Expansion.collapsed);
           },
         ),
         MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
