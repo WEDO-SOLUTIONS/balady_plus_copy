@@ -1,0 +1,94 @@
+---
+name: Notify Reviewers in Mattermost
+
+on:
+  pull_request:
+    types:
+      - ready_for_review
+      - synchronize
+    branches:
+      - "bugfix/*"
+      - "feat/*"
+      - "feature/*"
+      - "urbi"
+      - "urbi-release-*"
+    paths-ignore:
+      - "**.md"
+      - "doc/**"
+      - ".git/"
+      - ".vscode/"
+
+jobs:
+  notify_reviewers:
+    name: Notify reviewers
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: [self-hosted, Linux]
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Send notification
+        env:
+          MM_CHANNEL_ID: ${{ secrets.MM_REVIEWERS_CHANNEL_ID }}
+          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
+          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+          MM_MAPPING_FILE: ${{ github.workspace }}/.github/mm_mapping.yml
+        run: |
+          # Get info about PR
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          EVENT_ACTION="${{ github.event.action }}"
+
+          # Get reviewers
+          REVIEWERS="${{ join(github.event.pull_request.requested_reviewers.*.login, ' ') }}"
+
+          # If no reviewers, exiting
+          if [ -z "${REVIEWERS}" ]; then
+            echo "No reviewers to notify."
+            exit 0
+          fi
+
+          # Get mattermost usernames from github usernames
+          MENTION_REVIEWERS=""
+          NOT_FOUND_REVIEWERS=""
+          for reviewer in ${REVIEWERS}; do
+            mattermost_user="$(reviewer=${reviewer} yq e '.[env(reviewer)] // ""' ${{ env.MM_MAPPING_FILE }})"
+            echo "Mattermost user: ${mattermost_user}"
+            if [ -n "${mattermost_user}" ]; then
+              MENTION_REVIEWERS+="@${mattermost_user} "
+            else
+              NOT_FOUND_REVIEWERS+="${reviewer} "
+              echo "Couldn't map github username to mattermost for ${reviewer}"
+            fi
+          done
+
+          # Create message depending on action type
+          if [ "${EVENT_ACTION}" == "ready_for_review" ]; then
+            MESSAGE="${MENTION_REVIEWERS}\n\
+          You were assigned as a reviewer:\n\
+          **Pull request**: [${PR_TITLE}](${PR_URL})\n"
+          elif [ "${EVENT_ACTION}" == "synchronize" ]; then
+            MESSAGE="${MENTION_REVIEWERS}\n\
+          There are some changes:\n\
+          **Pull request**: [${PR_TITLE}](${PR_URL})\n"
+          fi
+
+          # Send notification mentioning reviewers
+          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
+            \"channel_id\": \"${MM_CHANNEL_ID}\", \
+            \"message\": \"\
+          ${MESSAGE}\
+          **Branch**: ${PR_BRANCH}\n\
+          **Author**: ${PR_AUTHOR}\
+          \"\
+          }"
+
+          # Send notification if we couldn't map some reviewers to mattermost users
+          if [ -n "${NOT_FOUND_REVIEWERS}" ]; then
+            curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
+              \"channel_id\": \"${MM_CHANNEL_ID}\", \
+              \"message\": \"Can't map github users to mattermost: $NOT_FOUND_REVIEWERS\"\
+            }"
+          fi
