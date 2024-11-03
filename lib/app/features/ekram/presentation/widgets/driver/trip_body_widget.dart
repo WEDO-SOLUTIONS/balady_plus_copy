@@ -390,6 +390,7 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (BuildContext context) {
         return ConfirmDialog(
           title:"deletPathTitle".tr(),

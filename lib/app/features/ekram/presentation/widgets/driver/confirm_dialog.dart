@@ -37,10 +37,9 @@ Function onOkCallback;
 
     return AlertDialog(
       scrollable: true,
+
       content: Container(
-      
         decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(20)),
-      
         child:
         Column(
          mainAxisAlignment: MainAxisAlignment.start,
