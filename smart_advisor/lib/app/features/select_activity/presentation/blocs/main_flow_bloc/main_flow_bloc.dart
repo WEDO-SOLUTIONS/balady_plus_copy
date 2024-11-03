@@ -694,13 +694,14 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
       case 1:
         return "فتح محل / منشأة تجارية";
       case 2:
-        return "اختيار النشاط";
+        return state.selectedCategory?.name ?? "";
       case 3:
-        return "اختيار النشاط";
+        return state.selectedIsic?.name ?? "";
+        ;
       case 4:
-        return "اختيار النشاط";
+        return state.selectedActivity?.name ?? "";
       case 5:
-        return "اختيار النشاط";
+        return "تفاصيل الموقع";
       case 6:
         return "تفاصيل الموقع";
       case 7:
