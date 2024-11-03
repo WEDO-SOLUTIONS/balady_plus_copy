@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+/*import 'package:flutter/cupertino.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 
@@ -17,3 +17,4 @@ class MapLostInternet extends StatelessWidget {
         onRetry: onTap,
       );
 }
+*/

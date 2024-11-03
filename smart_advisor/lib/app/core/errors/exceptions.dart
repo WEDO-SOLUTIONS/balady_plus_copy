@@ -7,12 +7,10 @@ class ServerException implements Exception {
   final String errorMessage;
   final int? statusCode;
   final String? statusMessage;
+  final String? errorCode;
 
-  const ServerException(
-    this.errorMessage, {
-    this.statusCode,
-    this.statusMessage,
-  });
+  const ServerException(this.errorMessage,
+      {this.statusCode, this.statusMessage, this.errorCode});
 }
 
 class CacheException implements Exception {}

@@ -1,3 +1,5 @@
+import 'entity_violation_activity_model.dart' as d;
+
 class ViolationDetailsVdModel {
   final String? isCorrectionNeeded;
   final String? description;
@@ -104,7 +106,7 @@ class ViolationDetailsVdModel {
         isCritical: json["IsCritical"],
         linkClauseNo: json["Link_ClauseNo"],
         clauseName: json["ClauseName"],
-        fineAmount: json["FineAmount"],
+        fineAmount: json["FineAmount"] ?? 0,
         violatorList: json["ViolatorList"] == null
             ? []
             : List<ViolatorList>.from(
@@ -119,6 +121,24 @@ class ViolationDetailsVdModel {
         objectionPeriod: json["ObjectionPeriod"],
         linkId: json["LinkID"],
       );
+
+  d.EntityViolationActivityModel toViolationModel() {
+    return d.EntityViolationActivityModel(
+        description: description,
+        unitType: unitType,
+        regulationId: regulationId,
+        parentGroup: parentGroup,
+        regulationName: regulationName,
+        isCritical: isCritical,
+        linkId: linkId,
+        fineAmount: fineAmount,
+        violatorList: violatorList
+                ?.map((e) => d.ViolatorList(
+                    violatorIdType: e.violatorIdType,
+                    violatorIdNumber: e.violatorIdNumber))
+                .toList() ??
+            []);
+  }
 }
 
 class ViolatorList {

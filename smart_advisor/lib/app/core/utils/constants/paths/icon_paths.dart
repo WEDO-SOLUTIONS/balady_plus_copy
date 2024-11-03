@@ -69,4 +69,63 @@ class IconPath {
 
   static const arrowLSide =
       "packages/smart_advisor/smart_advisor_assets/images/svg_icon/arrowLS.svg";
+
+  static const ArrowCornerRight =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/ArrowCornerRight.svg";
+  static const baladyLogo =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/balady_logo.svg";
+  static const QrCodeScan =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/Qr_CodeScan.svg";
+  static const commercialBackground =
+      "packages/smart_advisor/smart_advisor_assets/images/commercial_background.png";
+  static const constructionsBackground =
+      "packages/smart_advisor/smart_advisor_assets/images/constructions_background.png";
+  static const newBackIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/ArrowCornerRightL.svg";
+
+  static const stepActive =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/step_active.svg";
+  static const stepInActive =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/step_inactive.svg";
+
+  static const stepCompleted =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/step_completed.svg";
+
+  static const stepIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/step_icon.svg";
+
+  static const issueCrIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/issue_cr_icon.svg";
+
+  static const issueLicenseIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/issue_license_icon.svg";
+  static const doingWorkIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/doing_work_icon.svg";
+
+  static const complianceIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/complianceIcon.svg";
+
+  static const locationIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/location_icon.svg";
+  static const stepArrowIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/arrowStepIcon.svg";
+
+  static const furasIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/furas.png";
+
+  static const location1Icon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/location_1.svg";
+  static const area1Icon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/area_1.svg";
+  static const doubleCard =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/dublecard.svg";
+
+  static const filterIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/filter.svg";
+
+  static const stepVerticalIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/stepper_vertical.svg";
+
+  static const close =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/close.svg";
 }

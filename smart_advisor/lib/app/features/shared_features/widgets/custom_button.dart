@@ -1,8 +1,6 @@
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
-
 import '/app/core/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class CustomButton extends StatefulWidget {
   final Function onPress;
@@ -51,17 +49,15 @@ class _CustomButtonState extends State<CustomButton> {
     return Container(
       margin: widget.btnMargin,
       child: ElevatedButton(
-          onPressed: () => widget.onPress(),
+          onPressed: () => widget.isDisabled ? null : widget.onPress(),
           style: ElevatedButton.styleFrom(
             foregroundColor: widget.isDisabled
                 ? const Color(0xffD8DCE4)
-                : widget.btnEffectColor ??
-                    widget.btnColor ??
-                    AppColor.statusAccentColor,
+                : widget.btnEffectColor ?? widget.btnColor ?? AppColor.primary,
             padding: widget.btnPadding ?? EdgeInsets.zero,
             backgroundColor: widget.isDisabled
-                ? const Color(0xffD8DCE4)
-                : widget.btnColor ?? AppColor.statusAccentColor,
+                ? const Color(0xffDDE9E0)
+                : widget.btnColor ?? AppColor.primary,
             // shadowColor: Colors.pink,
             shadowColor: widget.btnShadowColor ?? widget.btnColor,
             alignment: widget.btnAlignment ?? Alignment.center,

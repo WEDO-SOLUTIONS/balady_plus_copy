@@ -44,14 +44,11 @@ class DeletePermitItemEvent extends CalculatorEvent {
   const DeletePermitItemEvent({required this.index});
 }
 
-
 class DeleteBoardItemEvent extends CalculatorEvent {
   final int index;
 
   const DeleteBoardItemEvent({required this.index});
 }
-
-
 
 class ChangePermitWidthEvent extends CalculatorEvent {
   final String data;
@@ -76,4 +73,9 @@ class ChangePermitNoOfVeichlesEvent extends CalculatorEvent {
   final int index;
   const ChangePermitNoOfVeichlesEvent(
       {required this.data, required this.index});
+}
+
+class ChangeAreaValueEvent extends CalculatorEvent {
+  final String data;
+  const ChangeAreaValueEvent({required this.data});
 }

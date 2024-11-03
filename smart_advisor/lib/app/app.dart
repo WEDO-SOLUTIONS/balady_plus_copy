@@ -11,6 +11,7 @@ import './core/services/services_exports.dart' show NavigationService;
 import './core/utils/utils_exports.dart'
     show AppColor, AppConfig, AppRouter, CommonFunctions, RouteName;
 import 'core/utils/constants/language.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart' show EnvType;
 
 class SmartAdvisorApp extends StatelessWidget {
   const SmartAdvisorApp({super.key});

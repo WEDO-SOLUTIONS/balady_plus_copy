@@ -175,59 +175,55 @@ class _CommercialConditionRegulationState
           ),
           Expanded(
             child: Padding(
-                padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
-                child: SingleChildScrollView(
+              padding: const EdgeInsets.only(left: 16, right: 16, top: 20),
+              child: SingleChildScrollView(
                   controller: _scrollController,
                   child: Column(
                     children: [
-                      Column(
-                        children: [
-                          /* Text("files_title_1".tr(),
+                      /* Text("files_title_1".tr(),
                               style: AppStyle.calloutBoldStyle.copyWith(
                                 color: AppColor.primary,
                               )),
                           const SizedBox(
                             height: 4,
                           ),*/
-                          Text("files_title_2".tr(),
-                              style: AppStyle.footNoteRomanStyle.copyWith(
-                                color: AppColor.textSecondaryColor,
-                              )),
-                          const SizedBox(
-                            height: 4,
-                          ),
-                          const SizedBox(height: 20),
-                          MediaQuery.removePadding(
-                            context: context,
-                            removeTop: true,
-                            child: ListView.builder(
-                                itemCount: _requirements.length,
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemBuilder: (ctx, index) {
-                                  GlobalKey itemKey = GlobalKey();
+                      Text("files_title_2".tr(),
+                          style: AppStyle.footNoteRomanStyle.copyWith(
+                            color: AppColor.textSecondaryColor,
+                          )),
+                      const SizedBox(
+                        height: 4,
+                      ),
+                      const SizedBox(height: 20),
+                      MediaQuery.removePadding(
+                        context: context,
+                        removeTop: true,
+                        child: ListView.builder(
+                            itemCount: _requirements.length,
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (ctx, index) {
+                              ValueKey itemKey = ValueKey(index.toString());
 
-                                  return SectionWidget(
-                                    key: itemKey,
-                                    item: _requirements[index],
-                                    onUpdateHeights: (double height, int i) {
-                                      print("FFFFF ${index} ${i} ${height}");
-                                      if (_itemHeights.length - 1 < index) {
-                                        _itemHeights.add({});
-                                        _itemHeights[index][i] = height;
-                                      } else {
-                                        _itemHeights[index][i] = height;
-                                      }
-                                    },
-                                  );
-                                }),
-                          ),
-                        ],
+                              return SectionWidget(
+                                key: itemKey,
+                                item: _requirements[index],
+                                onUpdateHeights: (double height, int i) {
+                                  print("FFFFF ${index} ${i} ${height}");
+                                  if (_itemHeights.length - 1 < index) {
+                                    _itemHeights.add({});
+                                    _itemHeights[index][i] = height;
+                                  } else {
+                                    _itemHeights[index][i] = height;
+                                  }
+                                },
+                              );
+                            }),
                       ),
                     ],
-                  ),
-                )),
-          ),
+                  )),
+            ),
+          )
         ],
       ),
     );

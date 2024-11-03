@@ -74,6 +74,7 @@ class _SearchPageState extends State<SearchPage> {
                                 itemCount: state.sectors?.length ?? 0,
                                 itemBuilder: (context, index) {
                                   return ActivityItemCard(
+                                    isSelected: false,
                                     id: state.sectors?[index].id.toString() ??
                                         "",
                                     name: state.sectors?[index].isicNameAr

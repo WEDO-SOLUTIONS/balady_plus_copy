@@ -8,10 +8,15 @@ class PermitRequestParams {
       required this.latitude,
       required this.longitude});
 
-  toMap() => {
-        "activityIds": activityIds.join(","),
-        "latitude": latitude,
-        "longitude": longitude,
-        // "municipalityId": "1"
-      };
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      "latitude": latitude,
+      "longitude": longitude,
+    };
+    for (var e in activityIds) {
+      map["activityIds"] = e;
+    }
+
+    return map;
+  }
 }

@@ -416,7 +416,8 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": false,
       "action": {
         "type": "page",
-        "value": ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
+        "value": ClassificationCertificateRouteName
+            .classificationCertificateVerifyOverviewScreen,
       },
       "ar": {
         "title": "classification_certificate_verify",
@@ -652,7 +653,8 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": false,
       "action": {
         "type": "page",
-        "value": ClassificationCertificateRouteName.classificationCertificateVerifyOverviewScreen,
+        "value": ClassificationCertificateRouteName
+            .classificationCertificateVerifyOverviewScreen,
       },
       "ar": {
         "title": "classification_certificate_verify",
@@ -667,19 +669,18 @@ Map<String, dynamic> servicesConfig = {
     },
   ],
   "help_services": [
-    /*{
+    {
       "id": 408,
       "icon": "smart_advisor",
       "3d_icon": null,
       "order": 13,
       "isNew": false,
       "isImportant": false,
-      "requireLogin": true,
+      "requireLogin": false,
       "action": {"type": "page", "value": ""},
       "ar": {"title": "smart_advisor", "description": null, "tag": null},
       "en": {"title": "smart_advisor", "description": null, "tag": null}
-    },*/
-
+    },
 
     {
       "id": 401,

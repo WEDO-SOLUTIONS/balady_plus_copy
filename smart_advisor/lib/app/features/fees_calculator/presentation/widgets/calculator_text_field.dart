@@ -1,3 +1,5 @@
+import 'package:flutter/services.dart';
+
 import '/app/core/utils/constants/app_style.dart';
 import 'package:flutter/material.dart';
 
@@ -26,9 +28,11 @@ class CalculatorCustomTextField extends StatelessWidget {
         ),
         SizedBox(height: 8),
         // The TextField with custom design
-        TextField(
+        TextFormField(
+          initialValue: value,
           textAlign: TextAlign.right,
           keyboardType: TextInputType.number,
+          inputFormatters: [FilteringTextInputFormatter.digitsOnly],
           onChanged: (String y) {
             onChanged(y);
           },

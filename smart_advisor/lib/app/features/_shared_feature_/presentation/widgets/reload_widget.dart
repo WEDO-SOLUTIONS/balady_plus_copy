@@ -13,38 +13,40 @@ class ReloadWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTab,
-      child: Container(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              "packages/smart_advisor/smart_advisor_assets/images/error_placeholder.png",
-              width: 141,
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Text(
-              "لا يوجد نتائج",
-              style: AppStyle.calloutBoldStyle
-                  .copyWith(color: AppColor.textPrimaryColor),
-            ),
-            const SizedBox(
-              height: 24,
-            ),
-            Center(
-              child: CustomButton(
-                btnWidth: 194,
-                text: "reload".tr(),
-                onPress: () {
-                  onTab();
-                },
+    return Center(
+      child: InkWell(
+        onTap: onTab,
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                "packages/smart_advisor/smart_advisor_assets/images/error_placeholder.png",
+                width: 141,
               ),
-            ),
-          ],
+              const SizedBox(
+                height: 24,
+              ),
+              Text(
+                "لا يوجد نتائج",
+                style: AppStyle.calloutBoldStyle
+                    .copyWith(color: AppColor.textPrimaryColor),
+              ),
+              const SizedBox(
+                height: 24,
+              ),
+              Center(
+                child: CustomButton(
+                  btnWidth: 194,
+                  text: "reload".tr(),
+                  onPress: () {
+                    onTab();
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

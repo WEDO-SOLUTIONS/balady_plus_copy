@@ -1,3 +1,5 @@
+import '../../../select_activity/domain/entities/addetional_activites_response.dart';
+
 class FeesCalculatorRequest {
   final String? municipalityGisCode;
   final String? longitude;
@@ -12,22 +14,23 @@ class FeesCalculatorRequest {
   final List<Board>? boards;
   final dynamic atmFeesPaid;
   final String? crNumber;
+  List<AddetionalActivityItem>? addetionalActivites;
 
-  FeesCalculatorRequest({
-    this.municipalityGisCode,
-    this.longitude,
-    this.latitude,
-    this.activityId,
-    this.licensePeriod,
-    this.shopArea,
-    this.cleanOption,
-    this.unitCount,
-    this.accommodationTypeId,
-    this.permits,
-    this.boards,
-    this.atmFeesPaid,
-    this.crNumber,
-  });
+  FeesCalculatorRequest(
+      {this.municipalityGisCode,
+      this.longitude,
+      this.latitude,
+      this.activityId,
+      this.licensePeriod,
+      this.shopArea,
+      this.cleanOption,
+      this.unitCount,
+      this.accommodationTypeId,
+      this.permits,
+      this.boards,
+      this.atmFeesPaid,
+      this.crNumber,
+      this.addetionalActivites});
 
   factory FeesCalculatorRequest.fromJson(Map<String, dynamic> json) =>
       FeesCalculatorRequest(
@@ -48,7 +51,6 @@ class FeesCalculatorRequest {
             ? []
             : List<Board>.from(json["boards"]!.map((x) => Board.fromJson(x))),
         atmFeesPaid: json["atmFeesPaid"],
-        crNumber: json["crNumber"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -57,18 +59,27 @@ class FeesCalculatorRequest {
         "latitude": latitude,
         "activityId": activityId,
         "licensePeriod": licensePeriod,
-        "shopArea": shopArea,
+        "shopArea": shopArea.toString(),
         "cleanOption": cleanOption,
         "unitCount": unitCount,
         "accommodationTypeId": accommodationTypeId,
-        "permits": permits == null
-            ? []
-            : List<dynamic>.from(permits!.map((x) => x.toJson())),
-        "boards": boards == null
-            ? []
-            : List<dynamic>.from(boards!.map((x) => x.toJson())),
+        if (permits != null && permits!.isNotEmpty)
+          "permits": permits == null
+              ? []
+              : List<dynamic>.from(permits!.map((x) => x.toJson())),
+        if (boards != null && boards!.isNotEmpty)
+          "boards": boards == null
+              ? []
+              : List<dynamic>.from(boards!.map((x) => x.toJson())),
         "atmFeesPaid": atmFeesPaid,
         "crNumber": crNumber,
+        /*  if (addetionalActivites != null && addetionalActivites!.isNotEmpty)
+          "additionalActivities": addetionalActivites == null
+              ? []
+              : List<dynamic>.from(addetionalActivites!.map((x) => {
+                    "ActivityId": x.activityId.toString(),
+                    "Area": x.area.toString()
+                  })),*/
       };
 }
 

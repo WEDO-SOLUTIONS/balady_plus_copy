@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 
@@ -10,3 +10,4 @@ class MapSearchEmpty extends StatelessWidget {
         errorLabel: context.l10n.searchNothingFound,
       );
 }
+*/

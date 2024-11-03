@@ -62,6 +62,9 @@ class ServiceIcon extends StatelessWidget {
                   arguments: NavigationService.bottomNavKey.currentContext!
                       .read<PrayerTimesCubit>(),
                 );
+              } else if (service.id == 408) {
+                SmartAdvisor.navigateToSmartAdvisorApp(
+                    context: context, envType: sl<EnvType>());
               } else {
                 NavigationService.navigatorKey.currentState?.pushNamed(
                   service.action.value,
@@ -412,7 +415,7 @@ class ServiceIcon extends StatelessWidget {
           isFullHeight: false,
           dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
           currentRouteName: RouteName.postersStartService,
-          child: NotAuthorizedIndivisualDialog(),
+          child: const NotAuthorizedIndivisualDialog(),
         );
       }
 

@@ -1,3 +1,7 @@
+import 'package:smart_advisor/app/features/map/data/models/map_requests_params.dart';
+
+import 'package:smart_advisor/app/features/map/data/models/point_layers_data.dart';
+
 import '/app/features/map/domain/entities/get_zones_request.dart';
 import '/app/features/map/domain/entities/gis_data_request.dart';
 import '/app/features/map/domain/entities/gis_data_response.dart';
@@ -45,6 +49,17 @@ class SmartAdvisorMapRepositoryImplementation
       ValidatePointRequest params) async {
     try {
       final data = await remoteDataSource.validatePoint(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<PointLayersData>?>> getPointsInLayers(
+      MapRequestParams params) async {
+    try {
+      final data = await remoteDataSource.getPointsInLayers(params: params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));
