@@ -13,6 +13,8 @@ import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../data/model/driver/GhuslEmploye.dart';
+import '../../../data/model/driver/deceased_attachment.dart';
 import '../../../data/model/driver/deceased_identical_item.dart';
 import '../../../domain/entities/deceased_request_details/deceased_request_details.dart';
 import '../../blocs/driver_extra_data_bloc/extra_data_bloc.dart';
@@ -23,27 +25,26 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'deseased_attachment_widget.dart';
 class ExtraDataCardWidget extends StatelessWidget {
   final DeceasedIdenticalItem item;
-    ExtraDataBloc? bloc;
+  ExtraDataBloc? bloc;
 
 
-   ExtraDataCardWidget(
-      {Key? key,
-        required this.item,
-        required this.bloc,
 
-       })
-      :super(key: key){
-     bloc!.add(GetDeceasedAttachmentEvent(requestId: item.requestId!));
-     bloc!.add(GetGhuslEmployeesEvent(requestId: item.requestId!,ghuslEmployeeIdentityNo: item.ghuslEmployeeIdentityNo));
+  ExtraDataCardWidget({Key? key,
+    required this.item,
+    required this.bloc,
 
-   }
+  })
+      :super(key: key) {
+    bloc!.add(GetDeceasedAttachmentEvent(requestId: item.requestId!));
+    bloc!.add(GetGhuslEmployeesEvent(requestId: item.requestId!,
+        ghuslEmployeeIdentityNo: item.ghuslEmployeeIdentityNo));
+  }
 
 
   @override
   Widget build(BuildContext context) {
-
     return BlocProvider.value(
-      value:bloc! ,
+        value: bloc!,
         child:
         BlocConsumer<ExtraDataBloc, ExtraDataState>(
           listener: (context, state) {
@@ -53,11 +54,14 @@ class ExtraDataCardWidget extends StatelessWidget {
             }
           },
           builder: (context, state) {
-
             return Container(
-              width: MediaQuery.of(context).size.width - 60,
+              width: MediaQuery
+                  .of(context)
+                  .size
+                  .width - 60,
               decoration: new BoxDecoration(
-                  color: AppColor.white, borderRadius: BorderRadius.circular(16)),
+                  color: AppColor.white,
+                  borderRadius: BorderRadius.circular(16)),
 
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -70,23 +74,29 @@ class ExtraDataCardWidget extends StatelessWidget {
                     details: item.deceasedName ?? "",
                   ),
 
-                 // item.ghuslable ==true ?
-                 CustomDropDownDialog(
-                    items: bloc!.getGhuslEmployeeByRequestId(item.requestId!) ?? [],
-                    selectedValue: state.lstSelectedEmploye?[item.requestId]?.fullName,
+                  item.ghuslable == true ?
+                  CustomDropDownDialog(
+                    items: bloc!.getGhuslEmployeeByRequestId(item.requestId!) ??
+                        [],
+                    selectedValue: state.lstSelectedEmploye?[item.requestId]
+                        ?.fullName,
                     onChangeType: (var selectedItem) {
-
-                      bloc!.add(SetSelectEmployeeEvent(requestId:item.requestId!, employee: selectedItem ));
+                      item.ghuslEmployeeIdentityNo =
+                          (selectedItem as GhuslEmploye).identityNumber;
+                      item.ghuslEmployeeName =
+                          (selectedItem as GhuslEmploye).fullName;
+                      bloc!.add(SetSelectEmployeeEvent(
+                          requestId: item.requestId!, employee: selectedItem));
                     },
                     onEmptyList: () async {
                       // return context
                       //     .read<AddTripBloc>()
                       //     .getLanuduriesLookUp();
                     },
-                    label: "GhuslName".tr()+ (item.ghuslEmployeeRequired==true?" *":""),
+                    label: "GhuslName".tr() +
+                        (item.ghuslEmployeeRequired == true ? " *" : ""),
                     hint: "GhuslName".tr(),
-                  ),
-                     //:Container(),
+                  ) : Container(),
 
 
                   ListView.builder(
@@ -98,7 +108,10 @@ class ExtraDataCardWidget extends StatelessWidget {
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (ctx, index) {
                       return DeceasedAttachmentCardWidget(
-                        item: bloc!.getAttachmentByRequestId(item.requestId!)![index],bloc: bloc!,requestId: item.requestId!,
+                        item: bloc!.getAttachmentByRequestId(
+                            item.requestId!)![index],
+                        bloc: bloc!,
+                        requestId: item.requestId!,
 
                       );
                     },
@@ -107,32 +120,22 @@ class ExtraDataCardWidget extends StatelessWidget {
                   SizedBox(
                     height: 10,
                   ),
+                  (item.ghuslable== true ||(bloc!.getAttachmentByRequestId(item.requestId!) != null&& bloc!.getAttachmentByRequestId(item.requestId!)!.isNotEmpty)) ?
                   Padding(
-                    padding: const EdgeInsets.only(top: 20,left: 30,right: 30),
+                    padding: const EdgeInsets.only(
+                        top: 20, left: 30, right: 30),
                     child: ElevatedButtonWidget.primaryCustom(
-                      btnColor:  AppColor.primary800Light,
+                      btnColor: AppColor.primary800Light,
                       height: 40,
                       onPressed: () {
-                        bloc?.add(EditAdditionalDataEvent(requestId: item.requestId!));
-
-                        // if (widget.model?.startupInfo?.date != null &&
-                        //     widget.model?.startupInfo?.time != null
-                        //     && widget.model?.arrivalInfo?.date != null &&
-                        //     widget.model?.arrivalInfo?.time != null) {
-                        //
-                        //
-                        //   // context.read<AddTripBloc>().add(
-                        //   //     EditTripPathData(item: widget.model, hidenScreen: false));
-                        // }
-                        // else {
-                        //   CommonFunctions.showError("please_enter_date_and_time".tr());
-                        // }
-
-
+                        if (bloc?.validateForm(item) == true) {
+                          bloc?.add(EditAdditionalDataEvent(
+                              requestId: item.requestId!));
+                        }
                       },
                       text: ('saveButton').tr(),
                     ),
-                  ),
+                  ):Container(),
 
 
                   if (state.status == BlocStatus.loading)
@@ -141,17 +144,14 @@ class ExtraDataCardWidget extends StatelessWidget {
                 ],
               ),
             );
-
           },
         )
 
 
-
     );
-
-
-
-
-
   }
 }
+
+
+
+

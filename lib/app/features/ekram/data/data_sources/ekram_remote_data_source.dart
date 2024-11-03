@@ -95,7 +95,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getLocations();
 
-  Future<EkramAttachmentResponse> editAdditionalData(
+  Future<ResponseBodyModel<dynamic>> editAdditionalData(
       int id,EditAdditionalRequest request);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(String params);
@@ -1240,11 +1240,11 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   Future<ResponseBodyModel<dynamic>> completeTrip(int params) async {
     Response response;
     try {
-      response = await webService.dio.post(
-        "${ApiUrl.completeTrip}/$params",
+      response = await webService.dio.put(
+        ApiUrl.completeTrip(params),queryParameters: {"isDriver":true}
       );
 
-      var data = response.data["data"]?["result"];
+
 
       final decodedResponse = ResponseBodyModel<dynamic>.fromMap(response.data);
 
@@ -1619,16 +1619,22 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<EkramAttachmentResponse> editAdditionalData(int id,EditAdditionalRequest request) async {
+  Future<ResponseBodyModel<dynamic>> editAdditionalData(int id,EditAdditionalRequest request) async {
     Response response;
 
     try {
       response = await webService.dio.post(ApiUrl.editAdditionalData(request.requestId!),
           data: request.toJson());
 
-      var data = response.data;
-      return EkramAttachmentResponse(
-          data: data, type: response.headers["Content-Type"]?.first ?? "");
+      var data = response.data["data"]?["result"];
+
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data,
+          parsedResult: data);
+
+      return decodedResponse.toFuture();
+
+
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

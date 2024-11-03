@@ -28,7 +28,9 @@ import '../../widgets/driver/extra_data_card_widget.dart';
 
 
 class DriverExtraDataPage extends StatefulWidget {
-  const DriverExtraDataPage({Key? key}) : super(key: key);
+
+  ExtraDataBloc bloc;
+   DriverExtraDataPage({Key? key,required this.bloc}) : super(key: key);
 
   @override
   State<DriverExtraDataPage> createState() =>
@@ -39,12 +41,11 @@ class _DriverExtraDataPageState
     extends State<DriverExtraDataPage> {
 
   IdenticalListBloc? identicalListBloc;
-  ExtraDataBloc? bloc;
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    bloc=  ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(), editAdditionalData: sl());
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.detailsServiceFuneralCarDriver);
   }
@@ -57,25 +58,7 @@ class _DriverExtraDataPageState
 
     return    Scaffold(
       backgroundColor: AppColor.white2,
-      // appBar: DetailsHeader(
-      //   titleWidget: Row(
-      //     mainAxisAlignment: MainAxisAlignment.start,
-      //     children: [
-      //       CustomTextWidget(
-      //         'requests_transporting_deceased'.tr(),
-      //         fontSize: 20,
-      //         maxLines: 1,
-      //         textOverflow: TextOverflow.ellipsis,
-      //         fontWeight: AppFontWeight.bold,
-      //         fontColor: AppColor.blackModern700Light,
-      //       ),
-      //       const SizedBox(
-      //         width: 16,
-      //       ),
-      //
-      //     ],
-      //   ),
-      // ),
+
       body: Padding(
         padding: const EdgeInsets.only(top: 16.0,right: 16,left: 16,bottom: 30),
         child:
@@ -110,7 +93,7 @@ class _DriverExtraDataPageState
 
 
                               ExtraDataCardWidget(
-                                bloc: bloc,
+                                bloc: widget.bloc,
                                 item: identicalListBloc!.state.details![index],
 
 

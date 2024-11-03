@@ -20,6 +20,7 @@ import '../../../data/model/driver/transport_request_item_model.dart';
 import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 
 
+import '../../blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import '../../blocs/driver_identical_bloc/identical_list_bloc.dart';
 import '../../dialogs/add_path_dialog.dart';
 import '../../widgets/driver/trip_body_widget.dart';
@@ -27,38 +28,21 @@ import 'add_custom_trip_path.dart';
 import 'extra_data.dart';
 
 class RequestTrips extends StatelessWidget {
-  final TransportRequestItemModel model;
+
   AddTripBloc? bloc;
+  ExtraDataBloc? extraDataBloc;
   int pathCounter=0;
-   RequestTrips({Key? key, required this.model}) : super(key: key);
+   RequestTrips({Key? key,required this.bloc}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    extraDataBloc=  ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(), editAdditionalData: sl());
 
-    return BlocProvider(
-      create: (context)
-      {
-        bloc = AddTripBloc(
-            deleteTrip: sl(),
-            getTrips: sl(),
-            editTrip: sl(),
-            getTripStations: sl(),
-            model: model,
-            context: context,
-            addTrip: sl(),
-            updateDriverLocation: sl());
-        bloc!.add(GetTripsEvent());
+    return BlocProvider.value(
+      value: bloc!,
 
-
-        return bloc!;
-      },
       child: BlocConsumer<AddTripBloc, AddTripState>(
         listener: (context, state) {
-          // if (state.status == BlocStatus.failure) {
-          //
-          //
-          //   // CommonFunctions.showError(state.errorMessage ?? "");
-          // }
         },
         builder: (cont, state) {
           pathCounter = 0;
@@ -104,54 +88,22 @@ class RequestTrips extends StatelessWidget {
                          ),
                          SizedBox(width: 20,),
                          Flexible(
-                           child: Column(
-                             children: [
-                               ElevatedButtonWidget.primaryCustomBorderColor(
-                                 borderColor: AppColor.kGreenBoarder,
-                                 bgColor: Colors.transparent,
-                                 color: AppColor.darkGreylight,
-                                 fontSize:13,
-                                 height:45,
-                                 onPressed: () async {
+                           child: ElevatedButtonWidget.primaryCustomBorderColor(
+                             borderColor: AppColor.kGreenBoarder,
+                             bgColor: Colors.transparent,
+                             color: AppColor.darkGreylight,
+                             fontSize:13,
+                             height:45,
+                             onPressed: () async {
 
-                                   bloc ??= context.read<AddTripBloc>();
-                                   await CustomPopUpsWidgets.showBottomSheet(
-                                   context, child: AddNewTripPathDailog( title: 'addnewPath'.tr(), bloc: bloc!,),
-                                   );
+                               bloc ??= context.read<AddTripBloc>();
+                               await CustomPopUpsWidgets.showBottomSheet(
+                               context, child: AddNewTripPathDailog( title: 'addnewPath'.tr(), bloc: bloc!,),
+                               );
 
 
-                                 },
-                                 text: ('addnewPath').tr(),
-                               ),
-                               InkWell(
-                                 onTap: () async {
-
-                                 //  NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => DriverExtraDataPage(),),);
-                                   await CustomPopUpsWidgets.showBottomSheet(
-                                     context, child: DriverExtraDataPage(),
-                                   );
-                                 },
-                                 child: Container(
-                                   padding: const EdgeInsets.all(16),
-                                   width: double.infinity,
-                                   decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.blackModern300Light, width: 1), borderRadius: BorderRadius.circular(6)),
-                                   //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-                                   child: Row(
-                                     mainAxisAlignment: MainAxisAlignment.center,
-                                     children: [
-
-                                       CustomTextWidget(
-                                         ("extra_data").tr(),
-                                         fontSize: 12,
-                                         fontWeight: AppFontWeight.medium,
-                                         fontColor: AppColor.black,
-                                         textAlign: TextAlign.start,
-                                       ),
-                                     ],
-                                   ),
-                                 ),
-                               ),
-                             ],
+                             },
+                             text: ('addnewPath').tr(),
                            ),
                          ),
 
@@ -208,16 +160,68 @@ class RequestTrips extends StatelessWidget {
                          ),
                        ),
                      ),
+                     SizedBox(height: 20,),
+                     InkWell(
+                       onTap: () async {
 
+
+                         await CustomPopUpsWidgets.showBottomSheet(
+                           context, child: DriverExtraDataPage(bloc: extraDataBloc!,),
+                         );
+                       },
+                       child: Container(
+                         padding: const EdgeInsets.all(16),
+                         width: double.infinity,
+                         decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.borderBlck, width: 1), borderRadius: BorderRadius.circular(6)),
+                         //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           children: [
+
+                             CustomTextWidget(
+                               ("extra_data").tr(),
+                               fontSize: 14,
+                               fontWeight: AppFontWeight.bold,
+                               fontColor: AppColor.borderBlck,
+                               textAlign: TextAlign.start,
+                             ),
+                           ],
+                         ),
+                       ),
+                     ),
                      SizedBox(height: 20,),
                      ElevatedButtonWidget.primaryCustom(
                        onPressed: () {
 
-                         NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => DriverExtraDataPage(),),);
-               // fffff
+
+                         bool isValid= false;
+                         IdenticalListBloc? identicalListBloc= sl();
+                         if(identicalListBloc.state.details != null) {
+                           for (int index = 0; index < identicalListBloc.state.details!.length; index++) {
+                             var isExrtaValid = extraDataBloc!.validateForm(identicalListBloc.state.details![index]);
+
+                             if (isExrtaValid==true)
+                               {
+                                 isValid = true;
+
+                               }
+                             else
+                               {
+                                 isValid = false;
+                               }
+                           }
+                           if(isValid == true)
+                             {
+                               bloc?.add(SubmitEvent());
+                             }
+                         }
+
+
+
+
 
                        },
-                       text: ('nextButton').tr(),
+                       text: ('tripComplete').tr(),
                      ),
 
                    ],

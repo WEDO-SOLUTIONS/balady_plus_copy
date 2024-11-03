@@ -94,7 +94,7 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getStatus();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLocations();
-  Future<Either<Failure, EkramAttachmentResponse>> editAdditionalData(EditAdditionalRequest request);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> editAdditionalData(EditAdditionalRequest request);
 
   Future<Either<Failure, ResponseBodyModel<UserInfoResponseModel>>>
       checkUserinfo(UserInfoRequestParams params);

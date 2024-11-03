@@ -77,16 +77,15 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     }, (success) async {
 
 
-      Map<int, List<DeceasedAttachment>>? lst = prepareAttachmentData(e.requestId,success.data?.result);
-
-
 
 
           emitter(state.copyWith(
             status: BlocStatus.success,
-            lstDeceasedAttachment: lst,
+
             errorMessage: "",
           ));
+          CommonFunctions.showSuccess("update_appointment_success_msg".tr());
+
 
 
     });
@@ -182,7 +181,7 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
                       lstDeceasedAttachment: map
                     ));
 
-                    CommonFunctions.showSuccess("uploadSucessfull".tr());
+                    //CommonFunctions.showSuccess("uploadSucessfull".tr());
 
                   }
 
@@ -298,4 +297,38 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     return null;
   }
 
-}
+
+  bool validateForm(DeceasedIdenticalItem item){
+    Map<int, List<DeceasedAttachment>>?map = state.lstDeceasedAttachment;
+
+        if(item.ghuslEmployeeRequired==true && (item.ghuslEmployeeIdentityNo==null||item.ghuslEmployeeIdentityNo!.isEmpty)) {
+
+         CommonFunctions.showError("slectGhuslName".tr());
+          return false;
+        }
+        else if(map != null && map.containsKey(item.requestId))
+          {
+            List<DeceasedAttachment>? lst = map[item.requestId];
+            if (lst != null) {
+              for(int index = 0; index<lst.length;index++)
+                {
+                  if(lst[index].mandatory==true && (lst[index].attachUrl == null||lst[index].attachUrl!.isEmpty))
+                    {
+
+                      CommonFunctions.showError("pleaseenter".tr()+ lst[index].name!);
+                      return false;
+                    }
+
+
+                }
+
+            }
+
+          }
+          return true;
+      }
+
+
+    }
+
+

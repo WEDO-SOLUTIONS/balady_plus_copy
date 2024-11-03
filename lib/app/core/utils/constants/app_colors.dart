@@ -120,6 +120,8 @@ class AppColor {
   static const riverBed = Color(0xFF47515C);
   static const mystic = Color(0x7FE6EFEF);
   static const lightgery = Color(0xFFF545480);
+  static const borderBlck = Color(0xFFF545454);
+
 
 
   static const Color kGray115 = Color.fromARGB(255, 115, 115, 115);

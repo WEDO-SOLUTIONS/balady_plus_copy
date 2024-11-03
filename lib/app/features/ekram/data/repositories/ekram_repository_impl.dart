@@ -451,7 +451,7 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, EkramAttachmentResponse>> editAdditionalData(
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> editAdditionalData(
       EditAdditionalRequest request) async {
     try {
       final data = await remoteDataSource.editAdditionalData(request.requestId!,request);

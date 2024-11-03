@@ -10,11 +10,11 @@ import '../repositories/ekram_repository.dart';
 
 import 'package:dartz/dartz.dart' show Either;
 
-class EditAdditionalData extends UseCase<EkramAttachmentResponse, EditAdditionalRequest> {
+class EditAdditionalData extends UseCase<ResponseBodyModel<dynamic>, EditAdditionalRequest> {
   final EkramRepository repository;
   EditAdditionalData({required this.repository});
   @override
-  Future<Either<Failure, EkramAttachmentResponse>> call(EditAdditionalRequest params) async {
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> call(EditAdditionalRequest params) async {
     return await repository.editAdditionalData(params);
   }
 }

@@ -399,8 +399,7 @@ class ApiUrl {
 
 
 
-  static const completeTrip =
-      'v2/ekram-mobile-services/complete-deceased-transports';
+
 
 
   static const updateLocation = 'v2/ekram-mobile-services/add-trip-locations';
@@ -644,7 +643,7 @@ class ApiUrl {
   static  getDeceasedAttachment (int requestId)=> 'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
   static  uploadAttachment(int id)=>'v1/superapp-ekram-services/attachments/$id/upload-file';
   static  editAdditionalData(int id)=>'v1/superapp-ekram-services/transport/$id/edit-additional-data';
-
+  static  completeTrip(int id)=> 'v1/superapp-ekram-services/trips/$id/finalize';
 
 
 
