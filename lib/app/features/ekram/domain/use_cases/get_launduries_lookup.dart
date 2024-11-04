@@ -3,17 +3,19 @@ import 'package:dartz/dartz.dart' show Either;
 
 import '../../../../core/errors/failures.dart';
 import '../../../../core/services/local/use_case.dart';
+import '../../data/model/look_up_item_location_model.dart';
 import '../entities/lookup_item_location.dart';
 import '../repositories/ekram_repository.dart';
 
 class GetLaundriesLookup extends UseCase<
-    ResponseBodyModel<List<LookUpItemLocation>>, List<dynamic>> {
+    ResponseBodyModel<List<LookUpItemLocationModel>>, List<dynamic>>  {
   final EkramRepository repository;
 
-  GetLaundriesLookup({required this.repository});
-  @override
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocation>>>> call(
-      List<dynamic> params) async {
-    return await repository.getLaundriesLookup(params[0], params[1]);
-  }
+
+GetLaundriesLookup({required this.repository});
+@override
+Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>> call(
+List<dynamic> params) async {
+return await repository.getLaundriesLookup(params[0], params[1]);
+}
 }

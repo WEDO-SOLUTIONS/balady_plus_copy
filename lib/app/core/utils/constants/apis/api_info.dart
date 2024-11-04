@@ -420,8 +420,7 @@ class ApiUrl {
       "v1/superapp-ekram-services/transport/$requestId/charities";
   static String mosquesGhuslPlaces(int requestId, String mosqueOrghusl) =>
       "v1/superapp-ekram-services/mosques-ghusl-places/$requestId/$mosqueOrghusl";
-  static String deceasedRequestDetails(int requestId) =>
-      "v1/superapp-ekram-services/request/$requestId/request-details";
+
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
   static String saveDeathBurialInfo(int requestId) =>

@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
-import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
@@ -9,13 +8,13 @@ import 'package:balady_plus/app/features/ekram/domain/entities/trip_location_res
 import 'package:balady_plus/app/features/ekram/domain/entities/update_driver_location_params.dart';
 import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:dartz/dartz.dart';
-
 import '../../../../core/errors/failures.dart';
 import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../data/model/add_trip_params.dart';
 import '../../data/model/apply_deceased/grave_active_request_details.dart';
 import '../../data/model/baqie_approval_response.dart';
+import '../../data/model/cemetries_params.dart';
 import '../../data/model/driver/EditAdditionalRequest.dart';
 import '../../data/model/driver/GhuslEmploye.dart';
 import '../../data/model/driver/deceased_attachment.dart';
@@ -23,6 +22,7 @@ import '../../data/model/driver/deceased_identical_item.dart';
 import '../../data/model/driver/trip_details_model.dart';
 import '../../data/model/ekram_attachment_response.dart';
 import '../../data/model/look_up_item_location_model.dart';
+import '../../data/model/mosque_ghusl_places_params.dart';
 import '../../data/model/upload_letter_params.dart';
 import '../../ekram_exports.dart';
 import '../entities/active_grave_request_params.dart';
@@ -50,16 +50,28 @@ abstract class EkramRepository {
       getNationalities();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getHospitals(
       int cityId);
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundries(int cityId);
 
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosques(int cityId);
+
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLookUp(
       int id);
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getEkramLookUp(
       String id);
+
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
+  getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params);
+
+
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
+  getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params);
+
+
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+  getCemetriesLookUp(int requestId, CemetriesParams params);
+
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getNationalityTypes();
@@ -72,6 +84,7 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<DeceasedRequestDetails>>>
       getDeceasedTransportRequestDetails(int params);
+
   Future<Either<Failure, ResponseBodyModel<List<DeceasedIdenticalItem>>>>
       getidenticalList(int params);
 
@@ -135,10 +148,8 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel>> verifyDeceased(
       VerifyDeceasedParams params);
-  Future<Either<Failure, RequestDetailsResponseModel>> requestDetails(
-      int params);
-  Future<Either<Failure, RequestDetailsResponseModel>> saveDeceasedInfo(
-      int requestId, SaveDeceasedInfoParams params);
+  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>> requestDetails(String params);
+
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
 }

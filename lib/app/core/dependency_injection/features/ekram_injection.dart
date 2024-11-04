@@ -20,7 +20,6 @@ import '../../../features/ekram/domain/use_cases/get_deceased_transport_request_
 import '../../../features/ekram/domain/use_cases/get_ekram_lookups.dart';
 import '../../../features/ekram/domain/use_cases/get_launduries_lookup.dart';
 import '../../../features/ekram/domain/use_cases/get_locations.dart';
-import '../../../features/ekram/domain/use_cases/get_mosques.dart';
 import '../../../features/ekram/domain/use_cases/get_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_mosques_lookup.dart';
 import '../../../features/ekram/domain/use_cases/get_status.dart';

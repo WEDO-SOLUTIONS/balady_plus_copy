@@ -10,7 +10,6 @@ import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_respo
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
-import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/active_grave_request_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/apply_deceased_response.dart';
@@ -33,6 +32,7 @@ import '../../domain/entities/cemetry_request_details/cemetry_request_details.da
 import '../../domain/entities/cemetry_requests/cemetry_request_response.dart';
 import '../../domain/entities/get_cemetries_params.dart';
 import '../../domain/entities/user_info_request_params.dart';
+import '../model/cemetries_params.dart';
 import '../model/driver/EditAdditionalRequest.dart';
 import '../model/driver/GhuslEmploye.dart';
 import '../model/driver/deceased_attachment.dart';
@@ -40,6 +40,7 @@ import '../model/driver/deceased_identical_item.dart';
 import '../model/driver/transport_request_item_model.dart';
 import '../model/driver/trip_details_model.dart';
 import '../model/driver/trip_stations.dart';
+import '../model/mosque_ghusl_places_params.dart';
 import '../model/upload_letter_params.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -280,10 +281,10 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundries(int cityId) async {
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+  getCemetriesLookUp(int requestId, CemetriesParams params) async {
     try {
-      final data = await remoteDataSource.getLaundries(cityId);
+      final data = await remoteDataSource.getCemetriesLookUp(requestId, params);
 
       return Right(data);
     } on ServerException catch (error, stackTrace) {
@@ -300,10 +301,9 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosques(int cityId) async {
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>> getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params) async {
     try {
-      final data = await remoteDataSource.getMosques(cityId);
+      final data = await remoteDataSource.getMosquesLookUp(cityId, params);
 
       return Right(data);
     } on ServerException catch (error, stackTrace) {
@@ -318,6 +318,30 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
+  getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params) async {
+    try {
+      final data = await remoteDataSource.getLaundriesLookUp(cityId, params);
+
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+
+
 
   @override
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(
@@ -814,8 +838,8 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, RequestDetailsResponseModel>> requestDetails(
-      int params) async {
+  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>> requestDetails(
+      String params) async {
     try {
       final data = await remoteDataSource.requestDetails(params);
       return Right(data);
@@ -832,24 +856,6 @@ class EkramRepositoryImpl implements EkramRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, RequestDetailsResponseModel>> saveDeceasedInfo(
-      int requestId, SaveDeceasedInfoParams params) async {
-    try {
-      final data = await remoteDataSource.saveDeceasedInfo(requestId, params);
-      return Right(data);
-    } on ServerException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(ServerFailure(error.errorMessage,
-          statusCode: error.statusCode, errorCode: error.errorCode));
-    }
-  }
 
   @override
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
@@ -870,4 +876,5 @@ class EkramRepositoryImpl implements EkramRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
 }
