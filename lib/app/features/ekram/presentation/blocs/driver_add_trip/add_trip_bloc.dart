@@ -21,6 +21,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import '../../../data/model/driver/trip_details_model.dart';
 import '../../../data/model/driver/trip_stations.dart';
+import '../../../domain/use_cases/complete_trip.dart';
 import '../../../domain/use_cases/delete_trip.dart';
 import '../../../domain/use_cases/edit_trip.dart';
 import '../../../domain/use_cases/get_trip_stations.dart';
@@ -35,6 +36,7 @@ class AddTripBloc extends Bloc<TripEvent, AddTripState> {
   final EditTrip _editTrip;
   final UpadateDriverLocation _upadateDriverLocation;
  final GetTripStations _getTripStations;
+ final CompleteTrip _completeTrip;
  final GetTrips _getTrips;
   final TransportRequestItemModel model;
   BuildContext _context;
@@ -43,12 +45,12 @@ class AddTripBloc extends Bloc<TripEvent, AddTripState> {
       {
         required GetTrips getTrips,
         required DeleteTrip deleteTrip,
-
         required GetTripStations getTripStations,
-      required AddTrip addTrip,
+        required AddTrip addTrip,
         required EditTrip editTrip,
       required TransportRequestItemModel model,
       required UpadateDriverLocation updateDriverLocation,
+        required CompleteTrip completeTrip,
       required BuildContext context,
       })
       :
@@ -58,6 +60,7 @@ class AddTripBloc extends Bloc<TripEvent, AddTripState> {
         _getTripStations=getTripStations,
         _upadateDriverLocation = updateDriverLocation,
         _getTrips = getTrips,
+        _completeTrip = completeTrip,
         _context=context,
         model =model,
         super(
@@ -114,64 +117,25 @@ else
   Future<void> _submitHandler(SubmitEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    // AddTripParams params = AddTripParams(
-    //     currentTripStationArrivalTime: state.currentTripStationArrivalTime,
-    //     currentTripStationId: state.currentTripStationId,
-    //     currentTripStationLocationX: state.currentTripStationLocationX,
-    //     currentTripStationLocationY: state.currentTripStationLocationY,
-    //     currentTripStationName: state.currentTripStationName,
-    //     currentTripStationTypeId: state.currentTripStationTypeId,
-    //     nextTripStationArrivalTime: state.nextTripStationArrivalTime,
-    //     nextTripStationId: state.nextTripStationId,
-    //     nextTripStationName: state.nextTripStationName,
-    //     nextTripStationTypeId: state.nextTripStationTypeId?.id,
-    //     requestProcessId: state.data.deathInfoId);
-    //
-    // LookUpItemLocation? locationInfo;
-    // if (state.nextLaundryStation != null) {
-    //   locationInfo = state.launduries?.firstWhereOrNull(
-    //       (element) => element.id == state.nextLaundryStation?.id);
-    //   params.nextTripStationName = state.nextLaundryStation?.name;
-    //   params.nextTripStationId = state.nextLaundryStation?.id;
-    // }
-    // if (state.nextMosqueStation != null) {
-    //   locationInfo = state.mosques?.firstWhereOrNull(
-    //       (element) => element.id == state.nextMosqueStation?.id);
-    //   params.nextTripStationName = state.nextMosqueStation?.name;
-    //   params.nextTripStationId = state.nextMosqueStation?.id;
-    // }
-    //
-    // if (state.nextHospitalStation != null) {
-    //   params.nextTripStationName = state.nextHospitalStation?.name;
-    //   params.nextTripStationId = state.nextHospitalStation?.id;
-    // }
-    //
-    // if (state.isCemetry()) {
-    //   // MM Check
-    //   params.nextTripStationName = state.data.cemetryName;
-    //   params.nextTripStationId = state.data.cemetryId;
-    // }
-    //
-    // params.nextTripStationLocationX = double.tryParse(locationInfo?.x ?? "");
-    // params.nextTripStationLocationY = double.tryParse(locationInfo?.y ?? "");
-    //
-    // final failureOrSuccess = await _addTrip(params);
-    //
-    // await failureOrSuccess.fold((failure) {
-    //   emitter(state.copyWith(
-    //     status: BlocStatus.failure,
-    //     errorMessage: (failure as ServerFailure).errorMessage,
-    //   ));
-    // }, (success) async {
-    //   await _updateDriverLocatioHandler();
-    //   emitter(state.copyWith(
-    //     status: BlocStatus.success,
-    //     errorMessage: "",
-    //   ));
-    //
-    //   NavigationService.navigatorKey.currentState
-    //       ?.pop(success.data?.responseMessage);
-    // });
+    final failureOrSuccess = await _completeTrip(state.model.requestId!);
+
+    await failureOrSuccess.fold((failure) {
+      CommonFunctions.showError((failure as ServerFailure).errorMessage);
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+
+    }, (success) async {
+      await _updateDriverLocatioHandler();
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        errorMessage: "",
+      ));
+
+      // NavigationService.navigatorKey.currentState
+      //     ?.pop(success.data?.responseMessage);
+    });
   }
   Future<void> _clearErrorMsg(ClearErrorMsgEvent e, Emitter emitter) async {
 
@@ -205,8 +169,7 @@ else
   Future<void> _getTripsHandler(GetTripsEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getTrips(
-        state.model);
+    final failureOrSuccess = await _getTrips(state.model);
 
     failureOrSuccess.fold((failure) async {
       CommonFunctions.showError((failure as ServerFailure).errorMessage);

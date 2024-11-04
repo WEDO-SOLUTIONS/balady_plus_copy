@@ -5,7 +5,7 @@ import '../../../features/ekram/domain/use_cases/book_cemetry.dart';
 import '../../../features/ekram/domain/use_cases/check_user_info.dart';
 import '../../../features/ekram/domain/use_cases/complete_trip.dart';
 import '../../../features/ekram/domain/use_cases/delete_trip.dart';
-import '../../../features/ekram/domain/use_cases/download_attachment.dart';
+import '../../../features/ekram/domain/use_cases/edit_aditional_data.dart';
 import '../../../features/ekram/domain/use_cases/edit_trip.dart';
 import '../../../features/ekram/domain/use_cases/get_active_cities.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetries.dart';
@@ -23,7 +23,7 @@ import '../../../features/ekram/domain/use_cases/get_status.dart';
 import '../../../features/ekram/domain/use_cases/get_trips.dart';
 import '../../../features/ekram/domain/use_cases/get_trips_location.dart';
 import '../../../features/ekram/domain/use_cases/update_driver_location.dart';
-import '../../../features/ekram/domain/use_cases/upload_trip.dart';
+import '../../../features/ekram/domain/use_cases/upload_attachment.dart';
 import '../../../features/ekram/ekram_exports.dart';
 import '../../../features/ekram/presentation/blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import '../../../features/ekram/presentation/blocs/driver_identical_bloc/identical_list_bloc.dart';
@@ -64,11 +64,11 @@ class EkramInjection {
     sl.registerLazySingleton(() => GetLaundries(repository: sl()));
     sl.registerLazySingleton(() => DeleteTrip(repository: sl()));
     sl.registerLazySingleton(() => CompleteTrip(repository: sl()));
-    sl.registerLazySingleton(() => UploadLetter(repository: sl()));
+    sl.registerLazySingleton(() => UploadAttachment(repository: sl()));
     sl.registerLazySingleton(() => UpadateDriverLocation(repository: sl()));
     sl.registerLazySingleton(() => GetTripsLocation(repository: sl()));
     sl.registerLazySingleton(() => GetTripStations(repository: sl()));
-    sl.registerLazySingleton(() => DownloadAttachment(repository: sl()));
+    sl.registerLazySingleton(() => EditAdditionalData(repository: sl()));
     sl.registerLazySingleton(() => GetEkramLookUp(repository: sl()));
     sl.registerLazySingleton(() => CheckUserinfo(repository: sl()));
     sl.registerLazySingleton(() => GetCemetries(repository: sl()));
@@ -84,7 +84,7 @@ class EkramInjection {
         isDriver: true));
 
 
-    sl.registerLazySingleton(() => ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),downloadAttachment: sl()));
+    sl.registerLazySingleton(() => ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(),editAdditionalData: sl()));
 
 
 

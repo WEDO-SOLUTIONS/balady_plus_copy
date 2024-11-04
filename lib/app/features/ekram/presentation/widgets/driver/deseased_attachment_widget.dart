@@ -1,17 +1,30 @@
+import 'dart:io';
+
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:dartz/dartz.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../etmam_app/core/utils/common_functions.dart';
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../core/utils/constants/paths/icon_paths.dart';
+import '../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../../core/utils/enums/enums.dart';
+import '../../../../../events_logs/controller/logs_controller.dart';
+import '../../../../../events_logs/events_names.dart';
+import '../../../../../events_logs/models/error_exception_model.dart';
+import '../../../../_shared_feature_/data/entities/file_data_item.dart';
+import '../../../../_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
+import '../../../../objectable_transactions/presentation/widgets/create_objection_page/objection_reason_attachment.dart';
 import '../../../data/model/driver/deceased_attachment.dart';
 import '../../../data/model/driver/deceased_identical_item.dart';
 import '../../../domain/entities/deceased_request_details/deceased_request_details.dart';
@@ -21,14 +34,14 @@ import '../ekram_status_widget.dart';
 class DeceasedAttachmentCardWidget extends StatelessWidget {
   final DeceasedAttachment item;
   final ExtraDataBloc bloc;
+  final int requestId;
 
-
-   DeceasedAttachmentCardWidget(
-      {Key? key,
-        required this.item,
-        required this.bloc,
-       })
-      : super(key: key);
+  DeceasedAttachmentCardWidget({
+    Key? key,
+    required this.item,
+    required this.bloc,
+   required this.requestId,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,74 +50,88 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        SizedBox(height: 15,),
+        SizedBox(
+          height: 15,
+        ),
         CustomTextWidget(
-          item.name??(item.mandatory==true?" *":""),
+          "${item.name!}${item.mandatory == false ? " * " : ""} (${item.allowedFilesExtension})",
           fontSize: 14,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
           fontWeight: AppFontWeight.bold,
           fontColor: AppColor.blackModern700Light,
         ),
-        SizedBox(height: 10,),
-        Row(
-          children: [
-            // InkWell(
-            //   onTap: () async {
-            //
-            //   },
-            //   child: Container(
-            //     padding: const EdgeInsets.all(16),
-            //     width: double.infinity,
-            //     decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.blackModern300Light, width: 1), borderRadius: BorderRadius.circular(6)),
-            //     //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
-            //     child: Row(
-            //       mainAxisAlignment: MainAxisAlignment.center,
-            //       children: [
-            //         CustomTextWidget(
-            //           ("compliance_image_upload").tr(),
-            //           fontSize: 12,
-            //           fontWeight: AppFontWeight.medium,
-            //           fontColor: AppColor.black,
-            //           textAlign: TextAlign.start,
-            //         ),
-            //       ],
-            //     ),
-            //   ),
-            // ),
-
-            Expanded(
-              flex: 4,
-              child: ElevatedButtonWidget.primaryCustomBorderColor(
-                borderColor: AppColor.kGreenBoarder,
-                bgColor: Colors.transparent,
-                color: AppColor.darkGreylight,
-                fontSize:13,
-                height:45,
-                onPressed: () async {
-              
-                },
-                text: ('compliance_image_upload').tr(),
-              ),
-            ),
-
-            SizedBox(width: 10,),
-            Expanded(
-              flex: 1,
-              child: IconButton(onPressed: () {
-                bloc.add(DownLoadDeceasedAttachmentEvent(id: item.id!));
-              },
-                icon: Icon(IconData(0xf58e, fontFamily: 'MaterialIcons'),size: 20,color: AppColor.primary800Light,),
-                iconSize: 45 ,
-                padding: EdgeInsets.zero,
-                constraints: const BoxConstraints(),),
-            ),
-
-          ],
+        SizedBox(
+          height: 10,
         ),
-     
+        item.updatable == true
+            ? ElevatedButtonWidget.attachFile(
+              onPressed: () async {
+                FocusManager.instance.primaryFocus?.unfocus();
+
+                FileDataItem? file =
+                    await CommonFunctions.pickFile(context);
+                if (file != null) {
+                  bloc.add(UploadDeceasedAttachmentEvent(
+                      attachmentId: item.attachmentTypeId!,
+                      file: file,
+                  requestId: requestId));
+                  // saveFile(
+                  //     fileIndex, item.filePath, item.fileName,
+                  //     item.fileBase64);
+                }
+              },
+            )
+            : Container(),
+        SizedBox(
+          height: 10,
+        ),
+        item.attachUrl != null && item.attachUrl!.isNotEmpty
+            ? GestureDetector(
+                onTap: () {
+
+
+                  String fileName= "";
+                  if(item.contentType!.toLowerCase().contains("png")
+                      ||item.contentType!.toLowerCase().contains("png")||
+                      item.contentType!.toLowerCase().contains("jpeg")) {
+                    fileName= "${item.fileName!}.png";
+                  }
+
+                    CommonFunctions.showApigeeFile(CommonFunctions.getDMSUrl(item.uuid ?? ""), fileName ,serviceId: 0);
+                },
+                child: Container(
+                  padding: const EdgeInsets.all(16),
+                  margin: const EdgeInsets.only(top: 16),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      color: Color(0x80E6EFEF)),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      CustomTextWidget(
+                        "obkection_enquiry_show_file".tr(),
+                        fontColor: AppColor.primary900Light,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const SizedBox(
+                        height: 32,
+                      ),
+                      const CustomSvgIconWidget(IconPath.receiveSquare,
+                          iconSize: 24.0),
+                    ],
+                  ),
+                ))
+            : Container(),
+
+
+
+
 
       ],
     );
   }
+
+
 }

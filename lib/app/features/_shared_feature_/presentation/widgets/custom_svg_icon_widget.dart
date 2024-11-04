@@ -74,7 +74,8 @@ class _CustomNetworkImageWidgetState extends State<CustomNetworkImageWidget> {
     bool isSvgIcon = widget.imagePath.contains(".svg");
     bool isUrl = widget.imagePath.startsWith("http");
 
-    final header=  widget.sso ? {
+    final header=  widget.sso ?
+    {
 
       "Authorization":
       "Bearer ${CommonProperties.token}"

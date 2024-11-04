@@ -23,6 +23,7 @@ import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 import '../../blocs/driver_identical_bloc/identical_list_bloc.dart';
 
 class IdenticalListPage extends StatefulWidget {
@@ -179,13 +180,21 @@ class _IdenticalListPageState
                       ),
                       ElevatedButtonWidget.primaryCustom(
                         onPressed: () {
+                         var bloc = AddTripBloc(
+                              deleteTrip: sl(),
+                              completeTrip: sl(),
+                              getTrips: sl(),
+                              editTrip: sl(),
+                              getTripStations: sl(),
+                              model: params,
+                              context: context,
+                              addTrip: sl(),
+                              updateDriverLocation: sl());
 
                           NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(builder: (context) => RequestTrips(
-                              model: params,),
-                            ),
-                          );
+                              bloc: bloc,),),);
 
-
+                         bloc.add(GetTripsEvent());
 
                         },
                         text: ('startTrip').tr(),

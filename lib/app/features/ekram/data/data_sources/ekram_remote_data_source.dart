@@ -1,9 +1,6 @@
-import 'dart:convert';
 
-import 'package:balady_plus/app/commercial_model/features/comercial_license_renew/data/data_sources/renew_cr_remote_data_source.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
-import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
@@ -13,20 +10,20 @@ import 'package:balady_plus/app/features/ekram/data/model/request_details_respon
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/trip_location_response_model.dart';
-import 'package:balady_plus/app/features/ekram/data/model/upload_letter_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/update_driver_location_params.dart';
-import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_location.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:http_parser/http_parser.dart' as http;
+import 'package:mime/mime.dart';
 
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/utils/constants/apis/api_info.dart';
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../domain/entities/active_grave_request_params.dart';
@@ -39,6 +36,7 @@ import '../model/cemetry_request_details/cemetry_request_details_model.dart';
 import '../model/cemetry_requests/cemetry_request_response_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../model/driver/EditAdditionalRequest.dart';
 import '../model/driver/GhuslEmploye.dart';
 import '../model/driver/deceased_attachment.dart';
 import '../model/driver/deceased_identical_item.dart';
@@ -84,7 +82,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId, int requestId);
 
-  Future<ResponseBodyModel<dynamic>> uploadLetter(UploadLetterParamas params);
+  Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(int attachmentId, FileDataItem params );
 
   Future<ResponseBodyModel<dynamic>> upadateDriverLocation(
       UpdateDriverLocationParams params);
@@ -96,7 +94,8 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getLocations();
 
-  Future<EkramAttachmentResponse> downLoadAttachment(int id);
+  Future<ResponseBodyModel<dynamic>> editAdditionalData(
+      int id,EditAdditionalRequest request);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(String params);
 
@@ -326,8 +325,10 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-      response = await webService.dio.get(ApiUrl.deceasedAttachment(requestId),
-          queryParameters: {"isDriver": true});
+      response = await webService.dio.get(
+          ApiUrl.getDeceasedAttachment(requestId),
+          queryParameters: {"isDriver":true}
+      );
 
       var data = response.data["data"]?["result"];
 
@@ -1215,11 +1216,11 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   Future<ResponseBodyModel<dynamic>> completeTrip(int params) async {
     Response response;
     try {
-      response = await webService.dio.post(
-        "${ApiUrl.completeTrip}/$params",
+      response = await webService.dio.put(
+        ApiUrl.completeTrip,queryParameters: {"isDriver":true}
       );
 
-      var data = response.data["data"]?["result"];
+
 
       final decodedResponse = ResponseBodyModel<dynamic>.fromMap(response.data);
 
@@ -1262,20 +1263,55 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel> uploadLetter(UploadLetterParamas params) async {
-    Response response;
+  Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(int attachmentId, FileDataItem params ) async {
+
+    var response;
+
     try {
+
+
+
+      int timeStamp = DateTime.now().millisecondsSinceEpoch;
+      String newFileName = params.fileName.replaceRange(0, params.fileName.indexOf("."), "$timeStamp");
+      String contentTyp = lookupMimeType(params.filePath)!;
+      final formData = FormData.fromMap(
+        {
+          "file": await MultipartFile.fromFile(
+            params.filePath,
+            filename:  newFileName , //params.fileName,
+            contentType: http.MediaType.parse(contentTyp),
+          ),
+        },
+      );
       response = await webService.dio.post(
-        ApiUrl.uploadLetter,
-        data: params.toMap(),
+        ApiUrl.uploadAttachment(
+          attachmentId,
+        ),
+        data: formData,
+        options: Options(
+          headers: {
+            "fileContentType": contentTyp,
+          },
+        ),
       );
 
-      final decodedResponse = ResponseBodyModel<dynamic>.fromMap(
-        response.data,
-      );
+      var data = response.data["data"]?["result"];
+
+      DeceasedAttachment? parsedResult =
+      data != null ? DeceasedAttachment.fromJson(data) : null;
+
+
+
+
+      final decodedResponse =
+      ResponseBodyModel<DeceasedAttachment>.fromMap(response.data,
+          parsedResult: parsedResult);
+
 
       return decodedResponse.toFuture();
-    } on DioException catch (error, stackTrace) {
+
+
+    } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1559,17 +1595,23 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<EkramAttachmentResponse> downLoadAttachment(int id) async {
+  Future<ResponseBodyModel<dynamic>> editAdditionalData(int id,EditAdditionalRequest request) async {
     Response response;
 
     try {
-      response = await webService.dio.get("${ApiUrl.ekramAttachments}/$id",
-          options: Options(responseType: ResponseType.bytes));
+      response = await webService.dio.post(ApiUrl.editAdditionalData(request.requestId!),
+          data: request.toJson());
 
-      var data = response.data;
-      return EkramAttachmentResponse(
-          data: data, type: response.headers["Content-Type"]?.first ?? "");
-    } on DioException catch (error, stackTrace) {
+      var data = response.data["data"]?["result"];
+
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data,
+          parsedResult: data);
+
+      return decodedResponse.toFuture();
+
+
+    } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,

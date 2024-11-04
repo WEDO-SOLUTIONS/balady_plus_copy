@@ -4223,7 +4223,14 @@
   "add_Custom_Path": "مسار جديد اضافي ",
   "please_enter_date_and_time": "من فضلك اختر الوقت والتاريخ الخاصة بالمسار",
   "path_deleted": "تم حذف المسار بنجاح",
-  "do_you_want_to_delete_path": "هل تريد حذف المسار؟",
-  "extra_data": "بيانات اضافية",
-  "GhuslName": "اسم المغسل*"
+  "do_you_want_to_delete_path": " سيتم حذف المسار ولا يمكنك استرجاعة مرة اخرى",
+  "extra_data": "البيانات الإضافية",
+  "GhuslName": "اسم المغسل",
+  "uploadSucessfull": "تم رفع الملف بنجاح",
+  "slectGhuslName": " من فضلك اختر المغسل",
+  "pleaseenter": "من فضلك ارفق ",
+  "tripComplete": "اكتمال الرحلة",
+  "yesDeletePath": "نعم، الغاء المسار ",
+  "noGoback": "لا، التراجع",
+  "deletPathTitle": "تأكيد الغاء المسار"
 }

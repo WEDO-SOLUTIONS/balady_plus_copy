@@ -11,10 +11,12 @@ import 'package:balady_plus/app/features/new_appointment/presentation/core/model
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart';
+import '../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../../data/model/add_trip_params.dart';
 import '../../data/model/apply_deceased/grave_active_request_details.dart';
 import '../../data/model/baqie_approval_response.dart';
+import '../../data/model/driver/EditAdditionalRequest.dart';
 import '../../data/model/driver/GhuslEmploye.dart';
 import '../../data/model/driver/deceased_attachment.dart';
 import '../../data/model/driver/deceased_identical_item.dart';
@@ -91,15 +93,14 @@ abstract class EkramRepository {
       int params);
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(int params);
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> uploadLetter(
-      UploadLetterParamas params);
+  Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>> uploadAttachment(int attachmentId, FileDataItem params );
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> upadateDriverLocation(
       UpdateDriverLocationParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getStatus();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLocations();
-  Future<Either<Failure, EkramAttachmentResponse>> downLoadAttachment(int id);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> editAdditionalData(EditAdditionalRequest request);
 
   Future<Either<Failure, ResponseBodyModel<UserInfoResponseModel>>>
       checkUserinfo(UserInfoRequestParams params);

@@ -5,7 +5,9 @@ import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/constants.dart';
 
 class ViewAPIGEEImageScreen extends StatefulWidget {
-  const ViewAPIGEEImageScreen({Key? key}) : super(key: key);
+  String? imgUrl;
+  String? xServiceId;
+   ViewAPIGEEImageScreen({Key? key,this.imgUrl,this.xServiceId}) : super(key: key);
 
   @override
   State<ViewAPIGEEImageScreen> createState() => _ViewAPIGEEImageScreenState();
@@ -14,14 +16,32 @@ class ViewAPIGEEImageScreen extends StatefulWidget {
 class _ViewAPIGEEImageScreenState extends State<ViewAPIGEEImageScreen> {
   @override
   Widget build(BuildContext context) {
-    String url = ModalRoute.of(context)!.settings.arguments as String;
+    String url;
+    if(widget.xServiceId == null) {
+      url = ModalRoute
+          .of(context)!
+          .settings
+          .arguments as String;
+    }
+    else
+      {
+        url = widget.imgUrl!;
+      }
+
+
+
+   var  headers= {
+      "verifyingKEY": CommonFunctions.hashRequest(url, "GET",xserviceId: "0"),
+    "Authorization": "Bearer ${CommonProperties.token}"};
+    if(widget.xServiceId != null)
+      {
+        headers.addAll({"X-Service-Id":"0"});
+      }
+
     return Stack(
       children: [
         PhotoView(
-          imageProvider: NetworkImage(url, headers: {
-            "verifyingKEY": CommonFunctions.hashRequest(url, "GET"),
-            "Authorization": "Bearer ${CommonProperties.token}"
-          }),
+          imageProvider: NetworkImage(url,headers: headers ),
         ),
         Align(
           alignment: AlignmentDirectional.topStart,

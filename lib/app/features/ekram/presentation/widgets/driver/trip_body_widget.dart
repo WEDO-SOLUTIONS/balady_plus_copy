@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/presentation/widgets/driver/confirm_dialog.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/driver/trip_datetime_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,20 +85,8 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
                   onPressed: () async {
 
 
+                    await showCancelConfirmDialog();
 
-                    await CustomPopUpsWidgets.showConfirmMessageDialog(
-                      context,
-                      "do_you_want_to_delete_path".tr(),
-                      primaryBtn: (){
-                        context.read<AddTripBloc>().add(
-                            DeleteTripPath(tripId: widget.model?.id!));
-                      },
-                        secondaryBtn:(){
-                          Navigator.pop(context);
-                        }
-
-
-                    );
 
 
                   },
@@ -395,40 +384,34 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
   //
   // }
 
-  void showCancelConfirmDialog(Function onConfirm,BuildContext context) {
-    BottomSheetDialog.showDraggableSheet(
-        context,
-      child: BottomSheetWithActions(
-          title: "",
-          action: Row(
-            children: [
-              Expanded(
-                child: ElevatedButtonWidget.primaryCustom(
-                    text: "poster_cancel_confirm_yes".tr(),
-                    onPressed: () {
-                      onConfirm();
-                    }),
-              ),
-              const CustomHorizontalSpace(width: 32),
-              Expanded(
-                child: ElevatedButtonWidget.primaryCustomBorder(
-                    text: "poster_cancel_confirm_no".tr(),
-                    onPressed: () {
-                      Navigator.pop(context);;
-                    }),
-              ),
-            ],
-          ),
-          body: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const CustomVerticalSpace(height: 32),
-              NotesWidget(notes: [
-                "do_you_want_to_delete_path".tr()
-              ])
-            ],
-          )),
+  Future<void> showCancelConfirmDialog() async {
+
+
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return ConfirmDialog(
+          title:"deletPathTitle".tr(),
+          message:"do_you_want_to_delete_path".tr(),
+          okTitle: "yesDeletePath".tr(),
+          cancelTitle: "noGoback".tr(),
+          onOkCallback: (){
+
+            context.read<AddTripBloc>().add(
+                DeleteTripPath(tripId: widget.model?.id!));
+
+          },
+
+
+        );
+      },
     );
+
+
+
+
   }
 
 }

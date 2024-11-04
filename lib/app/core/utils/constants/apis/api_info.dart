@@ -365,11 +365,16 @@ class ApiUrl {
   static const ekramDeceasedTransportApply =
       'v2/ekram-mobile-services/deceased-transport/add-request';
 
-  static const completeTrip =
-      'v2/ekram-mobile-services/complete-deceased-transports';
 
-  static const uploadLetter =
-      'v2/ekram-mobile-services/deceased-transport/update-attachments';
+
+
+
+
+
+
+
+
+
 
   static const updateLocation = 'v2/ekram-mobile-services/add-trip-locations';
 
@@ -615,10 +620,18 @@ class ApiUrl {
   static ekramGetTrips(int requestId) =>
       'v1/superapp-ekram-services/trips/$requestId/trips';
 
-  static deleteTrip(int requestId, int tripId) =>
-      'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
-  static ghuslEmployees(int requestId) =>
-      'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
-  static deceasedAttachment(int requestId) =>
-      'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
+  static  deleteTrip (int requestId,int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
+  static  ghuslEmployees (int requestId)=> 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
+  static  getDeceasedAttachment (int requestId)=> 'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
+  static  uploadAttachment(int id)=>'v1/superapp-ekram-services/attachments/$id/upload-file';
+  static  editAdditionalData(int id)=>'v1/superapp-ekram-services/transport/$id/edit-additional-data';
+  static  completeTrip(int id)=> 'v1/superapp-ekram-services/trips/$id/finalize';
+
+
+
+
+
+
+
+
 }
