@@ -284,7 +284,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundries(int cityId, MosqueGhuslPlacesParams params) async {
+      getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params) async {
     try {
       final data = await remoteDataSource.getLaundriesLookUp(cityId, params);
 
@@ -304,7 +304,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosques(int cityId, MosqueGhuslPlacesParams params) async {
+      getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params) async {
     try {
       final data = await remoteDataSource.getMosquesLookUp(cityId, params);
 
@@ -340,6 +340,7 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
   @override
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(
       int params) async {
@@ -918,8 +919,8 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCemetriesLookUp(
-      int requestId, CemetriesParams params) async {
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getCemetriesLookUp(int requestId, CemetriesParams params) async {
     try {
       final data = await remoteDataSource.getCemetriesLookUp(requestId, params);
 

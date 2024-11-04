@@ -6,14 +6,14 @@ import '../../../../core/services/local/use_case.dart';
 import '../entities/lookup_item_location.dart';
 import '../repositories/ekram_repository.dart';
 
-class GetMosques
-    extends UseCase<ResponseBodyModel<List<LookUpItemLocation>>, List<dynamic>> {
+class GetLaundriesLookup extends UseCase<
+    ResponseBodyModel<List<LookUpItemLocation>>, List<dynamic>> {
   final EkramRepository repository;
 
-  GetMosques({required this.repository});
+  GetLaundriesLookup({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocation>>>> call(
       List<dynamic> params) async {
-    return await repository.getMosques(params[0],params[1]);
+    return await repository.getLaundriesLookup(params[0], params[1]);
   }
 }

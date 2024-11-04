@@ -18,9 +18,9 @@ import '../../../features/ekram/domain/use_cases/get_ghusl_employees.dart';
 import '../../../features/ekram/domain/use_cases/get_identical_list_request.dart';
 import '../../../features/ekram/domain/use_cases/get_deceased_transport_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_ekram_lookups.dart';
-import '../../../features/ekram/domain/use_cases/get_launduries.dart';
+import '../../../features/ekram/domain/use_cases/get_launduries_lookup.dart';
 import '../../../features/ekram/domain/use_cases/get_locations.dart';
-import '../../../features/ekram/domain/use_cases/get_mosques.dart';
+import '../../../features/ekram/domain/use_cases/get_mosques_lookup.dart';
 import '../../../features/ekram/domain/use_cases/get_status.dart';
 import '../../../features/ekram/domain/use_cases/get_trips.dart';
 import '../../../features/ekram/domain/use_cases/get_trips_location.dart';
@@ -55,16 +55,15 @@ class EkramInjection {
 
     sl.registerLazySingleton(
         () => GetDeceasedTransportRequestDetails(repository: sl()));
-    sl.registerLazySingleton(
-        () => GetIdenticalListRequest(repository: sl()));
+    sl.registerLazySingleton(() => GetIdenticalListRequest(repository: sl()));
     sl.registerLazySingleton(() => GetTrips(repository: sl()));
     sl.registerLazySingleton(() => EditTrip(repository: sl()));
     sl.registerLazySingleton(() => AddTrip(repository: sl()));
     sl.registerLazySingleton(() => GetGhuslEmployees(repository: sl()));
     sl.registerLazySingleton(() => DeleteAttachment(repository: sl()));
     sl.registerLazySingleton(() => GetDeceasedAttachment(repository: sl()));
-    sl.registerLazySingleton(() => GetMosques(repository: sl()));
-    sl.registerLazySingleton(() => GetLaundries(repository: sl()));
+    sl.registerLazySingleton(() => GetMosquesLookup(repository: sl()));
+    sl.registerLazySingleton(() => GetLaundriesLookup(repository: sl()));
     sl.registerLazySingleton(() => DeleteTrip(repository: sl()));
     sl.registerLazySingleton(() => CompleteTrip(repository: sl()));
     sl.registerLazySingleton(() => UploadAttachment(repository: sl()));
@@ -83,14 +82,14 @@ class EkramInjection {
     sl.registerLazySingleton(() => GetCemetryRequestDetails(repository: sl()));
 
     sl.registerLazySingleton(() => IdenticalListBloc(
-        getIdenticalListRequestDetails: sl(),
-        isDriver: true));
+        getIdenticalListRequestDetails: sl(), isDriver: true));
 
-
-    sl.registerLazySingleton(() => ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(),editAdditionalData: sl(),deleteAttachment: sl()));
-
-
-
+    sl.registerLazySingleton(() => ExtraDataBloc(
+        getGhuslEmployees: sl(),
+        getDeceasedAttachment: sl(),
+        uploadAttachment: sl(),
+        editAdditionalData: sl(),
+        deleteAttachment: sl()));
 
     //! Entities
 
