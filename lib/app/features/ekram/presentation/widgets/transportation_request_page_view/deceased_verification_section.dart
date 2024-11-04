@@ -82,6 +82,8 @@ class DeceasedVerificationSection extends StatelessWidget {
                             CustomTextFieldWidget(
                               label: "ekram_decesssed_identity".tr(),
                               isDigitsOnly: true,
+                              controller :TextEditingController()..text = state.deceasedId??"",
+
                               keyboardType: TextInputType.number,
                               onChanged: (String? val) {
                                 EkramRequestTransportationBloc b = context
