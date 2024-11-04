@@ -92,7 +92,7 @@ class _ToastWidget extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           color: context.colorsV2.backgroundSurface1,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(RadiusBorder.l),
           boxShadow: const [
             BoxShadow(
               color: Color(0x11000000),
