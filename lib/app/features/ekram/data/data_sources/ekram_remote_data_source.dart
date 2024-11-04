@@ -51,12 +51,6 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params);
 
-  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
-      int requestId, MosqueGhuslPlacesParams params);
-
-  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
-      int requestId, MosqueGhuslPlacesParams params);
-
   Future<ResponseBodyModel<List<LookUpItem>>> getNationalities();
 
   Future<ResponseBodyModel<List<LookUpItem>>> getLookup(int params);
@@ -83,7 +77,8 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<dynamic>> completeTrip(int params);
 
   Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId, int requestId);
-  Future<ResponseBodyModel<dynamic>> deleteAttachment(int attachmentId, int requestId);
+  Future<ResponseBodyModel<dynamic>> deleteAttachment(
+      int attachmentId, int requestId);
 
   Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(
       int attachmentId, FileDataItem params);
@@ -135,13 +130,21 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<GraveActiveRequestDetails>>
       getActiveGraveRequestDetails(ActiveGraveRequestParams params);
+        Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
+      GetCemetriesParams params);
 
   Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
 
-  Future<ResponseBodyModel<List<LookUpItem>>> getSpecialTransportReasons();
-  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypes();
-    Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(int requestId , CemetriesParams params);
-  Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompanies(
+  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
+      int cityId, MosqueGhuslPlacesParams params);
+  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
+      int cityId, MosqueGhuslPlacesParams params);
+  Future<ResponseBodyModel<List<LookUpItem>>>
+      getSpecialTransportReasonsLookUp();
+  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypesLookUp();
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetriesLookUp(
+      int requestId, CemetriesParams params);
+  Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompaniesLookUp(
       int requestId, TransportationCompaniesParams params);
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
   Future<RequestDetailsResponseModel> requestDetails(int requestId);
@@ -155,6 +158,65 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   final WebService webService;
 
   EkramRemoteDataSourceImpl({required this.webService});
+
+@override
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
+      GetCemetriesParams params) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ekramCemetries,
+        queryParameters: params.toMap(),
+      );
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+  }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
 
   @override
   Future<ResponseBodyModel<List<LookUpItem>>> getNationalities() async {
@@ -1059,7 +1121,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       var data = response.data["data"]?["result"];
 
       final decodedResponse =
-      ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.toFuture();
     } on DioException catch (error, stackTrace) {
@@ -1098,13 +1160,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
+
   @override
   Future<ResponseBodyModel<dynamic>> deleteAttachment(
       int attachmentId, int requestId) async {
     Response response;
     try {
       response = await webService.dio.delete(
-          ApiUrl.deleteAttachment(requestId,attachmentId),
+          ApiUrl.deleteAttachment(requestId, attachmentId),
           queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
@@ -1749,8 +1812,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-
-  
 
   @override
   Future<ResponseBodyModel<ApplyDeceasedResponseModel>> bookCemetry(
@@ -2561,7 +2622,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getSpecialTransportReasons() async {
+  Future<ResponseBodyModel<List<LookUpItem>>>
+      getSpecialTransportReasonsLookUp() async {
     Response response;
 
     try {
@@ -2621,7 +2683,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypes() async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypesLookUp() async {
     Response response;
 
     try {
@@ -2681,11 +2743,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(int requestId , CemetriesParams params) async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetriesLookUp(
+      int requestId, CemetriesParams params) async {
     Response response;
 
     try {
-      response = await webService.dio.get(ApiUrl.cemetries(requestId),data: params.toJson());
+      response = await webService.dio
+          .get(ApiUrl.cemetries(requestId), data: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2741,7 +2805,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompanies(
+  Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompaniesLookUp(
       int requestId, TransportationCompaniesParams params) async {
     Response response;
 
@@ -2803,13 +2867,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
-      int requestId, MosqueGhuslPlacesParams params) async {
+  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
+      int cityId, MosqueGhuslPlacesParams params) async {
     Response response;
 
     try {
-      response = await webService.dio.get(ApiUrl.ekramLaundries(requestId),
-          queryParameters: params.toJson());
+      response = await webService.dio
+          .get(ApiUrl.ekramLaundries(cityId), queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2862,13 +2926,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
-      int requestId, MosqueGhuslPlacesParams params) async {
+  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
+      int cityId, MosqueGhuslPlacesParams params) async {
     Response response;
 
     try {
-      response = await webService.dio.get(ApiUrl.ekramMosques(requestId),
-          queryParameters: params.toJson());
+      response = await webService.dio
+          .get(ApiUrl.ekramMosques(cityId), queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 

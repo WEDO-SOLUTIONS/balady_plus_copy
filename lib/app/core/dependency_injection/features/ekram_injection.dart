@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/ekram/domain/use_cases/delete_attachment.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_trip_stations.dart';
 
 import '../../../features/ekram/domain/use_cases/add_trip.dart';
@@ -9,7 +10,7 @@ import '../../../features/ekram/domain/use_cases/delete_trip.dart';
 import '../../../features/ekram/domain/use_cases/edit_aditional_data.dart';
 import '../../../features/ekram/domain/use_cases/edit_trip.dart';
 import '../../../features/ekram/domain/use_cases/get_active_cities.dart';
-import '../../../features/ekram/domain/use_cases/get_cemetries.dart';
+import '../../../features/ekram/domain/use_cases/get_cemetries_lookup.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetry_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_cemetry_requests.dart';
 import '../../../features/ekram/domain/use_cases/get_deceased_attachment.dart';

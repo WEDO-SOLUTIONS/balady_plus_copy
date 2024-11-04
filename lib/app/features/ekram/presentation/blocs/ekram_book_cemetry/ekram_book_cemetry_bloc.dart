@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/death_info.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/deceased_info.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     hide ApplicantInfoSection, AgreementSection;
 import 'package:equatable/equatable.dart';
@@ -33,7 +34,7 @@ import '../../../domain/entities/user_info_response.dart';
 import '../../../domain/use_cases/book_cemetry.dart';
 import '../../../domain/use_cases/check_user_info.dart';
 import '../../../domain/use_cases/get_active_cities.dart';
-import '../../../domain/use_cases/get_cemetries.dart';
+import '../../../domain/use_cases/get_cemetries_lookup.dart';
 import '../../../domain/use_cases/get_countries.dart';
 import '../../../domain/use_cases/get_ekram_lookups.dart';
 import '../../../domain/use_cases/get_nationality_types.dart';

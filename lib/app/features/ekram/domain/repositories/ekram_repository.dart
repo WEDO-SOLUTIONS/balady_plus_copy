@@ -1,6 +1,9 @@
+import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
@@ -46,15 +49,18 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getBurialCities();
 
+        Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCemetries(
+      GetCemetriesParams params);
+
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getNationalities();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getHospitals(
       int cityId);
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundries(int cityId);
+      getLaundries(int cityId , MosqueGhuslPlacesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosques(int cityId);
+      getMosques(int cityId, MosqueGhuslPlacesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLookUp(
       int id);
@@ -110,8 +116,7 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getActiveCities();
 
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCemetries(
-      GetCemetriesParams params);
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCemetriesLookUp(int requestId , CemetriesParams params);
 
   Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>> bookCemetry(
       BookCemetryParamas params);
@@ -141,4 +146,10 @@ abstract class EkramRepository {
       int requestId, SaveDeceasedInfoParams params);
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
-}
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getSpecialTransportReasons();
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getGraveTypes();
+       Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getTransportationCompanies( int requestId, TransportationCompaniesParams params) ;
+      }
