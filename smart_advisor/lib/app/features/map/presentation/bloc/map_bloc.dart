@@ -143,8 +143,22 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           validatePointStatus: BlocStatus.success,
           valiadtePoints: success,
         ));
-
-        add(GetGISDataEvent(lat: event.lat, lon: event.lon));
+        bool valid = false;
+        for (var element in success) {
+          if (element.allowed == true) {
+            valid = true;
+            break;
+          }
+        }
+        if (success.isEmpty) {
+          valid = true;
+        }
+        if (valid)
+          add(GetGISDataEvent(lat: event.lat, lon: event.lon));
+        else {
+          CommonFunctions.showError(
+              "منطقة حظر! لا يمكن مزاولة هذا النشاط في هذه المنطقة.");
+        }
       },
     );
   }

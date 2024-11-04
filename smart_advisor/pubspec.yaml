@@ -71,7 +71,6 @@ dependencies:
   enhance_stepper: ^1.0.1
   cupertino_stepper:
   flutter_riverpod: ^2.4.1
-  syncfusion_flutter_pdfviewer:
 
 dev_dependencies:
   flutter_lints: ^2.0.1

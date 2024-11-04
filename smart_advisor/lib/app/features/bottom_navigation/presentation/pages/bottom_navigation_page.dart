@@ -39,7 +39,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         ),
       ],
       child: Scaffold(
-        key: NavigationService.bottomNavKey,
+        key: NavigationService.navigatorKey,
         body: PageView.builder(
           physics: const NeverScrollableScrollPhysics(),
           controller: _pageViewController,
