@@ -305,9 +305,6 @@ class ServiceIcon extends StatelessWidget {
               );
               print(error);
             }
-          } else if (service.id == 408) {
-            SmartAdvisor.navigateToSmartAdvisorApp(
-                context: context, envType: sl<EnvType>());
           }
         },
         child: Container(
