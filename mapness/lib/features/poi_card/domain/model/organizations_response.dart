@@ -1,5 +1,9 @@
+import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 
+part 'organizations_response.g.dart';
+
+@JsonSerializable()
 class OrganizationsMessage {
   final List<OrganizationItem> items;
   final int total;
@@ -11,21 +15,7 @@ class OrganizationsMessage {
     this.page = 1,
   });
 
-  factory OrganizationsMessage.fromJson(Map<String, dynamic>? json) {
-    final itemsList = <OrganizationItem>[];
-    (json?['items'] as Iterable?)?.forEach((v) => itemsList.add(OrganizationItem.fromJson(v)));
-    final totalJson = json?['total'] ?? 0;
-    final pageJson = json?['page'] ?? 0;
-    return OrganizationsMessage(
-      items: itemsList,
-      total: totalJson,
-      page: pageJson,
-    );
-  }
+  factory OrganizationsMessage.fromJson(Map<String, dynamic> json) => _$OrganizationsMessageFromJson(json);
 
-  Map<String, dynamic> toJson() => {
-        'items': items.map((v) => v.toJson()).toList(),
-        'total': total,
-        'page': page,
-      };
+  Map<String, dynamic> toJson() => _$OrganizationsMessageToJson(this);
 }
