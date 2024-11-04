@@ -4222,7 +4222,7 @@
   "pathID": "رقم المسار",
   "add_Custom_Path": "مسار جديد اضافي ",
   "please_enter_date_and_time": "من فضلك اختر الوقت والتاريخ الخاصة بالمسار",
-  "path_deleted": "تم حذف المسار بنجاح",
+  "path_deleted": "تم الحذف بنجاح",
   "do_you_want_to_delete_path": " سيتم حذف المسار ولا يمكنك استرجاعة مرة اخرى",
   "extra_data": "البيانات الإضافية",
   "GhuslName": "اسم المغسل",
@@ -4232,5 +4232,7 @@
   "tripComplete": "اكتمال الرحلة",
   "yesDeletePath": "نعم، الغاء المسار ",
   "noGoback": "لا، التراجع",
-  "deletPathTitle": "تأكيد الغاء المسار"
+  "deletPathTitle": "تأكيد الغاء المسار",
+  "enter_ekram_fourth_name": "ادخل الاسم الرابع",
+  "enternationilaty": "اختر الجنسية"
 }

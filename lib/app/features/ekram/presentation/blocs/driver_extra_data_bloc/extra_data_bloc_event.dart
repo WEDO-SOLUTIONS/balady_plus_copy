@@ -26,6 +26,13 @@ class UploadDeceasedAttachmentEvent extends ExtraDataEvent {
 
 }
 
+class DeleteDeceasedAttachmentEvent extends ExtraDataEvent {
+  final DeceasedAttachment? item;
+  int? requestId;
+   DeleteDeceasedAttachmentEvent({this.item,this.requestId});
+
+}
+
 class GetGhuslEmployeesEvent extends ExtraDataEvent {
   int requestId;
   String? ghuslEmployeeIdentityNo;

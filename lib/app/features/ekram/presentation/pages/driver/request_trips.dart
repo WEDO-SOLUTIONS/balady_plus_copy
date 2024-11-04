@@ -36,7 +36,7 @@ class RequestTrips extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    extraDataBloc=  ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(), editAdditionalData: sl());
+    extraDataBloc=  ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(), editAdditionalData: sl(),deleteAttachment: sl());
 
     return BlocProvider.value(
       value: bloc!,

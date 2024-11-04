@@ -88,6 +88,8 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(
       int tripId, int requestId);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteAttachment(
+      int attachmentId, int requestId);
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> getTripStations(
       int params);
