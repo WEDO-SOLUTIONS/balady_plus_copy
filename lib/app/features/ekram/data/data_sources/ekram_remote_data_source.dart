@@ -1,4 +1,3 @@
-
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
@@ -82,7 +81,8 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId, int requestId);
 
-  Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(int attachmentId, FileDataItem params );
+  Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(
+      int attachmentId, FileDataItem params);
 
   Future<ResponseBodyModel<dynamic>> upadateDriverLocation(
       UpdateDriverLocationParams params);
@@ -95,7 +95,7 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getLocations();
 
   Future<ResponseBodyModel<dynamic>> editAdditionalData(
-      int id,EditAdditionalRequest request);
+      int id, EditAdditionalRequest request);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getEkramLookup(String params);
 
@@ -137,10 +137,14 @@ abstract class EkramRemoteDataSource {
 
   Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
 
+  Future<ResponseBodyModel<List<LookUpItem>>> specialTransportReasons();
+    Future<ResponseBodyModel<List<LookUpItem>>> graveTypes() ;
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
   Future<RequestDetailsResponseModel> requestDetails(int requestId);
-  Future<RequestDetailsResponseModel> saveDeceasedInfo(int requestId , SaveDeceasedInfoParams params);
-  Future<ResponseBodyModel> saveDeathBurialInfo(int requestId , SaveDeathBurialInfoParams params);
+  Future<RequestDetailsResponseModel> saveDeceasedInfo(
+      int requestId, SaveDeceasedInfoParams params);
+  Future<ResponseBodyModel> saveDeathBurialInfo(
+      int requestId, SaveDeathBurialInfoParams params);
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -327,8 +331,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     try {
       response = await webService.dio.get(
           ApiUrl.getDeceasedAttachment(requestId),
-          queryParameters: {"isDriver":true}
-      );
+          queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
 
@@ -1216,11 +1219,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   Future<ResponseBodyModel<dynamic>> completeTrip(int params) async {
     Response response;
     try {
-      response = await webService.dio.put(
-        ApiUrl.completeTrip(params),queryParameters: {"isDriver":true}
-      );
-
-
+      response = await webService.dio.put(ApiUrl.completeTrip(params),
+          queryParameters: {"isDriver": true});
 
       final decodedResponse = ResponseBodyModel<dynamic>.fromMap(response.data);
 
@@ -1263,22 +1263,20 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(int attachmentId, FileDataItem params ) async {
-
+  Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(
+      int attachmentId, FileDataItem params) async {
     var response;
 
     try {
-
-
-
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
-      String newFileName = params.fileName.replaceRange(0, params.fileName.indexOf("."), "$timeStamp");
+      String newFileName = params.fileName
+          .replaceRange(0, params.fileName.indexOf("."), "$timeStamp");
       String contentTyp = lookupMimeType(params.filePath)!;
       final formData = FormData.fromMap(
         {
           "file": await MultipartFile.fromFile(
             params.filePath,
-            filename:  newFileName , //params.fileName,
+            filename: newFileName, //params.fileName,
             contentType: http.MediaType.parse(contentTyp),
           ),
         },
@@ -1298,19 +1296,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       var data = response.data["data"]?["result"];
 
       DeceasedAttachment? parsedResult =
-      data != null ? DeceasedAttachment.fromJson(data) : null;
+          data != null ? DeceasedAttachment.fromJson(data) : null;
 
-
-
-
-      final decodedResponse =
-      ResponseBodyModel<DeceasedAttachment>.fromMap(response.data,
+      final decodedResponse = ResponseBodyModel<DeceasedAttachment>.fromMap(
+          response.data,
           parsedResult: parsedResult);
 
-
       return decodedResponse.toFuture();
-
-
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1593,22 +1585,21 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<dynamic>> editAdditionalData(int id,EditAdditionalRequest request) async {
+  Future<ResponseBodyModel<dynamic>> editAdditionalData(
+      int id, EditAdditionalRequest request) async {
     Response response;
 
     try {
-      response = await webService.dio.post(ApiUrl.editAdditionalData(request.requestId!),
+      response = await webService.dio.post(
+          ApiUrl.editAdditionalData(request.requestId!),
           data: request.toJson());
 
       var data = response.data["data"]?["result"];
 
       final decodedResponse =
-      ResponseBodyModel<bool>.fromMap(response.data,
-          parsedResult: data);
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.toFuture();
-
-
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -2584,14 +2575,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<RequestDetailsResponseModel> saveDeceasedInfo(int requestId , SaveDeceasedInfoParams params) async {
+  Future<RequestDetailsResponseModel> saveDeceasedInfo(
+      int requestId, SaveDeceasedInfoParams params) async {
     Response? response;
 
     try {
-      response = await webService.dio.post(
-        ApiUrl.saveDeceasdInfo(requestId),
-        data:params.toJson()
-      );
+      response = await webService.dio
+          .post(ApiUrl.saveDeceasdInfo(requestId), data: params.toJson());
       final data = response.data;
 
       final result = ResponseBodyModel.fromMap(data).data?.result;
@@ -2637,7 +2627,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel> saveDeathBurialInfo(int requestId , SaveDeathBurialInfoParams params) async {
+  Future<ResponseBodyModel> saveDeathBurialInfo(
+      int requestId, SaveDeathBurialInfoParams params) async {
     Response? response;
 
     try {
@@ -2651,9 +2642,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       );
       final data = response.data;
 
-          return   ResponseBodyModel.fromMap(data);
-
-
+      return ResponseBodyModel.fromMap(data);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -2689,6 +2678,186 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           ),
           response: response,
         );
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> specialTransportReasons() async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.specialTransportReasons);
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+      if (response.statusCode != 200) {
+        String errorMessage = decodedResponse.data?.responseMessage ??
+            decodedResponse.statusDetails?.message ??
+            ("errors_server_error_1").tr();
+        throw ServerException(errorMessage, statusCode: response.statusCode);
+      }
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> graveTypes() async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.graveTypes);
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+      if (response.statusCode != 200) {
+        String errorMessage = decodedResponse.data?.responseMessage ??
+            decodedResponse.statusDetails?.message ??
+            ("errors_server_error_1").tr();
+        throw ServerException(errorMessage, statusCode: response.statusCode);
+      }
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> transportRequestCemeteries(
+   int requestId) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.transportRequestCemeteries(requestId));
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+      if (response.statusCode != 200) {
+        String errorMessage = decodedResponse.data?.responseMessage ??
+            decodedResponse.statusDetails?.message ??
+            ("errors_server_error_1").tr();
+        throw ServerException(errorMessage, statusCode: response.statusCode);
+      }
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
       }
     }
   }

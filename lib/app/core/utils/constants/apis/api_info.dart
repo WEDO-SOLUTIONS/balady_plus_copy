@@ -427,13 +427,19 @@ class ApiUrl {
   static String baquieApproval =
       "v2/ekram-mobile-services/deaths/baqie-approvals";
 
+
   static String verifyDeceased = "v1/superapp-ekram-services/apply";
+  static String specialTransportReasons = "v1/superapp-ekram-services/special-transport-reason";
+  static String graveTypes = "v1/superapp-ekram-services/grave-types";
   static String deceasedRequestDetails(int requestId) =>
       "v1/superapp-ekram-services/request/$requestId/request-details";
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
   static String saveDeathBurialInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
+  static String transportRequestCemeteries(int requestId) =>
+      "v1/superapp-ekram-services/transport/$requestId/transport-request-cemeteries";
+
 
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
