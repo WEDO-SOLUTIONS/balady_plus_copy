@@ -83,9 +83,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                               label: "ekram_decesssed_identity".tr(),
                               isDigitsOnly: true,
                               keyboardType: TextInputType.number,
-                              onChanged: (String? val) {
-                                EkramRequestTransportationBloc b = context
-                                    .read<EkramRequestTransportationBloc>();
+                              onChanged: (String? val) {                      
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(ChangeIdEvent(deceasedId: val));

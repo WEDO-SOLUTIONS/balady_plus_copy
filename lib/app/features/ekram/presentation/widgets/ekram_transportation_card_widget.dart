@@ -21,10 +21,9 @@ class EkramTransporationCardWidget extends StatelessWidget {
   final TransportRequestItemModel ekramTransportationItem;
   final Function OnDetailsPress;
   const EkramTransporationCardWidget(
-      {Key? key,
+      {super.key,
       required this.ekramTransportationItem,
-      required this.OnDetailsPress})
-      : super(key: key);
+      required this.OnDetailsPress});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +46,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
                 ),
                 Expanded(
                   child: CustomTextWidget(
-                    '#${ekramTransportationItem.requestId.toString()}',
+                    '${'request'.tr()} ${ekramTransportationItem.requestId.toString()}#',
                     textStyle: AppStyle.requestNumberTextStle,
                     textAlign: TextAlign.start,
                   ),
@@ -84,8 +83,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
                   ),
                   RequestParameter(
                     title: 'ekram_transport_status'.tr(),
-                    value:
-                        ekramTransportationItem.transportCaseName ?? "",
+                    value: ekramTransportationItem.transportCaseName ?? "",
                   ),
                   /* RequestParameter(
                     title: 'transportationStatus'.tr(),

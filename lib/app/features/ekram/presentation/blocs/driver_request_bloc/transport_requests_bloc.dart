@@ -27,26 +27,21 @@ part 'transport_requests_event.dart';
 
 part 'transport_requests_state.dart';
 
-class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
+class TransportRequestsBloc
+    extends Bloc<EkramRequestsEvent, EkramRequestsState> {
   final GetDeceasedTransportRequests _getDeceasedTransportRequests;
 
-
-  TransportRequestsBloc(
-      {
-        required GetDeceasedTransportRequests getDeceasedTransportRequests,
-        required bool isDriver,
-  })
-      : _getDeceasedTransportRequests = getDeceasedTransportRequests,
+  TransportRequestsBloc({
+    required GetDeceasedTransportRequests getDeceasedTransportRequests,
+    required bool isDriver,
+  })  : _getDeceasedTransportRequests = getDeceasedTransportRequests,
         super(EkramRequestsState(isDriver: isDriver)) {
     on<EkramRequestsEvent>((event, emit) {
       emit(state);
     });
 
-
     on<GetDeceasedTransportRequestsEvent>(_getRequestsHandler);
     on<GetMoreDeceasedTransportRequestsEvent>(_loadMoreHandler);
-
-
   }
 
   Future<void> _loadMoreHandler(
@@ -54,7 +49,8 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
     emitter(state.copyWith(status: BlocStatus.loadMore));
 
     final failureOrSuccess = await _getDeceasedTransportRequests(
-        GetRequestsParams(page: state.currentPage + 1, size: 10));
+        GetRequestsParams(
+            page: state.currentPage + 1, size: 10, isDriver: true));
 
     failureOrSuccess.fold((failure) {
       String? errorCode = (failure as ServerFailure).errorCode;
@@ -65,9 +61,8 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
 
       emitter(state.copyWith(
         status: status,
-        errorMessage: status == BlocStatus.failure
-            ? (failure as ServerFailure).errorMessage
-            : "",
+        errorMessage:
+            status == BlocStatus.failure ? (failure).errorMessage : "",
       ));
     }, (success) {
       List<TransportRequestItemModel>? newDeceasedRequestItems =
@@ -85,12 +80,8 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
     });
   }
 
-
-
   Future<void> _getRequestsHandler(
       GetDeceasedTransportRequestsEvent e, Emitter emitter) async {
-
-
     emitter(state.copyWith(
         status: BlocStatus.loadingShimmer,
         currentPage: 0,
@@ -101,11 +92,13 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
         ? GetRequestsParams(
             page: 0,
             size: 10,
+            isDriver: state.isDriver,
             text: e.text ?? state.searchBy,
           )
         : GetRequestsParams(
             page: 0,
             size: 10,
+            isDriver: state.isDriver,
             text: e.text ?? state.searchBy,
             isMultiCity: e.isMultiCity ?? state.isMultiCity(),
             transportLocationStatusId:
@@ -119,7 +112,7 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
         status: status,
         deceasedRequestItems: status == BlocStatus.success ? [] : null,
         totalItemCount: 0,
-        errorMessage:(failure as ServerFailure).errorMessage ,
+        errorMessage: (failure as ServerFailure).errorMessage,
       ));
       CommonFunctions.showError(failure.errorMessage);
     }, (success) {
@@ -131,23 +124,6 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
       ));
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();

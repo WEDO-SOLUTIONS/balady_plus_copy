@@ -75,9 +75,6 @@ class EkramRequestTransportationBloc extends Bloc<
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"))) {
-
-
-
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeAgreementEvent>(_changeAgreementHandler);
     on<SelectHospitalEvent>(_selectHospitalHanlder);
@@ -94,11 +91,6 @@ class EkramRequestTransportationBloc extends Bloc<
     // on<GetCitiesEvent>(_getCitiesHandler);
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
 
-
-
-
-
-
     on<GetHospitalsEvent>(_getHospitalsHandler);
     on<AddDeceasedEvent>(_addDeceasedHandler);
     on<DeleteDeceasedEvent>(_deleteDeceasedHandler);
@@ -108,8 +100,6 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeIdEvent>(_changeIdHandler);
     on<VerifyDeceasedEvent>(_verifyDeceasedHandler);
     on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
-
-
 
     getNationalitiesHandler();
     getCitiesHandler();
@@ -150,25 +140,28 @@ class EkramRequestTransportationBloc extends Bloc<
     ));
   }
 
-
-
   Future<void> _changeDeceasedInfoDataHanlder(
       ChangeDeceasedUserInfoEvent e, Emitter emitter) async {
-
     SaveDeceasedInfoParams? params = state.saveDeceasedInfoParams;
     params ??= SaveDeceasedInfoParams(
         deceasedInfo: DeceasedInfo(), mainInfo: MainInfo());
 
     DeceasedInfo info = params.deceasedInfo!;
 
-    info = info.copyWith(nationalityId: e.item?.nationalityId,firstName: e.item?.firstName,secondName: e.item?.secondName,thirdName: e.item?.thirdName,fourthName: e.item?.fourthName,isMuslim: e.item?.isMuslim,gender: e.item?.gender);
+    info = info.copyWith(
+        nationalityId: e.item?.nationalityId,
+        firstName: e.item?.firstName,
+        secondName: e.item?.secondName,
+        thirdName: e.item?.thirdName,
+        fourthName: e.item?.fourthName,
+        isMuslim: e.item?.isMuslim,
+        gender: e.item?.gender);
     params = params.copyWith(deceasedInfo: info);
 
     emitter(state.copyWith(
         errorMessage: "",
         status: BlocStatus.success,
         saveDeceasedInfoParams: params));
-    
   }
 
   Future<void> _changeNationalIdDobHandler(
@@ -485,6 +478,7 @@ class EkramRequestTransportationBloc extends Bloc<
           isVerified: false));
       return null;
     }, (success) {
+      CommonFunctions.showSuccess('done_check'.tr());
       emit(state.copyWith(
         status: BlocStatus.success,
         isVerified: true,
