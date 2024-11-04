@@ -20,6 +20,7 @@ import '../../../features/ekram/domain/use_cases/get_ekram_lookups.dart';
 import '../../../features/ekram/domain/use_cases/get_launduries.dart';
 import '../../../features/ekram/domain/use_cases/get_locations.dart';
 import '../../../features/ekram/domain/use_cases/get_mosques.dart';
+import '../../../features/ekram/domain/use_cases/get_request_details.dart';
 import '../../../features/ekram/domain/use_cases/get_status.dart';
 import '../../../features/ekram/domain/use_cases/get_trips.dart';
 import '../../../features/ekram/domain/use_cases/get_trips_location.dart';
@@ -78,6 +79,9 @@ class EkramInjection {
     sl.registerLazySingleton(() => BookCemetry(repository: sl()));
 
     sl.registerLazySingleton(() => GetCemetryRequests(repository: sl()));
+
+
+    sl.registerLazySingleton(() => GetRequestDetails(repository: sl()));
 
     sl.registerLazySingleton(() => GetCemetryRequestDetails(repository: sl()));
 

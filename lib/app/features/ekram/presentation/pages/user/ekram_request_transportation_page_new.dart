@@ -38,9 +38,11 @@ class _EkramRequestTransportationPageState
   Widget build(BuildContext context) {
     TransportRequestsBloc ekramRequestsBloc =
         ModalRoute.of(context)!.settings.arguments as TransportRequestsBloc;
+
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
           getCities: sl(),
+          getRequestDetails: sl() ,
           getHospitals: sl(),
           getNationalities: sl(),
           applyDeceasedTransport: sl(),

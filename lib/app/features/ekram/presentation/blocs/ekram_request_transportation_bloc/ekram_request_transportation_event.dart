@@ -117,7 +117,17 @@ class ChangeDeceasedUserInfoEvent extends EkramRequestTransportationEvent {
   final DeceasedInfo? item;
   ChangeDeceasedUserInfoEvent({this.item});
 }
+class SetApplicantInfoEvent extends EkramRequestTransportationEvent {
+  final MainInfo? mainInfo;
+  SetApplicantInfoEvent({this.mainInfo});
+}
 class SubmitDeceasedInfoEvent extends EkramRequestTransportationEvent {
 
   SubmitDeceasedInfoEvent();
+}
+
+
+class getRequestDetailsEvent extends EkramRequestTransportationEvent {
+  final String requestId;
+  const getRequestDetailsEvent({required this.requestId});
 }

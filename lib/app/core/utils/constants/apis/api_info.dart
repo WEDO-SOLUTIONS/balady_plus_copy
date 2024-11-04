@@ -431,8 +431,7 @@ class ApiUrl {
   static String verifyDeceased = "v1/superapp-ekram-services/apply";
   static String specialTransportReasons = "v1/superapp-ekram-services/special-transport-reason";
   static String graveTypes = "v1/superapp-ekram-services/grave-types";
-  static String deceasedRequestDetails(int requestId) =>
-      "v1/superapp-ekram-services/request/$requestId/request-details";
+
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
   static String saveDeathBurialInfo(int requestId) =>
@@ -612,6 +611,10 @@ class ApiUrl {
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
 
+
+
+
+  ///new EKRAM
   static getIdenticalDeseasedList(String id) =>
       '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
   static initializeTripsRquest(int requestId) =>
@@ -634,7 +637,8 @@ class ApiUrl {
   static  completeTrip(int id)=> 'v1/superapp-ekram-services/trips/$id/finalize';
   static  updateLocation (int id)=> 'v1/superapp-ekram-services/transport/add-transport-track/$id';
   static  deleteAttachment (int requestId,int attachmentId) => 'v1/superapp-ekram-services/trips/$requestId/$attachmentId/delete-trip';
-
+  static String deceasedRequestDetails(String requestId) =>
+      "v1/superapp-ekram-services/request/$requestId/request-details";
 
 
 

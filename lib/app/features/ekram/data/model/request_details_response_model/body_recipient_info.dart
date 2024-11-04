@@ -1,25 +1,30 @@
 class BodyRecipientInfo {
-  bool? hasIdentity;
-  bool? baladyClient;
-  bool? ekramDepartment;
-
   BodyRecipientInfo({
     this.hasIdentity,
     this.baladyClient,
-    this.ekramDepartment,
-  });
+    this.ekramDepartment,});
 
-  factory BodyRecipientInfo.fromJson(Map<String, dynamic> json) {
-    return BodyRecipientInfo(
-      hasIdentity: json['hasIdentity'] as bool?,
-      baladyClient: json['baladyClient'] as bool?,
-      ekramDepartment: json['ekramDepartment'] as bool?,
-    );
+  BodyRecipientInfo.fromJson(dynamic json) {
+    hasIdentity = json['hasIdentity'];
+    baladyClient = json['baladyClient'];
+    ekramDepartment = json['ekramDepartment'];
+  }
+  bool? hasIdentity;
+  bool? baladyClient;
+  bool? ekramDepartment;
+  BodyRecipientInfo copyWith({  bool? hasIdentity,
+    bool? baladyClient,
+    bool? ekramDepartment,
+  }) => BodyRecipientInfo(  hasIdentity: hasIdentity ?? this.hasIdentity,
+    baladyClient: baladyClient ?? this.baladyClient,
+    ekramDepartment: ekramDepartment ?? this.ekramDepartment,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['hasIdentity'] = hasIdentity;
+    map['baladyClient'] = baladyClient;
+    map['ekramDepartment'] = ekramDepartment;
+    return map;
   }
 
-  Map<String, dynamic> toJson() => {
-        'hasIdentity': hasIdentity,
-        'baladyClient': baladyClient,
-        'ekramDepartment': ekramDepartment,
-      };
 }
