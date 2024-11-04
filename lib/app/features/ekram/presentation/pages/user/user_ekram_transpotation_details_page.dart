@@ -40,9 +40,7 @@ class _UsersEkramTransportationDetailsPageState
 
     return BlocProvider(
       create: (context) => IdenticalListBloc(
-          getIdenticalListRequestDetails: sl(),
-
-          isDriver: false),
+          getIdenticalListRequestDetails: sl(), isDriver: false),
       child: BlocListener<ExtraDataBloc, ExtraDataState>(
           listener: (context, state) {
             print("state $state");
@@ -52,8 +50,7 @@ class _UsersEkramTransportationDetailsPageState
           },
           child: Scaffold(
             backgroundColor: AppColor.white2,
-            appBar:
-            DetailsHeader(
+            appBar: DetailsHeader(
               titleWidget: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -114,7 +111,7 @@ class _UsersEkramTransportationDetailsPageState
                     // DriversInfo
                     //  DriversInfoWidget(),
                     // ApplicantInfo
-                  //  ApplicantInfoWidget(),
+                    //  ApplicantInfoWidget(),
                     // DeceasedInfo
                     DeceasedInfoWidget_new(),
                     // BurialInfo

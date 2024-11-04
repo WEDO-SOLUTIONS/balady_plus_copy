@@ -19,6 +19,17 @@ class SubmitRequestEvent extends EkramRequestTransportationEvent {
   SubmitRequestEvent();
 }
 
+class ChangeNationalIdDob extends EkramRequestTransportationEvent {
+  final String? gorgianDate;
+  final String? hijriDate;
+  ChangeNationalIdDob({this.gorgianDate, this.hijriDate});
+}
+
+class SelectNationalIdTypeEvent extends EkramRequestTransportationEvent {
+  final LookUpItem item;
+  const SelectNationalIdTypeEvent({required this.item});
+}
+
 class ChangeAgreementEvent extends EkramRequestTransportationEvent {
   final bool? isagree;
   ChangeAgreementEvent({this.isagree});
@@ -85,4 +96,20 @@ class EditDeceasedEvent extends EkramRequestTransportationEvent {
 class AddFileEvent extends EkramRequestTransportationEvent {
   final FileDataItem data;
   const AddFileEvent(this.data);
+}
+
+class VerifyDeceasedEvent extends EkramRequestTransportationEvent {
+  final String? text;
+  const VerifyDeceasedEvent({this.text});
+}
+
+class ChangeIdEvent extends EkramRequestTransportationEvent {
+  final String? deceasedId;
+
+  const ChangeIdEvent({required this.deceasedId});
+}
+
+class ChangeNationalityEvent extends EkramRequestTransportationEvent {
+  final LookUpItem? item;
+  ChangeNationalityEvent({this.item});
 }

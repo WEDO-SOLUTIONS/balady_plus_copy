@@ -11,13 +11,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
-import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class DeceasedInfoSection extends StatelessWidget {
   const DeceasedInfoSection({super.key});
@@ -37,14 +35,6 @@ class DeceasedInfoSection extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      VdHeaderDesc(
-                        header:
-                            Helpers.translatingWord("cemetry_deceassed_info"),
-                      ),
-                      ExpandableCard(
-                        title: 'deceased_verification'.tr(),
-                        children: [],
-                      ),
                       SizedBox(
                         height: 20,
                       ),
@@ -77,34 +67,6 @@ class DeceasedInfoTextFieldsSection extends StatefulWidget {
 
 class _ApplicantInfoTextFieldsSectionState
     extends State<DeceasedInfoTextFieldsSection> {
-  //final fullNameTextEditController = TextEditingController();
-  //final mobileTextEditController = TextEditingController();
-  //final applicantTypeTextEditController = TextEditingController();
-//  final relationShipTextEditController = TextEditingController();
-
-  //final fullNameFocusNode = FocusNode();
-  // final mobileFocusNode = FocusNode();
-  // final applicantTypeFocusNode = FocusNode();
-  //final relationShipFocusNode = FocusNode();
-
-  @override
-  void dispose() {
-    // fullNameTextEditController.clear();
-    // fullNameTextEditController.dispose();
-    // mobileTextEditController.clear();
-    //  mobileTextEditController.dispose();
-    //  applicantTypeTextEditController.clear();
-    // applicantTypeTextEditController.dispose();
-    // applicantTypeTextEditController.clear();
-    // relationShipTextEditController.dispose();
-
-    // fullNameFocusNode.dispose();
-    // mobileFocusNode.dispose();
-    // applicantTypeFocusNode.dispose();
-    //   relationShipFocusNode.dispose();
-    super.dispose();
-  }
-
   @override
   void initState() {
     super.initState();
@@ -171,16 +133,27 @@ class _ApplicantInfoTextFieldsSectionState
             const CustomVerticalSpace(height: 16),
             CustomLookUpLongDialog(
               items: state.nationalities ?? [],
-              onEmptyList: () async {},
+              value: state.getNationalityById(
+                  state.saveDeceasedInfoParams?.deceasedInfo?.nationalityId),
+              onEmptyList: () async {
+                return context
+                    .read<EkramRequestTransportationBloc>()
+                    .getNationalitiesHandler();
+              },
               onChangeType: (LookUpItem? item) {
-                if (item != null) {}
+                if (item != null) {
+                  var b = context.read<EkramRequestTransportationBloc>();
+                  context
+                      .read<EkramRequestTransportationBloc>()
+                      .add(ChangeNationalityEvent(item: item));
+                }
               },
               label: ("nationality").tr(),
               hint: ("nationality").tr(),
             ),
             const CustomVerticalSpace(height: 20),
             CustomTextWidget(
-              ("burialDestination").tr(),
+              ("sex").tr(),
               fontColor: AppColor.blackModern700Light,
               fontSize: 17.0,
               textAlign: TextAlign.start,
@@ -190,7 +163,7 @@ class _ApplicantInfoTextFieldsSectionState
               children: [
                 Expanded(
                   child: CustomRadioButtonEnd<bool>(
-                    title: ("burial_in_death_city").tr(),
+                    title: ("male").tr(),
                     value: true,
                     currentSelected: true,
                     onChange: (bool item) {},

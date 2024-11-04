@@ -150,20 +150,18 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               isMandatory: true,
                               onChanged: (String? date) {},
                             ),
-                                     CustomLookUpLongDialog(
-                items:  [],
-                value: LookUpItem(),
-                onEmptyList: () async {
-     
-                },
-                onChangeType: (LookUpItem? item) {
-                  if (item != null) {
-  
-                  }
-                },
-                label: Helpers.translatingWord("cemetry_deceassed_burial_time"),
-                hint: Helpers.translatingWord("cemetry_deceassed_burial_time"),
-              ),
+                            CustomLookUpLongDialog(
+                              items: [],
+                              value: LookUpItem(),
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {}
+                              },
+                              label: Helpers.translatingWord(
+                                  "cemetry_deceassed_burial_time"),
+                              hint: Helpers.translatingWord(
+                                  "cemetry_deceassed_burial_time"),
+                            ),
                           ],
                         ),
                       ),

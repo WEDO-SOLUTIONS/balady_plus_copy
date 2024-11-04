@@ -31,7 +31,7 @@ import '../widgets/add_deceased/cemetry_national_id_date_hijri.dart';
 
 class AddDeceasedDialog extends StatelessWidget {
   final AddDeceasedDialogParams params;
-  const AddDeceasedDialog({Key? key, required this.params}) : super(key: key);
+  const AddDeceasedDialog({super.key, required this.params});
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +99,7 @@ class AddDeceasedDialog extends StatelessWidget {
 }
 
 class DialogBody extends StatefulWidget {
-  DialogBody({Key? key}) : super(key: key);
+  const DialogBody({super.key});
 
   @override
   State<DialogBody> createState() => _DialogBodyState();
@@ -189,7 +189,7 @@ class _DialogBodyState extends State<DialogBody> {
               CemetryNationalDobGorgian(),
               // if (state.data.selectedNationalType?.fillInfo == false ||)
               ElevatedButtonWidget.verify(
-                  text: (state?.data?.userInfoResponse != null)
+                  text: (state.data.userInfoResponse != null)
                       ? "done_check".tr()
                       : "verify".tr(),
                   onPressed: () {
@@ -221,7 +221,9 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangeNameEvent(firstName: text));
                   },
-                  onValidate: (String? value) {}),
+                  onValidate: (String? value) {
+                    return null;
+                  }),
               const CustomVerticalSpace(height: 16),
               CustomTextFieldWidget(
                   label: "ekram_second_name".tr(),
@@ -234,7 +236,9 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangeNameEvent(secondName: text));
                   },
-                  onValidate: (String? value) {}),
+                  onValidate: (String? value) {
+                    return null;
+                  }),
               const CustomVerticalSpace(height: 16),
               CustomTextFieldWidget(
                   label: "ekram_third_name".tr(),
@@ -247,7 +251,9 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangeNameEvent(thirdName: text));
                   },
-                  onValidate: (String? value) {}),
+                  onValidate: (String? value) {
+                    return null;
+                  }),
               const CustomVerticalSpace(height: 16),
               CustomTextFieldWidget(
                   label: "ekram_fourth_name".tr(),
@@ -260,7 +266,9 @@ class _DialogBodyState extends State<DialogBody> {
                         .read<EkramAddDeceasedBloc>()
                         .add(ChangeNameEvent(fourthName: text));
                   },
-                  onValidate: (String? value) {}),
+                  onValidate: (String? value) {
+                    return null;
+                  }),
               const CustomVerticalSpace(height: 16),
               CustomLookUpLongDialog(
                 items: state.nationalities ?? [],
@@ -272,11 +280,11 @@ class _DialogBodyState extends State<DialogBody> {
                       .getNationalitiesHandler();
                 },
                 onChangeType: (LookUpItem? item) {
-                  if (item != null) {
-                    context
-                        .read<EkramAddDeceasedBloc>()
-                        .add(ChangeNationalityEvent(item: item));
-                  }
+                  // if (item != null) {
+                  //   context
+                  //       .read<EkramAddDeceasedBloc>()
+                  //       .add(ChangeNationalityEvent(item: item));
+                  // }
                 },
                 label: ("nationality").tr(),
                 hint: ("nationality").tr(),
@@ -431,7 +439,9 @@ class _DialogBodyState extends State<DialogBody> {
                         .add(ChangePermitNumberEvent(text: text));
                   },
                   showOptional: true,
-                  onValidate: (String? value) {}),
+                  onValidate: (String? value) {
+                    return null;
+                  }),
               CustomVerticalSpace(height: 16),
 
               VdHeaderDesc(
@@ -471,7 +481,9 @@ class _DialogBodyState extends State<DialogBody> {
                       context.read<EkramAddDeceasedBloc>().add(
                           ChangeNeedSpecialTransferReasonEvent(text: text));
                     },
-                    onValidate: (String? value) {})
+                    onValidate: (String? value) {
+                      return null;
+                    })
               ],
               CustomVerticalSpace(height: 10),
               CustomVerticalSpace(height: 20),

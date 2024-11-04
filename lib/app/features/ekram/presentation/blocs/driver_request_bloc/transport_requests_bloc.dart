@@ -27,7 +27,8 @@ part 'transport_requests_event.dart';
 
 part 'transport_requests_state.dart';
 
-class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
+class TransportRequestsBloc
+    extends Bloc<EkramRequestsEvent, EkramRequestsState> {
   final GetDeceasedTransportRequests _getDeceasedTransportRequests;
   final GetDeceasedTransportRequestDetails _getDeceasedTransportRequestDetails;
   final GetIdenticalListRequest _getDeceasedDriverRequestDetails;
@@ -71,7 +72,6 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
     on<GetMoreDeceasedTransportRequestsEvent>(_loadMoreHandler);
     on<GetMoreCemetryRequestsEvent>(_loadMoreCemetryRequestsHandler);
     on<ShowFilterEvent>(_showFilterHandler);
-
   }
 
   Future<void> _loadMoreHandler(
@@ -110,12 +110,8 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
     });
   }
 
-
-
   Future<void> _getRequestsHandler(
       GetDeceasedTransportRequestsEvent e, Emitter emitter) async {
-
-
     emitter(state.copyWith(
         status: BlocStatus.loadingShimmer,
         currentPage: 0,
@@ -144,7 +140,7 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
         status: status,
         deceasedRequestItems: status == BlocStatus.success ? [] : null,
         totalItemCount: 0,
-        errorMessage:(failure as ServerFailure).errorMessage ,
+        errorMessage: (failure as ServerFailure).errorMessage,
       ));
       CommonFunctions.showError(failure.errorMessage);
     }, (success) {
@@ -156,21 +152,6 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
       ));
     });
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   Future<void> _getDeceasedTransportRequestDetailsHandler(
       GetDeceasedTransportRequestDetailsEvent e, Emitter emitter) async {
@@ -298,8 +279,8 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
       currentPage: 0,
     ));
 
-    final failureOrSuccess = await _getCemetryRequests(
-        GetRequestsParams(page: 0, size: 10));
+    final failureOrSuccess =
+        await _getCemetryRequests(GetRequestsParams(page: 0, size: 10));
 
     failureOrSuccess.fold((failure) {
       String? errorCode = (failure as ServerFailure).errorCode;
@@ -328,8 +309,8 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
       GetMoreCemetryRequestsEvent e, Emitter emitter) async {
     emitter(state.copyWith(cemetryListStatus: BlocStatus.loadMore));
 
-    final failureOrSuccess = await _getCemetryRequests(GetRequestsParams(
-    page: state.cemetryCurrentPage + 1, size: 10));
+    final failureOrSuccess = await _getCemetryRequests(
+        GetRequestsParams(page: state.cemetryCurrentPage + 1, size: 10));
 
     failureOrSuccess.fold((failure) {
       String? errorCode = (failure as ServerFailure).errorCode;

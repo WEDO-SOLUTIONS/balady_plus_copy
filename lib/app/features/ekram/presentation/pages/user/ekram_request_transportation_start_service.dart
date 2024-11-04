@@ -61,11 +61,9 @@ class _EkramRequestTransportationStartServiceState
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
               child: ElevatedButtonWidget.startService(
                 onPressed: () async {
-
                   NavigationService.navigatorKey.currentState!.pushNamed(
                       RouteName.ekramRequestTransportationScreen,
-                      arguments: ekramRequestsBloc
-                      );
+                      arguments: ekramRequestsBloc);
                 },
               ),
             )
