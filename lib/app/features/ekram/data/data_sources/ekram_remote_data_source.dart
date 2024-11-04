@@ -1217,7 +1217,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
     try {
       response = await webService.dio.put(
-        ApiUrl.completeTrip,queryParameters: {"isDriver":true}
+        ApiUrl.completeTrip(params),queryParameters: {"isDriver":true}
       );
 
 
