@@ -107,7 +107,11 @@ class ApplicantInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-            const EkramPreviousNextButtons()
+             EkramPreviousNextButtons(btnPressed:(){
+
+               context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
+
+            })
           ],
         );
       },

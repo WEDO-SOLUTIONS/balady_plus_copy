@@ -73,6 +73,9 @@ class EkramRequestTransportationBloc extends Bloc<
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"))) {
+
+
+
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeAgreementEvent>(_changeAgreementHandler);
     on<SelectHospitalEvent>(_selectHospitalHanlder);
@@ -88,7 +91,11 @@ class EkramRequestTransportationBloc extends Bloc<
 
     // on<GetCitiesEvent>(_getCitiesHandler);
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
-    on<ChangeNationalityEvent>(_changeNationalityHanlder);
+
+    on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
+
+
+
 
     on<GetHospitalsEvent>(_getHospitalsHandler);
     on<AddDeceasedEvent>(_addDeceasedHandler);
@@ -98,6 +105,9 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeNationalIdDob>(_changeNationalIdDobHandler);
     on<ChangeIdEvent>(_changeIdHandler);
     on<VerifyDeceasedEvent>(_verifyDeceasedHandler);
+
+
+
     getNationalitiesHandler();
     getCitiesHandler();
   }
@@ -137,21 +147,25 @@ class EkramRequestTransportationBloc extends Bloc<
     ));
   }
 
-  Future<void> _changeNationalityHanlder(
-      ChangeNationalityEvent e, Emitter emitter) async {
+
+
+  Future<void> _changeDeceasedInfoDataHanlder(
+      ChangeDeceasedUserInfoEvent e, Emitter emitter) async {
+
     SaveDeceasedInfoParams? params = state.saveDeceasedInfoParams;
     params ??= SaveDeceasedInfoParams(
         deceasedInfo: DeceasedInfo(), mainInfo: MainInfo());
 
     DeceasedInfo info = params.deceasedInfo!;
 
-    info = info.copyWith(nationalityId: e.item?.id!);
+    info = info.copyWith(nationalityId: e.item?.nationalityId,firstName: e.item?.firstName,secondName: e.item?.secondName,thirdName: e.item?.thirdName,fourthName: e.item?.fourthName,isMuslim: e.item?.isMuslim,gender: e.item?.gender);
     params = params.copyWith(deceasedInfo: info);
 
     emitter(state.copyWith(
         errorMessage: "",
         status: BlocStatus.success,
         saveDeceasedInfoParams: params));
+    
   }
 
   Future<void> _changeNationalIdDobHandler(

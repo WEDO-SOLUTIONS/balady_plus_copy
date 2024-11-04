@@ -95,8 +95,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                             DeceasedBirthdateGregorian(),
                             ElevatedButtonWidget.primaryCustomBorder(
                               onPressed: () async {
-                                EkramRequestTransportationBloc b = context
-                                    .read<EkramRequestTransportationBloc>();
+
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(VerifyDeceasedEvent());
@@ -111,7 +110,9 @@ class DeceasedVerificationSection extends StatelessWidget {
                 ),
               ),
             ),
-            const EkramPreviousNextButtons()
+             EkramPreviousNextButtons(btnPressed: (){
+               context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
+             },)
           ],
         );
       },

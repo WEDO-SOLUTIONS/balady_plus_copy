@@ -1,8 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/cards/expandable_card.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/fields/read_only_field.dart';
+
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget%20copy.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
@@ -11,11 +10,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../data/model/save_deceased_info_params/deceased_info.dart';
 
 class DeceasedInfoSection extends StatelessWidget {
   const DeceasedInfoSection({super.key});
@@ -49,7 +48,13 @@ class DeceasedInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-            EkramPreviousNextButtons()
+            EkramPreviousNextButtons(btnPressed: (){
+
+
+              context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
+
+
+            },)
           ],
         );
       },
@@ -102,7 +107,10 @@ class _ApplicantInfoTextFieldsSectionState
             CustomTextFieldWidget(
                 label: "ekram_first_name".tr(),
                 hintText: "ekram_first_name".tr(),
-                onChanged: (String? text) {},
+                onChanged: (String? text) {
+
+                  context.read<EkramRequestTransportationBloc>().add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(firstName: text)));
+                },
                 onValidate: (String? value) {
                   return null;
                 }),
@@ -110,7 +118,11 @@ class _ApplicantInfoTextFieldsSectionState
             CustomTextFieldWidget(
                 label: "ekram_second_name".tr(),
                 hintText: "ekram_second_name".tr(),
-                onChanged: (String? text) {},
+                onChanged: (String? text) {
+                  context
+                      .read<EkramRequestTransportationBloc>()
+                      .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(secondName: text)));
+                },
                 onValidate: (String? value) {
                   return null;
                 }),
@@ -118,7 +130,12 @@ class _ApplicantInfoTextFieldsSectionState
             CustomTextFieldWidget(
                 label: "ekram_third_name".tr(),
                 hintText: "ekram_third_name".tr(),
-                onChanged: (String? text) {},
+                onChanged: (String? text) {
+                  context
+                      .read<EkramRequestTransportationBloc>()
+                      .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(thirdName: text)));
+
+                },
                 onValidate: (String? value) {
                   return null;
                 }),
@@ -126,7 +143,14 @@ class _ApplicantInfoTextFieldsSectionState
             CustomTextFieldWidget(
                 label: "ekram_fourth_name".tr(),
                 hintText: "ekram_fourth_name".tr(),
-                onChanged: (String? text) {},
+                onChanged: (String? text) {
+
+
+                  context
+                      .read<EkramRequestTransportationBloc>()
+                      .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(fourthName: text)));
+
+                },
                 onValidate: (String? value) {
                   return null;
                 }),
@@ -142,10 +166,11 @@ class _ApplicantInfoTextFieldsSectionState
               },
               onChangeType: (LookUpItem? item) {
                 if (item != null) {
-                  var b = context.read<EkramRequestTransportationBloc>();
+
                   context
                       .read<EkramRequestTransportationBloc>()
-                      .add(ChangeNationalityEvent(item: item));
+                      .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(nationalityId: item.id)));
+
                 }
               },
               label: ("nationality").tr(),
@@ -165,8 +190,14 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("male").tr(),
                     value: true,
-                    currentSelected: true,
-                    onChange: (bool item) {},
+                    currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.gender==null||state.saveDeceasedInfoParams?.deceasedInfo?.gender=="MALE"),
+                    onChange: (bool item) {
+
+                      context
+                          .read<EkramRequestTransportationBloc>()
+                          .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(gender: "MALE")));
+
+                    },
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
@@ -179,8 +210,16 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("female").tr(),
                     value: true,
-                    currentSelected: false,
-                    onChange: (bool item) {},
+                    currentSelected: state.saveDeceasedInfoParams?.deceasedInfo?.gender=="FEMALE",
+
+                    onChange: (bool item) {
+
+                      context
+                          .read<EkramRequestTransportationBloc>()
+                          .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(gender: "FEMALE")));
+
+
+                    },
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
@@ -201,8 +240,13 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("muslim").tr(),
                     value: true,
-                    currentSelected: true,
-                    onChange: (bool item) {},
+                    currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==null||state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==true),
+                    onChange: (bool item) {
+
+                      context
+                          .read<EkramRequestTransportationBloc>()
+                          .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(isMuslim: true)));
+                    },
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
@@ -215,8 +259,13 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("non_muslim").tr(),
                     value: true,
-                    currentSelected: false,
-                    onChange: (bool item) {},
+                    currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==false),
+                    onChange: (bool item) {
+
+                      context
+                          .read<EkramRequestTransportationBloc>()
+                          .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(isMuslim: false)));
+                    },
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,

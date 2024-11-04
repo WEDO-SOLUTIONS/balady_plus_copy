@@ -113,3 +113,7 @@ class ChangeNationalityEvent extends EkramRequestTransportationEvent {
   final LookUpItem? item;
   ChangeNationalityEvent({this.item});
 }
+class ChangeDeceasedUserInfoEvent extends EkramRequestTransportationEvent {
+  final DeceasedInfo? item;
+  ChangeDeceasedUserInfoEvent({this.item});
+}
