@@ -51,7 +51,10 @@ class DeceasedInfoSection extends StatelessWidget {
             EkramPreviousNextButtons(btnPressed: (){
 
 
-              context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
+             if( state.validateDeceasedInfoSection(true)== true){
+               context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
+              }
+
 
 
             },)
@@ -261,7 +264,6 @@ class _ApplicantInfoTextFieldsSectionState
                     value: true,
                     currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==false),
                     onChange: (bool item) {
-
                       context
                           .read<EkramRequestTransportationBloc>()
                           .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(isMuslim: false)));

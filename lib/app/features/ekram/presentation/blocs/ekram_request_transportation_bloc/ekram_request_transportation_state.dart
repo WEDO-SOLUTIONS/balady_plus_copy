@@ -156,10 +156,8 @@ class EkramRequestTransportationState extends Equatable {
     }
 
     if (currentPageValue == 1) {
-      // if ((deceasedInfoDto?.length ?? 0) > 0)
-      //   return true;
-      // else
-      //   return false;
+      return validateDeceasedInfoSection(false);
+
     } else if (currentPageValue == 2) {
       /*  if (deathLocation?.isNotEmpty ?? false) {
         return true;
@@ -184,5 +182,38 @@ class EkramRequestTransportationState extends Equatable {
     }
 
     return null;
+  }
+
+
+
+  bool validateDeceasedInfoSection(bool ShowErrorMessage)
+  {
+    if(saveDeceasedInfoParams != null) {
+      if(saveDeceasedInfoParams?.deceasedInfo?.firstName== null||saveDeceasedInfoParams!.deceasedInfo!.firstName!.isEmpty) {
+        if(ShowErrorMessage==true)
+          CommonFunctions.showError("lbl_first_name_hint2".tr());
+        return false;
+      }
+      else if(saveDeceasedInfoParams?.deceasedInfo?.fourthName== null||saveDeceasedInfoParams!.deceasedInfo!.fourthName!.isEmpty) {
+
+        if(ShowErrorMessage==true)
+        CommonFunctions.showError("enter_ekram_fourth_name".tr());
+        return false;
+      }
+      else if(saveDeceasedInfoParams?.deceasedInfo?.nationalityId== null) {
+        if(ShowErrorMessage==true)
+        CommonFunctions.showError("enternationilaty".tr());
+        return false;
+      }
+
+
+
+      return true;
+    }
+    else {
+      if(ShowErrorMessage==true)
+      CommonFunctions.showError("lbl_first_name_hint2".tr());
+      return false;
+    }
   }
 }
