@@ -1,13 +1,16 @@
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
+import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/driver/trip_details_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/trip_location_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
@@ -49,10 +52,10 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params);
 
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
-      int params);
+      int requestId, MosqueGhuslPlacesParams params);
 
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
-      int params);
+      int requestId, MosqueGhuslPlacesParams params);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getNationalities();
 
@@ -104,9 +107,6 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getActiveCities();
 
-  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
-      GetCemetriesParams params);
-
   Future<ResponseBodyModel<List<GhuslEmploye>>> getGhuslEmployees(
       int requestId);
   Future<ResponseBodyModel<List<DeceasedAttachment>>> getDeceasedAttachment(
@@ -137,8 +137,11 @@ abstract class EkramRemoteDataSource {
 
   Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
 
-  Future<ResponseBodyModel<List<LookUpItem>>> specialTransportReasons();
-    Future<ResponseBodyModel<List<LookUpItem>>> graveTypes() ;
+  Future<ResponseBodyModel<List<LookUpItem>>> getSpecialTransportReasons();
+  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypes();
+    Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(int requestId , CemetriesParams params);
+  Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompanies(
+      int requestId, TransportationCompaniesParams params);
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
   Future<RequestDetailsResponseModel> requestDetails(int requestId);
   Future<RequestDetailsResponseModel> saveDeceasedInfo(
@@ -1044,126 +1047,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
-      int params) async {
-    Response response;
-
-    try {
-      response = await webService.dio.get(
-        ApiUrl.ekramLaundries.replaceAll("{}", params.toString()),
-      );
-
-      var data = response.data["data"]?["result"];
-
-      List<LookUpItemLocationModel> parsedResult = data != null
-          ? List<LookUpItemLocationModel>.from(
-              data.map((x) => LookUpItemLocationModel.fromJson(x)))
-          : [];
-
-      final decodedResponse =
-          ResponseBodyModel<List<LookUpItemLocationModel>>.fromMap(
-              response.data,
-              parsedResult: parsedResult);
-
-      return decodedResponse.toFuture();
-    } on DioException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //  //CommonFunctions.sendExceptionLog(exception:  error, response: response);
-        } catch (error, stackTrace) {
-          LogsViewModel().sendEventFromModel(
-            event: ErrorExceptionModel(
-              nameEvent: EventsName.handledException,
-              message: error.toString(),
-              stackTrace: stackTrace.toString(),
-            ),
-          );
-        }
-        throw ServerException(("errors_server_error_2").tr());
-      }
-    }
-  }
-
-  @override
-  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
-      int params) async {
-    Response response;
-
-    try {
-      response = await webService.dio.get(
-        ApiUrl.ekramMosques.replaceAll("{}", params.toString()),
-      );
-
-      var data = response.data["data"]?["result"];
-
-      List<LookUpItemLocationModel> parsedResult = data != null
-          ? List<LookUpItemLocationModel>.from(
-              data.map((x) => LookUpItemLocationModel.fromJson(x)))
-          : [];
-
-      final decodedResponse =
-          ResponseBodyModel<List<LookUpItemLocationModel>>.fromMap(
-              response.data,
-              parsedResult: parsedResult);
-
-      return decodedResponse.toFuture();
-    } on DioException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
-        } catch (error, stackTrace) {
-          LogsViewModel().sendEventFromModel(
-            event: ErrorExceptionModel(
-              nameEvent: EventsName.handledException,
-              message: error.toString(),
-              stackTrace: stackTrace.toString(),
-            ),
-          );
-        }
-        throw ServerException(("errors_server_error_2").tr());
-      }
-    }
-  }
-
-  @override
   Future<ResponseBodyModel<dynamic>> deleteTrip(
       int tripId, int requestId) async {
     Response response;
@@ -1815,64 +1698,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     }
   }
 
-  @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
-      GetCemetriesParams params) async {
-    Response response;
-
-    try {
-      response = await webService.dio.get(
-        ApiUrl.ekramCemetries,
-        queryParameters: params.toMap(),
-      );
-
-      var data = response.data["data"]?["result"];
-
-      List<LookUpItem> parsedResult = data != null
-          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
-          : [];
-
-      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
-
-      return decodedResponse.toFuture();
-    } on DioException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      throw ServerException(error.toString(),
-          statusCode: error.response?.statusCode, dioError: error);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      if (error is ServerException) {
-        rethrow;
-      } else {
-        try {
-          //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
-        } catch (error, stackTrace) {
-          LogsViewModel().sendEventFromModel(
-            event: ErrorExceptionModel(
-              nameEvent: EventsName.handledException,
-              message: error.toString(),
-              stackTrace: stackTrace.toString(),
-            ),
-          );
-        }
-        throw ServerException(("errors_server_error_2").tr());
-      }
-    }
-  }
+  
 
   @override
   Future<ResponseBodyModel<ApplyDeceasedResponseModel>> bookCemetry(
@@ -2683,7 +2509,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> specialTransportReasons() async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getSpecialTransportReasons() async {
     Response response;
 
     try {
@@ -2743,7 +2569,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> graveTypes() async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypes() async {
     Response response;
 
     try {
@@ -2801,13 +2627,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
+
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> transportRequestCemeteries(
-   int requestId) async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(int requestId , CemetriesParams params) async {
     Response response;
 
     try {
-      response = await webService.dio.get(ApiUrl.transportRequestCemeteries(requestId));
+      response = await webService.dio.get(ApiUrl.cemetries(requestId),data: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2848,6 +2674,186 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       } else {
         try {
           // CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompanies(
+      int requestId, TransportationCompaniesParams params) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.transportCompanies(requestId),
+          queryParameters: params.toJson());
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+      if (response.statusCode != 200) {
+        String errorMessage = decodedResponse.data?.responseMessage ??
+            decodedResponse.statusDetails?.message ??
+            ("errors_server_error_1").tr();
+        throw ServerException(errorMessage, statusCode: response.statusCode);
+      }
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
+      int requestId, MosqueGhuslPlacesParams params) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.ekramLaundries(requestId),
+          queryParameters: params.toJson());
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItemLocationModel> parsedResult = data != null
+          ? List<LookUpItemLocationModel>.from(
+              data.map((x) => LookUpItemLocationModel.fromJson(x)))
+          : [];
+
+      final decodedResponse =
+          ResponseBodyModel<List<LookUpItemLocationModel>>.fromMap(
+              response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //  //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosques(
+      int requestId, MosqueGhuslPlacesParams params) async {
+    Response response;
+
+    try {
+      response = await webService.dio.get(ApiUrl.ekramMosques(requestId),
+          queryParameters: params.toJson());
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItemLocationModel> parsedResult = data != null
+          ? List<LookUpItemLocationModel>.from(
+              data.map((x) => LookUpItemLocationModel.fromJson(x)))
+          : [];
+
+      final decodedResponse =
+          ResponseBodyModel<List<LookUpItemLocationModel>>.fromMap(
+              response.data,
+              parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
