@@ -62,10 +62,7 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
     super.initState();
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.listServiceFuneralCarDriver);
-
     CommonFunctions.checkLocationSettings(context);
-    sl<EkramLocationService>().start();
-
   }
 
 
@@ -73,7 +70,7 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    sl<EkramLocationService>().stop();
+     sl<EkramLocationService>().stop();
 
     _controller.addListener(() {
       setState(() {
@@ -90,11 +87,6 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
     return BlocProvider(
       create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
           isDriver: true)
         ..add(GetDeceasedTransportRequestsEvent(isDriver: true)),
       child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
@@ -187,11 +179,6 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
                 if (state.status == BlocStatus.loadingShimmer)
                   CustomCircularLoadingWidget(),
 
-                  // CustomShimmerListWidget(
-                  //   height: 274,
-                  //   itemCount: 3,
-                  //   padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                  // ),
                 if (state.status == BlocStatus.retry)
                   ReloadWidget(
                     onTab: () {

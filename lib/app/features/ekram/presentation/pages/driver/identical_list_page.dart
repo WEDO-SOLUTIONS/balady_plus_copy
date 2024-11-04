@@ -10,6 +10,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/services/local/location_service.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
@@ -43,6 +44,7 @@ class _IdenticalListPageState
 
     CommonFunctions.sendUXCamEvent(UXCamEvents.detailsServiceFuneralCarDriver);
 
+
   }
 
   @override
@@ -53,11 +55,7 @@ class _IdenticalListPageState
 
     return BlocProvider.value(
       value: sl<IdenticalListBloc>(),
-      // create: (conts) {
-      //   IdenticalListBloc bloc= sl();
-      //   bloc.add(GetIdenticalListRequestEvent(requestId: params.requestId!));
-      //   return bloc;
-      // },
+
       child: BlocConsumer<IdenticalListBloc, IdenticalListState>(
         listener: (cont, state) {
 

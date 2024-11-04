@@ -1380,11 +1380,9 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.post(
-        ApiUrl.updateLocation,
+        ApiUrl.updateLocation(params.requestId),
         data: params.toMap(),
       );
-
-      var data = response.data["data"]?["result"];
 
       final decodedResponse =
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);

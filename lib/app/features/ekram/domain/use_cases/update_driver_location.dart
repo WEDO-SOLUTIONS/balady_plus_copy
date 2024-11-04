@@ -6,8 +6,7 @@ import '../../../../core/services/local/use_case.dart';
 import '../entities/update_driver_location_params.dart';
 import '../repositories/ekram_repository.dart';
 
-class UpadateDriverLocation
-    extends UseCase<ResponseBodyModel, UpdateDriverLocationParams> {
+class UpadateDriverLocation extends UseCase<ResponseBodyModel, UpdateDriverLocationParams> {
   final EkramRepository repository;
   UpadateDriverLocation({required this.repository});
   @override

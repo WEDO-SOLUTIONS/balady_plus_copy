@@ -75,7 +75,6 @@ class AddTripBloc extends Bloc<TripEvent, AddTripState> {
     on<EditTripPathData>(_editTripPathData);
     on<ClearErrorMsgEvent>(_clearErrorMsg);
     on<SubmitEvent>(_submitHandler);
-    // on<UpdateDriverLocationEvent>(_updateDriverLocatioHandler);
 
   }
 
@@ -127,14 +126,12 @@ else
       ));
 
     }, (success) async {
-      await _updateDriverLocatioHandler();
+     // await _updateDriverLocatioHandler();
       emitter(state.copyWith(
         status: BlocStatus.success,
         errorMessage: "",
       ));
 
-      // NavigationService.navigatorKey.currentState
-      //     ?.pop(success.data?.responseMessage);
     });
   }
   Future<void> _clearErrorMsg(ClearErrorMsgEvent e, Emitter emitter) async {
@@ -143,28 +140,6 @@ else
 
     emitter(state.copyWith(status: status,errorMessage: ""));
   }
-
-  Future<void> _updateDriverLocatioHandler() async {
-    try {
-      LatLng? location = await Helpers.getCurrentLocation();
-      if (location != null) {
-        final failureOrSuccess =
-            await _upadateDriverLocation(UpdateDriverLocationParams(
-                //deadInfoRecordId: state.data.deathInfoId!,
-                x: location.longitude,
-                y: location.latitude));
-      }
-    } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-  }
-
 
   Future<void> _getTripsHandler(GetTripsEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));

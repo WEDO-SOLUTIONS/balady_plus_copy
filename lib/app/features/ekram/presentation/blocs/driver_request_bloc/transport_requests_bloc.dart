@@ -29,48 +29,23 @@ part 'transport_requests_state.dart';
 
 class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState> {
   final GetDeceasedTransportRequests _getDeceasedTransportRequests;
-  final GetDeceasedTransportRequestDetails _getDeceasedTransportRequestDetails;
-  final GetIdenticalListRequest _getDeceasedDriverRequestDetails;
-  final GetLookUp _getLookUp;
-  final GetStatus _getStatus;
-  final GetLocations _getLocations;
-  final GetCemetryRequests _getCemetryRequests;
-  final GetCemetryRequestDetails _getCemetryRequestDetails;
+
 
   TransportRequestsBloc(
-      {required GetDeceasedTransportRequests getDeceasedTransportRequests,
-      required GetDeceasedTransportRequestDetails
-          getDeceasedTransportRequestDetails,
-      required GetIdenticalListRequest getDeceasedDriverRequestDetails,
-      required bool isDriver,
-      required GetLookUp getLookUp,
-      required GetStatus getStatus,
-      required GetLocations getLocations})
+      {
+        required GetDeceasedTransportRequests getDeceasedTransportRequests,
+        required bool isDriver,
+  })
       : _getDeceasedTransportRequests = getDeceasedTransportRequests,
-        _getDeceasedTransportRequestDetails =
-            getDeceasedTransportRequestDetails,
-        _getDeceasedDriverRequestDetails = getDeceasedDriverRequestDetails,
-        _getLookUp = getLookUp,
-        _getStatus = getStatus,
-        _getLocations = getLocations,
-        _getCemetryRequests = GetCemetryRequests(repository: sl()),
-        _getCemetryRequestDetails = GetCemetryRequestDetails(repository: sl()),
         super(EkramRequestsState(isDriver: isDriver)) {
     on<EkramRequestsEvent>((event, emit) {
       emit(state);
     });
+
+
     on<GetDeceasedTransportRequestsEvent>(_getRequestsHandler);
-
-    on<GetDeceasedTransportRequestDetailsEvent>(
-        _getDeceasedTransportRequestDetailsHandler);
-
-    on<GetCemetryRequestsEvent>(_getCemetryRequestsHandler);
-
-    on<GetCemetryRequestDetailsEvent>(_getCemetryRequestDetailsHandler);
-
     on<GetMoreDeceasedTransportRequestsEvent>(_loadMoreHandler);
-    on<GetMoreCemetryRequestsEvent>(_loadMoreCemetryRequestsHandler);
-    on<ShowFilterEvent>(_showFilterHandler);
+
 
   }
 
@@ -172,218 +147,7 @@ class TransportRequestsBloc extends Bloc<EkramRequestsEvent, EkramRequestsState>
 
 
 
-  Future<void> _getDeceasedTransportRequestDetailsHandler(
-      GetDeceasedTransportRequestDetailsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
 
-    var failureOrSuccess;
-    if (e.isDriver) {
-      failureOrSuccess = await _getDeceasedDriverRequestDetails(e.requestId);
-    } else {
-      failureOrSuccess = await _getDeceasedTransportRequestDetails(e.requestId);
-    }
-    await failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-      if (e.isDriver) {
-        final result = await NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.IdenticalListPage,
-                arguments: success.data?.result);
-        print(result);
-        if (result == true) {
-          add(GetDeceasedTransportRequestsEvent(isDriver: state.isDriver!));
-        }
-      } else {
-        NavigationService.navigatorKey.currentState!.pushNamed(
-            RouteName.driverEkramTransportationDetailsScreen,
-            arguments: success.data?.result);
-      }
-    });
-  }
-
-  Future<void> _showFilterHandler(ShowFilterEvent e, Emitter emitter) async {
-    List<LookUpItem> filters = state.transferStatusList ?? [];
-
-    List<LookUpItem> requestStatusListFilters = state.requestStatusList ?? [];
-    List<LookUpItem> locationsListFilters = state.locationsList ?? [];
-
-    if (requestStatusListFilters.isEmpty) {
-      emitter(state.copyWith(
-        status: BlocStatus.loading,
-        errorMessage: "",
-      ));
-      final failureOrSuccess = await _getStatus(0);
-      requestStatusListFilters = failureOrSuccess.fold((failure) {
-        emitter(state.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-        return [];
-      }, (success) {
-        emitter(state.copyWith(
-          status: BlocStatus.success,
-          requestStatusList: success.data?.result,
-          errorMessage: "",
-        ));
-        return success.data?.result ?? [];
-      });
-    }
-    /*if (locationsListFilters.isEmpty) {
-      emitter(state.copyWith(
-        status: BlocStatus.loading,
-        errorMessage: "",
-      ));
-      final failureOrSuccess = await _getLocations(0);
-      locationsListFilters = failureOrSuccess.fold((failure) {
-        emitter(state.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        ));
-        return [];
-      }, (success) {
-        emitter(state.copyWith(
-          status: BlocStatus.success,
-          locationsList: success.data?.result,
-          errorMessage: "",
-        ));
-        return success.data?.result ?? [];
-      });
-    }*/
-
-    await CustomPopUpsWidgets.showBottomSheet(
-      NavigationService.navigatorKey.currentContext!,
-      child: FilterDialog(
-        onClear: () {
-          add(GetDeceasedTransportRequestsEvent(
-              isDriver: state.isDriver!, clear: true));
-        },
-        // cityCurrentSelection: state.cityFilterItem,
-        //  deathCurrentSelection: state.locationFilterItem,
-        requestCurrentSelection: state.requestStatusFilterItem,
-        /* citiesItems: [
-          LookUpItem(id: 0, name: trans("inside_city")),
-          LookUpItem(id: 1, name: trans("outside_city"))
-        ],*/
-        requestStatusItems: requestStatusListFilters,
-        // deathTransferItems:
-        //     state.isDriver == true ? locationsListFilters : null,
-        onFilter: (List<LookUpItem?>? items) {
-          emitter(state.copyWith(
-              requestStatusFilterItem: items?[0],
-              locationFilterItem: items?[1],
-              cityFilterItem: items?[2]));
-          add(GetDeceasedTransportRequestsEvent(
-              isDriver: state.isDriver!,
-              requestStatusId: items?[0]?.id,
-              transportLocationStatusId: items?[1]?.id,
-              isMultiCity: items?[2]?.id != null
-                  ? (items?[2]?.id == 0 ? false : true)
-                  : null));
-        },
-      ),
-    );
-  }
-
-  Future<void> _getCemetryRequestsHandler(
-      GetCemetryRequestsEvent event, Emitter emitter) async {
-    emitter(state.copyWith(
-      cemetryListStatus: BlocStatus.loadingShimmer,
-      currentPage: 0,
-    ));
-
-    final failureOrSuccess = await _getCemetryRequests(
-        GetRequestsParams(page: 0, size: 10));
-
-    failureOrSuccess.fold((failure) {
-      String? errorCode = (failure as ServerFailure).errorCode;
-      BlocStatus status = BlocStatus.retry;
-      if (errorCode == "2") {
-        status = BlocStatus.success;
-      }
-
-      emitter(state.copyWith(
-        cemetryListStatus: status,
-        cemetryRequestItems: status == BlocStatus.success ? [] : null,
-        // totalItemCount: 0,
-        errorMessage: "",
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        cemetryListStatus: BlocStatus.success,
-        cemetryRequestItems: success.data?.result?.items,
-        // totalItemCount: success.data?.result?.totalItemCount,
-        errorMessage: "",
-      ));
-    });
-  }
-
-  Future<void> _loadMoreCemetryRequestsHandler(
-      GetMoreCemetryRequestsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(cemetryListStatus: BlocStatus.loadMore));
-
-    final failureOrSuccess = await _getCemetryRequests(GetRequestsParams(
-    page: state.cemetryCurrentPage + 1, size: 10));
-
-    failureOrSuccess.fold((failure) {
-      String? errorCode = (failure as ServerFailure).errorCode;
-      BlocStatus status = BlocStatus.failure;
-      if (errorCode == "2") {
-        status = BlocStatus.success;
-      }
-
-      emitter(state.copyWith(
-        cemetryListStatus: status,
-        errorMessage: status == BlocStatus.failure
-            ? (failure as ServerFailure).errorMessage
-            : "",
-      ));
-    }, (success) {
-      List<CemetryRequestItem>? newDeceasedRequestItems =
-          success.data?.result?.items;
-      List<CemetryRequestItem>? oldDeceasedRequestItems =
-          state.cemetryRequestItems;
-      if (newDeceasedRequestItems != null)
-        oldDeceasedRequestItems?.addAll(newDeceasedRequestItems);
-      emitter(state.copyWith(
-        cemetryListStatus: BlocStatus.success,
-        cemetryRequestItems: oldDeceasedRequestItems,
-        cemetryCurrentPage: state.cemetryCurrentPage + 1,
-        errorMessage: "",
-      ));
-    });
-  }
-
-  Future<void> _getCemetryRequestDetailsHandler(
-      GetCemetryRequestDetailsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    var failureOrSuccess;
-
-    failureOrSuccess = await _getCemetryRequestDetails(e.requestId);
-
-    await failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) async {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-
-      NavigationService.navigatorKey.currentState!.pushNamed(
-          RouteName.EkramCemetryDetailsPage,
-          arguments: success.data?.result);
-    });
-  }
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();

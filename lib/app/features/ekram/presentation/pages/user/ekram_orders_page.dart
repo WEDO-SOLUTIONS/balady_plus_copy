@@ -38,11 +38,6 @@ class _EkramOrdersPageState extends State<EkramOrdersPage> {
       // value: sl<EkramRequestsBloc>(),
       create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
           isDriver: false),
       child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {},

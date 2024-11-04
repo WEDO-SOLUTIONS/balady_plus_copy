@@ -402,7 +402,7 @@ class ApiUrl {
 
 
 
-  static const updateLocation = 'v2/ekram-mobile-services/add-trip-locations';
+
 
   static const tripLocations = 'v2/ekram-mobile-services/trip-locations';
 
@@ -644,6 +644,7 @@ class ApiUrl {
   static  uploadAttachment(int id)=>'v1/superapp-ekram-services/attachments/$id/upload-file';
   static  editAdditionalData(int id)=>'v1/superapp-ekram-services/transport/$id/edit-additional-data';
   static  completeTrip(int id)=> 'v1/superapp-ekram-services/trips/$id/finalize';
+  static  updateLocation (int id)=> 'v1/superapp-ekram-services/transport/add-transport-track/$id';
 
 
 

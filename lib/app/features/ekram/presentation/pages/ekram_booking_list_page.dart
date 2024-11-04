@@ -56,11 +56,6 @@ class _EkramBookingListPageState extends State<EkramBookingListPage> {
     return BlocProvider(
       create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
           isDriver: false)
         ..add(GetCemetryRequestsEvent()),
       child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(

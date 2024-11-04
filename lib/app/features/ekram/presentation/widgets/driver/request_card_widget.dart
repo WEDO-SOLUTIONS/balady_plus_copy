@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
+import '../../../../../core/services/local/location_service.dart';
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
@@ -31,6 +32,13 @@ class RequestCardWidget extends StatelessWidget {
     Key? key,
     required this.requestItemModel,
   }) : super(key: key);
+
+  @override
+  void dispose() {
+    sl<EkramLocationService>().stop();
+
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +127,9 @@ class RequestCardWidget extends StatelessWidget {
             ElevatedButtonWidget.primaryCustom(
                 height: 40,
                 onPressed: () {
-                  NavigatorState navigator = Navigator.of(context);
 
+
+                  sl<EkramLocationService>().start(requestItemModel.requestId!);
                   NavigationService.navigatorKey.currentState!.pushNamed(
                     RouteName.IdenticalListPage,
                     arguments: requestItemModel,
@@ -131,14 +140,7 @@ class RequestCardWidget extends StatelessWidget {
                       requestId: requestItemModel.requestId!,
                     ),
                   );
-                  // navigator.pushNamed(RouteName.IdenticalListPage,
-                  //     arguments: requestItemModel);
 
-                  // Navigator.pushNamed(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => DriverExtraDataPage(),
-                  //   ),
-                  // );
                 },
                 text: "register_trip_details".tr())
           ],
@@ -148,68 +150,4 @@ class RequestCardWidget extends StatelessWidget {
   }
 }
 
-class DetailsInfoWithImgSvg extends StatelessWidget {
-  final String img;
-  final String title;
-  final bool withGreenImg;
-  final bool fromHeader;
-  final Color textColor;
-  final bool fontFamilyNumber;
-  final double iconHeight;
-  final double iconWidth;
 
-  const DetailsInfoWithImgSvg(
-      {Key? key,
-      required this.img,
-      required this.title,
-      this.withGreenImg = false,
-      this.fromHeader = false,
-      this.fontFamilyNumber = true,
-      this.iconHeight = 14,
-      this.iconWidth = 14,
-      this.textColor = AppColor.gray})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: <Widget>[
-        CustomSvgIconWidget(
-          img,
-          iconHeight: iconHeight,
-          iconWidth: iconWidth,
-          iconColor:
-              withGreenImg ? AppColor.greenishYellow500 : AppColor.black400,
-        ),
-        const CustomHorizontalSpace(width: 5),
-        Flexible(
-          child: Container(
-            margin: const EdgeInsets.only(top: 2.2),
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: CustomTextWidget(
-                title,
-                fontSize: 13.0,
-                fontWeight:
-                    fromHeader ? AppFontWeight.bold : AppFontWeight.medium,
-                fontColor: (fromHeader && textColor == AppColor.gray)
-                    ? AppColor.black500
-                    : textColor,
-                textScaleFactor: 1,
-                maxLines: 1,
-                textOverflow: TextOverflow.ellipsis,
-                fontFamily: fontFamilyNumber
-                    ? Constants.lucidaGrandFontType
-                    : Constants.appFontType,
-                textAlign: TextAlign.start,
-              ),
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}

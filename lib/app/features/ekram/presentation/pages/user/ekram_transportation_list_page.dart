@@ -65,11 +65,6 @@ class _EkramTransportationListPageState
     return BlocProvider(
       create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
           isDriver: false)
         ..add(GetDeceasedTransportRequestsEvent(isDriver: false)),
       child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
