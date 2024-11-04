@@ -552,7 +552,8 @@ class EkramAddDeceasedBloc
 
       final failureOrSuccess = await _checkUserInfo(UserInfoRequestParams(
           dob: state.data.deceassedDOBHijri ?? "",
-          nationalId: state.data.deceassedId ?? "", identityType: state.data.identityType ?? 0));
+          nationalId: state.data.deceassedId ?? "",
+          identityType: state.data.identityType ?? 0));
 
       failureOrSuccess.fold((failure) {
         emitter(state.copyWith(
@@ -561,14 +562,18 @@ class EkramAddDeceasedBloc
         ));
       }, (success) {
         String firstName = success.data?.result?.deceasedInfo?.firstName ?? "";
-        String secondName = success.data?.result?.deceasedInfo?.secondName ?? "";
+        String secondName =
+            success.data?.result?.deceasedInfo?.secondName ?? "";
         String thirdName = success.data?.result?.deceasedInfo?.thirdName ?? "";
-        String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";
+        String fourthName =
+            success.data?.result?.deceasedInfo?.fourthName ?? "";
         // int? gender = success.data?.result?.genderCode;
-        bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim ;
+        bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim;
 
         LookUpItem? nationality = state.nationalities?.firstWhereOrNull(
-            (element) => element.id == success.data?.result?.deceasedInfo?.nationalityId);
+            (element) =>
+                element.id ==
+                success.data?.result?.deceasedInfo?.nationalityId);
         emitter(state.copyWith(
             status: BlocStatus.success,
             cemetries: [],

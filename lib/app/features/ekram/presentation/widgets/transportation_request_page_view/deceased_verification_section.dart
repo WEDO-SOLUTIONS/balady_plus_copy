@@ -1,19 +1,29 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/cemetry_burial_date_hijri.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/gorgian_date_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/hijri_date_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/deceased_birthdate_gregorian.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/deceased_birthdate_hijri.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/presentation/bloc/inquiry_print_bloc/ekram_inquiry_print_bloc.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/presentation/bloc/inquiry_print_bloc/ekram_inquiry_print_event.dart';
+import 'package:balady_plus/app/features/ekram_inquiry_service/presentation/bloc/inquiry_print_bloc/ekram_inquiry_print_state.dart';
 import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
+import 'package:balady_plus/etmam_app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class DeceasedVerificationSection extends StatelessWidget {
-  const DeceasedVerificationSection({Key? key}) : super(key: key);
+  const DeceasedVerificationSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -59,28 +69,48 @@ class DeceasedVerificationSection extends StatelessWidget {
                               ],
                             ),
                             CustomLookUpLongDialog(
-                              items: const [],
-                              value: LookUpItem(),
-                              isDisbaled: false,
-                              onEmptyList: () async {},
-                              onChangeType: (LookUpItem? item) {},
-                              label: "ekram_decesssed_identity_type".tr(),
-                              hint: "National_ID".tr(),
+                              items: state.nationalIdTypes ?? [],
+                              value: state.selectedNationalIdType,
+                              onEmptyList: () async {
+                                return context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .getEkramNationalIdTypesEventHandler();
+                              },
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(SelectNationalIdTypeEvent(
+                                          item: item));
+                                }
+                              },
+                              label: ("ekram_identity_type").tr(),
+                              hint: ("ekram_identity_type").tr(),
                             ),
-                            CustomLookUpLongDialog(
-                              items: const [],
-                              value: LookUpItem(),
-                              isDisbaled: false,
-                              onEmptyList: () async {},
-                              onChangeType: (LookUpItem? item) {},
-                              label: "dc_dead_person_field".tr(),
-                              hint: "10541XXXXX".tr(),
+                            CustomTextFieldWidget(
+                              label: "ekram_decesssed_identity".tr(),
+                              isDigitsOnly: true,
+                              keyboardType: TextInputType.number,
+                              onChanged: (String? val) {
+                                EkramRequestTransportationBloc b = context
+                                    .read<EkramRequestTransportationBloc>();
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(ChangeIdEvent(deceasedId: val));
+                              },
                             ),
-                            CustomHeaderAndDescOnTapWidget(
-                              label: "date_of_birth".tr(),
-                              onTap: () {},
-                              icon: SvgPicture.asset(IconPath.calendar),
-                            ),
+                            DeceasedBirthdateHijri(),
+                            DeceasedBirthdateGregorian(),
+                            ElevatedButtonWidget.primaryCustomBorder(
+                              onPressed: () async {
+                                EkramRequestTransportationBloc b = context
+                                    .read<EkramRequestTransportationBloc>();
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(VerifyDeceasedEvent());
+                              },
+                              text: "verify".tr(),
+                            )
                           ],
                         ),
                       ),

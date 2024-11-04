@@ -1,24 +1,22 @@
-import 'dart:convert';
 
-import 'package:balady_plus/app/commercial_model/features/comercial_license_renew/data/data_sources/renew_cr_remote_data_source.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
-import 'package:balady_plus/app/features/ekram/data/model/add_trip_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/driver/trip_details_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/trip_location_response_model.dart';
-import 'package:balady_plus/app/features/ekram/data/model/upload_letter_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/update_driver_location_params.dart';
-import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_location.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:http_parser/http_parser.dart' as http;
 import 'package:mime/mime.dart';
@@ -73,15 +71,16 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<DeceasedIdenticalItem>>> getIdenticalList(
       int params);
 
-  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(TransportRequestItemModel params);
+  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(
+      TransportRequestItemModel params);
 
   Future<ResponseBodyModel> addTrip(int requestId, TripDetailsModel params);
 
-  Future<ResponseBodyModel> editTrip(int requestID,TripDetailsModel params);
+  Future<ResponseBodyModel> editTrip(int requestID, TripDetailsModel params);
 
   Future<ResponseBodyModel<dynamic>> completeTrip(int params);
 
-  Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId,int requestId);
+  Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId, int requestId);
 
   Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(int attachmentId, FileDataItem params );
 
@@ -131,13 +130,17 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getEkramOrgnizations(
       GetOrgnizationsParams params);
 
-  Future<ResponseBodyModel<List<TripStations>>> getTripStations(
-      int params);
+  Future<ResponseBodyModel<List<TripStations>>> getTripStations(int params);
 
   Future<ResponseBodyModel<GraveActiveRequestDetails>>
       getActiveGraveRequestDetails(ActiveGraveRequestParams params);
 
   Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
+
+  Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
+  Future<RequestDetailsResponseModel> requestDetails(int requestId);
+  Future<RequestDetailsResponseModel> saveDeceasedInfo(int requestId , SaveDeceasedInfoParams params);
+  Future<ResponseBodyModel> saveDeathBurialInfo(int requestId , SaveDeathBurialInfoParams params);
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -165,7 +168,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -222,7 +225,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -260,14 +263,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<GhuslEmploye>>> getGhuslEmployees(int requestId) async {
+  Future<ResponseBodyModel<List<GhuslEmploye>>> getGhuslEmployees(
+      int requestId) async {
     Response response;
 
     try {
-      response = await webService.dio.get(
-        ApiUrl.ghuslEmployees(requestId),
-        queryParameters: {"isDriver":true}
-      );
+      response = await webService.dio.get(ApiUrl.ghuslEmployees(requestId),
+          queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
 
@@ -280,7 +282,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -331,15 +333,16 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       var data = response.data["data"]?["result"];
 
       List<DeceasedAttachment> parsedResult = data != null
-          ? List<DeceasedAttachment>.from(data.map((x) => DeceasedAttachment.fromJson(x)))
+          ? List<DeceasedAttachment>.from(
+              data.map((x) => DeceasedAttachment.fromJson(x)))
           : [];
 
-      final decodedResponse = ResponseBodyModel<List<DeceasedAttachment>>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
+      final decodedResponse =
+          ResponseBodyModel<List<DeceasedAttachment>>.fromMap(response.data,
+              parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -376,11 +379,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     }
   }
 
-
-
-
-
-
   @override
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params) async {
     Response response;
@@ -401,7 +399,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -460,7 +458,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -517,7 +515,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -560,9 +558,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-
       response = await webService.dio.post(
-        ApiUrl.deceasedTransportRequests, queryParameters: {"page": params.page, "size": params.size,"isDriver":true},);
+        ApiUrl.deceasedTransportRequests,
+        queryParameters: {
+          "page": params.page,
+          "size": params.size,
+          "isDriver": true
+        },
+      );
 
       //   if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
       // if ((params.text?.isNotEmpty ?? false) &&
@@ -590,11 +593,12 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           data != null ? TransportRequestResponseModel.fromMap(data) : null;
 
       final decodedResponse =
-          ResponseBodyModel<TransportRequestResponseModel>.fromMap(response.data,
+          ResponseBodyModel<TransportRequestResponseModel>.fromMap(
+              response.data,
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -649,31 +653,26 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     }
   }
 
-
   @override
-  Future<ResponseBodyModel<List<TripStations>>>
-  getTripStations(int params) async {
+  Future<ResponseBodyModel<List<TripStations>>> getTripStations(
+      int params) async {
     Response response;
 
     try {
-
-      response = await webService.dio.get(
-        ApiUrl.GetTripstations(params),queryParameters: {"isDriver":true});
+      response = await webService.dio.get(ApiUrl.GetTripstations(params),
+          queryParameters: {"isDriver": true});
       var data = response.data["data"]?["result"];
 
-
       List<TripStations> parsedResult = data != null
-          ? List<TripStations>.from(
-          data.map((x) => TripStations.fromJson(x)))
+          ? List<TripStations>.from(data.map((x) => TripStations.fromJson(x)))
           : [];
-
 
       final decodedResponse = ResponseBodyModel<List<TripStations>>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -727,8 +726,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-
-
 
   @override
   Future<ResponseBodyModel<DeceasedRequestDetailsModel>>
@@ -751,7 +748,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -796,11 +793,9 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-
-
       response = await webService.dio.get(
         "${ApiUrl.getIdenticalDeseasedList("$params")}",
-        queryParameters: {"transportActions":"ADD_TRIP"},
+        queryParameters: {"transportActions": "ADD_TRIP"},
       );
 
       var data = response.data["data"]?["result"];
@@ -813,16 +808,15 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
       List<DeceasedIdenticalItem> parsedResult = data != null
           ? List<DeceasedIdenticalItem>.from(
-          data.map((x) => DeceasedIdenticalItem.fromJson(x)))
+              data.map((x) => DeceasedIdenticalItem.fromJson(x)))
           : [];
-
 
       final decodedResponse =
           ResponseBodyModel<List<DeceasedIdenticalItem>>.fromMap(response.data,
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -861,15 +855,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(TransportRequestItemModel params) async {
+  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(
+      TransportRequestItemModel params) async {
     Response response;
 
     try {
-
-
-      response = await webService.dio.put("${ApiUrl.initializeTripsRquest(params.requestId!)}",queryParameters: {"isDriver":true}
-      );
-
+      response = await webService.dio.put(
+          "${ApiUrl.initializeTripsRquest(params.requestId!)}",
+          queryParameters: {"isDriver": true});
 
       // String qa = "";
       //
@@ -889,7 +882,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -945,24 +938,19 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel> addTrip(int requestId, TripDetailsModel params) async {
+  Future<ResponseBodyModel> addTrip(
+      int requestId, TripDetailsModel params) async {
     Response response;
     try {
-
-      response = await webService.dio.post(
-        ApiUrl.addNewPath(requestId),
-        data: params.toJson(),
-          queryParameters: {"isDriver":true}
-      );
-
+      response = await webService.dio.post(ApiUrl.addNewPath(requestId),
+          data: params.toJson(), queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
 
       final decodedResponse =
-      ResponseBodyModel<bool>.fromMap(response.data,
-          parsedResult: data);
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -998,28 +986,24 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-
-
 
   @override
-  Future<ResponseBodyModel> editTrip(int requestID,TripDetailsModel params) async {
+  Future<ResponseBodyModel> editTrip(
+      int requestID, TripDetailsModel params) async {
     Response response;
     try {
-
       response = await webService.dio.post(
-        ApiUrl.EditTrip(requestID,params.id!),
-        data: params.toJson(),
-        queryParameters: {"isDriver":true}
-      );
+          ApiUrl.EditTrip(requestID, params.id!),
+          data: params.toJson(),
+          queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
 
       final decodedResponse =
-      ResponseBodyModel<bool>.fromMap(response.data,
-          parsedResult: data);
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1055,13 +1039,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-
-
-
-
-
-
-
 
   @override
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundries(
@@ -1086,7 +1063,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1146,7 +1123,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1184,22 +1161,21 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId,int requestId)async {
+  Future<ResponseBodyModel<dynamic>> deleteTrip(
+      int tripId, int requestId) async {
     Response response;
     try {
       response = await webService.dio.delete(
-        ApiUrl.deleteTrip(tripId,requestId),
-        queryParameters: {"isDriver":true}
-      );
+          ApiUrl.deleteTrip(tripId, requestId),
+          queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
 
       final decodedResponse =
-      ResponseBodyModel<bool>.fromMap(response.data,
-          parsedResult: data);
+          ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1241,7 +1217,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
     try {
       response = await webService.dio.put(
-        ApiUrl.completeTrip(params),queryParameters: {"isDriver":true}
+        ApiUrl.completeTrip,queryParameters: {"isDriver":true}
       );
 
 
@@ -1249,7 +1225,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       final decodedResponse = ResponseBodyModel<dynamic>.fromMap(response.data);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1388,7 +1364,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1445,7 +1421,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1522,7 +1498,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1579,7 +1555,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1696,7 +1672,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         throw ServerException(errorMessage, statusCode: response.statusCode);
       }
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1754,7 +1730,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1811,7 +1787,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1870,7 +1846,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1929,7 +1905,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1986,7 +1962,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2049,7 +2025,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2126,7 +2102,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2183,7 +2159,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2240,7 +2216,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2297,7 +2273,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2354,7 +2330,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2407,7 +2383,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
               parsedResult: GraveActiveRequestDetails.fromJson(data));
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2460,7 +2436,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: BaqieApprovalResponse.fromJson(data));
 
       return decodedResponse.data!.result!;
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -2493,6 +2469,226 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           );
         }
         throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.verifyDeceased,
+        data: params.toMap(),
+      );
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data);
+
+      return result;
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<RequestDetailsResponseModel> requestDetails(int requestId) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.deceasedRequestDetails(requestId),
+        options: Options(
+          headers: {
+            /*"Authorization": token*/
+          },
+        ),
+      );
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return RequestDetailsResponseModel.fromJson(result);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<RequestDetailsResponseModel> saveDeceasedInfo(int requestId , SaveDeceasedInfoParams params) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.saveDeceasdInfo(requestId),
+        data:params.toJson()
+      );
+      final data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return RequestDetailsResponseModel.fromJson(result);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel> saveDeathBurialInfo(int requestId , SaveDeathBurialInfoParams params) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.saveDeathBurialInfo(requestId),
+        options: Options(
+          headers: {
+            /*"Authorization": token*/
+          },
+        ),
+      );
+      final data = response.data;
+
+          return   ResponseBodyModel.fromMap(data);
+
+
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
       }
     }
   }

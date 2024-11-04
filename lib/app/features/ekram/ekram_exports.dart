@@ -60,10 +60,9 @@ export 'presentation/widgets/ekram_status_widget.dart';
 export 'presentation/widgets/ekram_type_card_widget.dart';
 
 /// presentation -> widgets -> transportation request page view
-export 'presentation/widgets/transportation_request_page_view/agreement_section.dart';
-export 'presentation/widgets/transportation_request_page_view/applicant_info_section.dart';
-export 'presentation/widgets/transportation_request_page_view/death_and_burial_info_section.dart';
 export 'presentation/widgets/transportation_request_page_view/deceased_info_section.dart';
+export 'presentation/widgets/transportation_request_page_view/death_and_burial_info_section.dart';
+export 'presentation/widgets/transportation_request_page_view/applicant_info_section.dart';
 
 /// presentation -> widgets -> transportation request widgets
 export 'presentation/widgets/transportation_request_widgets/ekram_previous_next_buttons.dart';

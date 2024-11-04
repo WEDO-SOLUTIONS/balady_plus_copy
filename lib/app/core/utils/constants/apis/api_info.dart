@@ -1,4 +1,3 @@
-
 class ApiUrl {
   static const apiV1 = 'v1/';
 
@@ -134,8 +133,7 @@ class ApiUrl {
   static const transactionsRequests =
       '/v1/balady-dashboard/objectable-requests';
 
-  static const ServiceQuestionList =
-      'v1/portal-services/faq';
+  static const ServiceQuestionList = 'v1/portal-services/faq';
 
   static const postObjection =
       '/v2/objection-services/submit-objection-requests';
@@ -201,38 +199,18 @@ class ApiUrl {
 
 // Pega Incdients
 
-
-
   static const String IncidentRetrieveData =
       '/prweb/PRRestService/FrontUserBalady/V1/RetrieveData';
 
   static const String IncidentCreate =
       '/prweb/PRRestService/FrontUserBalady/V1/CreateIncidentRequest';
 
-
-
-
-
-
-
-
-
-
-
-
   ///! Daem
-
-
-
-
 
 //! CRM
 
-
   static const String IncidentEvaluate =
       "/prweb/PRRestService/FrontUserBalady/V1/SubmitPetitionerEvaluation";
-
-
 
   static const requestDetails =
       'v1/damaged-vehicle-mobile/incident-request-details';
@@ -362,7 +340,7 @@ class ApiUrl {
   static const ekramOrgnizations =
       'v2/ekram-mobile-services/organizations-info';
 
-  static const ekramNationalities = 'v2/ekram-mobile-services/nationalities';
+  static const ekramNationalities = 'v1/superapp-ekram-services/nationalities';
 
   static const ekramCities = 'v2/ekram-mobile-services/cities-cemetries';
 
@@ -383,10 +361,6 @@ class ApiUrl {
 
   static const deceasedTransportRequestDetails =
       'v2/ekram-mobile-services/deceased-transport-details';
-
-
-
-
 
   static const ekramDeceasedTransportApply =
       'v2/ekram-mobile-services/deceased-transport/add-request';
@@ -452,6 +426,14 @@ class ApiUrl {
 
   static String baquieApproval =
       "v2/ekram-mobile-services/deaths/baqie-approvals";
+
+  static String verifyDeceased = "v1/superapp-ekram-services/apply";
+  static String deceasedRequestDetails(int requestId) =>
+      "v1/superapp-ekram-services/request/$requestId/request-details";
+  static String saveDeceasdInfo(int requestId) =>
+      "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
+  static String saveDeathBurialInfo(int requestId) =>
+      "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
 
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
@@ -556,61 +538,57 @@ class ApiUrl {
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-
-
-
 //CRM APIgee
 
-  static const String crmRequestsList ='/v1/crm-services/mobile/incidents';
+  static const String crmRequestsList = '/v1/crm-services/mobile/incidents';
   // '/prweb/PRRestService/FrontUserBalady/V1/GetIncidentRequests';
 
-
-  static const String IncidentRequestDetails =  '/v1/crm-services/mobile/fetch-incidents';
+  static const String IncidentRequestDetails =
+      '/v1/crm-services/mobile/fetch-incidents';
   //'/prweb/PRRestService/FrontUserBalady/V1/FetchIncidentRequest';
 
-
-  static const String FetchMuncipalServiceRequest = '/v1/crm-services/mobile/fetch-municipalities';
+  static const String FetchMuncipalServiceRequest =
+      '/v1/crm-services/mobile/fetch-municipalities';
 // '/prweb/PRRestService/FrontUserBalady/V1/FetchMuncipalServiceRequest';
 
-
-  static const String FetchInquiryRequest = '/v1/crm-services/mobile/fetch-inquiry';
+  static const String FetchInquiryRequest =
+      '/v1/crm-services/mobile/fetch-inquiry';
 // '/prweb/PRRestService/FrontUserBalady/V1/FetchInquiryRequest';
 
+  static const String DaemRetrieveData =
+      '/v1/crm-services/mobile/retrieve-tsr-data';
+  // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
 
-  static const String DaemRetrieveData = '/v1/crm-services/mobile/retrieve-tsr-data';
-     // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveTSRData';
+  static const String DaemCreateTikcet =
+      '/v1/crm-services/mobile/create-daem-ticket';
+  //  '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
 
+  static const String MSRRetrieveMSRData =
+      '/v1/crm-services/mobile/retrieve-msr-data';
+  // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
 
-  static const String DaemCreateTikcet = '/v1/crm-services/mobile/create-daem-ticket';
-    //  '/prweb/PRRestService/FrontUserBalady/V1/CreateDaemTicket';
+  static const String MSRCreate =
+      '/v1/crm-services/mobile/create-muncipal-service';
+  //'/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
 
-  static const String MSRRetrieveMSRData = '/v1/crm-services/mobile/retrieve-msr-data';
-     // '/prweb/PRRestService/FrontUserBalady/V1/RetrieveMSRData';
+  static const String INQMainAndSubClassifications =
+      '/v1/crm-services/mobile/main-and-sub-for-special-classification';
+  //  '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
 
-
-  static const String MSRCreate = '/v1/crm-services/mobile/create-muncipal-service';
-      //'/prweb/PRRestService/FrontUserBalady/V1/CreateMuncipalServiceRequest';
-
-  static const String INQMainAndSubClassifications = '/v1/crm-services/mobile/main-and-sub-for-special-classification';
-    //  '/prweb/PRRestService/FrontUserBalady/V1/GetMainAndSubClassificationsForSpecialClassification';
-
-  static const String INQAllSPLClassifications = '/v1/crm-services/mobile/special-classifications-by-type';
-      //'/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
+  static const String INQAllSPLClassifications =
+      '/v1/crm-services/mobile/special-classifications-by-type';
+  //'/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassificationsByType';
 
   static const String INQCreate = '/v1/crm-services/mobile/create-inquiry';
-     // '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
+  // '/prweb/PRRestService/FrontUserBalady/V1/CreateInquiryRequest';
 
+  static const String IncidentDaemUploadFile =
+      '/v1/crm-services/mobile/stream/upload';
+  // '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
 
-  static const String IncidentDaemUploadFile = '/v1/crm-services/mobile/stream/upload';
-     // '/prweb/PRRestService/FrontUserBalady/V1/UploadFile';
-
-
-  static const String IncidentDownloadFile = '/v1/crm-services/mobile/download-file';
-    //  '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
-
-
-
-
+  static const String IncidentDownloadFile =
+      '/v1/crm-services/mobile/download-file';
+  //  '/prweb/PRRestService/FrontUserBalady/V1/DownloadFile';
 
   ///////////// not used apis
   // static const String INQMainClassifications =
@@ -621,22 +599,26 @@ class ApiUrl {
   // static const String INQSPLClassifications =
   //     '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
 
-
-
-  static const sendMessagechatBotFeedback = '/v1/chatbot-services/assign-feedback';
+  static const sendMessagechatBotFeedback =
+      '/v1/chatbot-services/assign-feedback';
   static const getChatgptOldSession = '/v1/chatbot-services/old-sessions';
   static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
 
+  static getIdenticalDeseasedList(String id) =>
+      '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
+  static initializeTripsRquest(int requestId) =>
+      'v1/superapp-ekram-services/trips/$requestId/initialize';
+  static GetTripstations(int requestId) =>
+      'v1/superapp-ekram-services/trips/$requestId/trip-stations';
+  static EditTrip(int requestId, int tripId) =>
+      'v1/superapp-ekram-services/trips/$requestId/$tripId/edit-trip';
 
-  static  getIdenticalDeseasedList(String id) => '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
-  static  initializeTripsRquest (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/initialize';
-  static  GetTripstations (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/trip-stations';
-  static  EditTrip (int requestId,int tripId)=> 'v1/superapp-ekram-services/trips/$requestId/$tripId/edit-trip';
-
-  static  addNewPath (int requestId) => 'v1/superapp-ekram-services/trips/$requestId/add-trip';
-  static  ekramGetTrips (int requestId)=> 'v1/superapp-ekram-services/trips/$requestId/trips';
+  static addNewPath(int requestId) =>
+      'v1/superapp-ekram-services/trips/$requestId/add-trip';
+  static ekramGetTrips(int requestId) =>
+      'v1/superapp-ekram-services/trips/$requestId/trips';
 
   static  deleteTrip (int requestId,int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
   static  ghuslEmployees (int requestId)=> 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';

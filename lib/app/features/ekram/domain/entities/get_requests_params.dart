@@ -1,5 +1,4 @@
 class GetRequestsParams {
-
   int page;
   int size;
   String? text;
@@ -7,8 +6,7 @@ class GetRequestsParams {
   int? transportLocationStatusId;
   bool? isMultiCity;
   GetRequestsParams(
-      {
-      required this.page,
+      {required this.page,
       required this.size,
       this.text,
       this.deceasedTransportRequestStatusId,

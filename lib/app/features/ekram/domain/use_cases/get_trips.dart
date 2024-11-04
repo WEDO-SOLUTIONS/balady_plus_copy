@@ -8,7 +8,8 @@ import '../../data/model/driver/trip_details_model.dart';
 import '../entities/trip_details.dart';
 import '../repositories/ekram_repository.dart';
 
-class GetTrips extends UseCase<ResponseBodyModel<List<TripDetailsModel>>, TransportRequestItemModel> {
+class GetTrips extends UseCase<ResponseBodyModel<List<TripDetailsModel>>,
+    TransportRequestItemModel> {
   final EkramRepository repository;
 
   GetTrips({required this.repository});

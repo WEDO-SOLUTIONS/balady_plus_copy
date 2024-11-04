@@ -1,4 +1,8 @@
+import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_location_response.dart';
@@ -31,11 +35,11 @@ import '../entities/user_info_request_params.dart';
 
 abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getCities();
-  Future<Either<Failure, ResponseBodyModel<List<GhuslEmploye>>>> getGhuslEmployees(int requestId);
+  Future<Either<Failure, ResponseBodyModel<List<GhuslEmploye>>>>
+      getGhuslEmployees(int requestId);
 
-
-  Future<Either<Failure, ResponseBodyModel<List<DeceasedAttachment>>>> getDeceasedAttachment(int requestId);
-
+  Future<Either<Failure, ResponseBodyModel<List<DeceasedAttachment>>>>
+      getDeceasedAttachment(int requestId);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getDeathCities();
 
@@ -77,14 +81,16 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<TripLocationsResponse>>>
       getTripsLocation(int params);
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> addTrip(int requestId,
-  TripDetailsModel params);
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> editTrip(int requestId,
-      TripDetailsModel params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> addTrip(
+      int requestId, TripDetailsModel params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> editTrip(
+      int requestId, TripDetailsModel params);
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(int tripId,int requestId);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteTrip(
+      int tripId, int requestId);
 
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> getTripStations(int params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> getTripStations(
+      int params);
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(int params);
 
   Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>> uploadAttachment(int attachmentId, FileDataItem params );
@@ -124,4 +130,13 @@ abstract class EkramRepository {
 
   Future<Either<Failure, BaqieApprovalResponse>> baqieApproval(
       ActiveGraveRequestParams params);
+
+  Future<Either<Failure, ResponseBodyModel>> verifyDeceased(
+      VerifyDeceasedParams params);
+  Future<Either<Failure, RequestDetailsResponseModel>> requestDetails(
+      int params);
+  Future<Either<Failure, RequestDetailsResponseModel>> saveDeceasedInfo(
+      int requestId, SaveDeceasedInfoParams params);
+  Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
+      int requestId, SaveDeathBurialInfoParams params);
 }

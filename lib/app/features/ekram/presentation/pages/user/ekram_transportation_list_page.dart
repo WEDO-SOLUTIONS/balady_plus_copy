@@ -116,7 +116,9 @@ class _EkramTransportationListPageState
                 ),
                 FilterIcon(
                   onTap: () async {
-                    context.read<TransportRequestsBloc>().add(ShowFilterEvent());
+                    context
+                        .read<TransportRequestsBloc>()
+                        .add(ShowFilterEvent());
                   },
                 ),
               ],
