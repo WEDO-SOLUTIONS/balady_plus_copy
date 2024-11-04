@@ -617,18 +617,20 @@ class ApiUrl {
   static ekramGetTrips(int requestId) =>
       'v1/superapp-ekram-services/trips/$requestId/trips';
 
-  static deleteTrip(int requestId, int tripId) =>
-      'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
-  static ghuslEmployees(int requestId) =>
-      'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
-  static getDeceasedAttachment(int requestId) =>
-      'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
-  static uploadAttachment(int id) =>
-      'v1/superapp-ekram-services/attachments/$id/upload-file';
-  static editAdditionalData(int id) =>
-      'v1/superapp-ekram-services/transport/$id/edit-additional-data';
-  static completeTrip(int id) =>
-      'v1/superapp-ekram-services/trips/$id/finalize';
-  static updateLocation(int id) =>
-      'v1/superapp-ekram-services/transport/add-transport-track/$id';
+  static  deleteTrip (int requestId,int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
+  static  ghuslEmployees (int requestId)=> 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
+  static  getDeceasedAttachment (int requestId)=> 'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
+  static  uploadAttachment(int id)=>'v1/superapp-ekram-services/attachments/$id/upload-file';
+  static  editAdditionalData(int id)=>'v1/superapp-ekram-services/transport/$id/edit-additional-data';
+  static  completeTrip(int id)=> 'v1/superapp-ekram-services/trips/$id/finalize';
+  static  updateLocation (int id)=> 'v1/superapp-ekram-services/transport/add-transport-track/$id';
+  static  deleteAttachment (int requestId,int attachmentId) => 'v1/superapp-ekram-services/trips/$requestId/$attachmentId/delete-trip';
+
+
+
+
+
+
+
+
 }

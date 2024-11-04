@@ -14,6 +14,7 @@ import '../../../data/model/driver/GhuslEmploye.dart';
 import '../../../data/model/driver/deceased_attachment.dart';
 import '../../../data/model/driver/deceased_identical_item.dart';
 import '../../../data/model/upload_letter_params.dart';
+import '../../../domain/use_cases/delete_attachment.dart';
 import '../../../domain/use_cases/edit_aditional_data.dart';
 import '../../../domain/use_cases/get_deceased_attachment.dart';
 import '../../../domain/use_cases/get_ghusl_employees.dart';
@@ -28,6 +29,7 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
   final GetGhuslEmployees _getGhuslEmployees;
   final GetDeceasedAttachment _getDeceasedAttachment;
   final UploadAttachment _uploadAttachment;
+  final DeleteAttachment _deleteAttachment;
   final EditAdditionalData _editAdditionalData;
 
 
@@ -39,12 +41,14 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
         required GetGhuslEmployees getGhuslEmployees,
         required GetDeceasedAttachment getDeceasedAttachment,
         required UploadAttachment uploadAttachment,
-        required EditAdditionalData editAdditionalData
+        required EditAdditionalData editAdditionalData,
+        required DeleteAttachment deleteAttachment
       })
       :
         _getGhuslEmployees = getGhuslEmployees,
         _getDeceasedAttachment = getDeceasedAttachment,
         _editAdditionalData = editAdditionalData,
+        _deleteAttachment = deleteAttachment,
         _uploadAttachment = uploadAttachment,
         super(ExtraDataState(lstSelectedEmploye: {},lstEmployee: {},lstDeceasedAttachment: {})) {
 
@@ -53,6 +57,7 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     on<GetDeceasedAttachmentEvent>(_getDeceasedAttachmentHandler);
     on<SetSelectEmployeeEvent>(_setSelectedEmployeeHandler);
     on<UploadDeceasedAttachmentEvent>(_UploadAttachmentHandler);
+    on<DeleteDeceasedAttachmentEvent>(_DeleteAttachmentHandler);
      on<EditAdditionalDataEvent>(_editAdditionalDataHandler);
 
 
@@ -66,7 +71,10 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     if(emp != null) {
       ghuslEmployeeIdentityNumber= emp.identityNumber;
     }
-    EditAdditionalRequest request = EditAdditionalRequest().copyWith(requestId: e.requestId,attachments:getAttachmentByRequestId(e.requestId),ghuslEmployeeIdentityNumber:ghuslEmployeeIdentityNumber);
+
+
+
+    EditAdditionalRequest request = EditAdditionalRequest().copyWith(requestId: e.requestId,attachments:getUpdateAttachmentByRequestId(e.requestId),ghuslEmployeeIdentityNumber:ghuslEmployeeIdentityNumber);
     var failureOrSuccess = await _editAdditionalData(request);
     failureOrSuccess.fold((failure) {
       emitter(state.copyWith(
@@ -75,9 +83,6 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
       ));
       CommonFunctions.showError((failure as ServerFailure).errorMessage);
     }, (success) async {
-
-
-
 
           emitter(state.copyWith(
             status: BlocStatus.success,
@@ -102,21 +107,10 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
-      Map<int, List<DeceasedAttachment>>? data =prepareAttachmentData(e.requestId,success.data?.result);
-      emitter(state.copyWith(
-       status: BlocStatus.success,
-       lstDeceasedAttachment: data,
-       errorMessage: "",
-       ));
 
 
 
 
-      //  emitter(state.copyWith(
-      //   status: BlocStatus.success,
-      //   lstDeceasedAttachment: data,
-      //   errorMessage: "",
-      // ));
     });
   }
 
@@ -180,6 +174,9 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
                       errorMessage: "",
                       lstDeceasedAttachment: map
                     ));
+                    
+                    
+                    add(EditAdditionalDataEvent(requestId: e.requestId!));
 
                     //CommonFunctions.showSuccess("uploadSucessfull".tr());
 
@@ -199,7 +196,38 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
 
   }
 
- _setSelectedEmployeeHandler(SetSelectEmployeeEvent e, Emitter emitter)  {
+  Future<void> _DeleteAttachmentHandler(DeleteDeceasedAttachmentEvent e, Emitter emitter) async {
+
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _deleteAttachment([e.item?.id!,e.requestId]);
+
+    failureOrSuccess.fold((failure) {
+      print(failure);
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (res) async {
+
+      if(res.data?.result == true)
+      {
+
+        add(GetDeceasedAttachmentEvent(requestId: e.requestId!));
+        CommonFunctions.showSuccess("path_deleted".tr());
+
+      }
+
+
+
+
+
+    });
+
+  }
+
+
+  _setSelectedEmployeeHandler(SetSelectEmployeeEvent e, Emitter emitter)  {
    emitter(state.copyWith(
      status: BlocStatus.loading,
      errorMessage: "",
@@ -292,6 +320,27 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
     if(map!= null && map.containsKey(requestId))
     {
       return map[requestId];
+    }
+
+    return null;
+  }
+
+  List<DeceasedAttachment>? getUpdateAttachmentByRequestId(int requestId)
+  {
+    List<DeceasedAttachment>? res=[];
+    Map<int, List<DeceasedAttachment>>? map= state.lstDeceasedAttachment;
+    if(map!= null && map.containsKey(requestId))
+    {
+      List<DeceasedAttachment>? lst= map[requestId];
+
+      for(int index=0;index<lst!.length;index++)
+        {
+          if(lst[index].id!= null &&lst[index].attached== true )
+            {
+              res.add(lst[index]);
+            }
+        }
+      return res;
     }
 
     return null;

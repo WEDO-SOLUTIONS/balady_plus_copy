@@ -85,7 +85,15 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
                   onPressed: () async {
 
 
-                    await showCancelConfirmDialog();
+                    await showCancelConfirmDialog((){
+
+
+                      context.read<AddTripBloc>().add(
+                          DeleteTripPath(tripId: widget.model?.id!));
+
+                      Navigator.pop(context);
+
+                    },);
 
 
 
@@ -384,7 +392,7 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
   //
   // }
 
-  Future<void> showCancelConfirmDialog() async {
+  Future<void> showCancelConfirmDialog(Function callback) async {
 
 
 
@@ -397,12 +405,7 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
           message:"do_you_want_to_delete_path".tr(),
           okTitle: "yesDeletePath".tr(),
           cancelTitle: "noGoback".tr(),
-          onOkCallback: (){
-
-            context.read<AddTripBloc>().add(
-                DeleteTripPath(tripId: widget.model?.id!));
-
-          },
+          onOkCallback: callback,
 
 
         );

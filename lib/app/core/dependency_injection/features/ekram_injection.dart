@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/domain/use_cases/delete_attachment.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_trip_stations.dart';
 
 import '../../../features/ekram/domain/use_cases/add_trip.dart';
@@ -59,6 +60,7 @@ class EkramInjection {
     sl.registerLazySingleton(() => EditTrip(repository: sl()));
     sl.registerLazySingleton(() => AddTrip(repository: sl()));
     sl.registerLazySingleton(() => GetGhuslEmployees(repository: sl()));
+    sl.registerLazySingleton(() => DeleteAttachment(repository: sl()));
     sl.registerLazySingleton(() => GetDeceasedAttachment(repository: sl()));
     sl.registerLazySingleton(() => GetMosques(repository: sl()));
     sl.registerLazySingleton(() => GetLaundries(repository: sl()));
@@ -84,7 +86,7 @@ class EkramInjection {
         isDriver: true));
 
 
-    sl.registerLazySingleton(() => ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(),editAdditionalData: sl()));
+    sl.registerLazySingleton(() => ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(),editAdditionalData: sl(),deleteAttachment: sl()));
 
 
 

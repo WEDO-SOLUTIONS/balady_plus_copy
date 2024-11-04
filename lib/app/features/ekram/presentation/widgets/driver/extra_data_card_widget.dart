@@ -101,15 +101,13 @@ class ExtraDataCardWidget extends StatelessWidget {
 
                   ListView.builder(
                     padding: EdgeInsets.zero,
-                    itemCount:
-                    bloc!.getAttachmentByRequestId(item.requestId!)?.length ??
+                    itemCount: state.lstDeceasedAttachment?[item.requestId!]?.length ??
                         0,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (ctx, index) {
                       return DeceasedAttachmentCardWidget(
-                        item: bloc!.getAttachmentByRequestId(
-                            item.requestId!)![index],
+                        item: state.lstDeceasedAttachment![item.requestId!]![index],
                         bloc: bloc!,
                         requestId: item.requestId!,
 

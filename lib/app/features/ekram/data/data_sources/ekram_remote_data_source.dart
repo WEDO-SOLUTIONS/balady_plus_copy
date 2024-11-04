@@ -83,6 +83,7 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<dynamic>> completeTrip(int params);
 
   Future<ResponseBodyModel<dynamic>> deleteTrip(int tripId, int requestId);
+  Future<ResponseBodyModel<dynamic>> deleteAttachment(int attachmentId, int requestId);
 
   Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(
       int attachmentId, FileDataItem params);
@@ -1053,6 +1054,57 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     try {
       response = await webService.dio.delete(
           ApiUrl.deleteTrip(tripId, requestId),
+          queryParameters: {"isDriver": true});
+
+      var data = response.data["data"]?["result"];
+
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+  @override
+  Future<ResponseBodyModel<dynamic>> deleteAttachment(
+      int attachmentId, int requestId) async {
+    Response response;
+    try {
+      response = await webService.dio.delete(
+          ApiUrl.deleteAttachment(requestId,attachmentId),
           queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];

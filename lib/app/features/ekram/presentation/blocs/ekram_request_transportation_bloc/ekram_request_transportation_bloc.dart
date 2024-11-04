@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/deceased_info.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/main_info.dart';
@@ -17,6 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/errors/failures.dart';
@@ -92,7 +94,7 @@ class EkramRequestTransportationBloc extends Bloc<
     // on<GetCitiesEvent>(_getCitiesHandler);
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
 
-    on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
+
 
 
 
@@ -105,6 +107,7 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeNationalIdDob>(_changeNationalIdDobHandler);
     on<ChangeIdEvent>(_changeIdHandler);
     on<VerifyDeceasedEvent>(_verifyDeceasedHandler);
+    on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
 
 
 

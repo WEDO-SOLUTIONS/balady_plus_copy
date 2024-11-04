@@ -359,6 +359,25 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteAttachment(
+      int attachmentId, int requestId) async {
+    try {
+      final data = await remoteDataSource.deleteAttachment(attachmentId, requestId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+
+  @override
   Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>> uploadAttachment(int attachmentId, FileDataItem params ) async {
     try {
       final data = await remoteDataSource.uploadAttachment(attachmentId,params);

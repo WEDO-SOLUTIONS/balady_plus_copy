@@ -40,7 +40,7 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
     Key? key,
     required this.item,
     required this.bloc,
-   required this.requestId,
+    required this.requestId,
   }) : super(key: key);
 
   @override
@@ -54,7 +54,7 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
           height: 15,
         ),
         CustomTextWidget(
-          "${item.name!}${item.mandatory == false ? " * " : ""} (${item.allowedFilesExtension})",
+          "${item.name!}${item.mandatory == true ? " * " : ""} (${item.allowedFilesExtension})",
           fontSize: 14,
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
@@ -64,74 +64,91 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
         SizedBox(
           height: 10,
         ),
-        item.updatable == true
-            ? ElevatedButtonWidget.attachFile(
-              onPressed: () async {
-                FocusManager.instance.primaryFocus?.unfocus();
-
-                FileDataItem? file =
-                    await CommonFunctions.pickFile(context);
-                if (file != null) {
-                  bloc.add(UploadDeceasedAttachmentEvent(
-                      attachmentId: item.attachmentTypeId!,
-                      file: file,
-                  requestId: requestId));
-                  // saveFile(
-                  //     fileIndex, item.filePath, item.fileName,
-                  //     item.fileBase64);
-                }
-              },
-            )
-            : Container(),
-        SizedBox(
-          height: 10,
-        ),
         item.attachUrl != null && item.attachUrl!.isNotEmpty
-            ? GestureDetector(
-                onTap: () {
-
-
-                  String fileName= "";
-                  if(item.contentType!.toLowerCase().contains("png")
-                      ||item.contentType!.toLowerCase().contains("png")||
-                      item.contentType!.toLowerCase().contains("jpeg")) {
-                    fileName= "${item.fileName!}.png";
-                  }
-
-                    CommonFunctions.showApigeeFile(CommonFunctions.getDMSUrl(item.uuid ?? ""), fileName ,serviceId: 0);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(16),
-                  margin: const EdgeInsets.only(top: 16),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: Color(0x80E6EFEF)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            ? Container(
+              padding: const EdgeInsets.all(16),
+              margin: const EdgeInsets.only(top: 16),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  color: AppColor.grey900Light.withOpacity(0.5),),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CustomTextWidget(
+                    "${"attachment_text".tr()} ${item.fileName!}",
+                    fontColor: AppColor.borderBlck,
+                    fontSize: 12,
+                    fontWeight: AppFontWeight.bold,
+                  ),
+                  const SizedBox(
+                    height: 32,
+                  ),
+                  Row(
                     children: [
-                      CustomTextWidget(
-                        "obkection_enquiry_show_file".tr(),
-                        fontColor: AppColor.primary900Light,
-                        fontSize: 12,
-                        fontWeight: AppFontWeight.bold,
+                      GestureDetector(
+                        onTap: () {
+                          String fileName = "";
+                          if (item.contentType!.toLowerCase().contains("png") ||
+                              item.contentType!.toLowerCase().contains("png") ||
+                              item.contentType!.toLowerCase().contains("jpeg")) {
+                            fileName = "${item.fileName!}.png";
+                          }
+
+                          CommonFunctions.showApigeeFile(
+                              CommonFunctions.getDMSUrl(item.uuid ?? ""), fileName,
+                              serviceId: 0);
+                        },
+                        child: const CustomSvgIconWidget(IconPath.receiveSquare,
+                            iconSize: 24.0,iconColor: AppColor.greyLight,),
                       ),
+
+
                       const SizedBox(
-                        height: 32,
+                        width: 20,
                       ),
-                      const CustomSvgIconWidget(IconPath.receiveSquare,
-                          iconSize: 24.0),
+                      GestureDetector(
+                        onTap: () {
+
+                          bloc.add(DeleteDeceasedAttachmentEvent(
+                            item: item,
+                              requestId: requestId
+                          ));
+
+                        },
+                        child: const CustomSvgIconWidget(IconPath.delete,
+                            iconSize: 24.0,iconColor: AppColor.greyLight),
+                      ),
                     ],
                   ),
-                ))
-            : Container(),
 
+                ],
+              ),
+            )
 
+            : item.updatable == true
+                ? Container(
 
+                    margin: const EdgeInsets.only(top: 16),
+                  child: ElevatedButtonWidget.attachFile(
+                      onPressed: () async {
+                        FocusManager.instance.primaryFocus?.unfocus();
 
-
+                        FileDataItem? file =
+                            await CommonFunctions.pickFile(context);
+                        if (file != null) {
+                          bloc.add(UploadDeceasedAttachmentEvent(
+                              attachmentId: item.attachmentTypeId!,
+                              file: file,
+                              requestId: requestId));
+                          // saveFile(
+                          //     fileIndex, item.filePath, item.fileName,
+                          //     item.fileBase64);
+                        }
+                      },
+                    ),
+                )
+                : Container(),
       ],
     );
   }
-
-
 }
