@@ -84,4 +84,34 @@ class DeceasedInfo {
         'hideDeathInfo': hideDeathInfo,
         'deceasedDataSource': deceasedDataSource,
       };
+
+  DeceasedInfo copyWith({
+    String? identityNumber,
+    String? identityTypeName,
+    String? firstName,
+    String? secondName,
+    String? thirdName,
+    String? fourthName,
+    String? birthDate,
+    int? nationalityId,
+    bool? isMuslim,
+    String? gender,
+    bool? hasIdentity,
+    bool? baladyClient,
+  }) {
+    return DeceasedInfo(
+      identityNumber: identityNumber ?? this.identityNumber,
+      identityTypeName: identityTypeName ?? this.identityTypeName,
+      firstName: firstName ?? this.firstName,
+      secondName: secondName ?? this.secondName,
+      thirdName: thirdName ?? this.thirdName,
+      fourthName: fourthName ?? this.fourthName,
+      birthDate: birthDate ?? this.birthDate,
+      nationalityId: nationalityId ?? this.nationalityId,
+      isMuslim: isMuslim ?? this.isMuslim,
+      gender: gender ?? this.gender,
+      hasIdentity: hasIdentity ?? this.hasIdentity,
+      baladyClient: baladyClient ?? this.baladyClient,
+    );
+  }
 }

@@ -11,6 +11,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
+
 class ApplicantInfoSection extends StatelessWidget {
   const ApplicantInfoSection({super.key});
 
@@ -57,9 +58,17 @@ class ApplicantInfoSection extends StatelessWidget {
                                 )
                               ],
                             ),
+
                             CustomTextFieldWidget(
+                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??"",
+
                                 label: "health_submitter_name".tr(),
-                                onChanged: (String? text) {},
+                                onChanged: (String? text) {
+
+                                //  context.read<EkramRequestTransportationBloc>().add(SetApplicantInfoEvent(mainInfo: MainInfo(firstName: text)));
+
+
+                                },
                                 onValidate: (String? value) {
                                   return null;
                                 }),
@@ -67,12 +76,16 @@ class ApplicantInfoSection extends StatelessWidget {
                                 label: "driver_card_applicant_mobile".tr(),
                                 hintText: "10541XXXXX".tr(),
                                 keyboardType: TextInputType.phone,
+                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.mobileNumber??"",
+
                                 onChanged: (String? text) {},
                                 onValidate: (String? value) {
                                   return null;
                                 }),
                             CustomTextFieldWidget(
                                 label: "ekramRelationShip".tr(),
+                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.relationship??"",
+
                                 hintText: "10541XXXXX".tr(),
                                 keyboardType: TextInputType.phone,
                                 onChanged: (String? text) {},

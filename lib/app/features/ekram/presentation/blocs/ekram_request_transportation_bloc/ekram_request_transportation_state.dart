@@ -26,14 +26,15 @@ class EkramRequestTransportationState extends Equatable {
   final List<DeceasedInfoDto>? deceasedInfoDto;
   final FileDataItem? letter;
   final String? deceassedDOBGorgian;
-  final String? addTransportBurialId;
+  final String? requestId;
   final String? deceasedId;
-  final SaveDeceasedInfoParams? saveDeceasedInfoParams;
+  final RequestDetailsResponseModel? requestDetailsModel;
+  final bool? editInfoSection;
 
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
       this.isVerified,
-      this.addTransportBurialId,
+      this.requestId,
       this.deceasedId,
       this.deceassedDOBHijri,
       this.isdeceasedInfoReadOnly = false,
@@ -57,8 +58,9 @@ class EkramRequestTransportationState extends Equatable {
       this.otherHospitalName,
       this.selectedNationality,
       this.deceasedInfoDto,
-      this.saveDeceasedInfoParams,
-      this.letter});
+      this.requestDetailsModel,
+      this.letter,
+      this.editInfoSection});
 
   EkramRequestTransportationState copyWith({
     final Nullable<String?>? deceassedDOBHijri,
@@ -84,9 +86,10 @@ class EkramRequestTransportationState extends Equatable {
     final bool? clearHospital,
     final FileDataItem? letter,
     final Nullable<String?>? deceassedDOBGorgian,
-    final String? addTransportBurialId,
+    final String? requestId,
     final String? deceasedId,
-    final SaveDeceasedInfoParams? saveDeceasedInfoParams,
+    final RequestDetailsResponseModel? requestDetailsModel,
+    final bool? editInfoSection,
   }) {
     return EkramRequestTransportationState(
       isdeceasedInfoReadOnly:
@@ -116,7 +119,7 @@ class EkramRequestTransportationState extends Equatable {
       fullName: fullName ?? fullName,
       mobileNumber: mobileNumber ?? mobileNumber,
       requestType: requestType,
-      addTransportBurialId: addTransportBurialId,
+      requestId: requestId??this.requestId,
       deceasedId: deceasedId ?? this.deceasedId,
       deceassedDOBGorgian: deceassedDOBGorgian == null
           ? this.deceassedDOBGorgian
@@ -124,8 +127,9 @@ class EkramRequestTransportationState extends Equatable {
       deceassedDOBHijri: deceassedDOBHijri == null
           ? this.deceassedDOBHijri
           : deceassedDOBHijri.value,
-      saveDeceasedInfoParams:
-          saveDeceasedInfoParams ?? this.saveDeceasedInfoParams,
+      requestDetailsModel:
+          requestDetailsModel ?? this.requestDetailsModel,
+        editInfoSection:editInfoSection ?? this.editInfoSection,
     );
   }
 
@@ -133,7 +137,7 @@ class EkramRequestTransportationState extends Equatable {
   List<Object?> get props => [
         status,
         isVerified,
-        saveDeceasedInfoParams,
+        requestDetailsModel,
         selectedNationalIdType,
         currentPageValue,
         relation,
@@ -152,7 +156,9 @@ class EkramRequestTransportationState extends Equatable {
 
   bool isNextButtonEnabled() {
     if (currentPageValue == 0) {
-      return isVerified ?? false;
+
+      return true;
+     // return isVerified ?? false;
     }
 
     if (currentPageValue == 1) {
@@ -188,19 +194,19 @@ class EkramRequestTransportationState extends Equatable {
 
   bool validateDeceasedInfoSection(bool ShowErrorMessage)
   {
-    if(saveDeceasedInfoParams != null) {
-      if(saveDeceasedInfoParams?.deceasedInfo?.firstName== null||saveDeceasedInfoParams!.deceasedInfo!.firstName!.isEmpty) {
+    if(requestDetailsModel != null) {
+      if(requestDetailsModel?.deceasedInfo?.firstName== null||requestDetailsModel!.deceasedInfo!.firstName!.isEmpty) {
         if(ShowErrorMessage==true)
           CommonFunctions.showError("lbl_first_name_hint2".tr());
         return false;
       }
-      else if(saveDeceasedInfoParams?.deceasedInfo?.fourthName== null||saveDeceasedInfoParams!.deceasedInfo!.fourthName!.isEmpty) {
+      else if(requestDetailsModel?.deceasedInfo?.fourthName== null||requestDetailsModel!.deceasedInfo!.fourthName!.isEmpty) {
 
         if(ShowErrorMessage==true)
         CommonFunctions.showError("enter_ekram_fourth_name".tr());
         return false;
       }
-      else if(saveDeceasedInfoParams?.deceasedInfo?.nationalityId== null) {
+      else if(requestDetailsModel?.deceasedInfo?.nationalityId== null) {
         if(ShowErrorMessage==true)
         CommonFunctions.showError("enternationilaty".tr());
         return false;

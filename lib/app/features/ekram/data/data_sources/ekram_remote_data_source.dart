@@ -3,13 +3,11 @@ import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
-import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/driver/trip_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
-import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/trip_location_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
@@ -147,9 +145,9 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompaniesLookUp(
       int requestId, TransportationCompaniesParams params);
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
-  Future<RequestDetailsResponseModel> requestDetails(int requestId);
+  Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(String requestId);
   Future<RequestDetailsResponseModel> saveDeceasedInfo(
-      int requestId, SaveDeceasedInfoParams params);
+      int requestId, RequestDetailsResponseModel params);
   Future<ResponseBodyModel> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
 }
@@ -933,11 +931,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           "${ApiUrl.initializeTripsRquest(params.requestId!)}",
           queryParameters: {"isDriver": true});
 
-      // String qa = "";
-      //
-      // qa = await rootBundle.loadString("assets/trips.json");
-      //
-      //  var response = json.decode(qa);
+
 
       var data = response.data["data"]?["result"];
 
@@ -2457,7 +2451,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<RequestDetailsResponseModel> requestDetails(int requestId) async {
+  Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(String requestId) async {
     Response? response;
 
     try {
@@ -2469,11 +2463,19 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           },
         ),
       );
-      final data = response.data;
 
-      final result = ResponseBodyModel.fromMap(data).data?.result;
 
-      return RequestDetailsResponseModel.fromJson(result);
+
+      var data = response.data["data"]?["result"];
+
+      RequestDetailsResponseModel? parsedResult = data != null ?  RequestDetailsResponseModel.fromJson(data) : null;
+
+      final decodedResponse = ResponseBodyModel<RequestDetailsResponseModel>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -2515,7 +2517,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   @override
   Future<RequestDetailsResponseModel> saveDeceasedInfo(
-      int requestId, SaveDeceasedInfoParams params) async {
+      int requestId, RequestDetailsResponseModel params) async {
     Response? response;
 
     try {

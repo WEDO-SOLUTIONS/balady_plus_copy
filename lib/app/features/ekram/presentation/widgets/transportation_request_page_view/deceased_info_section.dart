@@ -14,7 +14,8 @@ import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
-import '../../../data/model/save_deceased_info_params/deceased_info.dart';
+import '../../../data/model/request_details_response_model/deceased_info.dart';
+
 
 class DeceasedInfoSection extends StatelessWidget {
   const DeceasedInfoSection({super.key});
@@ -52,6 +53,7 @@ class DeceasedInfoSection extends StatelessWidget {
 
 
              if( state.validateDeceasedInfoSection(true)== true){
+
                context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
               }
 
@@ -108,8 +110,10 @@ class _ApplicantInfoTextFieldsSectionState
               height: 15,
             ),
             CustomTextFieldWidget(
+              enabled: state.editInfoSection??true,
                 label: "ekram_first_name".tr(),
                 hintText: "ekram_first_name".tr(),
+                controller :TextEditingController()..text = state.requestDetailsModel?.deceasedInfo?.firstName??"",
                 onChanged: (String? text) {
 
                   context.read<EkramRequestTransportationBloc>().add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(firstName: text)));
@@ -119,8 +123,11 @@ class _ApplicantInfoTextFieldsSectionState
                 }),
             const CustomVerticalSpace(height: 16),
             CustomTextFieldWidget(
+              enabled: state.editInfoSection??true,
                 label: "ekram_second_name".tr(),
                 hintText: "ekram_second_name".tr(),
+                controller :TextEditingController()..text = state.requestDetailsModel?.deceasedInfo?.secondName??"",
+
                 onChanged: (String? text) {
                   context
                       .read<EkramRequestTransportationBloc>()
@@ -131,8 +138,11 @@ class _ApplicantInfoTextFieldsSectionState
                 }),
             const CustomVerticalSpace(height: 16),
             CustomTextFieldWidget(
+              enabled: state.editInfoSection??true,
                 label: "ekram_third_name".tr(),
                 hintText: "ekram_third_name".tr(),
+                controller :TextEditingController()..text = state.requestDetailsModel?.deceasedInfo?.thirdName??"",
+
                 onChanged: (String? text) {
                   context
                       .read<EkramRequestTransportationBloc>()
@@ -144,11 +154,12 @@ class _ApplicantInfoTextFieldsSectionState
                 }),
             const CustomVerticalSpace(height: 16),
             CustomTextFieldWidget(
+              enabled: state.editInfoSection??true,
                 label: "ekram_fourth_name".tr(),
+                controller :TextEditingController()..text = state.requestDetailsModel?.deceasedInfo?.fourthName??"",
+
                 hintText: "ekram_fourth_name".tr(),
                 onChanged: (String? text) {
-
-
                   context
                       .read<EkramRequestTransportationBloc>()
                       .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(fourthName: text)));
@@ -159,9 +170,10 @@ class _ApplicantInfoTextFieldsSectionState
                 }),
             const CustomVerticalSpace(height: 16),
             CustomLookUpLongDialog(
+
               items: state.nationalities ?? [],
               value: state.getNationalityById(
-                  state.saveDeceasedInfoParams?.deceasedInfo?.nationalityId),
+                  state.requestDetailsModel?.deceasedInfo?.nationalityId),
               onEmptyList: () async {
                 return context
                     .read<EkramRequestTransportationBloc>()
@@ -178,6 +190,7 @@ class _ApplicantInfoTextFieldsSectionState
               },
               label: ("nationality").tr(),
               hint: ("nationality").tr(),
+                isDisbaled: state.editInfoSection != null ? !state.editInfoSection! :false
             ),
             const CustomVerticalSpace(height: 20),
             CustomTextWidget(
@@ -191,11 +204,11 @@ class _ApplicantInfoTextFieldsSectionState
               children: [
                 Expanded(
                   child: CustomRadioButtonEnd<bool>(
+
                     title: ("male").tr(),
                     value: true,
-                    currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.gender==null||state.saveDeceasedInfoParams?.deceasedInfo?.gender=="MALE"),
+                    currentSelected: (state.requestDetailsModel?.deceasedInfo?.gender==null||state.requestDetailsModel?.deceasedInfo?.gender=="MALE"),
                     onChange: (bool item) {
-
                       context
                           .read<EkramRequestTransportationBloc>()
                           .add(ChangeDeceasedUserInfoEvent(item: DeceasedInfo(gender: "MALE")));
@@ -204,6 +217,7 @@ class _ApplicantInfoTextFieldsSectionState
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
+                    isDisabled: state.editInfoSection != null ? !state.editInfoSection! :false,
                   ),
                 ),
                 SizedBox(
@@ -213,7 +227,7 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("female").tr(),
                     value: true,
-                    currentSelected: state.saveDeceasedInfoParams?.deceasedInfo?.gender=="FEMALE",
+                    currentSelected: state.requestDetailsModel?.deceasedInfo?.gender=="FEMALE",
 
                     onChange: (bool item) {
 
@@ -226,6 +240,7 @@ class _ApplicantInfoTextFieldsSectionState
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
+                    isDisabled: state.editInfoSection != null ? !state.editInfoSection! :false,
                   ),
                 ),
               ],
@@ -243,7 +258,7 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("muslim").tr(),
                     value: true,
-                    currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==null||state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==true),
+                    currentSelected: (state.requestDetailsModel?.deceasedInfo?.isMuslim==null||state.requestDetailsModel?.deceasedInfo?.isMuslim==true),
                     onChange: (bool item) {
 
                       context
@@ -253,6 +268,7 @@ class _ApplicantInfoTextFieldsSectionState
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
+                    isDisabled: state.editInfoSection != null ? !state.editInfoSection! :false,
                   ),
                 ),
                 SizedBox(
@@ -262,7 +278,7 @@ class _ApplicantInfoTextFieldsSectionState
                   child: CustomRadioButtonEnd<bool>(
                     title: ("non_muslim").tr(),
                     value: true,
-                    currentSelected: (state.saveDeceasedInfoParams?.deceasedInfo?.isMuslim==false),
+                    currentSelected: (state.requestDetailsModel?.deceasedInfo?.isMuslim==false),
                     onChange: (bool item) {
                       context
                           .read<EkramRequestTransportationBloc>()
@@ -271,6 +287,7 @@ class _ApplicantInfoTextFieldsSectionState
                     endRadio: false,
                     unSelectedBackgroundColor: Colors.transparent,
                     textSize: 16,
+                    isDisabled: state.editInfoSection != null ? !state.editInfoSection! :false,
                   ),
                 ),
               ],

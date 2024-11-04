@@ -49,7 +49,7 @@ export 'presentation/pages/ekram_home_page.dart';
 export 'presentation/pages/ekram_select_type_page.dart';
 export 'presentation/pages/user/ekram_transportation_list_page.dart';
 export 'presentation/pages/ekram_booking_list_page.dart';
-export 'presentation/pages/user/ekram_request_transportation_page.dart';
+export 'presentation/pages/user/ekram_request_transportation_page_new.dart';
 export 'presentation/pages/ekram_success_screen.dart';
 export 'presentation/pages/driver/identical_list_page.dart';
 
