@@ -137,12 +137,18 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
-    final isStoriesOpen = ref.watch(storiesOpenStateProvider);
-    if (isStoriesOpen) {
-      Future(ToastOverlay.of(context).hide);
-    } else {
+    if (!ref.read(storiesOpenStateProvider)) {
       Future(_showBetaNotification);
     }
+
+    ref.listen(storiesOpenStateProvider, (_, isStoriesOpen) {
+      if (isStoriesOpen) {
+        ToastOverlay.of(context).hide();
+      } else {
+        _showBetaNotification();
+      }
+    });
+
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
