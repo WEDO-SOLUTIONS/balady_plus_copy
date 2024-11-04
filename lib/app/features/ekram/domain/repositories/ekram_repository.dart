@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/get_requests_params.dart';
@@ -134,10 +135,10 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel>> verifyDeceased(
       VerifyDeceasedParams params);
-  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>> requestDetails(
-      String params);
+  Future<Either<Failure, RequestDetailsResponseModel>> requestDetails(
+      int params);
   Future<Either<Failure, RequestDetailsResponseModel>> saveDeceasedInfo(
-      int requestId, RequestDetailsResponseModel params);
+      int requestId, SaveDeceasedInfoParams params);
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
 }

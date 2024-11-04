@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_respo
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/save_deceased_info_params/save_deceased_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/active_grave_request_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/apply_deceased_response.dart';
@@ -813,8 +814,8 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>> requestDetails(
-      String params) async {
+  Future<Either<Failure, RequestDetailsResponseModel>> requestDetails(
+      int params) async {
     try {
       final data = await remoteDataSource.requestDetails(params);
       return Right(data);
@@ -833,7 +834,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, RequestDetailsResponseModel>> saveDeceasedInfo(
-      int requestId, RequestDetailsResponseModel params) async {
+      int requestId, SaveDeceasedInfoParams params) async {
     try {
       final data = await remoteDataSource.saveDeceasedInfo(requestId, params);
       return Right(data);

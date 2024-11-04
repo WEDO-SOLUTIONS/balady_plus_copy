@@ -346,11 +346,7 @@ class ApiUrl {
 
   static const ekramHospitals = 'v2/ekram-mobile-services/citiy-hospitals';
 
-  static const ekramMosques =
-      'v2/ekram-mobile-services/mosques-ghusl-places/{}/MOSQUE';
 
-  static const ekramLaundries =
-      'v2/ekram-mobile-services/mosques-ghusl-places/{}/GHUSL_PLACE';
 
   //static const ekramLookup = 'v1/ekram-mobile-services/lookups';
 
@@ -364,19 +360,6 @@ class ApiUrl {
 
   static const ekramDeceasedTransportApply =
       'v2/ekram-mobile-services/deceased-transport/add-request';
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   static const tripLocations = 'v2/ekram-mobile-services/trip-locations';
 
@@ -429,16 +412,26 @@ class ApiUrl {
 
 
   static String verifyDeceased = "v1/superapp-ekram-services/apply";
-  static String specialTransportReasons = "v1/superapp-ekram-services/special-transport-reason";
+  static String specialTransportReasons =
+      "v1/superapp-ekram-services/special-transport-reason";
   static String graveTypes = "v1/superapp-ekram-services/grave-types";
 
+  static String transportCompanies(int requestId) =>
+      "v1/superapp-ekram-services/transport/$requestId/charities";
+  static String mosquesGhuslPlaces(int requestId, String mosqueOrghusl) =>
+      "v1/superapp-ekram-services/mosques-ghusl-places/$requestId/$mosqueOrghusl";
+  static String deceasedRequestDetails(int requestId) =>
+      "v1/superapp-ekram-services/request/$requestId/request-details";
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
   static String saveDeathBurialInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
-  static String transportRequestCemeteries(int requestId) =>
+  static String cemetries(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/transport-request-cemeteries";
-
+        static  ekramMosques (int requestId) =>
+      'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/MOSQUE';
+  static  ekramLaundries(int requestId) =>
+      'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/GHUSL_PLACE';
 
   static String joodEskanGenerateDonation =
       "v1/joodeskan-services/generate-donation-url";
