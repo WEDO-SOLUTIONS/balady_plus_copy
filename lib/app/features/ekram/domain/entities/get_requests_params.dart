@@ -5,11 +5,13 @@ class GetRequestsParams {
   int? deceasedTransportRequestStatusId;
   int? transportLocationStatusId;
   bool? isMultiCity;
+  bool? isDriver;
   GetRequestsParams(
       {required this.page,
       required this.size,
       this.text,
       this.deceasedTransportRequestStatusId,
       this.transportLocationStatusId,
-      this.isMultiCity});
+      this.isMultiCity,
+      this.isDriver});
 }

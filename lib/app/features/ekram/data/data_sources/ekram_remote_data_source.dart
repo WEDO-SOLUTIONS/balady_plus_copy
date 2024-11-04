@@ -130,7 +130,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<GraveActiveRequestDetails>>
       getActiveGraveRequestDetails(ActiveGraveRequestParams params);
-        Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
       GetCemetriesParams params);
 
   Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
@@ -159,7 +159,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   EkramRemoteDataSourceImpl({required this.webService});
 
-@override
+  @override
   Future<ResponseBodyModel<List<LookUpItem>>> getCemetries(
       GetCemetriesParams params) async {
     Response response;
@@ -181,7 +181,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -205,14 +205,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException(("errors_server_error_2").tr());
       }
     }
@@ -632,7 +632,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         queryParameters: {
           "page": params.page,
           "size": params.size,
-          "isDriver": true
+          "isDriver": params.isDriver ?? false
         },
       );
 
@@ -1259,7 +1259,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   @override
   Future<ResponseBodyModel<DeceasedAttachment>> uploadAttachment(
       int attachmentId, FileDataItem params) async {
-    var response;
+    Response response;
 
     try {
       int timeStamp = DateTime.now().millisecondsSinceEpoch;
@@ -1297,7 +1297,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
@@ -1594,7 +1594,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.toFuture();
-    } on DioError catch (error, stackTrace) {
+    } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
           nameEvent: EventsName.handledException,
