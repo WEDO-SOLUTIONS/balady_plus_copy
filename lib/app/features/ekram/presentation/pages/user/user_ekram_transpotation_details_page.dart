@@ -46,89 +46,98 @@ class _UsersEkramTransportationDetailsPageState
           getNationalities: sl(),
           applyDeceasedTransport: sl(),
           getCemeteryTypesLookUp: sl(),
-      ),
+      )..add(getRequestDetailsEvent(requestId: "${params.requestId}")),
 
-      child: BlocListener<EkramRequestTransportationBloc, EkramRequestTransportationState>(
+      child: BlocConsumer<EkramRequestTransportationBloc, EkramRequestTransportationState>(
           listener: (context, state) {
-            print("state $state");
+
             if (state.status == BlocStatus.failure) {
               CommonFunctions.showError(state.errorMessage ?? "");
             }
           },
-          child: Scaffold(
-            backgroundColor: AppColor.white2,
-            appBar: DetailsHeader(
-              titleWidget: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+        builder: (context, state){return Scaffold(
+          backgroundColor: AppColor.white2,
+          appBar: DetailsHeader(
+            titleWidget: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                CustomTextWidget(
+                  "request".tr(),
+                  fontSize: 20,
+                  maxLines: 1,
+                  textOverflow: TextOverflow.ellipsis,
+                  fontWeight: AppFontWeight.bold,
+                  fontColor: AppColor.blackModern700Light,
+                ),
+                const SizedBox(
+                  width: 16,
+                ),
+                CustomTextWidget(
+                  "#${params.requestId}",
+                  fontSize: 14,
+                  maxLines: 1,
+                  textOverflow: TextOverflow.ellipsis,
+                  fontWeight: AppFontWeight.medium,
+                  fontColor: AppColor.blackModern700Light,
+                ),
+              ],
+            ),
+          ),
+          body: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: SingleChildScrollView(
+              child: Column(
                 children: [
-                  CustomTextWidget(
-                    "request".tr(),
-                    fontSize: 20,
-                    maxLines: 1,
-                    textOverflow: TextOverflow.ellipsis,
-                    fontWeight: AppFontWeight.bold,
-                    fontColor: AppColor.blackModern700Light,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          SvgPicture.asset(
+                            IconPath.calendarIcon,
+                            width: 24,
+                            height: 24,
+                          ),
+                          CustomHorizontalSpace(width: 8),
+                          CustomTextWidget(
+                            params.requestDate ?? "",
+                            fontColor: AppColor.blackModern500Light,
+                            fontSize: 12,
+                            fontWeight: AppFontWeight.bold,
+                          )
+                        ],
+                      ),
+                      HomeTag(
+                        title: params.requestStatusName ?? "",
+                        backgroundColor: AppColor.secondary100Light,
+                      )
+                    ],
                   ),
-                  const SizedBox(
-                    width: 16,
-                  ),
-                  CustomTextWidget(
-                    "#${params.requestId}",
-                    fontSize: 14,
-                    maxLines: 1,
-                    textOverflow: TextOverflow.ellipsis,
-                    fontWeight: AppFontWeight.medium,
-                    fontColor: AppColor.blackModern700Light,
-                  ),
+                  Constants.verticalSpaceSmall,
+                  DeceasedInfoWidget_new(item:state.requestDetailsModel?.deceasedInfo),
+                   ApplicantInfoWidget(),
+                   BurialInfoWidget(),
+                  DriversInfoWidget(),
+
+
+                  // TransferInfo
+                  // DriversInfo
+                  //  DriversInfoWidget(),
+                  // ApplicantInfo
+                  //  ApplicantInfoWidget(),
+                  // DeceasedInfo
+                  //
+                  // BurialInfo
+                  //  ,
+                  Constants.verticalSpaceSmall,
                 ],
               ),
             ),
-            body: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              IconPath.calendarIcon,
-                              width: 24,
-                              height: 24,
-                            ),
-                            CustomHorizontalSpace(width: 8),
-                            CustomTextWidget(
-                              params.requestDate ?? "",
-                              fontColor: AppColor.blackModern500Light,
-                              fontSize: 12,
-                              fontWeight: AppFontWeight.bold,
-                            )
-                          ],
-                        ),
-                        HomeTag(
-                          title: params.requestStatusName ?? "",
-                          backgroundColor: AppColor.secondary100Light,
-                        )
-                      ],
-                    ),
-                    Constants.verticalSpaceSmall,
-                    // TransferInfo
-                    // DriversInfo
-                    //  DriversInfoWidget(),
-                    // ApplicantInfo
-                    //  ApplicantInfoWidget(),
-                    // DeceasedInfo
-                    DeceasedInfoWidget_new(),
-                    // BurialInfo
-                    //  BurialInfoWidget(),
-                    Constants.verticalSpaceSmall,
-                  ],
-                ),
-              ),
-            ),
-          )),
+          ),
+        );
+          }
+
+        ),
     );
   }
 }
