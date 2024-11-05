@@ -4,23 +4,27 @@ class MapState extends Equatable {
   final BlocStatus zonesStatus;
   final BlocStatus gisDataStatus;
   final BlocStatus validatePointStatus;
+  final BlocStatus layerStatus;
   final List<ZoneItem>? zones;
   final List<ValidatePointResponse>? valiadtePoints;
   final GisDataResponse? gisDataResponse;
   final GISDataRequest? gisDataRequest;
   final String? errorMessage;
   final bool? clearGISData;
+  final List<PointLayersData>? layerData;
 
   const MapState(
       {this.zonesStatus = BlocStatus.initial,
       this.gisDataStatus = BlocStatus.initial,
       this.validatePointStatus = BlocStatus.initial,
+      this.layerStatus = BlocStatus.initial,
       this.zones,
       this.gisDataResponse,
       this.valiadtePoints,
       this.errorMessage,
       this.gisDataRequest,
-      this.clearGISData});
+      this.clearGISData,
+      this.layerData});
 
   @override
   List<Object?> get props => [
@@ -32,7 +36,9 @@ class MapState extends Equatable {
         gisDataResponse,
         errorMessage,
         gisDataRequest,
-        clearGISData
+        clearGISData,
+        layerData,
+        layerStatus
       ];
 
   MapState copyWith(
@@ -44,8 +50,11 @@ class MapState extends Equatable {
       GisDataResponse? gisDataResponse,
       GISDataRequest? gisDataRequest,
       String? errorMessage,
-      bool? clearGISData}) {
+      bool? clearGISData,
+      List<PointLayersData>? layerData,
+      BlocStatus? layerStatus}) {
     return MapState(
+        layerStatus: layerStatus ?? this.layerStatus,
         zonesStatus: zonesStatus ?? this.zonesStatus,
         gisDataStatus: gisDataStatus ?? this.gisDataStatus,
         validatePointStatus: validatePointStatus ?? this.validatePointStatus,
@@ -55,6 +64,7 @@ class MapState extends Equatable {
         errorMessage: errorMessage ?? this.errorMessage,
         gisDataRequest: gisDataRequest ?? this.gisDataRequest,
         clearGISData:
-            clearGISData == true ? null : clearGISData ?? this.clearGISData);
+            clearGISData == true ? null : clearGISData ?? this.clearGISData,
+        layerData: layerData ?? this.layerData);
   }
 }

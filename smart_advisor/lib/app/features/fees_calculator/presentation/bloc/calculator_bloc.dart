@@ -27,9 +27,13 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
       : _getActivites = GetActivitesUc(repository: sl()),
         calculateFees = CalculateFeesUC(repository: sl()),
         super(CalculatorState(
-            totalArea: args.area.toString(),
-            addetionalActivitesResponse: args.addetionalActivites,
-            permits: args.permits)) {
+            totalArea: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
+                .toString(),
+            addetionalActivitesResponse: args.addetionalActivites
+                ?.where((e) => e.isSelected == true)
+                .toList(),
+            permits:
+                args.permits?.where((e) => e.isSelected == true).toList())) {
     on<ChangeAddetionalActivityEvent>(changeAddetionalActivityArea);
     on<ChangeCleanOptionEvent>(changeCleanOptions);
     on<AddBoardnEvent>(addBoardHandler);
@@ -46,8 +50,11 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     on<ChangePermitDaysEvent>(changePermitDays);
     on<ChangePermitNoOfVeichlesEvent>(changePermitNoOfVeichles);
     on<DeleteBoardItemEvent>(DeleteBoardItemHandler);
+    on<ChangeAreaValueEvent>(changeAreaValue);
+  }
 
-    print("GGGDDF ${args.area.toString()}");
+  void changeAreaValue(ChangeAreaValueEvent event, Emitter emit) async {
+    emit(state.copyWith(totalArea: event.data));
   }
 
   void changePermitNoOfVeichles(
@@ -115,7 +122,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
 
     List<AddetionalActivityItem> addetionalActivitesResponse =
         state.addetionalActivitesResponse ?? [];
-    addetionalActivitesResponse.removeAt(event.index);
+    addetionalActivitesResponse.removeWhere((e) => e.activityId == event.index);
     emit(state.copyWith(
         status: BlocStatus.success,
         addetionalActivitesResponse: addetionalActivitesResponse));
@@ -127,7 +134,10 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
 
     List<AddetionalActivityItem> addetionalActivitesResponse =
         state.addetionalActivitesResponse ?? [];
-    addetionalActivitesResponse[event.index].area = double.tryParse(event.area);
+    int index = addetionalActivitesResponse
+        .indexWhere((e) => e.activityId == event.index);
+
+    addetionalActivitesResponse[index].area = double.tryParse(event.area);
     emit(state.copyWith(
         status: BlocStatus.success,
         addetionalActivitesResponse: addetionalActivitesResponse));
@@ -158,19 +168,24 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
   void calculateHandler(CalculateEvent event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    /* List<int> activityIds = [args.activityId!.id];
+    List<int> activityIds = [args.activityId!.id];
 
     args.addetionalActivites?.forEach((e) {
       activityIds.add(e.activityId);
-    });*/
+    });
 
     final failureOrSuccess = await calculateFees(FeesCalculatorRequest(
         municipalityGisCode: args.gisData?.municipalityuniquecode,
         longitude: args.gisRequest?.lon.toString(),
         latitude: args.gisRequest?.lat.toString(),
         activityId: args.activityId?.id,
+        addetionalActivites: args.addetionalActivites
+                ?.where((e) => e.isSelected == true)
+                .toList() ??
+            [],
         licensePeriod: state.selectedPeriod?.id,
-        shopArea: args.area,
+        shopArea: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
+            .toDouble(),
         cleanOption: state.cleanOption?.idStr,
         boards: state.boards
             ?.map(
@@ -186,6 +201,9 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
         ));
       },
       (success) async {
+        emit(state.copyWith(status: BlocStatus.closeLoading));
+        emit(state.copyWith(status: BlocStatus.success));
+
         NavigationService.navigatorKey.currentState!
             .pushNamed(RouteName.calculatorResultsPage, arguments: success);
       },

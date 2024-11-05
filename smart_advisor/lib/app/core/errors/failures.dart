@@ -14,8 +14,9 @@ abstract class Failure extends Equatable {
 // Global Failures
 class ServerFailure extends Failure {
   final String errorMessage;
-
-  ServerFailure(this.errorMessage) : super([errorMessage]);
+  final String? errorCode;
+  ServerFailure(this.errorMessage, {this.errorCode})
+      : super([errorMessage, errorCode]);
 }
 
 class CacheFailure extends Failure {}

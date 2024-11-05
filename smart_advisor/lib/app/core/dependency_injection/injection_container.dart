@@ -7,6 +7,7 @@ import '../../features/home_page/domain/repositories/repository.dart';
 import '../../features/map/domain/repositories/repository.dart';
 import '../../features/qr_scan/domain/repositories/repository.dart';
 import '../../features/select_activity/domain/repositories/repository.dart';
+import '../../features/self_rating/domain/repositories/repository.dart';
 import '/app/core/dependency_injection/features/activities_injection.dart';
 import '/app/core/dependency_injection/features/calculator_injection.dart';
 import '/app/core/dependency_injection/features/details_injection.dart';
@@ -26,11 +27,12 @@ import '../services/services_exports.dart'
         SmartAdvisorNetworkConnection,
         SmartAdvisorNetworkConnectionImplementation,
         SmartAdvisorWebService;
+import 'features/self_rating_iinjection.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
 
-void initialize() {
+void initialize(EnvType env) {
   //! Features
   //? home
 
@@ -50,18 +52,19 @@ void initialize() {
 
 //? Calculator
   if (!sl.isRegistered<CalculatorRepository>()) CalculatorInjection.init();
+
+  if (!sl.isRegistered<Repository>()) SelfRatingInjection.init();
   //! Core
   if (!sl.isRegistered<SmartAdvisorWebService>())
-    sl.registerFactory(() => SmartAdvisorWebService(dio: sl()));
+    sl.registerLazySingleton(() => SmartAdvisorWebService(dio: new Dio()));
 
   if (!sl.isRegistered<SmartAdvisorNetworkConnection>())
-    sl.registerFactory<SmartAdvisorNetworkConnection>(
+    sl.registerLazySingleton<SmartAdvisorNetworkConnection>(
       () => SmartAdvisorNetworkConnectionImplementation(sl()),
     );
 
   if (!sl.isRegistered<InternetConnectionChecker>())
     sl.registerLazySingleton(() => InternetConnectionChecker());
   if (!sl.isRegistered<Dio>()) sl.registerLazySingleton(() => Dio());
-  if (!sl.isRegistered<EnvType>())
-    sl.registerLazySingleton<EnvType>(() => EnvType.dev);
+  if (!sl.isRegistered<EnvType>()) sl.registerLazySingleton<EnvType>(() => env);
 }

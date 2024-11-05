@@ -9,7 +9,6 @@ import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/_shared_feature_/presentation/models/grideViewModel.dart';
 import '/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
-import '/app/features/_shared_feature_/presentation/widgets/shimmer_card.dart';
 import '/app/features/home_page/presentation/bloc/home_bloc.dart';
 import '/app/features/home_page/presentation/bloc/home_event.dart';
 import '/app/features/home_page/presentation/bloc/home_state.dart';

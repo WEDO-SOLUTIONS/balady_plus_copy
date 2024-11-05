@@ -1,3 +1,4 @@
+import '../../../select_activity/domain/use_cases/get_work_flow.dart';
 import '../../domain/entities/violation_details_Vd_request_params.dart';
 import '../../domain/use_cases/violation_details_vd.dart';
 import '/app/core/dependency_injection/dependency_injection_exports.dart';
@@ -20,7 +21,7 @@ import '../../domain/entities/entity_violation_activity_request_params.dart';
 import '../../domain/use_cases/get_violation_details.dart';
 import '../../domain/use_cases/get_violation_entity_activity_detailes.dart';
 import '../widgets/tabs/third/Details.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   ActivityDetailsPageParams args;
@@ -33,6 +34,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
 
   final GetViolationVDUC _getViolationVD;
 
+  final GetWorkFlowUc _getWorkFlowUc;
+
   DetailsBloc({required this.args})
       : _getViolationVD = GetViolationVDUC(repository: sl()),
         _getRegulationsUc = GetRegulationsUc(repository: sl()),
@@ -41,6 +44,7 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         _getViolationEntityActivityDetailsUC =
             GetViolationEntityActivityDetailsUC(repository: sl()),
         _getViolationDetails = GetViolationDetailsUC(repository: sl()),
+        _getWorkFlowUc = GetWorkFlowUc(repository: sl()),
         super(DetailsState()) {
     on<GetRegulationsEvent>(_getRegulations);
     on<GetEntityActivityDetailsEvent>(_getEntityActivityDetails);
@@ -126,7 +130,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         lat: args.gisRequest?.lat ?? 0,
         lng: args.gisRequest?.lon ?? 0,
         serviceType: 1004,
-        area: args.area ?? 0));
+        area: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
+            .toDouble()));
 
     result.fold((failure) {
       emit(state.copyWith(
@@ -149,7 +154,9 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
               latitude: args.gisRequest?.lat ?? 0,
               longitude: args.gisRequest?.lon ?? 0,
               serviceType: 1004,
-              shopArea: args.area ?? 0));
+              shopArea:
+                  ((args.suggestedArea?.to ?? args.suggestedArea?.from) ?? 0)
+                      .toDouble()));
 
       result.fold((failure) {
         emit(state.copyWith(
@@ -190,8 +197,9 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   }
 
   Future<String?> getComplinaceData(BuildContext context) async {
-    final String? d = await BaladyServices.getBuildingCompliance(
+    return "";
+    /*  final String? d = await BaladyServices.getBuildingCompliance(
         context, args.gisRequest!.lat, args.gisRequest!.lon);
-    return d;
+    return d;*/
   }
 }

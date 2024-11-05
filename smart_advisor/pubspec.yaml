@@ -58,7 +58,7 @@ dependencies:
   flutter_html:
     # Location
   geolocator: ^10.1.0
-  qr_code_scanner: ^1.0.0
+  qr_code_scanner: ^1.0.1
   # Permissions
   permission_handler: ^11.0.1
   webview_flutter:
@@ -66,6 +66,12 @@ dependencies:
   scrollable_positioned_list: ^0.3.5
 
   photo_view: ^0.14.0
+  curl_logger_dio_interceptor: ^1.0.0
+  # easy_stepper:
+  enhance_stepper: ^1.0.1
+  cupertino_stepper:
+  flutter_riverpod: ^2.4.1
+  syncfusion_flutter_pdfviewer:
 
 dev_dependencies:
   flutter_lints: ^2.0.1
@@ -76,9 +82,7 @@ dependency_overrides:
   intl: 0.19.0
   cached_network_image:
   dio_cache_interceptor: ^3.5.0
-  open_file_plus:
-    git:
-      url: https://github.com/urbi-ae/open_file_plus
+  open_file_plus: ^3.4.1+1
   archive: ^3.6.1
   dio: ^5.0.0
   json_serializable: ^6.7.1

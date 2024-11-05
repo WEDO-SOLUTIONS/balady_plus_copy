@@ -39,7 +39,11 @@ class ResponseData<T> {
               : json["responseCode"],
           beRequestId: json["beRequestId"],
           correlationId: json["correlationId"],
-          responseMessage: json["responseMessage"],
+          responseMessage: json["responseMessage"].runtimeType == String
+              ? json["responseMessage"]
+              : json["responseMessage"] != null
+                  ? json["responseMessage"].firstOrNull
+                  : null,
           result: parsedResult ?? json["result"]);
 
   String? getRefResponseMessage() {

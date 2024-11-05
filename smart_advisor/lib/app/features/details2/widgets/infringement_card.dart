@@ -37,9 +37,9 @@ class _InfringementCardState extends State<InfringementCard> {
                             ? "مخالفة جسيمة"
                             : "مخالفة غير جسيمة",
                         style: AppStyle.textRegularRomanStyle.copyWith(
-                            color: widget.isCritical == "true"
+                            color: widget.isCritical == true
                                 ? const Color(0xffE0373D)
-                                : const Color(0xffbe890e)))),
+                                : AppColor.textPrimaryColor))),
               ],
             ),
             subtitle: Text(

@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.1+39
-version: 3.11.13+226
+#version: 3.30.1+43
+version: 3.11.15+230
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -225,10 +225,10 @@ dependencies:
 
   ############################################################
   balady_authorization:
-    #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
-    git:
-      ref: main
-      url: git@github.com:urbi-ae/balady_authorization.git
+    hosted: https://baladyapp-unpub.urbi.ae/
+  #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
+  # git:
+  #  url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
   #      ref: master
   #      path: packages/firebase_messaging/firebase_messaging
   ############################################################
@@ -344,4 +344,15 @@ flutter:
         - asset: assets/fonts/inter/Inter-Regular.ttf
           weight: 400
         - asset: assets/fonts/inter/Inter-SemiBold.ttf
+          weight: 600
+
+    - family: SomarSans
+      fonts:
+        - asset: assets/fonts/SomarSans/SomarSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/SomarSans/SomarSans-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SomarSans/SomarSans-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/SomarSans/SomarSans-SemiBold.ttf
           weight: 600

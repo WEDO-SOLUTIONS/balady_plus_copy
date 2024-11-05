@@ -17,16 +17,20 @@ class LookUpResponseModel extends LookUpResponse {
 }
 
 class LookUpItemModel extends LookUpItem {
-  LookUpItemModel({
-    required super.id,
-    required super.name,
-  });
+  LookUpItemModel(
+      {required super.id,
+      required super.name,
+      super.maxArea,
+      super.minArea,
+      super.isATM});
 
   factory LookUpItemModel.fromJson(Map<String, dynamic> json) =>
       LookUpItemModel(
-        id: json["id"],
-        name: json["name"],
-      );
+          id: json["id"],
+          name: json["name"],
+          maxArea: json["maxArea"]?.toDouble(),
+          minArea: json["minArea"]?.toDouble(),
+          isATM: json["atm"]);
 
   Map<String, dynamic> toJson() => {
         "id": id,

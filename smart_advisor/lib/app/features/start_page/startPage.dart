@@ -104,7 +104,7 @@ class _StartpageState extends State<Startpage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 MediaQuery.removePadding(
@@ -126,9 +126,15 @@ class _StartpageState extends State<Startpage> {
                             backgroundColor: const Color(0xff000000),
                             isScrollControlled: true,
                             builder: (ctx) {
-                              return InternetDialog();
+                              return const InternetDialog();
                             },
                           );
+                        } else if (currentIndex == 1) {
+                          CommonFunctions.openWebView(
+                              context: context,
+                              title: 'اشتراطات إنشاء المباني السكنية',
+                              URL:
+                                  'https://apps.balady.gov.sa/BALADYCDN/Content/Construction/ashtratatanshaalmbanyalsknytmalqrar3.pdf');
                         }
                       },
                       child: StartPageItemCard(

@@ -30,3 +30,15 @@ class ValidatePointEvent extends MapEvent {
 class ClearGISDataEvent extends MapEvent {
   const ClearGISDataEvent();
 }
+
+class GetLayersEvent extends MapEvent {
+  final double southWestLongitude;
+  final double southWestLlatitude;
+  final double northEastLongitude;
+  final double northEastLatitude;
+  const GetLayersEvent(
+      {required this.southWestLongitude,
+      required this.southWestLlatitude,
+      required this.northEastLongitude,
+      required this.northEastLatitude});
+}

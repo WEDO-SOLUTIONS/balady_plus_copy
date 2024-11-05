@@ -19,7 +19,7 @@ class ApiUrls {
   static String getrubrics(int id) =>
       "v1/$_proxy/commercial/lookups/categories/$id/rubrics";
 
-  static String getIsics(int id) => "v1/$_proxy/commercial/rubrics/$id/isics";
+  static String getIsics(int id) => "v1/$_proxy/commercial/rubrics";
   static String getActivites(int id) =>
       "v1/$_proxy/commercial/isics/$id/activities";
 
@@ -42,4 +42,16 @@ class ApiUrls {
 
   static String getViolationDetailsVD(int activityId) =>
       "v1/$_proxy/cis/activities/$activityId/vd/violation-details";
+  static String getMapLayers = "v1/gis-urbi-services/layers";
+
+  static String getCities() => "v1/$_proxy/cities";
+
+  static String getDistricts(int cityId) => "v1/$_proxy/districts/$cityId";
+
+  static String getWorkFlow = "v1/$_proxy/commercial/work-flows";
+
+  static String selfRatingItems(int activityId) =>
+      "v1/cis-selfrating-services/acitivities/${activityId}/inspection-clauses";
+
+  static String submitRatingItems = "v1/cis-selfrating-services/evaluation";
 }

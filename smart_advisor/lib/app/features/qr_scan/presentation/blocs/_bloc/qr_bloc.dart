@@ -1,4 +1,5 @@
 import 'package:smart_advisor/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
+import 'package:smart_advisor/app/features/select_activity/domain/entities/suggested_area_model.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/route_names.dart';
@@ -40,7 +41,7 @@ class QRBloc extends Bloc<QrEvent, QrState> {
               qrStatus: BlocStatus.success, qrResponse: success));
 
           NavigationService.navigatorKey.currentState!.pushReplacementNamed(
-              RouteName.addetionalActivitesPage,
+              RouteName.newDetails,
               arguments: ActivityDetailsPageParams(
                   area: success.comLicenseInfo?.shopArea?.toDouble(),
                   activityId: LookUpItem(
@@ -50,12 +51,17 @@ class QRBloc extends Bloc<QrEvent, QrState> {
                       name: success.comLicenseInfo?.activityInfo?.mainActivity
                               ?.activityDetailName ??
                           ""),
+                  suggestedArea: SuggestedAreaModel(
+                      id: 1,
+                      isActive: true,
+                      desc: "",
+                      from: success.comLicenseInfo?.shopArea?.toInt(),
+                      to: success.comLicenseInfo?.shopArea?.toInt()),
                   gisRequest: GISDataRequest(
-                      lat: double.tryParse(success.comLicenseInfo?.locationInfo?.latitude ?? "") ??
-                          0,
-                      lon: double.tryParse(
-                              success.comLicenseInfo?.locationInfo?.longitude ?? "") ??
-                          0)));
+                      lat:
+                          double.tryParse(success.comLicenseInfo?.locationInfo?.latitude ?? "") ??
+                              0,
+                      lon: double.tryParse(success.comLicenseInfo?.locationInfo?.longitude ?? "") ?? 0)));
         },
       );
     });
