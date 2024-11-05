@@ -625,7 +625,7 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         isVerified: true,
         requestDetailsModel: res.data?.result,
-        editInfoSection: res.data?.result?.deceasedInfo != null ? false : true,
+        editInfoSection:isScreenEditable(res.data?.result) ,
         errorMessage: "",
       ));
     });
@@ -671,5 +671,19 @@ class EkramRequestTransportationBloc extends Bloc<
     //     errorMessage: "",
     //     status: BlocStatus.success,
     //     saveDeceasedInfoParams: params));
+  }
+
+  bool isScreenEditable( RequestDetailsResponseModel? res)
+  {
+
+    if(res?.deceasedInfo?.deceasedDataSource != null&& res?.deceasedInfo?.deceasedDataSource =="MANUALLY" )
+      {
+        return true;
+      }
+
+    else {
+      return false;
+    }
+
   }
 }

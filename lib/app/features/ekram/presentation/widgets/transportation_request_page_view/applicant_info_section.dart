@@ -61,7 +61,7 @@ class ApplicantInfoSection extends StatelessWidget {
 
                             CustomTextFieldWidget(
                                 controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??"",
-
+                                enabled: state.editInfoSection??true,
                                 label: "health_submitter_name".tr(),
                                 onChanged: (String? text) {
 
@@ -73,6 +73,7 @@ class ApplicantInfoSection extends StatelessWidget {
                                   return null;
                                 }),
                             CustomTextFieldWidget(
+                                enabled: state.editInfoSection??true,
                                 label: "driver_card_applicant_mobile".tr(),
                                 hintText: "10541XXXXX".tr(),
                                 keyboardType: TextInputType.phone,
@@ -94,10 +95,11 @@ class ApplicantInfoSection extends StatelessWidget {
                                 }),
                             CustomLookUpLongDialog(
                               items: const [],
+
                               value: LookUpItem(
                                   name: 'transportation_from_hospital'.tr(),
                                   id: 3),
-                              isDisbaled: false,
+                              isDisbaled: true,
                               onChangeType: (LookUpItem? item) {},
                               label: "deceasedTransportationStatus".tr(),
                               hint: "",
