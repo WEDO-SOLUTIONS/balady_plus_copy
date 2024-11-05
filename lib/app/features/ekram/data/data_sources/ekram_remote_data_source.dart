@@ -48,7 +48,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getDeathCities();
 
-  Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params);
+  Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int cityId);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getNationalities();
 
@@ -134,6 +134,7 @@ abstract class EkramRemoteDataSource {
 
   Future<BaqieApprovalResponse> baqieApproval(ActiveGraveRequestParams params);
 
+  Future<ResponseBodyModel<List<LookUpItem>>> getPrayers();
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
       int cityId, MosqueGhuslPlacesParams params);
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
@@ -449,12 +450,12 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int params) async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int cityId) async {
     Response response;
 
     try {
       response = await webService.dio.get(
-        "${ApiUrl.ekramHospitals}/$params",
+        ApiUrl.ekramHospitals(cityId),
       );
 
       var data = response.data["data"]?["result"];
@@ -2981,6 +2982,67 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       } else {
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+  
+@override
+  Future<ResponseBodyModel<List<LookUpItem>>> getPrayers() async {
+    Response response;
+
+    try {
+      response = await webService.dio
+          .get(ApiUrl.prayers);
+
+      var data = response.data["data"]?["result"];
+
+      List<LookUpItem> parsedResult = data != null
+          ? List<LookUpItem>.from(data.map((x) => LookUpItem.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<LookUpItem>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+      if (response.statusCode != 200) {
+        String errorMessage = decodedResponse.data?.responseMessage ??
+            decodedResponse.statusDetails?.message ??
+            ("errors_server_error_1").tr();
+        throw ServerException(errorMessage, statusCode: response.statusCode);
+      }
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          // CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(

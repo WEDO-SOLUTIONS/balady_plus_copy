@@ -281,7 +281,7 @@ class ApiUrl {
       '/v1/gis-services/compliance-certificates/point-data';
 
   static String complianceAttachment(String requestId, String fileTypeId) =>
-      '/v1/compliance-certificate-mobile-services/${requestId}/upload-attahchment/${fileTypeId}';
+      '/v1/compliance-certificate-mobile-services/$requestId/upload-attahchment/$fileTypeId';
 
   static String downLoadBuildingLicense(String id) =>
       '/v1/compliance-certificate-mobile-services/download-request-files/$id';
@@ -344,9 +344,8 @@ class ApiUrl {
 
   static const ekramCities = 'v2/ekram-mobile-services/cities-cemetries';
 
-  static const ekramHospitals = 'v2/ekram-mobile-services/citiy-hospitals';
-
-
+  static String ekramHospitals(int cityId) =>
+      'v1/superapp-ekram-services/lookup/$cityId/hospitals';
 
   //static const ekramLookup = 'v1/ekram-mobile-services/lookups';
 
@@ -410,11 +409,11 @@ class ApiUrl {
   static String baquieApproval =
       "v2/ekram-mobile-services/deaths/baqie-approvals";
 
-
   static String verifyDeceased = "v1/superapp-ekram-services/apply";
   static String specialTransportReasons =
       "v1/superapp-ekram-services/special-transport-reason";
   static String graveTypes = "v1/superapp-ekram-services/grave-types";
+  static String prayers = "v1/superapp-ekram-services/prayers";
 
   static String transportCompanies(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/charities";
@@ -426,9 +425,9 @@ class ApiUrl {
       "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
   static String cemetries(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/transport-request-cemeteries";
-        static  ekramMosques (int requestId) =>
+  static ekramMosques(int requestId) =>
       'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/MOSQUE';
-  static  ekramLaundries(int requestId) =>
+  static ekramLaundries(int requestId) =>
       'v1/superapp-ekram-services/mosques-ghusl-places/$requestId/GHUSL_PLACE';
 
   static String joodEskanGenerateDonation =
@@ -602,9 +601,6 @@ class ApiUrl {
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
 
-
-
-
   ///new EKRAM
   static getIdenticalDeseasedList(String id) =>
       '/v1/superapp-ekram-services/transport/$id/identical-deceased-list';
@@ -620,14 +616,22 @@ class ApiUrl {
   static ekramGetTrips(int requestId) =>
       'v1/superapp-ekram-services/trips/$requestId/trips';
 
-  static  deleteTrip (int requestId,int tripId) => 'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
-  static  ghuslEmployees (int requestId)=> 'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
-  static  getDeceasedAttachment (int requestId)=> 'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
-  static  uploadAttachment(int id)=>'v1/superapp-ekram-services/attachments/$id/upload-file';
-  static  editAdditionalData(int id)=>'v1/superapp-ekram-services/transport/$id/edit-additional-data';
-  static  completeTrip(int id)=> 'v1/superapp-ekram-services/trips/$id/finalize';
-  static  updateLocation (int id)=> 'v1/superapp-ekram-services/transport/add-transport-track/$id';
-  static  deleteAttachment (int requestId,int attachmentId) => 'v1/superapp-ekram-services/trips/$requestId/$attachmentId/delete-trip';
+  static deleteTrip(int requestId, int tripId) =>
+      'v1/superapp-ekram-services/trips/$requestId/$tripId/delete-trip';
+  static ghuslEmployees(int requestId) =>
+      'v1/superapp-ekram-services/transport/$requestId/ghusl-employees';
+  static getDeceasedAttachment(int requestId) =>
+      'v1/superapp-ekram-services/attachments/$requestId/request-attachments';
+  static uploadAttachment(int id) =>
+      'v1/superapp-ekram-services/attachments/$id/upload-file';
+  static editAdditionalData(int id) =>
+      'v1/superapp-ekram-services/transport/$id/edit-additional-data';
+  static completeTrip(int id) =>
+      'v1/superapp-ekram-services/trips/$id/finalize';
+  static updateLocation(int id) =>
+      'v1/superapp-ekram-services/transport/add-transport-track/$id';
+  static deleteAttachment(int requestId, int attachmentId) =>
+      'v1/superapp-ekram-services/trips/$requestId/$attachmentId/delete-trip';
   static String deceasedRequestDetails(String requestId) =>
       "v1/superapp-ekram-services/request/$requestId/request-details";
   static String saveDeceasdInfo(String requestId) =>
