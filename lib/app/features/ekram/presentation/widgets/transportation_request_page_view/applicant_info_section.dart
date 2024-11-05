@@ -60,7 +60,7 @@ class ApplicantInfoSection extends StatelessWidget {
                             ),
 
                             CustomTextFieldWidget(
-                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??"",
+                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??state.fullName!,
                                 enabled: state.editInfoSection??true,
                                 label: "health_submitter_name".tr(),
                                 onChanged: (String? text) {
@@ -77,7 +77,7 @@ class ApplicantInfoSection extends StatelessWidget {
                                 label: "driver_card_applicant_mobile".tr(),
                                 hintText: "10541XXXXX".tr(),
                                 keyboardType: TextInputType.phone,
-                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.mobileNumber??"",
+                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.mobileNumber??state.mobileNumber!,
 
                                 onChanged: (String? text) {},
                                 onValidate: (String? value) {

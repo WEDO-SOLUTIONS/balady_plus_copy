@@ -47,8 +47,8 @@ class EkramRequestTransportationBloc extends Bloc<
   PageController controller = PageController();
   TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
-    const DeceasedVerificationSection(),
-    const DeceasedInfoSection(),
+      DeceasedVerificationSection(),
+     DeceasedInfoSection(),
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
@@ -65,7 +65,10 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetCountreies _getCountreies;
 
   EkramRequestTransportationBloc(
-      {required GetCities getCities,
+      {
+
+
+        required GetCities getCities,
       required GetHospitals getHospitals,
       required GetNationalities getNationalities,
       required ApplyDeceasedTransport applyDeceasedTransport,
@@ -85,6 +88,9 @@ class EkramRequestTransportationBloc extends Bloc<
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"),
             requestDetailsModel: null)) {
+
+
+
     on<EkramRequestTransportationEvent>((event, emit) {});
 
     on<ChangeAgreementEvent>(_changeAgreementHandler);
@@ -543,6 +549,7 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         deceasedId: e.deceasedId,
         errorMessage: ""));
+
   }
 
   // fawzi
@@ -572,6 +579,7 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
     });
   }
+
 
   Future<void> _getRequestDetailsHandler(
       getRequestDetailsEvent e, Emitter emitter) async {
@@ -603,6 +611,7 @@ class EkramRequestTransportationBloc extends Bloc<
         mainInfo: MainInfo());
 
     DeceasedInfo info = params.deceasedInfo!;
+
 
     info = info.copyWith(
         nationalityId: e.item?.nationalityId,
@@ -640,7 +649,7 @@ class EkramRequestTransportationBloc extends Bloc<
   bool isScreenEditable( RequestDetailsResponseModel? res)
   {
 
-    if(res?.deceasedInfo?.deceasedDataSource != null&& res?.deceasedInfo?.deceasedDataSource =="MANUALLY" )
+    if(res?.deceasedInfo?.deceasedDataSource == null|| res?.deceasedInfo?.deceasedDataSource =="MANUALLY" )
       {
         return true;
       }
