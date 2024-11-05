@@ -47,7 +47,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetEkramIdentityTypes _getEkramIdentityTypes;
 
   PageController controller = PageController();
-  TransportRequestsBloc? ekramRequestsBloc;
+ // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
       DeceasedVerificationSection(),
      DeceasedInfoSection(),
@@ -79,7 +79,7 @@ class EkramRequestTransportationBloc extends Bloc<
       required ApplyDeceasedTransport applyDeceasedTransport,
       required GetRequestDetails getRequestDetails,
 
-      this.ekramRequestsBloc})
+      })
       : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getCities = getCities,
         _getHospitals = getHospitals,
@@ -505,8 +505,6 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         errorMessage: "",
       ));
-      ekramRequestsBloc
-          ?.add(GetDeceasedTransportRequestsEvent(isDriver: false));
       NavigationService.navigatorKey.currentState!.pushReplacementNamed(
           RouteName.successRoute,
           arguments: SuccessScreenArgs(

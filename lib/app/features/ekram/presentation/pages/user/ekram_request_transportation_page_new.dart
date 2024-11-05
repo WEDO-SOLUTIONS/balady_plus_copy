@@ -46,8 +46,7 @@ class _EkramRequestTransportationPageState
           getHospitals: sl(),
           getNationalities: sl(),
           applyDeceasedTransport: sl(),
-          getCemeteryTypesLookUp: sl(),
-          ekramRequestsBloc: ekramRequestsBloc),
+          getCemeteryTypesLookUp: sl(),),
       child: BlocConsumer<EkramRequestTransportationBloc,
           EkramRequestTransportationState>(
         listener: (context, state) {
