@@ -1,10 +1,10 @@
 import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetery_types_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/verify_deceased.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_transportation_info.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_verification_section.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/emirate_approval_info_section.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/domain/use_cases/get_ekram_identity_types.dart';
@@ -52,10 +52,10 @@ class EkramRequestTransportationBloc extends Bloc<
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
-    const DeceasedTransportationInfo()
   ];
 
   final GetCities _getCities;
+  final GetCemeteryTypesLookUp _getCemeteryTypesLookUp;
   final GetHospitals _getHospitals;
   final GetNationalities _getNationalities;
   final ApplyDeceasedTransport _applyDeceasedTransport;
@@ -68,12 +68,14 @@ class EkramRequestTransportationBloc extends Bloc<
       {required GetCities getCities,
       required GetHospitals getHospitals,
       required GetNationalities getNationalities,
+      required GetCemeteryTypesLookUp getCemeteryTypesLookUp,
       required ApplyDeceasedTransport applyDeceasedTransport,
       required GetRequestDetails getRequestDetails,
       this.ekramRequestsBloc})
       : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getCities = getCities,
         _getHospitals = getHospitals,
+        _getCemeteryTypesLookUp = getCemeteryTypesLookUp,
         _getCountreies = GetCountreies(repository: sl()),
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
@@ -295,6 +297,40 @@ class EkramRequestTransportationBloc extends Bloc<
       return success.data?.result;
     });
   }
+
+    Future<void> _changeCemetryTypeEventHandler(
+      ChangeCemetryTypeEvent e, Emitter emitter) async {
+    // emitter(state.copyWith(
+    //     errorMessage: "",
+    //     cemetries: [],
+    //     data: state.data.copyWith(
+    //         selectedCemetryType: e.item,
+    //         selectedCemetry: Nullable(null),
+    //         baqieApproval: Nullable(null))));
+
+  }
+
+  Future<List<LookUpItem>?> getCemetryTypeItemsHandler() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getCemeteryTypesLookUp(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+          status: BlocStatus.success,
+          countries: success.data?.result,
+          errorMessage: "",
+          selectedCountry: success.data?.result
+              ?.firstWhere((value) => value.localCountry == true)));
+      return success.data?.result;
+    });
+  }
+  
 
   Future<List<LookUpItem>?> getNationalitiesHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));

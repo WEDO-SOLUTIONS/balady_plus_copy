@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget%20copy.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
@@ -101,6 +102,15 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               isDisbaled: false,
                               onEmptyList: () async {},
                               onChangeType: (LookUpItem? item) {},
+                              label: "arrivalCity".tr(),
+                              hint: "",
+                            ),
+                            CustomLookUpLongDialog(
+                              items: const [],
+                              value: LookUpItem(),
+                              isDisbaled: false,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {},
                               label: "ekramHospital".tr(),
                               hint: "",
                             ),
@@ -174,6 +184,125 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   "cemetry_deceassed_burial_time"),
                               hint: Helpers.translatingWord(
                                   "cemetry_deceassed_burial_time"),
+                            ),
+                            Row(
+                              children: [
+                                SvgPicture.asset(IconPath.editIcon),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'transferInfo'.tr(),
+                                  style: const TextStyle(
+                                    color: AppColor.black,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                            CustomVerticalSpace(height: 10),
+                            CustomTextWidget(
+                              "is_deaceased_requrie_special_transfer".tr(),
+                              fontColor: AppColor.blackModern700Light,
+                              fontSize: 16.0,
+                              maxLines: 2,
+                              textAlign: TextAlign.start,
+                              fontWeight: AppFontWeight.bold,
+                            ),
+                            CustomVerticalSpace(height: 10),
+                            CustomRadioButtonEnd<bool>(
+                              title: "yes".tr(),
+                              value: true,
+                              currentSelected: true,
+                              onChange: (bool item) {
+                                // context
+                                //     .read<EkramAddDeceasedBloc>()
+                                //     .add(ChangeIsNeedSpecialTransferEvent(isNeeded: true));
+                              },
+                              endRadio: false,
+                              unSelectedBackgroundColor: Colors.transparent,
+                              textSize: 16,
+                            ),
+                            CustomVerticalSpace(height: 10),
+                            CustomRadioButtonEnd<bool>(
+                              title: "no".tr(),
+                              value: true,
+                              currentSelected: false,
+                              onChange: (bool item) {
+                                // context
+                                //     .read<EkramAddDeceasedBloc>()
+                                //     .add(ChangeIsNeedSpecialTransferEvent(isNeeded: false));
+                              },
+                              endRadio: false,
+                              unSelectedBackgroundColor: Colors.transparent,
+                              textSize: 16,
+                            ),
+                            CustomLookUpLongDialog(
+                              items: [],
+                              value: null,
+                              onChangeType: (LookUpItem? item) {},
+                              onEmptyList: () async {},
+                              label: ("reasonForSpecialTransfer").tr(),
+                              hint: ("reasonForSpecialTransfer").tr(),
+                            ),
+                            CustomLookUpLongDialog(
+                              items: state.cemetryTypeItems ?? [],
+                              value: state.selectedCemetryType,
+                              onEmptyList: () async {
+                                return context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .getCemetryTypeItemsHandler();
+                              },
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeCemetryTypeEvent(item: item));
+                                }
+                              },
+                              label: ("cemetry_type").tr(),
+                              hint: ("cemetry_type").tr(),
+                            ),
+                            CustomLookUpLongDialog(
+                              items: state.cemetryTypeItems ?? [],
+                              value: state.selectedCemetryType,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {}
+                              },
+                              label: ("cemeteryName").tr(),
+                              hint: ("cemeteryName").tr(),
+                            ),
+                            CustomLookUpLongDialog(
+                              items: state.cemetryTypeItems ?? [],
+                              value: state.selectedCemetryType,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {}
+                              },
+                              label: ("ekram_orgnization_name").tr(),
+                              hint: ("ekram_orgnization_name").tr(),
+                            ),
+                            CustomLookUpLongDialog(
+                              items: state.cemetryTypeItems ?? [],
+                              value: state.selectedCemetryType,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {}
+                              },
+                              label: ("ekram_laundry").tr(),
+                              hint: ("ekram_laundry").tr(),
+                            ),
+                            CustomLookUpLongDialog(
+                              items: state.cemetryTypeItems ?? [],
+                              value: state.selectedCemetryType,
+                              onEmptyList: () async {},
+                              onChangeType: (LookUpItem? item) {
+                                if (item != null) {}
+                              },
+                              label: ("the_mosque").tr(),
+                              hint: ("the_mosque").tr(),
                             ),
                           ],
                         ),

@@ -282,7 +282,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-  getCemetriesLookUp(int requestId, CemetriesParams params) async {
+      getCemetriesLookUp(int requestId, CemetriesParams params) async {
     try {
       final data = await remoteDataSource.getCemetriesLookUp(requestId, params);
 
@@ -301,7 +301,8 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>> getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params) async {
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
+      getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params) async {
     try {
       final data = await remoteDataSource.getMosquesLookUp(cityId, params);
 
@@ -319,10 +320,9 @@ class EkramRepositoryImpl implements EkramRepository {
     }
   }
 
-
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-  getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params) async {
+      getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params) async {
     try {
       final data = await remoteDataSource.getLaundriesLookUp(cityId, params);
 
@@ -339,9 +339,6 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
-
-
-
 
   @override
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(
@@ -386,7 +383,8 @@ class EkramRepositoryImpl implements EkramRepository {
   Future<Either<Failure, ResponseBodyModel<dynamic>>> deleteAttachment(
       int attachmentId, int requestId) async {
     try {
-      final data = await remoteDataSource.deleteAttachment(attachmentId, requestId);
+      final data =
+          await remoteDataSource.deleteAttachment(attachmentId, requestId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -402,9 +400,11 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>> uploadAttachment(int attachmentId, FileDataItem params ) async {
+  Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>>
+      uploadAttachment(int attachmentId, FileDataItem params) async {
     try {
-      final data = await remoteDataSource.uploadAttachment(attachmentId,params);
+      final data =
+          await remoteDataSource.uploadAttachment(attachmentId, params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -499,7 +499,8 @@ class EkramRepositoryImpl implements EkramRepository {
   Future<Either<Failure, ResponseBodyModel<dynamic>>> editAdditionalData(
       EditAdditionalRequest request) async {
     try {
-      final data = await remoteDataSource.editAdditionalData(request.requestId!,request);
+      final data = await remoteDataSource.editAdditionalData(
+          request.requestId!, request);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -838,8 +839,8 @@ class EkramRepositoryImpl implements EkramRepository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>> requestDetails(
-      String params) async {
+  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>>
+      requestDetails(String params) async {
     try {
       final data = await remoteDataSource.requestDetails(params);
       return Right(data);
@@ -855,7 +856,6 @@ class EkramRepositoryImpl implements EkramRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
-
 
   @override
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
@@ -877,4 +877,60 @@ class EkramRepositoryImpl implements EkramRepository {
     }
   }
 
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getCemeteryTypesLookUp() async {
+    try {
+      final data = await remoteDataSource.getCemeteryTypesLookUp();
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getSpecialTransportReasonsLookUp() async {
+    try {
+      final data = await remoteDataSource.getCemeteryTypesLookUp();
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getTransportationCompaniesLookUp() async {
+    try {
+      final data = await remoteDataSource.getCemeteryTypesLookUp();
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }

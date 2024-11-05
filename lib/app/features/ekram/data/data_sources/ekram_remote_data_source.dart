@@ -139,13 +139,14 @@ abstract class EkramRemoteDataSource {
       int cityId, MosqueGhuslPlacesParams params);
   Future<ResponseBodyModel<List<LookUpItem>>>
       getSpecialTransportReasonsLookUp();
-  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypesLookUp();
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemeteryTypesLookUp();
   Future<ResponseBodyModel<List<LookUpItem>>> getCemetriesLookUp(
       int requestId, CemetriesParams params);
   Future<ResponseBodyModel<List<LookUpItem>>> getTransportationCompaniesLookUp(
       int requestId, TransportationCompaniesParams params);
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
-  Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(String requestId);
+  Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(
+      String requestId);
   Future<RequestDetailsResponseModel> saveDeceasedInfo(
       int requestId, RequestDetailsResponseModel params);
   Future<ResponseBodyModel> saveDeathBurialInfo(
@@ -930,8 +931,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       response = await webService.dio.put(
           "${ApiUrl.initializeTripsRquest(params.requestId!)}",
           queryParameters: {"isDriver": true});
-
-
 
       var data = response.data["data"]?["result"];
 
@@ -2451,7 +2450,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(String requestId) async {
+  Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(
+      String requestId) async {
     Response? response;
 
     try {
@@ -2464,18 +2464,16 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         ),
       );
 
-
-
       var data = response.data["data"]?["result"];
 
-      RequestDetailsResponseModel? parsedResult = data != null ?  RequestDetailsResponseModel.fromJson(data) : null;
+      RequestDetailsResponseModel? parsedResult =
+          data != null ? RequestDetailsResponseModel.fromJson(data) : null;
 
-      final decodedResponse = ResponseBodyModel<RequestDetailsResponseModel>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
+      final decodedResponse =
+          ResponseBodyModel<RequestDetailsResponseModel>.fromMap(response.data,
+              parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
-
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -2685,7 +2683,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getGraveTypesLookUp() async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getCemeteryTypesLookUp() async {
     Response response;
 
     try {

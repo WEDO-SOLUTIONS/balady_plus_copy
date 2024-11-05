@@ -42,10 +42,11 @@ class _EkramRequestTransportationPageState
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
           getCities: sl(),
-          getRequestDetails: sl() ,
+          getRequestDetails: sl(),
           getHospitals: sl(),
           getNationalities: sl(),
           applyDeceasedTransport: sl(),
+          getCemeteryTypesLookUp: sl(),
           ekramRequestsBloc: ekramRequestsBloc),
       child: BlocConsumer<EkramRequestTransportationBloc,
           EkramRequestTransportationState>(

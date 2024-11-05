@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/features/ekram/domain/use_cases/delete_attachment.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetery_types_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_trip_stations.dart';
 
@@ -44,6 +45,7 @@ class EkramInjection {
     sl.registerLazySingleton(() => EkramLocationService());
     //! Use Case
     sl.registerLazySingleton(() => GetCities(repository: sl()));
+    sl.registerLazySingleton(() => GetCemeteryTypesLookUp(repository: sl()));
     sl.registerLazySingleton(() => GetNationalities(repository: sl()));
     sl.registerLazySingleton(() => GetHospitals(repository: sl()));
     sl.registerLazySingleton(() => ApplyDeceasedTransport(repository: sl()));
