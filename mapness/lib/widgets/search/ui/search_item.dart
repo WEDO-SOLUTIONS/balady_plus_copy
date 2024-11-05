@@ -16,18 +16,20 @@ import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
 const prefixMapping = {
-  'Region': 'منطقة',
-  'Governorate': 'محافظة',
-  'City': 'مدينة',
-  'District area': 'محافظة',
-  'District': 'حى',
-  'Street': 'شارع',
-  'Buildings': 'مبنى',
-  'Park': 'بارك',
-  'Hotel': 'الفندق',
-  'Coffee shop': 'كافيه',
-  'Paid': 'مدفوع',
-  'Place': 'مكان',
+  'region': 'منطقة',
+  'rovernorate': 'محافظة',
+  'city': 'مدينة',
+  'district area': 'محافظة',
+  'district': 'حى',
+  'street': 'شارع',
+  'buildings': 'مبنى',
+  'park': 'بارك',
+  'hotel': 'الفندق',
+  'coffee shop': 'كافيه',
+  'paid': 'مدفوع',
+  'place': 'مكان',
+  'gym': 'صالة رياضية',
+  'company': 'شركة',
 };
 
 class SearchItem extends ConsumerWidget {
@@ -36,6 +38,7 @@ class SearchItem extends ConsumerWidget {
   final DirectoryObjectMessage result;
 
   final void Function() onTap;
+
   const SearchItem({
     required this.result,
     required this.onTap,
@@ -58,10 +61,10 @@ class SearchItem extends ConsumerWidget {
       photosUrls = photoItems.map((e) => e.url).toList();
     }
 
-    if (prefixMapping.containsKey(subtitle)) {
+    if (prefixMapping.containsKey(subtitle.toLowerCase())) {
       subtitle = switch (language) {
         Language.english => subtitle,
-        Language.arabic => prefixMapping[subtitle]!,
+        Language.arabic => prefixMapping[subtitle.toLowerCase()]!,
       };
     }
 
