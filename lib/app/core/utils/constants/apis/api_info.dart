@@ -396,7 +396,7 @@ class ApiUrl {
 
   static String ekramIdentityTypes = 'v2/ekram-mobile-services/identity-types';
 
-  static String ekramCountries = "v2/ekram-mobile-services/countries";
+  static String ekramCountries = "v1/superapp-ekram-services/countries";
 
   static String graveActiveRequestDetails(String id, int idType) =>
       'v2/ekram-mobile-services/request-details/$id/$idType';

@@ -5,8 +5,12 @@ class EkramRequestTransportationState extends Equatable {
   final bool? isVerified;
   final List<LookUpItem>? nationalIdTypes;
   final bool isdeceasedInfoReadOnly;
+  final bool isBurialDatesDisabled;
+  final bool isDeathDatesDisabled;
   final String? deceassedDOBHijri;
+  final String? burialDateHijri;
   final LookUpItem? selectedNationalIdType;
+        final List<LookUpItem>? countries;
   final BlocStatus status;
   final String? errorMessage;
   final int currentPageValue;
@@ -20,12 +24,16 @@ class EkramRequestTransportationState extends Equatable {
   final String? relation;
   final String? deathLocation;
   final LookUpItem? selectedCity;
+  final LookUpItem? selectedCountry;
   final LookUpItem? selectedHospital;
   final String? otherHospitalName;
   final LookUpItem? selectedNationality;
   final List<DeceasedInfoDto>? deceasedInfoDto;
   final FileDataItem? letter;
   final String? deceassedDOBGorgian;
+  final String? burialDateGregorian;
+  final String? deathDateGregorian;
+  final String? deathDateHijri;
   final String? requestId;
   final String? deceasedId;
   final RequestDetailsResponseModel? requestDetailsModel;
@@ -33,11 +41,17 @@ class EkramRequestTransportationState extends Equatable {
 
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
+      this.burialDateGregorian,
+      this.deathDateGregorian,
+      this.deathDateHijri,
       this.isVerified,
       this.requestId,
       this.deceasedId,
       this.deceassedDOBHijri,
+      this.burialDateHijri,
       this.isdeceasedInfoReadOnly = false,
+      this.isBurialDatesDisabled = false,
+      this.isDeathDatesDisabled = false,
       this.errorMsg,
       this.nationalIdTypes,
       this.selectedNationalIdType,
@@ -46,6 +60,7 @@ class EkramRequestTransportationState extends Equatable {
       this.currentPageValue = 0,
       this.cities,
       this.hospitals,
+      this.countries,
       this.nationalities,
       this.agreement,
       this.fullName,
@@ -54,6 +69,7 @@ class EkramRequestTransportationState extends Equatable {
       this.relation,
       this.deathLocation,
       this.selectedCity,
+      this.selectedCountry,
       this.selectedHospital,
       this.otherHospitalName,
       this.selectedNationality,
@@ -64,7 +80,10 @@ class EkramRequestTransportationState extends Equatable {
 
   EkramRequestTransportationState copyWith({
     final Nullable<String?>? deceassedDOBHijri,
+    final Nullable<String?>? burialDateHijri,
     final bool? isdeceasedInfoReadOnly,
+    final bool? isBurialDatesDisabled,
+    final bool? isDeathDatesDisabled,
     final bool? isVerified,
     final BlocStatus? status,
     final String? errorMsg,
@@ -77,8 +96,10 @@ class EkramRequestTransportationState extends Equatable {
     final String? deathLocation,
     final List<LookUpItem>? cities,
     final List<LookUpItem>? hospitals,
+    final List<LookUpItem>? countries,
     final List<LookUpItem>? nationalities,
     final LookUpItem? selectedCity,
+    final LookUpItem? selectedCountry,
     final LookUpItem? selectedHospital,
     final String? otherHospitalName,
     final LookUpItem? selectedNationality,
@@ -86,6 +107,9 @@ class EkramRequestTransportationState extends Equatable {
     final bool? clearHospital,
     final FileDataItem? letter,
     final Nullable<String?>? deceassedDOBGorgian,
+    final Nullable<String?>? burialDateGregorian,
+    final Nullable<String?>? deathDateGregorian,
+    final Nullable<String?>? deathDateHijri,
     final String? requestId,
     final String? deceasedId,
     final RequestDetailsResponseModel? requestDetailsModel,
@@ -94,6 +118,10 @@ class EkramRequestTransportationState extends Equatable {
     return EkramRequestTransportationState(
       isdeceasedInfoReadOnly:
           isdeceasedInfoReadOnly ?? this.isdeceasedInfoReadOnly,
+      isBurialDatesDisabled:
+          isBurialDatesDisabled ?? this.isBurialDatesDisabled,
+      isDeathDatesDisabled:
+          isDeathDatesDisabled ?? this.isDeathDatesDisabled,
       isVerified: isVerified ?? this.isVerified,
       errorMsg: errorMsg ?? this.errorMsg,
       selectedNationalIdType:
@@ -107,8 +135,10 @@ class EkramRequestTransportationState extends Equatable {
       deathLocation: deathLocation ?? this.deathLocation,
       cities: cities ?? this.cities,
       hospitals: hospitals ?? this.hospitals,
+      countries: countries ?? this.countries,
       nationalities: nationalities ?? this.nationalities,
       selectedCity: selectedCity ?? this.selectedCity,
+      selectedCountry: selectedCountry ?? this.selectedCountry,
       selectedHospital: clearHospital == true
           ? null
           : selectedHospital ?? this.selectedHospital,
@@ -124,9 +154,21 @@ class EkramRequestTransportationState extends Equatable {
       deceassedDOBGorgian: deceassedDOBGorgian == null
           ? this.deceassedDOBGorgian
           : deceassedDOBGorgian.value,
+      burialDateGregorian: burialDateGregorian == null
+          ? this.burialDateGregorian
+          : burialDateGregorian.value,
+      deathDateGregorian: deathDateGregorian == null
+          ? this.deathDateGregorian
+          : deathDateGregorian.value,
+      deathDateHijri: deathDateHijri == null
+          ? this.deathDateHijri
+          : deathDateHijri.value,
       deceassedDOBHijri: deceassedDOBHijri == null
           ? this.deceassedDOBHijri
           : deceassedDOBHijri.value,
+      burialDateHijri: burialDateHijri == null
+          ? this.burialDateHijri
+          : burialDateHijri.value,
       requestDetailsModel:
           requestDetailsModel ?? this.requestDetailsModel,
         editInfoSection:editInfoSection ?? this.editInfoSection,
@@ -135,6 +177,7 @@ class EkramRequestTransportationState extends Equatable {
 
   @override
   List<Object?> get props => [
+    countries,
         status,
         isVerified,
         requestDetailsModel,
@@ -143,6 +186,7 @@ class EkramRequestTransportationState extends Equatable {
         relation,
         deathLocation,
         selectedCity,
+        selectedCountry,
         selectedHospital,
         selectedNationality,
         deceasedInfoDto,
@@ -151,7 +195,13 @@ class EkramRequestTransportationState extends Equatable {
         deceasedId,
         otherHospitalName,
         deceassedDOBGorgian,
+        burialDateGregorian,
+        deathDateGregorian,
+        deathDateHijri,
         deceassedDOBHijri,
+        burialDateHijri,
+        isDeathDatesDisabled,
+        isBurialDatesDisabled,
       ];
 
   bool isNextButtonEnabled() {

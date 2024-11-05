@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/verify_deceased.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_transportation_info.dart';
@@ -61,6 +62,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetDeathCities _deathCities;
   final VerifyDeceased _verifyDeceased;
   final GetRequestDetails _getRequestDetails;
+  final GetCountreies _getCountreies;
 
   EkramRequestTransportationBloc(
       {required GetCities getCities,
@@ -72,6 +74,7 @@ class EkramRequestTransportationBloc extends Bloc<
       : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getCities = getCities,
         _getHospitals = getHospitals,
+        _getCountreies = GetCountreies(repository: sl()),
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         _getRequestDetails = getRequestDetails,
@@ -105,6 +108,8 @@ class EkramRequestTransportationBloc extends Bloc<
     on<EditDeceasedEvent>(_editDeceasedHandler);
     on<AddFileEvent>(_addFileHandler);
     on<ChangeNationalIdDob>(_changeNationalIdDobHandler);
+    on<ChangeBurialDateEvent>(_changeBurialDateEventHandler);
+    on<ChangeDeathDateEvent>(_changeDeathDateEventHandler);
     on<ChangeIdEvent>(_changeIdHandler);
 
     // fawzi
@@ -113,6 +118,7 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
     on<SetApplicantInfoEvent>(_setApplicantInfoDataHanlder);
     on<getRequestDetailsEvent>(_getRequestDetailsHandler);
+    getCountries();
 
     getNationalitiesHandler();
     getCitiesHandler();
@@ -185,6 +191,70 @@ class EkramRequestTransportationBloc extends Bloc<
         deceassedDOBHijri: Nullable(CommonFunctions.padHijriDate(hijri))));
   }
 
+  Future<void> _changeDeathDateEventHandler(
+      ChangeDeathDateEvent e, Emitter emitter) async {
+    String? hijri = e.hijriDate;
+    String? gorgian = e.gorgianDate;
+    if (e.gorgianDate != null) {
+      List<int> dateSplitted =
+          e.gorgianDate!.split("/").map((e) => int.parse(e)).toList();
+      hijri = HijriCalendar.fromDate(
+              DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
+          .toFormat("yyyy/mm/dd");
+    }
+    if (e.hijriDate != null) {
+      print("HHHff ${e.hijriDate}");
+      List<int> dateSplitted =
+          CommonFunctions.replaceArabicNumberWithEnglish(e.hijriDate!)
+              .split("/")
+              .map((e) => int.parse(e))
+              .toList();
+      var gDate = HijriCalendar();
+      DateTime gorgianDate = gDate.hijriToGregorian(
+          dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+      gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
+    }
+    print(gorgian);
+    print(hijri);
+
+    emitter(state.copyWith(
+        deceassedDOBGorgian: Nullable(CommonFunctions.padHijriDate(gorgian)),
+        errorMessage: "",
+        deceassedDOBHijri: Nullable(CommonFunctions.padHijriDate(hijri))));
+  }
+
+  Future<void> _changeBurialDateEventHandler(
+      ChangeBurialDateEvent e, Emitter emitter) async {
+    String? hijri = e.hijriDate;
+    String? gorgian = e.gorgianDate;
+    if (e.gorgianDate != null) {
+      List<int> dateSplitted =
+          e.gorgianDate!.split("/").map((e) => int.parse(e)).toList();
+      hijri = HijriCalendar.fromDate(
+              DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
+          .toFormat("yyyy/mm/dd");
+    }
+    if (e.hijriDate != null) {
+      print("HHHff ${e.hijriDate}");
+      List<int> dateSplitted =
+          CommonFunctions.replaceArabicNumberWithEnglish(e.hijriDate!)
+              .split("/")
+              .map((e) => int.parse(e))
+              .toList();
+      var gDate = HijriCalendar();
+      DateTime gorgianDate = gDate.hijriToGregorian(
+          dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+      gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
+    }
+    print(gorgian);
+    print(hijri);
+
+    emitter(state.copyWith(
+        deceassedDOBGorgian: Nullable(CommonFunctions.padHijriDate(gorgian)),
+        errorMessage: "",
+        deceassedDOBHijri: Nullable(CommonFunctions.padHijriDate(hijri))));
+  }
+
   Future<List<LookUpItem>?> getCitiesHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -201,6 +271,27 @@ class EkramRequestTransportationBloc extends Bloc<
         cities: success.data?.result,
         errorMessage: "",
       ));
+      return success.data?.result;
+    });
+  }
+
+  Future<List<LookUpItem>?> getCountries() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getCountreies(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+          status: BlocStatus.success,
+          countries: success.data?.result,
+          errorMessage: "",
+          selectedCountry: success.data?.result
+              ?.firstWhere((value) => value.localCountry == true)));
       return success.data?.result;
     });
   }

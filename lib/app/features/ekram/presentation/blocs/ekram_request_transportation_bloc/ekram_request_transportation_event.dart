@@ -24,7 +24,21 @@ class ChangeNationalIdDob extends EkramRequestTransportationEvent {
   final String? hijriDate;
   ChangeNationalIdDob({this.gorgianDate, this.hijriDate});
 }
+class ChangeBurialDateEvent extends EkramRequestTransportationEvent {
+  final String? gorgianDate;
+  final String? hijriDate;
+  ChangeBurialDateEvent({this.gorgianDate, this.hijriDate});
+}
+class ChangeDeathDateEvent extends EkramRequestTransportationEvent {
+  final String? gorgianDate;
+  final String? hijriDate;
+  ChangeDeathDateEvent({this.gorgianDate, this.hijriDate});
+}
 
+class ChangeCountryEvent extends EkramRequestTransportationEvent {
+  final LookUpItem item;
+  const ChangeCountryEvent({required this.item});
+}
 class SelectNationalIdTypeEvent extends EkramRequestTransportationEvent {
   final LookUpItem item;
   const SelectNationalIdTypeEvent({required this.item});

@@ -7,6 +7,8 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/t
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/gorgian_date_widget.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/hijri_date_widget.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/death_date_gregorian.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/death_date_hijri.dart';
 import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,17 +63,28 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 )
                               ],
                             ),
-                            HijriCalendarDateWidget(
-                              fieldName:
-                                  Helpers.translatingWord("death_date_hijri"),
-                              isMandatory: true,
-                              onChanged: (String? date) {},
-                            ),
-                            GorgianCalendarDateWidget(
-                              fieldName:
-                                  Helpers.translatingWord("death_date_gorgian"),
-                              isMandatory: true,
-                              onChanged: (String? date) {},
+                            DeathDateHijri(),
+                            DeathDateGregorian(),
+                            CustomLookUpLongDialog(
+                              items: state.countries ?? [],
+                              value: state.selectedCountry,
+                              onEmptyList: () async {
+                                return context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .getCountries();
+                              },
+                              onChangeType: (LookUpItem? item) {
+                                print(item?.name);
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeCountryEvent(item: item));
+                                }
+                              },
+                              label:
+                                  "${Helpers.translatingWord("ekram_death_country")} *",
+                              hint: Helpers.translatingWord(
+                                  "ekram_death_country"),
                             ),
                             CustomLookUpLongDialog(
                               items: const [],
@@ -170,10 +183,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-             EkramPreviousNextButtons(btnPressed: (){
-
-              context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
-            },)
+            EkramPreviousNextButtons(
+              btnPressed: () {
+                context
+                    .read<EkramRequestTransportationBloc>()
+                    .add(GoToNextPageEvent());
+              },
+            )
           ],
         );
       },
