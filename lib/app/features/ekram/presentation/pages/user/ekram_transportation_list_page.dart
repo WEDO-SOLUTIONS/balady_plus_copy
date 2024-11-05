@@ -163,12 +163,7 @@ class _EkramTransportationListPageState
                                         .deceasedRequestItems![index] );
 
 
-                                    // context.read<TransportRequestsBloc>().add(
-                                    //     GetDeceasedTransportRequestDetailsEvent(
-                                    //         isDriver: false,
-                                    //         requestId: state
-                                    //             .deceasedRequestItems![index]
-                                    //             .requestId!));
+
 
 
 

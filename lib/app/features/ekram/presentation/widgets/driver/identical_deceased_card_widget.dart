@@ -34,7 +34,8 @@ class IdenticalDeceasedCardWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+      Container(
       width: MediaQuery.of(context).size.width - 60,
       decoration: new BoxDecoration(
           color: AppColor.white, borderRadius: BorderRadius.circular(16)),

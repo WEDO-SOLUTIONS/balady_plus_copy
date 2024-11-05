@@ -4231,5 +4231,7 @@
   "noGoback": "لا، التراجع",
   "deletPathTitle": "تأكيد الغاء المسار",
   "enter_ekram_fourth_name": "ادخل الاسم الرابع",
-  "enternationilaty": "اختر الجنسية"
+  "enternationilaty": "اختر الجنسية",
+  "avaliableNationID": "هل لدى المتوفي هوية",
+  "serialNumber": "الرقم التسلسلي"
 }
