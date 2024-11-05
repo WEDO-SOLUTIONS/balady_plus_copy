@@ -41,6 +41,7 @@ import '../model/driver/transport_request_item_model.dart';
 import '../model/driver/trip_details_model.dart';
 import '../model/driver/trip_stations.dart';
 import '../model/mosque_ghusl_places_params.dart';
+import '../model/request_details_response_model/SaveDeceasedInfoParams.dart';
 import '../model/upload_letter_params.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -881,6 +882,25 @@ class EkramRepositoryImpl implements EkramRepository {
     try {
       final data =
           await remoteDataSource.saveDeathBurialInfo(requestId, params);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+  @override
+  Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(
+      String requestId, SaveDeceasedInfoParams params)async {
+    try {
+      final data =
+      await remoteDataSource.saveDeceasedInfo(requestId, params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

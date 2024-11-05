@@ -35,13 +35,20 @@ class _UsersEkramTransportationDetailsPageState
 
   @override
   Widget build(BuildContext context) {
-    DeceasedRequestDetails params =
-        ModalRoute.of(context)!.settings.arguments as DeceasedRequestDetails;
+    TransportRequestItemModel params =
+        ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
 
     return BlocProvider(
-      create: (context) => IdenticalListBloc(
-          getIdenticalListRequestDetails: sl(), isDriver: false),
-      child: BlocListener<ExtraDataBloc, ExtraDataState>(
+      create: (context) => EkramRequestTransportationBloc(
+          getCities: sl(),
+          getRequestDetails: sl(),
+          getHospitals: sl(),
+          getNationalities: sl(),
+          applyDeceasedTransport: sl(),
+          getCemeteryTypesLookUp: sl(),
+      ),
+
+      child: BlocListener<EkramRequestTransportationBloc, EkramRequestTransportationState>(
           listener: (context, state) {
             print("state $state");
             if (state.status == BlocStatus.failure) {
@@ -101,7 +108,7 @@ class _UsersEkramTransportationDetailsPageState
                           ],
                         ),
                         HomeTag(
-                          title: params.requestStatus ?? "",
+                          title: params.requestStatusName ?? "",
                           backgroundColor: AppColor.secondary100Light,
                         )
                       ],

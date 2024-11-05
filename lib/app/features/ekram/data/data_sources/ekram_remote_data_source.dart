@@ -41,6 +41,7 @@ import '../model/driver/GhuslEmploye.dart';
 import '../model/driver/deceased_attachment.dart';
 import '../model/driver/deceased_identical_item.dart';
 import '../model/driver/trip_stations.dart';
+import '../model/request_details_response_model/SaveDeceasedInfoParams.dart';
 
 abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<LookUpItem>>> getCities();
@@ -148,8 +149,8 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
   Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(
       String requestId);
-  Future<RequestDetailsResponseModel> saveDeceasedInfo(
-      int requestId, RequestDetailsResponseModel params);
+  Future<ResponseBodyModel> saveDeceasedInfo(
+      String requestId, SaveDeceasedInfoParams params);
   Future<ResponseBodyModel> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
 }
@@ -2515,18 +2516,28 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<RequestDetailsResponseModel> saveDeceasedInfo(
-      int requestId, RequestDetailsResponseModel params) async {
+  Future<ResponseBodyModel<dynamic>> saveDeceasedInfo(String requestId, SaveDeceasedInfoParams params) async {
     Response? response;
 
     try {
       response = await webService.dio
           .post(ApiUrl.saveDeceasdInfo(requestId), data: params.toJson());
-      final data = response.data;
+      // final data = response.data;
+      //
+      // final result = ResponseBodyModel.fromMap(data).data?.result;
+      //
+      // return result;
 
-      final result = ResponseBodyModel.fromMap(data).data?.result;
+      var data = response.data["data"]?["result"];
 
-      return RequestDetailsResponseModel.fromJson(result);
+      final decodedResponse =
+      ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.toFuture();
+
+
+
+
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

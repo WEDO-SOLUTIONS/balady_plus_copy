@@ -239,9 +239,12 @@ class EkramRequestTransportationState extends Equatable {
       ];
 
   bool isNextButtonEnabled() {
+
+
     if (currentPageValue == 0) {
-      return true;
-      // return isVerified ?? false;
+
+
+      return isVerified ?? false;
     }
 
     if (currentPageValue == 1) {

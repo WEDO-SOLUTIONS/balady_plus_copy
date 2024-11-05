@@ -102,7 +102,8 @@ class _EkramTransportationListPageState
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
-                    onTap: () => NavigationService.navigatorKey.currentState!
+                    onTap: () =>
+                        NavigationService.navigatorKey.currentState!
                         .pushNamed(
                             RouteName.EkramRequestTransportationStartService,
                             arguments: context.read<TransportRequestsBloc>()),
@@ -154,12 +155,23 @@ class _EkramTransportationListPageState
                                   ekramTransportationItem:
                                       state.deceasedRequestItems![index],
                                   OnDetailsPress: () {
-                                    context.read<TransportRequestsBloc>().add(
-                                        GetDeceasedTransportRequestDetailsEvent(
-                                            isDriver: false,
-                                            requestId: state
-                                                .deceasedRequestItems![index]
-                                                .requestId!));
+
+
+
+                                    NavigationService.navigatorKey.currentState!
+                                        .pushNamed(RouteName.driverEkramTransportationDetailsScreen,arguments:state
+                                        .deceasedRequestItems![index] );
+
+
+                                    // context.read<TransportRequestsBloc>().add(
+                                    //     GetDeceasedTransportRequestDetailsEvent(
+                                    //         isDriver: false,
+                                    //         requestId: state
+                                    //             .deceasedRequestItems![index]
+                                    //             .requestId!));
+
+
+
                                   },
                                 ),
                                 CustomVerticalSpace(

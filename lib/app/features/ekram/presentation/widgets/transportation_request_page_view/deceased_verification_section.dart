@@ -15,12 +15,17 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class DeceasedVerificationSection extends StatelessWidget {
-  const DeceasedVerificationSection({super.key});
+   DeceasedVerificationSection({super.key});
+
+  final TextEditingController? decesssedIdentity= TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EkramRequestTransportationBloc,
+
+    return BlocConsumer<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
+      listener: (context, state) {
+      },
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,15 +87,15 @@ class DeceasedVerificationSection extends StatelessWidget {
                             CustomTextFieldWidget(
                               label: "ekram_decesssed_identity".tr(),
                               isDigitsOnly: true,
-                              controller :TextEditingController()..text = state.deceasedId??"",
-
+                             controller :decesssedIdentity,
                               keyboardType: TextInputType.number,
                               onChanged: (String? val) {
-                                EkramRequestTransportationBloc b = context
-                                    .read<EkramRequestTransportationBloc>();
-                                context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .add(ChangeIdEvent(deceasedId: val));
+                                if(val != null) {
+                                  decesssedIdentity?.text = val;
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeIdEvent(deceasedId: val));
+                                }
                               },
                             ),
                             DeceasedBirthdateHijri(),

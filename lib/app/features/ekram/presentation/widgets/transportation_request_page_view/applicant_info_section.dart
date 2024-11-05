@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 
@@ -59,37 +60,52 @@ class ApplicantInfoSection extends StatelessWidget {
                               ],
                             ),
 
-                            CustomTextFieldWidget(
-                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??"",
-                                enabled: state.editInfoSection??true,
-                                label: "health_submitter_name".tr(),
-                                onChanged: (String? text) {
-
-                                //  context.read<EkramRequestTransportationBloc>().add(SetApplicantInfoEvent(mainInfo: MainInfo(firstName: text)));
 
 
-                                },
-                                onValidate: (String? value) {
-                                  return null;
-                                }),
-                            CustomTextFieldWidget(
-                                enabled: state.editInfoSection??true,
-                                label: "driver_card_applicant_mobile".tr(),
-                                hintText: "10541XXXXX".tr(),
-                                keyboardType: TextInputType.phone,
-                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.mobileNumber??"",
+                            ReadOnlyField(
+                              hieght: 55,
+                              title: "health_submitter_name".tr(),
+                              subTitle:state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??state.fullName!,
+                              subTitleColor:
+                              AppColor.grey1000.withOpacity(0.5),
+                              decoration: BoxDecoration(
+                                  color: AppColor.blackModern300Light
+                                      .withOpacity(0.4),
+                                  borderRadius:
+                                  BorderRadius.circular(8)),
+                            ),
 
-                                onChanged: (String? text) {},
-                                onValidate: (String? value) {
-                                  return null;
-                                }),
+                            ReadOnlyField(
+                              hieght: 55,
+                              title: "driver_card_applicant_mobile".tr(),
+                              subTitle:state.requestDetailsModel?.mainInfo?.submitterInfo?.mobileNumber??state.mobileNumber!,
+                              subTitleColor:
+                              AppColor.grey1000.withOpacity(0.5),
+                              decoration: BoxDecoration(
+                                  color: AppColor.blackModern300Light
+                                      .withOpacity(0.4),
+                                  borderRadius:
+                                  BorderRadius.circular(8)),
+                            ),
+
+
                             CustomTextFieldWidget(
                                 label: "ekramRelationShip".tr(),
-                                controller :TextEditingController()..text = state.requestDetailsModel?.mainInfo?.submitterInfo?.relationship??"",
-
+                                initialValue :state.requestDetailsModel?.mainInfo?.submitterInfo?.relationship??"",
                                 hintText: "10541XXXXX".tr(),
                                 keyboardType: TextInputType.phone,
-                                onChanged: (String? text) {},
+                                onChanged: (String? text) {
+
+                                  if(text != null)
+                                    {
+                                      context
+                                          .read<
+                                          EkramRequestTransportationBloc>()
+                                          .add(SetApplicantInfoEvent(
+                                          relation:text));
+                                    }
+
+                                },
                                 onValidate: (String? value) {
                                   return null;
                                 }),
@@ -124,7 +140,7 @@ class ApplicantInfoSection extends StatelessWidget {
             ),
              EkramPreviousNextButtons(btnPressed:(){
 
-               context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
+               context.read<EkramRequestTransportationBloc>().add(saveDeceasedInfoEvent());
 
             })
           ],

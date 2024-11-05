@@ -7,6 +7,7 @@ class ReadOnlyField extends StatelessWidget {
   final String? subTitle;
   final Color? subTitleColor;
   final bool showSpace;
+  final double? hieght;
   final BoxDecoration? decoration;
 
    ReadOnlyField(
@@ -15,7 +16,8 @@ class ReadOnlyField extends StatelessWidget {
       required this.title,
       this.subTitleColor,
       this.showSpace = true,
-      this.decoration
+      this.decoration,
+      this.hieght = 55,
       });
 
   @override
@@ -33,6 +35,7 @@ class ReadOnlyField extends StatelessWidget {
         Container(
             padding: const EdgeInsets.all(16),
             width: double.infinity,
+            height: hieght,
             decoration:decoration??  BoxDecoration(
                 color: Colors.transparent,
                 border:
