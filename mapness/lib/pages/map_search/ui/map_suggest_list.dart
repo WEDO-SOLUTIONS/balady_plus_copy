@@ -24,6 +24,26 @@ class MapSuggestList extends ConsumerWidget {
     final myLocation = ref.watch(locationProvider);
     final contentColor = context.colorsV2.backgroundSurface4;
 
+    void onObjectTap(DirectoryObjectMessage object) {
+      final objectId = object.id?.objectId;
+      if (objectId != null) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.searchKeys.suggestion,
+          group: MetricsConstants.searchTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'object': objectId,
+          },
+        );
+
+        PoiMapRoute.open(
+          ref.read(goRouterProvider),
+          objectId,
+          zoom: 18,
+        );
+      }
+    }
+
     return Padding(
       padding: const EdgeInsets.only(
         left: Spacing.$4x,
@@ -46,25 +66,7 @@ class MapSuggestList extends ConsumerWidget {
                   ? null
                   : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
               isLast: index == suggests.length - 1,
-              onObjectTap: (object) {
-                final objectId = object.id?.objectId;
-                if (objectId != null) {
-                  Metrics.logEventAdvanced(
-                    MetricsConstants.searchKeys.suggestion,
-                    group: MetricsConstants.searchTag,
-                    action: MetricAction.tap.toString(),
-                    props: {
-                      'object': objectId,
-                    },
-                  );
-
-                  PoiMapRoute.open(
-                    ref.read(goRouterProvider),
-                    objectId,
-                    zoom: 18,
-                  );
-                }
-              },
+              onObjectTap: onObjectTap,
             ),
             itemCount: suggests.length,
           ),
