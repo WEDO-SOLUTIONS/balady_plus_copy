@@ -154,4 +154,6 @@ abstract class EkramRepository {
       getSpecialTransportReasonsLookUp();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getTransportationCompaniesLookUp();
+        Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getPrayers();
 }
