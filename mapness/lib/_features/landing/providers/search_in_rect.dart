@@ -59,6 +59,18 @@ class SearchInRect extends _$SearchInRect {
       return false;
     }
 
+    // Check if the new rectangle is entirely within the old rectangle
+    final bool isNewInsideOld = newRect.northEast.latitude <= oldRect.northEast.latitude &&
+        newRect.northEast.longitude <= oldRect.northEast.longitude &&
+        newRect.southWest.latitude >= oldRect.southWest.latitude &&
+        newRect.southWest.longitude >= oldRect.southWest.longitude;
+
+    // If the new rectangle is within the old one, return false
+    if (isNewInsideOld) {
+      return false;
+    }
+
+    // Calculate the diagonal distance of the old rectangle
     final diag = CommonFunctions.distance(
       oldRect.northEast.latitude,
       oldRect.northEast.longitude,
@@ -66,12 +78,13 @@ class SearchInRect extends _$SearchInRect {
       oldRect.southWest.longitude,
     );
 
+    // Calculate the distance between the two rectangles' points
     final distance = CommonFunctions.distance(
-          oldRect.northEast.latitude,
-          oldRect.northEast.longitude,
-          newRect.northEast.latitude,
-          newRect.northEast.longitude,
-        ) +
+      oldRect.northEast.latitude,
+      oldRect.northEast.longitude,
+      newRect.northEast.latitude,
+      newRect.northEast.longitude,
+    ) +
         CommonFunctions.distance(
           oldRect.southWest.latitude,
           oldRect.southWest.longitude,
@@ -79,6 +92,7 @@ class SearchInRect extends _$SearchInRect {
           newRect.southWest.longitude,
         );
 
+    // Return true if the distance is more than half the diagonal of the old rectangle
     return distance > diag / 2;
   }
 }
