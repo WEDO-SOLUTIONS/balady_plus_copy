@@ -1,5 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/components.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -12,14 +11,14 @@ import 'package:urbi_utils/urbi_utils.dart';
 part 'widgets/routing_favourites_button.dart';
 
 class RoutingFavourites extends ConsumerWidget {
+  final bool showBookmark;
+  final void Function(FavouriteItem) onFavouriteTap;
+
   const RoutingFavourites({
     required this.showBookmark,
     required this.onFavouriteTap,
     super.key,
   });
-
-  final bool showBookmark;
-  final void Function(FavouriteItem) onFavouriteTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -85,19 +84,20 @@ class RoutingFavourites extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: Directionality(
+        // For all design, we use LTR
         textDirection: TextDirection.ltr,
         child: Row(
             children: <Widget>[
           if (showBookmark)
-            _Button(
+            _FavButton(
               icon: SystemIcons.bookmark,
               onTap: onFavouritesTap,
             ),
-          _Button(
+          _FavButton(
             icon: GeneralIcons.home,
             onTap: onHomeTap,
           ),
-          _Button(
+          _FavButton(
             icon: GeneralIcons.briefcase,
             onTap: onWorkTap,
           ),

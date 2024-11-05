@@ -1,10 +1,12 @@
 part of '../routing_favourites.dart';
 
-class _Button extends StatelessWidget {
+/// Special button for favourites to be used in [RoutingFavourites].
+/// Initially we use it for Home, Work and Favorites.
+class _FavButton extends StatelessWidget {
   final VoidCallback onTap;
   final IconData icon;
 
-  const _Button({
+  const _FavButton({
     required this.onTap,
     required this.icon,
     super.key,
