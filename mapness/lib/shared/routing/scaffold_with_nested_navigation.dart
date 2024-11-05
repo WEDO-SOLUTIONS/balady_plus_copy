@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/stories.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -62,8 +63,12 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
     final isOnboardingShown = ref.read(onboardingProvider);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(storiesOpenStateProvider.notifier).open();
       if (!isOnboardingShown) {
-        StoriesRoute.openOnboarding(context);
+        StoriesRoute.openOnboarding(
+          context,
+          onClose: ref.read(storiesOpenStateProvider.notifier).close,
+        );
         ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
       }
     });
