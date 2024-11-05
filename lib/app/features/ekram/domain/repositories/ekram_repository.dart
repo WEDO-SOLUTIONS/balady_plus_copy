@@ -51,27 +51,19 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getHospitals(
       int cityId);
 
-
-
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLookUp(
       int id);
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getEkramLookUp(
       String id);
 
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
+      getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-  getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params);
-
-
-
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-  getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params);
-
-
+      getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-  getCemetriesLookUp(int requestId, CemetriesParams params);
-
+      getCemetriesLookUp(int requestId, CemetriesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getNationalityTypes();
@@ -108,14 +100,16 @@ abstract class EkramRepository {
       int params);
   Future<Either<Failure, ResponseBodyModel<dynamic>>> completeTrip(int params);
 
-  Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>> uploadAttachment(int attachmentId, FileDataItem params );
+  Future<Either<Failure, ResponseBodyModel<DeceasedAttachment>>>
+      uploadAttachment(int attachmentId, FileDataItem params);
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> upadateDriverLocation(
       UpdateDriverLocationParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getStatus();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLocations();
-  Future<Either<Failure, ResponseBodyModel<dynamic>>> editAdditionalData(EditAdditionalRequest request);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> editAdditionalData(
+      EditAdditionalRequest request);
 
   Future<Either<Failure, ResponseBodyModel<UserInfoResponseModel>>>
       checkUserinfo(UserInfoRequestParams params);
@@ -148,8 +142,16 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel>> verifyDeceased(
       VerifyDeceasedParams params);
-  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>> requestDetails(String params);
+  Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>>
+      requestDetails(String params);
 
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
+
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getCemeteryTypesLookUp();
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getSpecialTransportReasonsLookUp();
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
+      getTransportationCompaniesLookUp();
 }

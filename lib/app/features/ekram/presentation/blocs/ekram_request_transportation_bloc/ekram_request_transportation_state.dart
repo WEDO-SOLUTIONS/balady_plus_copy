@@ -10,6 +10,8 @@ class EkramRequestTransportationState extends Equatable {
   final String? deceassedDOBHijri;
   final String? burialDateHijri;
   final LookUpItem? selectedNationalIdType;
+    final LookUpItem? selectedCemetryType;
+
         final List<LookUpItem>? countries;
   final BlocStatus status;
   final String? errorMessage;
@@ -17,6 +19,7 @@ class EkramRequestTransportationState extends Equatable {
   final List<LookUpItem>? cities;
   final List<LookUpItem>? hospitals;
   final List<LookUpItem>? nationalities;
+    final List<LookUpItem>? cemetryTypeItems;
   final bool? agreement;
   final String? fullName;
   final String? mobileNumber;
@@ -55,6 +58,7 @@ class EkramRequestTransportationState extends Equatable {
       this.errorMsg,
       this.nationalIdTypes,
       this.selectedNationalIdType,
+      this.selectedCemetryType,
       this.status = BlocStatus.initial,
       this.errorMessage,
       this.currentPageValue = 0,
@@ -62,6 +66,7 @@ class EkramRequestTransportationState extends Equatable {
       this.hospitals,
       this.countries,
       this.nationalities,
+      this.cemetryTypeItems,
       this.agreement,
       this.fullName,
       this.mobileNumber,
@@ -88,6 +93,7 @@ class EkramRequestTransportationState extends Equatable {
     final BlocStatus? status,
     final String? errorMsg,
     final LookUpItem? selectedNationalIdType,
+    final LookUpItem? selectedCemetryType,
     final List<LookUpItem>? nationalIdTypes,
     final String? errorMessage,
     final int? currentPageValue,
@@ -98,6 +104,7 @@ class EkramRequestTransportationState extends Equatable {
     final List<LookUpItem>? hospitals,
     final List<LookUpItem>? countries,
     final List<LookUpItem>? nationalities,
+    final List<LookUpItem>? cemetryTypeItems,
     final LookUpItem? selectedCity,
     final LookUpItem? selectedCountry,
     final LookUpItem? selectedHospital,
@@ -126,6 +133,8 @@ class EkramRequestTransportationState extends Equatable {
       errorMsg: errorMsg ?? this.errorMsg,
       selectedNationalIdType:
           selectedNationalIdType ?? this.selectedNationalIdType,
+      selectedCemetryType:
+          selectedCemetryType ?? this.selectedCemetryType,
       nationalIdTypes: nationalIdTypes ?? this.nationalIdTypes,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -137,6 +146,7 @@ class EkramRequestTransportationState extends Equatable {
       hospitals: hospitals ?? this.hospitals,
       countries: countries ?? this.countries,
       nationalities: nationalities ?? this.nationalities,
+      cemetryTypeItems: cemetryTypeItems ?? this.cemetryTypeItems,
       selectedCity: selectedCity ?? this.selectedCity,
       selectedCountry: selectedCountry ?? this.selectedCountry,
       selectedHospital: clearHospital == true
@@ -182,6 +192,7 @@ class EkramRequestTransportationState extends Equatable {
         isVerified,
         requestDetailsModel,
         selectedNationalIdType,
+        selectedCemetryType,
         currentPageValue,
         relation,
         deathLocation,
@@ -202,6 +213,7 @@ class EkramRequestTransportationState extends Equatable {
         burialDateHijri,
         isDeathDatesDisabled,
         isBurialDatesDisabled,
+        cemetryTypeItems
       ];
 
   bool isNextButtonEnabled() {

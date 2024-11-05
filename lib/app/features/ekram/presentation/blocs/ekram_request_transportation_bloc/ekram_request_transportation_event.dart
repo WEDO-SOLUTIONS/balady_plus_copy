@@ -35,6 +35,11 @@ class ChangeDeathDateEvent extends EkramRequestTransportationEvent {
   ChangeDeathDateEvent({this.gorgianDate, this.hijriDate});
 }
 
+class ChangeCemetryTypeEvent extends EkramRequestTransportationEvent {
+  final LookUpItem? item;
+  ChangeCemetryTypeEvent({this.item});
+}
+
 class ChangeCountryEvent extends EkramRequestTransportationEvent {
   final LookUpItem item;
   const ChangeCountryEvent({required this.item});

@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
-import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/add_deceased_dialog_params.dart';
 import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/deceased_require_transfer_widget.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/add_deceased/select_burial_destination_widget.dart';

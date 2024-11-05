@@ -2430,6 +2430,7 @@
   "nextTripStationType": "Next transportation station type",
   "nextTripStationName": "Next transportation station name",
   "nextTripStationArrivalTime": "Arrival time to the next station",
+  "arrivalCity": "Body arrival city",
   "register_trip_details": "Transportation flight registration",
   "trip_details": "transportation flight details",
   "trip_done": "Completed",
