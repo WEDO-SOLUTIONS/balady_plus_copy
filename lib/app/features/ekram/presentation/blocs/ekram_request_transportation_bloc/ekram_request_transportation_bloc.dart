@@ -29,12 +29,14 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../data/model/request_details_response_model/SaveDeceasedInfoParams.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 import '../../../data/model/request_details_response_model/main_info.dart';
 import '../../../data/model/request_details_response_model/request_details_response_model.dart';
 import '../../../domain/use_cases/get_death_cities.dart';
 import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_request_details.dart';
+import '../../../domain/use_cases/save_deceased_info.dart';
 
 part 'ekram_request_transportation_event.dart';
 
@@ -63,6 +65,8 @@ class EkramRequestTransportationBloc extends Bloc<
   final VerifyDeceased _verifyDeceased;
   final GetRequestDetails _getRequestDetails;
   final GetCountreies _getCountreies;
+  final SaveDeceasedInfo _saveDeceasedInfo;
+
 
   EkramRequestTransportationBloc(
       {
@@ -74,6 +78,7 @@ class EkramRequestTransportationBloc extends Bloc<
       required GetCemeteryTypesLookUp getCemeteryTypesLookUp,
       required ApplyDeceasedTransport applyDeceasedTransport,
       required GetRequestDetails getRequestDetails,
+
       this.ekramRequestsBloc})
       : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getCities = getCities,
@@ -83,6 +88,7 @@ class EkramRequestTransportationBloc extends Bloc<
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         _getRequestDetails = getRequestDetails,
+        _saveDeceasedInfo=SaveDeceasedInfo(repository: sl()),
         _deathCities = GetDeathCities(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
         super(EkramRequestTransportationState(
@@ -126,6 +132,9 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
     on<SetApplicantInfoEvent>(_setApplicantInfoDataHanlder);
     on<getRequestDetailsEvent>(_getRequestDetailsHandler);
+    on<saveDeceasedInfoEvent>(_saveDeceasedInfoHandler);
+
+
     getCountries();
 
     getNationalitiesHandler();
@@ -639,6 +648,29 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
+  Future<void> _saveDeceasedInfoHandler(saveDeceasedInfoEvent e, Emitter emitter) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+ var deceasedInfo= state.requestDetailsModel?.deceasedInfo;
+   deceasedInfo?.isMuslim ??= true;
+    deceasedInfo?.gender ??= "MALE";
+
+    final failureOrSuccess = await _saveDeceasedInfo([state.requestId!,SaveDeceasedInfoParams(mainInfo: state.requestDetailsModel?.mainInfo,deceasedInfo: deceasedInfo)]);
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+          isVerified: false));
+      return null;
+    }, (res) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        isVerified: true,
+        errorMessage: "",
+      ));
+      add(GoToNextPageEvent());
+    });
+  }
+
   Future<void> _changeDeceasedInfoDataHanlder(
       ChangeDeceasedUserInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
@@ -667,19 +699,22 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _setApplicantInfoDataHanlder(
       SetApplicantInfoEvent e, Emitter emitter) async {
-    // SaveDeceasedInfoParams? params = state.saveDeceasedInfoParams;
-    // params ??= SaveDeceasedInfoParams(
-    //     deceasedInfo: DeceasedInfo(gender: "MALE",isMuslim: true), mainInfo: MainInfo());
-    //
-    // DeceasedInfo info = params.deceasedInfo!;
-    //
-    // info = info.copyWith(nationalityId: e.item?.nationalityId,firstName: e.item?.firstName,secondName: e.item?.secondName,thirdName: e.item?.thirdName,fourthName: e.item?.fourthName,isMuslim: e.item?.isMuslim,gender: e.item?.gender);
-    // params = params.copyWith(deceasedInfo: info);
-    //
-    // emitter(state.copyWith(
-    //     errorMessage: "",
-    //     status: BlocStatus.success,
-    //     saveDeceasedInfoParams: params));
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(
+        deceasedInfo: DeceasedInfo(gender: "MALE", isMuslim: true),
+        mainInfo: MainInfo());
+
+    MainInfo info = params.mainInfo!;
+    SubmitterInfo submitter = SubmitterInfo(fullName: state.fullName,mobileNumber: state.mobileNumber,relationship: e.relation);
+
+    info = info.copyWith(submitterInfo: submitter,);
+    params = params.copyWith(mainInfo: info);
+
+    emitter(state.copyWith(
+        errorMessage: "",
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
   }
 
   bool isScreenEditable( RequestDetailsResponseModel? res)

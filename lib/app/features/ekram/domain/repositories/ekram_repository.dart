@@ -23,6 +23,7 @@ import '../../data/model/driver/trip_details_model.dart';
 import '../../data/model/ekram_attachment_response.dart';
 import '../../data/model/look_up_item_location_model.dart';
 import '../../data/model/mosque_ghusl_places_params.dart';
+import '../../data/model/request_details_response_model/SaveDeceasedInfoParams.dart';
 import '../../data/model/upload_letter_params.dart';
 import '../../ekram_exports.dart';
 import '../entities/active_grave_request_params.dart';
@@ -147,6 +148,9 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
+
+  Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(
+      String requestId, SaveDeceasedInfoParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getCemeteryTypesLookUp();

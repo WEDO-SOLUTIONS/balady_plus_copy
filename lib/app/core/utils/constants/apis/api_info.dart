@@ -421,8 +421,7 @@ class ApiUrl {
   static String mosquesGhuslPlaces(int requestId, String mosqueOrghusl) =>
       "v1/superapp-ekram-services/mosques-ghusl-places/$requestId/$mosqueOrghusl";
 
-  static String saveDeceasdInfo(int requestId) =>
-      "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
+
   static String saveDeathBurialInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-death-burial-info";
   static String cemetries(int requestId) =>
@@ -631,8 +630,8 @@ class ApiUrl {
   static  deleteAttachment (int requestId,int attachmentId) => 'v1/superapp-ekram-services/trips/$requestId/$attachmentId/delete-trip';
   static String deceasedRequestDetails(String requestId) =>
       "v1/superapp-ekram-services/request/$requestId/request-details";
-
-
+  static String saveDeceasdInfo(String requestId) =>
+      "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
 
 
 
