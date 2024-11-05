@@ -292,10 +292,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             bottom: false,
             child: StatefulBottomSheet(
               animateOpening: false,
-
-              /// TODO(Scroollocker): Fix this after fixing the issue with the bottom sheet.
-              /// Now we have a crash when we try build a bottom sheet again. For example after push and pop screens.
-              key: UniqueKey(),
+              key: const Key('POI CARD SHEET KEY'),
               scrollController: _bottomSheetController,
               topHeader: PoiPhotosHeader(
                 objectId: objectId,

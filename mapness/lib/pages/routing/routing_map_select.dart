@@ -1,4 +1,6 @@
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart' as uikitExt;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,8 +17,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/ui/buttons/app_close_button.dart';
-import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class RoutingMapSelect extends ConsumerStatefulWidget {
@@ -102,94 +102,78 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
               ),
             ),
             Container(
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(16),
+              decoration: BoxDecoration(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(uikit.RadiusBorder.xl),
                 ),
-                color: Colors.white,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
+                color: context.colorsV2.backgroundSurface1,
               ),
               child: SafeArea(
                 top: false,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6),
-                        child: SheetDragger(),
+                    uikit.Spacing.$2x.heightBox,
+                    const Center(child: SheetDragger()),
+                    uikit.Spacing.$3x.heightBox,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  context.l10n.pointToMap,
+                                  style: context.textStyleV3.h4SemiBold.copyWith(
+                                    color: context.color.textAndIconsBasePrimary,
+                                  ),
+                                ),
+                                uikit.Spacing.$1x.heightBox,
+                                Text(
+                                  context.l10n.moveMap,
+                                  style: context.textStyleV3.bodySmallRegular.copyWith(
+                                    color: context.color.textAndIconsBaseSecondary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          uikit.AppButton.close(onTap: _onClose),
+                        ],
                       ),
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.l10n.pointToMap,
-                                style: context.textStyle.heading2.copyWith(
-                                  color: context.color.textAndIconsBasePrimary,
-                                ),
-                              ),
-                              Text(
-                                context.l10n.moveMap,
-                                style: context.textStyle.footNote.copyWith(
-                                  color: context.color.textAndIconsBaseTertiary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        AppCloseButton(
-                          onPressed: () {
-                            Metrics.logEventAdvanced(
-                              MetricsConstants.routesKeys.specifyOnMapExit,
-                              group: MetricsConstants.routesTag,
-                              action: MetricAction.tap.toString(),
-                            );
-
-                            context.pop();
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
+                    uikit.Spacing.$2x.heightBox,
                     _NearestObject(
                       nearestObject: nearestObject,
                     ),
                     Padding(
                       padding: const EdgeInsets.only(
-                        top: 12,
-                        bottom: 8,
+                        left: uikit.Spacing.$4x,
+                        right: uikit.Spacing.$4x,
+                        top: uikit.Spacing.$3x,
+                        bottom: uikit.Spacing.$2x,
                       ),
-                      child: LabeledElevatedButton(
-                        label: context.l10n.done,
-                        onPressed: () {
-                          Metrics.logEventAdvanced(
-                            MetricsConstants.routesKeys.specifyOnMapDone,
-                            group: MetricsConstants.routesTag,
-                            action: MetricAction.tap.toString(),
-                          );
-
-                          switch (nearestObject.value!) {
-                            case DGisNearestObject(nearestPoint: final nearestPoint):
-                              context.pop(
-                                // We need to pass the coordinates of the nearest point
-                                // because coordinates of object like street or districts are so far from the selected point
-                                RoutePointCoordinates(nearestPoint.geoPoint),
-                              );
-                            case CooridnatesNearestObject(geoPoint: final geoPoint):
-                              context.pop(
-                                RoutePointCoordinates(geoPoint),
-                              );
-                          }
-                        },
-                        enabled: nearestObject.unwrapPrevious().hasValue,
+                      child: nearestObject.when(
+                        loading: () => uikit.BaladyAppButton(
+                          primaryLabel: context.l10n.done,
+                          buttonType: uikit.BaladyButtonType.secondary,
+                          buttonColorScheme: uikit.BaladyButtonColorScheme.neutral,
+                          onTap: null,
+                          buttonState: uikit.BaladyButtonState.loading,
+                        ),
+                        data: (data) => uikit.BaladyAppButton(
+                          primaryLabel: context.l10n.done,
+                          buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
+                          onTap: () => _onTap(data),
+                        ),
+                        error: (error, stackTrace) => uikit.BaladyAppButton(
+                          primaryLabel: context.l10n.done,
+                          buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
+                          onTap: null,
+                          buttonState: uikit.BaladyButtonState.disabled,
+                        ),
                       ),
                     ),
                   ],
@@ -201,6 +185,37 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
       ),
     );
   }
+
+  void _onTap(NearestObject nearestObject) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.specifyOnMapDone,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    switch (nearestObject) {
+      case DGisNearestObject(nearestPoint: final nearestPoint):
+        context.pop(
+          // We need to pass the coordinates of the nearest point
+          // because coordinates of object like street or districts are so far from the selected point
+          RoutePointCoordinates(nearestPoint.geoPoint),
+        );
+      case CooridnatesNearestObject(geoPoint: final geoPoint):
+        context.pop(
+          RoutePointCoordinates(geoPoint),
+        );
+    }
+  }
+
+  void _onClose() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.routesKeys.specifyOnMapExit,
+      group: MetricsConstants.routesTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    context.pop();
+  }
 }
 
 class _NearestObject extends StatelessWidget {
@@ -209,71 +224,19 @@ class _NearestObject extends StatelessWidget {
   final AsyncValue<NearestObject> nearestObject;
 
   @override
-  Widget build(BuildContext context) => Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(
-              top: 15,
-              bottom: 17,
-              left: 4,
-              right: 4,
-            ),
-            child: nearestObject.when(
-              data: (_) => SvgPicture.asset(
-                'assets/icons/svg/ic_routing_circle.svg',
-                package: PackageConfig.packageName,
-                width: 20,
-                height: 20,
-              ),
-              error: (_, __) => SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: context.color.textAndIconsBasePrimary,
-                ),
-              ),
-              loading: () => SizedBox(
-                width: 20,
-                height: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: context.color.textAndIconsBasePrimary,
-                ),
-              ),
-            ),
+  Widget build(BuildContext context) => uikit.ContentRowV2(
+        leading: const Icon(uikit.GeneralIcons.placeholder),
+        text: nearestObject.when(
+          data: (object) => uikit.ContentRowTextOptions(
+            title: _buildTitle(object),
           ),
-          const SizedBox(
-            width: 14,
+          error: (_, __) => uikit.ContentRowTextOptions(
+            title: context.l10n.moveMap,
           ),
-          Expanded(
-            child: nearestObject.when(
-              data: (object) => Text(
-                _buildTitle(object),
-                style: context.textStyle.text.copyWith(
-                  color: context.color.textAndIconsBasePrimary,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              error: (_, __) => Text(
-                context.l10n.moveMap,
-                style: context.textStyle.text.copyWith(
-                  color: context.color.textAndIconsBasePrimary,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              loading: () => Text(
-                context.l10n.moveMap,
-                style: context.textStyle.text.copyWith(
-                  color: context.color.textAndIconsBasePrimary,
-                ),
-                overflow: TextOverflow.ellipsis,
-              ),
-              skipLoadingOnRefresh: true,
-              skipLoadingOnReload: true,
-            ),
+          loading: () => uikit.ContentRowTextOptions(
+            title: context.l10n.moveMap,
           ),
-        ],
+        ),
       );
 
   String _buildTitle(NearestObject object) => switch (object) {

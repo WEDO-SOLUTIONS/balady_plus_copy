@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -130,53 +132,51 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
-            key: const Key('MAP SEARCH SHEET KEY'),
-            showBarrier: false,
-            controller: _dgisSheetController,
-            initialExpansion: _initialExpansion,
-            availableExpansions: const {
-              Expansion.hidden,
-              Expansion.middle,
-              Expansion.expanded,
-              Expansion.collapsed,
-            },
-            onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-            middleHeight: widget.biggestHeight * 0.8,
-            collapsedHeight: collapsedHeight,
-            scrollableBody: (context, scrollController) => ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(16),
-              ),
-              child: Material(
-                color: Colors.white,
-                child: SearchScope(
-                  named: SearchScopeEnum.map,
-                  child: CustomScrollView(
-                    controller: scrollController,
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-                      SliverPersistentHeader(
-                        delegate: MapSearchHeaderDelegate(
-                          requestFocus: widget.requestFocus,
-                          onClose: onClose,
-                        ),
-                        pinned: true,
-                      ),
-                      MapSearchContent(
-                        scrollController: scrollController,
-                      ),
-                    ],
+              key: const Key('MAP SEARCH SHEET KEY'),
+              showBarrier: false,
+              controller: _dgisSheetController,
+              initialExpansion: _initialExpansion,
+              availableExpansions: const {
+                Expansion.hidden,
+                Expansion.middle,
+                Expansion.expanded,
+                Expansion.collapsed,
+              },
+              onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
+              middleHeight: widget.biggestHeight * 0.8,
+              collapsedHeight: collapsedHeight,
+              scrollableBody: (context, scrollController) {
+                final bgColor = context.colorsV2.backgroundSurface1;
+                return ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(RadiusBorder.xl),
                   ),
-                ),
-              ),
-            ),
-          ),
+                  child: Material(
+                    color: bgColor,
+                    child: SearchScope(
+                      named: SearchScopeEnum.map,
+                      child: CustomScrollView(
+                        controller: scrollController,
+                        physics: const ClampingScrollPhysics(),
+                        slivers: [
+                          SliverPersistentHeader(
+                            delegate: MapSearchHeaderDelegate(
+                              backgroundColor: bgColor,
+                              requestFocus: widget.requestFocus,
+                              onClose: onClose,
+                            ),
+                            pinned: true,
+                          ),
+                          MapSearchContent(
+                            scrollController: scrollController,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
         ),
-        Container(
-          height: bottomSafeArea + 10,
-          width: double.maxFinite,
-          color: Colors.white,
-        )
       ],
     );
   }

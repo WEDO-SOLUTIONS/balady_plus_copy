@@ -43,6 +43,7 @@ class RoutingSearchContent extends ConsumerWidget {
 
     return searchState.map(
       empty: () => const SliverFillRemaining(
+        hasScrollBody: false,
         child: SafeArea(
           top: false,
           child: MapSearchEmpty(),
@@ -70,25 +71,19 @@ class RoutingSearchContent extends ConsumerWidget {
         ),
       ),
       suggest: (suggest) => SliverToBoxAdapter(
-        child: Container(
-          color: Colors.white,
-          child: SafeArea(
-            top: false,
-            child: RoutingSuggestList(
-              suggest: suggest,
-            ),
+        child: SafeArea(
+          top: false,
+          child: RoutingSuggestList(
+            suggest: suggest,
           ),
         ),
       ),
       results: (results) => SliverToBoxAdapter(
         child: SafeArea(
           top: false,
-          child: Container(
-            color: Colors.white,
-            child: RoutingSearchResults(
-              results: results,
-              scrollController: scrollController,
-            ),
+          child: RoutingSearchResults(
+            results: results,
+            scrollController: scrollController,
           ),
         ),
       ),
