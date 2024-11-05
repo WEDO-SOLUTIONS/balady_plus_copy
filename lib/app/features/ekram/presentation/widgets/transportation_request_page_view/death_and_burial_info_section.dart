@@ -283,10 +283,19 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               textSize: 16,
                             ),
                             CustomLookUpLongDialog(
-                              items: [],
-                              value: null,
-                              onChangeType: (LookUpItem? item) {},
-                              onEmptyList: () async {},
+                              items: state.specialTransportReasons ?? [],
+                              value: state.selectedSpecialTransportReason,
+                              onChangeType: (LookUpItem? item) {
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(ChangeSpecialTransportReasonsEvent(
+                                        item: item));
+                              },
+                              onEmptyList: () async {
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .getSpecialTransportReasons();
+                              },
                               label: ("reasonForSpecialTransfer").tr(),
                               hint: ("reasonForSpecialTransfer").tr(),
                             ),
@@ -302,15 +311,16 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 if (item != null) {
                                   context
                                       .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeCemetryTypeEvent(item: item));
+                                      .add(ChangeCemetryTypeItemsEvent(
+                                          item: item));
                                 }
                               },
                               label: ("cemetry_type").tr(),
                               hint: ("cemetry_type").tr(),
                             ),
                             CustomLookUpLongDialog(
-                              items: state.cemetryTypeItems ?? [],
-                              value: state.selectedCemetryType,
+                              items:  [],
+                              value: LookUpItem(),
                               onEmptyList: () async {},
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {}

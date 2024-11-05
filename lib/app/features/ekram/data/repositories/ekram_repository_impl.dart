@@ -128,6 +128,7 @@ class EkramRepositoryImpl implements EkramRepository {
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
     }
   }
+
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getPrayers() async {
@@ -895,12 +896,12 @@ class EkramRepositoryImpl implements EkramRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
   @override
   Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(
-      String requestId, SaveDeceasedInfoParams params)async {
+      String requestId, SaveDeceasedInfoParams params) async {
     try {
-      final data =
-      await remoteDataSource.saveDeceasedInfo(requestId, params);
+      final data = await remoteDataSource.saveDeceasedInfo(requestId, params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -938,7 +939,7 @@ class EkramRepositoryImpl implements EkramRepository {
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getSpecialTransportReasonsLookUp() async {
     try {
-      final data = await remoteDataSource.getCemeteryTypesLookUp();
+      final data = await remoteDataSource.getSpecialTransportReasonsLookUp();
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
