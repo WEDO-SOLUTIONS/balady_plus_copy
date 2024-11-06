@@ -4,6 +4,7 @@ import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transpor
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetery_types_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_prayers.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_special_transport_reasons_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/verify_deceased.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_verification_section.dart';
@@ -50,10 +51,10 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetEkramIdentityTypes _getEkramIdentityTypes;
 
   PageController controller = PageController();
- // TransportRequestsBloc? ekramRequestsBloc;
+  // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
-      DeceasedVerificationSection(),
-     DeceasedInfoSection(),
+    DeceasedVerificationSection(),
+    DeceasedInfoSection(),
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
@@ -70,28 +71,25 @@ class EkramRequestTransportationBloc extends Bloc<
   final SaveDeceasedInfo _saveDeceasedInfo;
 
   final GetPrayers _getPrayers;
+  final GetSpecialTransportReasonsLookUp _getSpecialTransportReasons;
 
-  EkramRequestTransportationBloc(
-      {
-
-
-        required GetCities getCities,
-      required GetHospitals getHospitals,
-      required GetNationalities getNationalities,
-      required GetCemeteryTypesLookUp getCemeteryTypesLookUp,
-      required ApplyDeceasedTransport applyDeceasedTransport,
-      required GetRequestDetails getRequestDetails,
-
-      })
-      : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
+  EkramRequestTransportationBloc({
+    required GetCities getCities,
+    required GetHospitals getHospitals,
+    required GetNationalities getNationalities,
+    required GetCemeteryTypesLookUp getCemeteryTypesLookUp,
+    required ApplyDeceasedTransport applyDeceasedTransport,
+    required GetRequestDetails getRequestDetails,
+  })  : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getHospitals = getHospitals,
         _getCemeteryTypesLookUp = getCemeteryTypesLookUp,
         _getCountreies = GetCountreies(repository: sl()),
         _getPrayers = GetPrayers(repository: sl()),
+        _getSpecialTransportReasons = GetSpecialTransportReasonsLookUp(repository: sl()),
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         _getRequestDetails = getRequestDetails,
-        _saveDeceasedInfo=SaveDeceasedInfo(repository: sl()),
+        _saveDeceasedInfo = SaveDeceasedInfo(repository: sl()),
         _deathCities = GetDeathCities(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
         super(EkramRequestTransportationState(
@@ -99,9 +97,6 @@ class EkramRequestTransportationBloc extends Bloc<
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"),
             requestDetailsModel: null)) {
-
-
-
     on<EkramRequestTransportationEvent>((event, emit) {});
 
     on<ChangeAgreementEvent>(_changeAgreementHandler);
@@ -120,6 +115,7 @@ class EkramRequestTransportationBloc extends Bloc<
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
 
     on<GetHospitalsEvent>(_getHospitalsHandler);
+    on<ChangeCemetryTypeItemsEvent>(_getCemetryTypeItemsHandler);
     on<AddDeceasedEvent>(_addDeceasedHandler);
     on<DeleteDeceasedEvent>(_deleteDeceasedHandler);
     on<EditDeceasedEvent>(_editDeceasedHandler);
@@ -131,6 +127,8 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeCountryEvent>(_changeCountryHandler);
     on<ChangeDeathCityEvent>(_changeCityHandler);
     on<ChangePrayerEvent>(_changePrayerHandler);
+    on<ChangeSpecialTransportReasonsEvent>(
+        _changeSpecialTransportReasonsHandler);
     on<ChangeBurialCityEvent>(_changeBurialCityHandler);
     on<ChangeHospitalEvent>(_changeHospitalHandler);
     on<ChangebodyArrivalCitiesEvent>(_changebodyArrivalCitiesHandler);
@@ -142,7 +140,6 @@ class EkramRequestTransportationBloc extends Bloc<
     on<SetApplicantInfoEvent>(_setApplicantInfoDataHanlder);
     on<getRequestDetailsEvent>(_getRequestDetailsHandler);
     on<saveDeceasedInfoEvent>(_saveDeceasedInfoHandler);
-
 
     getCountries();
     getPrayers();
@@ -177,6 +174,16 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<void> _changePrayerHandler(
       ChangePrayerEvent e, Emitter emitter) async {
     emitter(state.copyWith(selectedPrayer: e.item, errorMessage: ""));
+  }
+  Future<void> _getCemetryTypeItemsHandler(
+      ChangeCemetryTypeItemsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(selectedCemetryType: e.item, errorMessage: ""));
+  }
+
+  Future<void> _changeSpecialTransportReasonsHandler(
+      ChangeSpecialTransportReasonsEvent e, Emitter emitter) async {
+    emitter(state.copyWith(
+        selectedSpecialTransportReason: e.item, errorMessage: ""));
   }
 
   Future<void> _changeBurialCityHandler(
@@ -370,6 +377,24 @@ class EkramRequestTransportationBloc extends Bloc<
       return success.data?.result;
     });
   }
+  Future<List<LookUpItem>?> getSpecialTransportReasons() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getSpecialTransportReasons(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+          status: BlocStatus.success,
+          specialTransportReasons: success.data?.result,
+          errorMessage: ""));
+      return success.data?.result;
+    });
+  }
 
   Future<void> _changeCemetryTypeEventHandler(
       ChangeCemetryTypeEvent e, Emitter emitter) async {
@@ -395,10 +420,8 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
       emit(state.copyWith(
           status: BlocStatus.success,
-          countries: success.data?.result,
-          errorMessage: "",
-          selectedCountry: success.data?.result
-              ?.firstWhere((value) => value.localCountry == true)));
+          cemetryTypeItems: success.data?.result,
+          errorMessage: ""));
       return success.data?.result;
     });
   }
@@ -648,7 +671,6 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         deceasedId: e.deceasedId,
         errorMessage: ""));
-
   }
 
   // fawzi
@@ -679,7 +701,6 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
-
   Future<void> _getRequestDetailsHandler(
       getRequestDetailsEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
@@ -702,13 +723,19 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
-  Future<void> _saveDeceasedInfoHandler(saveDeceasedInfoEvent e, Emitter emitter) async {
+  Future<void> _saveDeceasedInfoHandler(
+      saveDeceasedInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
- var deceasedInfo= state.requestDetailsModel?.deceasedInfo;
-   deceasedInfo?.isMuslim ??= true;
+    var deceasedInfo = state.requestDetailsModel?.deceasedInfo;
+    deceasedInfo?.isMuslim ??= true;
     deceasedInfo?.gender ??= "MALE";
 
-    final failureOrSuccess = await _saveDeceasedInfo([state.requestId!,SaveDeceasedInfoParams(mainInfo: state.requestDetailsModel?.mainInfo,deceasedInfo: deceasedInfo)]);
+    final failureOrSuccess = await _saveDeceasedInfo([
+      state.requestId!,
+      SaveDeceasedInfoParams(
+          mainInfo: state.requestDetailsModel?.mainInfo,
+          deceasedInfo: deceasedInfo)
+    ]);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
           status: BlocStatus.failure,
@@ -734,7 +761,6 @@ class EkramRequestTransportationBloc extends Bloc<
 
     DeceasedInfo info = params.deceasedInfo!;
 
-
     info = info.copyWith(
         nationalityId: e.item?.nationalityId,
         firstName: e.item?.firstName,
@@ -759,27 +785,27 @@ class EkramRequestTransportationBloc extends Bloc<
         mainInfo: MainInfo());
 
     MainInfo info = params.mainInfo!;
-    SubmitterInfo submitter = SubmitterInfo(fullName: state.fullName,mobileNumber: state.mobileNumber,relationship: e.relation);
+    SubmitterInfo submitter = SubmitterInfo(
+        fullName: state.fullName,
+        mobileNumber: state.mobileNumber,
+        relationship: e.relation);
 
-    info = info.copyWith(submitterInfo: submitter,);
+    info = info.copyWith(
+      submitterInfo: submitter,
+    );
     params = params.copyWith(mainInfo: info);
 
     emitter(state.copyWith(
         errorMessage: "",
         status: BlocStatus.success,
         requestDetailsModel: params));
-
   }
 
-  bool isScreenEditable( RequestDetailsResponseModel? res)
-  {
-
-    if(res?.deceasedInfo?.deceasedDataSource == null|| res?.deceasedInfo?.deceasedDataSource =="MANUALLY" )
-      {
-        return true;
-      }
-
-    else {
+  bool isScreenEditable(RequestDetailsResponseModel? res) {
+    if (res?.deceasedInfo?.deceasedDataSource == null ||
+        res?.deceasedInfo?.deceasedDataSource == "MANUALLY") {
+      return true;
+    } else {
       return false;
     }
   }

@@ -159,6 +159,18 @@ class ChangePrayerEvent extends EkramRequestTransportationEvent {
   final LookUpItem? item;
   const ChangePrayerEvent({this.item});
 }
+class ChangeCemetryTypeItemsEvent extends EkramRequestTransportationEvent {
+  final LookUpItem? item;
+  const ChangeCemetryTypeItemsEvent({this.item});
+}
+class ChangeCemetryNamesItemsEvent extends EkramRequestTransportationEvent {
+  final LookUpItem? item;
+  const ChangeCemetryNamesItemsEvent({this.item});
+}
+class ChangeSpecialTransportReasonsEvent extends EkramRequestTransportationEvent {
+  final LookUpItem? item;
+  const ChangeSpecialTransportReasonsEvent({this.item});
+}
 
 class ChangeDeceasedUserInfoEvent extends EkramRequestTransportationEvent {
   final DeceasedInfo? item;

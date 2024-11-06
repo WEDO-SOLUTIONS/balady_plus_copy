@@ -12,7 +12,6 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
-
 class ApplicantInfoSection extends StatelessWidget {
   const ApplicantInfoSection({super.key});
 
@@ -59,59 +58,53 @@ class ApplicantInfoSection extends StatelessWidget {
                                 )
                               ],
                             ),
-
-
-
                             ReadOnlyField(
                               hieght: 55,
                               title: "health_submitter_name".tr(),
-                              subTitle:state.requestDetailsModel?.mainInfo?.submitterInfo?.fullName??state.fullName!,
-                              subTitleColor:
-                              AppColor.grey1000.withOpacity(0.5),
+                              subTitle: state.requestDetailsModel?.mainInfo
+                                      ?.submitterInfo?.fullName ??
+                                  state.fullName!,
+                              subTitleColor: AppColor.grey1000.withOpacity(0.5),
                               decoration: BoxDecoration(
                                   color: AppColor.blackModern300Light
                                       .withOpacity(0.4),
-                                  borderRadius:
-                                  BorderRadius.circular(8)),
+                                  borderRadius: BorderRadius.circular(8)),
                             ),
-
                             ReadOnlyField(
                               hieght: 55,
                               title: "driver_card_applicant_mobile".tr(),
-                              subTitle:state.requestDetailsModel?.mainInfo?.submitterInfo?.mobileNumber??state.mobileNumber!,
-                              subTitleColor:
-                              AppColor.grey1000.withOpacity(0.5),
+                              subTitle: state.requestDetailsModel?.mainInfo
+                                      ?.submitterInfo?.mobileNumber ??
+                                  state.mobileNumber!,
+                              subTitleColor: AppColor.grey1000.withOpacity(0.5),
                               decoration: BoxDecoration(
                                   color: AppColor.blackModern300Light
                                       .withOpacity(0.4),
-                                  borderRadius:
-                                  BorderRadius.circular(8)),
+                                  borderRadius: BorderRadius.circular(8)),
                             ),
-
-
                             CustomTextFieldWidget(
                                 label: "ekramRelationShip".tr(),
-                                initialValue :state.requestDetailsModel?.mainInfo?.submitterInfo?.relationship??"",
-                                hintText: "10541XXXXX".tr(),
+                                initialValue: state
+                                        .requestDetailsModel
+                                        ?.mainInfo
+                                        ?.submitterInfo
+                                        ?.relationship ??
+                                    "",
+                                hintText: "ekramRelationShip".tr(),
                                 keyboardType: TextInputType.phone,
                                 onChanged: (String? text) {
-
-                                  if(text != null)
-                                    {
-                                      context
-                                          .read<
-                                          EkramRequestTransportationBloc>()
-                                          .add(SetApplicantInfoEvent(
-                                          relation:text));
-                                    }
-
+                                  if (text != null) {
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(SetApplicantInfoEvent(
+                                            relation: text));
+                                  }
                                 },
                                 onValidate: (String? value) {
                                   return null;
                                 }),
                             CustomLookUpLongDialog(
                               items: const [],
-
                               value: LookUpItem(
                                   name: 'transportation_from_hospital'.tr(),
                                   id: 3),
@@ -138,10 +131,10 @@ class ApplicantInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-             EkramPreviousNextButtons(btnPressed:(){
-
-               context.read<EkramRequestTransportationBloc>().add(saveDeceasedInfoEvent());
-
+            EkramPreviousNextButtons(btnPressed: () {
+              context
+                  .read<EkramRequestTransportationBloc>()
+                  .add(saveDeceasedInfoEvent());
             })
           ],
         );
