@@ -63,8 +63,8 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
     final isOnboardingShown = ref.read(onboardingProvider);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(storiesOpenStateProvider.notifier).open();
       if (!isOnboardingShown) {
+        ref.read(storiesOpenStateProvider.notifier).open();
         StoriesRoute.openOnboarding(
           context,
           onClose: ref.read(storiesOpenStateProvider.notifier).close,
