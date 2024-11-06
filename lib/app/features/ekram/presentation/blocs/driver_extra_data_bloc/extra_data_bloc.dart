@@ -207,12 +207,14 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
 
     final failureOrSuccess = await _deleteAttachment([e.item?.id!,e.requestId]);
 
+
     failureOrSuccess.fold((failure) {
       print(failure);
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
+      CommonFunctions.showError((failure as ServerFailure).errorMessage);
     }, (res) async {
 
       if(res.data?.result == true)
