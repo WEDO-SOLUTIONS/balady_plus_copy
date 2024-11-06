@@ -26,7 +26,6 @@ import 'package:mapness/_features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/_features/poi_card/widgets/footer/poi_card_footer.dart';
 import 'package:mapness/_features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/_features/poi_card/widgets/photos_header/poi_photos_header.dart';
-import 'package:mapness/_features/poi_card/widgets/poi_background.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_card_map_controls_v2.dart';
 import 'package:mapness/_features/poi_card/widgets/poi_favorite_dialog.dart';
@@ -247,11 +246,12 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     return Stack(
       children: [
-        Positioned.fill(
-          child: PoiBackground(
-            bottomSheetAspectRatio: _bottomSheetAspectRatio,
-          ),
-        ),
+        // TODO(Ayat) It seems that in general this is not necessary
+        // Positioned.fill(
+        //   child: PoiBackground(
+        //     bottomSheetAspectRatio: _bottomSheetAspectRatio,
+        //   ),
+        // ),
         Positioned(
           ///Retrieve padding for map controls when photo is shown
           ///also map controls has own padding that calculates from bottomSheetHeight
