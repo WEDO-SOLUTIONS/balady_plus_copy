@@ -1,8 +1,8 @@
 class Age {
-  dynamic year;
-  dynamic month;
-  dynamic day;
-  dynamic description;
+  int? year;
+  int? month;
+  int? day;
+  String? description;
 
   Age({this.year, this.month, this.day, this.description});
 

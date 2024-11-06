@@ -69,7 +69,7 @@ class ExtraDataCardWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.max,
                 children: [
                   SizedBox(height: 15,),
-                  EkramHeaderAndDescWidget_new(
+                  EkramHeaderAndDescWidget_With_Background(
                     title: ('deceasedName').tr(),
                     details: item.deceasedName ?? "",
                   ),

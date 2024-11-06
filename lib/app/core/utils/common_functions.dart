@@ -1611,6 +1611,57 @@ class CommonFunctions {
     }
   }
 
+
+
+  static String? hijriToGregorian(String? hijriDate ) {
+
+    try
+    {
+      if(hijriDate != null && hijriDate.isNotEmpty) {
+        List<int> dateSplitted =
+        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate)
+            .split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        var gDate = HijriCalendar();
+        DateTime gorgianDate = gDate.hijriToGregorian(
+            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+        String gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
+        return gorgian;
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
+  static String? gregorianToHijri(String? gorgianDate ) {
+
+    try
+    {
+      if(gorgianDate != null && gorgianDate.isNotEmpty) {
+        List<int> dateSplitted = gorgianDate.split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        String hijri = HijriCalendar.fromDate(
+            DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
+            .toFormat("yyyy/mm/dd");
+
+        return hijri;
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
+
   static String getIssueCrWarning3() {
     if (CommonFunctions.isAppAR) {
       return '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>';

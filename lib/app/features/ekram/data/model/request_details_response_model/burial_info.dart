@@ -9,6 +9,9 @@ class BurialInfo {
   String? cityName;
   String? burialDestination;
   String? burialDestinationName;
+   int? approvalStatusId;
+   String? approvalStatusName;
+   String? approvalDate;
 
   BurialInfo({
     this.permitNumber,
@@ -21,6 +24,9 @@ class BurialInfo {
     this.cityName,
     this.burialDestination,
     this.burialDestinationName,
+    this.approvalStatusId,
+    this.approvalStatusName,
+    this.approvalDate,
   });
 
   factory BurialInfo.fromJson(Map<String, dynamic> json) => BurialInfo(
@@ -34,6 +40,9 @@ class BurialInfo {
         cityName: json['cityName'] as String?,
         burialDestination: json['burialDestination'] as String?,
         burialDestinationName: json['burialDestinationName'] as String?,
+        approvalStatusId: json['approvalStatusId'] as int?,
+        approvalStatusName: json['approvalStatusName'] as String?,
+        approvalDate: json['approvalDate'] as String?,
       );
 
   Map<String, dynamic> toJson() => {

@@ -33,11 +33,13 @@ import '../../../../new_appointment/presentation/core/models/lookup_list_model.d
 import '../../../data/model/request_details_response_model/SaveDeceasedInfoParams.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 import '../../../data/model/request_details_response_model/main_info.dart';
+import '../../../data/model/request_details_response_model/submitter_info.dart';
 import '../../../data/model/request_details_response_model/request_details_response_model.dart';
 import '../../../domain/use_cases/get_death_cities.dart';
 import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_request_details.dart';
 import '../../../domain/use_cases/save_deceased_info.dart';
+
 
 part 'ekram_request_transportation_event.dart';
 

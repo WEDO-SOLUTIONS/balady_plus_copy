@@ -22,103 +22,150 @@ class DeceasedInfoWidget_new extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomVerticalSpace(height: 10),
-        CustomTextWidget(
-          "deceasedData".tr(),
-          fontSize: 20.0,
-          fontWeight: AppFontWeight.bold,
-          fontColor: AppColor.blackModern700Light,
-          maxLines: 1,
-          textOverflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.start,
-        ),
+    return
+      Container(
+        width: MediaQuery.of(context).size.width - 30,
+        decoration: new BoxDecoration(
+            color: AppColor.white, borderRadius: BorderRadius.circular(16)),
+        child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomVerticalSpace(height: 10),
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: CustomTextWidget(
+              "deceasedInfo".tr(),
+              fontSize: 20.0,
+              fontWeight: AppFontWeight.bold,
+              fontColor: AppColor.blackModern700Light,
+              maxLines: 1,
+              textOverflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.start,
+            ),
+          ),
 
-        Container(
-          width: MediaQuery.of(context).size.width - 60,
-          decoration: new BoxDecoration(
-              color: AppColor.white, borderRadius: BorderRadius.circular(16)),
+          EkramHeaderAndDescWidget_With_Background(
+              title: ('avaliableNationID').tr(),
+              details: item?.hasIdentity == true ? "Yes".tr():"No".tr(),
+          ),
 
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              SizedBox(height: 15,),
-              EkramHeaderAndDescWidget_new(
-                  title: ('avaliableNationID').tr(),
-                  details: item?.hasIdentity == true ? "Yes".tr():"No".tr(),
-              ),
+          SizedBox(height: 8,),
+              Container(
+            decoration: new BoxDecoration(
+                color: AppColor.greenOptacty.withOpacity(0.5), borderRadius: BorderRadius.circular(8)),
+            margin: EdgeInsets.only(left: 10,right: 10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: EkramHeaderAndDescWidget_With_Background(
 
-              Row(
-                children: [
-                  EkramHeaderAndDescWidget_new(
                     title: ('user_data_applicant_type').tr(),
                     details: item?.identityTypeName??"",
+                      color:Colors.transparent,
+                      margin:EdgeInsets.all(0)
                   ),
-                  EkramHeaderAndDescWidget_new(
+                ),
+                Expanded(
+                  child: EkramHeaderAndDescWidget_With_Background(
                     title: ('lbl_ID_hint1').tr(),
                     details: item?.identityNumber?? "",
+                    color:Colors.transparent,
+                      margin:EdgeInsets.all(0)
                   ),
-                ],
-              ),
+                ),
+              ],
+            ),
+          ),
 
-                  Row(
-                    children: [
-                      EkramHeaderAndDescWidget_new(
+              SizedBox(height: 15,),
+              Container(
+                decoration: new BoxDecoration(
+                    color: AppColor.greenOptacty.withOpacity(0.5), borderRadius: BorderRadius.circular(8)),
+                margin: EdgeInsets.only(left: 10,right: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: ('cemetry_dob_gorgian').tr(),
                         details: item?.birthDate??"",
+                          color:Colors.transparent,
+                          margin:EdgeInsets.all(0)
                       ),
-                      EkramHeaderAndDescWidget_new(
+                    ),
+                    Expanded(
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: ('cemetry_dob_hijri').tr(),
                         details: item?.birthDate??"",
+                          color:Colors.transparent,
+                          margin:EdgeInsets.all(0)
                       ),
-                    ],
-                  ),
-
-                  Row(
-                    children: [
-                      EkramHeaderAndDescWidget_new(
+                    ),
+                  ],
+                ),
+              ),
+            SizedBox(height: 15,),
+              Container(
+                decoration: new BoxDecoration(
+                    color: AppColor.greenOptacty.withOpacity(0.5), borderRadius: BorderRadius.circular(8)),
+                margin: EdgeInsets.only(left: 10,right: 10),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 1,
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: ('ekram_first_name').tr(),
                         details: item?.firstName??"",
+                          color:Colors.transparent,
+                          margin:EdgeInsets.all(0)
                       ),
-                      EkramHeaderAndDescWidget_new(
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: ('ekram_second_name').tr(),
                         details: item?.secondName??"",
+                          color:Colors.transparent,
+                          margin:EdgeInsets.all(0)
                       ),
-                      EkramHeaderAndDescWidget_new(
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: ('ekram_third_name').tr(),
                         details: item?.thirdName??"",
+                          color:Colors.transparent,
+                          margin:EdgeInsets.all(0)
                       ),
-                      EkramHeaderAndDescWidget_new(
+                    ),
+                    Expanded(
+                      flex: 1,
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: ('ekram_fourth_name').tr(),
                         details: item?.fourthName??"",
+                          color:Colors.transparent,
+                          margin:EdgeInsets.all(0)
                       ),
-                    ],
-                  ),
-
-
-              EkramHeaderAndDescWidget_new(
-                title: ('personal_nationality').tr(),
-                details: item?.nationalityName??"",
+                    ),
+                  ],
+                ),
               ),
-              EkramHeaderAndDescWidget_new(
-                title: ('personal_gender').tr(),
-                details: item?.gender ??"",
-              ),
-              EkramHeaderAndDescWidget_new(
-                title: ('ekramReligion').tr(),
-                details: item?.isMuslim == true ? "muslim".tr():"non_muslim".tr(),
-              ),
-
-            ],
+          SizedBox(height: 8,),
+          EkramHeaderAndDescWidget_With_Background(
+            title: ('personal_nationality').tr(),
+            details: item?.nationalityName??"",
           ),
-        )
-        
-      ],
-    );;
+          EkramHeaderAndDescWidget_With_Background(
+            title: ('personal_gender').tr(),
+            details: (item?.gender == "FEMALE")?"female".tr() :"male".tr(),
+          ),
+          EkramHeaderAndDescWidget_With_Background(
+            title: ('ekramReligion').tr(),
+            details: item?.isMuslim == true ? "muslim".tr():"non_muslim".tr(),
+          )
+
+        ],
+            ),
+      );
   }
 }
