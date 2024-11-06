@@ -36,6 +36,7 @@ import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -44,6 +45,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
@@ -131,6 +133,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // restoreState();
       clearCache();
       checkNavigationState();
+      // TODO: Dmitrii.P: Is it the right place to call this method?
+      // Maybe we should call it upper or in the different places too?
+      final track = ref.read(urbiAnalyticsProvider).track;
+      AdvancedMetrics.instance.stopMeasureStartup(track: track);
+      AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
+      AdvancedMetrics.instance.startMeasureBattery();
     });
   }
 

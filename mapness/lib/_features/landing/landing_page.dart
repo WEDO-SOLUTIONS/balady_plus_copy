@@ -26,6 +26,7 @@ import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/beta_notification.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
@@ -124,6 +125,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
       ref.read(freeRoamStarterProvider.notifier).reset();
+      AdvancedMetrics.instance.resumeMeasureBattery();
+    } else if (state == AppLifecycleState.paused) {
+      AdvancedMetrics.instance.pauseMeasureBattery();
     }
 
     super.didChangeAppLifecycleState(state);

@@ -8,14 +8,6 @@ export 'dgis_map.dart';
 
 export 'dgis_map_controller.dart';
 
-export 'widgets/speed_info_widget.dart';
-
-export 'widgets/compass_control_widget.dart';
-
-export 'widgets/zoom_control_widget.dart';
-
-export 'widgets/message_widget.dart';
-
 export 'navi/free_roam_controller.dart';
 
 export 'navi/compass_controller.dart';

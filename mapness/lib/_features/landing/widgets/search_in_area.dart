@@ -2,7 +2,9 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class SearchInArea extends ConsumerWidget {
@@ -18,6 +20,12 @@ class SearchInArea extends ConsumerWidget {
     }
     return MapButton(
       onTap: () {
+        Metrics.logEventAdvanced(
+          MetricsConstants.searchKeys.searchInThisArea,
+          group: MetricsConstants.searchTag,
+          action: MetricAction.tap.toString(),
+        );
+
         ref.read(searchInRectProvider.notifier).update();
       },
       child: Padding(
