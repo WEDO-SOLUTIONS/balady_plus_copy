@@ -2,8 +2,10 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:rxdart/transformers.dart';
 
 part 'search_in_rect.g.dart';
 
@@ -13,7 +15,8 @@ class SearchInRect extends _$SearchInRect {
   (GeoRectMessage?, bool) build() {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
-    final subscription = dgisController?.visibleRectEvents.listen((event) async {
+    final subscription =
+        dgisController?.visibleRectEvents.debounceTime(const Duration(milliseconds: 300)).listen((event) async {
       _setDefaultValue(event);
 
       final isSearchRunning = ref.watch(searchProvider(SearchScopeEnum.map.value).notifier).isSearchRunning;
@@ -55,18 +58,19 @@ class SearchInRect extends _$SearchInRect {
   }
 
   bool _buttonVisible(GeoRectMessage? oldRect, GeoRectMessage newRect) {
-    if (oldRect == null) {
+    final zoom = ref.read(cameraPositionProvider)?.zoom;
+    if (oldRect == null || (zoom != null && zoom == 14)) {
       return false;
     }
 
     // Check if the new rectangle is entirely within the old rectangle
-    final bool isNewInsideOld = newRect.northEast.latitude <= oldRect.northEast.latitude &&
+    final bool isNextInsidePrev = newRect.northEast.latitude <= oldRect.northEast.latitude &&
         newRect.northEast.longitude <= oldRect.northEast.longitude &&
         newRect.southWest.latitude >= oldRect.southWest.latitude &&
         newRect.southWest.longitude >= oldRect.southWest.longitude;
 
     // If the new rectangle is within the old one, return false
-    if (isNewInsideOld) {
+    if (isNextInsidePrev) {
       return false;
     }
 

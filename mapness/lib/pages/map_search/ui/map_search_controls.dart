@@ -31,25 +31,26 @@ class MapSearchSheetControls extends ConsumerStatefulWidget {
 }
 
 class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> {
+
+  void _searchInArea() {
+    ref.read(searchInRectProvider.notifier).update();
+    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final double screenHeight = MediaQuery
-        .of(context)
-        .size
-        .height;
+    final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
     double bottomPadding = 16;
 
     // Hide controls when the bottom sheet is expanded
-
     final locationBottomSheet = (widget.currentSize ?? 0) > 0.75;
     hideControls = locationBottomSheet;
 
     final double padding = (widget.currentSize ?? 0) * screenHeight;
 
     // Update Padding for the bottom sheet size
-
     if ((widget.currentSize ?? 0) > 0.28 && (widget.currentSize ?? 0) < 0.4) {
       // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
       bottomPadding = 16 + padding - MapSearchSheetControls.screenPadding;
@@ -65,11 +66,6 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
         });
       }
     }));
-
-    void _searchInArea() {
-      ref.read(searchInRectProvider.notifier).update();
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
-    }
 
     return IgnorePointer(
       ignoring: hideControls,
