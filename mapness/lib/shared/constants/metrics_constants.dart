@@ -128,6 +128,7 @@ class Search {
   String get searchResult => 'Search result';
   String get searchField => 'Search field';
   String get exitIcon => 'Exit icon';
+  String get searchInThisArea => 'Search in this area';
 }
 
 class Login {
