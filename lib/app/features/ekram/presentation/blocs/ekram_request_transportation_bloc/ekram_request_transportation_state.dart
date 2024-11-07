@@ -321,14 +321,10 @@ class EkramRequestTransportationState extends Equatable {
     if (currentPageValue == 1) {
       return validateDeceasedInfoSection(false);
     } else if (currentPageValue == 2) {
-      /*  if (deathLocation?.isNotEmpty ?? false) {
-        return true;
-      } else {
-        return false;
-      }*/
+
       return true;
     } else if (currentPageValue == 3) {
-      if (agreement == null || agreement == false) return false;
+      return true;
     }
 
     return true;
@@ -416,6 +412,83 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
+  LookUpItem? getCemtryTypeById(int? id) {
+    if (cemetryTypeItems != null && id != null) {
+      for (int index = 0; index < cemetryTypeItems!.length; index++) {
+        if (cemetryTypeItems![index].id == id) {
+          return cemetryTypeItems![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  LookUpItem? getResoansTypeById(int? id) {
+    if (specialTransportReasons != null && id != null) {
+      for (int index = 0; index < specialTransportReasons!.length; index++) {
+        if (specialTransportReasons![index].id == id) {
+          return specialTransportReasons![index];
+        }
+      }
+    }
+
+    return null;
+  }
+  LookUpItem? getTransportTypeById(int? id) {
+    if (transportations != null && id != null) {
+      for (int index = 0; index < transportations!.length; index++) {
+        if (transportations![index].id == id) {
+          return transportations![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  LookUpItem? getlaundriesById(int? id) {
+    if (laundries != null && id != null) {
+      for (int index = 0; index < laundries!.length; index++) {
+        if (laundries![index].id == id) {
+          return laundries![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  LookUpItem? getMosquesById(int? id) {
+    if (mosques != null && id != null) {
+      for (int index = 0; index < mosques!.length; index++) {
+        if (mosques![index].id == id) {
+          return mosques![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+
+
+
+
+  int? getselectedDeathCity() {
+   if(requestDetailsModel?.deathInfo?.cityId != null) {
+     return requestDetailsModel?.deathInfo?.cityId!;
+   }
+   else  if(requestDetailsModel?.deathInfo?.corpseArrivalCityId != null) {
+     return requestDetailsModel?.deathInfo?.corpseArrivalCityId!;
+   }
+
+    return null;
+  }
+
+
+
+
 
 
   bool validateDeceasedInfoSection(bool ShowErrorMessage) {

@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:balady_plus/app/commercial_model/features/commercial_license/data/data_sources/cr_remote_data_source.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
@@ -137,9 +140,9 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getPrayers();
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
-      int transportationId, List<int> cityIds, MosqueGhuslPlacesParams params);
+      int transportationId, List<int?> cityIds, MosqueGhuslPlacesParams params);
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
-      int transportationId, List<int> cityIds, MosqueGhuslPlacesParams params);
+      int transportationId, List<int?> cityIds, MosqueGhuslPlacesParams params);
   Future<ResponseBodyModel<List<LookUpItem>>>
       getSpecialTransportReasonsLookUp();
   Future<ResponseBodyModel<List<LookUpItem>>> getCemeteryTypesLookUp();
@@ -2583,13 +2586,10 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response? response;
 
     try {
-      response = await webService.dio.get(
+      response = await webService.dio.post(
         ApiUrl.saveDeathBurialInfo(requestId),
-        options: Options(
-          headers: {
-            /*"Authorization": token*/
-          },
-        ),
+        data: params.toJson(),
+
       );
       final data = response.data;
 
@@ -2881,13 +2881,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   @override
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
       int transportId,
-      List<int> cityIds,
+      List<int?> cityIds,
       MosqueGhuslPlacesParams params) async {
     Response response;
 
-    try {
+
+   try {
       response = await webService.dio.post(ApiUrl.ekramLaundries(transportId),
-          data: {...cityIds}, queryParameters: params.toJson());
+          data: jsonEncode(cityIds), queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2942,13 +2943,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   @override
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
       int transportId,
-      List<int> cityIds,
+      List<int?> cityIds,
       MosqueGhuslPlacesParams params) async {
     Response response;
 
     try {
       response = await webService.dio.post(ApiUrl.ekramMosques(transportId),
-          data: {...cityIds}, queryParameters: params.toJson());
+          data: jsonEncode(cityIds), queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 

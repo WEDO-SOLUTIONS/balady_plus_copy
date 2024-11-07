@@ -26,8 +26,10 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../../data/model/request_details_response_model/burial_info.dart';
+import '../../../data/model/request_details_response_model/cemetery_data.dart';
 import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
+import '../../../data/model/request_details_response_model/transport_info.dart';
 
 class DeathAndBurialInfoSection extends StatelessWidget {
   const DeathAndBurialInfoSection({super.key});
@@ -76,12 +78,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               ],
                             ),
 
-
                             DeathDateHijri(currentDate: state.requestDetailsModel?.deathInfo?.deathDate,isDeathDatesDisabled: state.isDeathDatesDisabled,onChanged:(String? date ){
 
                               context
                                   .read<EkramRequestTransportationBloc>()
-                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(deathDate: date, gregorianDeathDate:CommonFunctions.hijriToGregorian(date))));
+                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(deathDate:  CommonFunctions.replaceArabicNumberWithEnglish(date!), gregorianDeathDate:CommonFunctions.hijriToGregorian(date))));
 
                             } ,),
 
@@ -91,7 +92,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                               context
                                   .read<EkramRequestTransportationBloc>()
-                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(gregorianDeathDate: date,deathDate: CommonFunctions.gregorianToHijri(date))));
+                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(gregorianDeathDate: CommonFunctions.replaceArabicNumberWithEnglish(date!),deathDate: CommonFunctions.gregorianToHijri(date))));
 
                             } ,),
 
@@ -318,7 +319,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                               context
                                   .read<EkramRequestTransportationBloc>()
-                                  .add(setBurialInfoEvent(burialInfo: BurialInfo(burialDate: date, gregorianBurialDate:CommonFunctions.hijriToGregorian(date))));
+                                  .add(setBurialInfoEvent(burialInfo: BurialInfo(burialDate: CommonFunctions.replaceArabicNumberWithEnglish(date!), gregorianBurialDate:CommonFunctions.hijriToGregorian(date))));
 
                             } ,),
 
@@ -327,7 +328,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                               context
                                   .read<EkramRequestTransportationBloc>()
-                                  .add(setBurialInfoEvent(burialInfo: BurialInfo(gregorianBurialDate: date, burialDate:CommonFunctions.gregorianToHijri(date))));
+                                  .add(setBurialInfoEvent(burialInfo: BurialInfo(gregorianBurialDate: CommonFunctions.replaceArabicNumberWithEnglish(date!), burialDate:CommonFunctions.gregorianToHijri(date))));
 
                             } ,),
 
@@ -387,12 +388,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               title: "yes".tr(),
                               value: true,
                               currentSelected:
-                                  state.isSpecialTransferNeeded == true,
+                              state.requestDetailsModel?.transportInfo?.needSpecialTransport  == true,
                               onChange: (bool item) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
-                                    .add(ChangeIsNeedSpecialTransferEvent(
-                                        isNeeded: true));
+                                    .add(setTransportInfoEvent(transportInfo: TransportInfo(needSpecialTransport: true)));
                               },
                               endRadio: false,
                               unSelectedBackgroundColor: Colors.transparent,
@@ -403,28 +403,25 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               title: "no".tr(),
                               value: true,
                               currentSelected:
-                                  state.isSpecialTransferNeeded == false,
+                                  state.requestDetailsModel?.transportInfo?.needSpecialTransport == false,
                               onChange: (bool item) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
-                                    .add(ChangeIsNeedSpecialTransferEvent(
-                                        isNeeded: false));
+                                    .add(setTransportInfoEvent(transportInfo: TransportInfo(needSpecialTransport: false,specialTransportReasonId: null,showOther: false)));
                               },
                               endRadio: false,
                               unSelectedBackgroundColor: Colors.transparent,
                               textSize: 16,
                             ),
-                            state.isSpecialTransferNeeded ?? false
+                            state.requestDetailsModel?.transportInfo?.needSpecialTransport ?? false
                                 ? CustomLookUpLongDialog(
                                     items: state.specialTransportReasons ?? [],
-                                    value: state.selectedSpecialTransportReason,
+                                    value: state.getResoansTypeById(state.requestDetailsModel?.transportInfo?.specialTransportReasonId),
                                     onChangeType: (LookUpItem? item) {
                                       context
-                                          .read<
-                                              EkramRequestTransportationBloc>()
-                                          .add(
-                                              ChangeSpecialTransportReasonsEvent(
-                                                  item: item));
+                                          .read<EkramRequestTransportationBloc>()
+                                          .add(setTransportInfoEvent(transportInfo: TransportInfo(specialTransportReasonId: item?.id,showOther: item?.isOther)));
+
                                     },
                                     onEmptyList: () async {
                                       context
@@ -436,9 +433,36 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     hint: ("reasonForSpecialTransfer").tr(),
                                   )
                                 : SizedBox.shrink(),
+
+                            state.requestDetailsModel?.transportInfo?.showOther == true?
+                            Column(
+                              children: [
+                                CustomTextFieldWidget(
+                                    label: "${"reasonForSpecialTransfer".tr()}*",
+                                    initialValue: state.requestDetailsModel?.transportInfo?.specialTransportReasonOther,
+                                    hintText: "reasonForSpecialTransfer".tr(),
+                                    onChanged: (String? text) {
+                                      if (text != null) {
+                                        context
+                                            .read<
+                                            EkramRequestTransportationBloc>()
+                                            .add(setTransportInfoEvent(
+                                            transportInfo: TransportInfo(
+                                                specialTransportReasonOther: text)));
+                                      }
+                                    },
+                                    onValidate: (String? value) {
+                                      return null;
+                                    }),
+
+                                SizedBox(height: 20,),
+                              ],
+                            ):Container(),
+
+
                             CustomLookUpLongDialog(
                               items: state.cemetryTypeItems ?? [],
-                              value: state.getCemtryById(state.requestDetailsModel?.cemeteryData?.graveTypeId),
+                              value: state.getCemtryTypeById(state.requestDetailsModel?.cemeteryData?.graveTypeId),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
@@ -448,8 +472,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 if (item != null) {
                                   context
                                       .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeCemetryTypeItemsEvent(
-                                          item: item));
+                                      .add(setCemtryInfoEvent(
+                                          cemeteryData: CemeteryData(graveTypeId: item.id)));
 
 
                                 }
@@ -459,61 +483,67 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.cemetries ?? [],
-                              value: state.selectedCemetry,
+                              value:state.getCemtryById(state.requestDetailsModel?.cemeteryData?.cemeteryId) ,
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetCemetriesEvent(
                                         params: CemetriesParams(
                                             deathCountryId:
-                                                state.selectedDeathCountry?.id,
+                                                state.requestDetailsModel?.deathInfo?.countryId,
                                             deathCityId:
-                                                state.selectedDeathCity?.id,
+                                                state.getselectedDeathCity(),
                                             burialCityId:
-                                                state.selectedBurialCity?.id ??
-                                                    state.selectedDeathCity?.id,
+                                                state.requestDetailsModel?.burialInfo?.cityId,
                                             specialTransportReasonId: state
-                                                .selectedSpecialTransportReason
-                                                ?.id,
-                                            prayId: state.selectedPrayer?.id,
-                                            burialDate: state.burialDateHijri,
-                                            deathDate: state.deathDateHijri,
+                                                .requestDetailsModel?.transportInfo?.specialTransportReasonId,
+                                            prayId: state.requestDetailsModel?.burialInfo?.prayId,
+                                            burialDate: state.requestDetailsModel?.burialInfo?.burialDate,
+                                            deathDate: state.requestDetailsModel?.deathInfo?.deathDate,
                                             graveTypeId:
-                                                state.selectedCemetryType?.id,
-                                            age: state.requestDetailsModel
-                                                ?.deathInfo?.age),
+                                            state.requestDetailsModel?.cemeteryData?.graveTypeId,
+                                            age: null),
                                         requestId: state.requestId!));
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
                                   context
                                       .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeCemetryItemsEvent(item: item));
+                                      .add(setCemtryInfoEvent(
+                                      cemeteryData: CemeteryData(cemeteryId: item.id)));
                                 }
                               },
                               label: ("cemeteryName").tr(),
                               hint: ("cemeteryName").tr(),
                             ),
+
                             CustomLookUpLongDialog(
                               items: state.transportations ?? [],
-                              value: state.selectedtransportation,
+                              value: state.getTransportTypeById(state.requestDetailsModel?.transportInfo?.charityId),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetTransportationNamesEvent(
                                         params: TransportationCompaniesParams(
                                             cemeteryId:
-                                                state.selectedCemetry?.id,
+                                                state.requestDetailsModel?.cemeteryData?.cemeteryId,
                                             deathCityId:
-                                                state.selectedDeathCity?.id),
+                                                state.requestDetailsModel?.deathInfo?.cityId),
                                         requestId: state.requestId!));
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+
+
+
                                   context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeTransportationNameEvent(
-                                          item: item));
+                                      .read<
+                                      EkramRequestTransportationBloc>()
+                                      .add(setTransportInfoEvent(
+                                      transportInfo: TransportInfo(
+                                          charityId: item.id)));
+
+
                                 }
                               },
                               label: ("ekram_orgnization_name").tr(),
@@ -521,27 +551,30 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.laundries ?? [],
-                              value: state.selectedlaundry,
+                              value: state.getlaundriesById(state.requestDetailsModel?.transportInfo?.ghuslPlaceId),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetLandriesEvent(
                                         params: MosqueGhuslPlacesParams(
-                                            burialDate: state.burialDateHijri,
+                                            burialDate: state.requestDetailsModel?.burialInfo?.burialDate,
                                             gender: state.requestDetailsModel
                                                 ?.deceasedInfo?.gender),
                                         cityIds: [
-                                          state.selectedDeathCity?.id,
-                                          state.selectedBurialCity?.id
+                                          state.requestDetailsModel?.deathInfo?.cityId,
+                                          state.requestDetailsModel?.burialInfo?.cityId
                                         ],
-                                        transportId:
-                                            state.selectedtransportation?.id));
+                                        transportId:state.requestDetailsModel?.transportInfo?.charityId
+                                           ));
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
                                   context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeLandriesEvent(item: item));
+                                      .read<
+                                      EkramRequestTransportationBloc>()
+                                      .add(setTransportInfoEvent(
+                                      transportInfo: TransportInfo(
+                                          ghuslPlaceId: item.id)));
                                 }
                               },
                               label: ("ekram_laundry").tr(),
@@ -549,27 +582,30 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.mosques ?? [],
-                              value: state.selectedMosque,
+                              value: state.getMosquesById(state.requestDetailsModel?.transportInfo?.mosqueId),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetMosquesEvent(
                                         params: MosqueGhuslPlacesParams(
-                                            burialDate: state.burialDateHijri,
+                                            burialDate: state.requestDetailsModel?.burialInfo?.burialDate,
                                             gender: state.requestDetailsModel
                                                 ?.deceasedInfo?.gender),
-                                        cityIds: [
-                                          state.selectedDeathCity?.id,
-                                          state.selectedBurialCity?.id
-                                        ],
+                                    cityIds: [
+                                      state.requestDetailsModel?.deathInfo?.cityId,
+                                      state.requestDetailsModel?.burialInfo?.cityId
+                                    ],
                                         transportId:
-                                            state.selectedtransportation?.id));
+                                        state.requestDetailsModel?.transportInfo?.charityId));
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
                                   context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeMosqueEvent(item: item));
+                                      .read<
+                                      EkramRequestTransportationBloc>()
+                                      .add(setTransportInfoEvent(
+                                      transportInfo: TransportInfo(
+                                          mosqueId: item.id)));
                                 }
                               },
                               label: ("the_mosque").tr(),
@@ -587,7 +623,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
               btnPressed: () {
                 context
                     .read<EkramRequestTransportationBloc>()
-                    .add(GoToNextPageEvent());
+                    .add(saveBurianDeathInfoEvent());
               },
             )
           ],

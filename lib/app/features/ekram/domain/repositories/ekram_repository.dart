@@ -60,10 +60,10 @@ abstract class EkramRepository {
       String id);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosquesLookUp(int transportId,List<int> cityIds, MosqueGhuslPlacesParams params);
+      getMosquesLookUp(int transportId,List<int?> cityIds, MosqueGhuslPlacesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundriesLookup(int transportId,List<int> cityIds, MosqueGhuslPlacesParams params);
+      getLaundriesLookup(int transportId,List<int?> cityIds, MosqueGhuslPlacesParams params);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
       getCemetriesLookUp(int requestId, CemetriesParams params);

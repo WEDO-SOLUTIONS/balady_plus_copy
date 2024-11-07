@@ -1,7 +1,6 @@
 import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
-import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
 import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
@@ -11,7 +10,6 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.da
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_launduries_lookup.dart';
-import 'package:balady_plus/app/features/ekram/domain/use_cases/get_madinah_emirate_approval_statue.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_mosques_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_prayers.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_special_transport_reasons_lookup.dart';
@@ -53,6 +51,7 @@ import '../../../data/model/request_details_response_model/main_info.dart';
 import '../../../data/model/request_details_response_model/submitter_info.dart';
 import '../../../data/model/request_details_response_model/request_details_response_model.dart';
 import '../../../data/model/request_details_response_model/transport_info.dart';
+import '../../../data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import '../../../domain/use_cases/get_death_cities.dart';
 import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_request_details.dart';
@@ -87,7 +86,6 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetNationalities _getNationalities;
   final ApplyDeceasedTransport _applyDeceasedTransport;
   final GetDeathCities _deathCities;
-  final GetMadinahEmirateApprovalStatus _getMadinahEmirateApprovalStatus;
   final VerifyDeceased _verifyDeceased;
   final GetRequestDetails _getRequestDetails;
   final GetCountreies _getCountreies;
@@ -121,8 +119,6 @@ class EkramRequestTransportationBloc extends Bloc<
         _getRequestDetails = getRequestDetails,
         _saveDeceasedInfo = SaveDeceasedInfo(repository: sl()),
         _deathCities = GetDeathCities(repository: sl()),
-        _getMadinahEmirateApprovalStatus =
-            GetMadinahEmirateApprovalStatus(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
         super(EkramRequestTransportationState(
             isSpecialTransferNeeded: false,
@@ -151,7 +147,6 @@ class EkramRequestTransportationBloc extends Bloc<
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
 
     on<GetHospitalsEvent>(_getHospitalsHandler);
-    on<GetMadinahEmirateApprovalStatusEvent>(_getMadinahEmirateApprovalStatusHandler);
     on<GetCemetriesEvent>(_getCemetriesHandler);
     on<GetTransportationNamesEvent>(_getTransportationNamesHandler);
     on<GetLandriesEvent>(_getLaundriesHandler);
@@ -439,29 +434,6 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
-  Future<void> _getMadinahEmirateApprovalStatusHandler(
-      GetMadinahEmirateApprovalStatusEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _getMadinahEmirateApprovalStatus([e.cemetryId,e.id,e.idType]);
-
-    failureOrSuccess.fold((failure) {
-      print("failure $failure");
-
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-madinahEmirateApprovalStatus: success.data!.result!.approvalStatusName!,
-madinahEmirateApprovalDate: success.data!.result!.approvalDate,
-        errorMessage: "",
-      ));
-    });
-  }
-
   Future<List<LookUpItem>?> getCountries() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -649,7 +621,7 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
     }, (success) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-        cemetries: success.data?.result,
+        transportations: success.data?.result,
         errorMessage: "",
       ));
     });
@@ -657,7 +629,7 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
 
   Future<void> _getLaundriesHandler(GetLandriesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getLaundires([e.transportId, e.params]);
+    final failureOrSuccess = await _getLaundires([e.transportId,e.cityIds, e.params]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(
@@ -675,7 +647,7 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
 
   Future<void> _getMosquesHandler(GetMosquesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getMosques([e.transportId, e.params]);
+    final failureOrSuccess = await _getMosques([e.transportId,e.cityIds, e.params]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(
@@ -685,7 +657,7 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
     }, (success) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-        laundries: success.data?.result,
+        mosques: success.data?.result,
         errorMessage: "",
       ));
     });
@@ -933,21 +905,22 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    var deceasedInfo = state.requestDetailsModel?.deceasedInfo;
-    deceasedInfo?.isMuslim ??= true;
-    deceasedInfo?.gender ??= "MALE";
 
-    var mainInfo = state.requestDetailsModel?.mainInfo;
-    mainInfo?.transportCaseId = 3;
     final failureOrSuccess = await _saveDeathBurialInfo([
       state.requestId!,
-      SaveDeceasedInfoParams(mainInfo: mainInfo, deceasedInfo: deceasedInfo)
+      SaveDeathBurialInfoParams(deathInfo: state.requestDetailsModel?.deathInfo,
+          burialInfo: state.requestDetailsModel?.burialInfo,
+        transportInfo: state.requestDetailsModel?.transportInfo,
+        cemeteryData: state.requestDetailsModel?.cemeteryData
+
+      )
     ]);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
           status: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,
           isVerified: false));
+
       return null;
     }, (res) {
       emit(state.copyWith(
@@ -1078,9 +1051,17 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(cemeteryData: CemeteryData());
 
+    if(params.cemeteryData == null) {
+      params = params.copyWith(cemeteryData:CemeteryData() );
+    }
     CemeteryData info = params.cemeteryData!;
 
     info = info.copyWith(
+      cemeteryId:  808,   //e.cemeteryData?.cemeteryId,
+      graveTypeId: e.cemeteryData?.graveTypeId,
+
+
+
     );
 
     params = params.copyWith(cemeteryData: info);
@@ -1100,6 +1081,14 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
     TransportInfo info = params.transportInfo!;
 
     info = info.copyWith(
+      needSpecialTransport: e.transportInfo?.needSpecialTransport,
+      specialTransportReasonId: e.transportInfo?.specialTransportReasonId,
+        showOther: e.transportInfo?.showOther,
+      specialTransportReasonOther: e.transportInfo?.specialTransportReasonOther,
+      charityId: e.transportInfo?.charityId,
+      ghuslPlaceId: e.transportInfo?.ghuslPlaceId,
+      mosqueId: e.transportInfo?.mosqueId,
+
     );
 
     params = params.copyWith(transportInfo: info);

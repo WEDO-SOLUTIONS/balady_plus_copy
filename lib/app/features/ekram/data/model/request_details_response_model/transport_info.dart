@@ -16,7 +16,13 @@ class TransportInfo {
     this.mosqueName,
     this.ghuslPlaceId,
     this.ghuslPlaceName,
-  this.assignDriverDate});
+  this.assignDriverDate,
+  this.specialTransportReasonId,
+   this.showOther,
+    this.specialTransportReasonOther
+
+
+  });
 
   TransportInfo.fromJson(dynamic json) {
     needSpecialTransport = json['needSpecialTransport'];
@@ -35,6 +41,9 @@ class TransportInfo {
     ghuslPlaceId = json['ghuslPlaceId'];
     ghuslPlaceName = json['ghuslPlaceName'];
     assignDriverDate = json['assignDriverDate'];
+    specialTransportReasonId = json['specialTransportReasonId'];
+    specialTransportReasonOther = json['specialTransportReasonOther'];
+
 
   }
   bool? needSpecialTransport;
@@ -51,6 +60,11 @@ class TransportInfo {
   int? mosqueId;
   String? mosqueName;
   int? ghuslPlaceId;
+  int?specialTransportReasonId;
+  bool? showOther;
+  String? specialTransportReasonOther;
+
+
   String? ghuslPlaceName;
    String? assignDriverDate;
   TransportInfo copyWith({  bool? needSpecialTransport,
@@ -65,10 +79,13 @@ class TransportInfo {
     String? driverName,
     String? driverMobile,
     int? mosqueId,
+    int?specialTransportReasonId,
     String? mosqueName,
     int? ghuslPlaceId,
     String? ghuslPlaceName,
     String? assignDriverDate,
+    bool? showOther,
+    String? specialTransportReasonOther,
   }) => TransportInfo(  needSpecialTransport: needSpecialTransport ?? this.needSpecialTransport,
     transportCaseId: transportCaseId ?? this.transportCaseId,
     transportCaseName: transportCaseName ?? this.transportCaseName,
@@ -85,6 +102,10 @@ class TransportInfo {
     mosqueName: mosqueName ?? this.mosqueName,
     ghuslPlaceId: ghuslPlaceId ?? this.ghuslPlaceId,
     ghuslPlaceName: ghuslPlaceName ?? this.ghuslPlaceName,
+    specialTransportReasonId: specialTransportReasonId ?? this.specialTransportReasonId,
+      showOther: showOther ?? this.showOther,
+    specialTransportReasonOther: specialTransportReasonOther ?? this.specialTransportReasonOther,
+
   );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -103,6 +124,9 @@ class TransportInfo {
     map['mosqueName'] = mosqueName;
     map['ghuslPlaceId'] = ghuslPlaceId;
     map['ghuslPlaceName'] = ghuslPlaceName;
+    map['specialTransportReasonId'] = specialTransportReasonId;
+    map['specialTransportReasonOther'] = specialTransportReasonOther;
+
     return map;
   }
 

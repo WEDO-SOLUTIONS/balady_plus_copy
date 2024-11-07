@@ -1643,14 +1643,14 @@ class CommonFunctions {
     try
     {
       if(gorgianDate != null && gorgianDate.isNotEmpty) {
-        List<int> dateSplitted = gorgianDate.split("/")
+        List<int> dateSplitted = CommonFunctions.replaceArabicNumberWithEnglish(gorgianDate).split("/")
             .map((e) => int.parse(e))
             .toList();
         String hijri = HijriCalendar.fromDate(
             DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
             .toFormat("yyyy/mm/dd");
 
-        return hijri;
+        return CommonFunctions.replaceArabicNumberWithEnglish(hijri);
       }
       return null;
     }
