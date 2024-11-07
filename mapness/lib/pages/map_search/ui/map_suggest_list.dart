@@ -46,8 +46,8 @@ class MapSuggestList extends ConsumerWidget {
               cameraConfig: PoiCameraConfig(zoom: 18),
             ),
           );
-        },
       }
+    }
 
     return Padding(
       padding: const EdgeInsets.only(

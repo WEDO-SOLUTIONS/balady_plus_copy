@@ -50,7 +50,7 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
   Future<void> _dismiss({double? from}) async {
     await _controller.reverse(from: from);
     widget.onClose?.call();
-    if (mounted && context.canPop()) {
+    if (mounted && context.router.canPop()) {
       await context.router.maybePop();
     }
   }

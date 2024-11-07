@@ -168,33 +168,34 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     if (points.every((element) => element.isNotEmpty)) {
       final start = points[0];
       final finish = points[1];
-      context.router.push(
-        RoutingRoutesRoute(
-          points: [
-            if (start.latitude != null && start.longitude != null)
-              RouteParamsPoint(
-                  latitude: start.latitude!,
-                  longitude: start.longitude!,
-                  objectId: start.objectId,
-                  entranceId: start.entranceId,
-                levelId: start.levelId,
-              )
-            else
-              null,
-            if (finish.latitude != null && finish.longitude != null)
-              RouteParamsPoint(
-                  latitude: finish.latitude!,
-                  longitude: finish.longitude!,
-                  objectId: finish.objectId,
-                  entranceId: finish.entranceId,
-                levelId: finish.levelId,
-              )
-          ],
-          labels: [
-            start.title(context.l10n) ?? '',
-            finish.title(context.l10n) ?? '',
-          ],
-        ),
+
+      RoutingRoutesRoute(
+        points: [
+          RouteParamsPointWithLabel(
+            value: start.latitude != null && start.longitude != null
+                ? RouteParamsPoint(
+                    latitude: start.latitude!,
+                    longitude: start.longitude!,
+                    objectId: start.objectId,
+                    entranceId: start.entranceId,
+                    levelId: start.levelId,
+                  )
+                : null,
+            label: start.title(context.l10n) ?? '',
+          ),
+          RouteParamsPointWithLabel(
+            value: finish.latitude != null && finish.longitude != null
+                ? RouteParamsPoint(
+                    latitude: finish.latitude!,
+                    longitude: finish.longitude!,
+                    objectId: finish.objectId,
+                    entranceId: finish.entranceId,
+                    levelId: finish.levelId,
+                  )
+                : null,
+            label: finish.title(context.l10n) ?? '',
+          ),
+        ],
       );
 
       points[1] = RoutePointFavouriteItem(null);

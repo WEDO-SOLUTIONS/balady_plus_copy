@@ -89,13 +89,18 @@ class DeeplinkPage extends ConsumerWidget {
                     context.router.popAndPush(
                       RoutingRoutesRoute(
                         points: [
-                          null,
-                          RouteParamsPoint(
-                            latitude: closestPoint!.latitude,
-                            longitude: closestPoint!.longitude,
-                          )
+                          RouteParamsPointWithLabel(
+                            value: null,
+                            label: context.l10n.myLocation,
+                          ),
+                          RouteParamsPointWithLabel(
+                            value: RouteParamsPoint(
+                              latitude: closestPoint!.latitude,
+                              longitude: closestPoint!.longitude,
+                            ),
+                            label: context.l10n.pointToMap,
+                          ),
                         ],
-                        labels: [context.l10n.myLocation, context.l10n.pointToMap],
                       ),
                     );
                   },

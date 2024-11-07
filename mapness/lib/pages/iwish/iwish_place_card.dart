@@ -157,15 +157,17 @@ class IwishPlaceCardPage extends ConsumerWidget {
                                             context.router.push(
                                               RoutingRoutesRoute(
                                                 points: [
-                                                  null,
-                                                  RouteParamsPoint(
-                                                    latitude: entity.location.latitude,
-                                                    longitude: entity.location.longitude,
-                                                  )
-                                                ],
-                                                labels: [
-                                                  context.l10n.myLocation,
-                                                  entity.title,
+                                                  RouteParamsPointWithLabel(
+                                                    value: null,
+                                                    label: context.l10n.myLocation,
+                                                  ),
+                                                  RouteParamsPointWithLabel(
+                                                    value: RouteParamsPoint(
+                                                      latitude: entity.location.latitude,
+                                                      longitude: entity.location.longitude,
+                                                    ),
+                                                    label: entity.title,
+                                                  ),
                                                 ],
                                               ),
                                             );

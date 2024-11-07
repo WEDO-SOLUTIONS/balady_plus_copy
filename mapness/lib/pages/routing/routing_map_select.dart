@@ -1,5 +1,5 @@
-import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart' as uikitExt;
 import 'package:dgis_map/library.dart';
@@ -17,6 +17,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 @RoutePage()
@@ -144,6 +145,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                           uikit.AppButton.close(onTap: _onClose),
                         ],
                       ),
+                    ),
                     const Center(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 6),

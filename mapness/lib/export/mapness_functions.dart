@@ -19,20 +19,22 @@ class MapnessFunctions {
     await context.router.push(
       RoutingRoutesRoute(
         points: [
-          if (startPoint?.latitude != null && startPoint?.longitude != null) RouteParamsPoint(
-            latitude: startPoint!.latitude,
-            longitude: startPoint.longitude,
-            )
-          else
-            null,
-          RouteParamsPoint(
-            latitude: finishPoint.latitude,
-            longitude: finishPoint.longitude,
+          RouteParamsPointWithLabel(
+            value: startPoint?.latitude != null && startPoint?.longitude != null
+                ? RouteParamsPoint(
+                    latitude: startPoint!.latitude,
+                    longitude: startPoint.longitude,
+                  )
+                : null,
+            label: startPoint?.label ?? appLocalizations.myLocation,
           ),
-        ],
-        labels: [
-          startPoint?.label ?? appLocalizations.myLocation,
-          finishPoint.label
+          RouteParamsPointWithLabel(
+            value: RouteParamsPoint(
+              latitude: finishPoint.latitude,
+              longitude: finishPoint.longitude,
+            ),
+            label: finishPoint.label,
+          ),
         ],
       ),
     );

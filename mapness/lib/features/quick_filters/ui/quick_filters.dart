@@ -117,13 +117,18 @@ class QuickFilters extends ConsumerWidget {
     context.router.push(
       RoutingRoutesRoute(
         points: [
-          null,
-          RouteParamsPoint(
-            latitude: point.coordinates.latitude,
-            longitude: point.coordinates.longitude,
-          )
+          RouteParamsPointWithLabel(
+            value: null,
+            label: context.l10n.myLocation,
+          ),
+          RouteParamsPointWithLabel(
+            value: RouteParamsPoint(
+              latitude: point.coordinates.latitude,
+              longitude: point.coordinates.longitude,
+            ),
+            label: point.title,
+          ),
         ],
-        labels: [context.l10n.myLocation, point.title],
       ),
     );
   }

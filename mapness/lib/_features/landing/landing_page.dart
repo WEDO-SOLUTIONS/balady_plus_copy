@@ -27,8 +27,6 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
-import 'package:mapness/shared/ui/loading/service_not_available_sheet.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
@@ -70,21 +68,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
 
     _calculatePadding();
-  }
-
-  void _showServiceNotAvilibleSheet() {
-    // Show not available sheet if service is not available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (rootNavigatorKey.currentContext?.mounted ?? false) {
-        showModalBottomSheet(
-          context: rootNavigatorKey.currentContext!,
-          backgroundColor: Colors.transparent,
-          builder: (_) => Builder(
-            builder: (ctx) => const ServiceNotAvailableSheet(),
-          ),
-        );
-      }
-    });
   }
 
   void _showBetaNotification() {

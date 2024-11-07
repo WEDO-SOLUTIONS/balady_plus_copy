@@ -243,19 +243,20 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               ctx.router.push(
                                 RoutingRoutesRoute(
                                   points: [
-                                    null,
-                                    if (coordinates?.latitude != null && coordinates?.longitude != null)
-                                      RouteParamsPoint(
-                                        latitude: coordinates!.latitude,
+                                    RouteParamsPointWithLabel(
+                                      value: null,
+                                      label: context.l10n.myLocation,
+                                    ),
+                                    RouteParamsPointWithLabel(
+                                      value: coordinates?.latitude != null && coordinates?.longitude != null
+                                          ? RouteParamsPoint(
+                                              latitude: coordinates!.latitude,
                                         longitude: coordinates.longitude,
                                         objectId: int.tryParse(id),
-                                      )
-                                    else
-                                      null,
-                                  ],
-                                  labels: [
-                                    context.l10n.myLocation,
-                                    homeTitle,
+                                            )
+                                          : null,
+                                      label: homeTitle,
+                                    ),
                                   ],
                                 ),
                               );
@@ -306,19 +307,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 context.router.push(
                                   RoutingRoutesRoute(
                                     points: [
-                                      null,
-                                      if (coordinates?.latitude != null && coordinates?.longitude != null)
-                                        RouteParamsPoint(
+                                      RouteParamsPointWithLabel(
+                                        value: null,
+                                        label: context.l10n.myLocation,
+                                      ),
+                                      RouteParamsPointWithLabel(
+                                        value: coordinates?.latitude != null && coordinates?.longitude != null ? RouteParamsPoint(
                                           latitude: coordinates!.latitude,
                                           longitude: coordinates.longitude,
                                           objectId: int.tryParse(entity!.id),
-                                        )
-                                      else
-                                        null,
-                                    ],
-                                    labels: [
-                                      context.l10n.myLocation,
-                                      workTitle,
+                                        ) : null,
+                                        label: workTitle,
+                                      ),
                                     ],
                                   ),
                                 );
@@ -430,16 +430,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           context.router.push(
                             RoutingRoutesRoute(
                               points: [
-                                null,
-                                RouteParamsPoint(
-                                  latitude: item.coordinates.latitude,
-                                  longitude: item.coordinates.longitude,
-                                  objectId: int.tryParse(item.entity!.id),
+                                RouteParamsPointWithLabel(
+                                  value: null,
+                                  label: context.l10n.myLocation,
                                 ),
-                              ],
-                              labels: [
-                                context.l10n.myLocation,
-                                item.title,
+                                RouteParamsPointWithLabel(
+                                  value: RouteParamsPoint(
+                                    latitude: item.coordinates.latitude,
+                                    longitude: item.coordinates.longitude,
+                                    objectId: int.tryParse(item.entity!.id),
+                                  ),
+                                  label: item.title,
+                                ),
                               ],
                             ),
                           );

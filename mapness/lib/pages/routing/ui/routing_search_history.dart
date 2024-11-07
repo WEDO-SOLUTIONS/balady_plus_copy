@@ -1,9 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/components.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:balady_uikit/core/icons/system_icons.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
@@ -90,10 +88,10 @@ class RoutingSearchHistory extends ConsumerWidget {
   }
 
   Future<void> _specifyOnTheMap(BuildContext context) async {
-    final result = await const RoutingMapRoute().push(context);
+    final result = await context.router.push(const RoutingMapSelectRoute());
 
-    if (result != null && context.mounted) {
-      context.pop(result);
+    if (result != null) {
+      await context.router.maybePop(result);
     }
   }
 

@@ -421,16 +421,21 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     context.router.push(
       RoutingRoutesRoute(
         points: [
-          null,
-          RouteParamsPoint(
-            latitude: objectMessage.markerPosition!.latitude,
-            longitude: objectMessage.markerPosition!.longitude,
-            objectId: objectMessage.id?.objectId,
-            entranceId: objectMessage.id?.entranceId,
-            levelId: objectMessage.levelId,
+          RouteParamsPointWithLabel(
+            value: null,
+            label: context.l10n.myLocation,
+          ),
+          RouteParamsPointWithLabel(
+            value: RouteParamsPoint(
+              latitude: objectMessage.markerPosition!.latitude,
+              longitude: objectMessage.markerPosition!.longitude,
+              objectId: objectMessage.id?.objectId,
+              entranceId: objectMessage.id?.entranceId,
+              levelId: objectMessage.levelId,
+            ),
+            label: objectMessage.title,
           ),
         ],
-        labels: [context.l10n.myLocation, objectMessage.title],
       ),
     );
   }
