@@ -41,7 +41,9 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../data/model/apply_deceased/grave_active_request_details.dart';
 import '../../../data/model/request_details_response_model/SaveDeceasedInfoParams.dart';
+import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 import '../../../data/model/request_details_response_model/main_info.dart';
 import '../../../data/model/request_details_response_model/submitter_info.dart';
@@ -123,8 +125,8 @@ class EkramRequestTransportationBloc extends Bloc<
             requestDetailsModel: null)) {
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeIsNeedSpecialTransferEvent>(_changeIsNeedSpecialTransferHanlder);
-    on<ChangeIsBurialInsideDeathCityEvent>(
-        _changeIsBurialInsideDeathCityHanlder);
+    on<setBurialInfoEvent>(
+        _setBurialInfoHanlder);
     on<ChangeAgreementEvent>(_changeAgreementHandler);
     on<SelectHospitalEvent>(_selectHospitalHanlder);
     on<SubmitRequestEvent>(_submitRequestEvent);
@@ -158,7 +160,7 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeBurialDateEvent>(_changeBurialDateEventHandler);
     on<ChangeDeathDateEvent>(_changeDeathDateEventHandler);
     on<ChangeIdEvent>(_changeIdHandler);
-    on<ChangeDeathCountryEvent>(_changeDeathCountryHandler);
+    on<ChangeDeathInfoEvent>(_changeDeathandBurialHandler);
     on<ChangeDeathCityEvent>(_changeCityHandler);
     on<ChangePrayerEvent>(_changePrayerHandler);
     on<ChangeSpecialTransportReasonsEvent>(
@@ -197,9 +199,40 @@ class EkramRequestTransportationBloc extends Bloc<
     ));
   }
 
-  Future<void> _changeDeathCountryHandler(
-      ChangeDeathCountryEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedDeathCountry: e.item, errorMessage: ""));
+  Future<void> _changeDeathandBurialHandler(
+      ChangeDeathInfoEvent e, Emitter emitter) async {
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(
+        deathInfo: DeathInfo(),);
+
+    DeathInfo info = params.deathInfo!;
+
+    info = info.copyWith(
+        deathDate: e.deathInfo?.deathDate,
+        gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
+        countryId: e.deathInfo?.countryId?? (info.countryId ?? 1),
+        cityId: e.deathInfo?.cityId,
+        corpseArrivalCityId: e.deathInfo?.corpseArrivalCityId,
+        cityOther:e.deathInfo?.cityOther ,
+        hospitalId: e.deathInfo?.hospitalId,
+        showHospitalOther: e.deathInfo?.showHospitalOther,
+        hospitalOther: e.deathInfo?.hospitalOther,
+        caseContagious: e.deathInfo?.caseContagious
+    );
+
+    params = params.copyWith(deathInfo: info);
+
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
+
+
+
+
+
   }
 
   Future<void> _changeCityHandler(
@@ -286,10 +319,36 @@ class EkramRequestTransportationBloc extends Bloc<
         state.copyWith(errorMessage: "", isSpecialTransferNeeded: e.isNeeded));
   }
 
-  Future<void> _changeIsBurialInsideDeathCityHanlder(
-      ChangeIsBurialInsideDeathCityEvent e, Emitter emitter) async {
+  Future<void> _setBurialInfoHanlder(
+      setBurialInfoEvent e, Emitter emitter) async {
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(
+      deathInfo: DeathInfo(),);
+
+    DeathInfo info = params.deathInfo!;
+
+    info = info.copyWith(
+        deathDate: e.deathInfo?.deathDate,
+        gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
+        countryId: e.deathInfo?.countryId?? (info.countryId ?? 1),
+        cityId: e.deathInfo?.cityId,
+        corpseArrivalCityId: e.deathInfo?.corpseArrivalCityId,
+        cityOther:e.deathInfo?.cityOther ,
+        hospitalId: e.deathInfo?.hospitalId,
+        showHospitalOther: e.deathInfo?.showHospitalOther,
+        hospitalOther: e.deathInfo?.hospitalOther,
+        caseContagious: e.deathInfo?.caseContagious
+    );
+
+    params = params.copyWith(deathInfo: info);
+
+
     emitter(state.copyWith(
-        errorMessage: "", isBurialInsideDeathCity: e.isBurialInsideDeathCity));
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
+
   }
 
   Future<void> _changeNationalIdDobHandler(
@@ -553,33 +612,41 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _getHospitalsHandler(
       GetHospitalsEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getHospitals(e.city.id!);
+    if(e.cityId != null) {
+      emitter(state.copyWith(status: BlocStatus.loading));
 
-    failureOrSuccess.fold((failure) {
-      print("failure $failure");
 
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      print("Succ3ess $success");
-      success.data?.result
-          ?.insert(0, LookUpItem(id: -1, name: trans("other_hospital")));
-      print("Succ3ess 555 ${success.data?.result?.length}");
+      final failureOrSuccess = await _getHospitals(e.cityId!);
 
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        hospitals: success.data?.result,
-        selectedDeathCity: e.city,
-        clearHospital: true,
-        errorMessage: "",
-      ));
+      failureOrSuccess.fold((failure) {
 
-      print("Succ3ess 555 ${state.hospitals}");
-    });
+
+        emitter(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      }, (success) {
+
+        success.data?.result
+            ?.insert(0, LookUpItem(id: -1, name: trans("other_hospital")));
+
+
+        emitter(state.copyWith(
+          status: BlocStatus.success,
+          hospitals: success.data?.result,
+          clearHospital: true,
+          errorMessage: "",
+        ));
+
+
+      });
+    }
+    else
+      {
+
+        CommonFunctions.showError("chosedeathcity".tr());
+      }
   }
 
   Future<void> _getCemetriesHandler(
@@ -899,12 +966,14 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
+
+
     var deceasedInfo = state.requestDetailsModel?.deceasedInfo;
     deceasedInfo?.isMuslim ??= true;
     deceasedInfo?.gender ??= "MALE";
-
     var mainInfo = state.requestDetailsModel?.mainInfo;
     mainInfo?.transportCaseId = 3;
+
     final failureOrSuccess = await _saveDeathBurialInfo([
       state.requestId!,
       SaveDeceasedInfoParams(mainInfo: mainInfo, deceasedInfo: deceasedInfo)
@@ -927,6 +996,8 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _changeDeceasedInfoDataHanlder(
       ChangeDeceasedUserInfoEvent e, Emitter emitter) async {
+
+
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(
         deceasedInfo: DeceasedInfo(gender: "MALE", isMuslim: true),
@@ -941,6 +1012,7 @@ class EkramRequestTransportationBloc extends Bloc<
         thirdName: e.item?.thirdName,
         fourthName: e.item?.fourthName,
         isMuslim: e.item?.isMuslim,
+
         gender: e.item?.gender);
     params = params.copyWith(deceasedInfo: info);
 

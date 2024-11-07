@@ -148,11 +148,13 @@ class RequestDetailsResponseModel {
       };
   RequestDetailsResponseModel copyWith({
     DeceasedInfo? deceasedInfo,
+    DeathInfo? deathInfo,
     MainInfo? mainInfo,
   }) {
     return RequestDetailsResponseModel(
       deceasedInfo: deceasedInfo ?? this.deceasedInfo,
       mainInfo: mainInfo ?? this.mainInfo,
+      deathInfo: deathInfo ?? this.deathInfo,
     );
   }
 }

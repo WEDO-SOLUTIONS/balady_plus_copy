@@ -6,29 +6,25 @@ import '../../../../../core/services/local/helpers.dart';
 import '../ekram_book_cemetry/hijri_date_widget.dart';
 
 class DeathDateHijri extends StatelessWidget {
-  const DeathDateHijri({super.key});
+  final Function(String?) onChanged;
+  String? currentDate;
+  bool ?isDeathDatesDisabled;
+   DeathDateHijri({super.key,required this.onChanged,this.currentDate,this.isDeathDatesDisabled});
 
   @override
   Widget build(BuildContext context) {
     DateTime today = DateTime.now();
     DateTime tomrrow = DateTime.now().add(Duration(days: 1));
 
-    return BlocBuilder<EkramRequestTransportationBloc,
-        EkramRequestTransportationState>(builder: (context, state) {
-      return HijriCalendarDateWidget(
-        minValue: HijriCalendar.fromDate(today),
-        maxValue: HijriCalendar.fromDate(tomrrow),
-        currentVlaue: state.deathDateHijri,
-        isDisabled: state.isDeathDatesDisabled,
-        fieldName:
-            Helpers.translatingWord("death_date_hijri"),
-        isMandatory: true,
-        onChanged: (String? date) {
-          context
-              .read<EkramRequestTransportationBloc>()
-              .add(ChangeDeathDateEvent(hijriDate: date));
-        },
-      );
-    });
+    return HijriCalendarDateWidget(
+      minValue: HijriCalendar.fromDate(today),
+      maxValue: HijriCalendar.fromDate(tomrrow),
+      currentVlaue: currentDate,
+      isDisabled: isDeathDatesDisabled??false,
+      fieldName:
+          Helpers.translatingWord("death_date_hijri"),
+      isMandatory: true,
+      onChanged: onChanged,
+    );
   }
 }

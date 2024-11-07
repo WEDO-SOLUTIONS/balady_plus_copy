@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
@@ -22,7 +23,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
+import '../../../data/model/request_details_response_model/death_info.dart';
+import '../../../data/model/request_details_response_model/deceased_info.dart';
 
 class DeathAndBurialInfoSection extends StatelessWidget {
   const DeathAndBurialInfoSection({super.key});
@@ -70,22 +74,40 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 )
                               ],
                             ),
-                            DeathDateHijri(),
-                            DeathDateGregorian(),
+
+
+                            DeathDateHijri(currentDate: state.requestDetailsModel?.deathInfo?.deathDate,isDeathDatesDisabled: state.isDeathDatesDisabled,onChanged:(String? date ){
+
+                              context
+                                  .read<EkramRequestTransportationBloc>()
+                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(deathDate: date, gregorianDeathDate:CommonFunctions.hijriToGregorian(date))));
+
+                            } ,),
+
+
+
+                            DeathDateGregorian(currentDate: state.requestDetailsModel?.deathInfo?.gregorianDeathDate,isDeathDatesDisabled: state.isDeathDatesDisabled,onChanged:(String? date ){
+
+                              context
+                                  .read<EkramRequestTransportationBloc>()
+                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(gregorianDeathDate: date,deathDate: CommonFunctions.gregorianToHijri(date))));
+
+                            } ,),
+
                             CustomLookUpLongDialog(
                               items: state.countries ?? [],
-                              value: state.selectedDeathCountry,
+                              value: state.getCountryById(state.requestDetailsModel?.deathInfo?.countryId),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
                                     .getCountries();
                               },
                               onChangeType: (LookUpItem? item) {
-                                print(item?.name);
+
                                 if (item != null) {
                                   context
                                       .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeDeathCountryEvent(item: item));
+                                      .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(countryId: item.id)));
                                 }
                               },
                               label:
@@ -93,10 +115,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: Helpers.translatingWord(
                                   "ekram_death_country"),
                             ),
-                            state.selectedDeathCountry?.id == 1
-                                ? CustomLookUpLongDialog(
+
+
+
+
+                            CustomLookUpLongDialog(
                                     items: state.cities ?? [],
-                                    value: state.selectedDeathCity,
+                                    value: state.requestDetailsModel?.deathInfo?.countryId == 1?state.getCityById(state.requestDetailsModel?.deathInfo?.cityId):state.getCityById(state.requestDetailsModel?.deathInfo?.corpseArrivalCityId),
                                     onEmptyList: () async {
                                       return context
                                           .read<
@@ -104,61 +129,109 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                           .getCitiesHandler();
                                     },
                                     onChangeType: (LookUpItem? item) {
-                                      print(item?.name);
+
                                       if (item != null) {
-                                        context
-                                            .read<
-                                                EkramRequestTransportationBloc>()
-                                            .add(ChangeDeathCityEvent(
-                                                item: item));
-                                      }
-                                    },
-                                    label: ("ekram_death_city").tr(),
-                                    hint: ("ekram_death_city").tr(),
-                                  )
-                                : CustomLookUpLongDialog(
-                                    items: state.bodyArrivalCities ?? [],
-                                    value: state.selectedBodyArrivalCity,
-                                    onEmptyList: () async {
-                                      return context
-                                          .read<
+
+                                        if(state.requestDetailsModel?.deathInfo?.countryId == 1) {
+                                          context
+                                              .read<
                                               EkramRequestTransportationBloc>()
-                                          .getCitiesHandler();
-                                    },
-                                    onChangeType: (LookUpItem? item) {
-                                      print(item?.name);
-                                      if (item != null) {
-                                        context
-                                            .read<
+                                              .add(ChangeDeathInfoEvent(
+                                              deathInfo: DeathInfo(
+                                                  cityId: item.id)));
+                                        }
+                                        else
+                                          {
+                                            context
+                                                .read<
                                                 EkramRequestTransportationBloc>()
-                                            .add(ChangebodyArrivalCitiesEvent(
-                                                item: item));
+                                                .add(ChangeDeathInfoEvent(
+                                                deathInfo: DeathInfo(
+                                                    corpseArrivalCityId: item.id)));
+                                          }
+
                                       }
                                     },
-                                    label: ("arrivalCity").tr(),
-                                    hint: ("arrivalCity").tr(),
+                                    label: state.requestDetailsModel?.deathInfo?.countryId == 1?("ekram_death_city").tr():("arrivalCity").tr(),
+                                    hint: state.requestDetailsModel?.deathInfo?.countryId == 1?("ekram_death_city").tr():("arrivalCity").tr(),
                                   ),
+
+
+                            state.requestDetailsModel?.deathInfo?.countryId == 1?
+                            Container(): CustomTextFieldWidget(
+                                label: "${"ekram_death_city".tr()}*",
+                                initialValue: state.requestDetailsModel?.deathInfo?.cityOther,
+
+                                hintText: "ekram_death_city".tr(),
+                                keyboardType: TextInputType.phone,
+                                onChanged: (String? text) {
+                                  if (text != null) {
+                                    context
+                                        .read<
+                                        EkramRequestTransportationBloc>()
+                                        .add(ChangeDeathInfoEvent(
+                                        deathInfo: DeathInfo(
+                                            cityOther: text)));
+                                  }
+                                },
+                                onValidate: (String? value) {
+                                  return null;
+                                }),
+
+
                             CustomLookUpLongDialog(
                               items: state.hospitals ?? [],
-                              value: state.selectedHospital,
+                              value: state.getHosptialById(state.requestDetailsModel?.deathInfo?.hospitalId),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetHospitalsEvent(
-                                        city: state.selectedDeathCity ??
-                                            LookUpItem()));
+                                        cityId: state.requestDetailsModel?.deathInfo?.cityId??
+                                            state.requestDetailsModel?.deathInfo?.corpseArrivalCityId));
                               },
                               onChangeType: (LookUpItem? item) {
-                                print(item?.name);
+
                                 if (item != null) {
                                   context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeHospitalEvent(item: item));
+                                      .read<
+                                      EkramRequestTransportationBloc>()
+                                      .add(ChangeDeathInfoEvent(
+                                      deathInfo: DeathInfo(
+                                          hospitalId: item.id,showHospitalOther: item.isOther)));
+
                                 }
                               },
                               label: ("ekramHospital").tr(),
                               hint: ("ekramHospital").tr(),
                             ),
+
+
+                            state.requestDetailsModel?.deathInfo?.showHospitalOther == true?
+                            Column(
+                              children: [
+                                CustomTextFieldWidget(
+                                    label: "${"hospital_name".tr()}*",
+                                    initialValue: state.requestDetailsModel?.deathInfo?.hospitalOther,
+                                    hintText: "hospital_name".tr(),
+                                    onChanged: (String? text) {
+                                      if (text != null) {
+                                        context
+                                            .read<
+                                            EkramRequestTransportationBloc>()
+                                            .add(ChangeDeathInfoEvent(
+                                            deathInfo: DeathInfo(
+                                                hospitalOther: text)));
+                                      }
+                                    },
+                                    onValidate: (String? value) {
+                                      return null;
+                                    }),
+
+                                SizedBox(height: 20,),
+                              ],
+                            ):Container(),
+
+
                             CustomTextWidget(
                               ("burialDestination").tr(),
                               fontColor: AppColor.blackModern700Light,
@@ -179,7 +252,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                           .read<
                                               EkramRequestTransportationBloc>()
                                           .add(
-                                              ChangeIsBurialInsideDeathCityEvent(
+                                              setBurialInfoEvent(
                                                   isBurialInsideDeathCity:
                                                       true));
                                     },
@@ -203,7 +276,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                           .read<
                                               EkramRequestTransportationBloc>()
                                           .add(
-                                              ChangeIsBurialInsideDeathCityEvent(
+                                              setBurialInfoEvent(
                                                   isBurialInsideDeathCity:
                                                       false));
                                     },

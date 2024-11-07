@@ -4247,6 +4247,7 @@
   "destinationTime": "موقع المحطة",
   "arrivalName": "اسم محطة الوصول",
   "arrivalTime": "وقت الوصول",
-  "showAttachment": "عرض المرفق"
+  "showAttachment": "عرض المرفق",
+  "chosedeathcity": "اختر مدينة الوفاة/وصول الجثمان"
 
 }
