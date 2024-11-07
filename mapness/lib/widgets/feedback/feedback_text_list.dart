@@ -110,6 +110,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                 for (var i = 0; i < _inputs.length; i++) ...[
                   Row(
                     key: _inputKeys[i],
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: FeedbackTextInput(
@@ -134,6 +135,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                             onTap: () => _removeInput(i),
                             buttonColorScheme: ButtonColorScheme.onColor,
                             padding: EdgeInsets.zero,
+                            size: ButtonSize.medium,
                           ),
                         ),
                     ],
