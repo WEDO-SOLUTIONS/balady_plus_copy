@@ -36,6 +36,7 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
 
 
 
+
   ExtraDataBloc(
       {
         required GetGhuslEmployees getGhuslEmployees,
@@ -108,8 +109,12 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
       ));
     }, (success) async {
 
-
-
+      Map<int, List<DeceasedAttachment>>? data =prepareAttachmentData(e.requestId,success.data?.result);
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        lstDeceasedAttachment: data,
+        errorMessage: "",
+      ));
 
     });
   }
@@ -202,12 +207,14 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
 
     final failureOrSuccess = await _deleteAttachment([e.item?.id!,e.requestId]);
 
+
     failureOrSuccess.fold((failure) {
       print(failure);
       emitter(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
+      CommonFunctions.showError((failure as ServerFailure).errorMessage);
     }, (res) async {
 
       if(res.data?.result == true)
@@ -254,6 +261,7 @@ class ExtraDataBloc extends Bloc<ExtraDataEvent, ExtraDataState> {
   }
 
   Map<int, List<DeceasedAttachment>>? prepareAttachmentData(int requestId,List<DeceasedAttachment>? res){
+
     Map<int, List<DeceasedAttachment>>? map= state.lstDeceasedAttachment;
     map ??= <int, List<DeceasedAttachment>>{};
     if(res != null &&res.isNotEmpty)

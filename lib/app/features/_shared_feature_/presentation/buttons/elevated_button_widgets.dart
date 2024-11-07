@@ -392,7 +392,6 @@ class ElevatedButtonWidget extends _ElevatedButton {
     btnColor:bgColor??  Colors.white,
     btnBorderColor: borderColor ?? AppColor.primary800Light,
     btnWidth: width,
-
     maxLines: maxLines,
     textStyle: AppStyle.elevatedButtonStyle.copyWith(
       color: color ?? AppColor.primary800Light,

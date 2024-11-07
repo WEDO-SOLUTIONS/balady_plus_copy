@@ -1,69 +1,63 @@
 import 'body_recipient_info.dart';
 import 'submitter_info.dart';
 
+
+
+
+
 class MainInfo {
   MainInfo({
+    this.submitterTypeId,
     this.individualSubmitter,
-    this.requestDate,
-    this.requestTime,
+    this.submitterTypeName,
     this.bodyRecipientInfo,
     this.needSpecialTransport,
-    this.transportCaseId,
-    this.transportCaseKey,
-    this.transportCaseName,
-    this.submitterInfo,});
+    this.submitterInfo,
+     this.transportCaseName});
 
   MainInfo.fromJson(dynamic json) {
+    submitterTypeId = json['submitterTypeId'];
     individualSubmitter = json['individualSubmitter'];
-    requestDate = json['requestDate'];
-    requestTime = json['requestTime'];
+    submitterTypeName = json['submitterTypeName'];
+    transportCaseName = json['transportCaseName'];
     bodyRecipientInfo = json['bodyRecipientInfo'] != null ? BodyRecipientInfo.fromJson(json['bodyRecipientInfo']) : null;
     needSpecialTransport = json['needSpecialTransport'];
-    transportCaseId = json['transportCaseId'];
-    transportCaseKey = json['transportCaseKey'];
-    transportCaseName = json['transportCaseName'];
     submitterInfo = json['submitterInfo'] != null ? SubmitterInfo.fromJson(json['submitterInfo']) : null;
   }
+  int? submitterTypeId;
   bool? individualSubmitter;
-  String? requestDate;
-  String? requestTime;
+  String? submitterTypeName;
+  String? transportCaseName;
   BodyRecipientInfo? bodyRecipientInfo;
   bool? needSpecialTransport;
-  int? transportCaseId;
-  String? transportCaseKey;
-  String? transportCaseName;
   SubmitterInfo? submitterInfo;
-  MainInfo copyWith({  bool? individualSubmitter,
-    String? requestDate,
-    String? requestTime,
+
+
+
+  MainInfo copyWith({  int? submitterTypeId,
+    bool? individualSubmitter,
+    String? submitterTypeName,
+    String? transportCaseName,
     BodyRecipientInfo? bodyRecipientInfo,
     bool? needSpecialTransport,
-    int? transportCaseId,
-    String? transportCaseKey,
-    String? transportCaseName,
     SubmitterInfo? submitterInfo,
-  }) => MainInfo(  individualSubmitter: individualSubmitter ?? this.individualSubmitter,
-    requestDate: requestDate ?? this.requestDate,
-    requestTime: requestTime ?? this.requestTime,
+  }) => MainInfo(  submitterTypeId: submitterTypeId ?? this.submitterTypeId,
+    individualSubmitter: individualSubmitter ?? this.individualSubmitter,
+    transportCaseName: transportCaseName??this.transportCaseName,
+    submitterTypeName: submitterTypeName ?? this.submitterTypeName,
     bodyRecipientInfo: bodyRecipientInfo ?? this.bodyRecipientInfo,
     needSpecialTransport: needSpecialTransport ?? this.needSpecialTransport,
-    transportCaseId: transportCaseId ?? this.transportCaseId,
-    transportCaseKey: transportCaseKey ?? this.transportCaseKey,
-    transportCaseName: transportCaseName ?? this.transportCaseName,
     submitterInfo: submitterInfo ?? this.submitterInfo,
   );
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
+    map['submitterTypeId'] = submitterTypeId;
     map['individualSubmitter'] = individualSubmitter;
-    map['requestDate'] = requestDate;
-    map['requestTime'] = requestTime;
+    map['submitterTypeName'] = submitterTypeName;
     if (bodyRecipientInfo != null) {
       map['bodyRecipientInfo'] = bodyRecipientInfo?.toJson();
     }
     map['needSpecialTransport'] = needSpecialTransport;
-    map['transportCaseId'] = transportCaseId;
-    map['transportCaseKey'] = transportCaseKey;
-    map['transportCaseName'] = transportCaseName;
     if (submitterInfo != null) {
       map['submitterInfo'] = submitterInfo?.toJson();
     }
@@ -72,52 +66,5 @@ class MainInfo {
 
 }
 
-class SubmitterInfo {
-  SubmitterInfo({
-    this.fullName,
-    this.mobileNumber,
-    this.hasIdentity,
-    this.baladyClient,
-    this.ekramDepartment,
-    this.relationship,});
 
-  SubmitterInfo.fromJson(dynamic json) {
-    fullName = json['fullName'];
-    mobileNumber = json['mobileNumber'];
-    hasIdentity = json['hasIdentity'];
-    baladyClient = json['baladyClient'];
-    ekramDepartment = json['ekramDepartment'];
-    relationship = json['relationship'];
-  }
-  String? fullName;
-  String? mobileNumber;
-  bool? hasIdentity;
-  bool? baladyClient;
-  bool? ekramDepartment;
-  String? relationship;
-  SubmitterInfo copyWith({  String? fullName,
-    String? mobileNumber,
-    bool? hasIdentity,
-    bool? baladyClient,
-    bool? ekramDepartment,
-    String? relationship,
-  }) => SubmitterInfo(  fullName: fullName ?? this.fullName,
-    mobileNumber: mobileNumber ?? this.mobileNumber,
-    hasIdentity: hasIdentity ?? this.hasIdentity,
-    baladyClient: baladyClient ?? this.baladyClient,
-    ekramDepartment: ekramDepartment ?? this.ekramDepartment,
-    relationship: relationship ?? this.relationship,
-  );
-  Map<String, dynamic> toJson() {
-    final map = <String, dynamic>{};
-    map['fullName'] = fullName;
-    map['mobileNumber'] = mobileNumber;
-    map['hasIdentity'] = hasIdentity;
-    map['baladyClient'] = baladyClient;
-    map['ekramDepartment'] = ekramDepartment;
-    map['relationship'] = relationship;
-    return map;
-  }
-
-}
 

@@ -13,7 +13,9 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../home_page/presentation/widgets/home_tag.dart';
+import '../../blocs/driver_add_trip/add_trip_bloc.dart';
 import '../../blocs/driver_identical_bloc/identical_list_bloc.dart';
+import '../../widgets/transportation_details_widget/body_sections/attachment_info_widget.dart';
 
 class UsersEkramTransportationDetailsPage extends StatefulWidget {
   const UsersEkramTransportationDetailsPage({Key? key}) : super(key: key);
@@ -25,18 +27,39 @@ class UsersEkramTransportationDetailsPage extends StatefulWidget {
 
 class _UsersEkramTransportationDetailsPageState
     extends State<UsersEkramTransportationDetailsPage> {
+
+  AddTripBloc? bloc;
+  ExtraDataBloc? extraDataBloc;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.detailsServiceBodyTransportation);
+
   }
 
   @override
   Widget build(BuildContext context) {
     TransportRequestItemModel params =
         ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
+
+    params.requestId = 4617335922;
+     bloc ??= AddTripBloc(
+      deleteTrip: sl(),
+      completeTrip: sl(),
+      getTrips: sl(),
+      editTrip: sl(),
+      getTripStations: sl(),
+      model: params,
+      context: context,
+      addTrip: sl(),
+      updateDriverLocation: sl())
+       ..add(GetTripsEvent());
+
+    extraDataBloc=  ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(), editAdditionalData: sl(),deleteAttachment: sl());
+    extraDataBloc!.add(GetDeceasedAttachmentEvent(requestId: params.requestId!));
+
 
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
@@ -46,7 +69,7 @@ class _UsersEkramTransportationDetailsPageState
           getNationalities: sl(),
           applyDeceasedTransport: sl(),
           getCemeteryTypesLookUp: sl(),
-      )..add(getRequestDetailsEvent(requestId: params.requestId!)),
+      )..add(getRequestDetailsEvent(requestId: "${params.requestId}")),//
 
       child: BlocConsumer<EkramRequestTransportationBloc, EkramRequestTransportationState>(
           listener: (context, state) {
@@ -62,24 +85,14 @@ class _UsersEkramTransportationDetailsPageState
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 CustomTextWidget(
-                  "request".tr(),
+                  "requests_transporting_deceased".tr(),
                   fontSize: 20,
                   maxLines: 1,
                   textOverflow: TextOverflow.ellipsis,
                   fontWeight: AppFontWeight.bold,
                   fontColor: AppColor.blackModern700Light,
                 ),
-                const SizedBox(
-                  width: 16,
-                ),
-                CustomTextWidget(
-                  "#${params.requestId}",
-                  fontSize: 14,
-                  maxLines: 1,
-                  textOverflow: TextOverflow.ellipsis,
-                  fontWeight: AppFontWeight.medium,
-                  fontColor: AppColor.blackModern700Light,
-                ),
+
               ],
             ),
           ),
@@ -93,14 +106,9 @@ class _UsersEkramTransportationDetailsPageState
                     children: [
                       Row(
                         children: [
-                          SvgPicture.asset(
-                            IconPath.calendarIcon,
-                            width: 24,
-                            height: 24,
-                          ),
-                          CustomHorizontalSpace(width: 8),
+
                           CustomTextWidget(
-                            params.requestDate ?? "",
+                           "${"posters_permit_request_id".tr()} ${params.requestId}",
                             fontColor: AppColor.blackModern500Light,
                             fontSize: 12,
                             fontWeight: AppFontWeight.bold,
@@ -115,11 +123,18 @@ class _UsersEkramTransportationDetailsPageState
                   ),
                   Constants.verticalSpaceSmall,
                   DeceasedInfoWidget_new(item:state.requestDetailsModel?.deceasedInfo),
-                   ApplicantInfoWidget(),
-                   BurialInfoWidget(),
-                  DriversInfoWidget(),
+                  SizedBox(height: 20,),
+                   ApplicantInfoWidget(item:state.requestDetailsModel?.mainInfo),
+                   SizedBox(height: 20,),
+                   BurialInfoWidget(deathInfo:state.requestDetailsModel?.deathInfo ,burialInfo: state.requestDetailsModel?.burialInfo,cemeteryData: state.requestDetailsModel?.cemeteryData,transportInfo: state.requestDetailsModel?.transportInfo,),
+                  SizedBox(height: 20,),
+                  AttachmentInfoWidget(bloc:extraDataBloc, requestId: params.requestId!,model: state.requestDetailsModel?.locationInfo,),
+                  SizedBox(height: 20,),
+                  DriversInfoWidget(bloc: bloc,),
 
 
+
+                  SizedBox(height: 30,)
                   // TransferInfo
                   // DriversInfo
                   //  DriversInfoWidget(),
@@ -129,7 +144,7 @@ class _UsersEkramTransportationDetailsPageState
                   //
                   // BurialInfo
                   //  ,
-                  Constants.verticalSpaceSmall,
+
                 ],
               ),
             ),

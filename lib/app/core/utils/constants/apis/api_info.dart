@@ -629,9 +629,10 @@ class ApiUrl {
       'v1/superapp-ekram-services/trips/$id/finalize';
   static updateLocation(int id) =>
       'v1/superapp-ekram-services/transport/add-transport-track/$id';
+
   static deleteAttachment(int requestId, int attachmentId) =>
-      'v1/superapp-ekram-services/trips/$requestId/$attachmentId/delete-trip';
-  static String deceasedRequestDetails(int requestId) =>
+      'v1/superapp-ekram-services/attachments/$attachmentId/delete';
+  static String deceasedRequestDetails(String requestId) =>
       "v1/superapp-ekram-services/request/$requestId/request-details";
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";

@@ -51,7 +51,7 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         SizedBox(
-          height: 15,
+          height: 20,
         ),
         CustomTextWidget(
           "${item.name!}${item.mandatory == true ? " * " : ""} (${item.allowedFilesExtension})",
@@ -61,11 +61,10 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
           fontWeight: AppFontWeight.bold,
           fontColor: AppColor.blackModern700Light,
         ),
-        SizedBox(
-          height: 10,
-        ),
+
         item.attachUrl != null && item.attachUrl!.isNotEmpty
-            ? Container(
+            ?
+        Container(
               padding: const EdgeInsets.all(16),
               margin: const EdgeInsets.only(top: 16),
               decoration: BoxDecoration(
@@ -81,7 +80,7 @@ class DeceasedAttachmentCardWidget extends StatelessWidget {
                     fontWeight: AppFontWeight.bold,
                   ),
                   const SizedBox(
-                    height: 32,
+                    height: 30,
                   ),
                   Row(
                     children: [

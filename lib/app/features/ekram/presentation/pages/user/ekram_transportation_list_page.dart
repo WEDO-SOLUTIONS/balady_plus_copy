@@ -157,7 +157,6 @@ class _EkramTransportationListPageState
                                   OnDetailsPress: () {
 
 
-
                                     NavigationService.navigatorKey.currentState!
                                         .pushNamed(RouteName.driverEkramTransportationDetailsScreen,arguments:state
                                         .deceasedRequestItems![index] );

@@ -4233,5 +4233,20 @@
   "enter_ekram_fourth_name": "ادخل الاسم الرابع",
   "enternationilaty": "اختر الجنسية",
   "avaliableNationID": "هل لدى المتوفي هوية",
-  "serialNumber": "الرقم التسلسلي"
+  "serialNumber": "الرقم التسلسلي",
+  "geha": "جهة",
+  "requestSource": "مصدر الطلب",
+  "raflyAge": "العمر التقديري",
+  "ageYear": "سنة",
+  "vichleAssignDate": "تاريخ تعيين المركبة ميلادي ",
+  "driverAssignDate": " تاريخ تعيين السائق ميلادي ",
+  "baquie_approval_date": "تاريخ موافقة الامارة(ميلادي)",
+  "hrjii_baquie_approval_date": "تاريخ موافقة الامارة(هجري)",
+  "tripPaths": "مسارات الرحلة",
+  "destinationName": "اسم محطة الانطلاق",
+  "destinationTime": "موقع المحطة",
+  "arrivalName": "اسم محطة الوصول",
+  "arrivalTime": "وقت الوصول",
+  "showAttachment": "عرض المرفق"
+
 }

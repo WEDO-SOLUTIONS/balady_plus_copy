@@ -121,6 +121,7 @@ class AppColor {
   static const mystic = Color(0x7FE6EFEF);
   static const lightgery = Color(0xFFF545480);
   static const borderBlck = Color(0xFFF545454);
+  static const greenOptacty = Color(0xFFE6EFEF);
 
 
 
@@ -165,6 +166,8 @@ class AppColor {
   static const grayLight = Color(0xffE8EFF1);
   static const blue100 = Color(0xff308FAB);
   static const golden = Color(0xffDFB300);
+  static const litgrey = Color(0xff868686);
+
 
 // Primary Light Colors
 

@@ -46,38 +46,38 @@ class IdenticalDeceasedCardWidget extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           SizedBox(height: 15,),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
                       title: ('deceasedName').tr(),
                       details: item.deceasedName ?? "",
                     ),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
                       title: ('ekram_deceased_id').tr(),
                       details: item.deceasedIdentityId !=null ?"${item.deceasedIdentityId}" :"",
                     ),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
                       title: ('transportationStatus').tr(),
                       details: item.transportCaseName !=null ?"${item.transportCaseName}" :"",
                     ),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
             title: ('deathCity/arrivelCity').tr(),
             details: item.deathCityName !=null ?"${item.deathCityName}" :"",
           ),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
             title: ('burial_city').tr(),
             details: item.burialCityName ?? "",
           ),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
             title: ('ekram_reciever_Mobile').tr(),
             details: item.bodyRecipientMobile ?? "",
           ),
-          EkramHeaderAndDescWidget_new(
+          EkramHeaderAndDescWidget_With_Background(
                       title: ('needSpecialTransfer').tr(),
                       details: (item.needSpecialTransport ?? false)
             ? ("yes").tr()
             : ("no").tr(),
                     ),
           if (item.needSpecialTransport == true)
-            EkramHeaderAndDescWidget_new(
+            EkramHeaderAndDescWidget_With_Background(
                           title: ('reasonForSpecialTransfer').tr(),
                           details: item.getSpecialTransferReason(),
                         ),

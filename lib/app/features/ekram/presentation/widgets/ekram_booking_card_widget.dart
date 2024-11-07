@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
-    show EkramBookingItem, EkramHeaderAndDescWidget_new, EkramStatusWidget;
+    show EkramBookingItem, EkramHeaderAndDescWidget_With_Background, EkramStatusWidget;
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
