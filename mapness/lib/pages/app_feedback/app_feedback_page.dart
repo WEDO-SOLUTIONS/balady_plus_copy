@@ -20,19 +20,19 @@ class AppFeedbackPage extends HookConsumerWidget {
     showCupertinoDialog(
         context: context,
         builder: (ctx) => CupertinoAlertDialog(
-              title: const Text('Unsaved Changes'),
-              content: const Text('If you go back now, your text will be lost. Are you sure you want to leave?'),
+              title: Text(context.l10n.appFeedbackUnsavedChanges),
+              content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
               actions: [
                 CupertinoDialogAction(
                   isDefaultAction: true,
-                  child: const Text('Stay'),
+                  child: Text(context.l10n.appFeedbackStay),
                   onPressed: () {
                     Navigator.of(ctx).pop();
                   },
                 ),
                 CupertinoDialogAction(
                   isDestructiveAction: true,
-                  child: const Text('Leave'),
+                  child: Text(context.l10n.appFeedbackLeave),
                   onPressed: () {
                     Navigator.of(ctx).pop();
                     context.pop();
@@ -99,7 +99,7 @@ class AppFeedbackPage extends HookConsumerWidget {
                   child: Scaffold(
                     backgroundColor: context.colorsV2.backgroundScreen,
                     appBar: BaladyTopBar.iconAndText(
-                      title: isControlEnabled && !isErrorState ? 'Share feedback' : null,
+                      title: isControlEnabled && !isErrorState ? context.l10n.appFeedbackShareFeedback : null,
                       leading: isSuccess
                           ? null
                           : ActionModel(

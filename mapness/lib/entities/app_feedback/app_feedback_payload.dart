@@ -9,6 +9,7 @@ enum AppFeedbackMobileOs { android, ios }
 
 @freezed
 class AppFeedbackPayload with _$AppFeedbackPayload {
+  // ignore: invalid_annotation_target
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackPayload({
     required final String reviewText,

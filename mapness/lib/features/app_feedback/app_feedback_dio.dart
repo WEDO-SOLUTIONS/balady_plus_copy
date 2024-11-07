@@ -12,7 +12,7 @@ Future<Dio> appFeedbackDio(AutoDisposeFutureProviderRef ref) async {
 
   return Dio(
     baseDio.options.copyWith(
-      baseUrl: env.feedbackApi,
+      baseUrl: env.appFeedbackApi,
       connectTimeout: const Duration(seconds: 30),
       receiveTimeout: const Duration(seconds: 30),
       sendTimeout: const Duration(seconds: 30),

@@ -3,6 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AppFeedbackInput extends HookWidget {
   final ValueChanged<bool>? isValid;
@@ -44,7 +45,7 @@ class AppFeedbackInput extends HookWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           WidgetLabel(
-            label: 'Leave comment',
+            label: context.l10n.appFeedbackLeaveAMessage,
             labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
               color: context.colorsV2.foregroundDefault,
             ),
@@ -57,12 +58,13 @@ class AppFeedbackInput extends HookWidget {
                   controller: textController,
                   focusNode: focusNode,
                   autofocus: true,
-                  hintText: 'Tell us more',
+                  hintText: context.l10n.appFeedbackTellUsMore,
                   maxLines: maxLinesValue,
                   maxLength: 1000,
                   onValidate: (v) => v != null && v.length != 10
                       ? null
-                      : 'Character limit reached', // Show error message if the text length is 1000 only
+                      : context
+                          .l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
                 ),
               ),
             ],

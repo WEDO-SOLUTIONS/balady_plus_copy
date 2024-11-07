@@ -11,10 +11,8 @@ class AppFeedbackError extends StatelessWidget {
         onRetry: () {
           onRetry?.call();
         },
-        errorLabel: onRetry != null
-            ? context.l10n.somethingDidntGoAsPlannedDescription
-            : context.l10n.somethingDidntGoAsPlanned,
-        errorTitle: context.l10n.failedToLoadData,
+        errorLabel: context.l10n.appFeedbackConnectionIssue,
+        errorTitle: context.l10n.appFeedbackSomethingWentWrong,
         withRetryButton: onRetry != null,
       );
 }

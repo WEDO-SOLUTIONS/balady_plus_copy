@@ -24,7 +24,7 @@ class SendFeedback extends _$SendFeedback {
   }
 
   Future<void> sendFeedback() async {
-    // final feedbackDio = await ref.read(appFeedbackDioProvider.future);
+    final feedbackDio = await ref.read(appFeedbackDioProvider.future);
 
     try {
       if (_feedbackPayload == null) {
@@ -33,8 +33,10 @@ class SendFeedback extends _$SendFeedback {
 
       await update((_) async => AppFeedbackState.loading);
 
-      // send feedback
-      await Future.delayed(const Duration(seconds: 10));
+      await feedbackDio.post(
+        '/feedback',
+        data: _feedbackPayload!.toJson(),
+      );
 
       await update((_) async => AppFeedbackState.success);
     } catch (e, st) {

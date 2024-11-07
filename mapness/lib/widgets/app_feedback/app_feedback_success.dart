@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AppFeedbackSuccess extends StatelessWidget {
   const AppFeedbackSuccess({super.key});
@@ -24,7 +25,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 horizontal: AppSizes.xxs,
               ),
               child: Text(
-                'Thank you!',
+                context.l10n.appFeedbackThankYou,
                 style: context.textStyleV3.h3SemiBold.copyWith(
                   color: context.colorsV2.foregroundDefault,
                 ),
@@ -37,7 +38,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 horizontal: AppSizes.xxs,
               ),
               child: Text(
-                'Your feedback will help us create a\nbetter experience for you.',
+                context.l10n.appFeedbackYourFeedbackWillHelpUsCreateABetterExperienceForYou,
                 style: context.textStyleV3.bodySmallRegular.copyWith(
                   color: context.colorsV2.foregroundSoft,
                 ),
@@ -53,7 +54,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                   vertical: Spacing.$4x,
                 ),
                 buttonColorScheme: ButtonColorScheme.primary,
-                primaryLabel: 'Done',
+                primaryLabel: context.l10n.done,
                 onTap: () {
                   context.pop();
                 },
