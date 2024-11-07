@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
@@ -7,6 +8,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:dgis_map/library.dart';
+import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,6 +33,7 @@ import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
@@ -39,6 +42,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
@@ -122,6 +126,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // restoreState();
       clearCache();
       checkNavigationState();
+      // TODO: Dmitrii.P: Is it the right place to call this method?
+      // Maybe we should call it upper or in the different places too?
+      final track = ref.read(urbiAnalyticsProvider).track;
+      AdvancedMetrics.instance.stopMeasureStartup(track: track);
+      AdvancedMetrics.instance.sendPreviousSessionBatteryUsage(track: track);
+      AdvancedMetrics.instance.startMeasureBattery();
     });
   }
 
@@ -507,18 +517,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-  final vendorConfig = switch (envType) {
-    EnvType.stg => VendorConfigMessage.momrahStg,
-    EnvType.pre || EnvType.prod => VendorConfigMessage.momrahProd,
-    EnvType.urbiPre || EnvType.dev => VendorConfigMessage.urbiPreProd,
-  };
+
+  final instance = FirebaseRemoteConfig.instance;
+  await instance.ensureInitialized();
+  await instance.fetchAndActivate();
+  final vendorConfigResponse = instance.getValue(envType.vendorConfigKey());
+  final vendorContentJsonString = jsonEncode(jsonDecode(vendorConfigResponse.asString()));
+  final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
+  await box.put(MapnessConstants.vendorConfigKey, vendorContentJsonString);
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
       systemLevel: LogLevelMessage.fatal,
       customLevel: LogLevelMessage.fatal,
     ),
-    config: vendorConfig,
+    configContent: VendorConfigContentMessage(content: vendorContentJsonString),
   );
 
   await Hive.initFlutter();
@@ -531,15 +544,14 @@ Future<void> setupMapness(EnvType envType) async {
     ..registerAdapter(HiveFavouriteItemEntityAdapter())
     ..registerAdapter(FavoriteCacheStateAdapter());
 
-  final box = await Hive.openBox('envType');
-  final env = switch (envType) {
-    EnvType.dev => 'dev',
-    EnvType.stg => 'stg',
-    EnvType.pre => 'pre',
-    EnvType.prod => 'prod',
-    EnvType.urbiPre => 'urbiPre',
-  };
-  await box.put('envType', env);
+  await box.put(MapnessConstants.envTypeKey, envType.appConfigKey());
+
+  ///save all env config to hive just for testing scenario
+  final envConfigResponse = instance.getValue(MapnessConstants.firebaseAppEnvConfigKey);
+  final envJsonString = jsonEncode(jsonDecode(envConfigResponse.asString()));
+  await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
+
+
 }
 
 class MapnessLogger {

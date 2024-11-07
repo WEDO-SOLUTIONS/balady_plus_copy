@@ -11,7 +11,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-typedef ConfirmReorder = void Function(List<RouteParamsPoint?> points, List<String> labels);
+typedef ConfirmReorder = void Function(List<RouteParamsPointWithLabel> points);
 
 /// This widget is used to change the path order. We use here the [ABRoute] widget to show the points
 ///
@@ -20,8 +20,7 @@ typedef ConfirmReorder = void Function(List<RouteParamsPoint?> points, List<Stri
 class ChangePathSheet extends StatefulWidget {
   final ConfirmReorder onConfirm;
   final VoidCallback onTap;
-  final List<RouteParamsPoint?> points;
-  final List<String> labels;
+  final List<RouteParamsPointWithLabel> points;
   final VoidCallback onClose;
   final BuildContext externalContext;
   final GeoPointMessage? myLocation;
@@ -29,7 +28,6 @@ class ChangePathSheet extends StatefulWidget {
     required this.onConfirm,
     required this.onTap,
     required this.points,
-    required this.labels,
     required this.onClose,
     required this.externalContext,
     required this.myLocation,
@@ -42,13 +40,11 @@ class ChangePathSheet extends StatefulWidget {
 
 class _ChangePathSheetState extends State<ChangePathSheet> {
   final pointsModels = <ABRouteModel>[];
-  late final List<RouteParamsPoint?> points;
-  late final List<String> labels;
+  late final List<RouteParamsPointWithLabel> points;
   @override
   void initState() {
     super.initState();
     points = widget.points;
-    labels = widget.labels;
     _updatePoints();
   }
 
@@ -61,17 +57,13 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     pointsModels.clear();
     final ctx = widget.externalContext;
     for (int i = 0; i < points.length; i++) {
-      final labelForMyLocation = labels[i] == ctx.l10n.myLocation;
-      final icon = labelForMyLocation
-          ? ctx.isLTR
-              ? TransportIcons.locationFullLTR
-              : TransportIcons.locationFullLTR
-          : GeneralIcons.bulletCircleSolid;
-      final color = i == 0 ? ctx.colorsV2.successActive : ctx.colorsV2.accentActive;
+      final point = points[i];
+      final labelForMyLocation = point.label == ctx.l10n.myLocation;
+
       pointsModels.add(
         ABRouteModel(
-          title: labels[i],
-          icon: Icon(icon, color: color),
+          title: point.label,
+          isMyLocation: labelForMyLocation,
         ),
       );
     }
@@ -121,10 +113,7 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
                     child: AppButton(
                       buttonColorScheme: ButtonColorScheme.primary,
                       onTap: () {
-                        widget.onConfirm(
-                          points,
-                          pointsModels.map((e) => e.title).toList(),
-                        );
+                        widget.onConfirm(points);
                       },
                       primaryLabel: widget.externalContext.l10n.set,
                     ),
@@ -151,7 +140,6 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
     setState(() {
       _swap(points, oldIndex, currentIndex);
       _swap(pointsModels, oldIndex, currentIndex);
-      _swap(labels, oldIndex, currentIndex);
     });
   }
 
@@ -176,14 +164,14 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
         group: MetricsConstants.routesTag,
         action: MetricAction.tap.toString(),
         props: {
-          'isMyLocation': labels[index] == l10n.myLocation,
+          'isMyLocation': points[index].label == l10n.myLocation,
         });
 
     // Callback from the parent widget on tap
     widget.onTap();
 
-    final isMyLocation = labels[index] == l10n.myLocation;
-    final isContainsMyLocation = labels.contains(l10n.myLocation);
+    final isMyLocation = points[index].label == l10n.myLocation;
+    final isContainsMyLocation = points.map((e) => e.label).contains(l10n.myLocation);
 
     // Show the search route screen and get new value from it
     final value = await context.router.push(
@@ -201,15 +189,17 @@ class _ChangePathSheetState extends State<ChangePathSheet> {
         longitude = widget.myLocation!.longitude;
       }
       if (longitude != null && latitude != null) {
-        final newPoint = RouteParamsPoint(
-          latitude: latitude,
-          longitude: longitude,
-          objectId: value.objectId,
-          entranceId: value.entranceId,
-          levelId: value.levelId,
+        final newPoint = RouteParamsPointWithLabel(
+          value: RouteParamsPoint(
+            latitude: latitude,
+            longitude: longitude,
+            objectId: value.objectId,
+            entranceId: value.entranceId,
+            levelId: value.levelId,
+          ),
+          label: value.title(l10n) ?? points[index].label,
         );
         points[index] = newPoint;
-        labels[index] = value.title(l10n) ?? labels[index];
         _updatePoints();
 
         // Don't use setState in [_updatePoints] because it will cause an error during the initState

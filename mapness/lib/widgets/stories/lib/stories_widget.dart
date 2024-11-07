@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -48,7 +49,15 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
       action: MetricAction.tap.name,
       props: {'id': id},
     );
-    context.pushRoute(StoriesRoute(type: StoryTypes.network, initialStoryId: id));
+
+    ref.read(storiesOpenStateProvider.notifier).open();
+    context.pushRoute(
+      StoriesRoute(
+        type: StoryTypes.network,
+        initialStoryId: id,
+        onClose: ref.read(storiesOpenStateProvider.notifier).close,
+      ),
+    );
   }
 
   @override

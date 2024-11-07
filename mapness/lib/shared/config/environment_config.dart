@@ -7,6 +7,7 @@ extension DgisEnvExt on DgisEnv {
         DgisEnv.momrahStaging => EnvironmentConfig.momrahStaging(),
         DgisEnv.urbiPreprod => EnvironmentConfig.urbiPreProd(),
       };
+
 }
 
 class EnvironmentConfig {
@@ -32,6 +33,21 @@ class EnvironmentConfig {
     required this.feedbackApi,
     this.proxy,
   });
+
+
+  factory EnvironmentConfig.fromJson(Map<String, dynamic> json) => EnvironmentConfig(
+      proxy: json['proxy'] as String?,
+      url: json['url'] as String,
+      meteoblue: json['meteoblue'] as String,
+      weatherApi: json['weatherApi'] as String,
+      jobsApi: json['jobsApi'] as String,
+      twinsApi: json['twinsApi'] as String,
+      baseApiDomain: json['baseApiDomain'] as String,
+      shareEtaApi: json['shareEtaApi'] as String,
+      feedbackApi: json['feedbackApi'] as String,
+    );
+
+
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',

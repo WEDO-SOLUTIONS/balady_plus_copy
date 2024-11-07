@@ -99,63 +99,51 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     final initialExpansion = widget.collapseInitially ? Expansion.collapsed : Expansion.middle;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Directionality(
-        textDirection: TextDirection.rtl,
-        child: Stack(
-          children: [
-            const RoutingMapControls(
-              bottomExtent: controlsBottomExtent,
-            ),
-            DgisBottomSheet(
-              controller: dgisBottomSheetController,
-              showBarrier: false,
-              availableExpansions: const {
-                Expansion.collapsed,
-                Expansion.expanded,
-                Expansion.middle,
-              },
-              initialExpansion: initialExpansion,
-              middleHeight: middleHeightFraction * widget.biggestHeight,
-              collapsedHeight: controlsBottomExtent,
-              scrollableBody: (context, scrollController) => Container(
-                decoration: const BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(RadiusBorder.xl),
-                    topLeft: Radius.circular(RadiusBorder.xl),
+      child: Stack(
+        children: [
+          const RoutingMapControls(
+            bottomExtent: controlsBottomExtent,
+          ),
+          DgisBottomSheet(
+            controller: dgisBottomSheetController,
+            showBarrier: false,
+            availableExpansions: const {
+              Expansion.collapsed,
+              Expansion.expanded,
+              Expansion.middle,
+            },
+            initialExpansion: initialExpansion,
+            middleHeight: middleHeightFraction * widget.biggestHeight,
+            collapsedHeight: controlsBottomExtent,
+            scrollableBody: (context, scrollController) => Material(
+              borderRadius: const BorderRadius.only(
+                topRight: Radius.circular(RadiusBorder.xl),
+                topLeft: Radius.circular(RadiusBorder.xl),
+              ),
+              color: context.color.surfaceBasePrimary,
+              child: CustomScrollView(
+                controller: scrollController,
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const ClampingScrollPhysics(),
+                slivers: [
+                  SliverPersistentHeader(
+                    delegate: RoutingHeaderDelegate(
+                      points: points,
+                      updatePoints: _updatePoints,
+                    ),
+                    pinned: true,
                   ),
-                ),
-                child: Material(
-                  borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(RadiusBorder.xl),
-                    topLeft: Radius.circular(RadiusBorder.xl),
+                  SliverToBoxAdapter(
+                    child: RoutingHistory(
+                      updatePoint: _updatePoint,
+                      searchByQuery: _searchQuery,
+                    ),
                   ),
-                  color: context.color.surfaceBasePrimary,
-                  child: CustomScrollView(
-                    controller: scrollController,
-                    keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                    physics: const ClampingScrollPhysics(),
-                    slivers: [
-                      SliverPersistentHeader(
-                        delegate: RoutingHeaderDelegate(
-                          points: points,
-                          updatePoints: _updatePoints,
-                        ),
-                        pinned: true,
-                      ),
-                      SliverToBoxAdapter(
-                        child: RoutingHistory(
-                          updatePoint: _updatePoint,
-                          searchByQuery: _searchQuery,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                ],
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -60,7 +61,11 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
 
     return ListView.separated(
       shrinkWrap: true,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        bottom: Spacing.$4x,
+      ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         if (index == results.length) {

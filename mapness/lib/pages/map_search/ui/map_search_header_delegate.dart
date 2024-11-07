@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
@@ -7,22 +8,25 @@ class MapSearchHeaderDelegate extends SliverPersistentHeaderDelegate {
   MapSearchHeaderDelegate({
     required this.requestFocus,
     required this.onClose,
+    required this.backgroundColor,
   });
 
   final bool requestFocus;
   final VoidCallback onClose;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) => DashboardHeader(
         requestFocus: requestFocus,
         onClose: onClose,
+        backgroundColor: backgroundColor,
       );
 
   @override
-  double get maxExtent => 84;
+  double get maxExtent => 76;
 
   @override
-  double get minExtent => 84;
+  double get minExtent => 76;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
@@ -32,34 +36,36 @@ class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({
     required this.requestFocus,
     required this.onClose,
+    required this.backgroundColor,
     super.key,
   });
 
   final bool requestFocus;
   final VoidCallback onClose;
+  final Color backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: const BorderRadius.only(
             topRight: Radius.circular(16),
             topLeft: Radius.circular(16),
           ),
         ),
         child: Column(
           children: [
-            const SizedBox(height: 8),
+            const SizedBox(height: Spacing.$1_5x),
             const Center(child: SheetDragger()),
-            const SizedBox(height: 8),
+            const SizedBox(height: Spacing.$1_5x),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: MapSearchBar(
                 requestFocus: requestFocus,
                 onClose: onClose,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: Spacing.$4x),
           ],
         ),
       );

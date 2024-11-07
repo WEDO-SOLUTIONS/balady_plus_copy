@@ -15,19 +15,23 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
 
+part 'widgets/search_history_gallery.dart';
+
 const prefixMapping = {
-  'Region': 'منطقة',
-  'Governorate': 'محافظة',
-  'City': 'مدينة',
-  'District area': 'محافظة',
-  'District': 'حى',
-  'Street': 'شارع',
-  'Buildings': 'مبنى',
-  'Park': 'بارك',
-  'Hotel': 'الفندق',
-  'Coffee shop': 'كافيه',
-  'Paid': 'مدفوع',
-  'Place': 'مكان',
+  'region': 'منطقة',
+  'rovernorate': 'محافظة',
+  'city': 'مدينة',
+  'district area': 'محافظة',
+  'district': 'حى',
+  'street': 'شارع',
+  'buildings': 'مبنى',
+  'park': 'بارك',
+  'hotel': 'الفندق',
+  'coffee shop': 'كافيه',
+  'paid': 'مدفوع',
+  'place': 'مكان',
+  'gym': 'صالة رياضية',
+  'company': 'شركة',
 };
 
 class SearchItem extends ConsumerWidget {
@@ -36,6 +40,7 @@ class SearchItem extends ConsumerWidget {
   final DirectoryObjectMessage result;
 
   final void Function() onTap;
+
   const SearchItem({
     required this.result,
     required this.onTap,
@@ -58,106 +63,55 @@ class SearchItem extends ConsumerWidget {
       photosUrls = photoItems.map((e) => e.url).toList();
     }
 
-    if (prefixMapping.containsKey(subtitle)) {
+    if (prefixMapping.containsKey(subtitle.toLowerCase())) {
       subtitle = switch (language) {
         Language.english => subtitle,
-        Language.arabic => prefixMapping[subtitle]!,
+        Language.arabic => prefixMapping[subtitle.toLowerCase()]!,
       };
     }
 
     return Material(
-      color: context.color.surfaceBaseSecondary,
+      color: context.colorsV2.backgroundSurface4,
       shape: smoothBorder(RadiusBorder.xl),
       child: SearchTapHandler(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 12,
-            horizontal: 16,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // this part of the code will be included in the uikit component, so it is not included as a separate widget
-              if (photosUrls.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: SizedBox(
-                    height: 96,
-                    child: ScrollConfiguration(
-                      behavior: NoGlowingScrollBehavior(),
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: photosUrls.length,
-                        itemBuilder: (context, i) {
-                          final photo = photoItems[i].previewUrls?.smallByWidth ?? photosUrls[i];
-                          return ClipRRect(
-                            borderRadius: BorderRadius.circular(
-                              RadiusBorder.l,
-                            ),
-                            child: Image.network(
-                              photo,
-                              fit: BoxFit.cover,
-                              height: 96,
-                              width: 96,
-                              cacheHeight: 96,
-                              cacheWidth: 96,
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) => Spacing.$1x.widthBox,
-                      ),
-                    ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            if (photosUrls.isNotEmpty) _PhotosGallery(photosUrls: photosUrls, photoItems: photoItems),
+            ContentRowV2(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              text: ContentRowTextOptions(
+                title: result.title,
+                titleOptions: const ContentRowTextOption(isBold: true),
+                subtitle: subtitle,
+                subtitleExtra: result.makeAddress(),
+                subtitleExtraOptions: const ContentRowTextOption(
+                  maxLines: 3,
+                ),
+              ),
+              trailing: ContentRowCustomTrailingOptions(
+                builder: (context) => Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+                  child: FutureBuilder<double?>(
+                    future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox.shrink();
+                      }
+                      final distanceKm = snapshot.data;
+                      if (distanceKm == null || !context.mounted) {
+                        return const SizedBox.shrink();
+                      }
+                      return ContentRowTrailingText(
+                        options: ContentRowTextTrailingOptions(text: (distanceKm * 1000).formatDistance(context.l10n)),
+                      );
+                    },
                   ),
                 ),
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      result.title,
-                      overflow: TextOverflow.ellipsis,
-                      style: context.textStyle.callout,
-                    ),
-                  ),
-                  FutureBuilder<double?>(
-                      future: _calculateDistance(markerPoint: result.markerPosition, myLocationPoint: myLocation),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) {
-                          return const SizedBox.shrink();
-                        }
-                        final distanceKm = snapshot.data;
-                        if (distanceKm == null || !context.mounted) {
-                          return const SizedBox.shrink();
-                        }
-
-                        return Padding(
-                          padding: const EdgeInsetsDirectional.only(start: 12),
-                          child: Text(
-                            (distanceKm * 1000).formatDistance(context.l10n),
-                            style: context.textStyle.footNoteBold.copyWith(
-                              color: context.color.textAndIconsBaseSecondary,
-                            ),
-                          ),
-                        );
-                      }),
-                ],
               ),
-              const SizedBox(height: 2),
-              Text(
-                subtitle,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: context.textStyle.footNote,
-              ),
-              const SizedBox(height: 4),
-              Text(
-                result.makeAddress(),
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBaseSecondary),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

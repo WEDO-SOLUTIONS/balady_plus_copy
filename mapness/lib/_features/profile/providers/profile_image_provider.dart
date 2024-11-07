@@ -97,7 +97,7 @@ class ProfileImage extends _$ProfileImage {
   Future<String> _uploadImage(Uint8List bytes) async {
     final compressedBytes = await _comporessList(bytes);
     // start the timer for the event "Image Upload"
-    ref.read(urbiMetricsProvider.notifier).logEvent('Profile_Image_Upload');
+    Metrics.logEvent('Profile_Image_Upload');
     mixpanel?.timeEvent('Profile Image Upload');
 
     final dio = await ref.read(dGisNetworkProvider.future);

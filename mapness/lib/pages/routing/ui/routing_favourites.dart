@@ -9,15 +9,17 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+part 'widgets/routing_favourites_button.dart';
+
 class RoutingFavourites extends ConsumerWidget {
+  final bool showBookmark;
+  final void Function(FavouriteItem) onFavouriteTap;
+
   const RoutingFavourites({
     required this.showBookmark,
     required this.onFavouriteTap,
     super.key,
   });
-
-  final bool showBookmark;
-  final void Function(FavouriteItem) onFavouriteTap;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,30 +89,22 @@ class RoutingFavourites extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
       child: Directionality(
+        // For all design, we use LTR
         textDirection: TextDirection.ltr,
         child: Row(
             children: <Widget>[
           if (showBookmark)
-            Expanded(
-              child: AppButton(
-                buttonColorScheme: ButtonColorScheme.tertiary,
-                onTap: onFavouritesTap,
-                primaryIcon: SystemIcons.bookmark,
-              ),
+            _FavButton(
+              icon: SystemIcons.bookmark,
+              onTap: onFavouritesTap,
             ),
-          Expanded(
-            child: AppButton(
-              buttonColorScheme: ButtonColorScheme.tertiary,
-              onTap: onHomeTap,
-              primaryIcon: GeneralIcons.home,
-            ),
+          _FavButton(
+            icon: GeneralIcons.home,
+            onTap: onHomeTap,
           ),
-          Expanded(
-            child: AppButton(
-              buttonColorScheme: ButtonColorScheme.tertiary,
-              onTap: onWorkTap,
-              primaryIcon: GeneralIcons.briefcase,
-            ),
+          _FavButton(
+            icon: GeneralIcons.briefcase,
+            onTap: onWorkTap,
           ),
         ].insertBetween(Spacing.$3x.widthBox).toList()),
       ),

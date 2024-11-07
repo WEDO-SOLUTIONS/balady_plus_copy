@@ -8,18 +8,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
-/// Return the Map between `objectId` and `label` for the object
-FutureOr<Map<int, String>> _generateTitleMap(List<UiMarkerInfoMessage?>? uiMarkers) {
-  final titleMap = <int, String>{};
-  for (final uiMarker in uiMarkers ?? List<UiMarkerInfoMessage?>.empty()) {
-    if (uiMarker?.objectId == null || uiMarker?.label == null) {
-      continue;
-    }
-    titleMap[uiMarker!.objectId!.objectId] = _breakLineInTwo(_removeComma(uiMarker.label!));
-  }
-  return titleMap;
-}
-
 /// We use this method to throw away the part of the organization description that contains
 /// additional information that is not necessary on the map next to the marker
 ///
@@ -76,12 +64,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool withLabel = true,
     bool isRtl = true,
   }) async {
-    final uiObjectMaps = withLabel
-        ? await compute<List<UiMarkerInfoMessage?>?, Map<int, String>>(_generateTitleMap, markersWithLabel)
-        : null;
-
-    final hasLabels = uiObjectMaps != null && uiObjectMaps.isNotEmpty && withLabel;
-
     final markers = <Marker>[];
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       if (markerInfo != null) {
@@ -103,7 +85,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               );
             },
             options: MarkerOptionsMessage(
-              text: hasLabels && objectId != null ? uiObjectMaps[objectId] : null,
+              text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
               textStyle: MarkerTextStyleMessage(
                 color: 0xff1E2A36,
                 fontSize: 13,

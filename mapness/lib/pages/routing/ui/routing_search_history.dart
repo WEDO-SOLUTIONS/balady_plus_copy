@@ -1,3 +1,8 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/components.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,93 +26,91 @@ class RoutingSearchHistory extends ConsumerWidget {
   final bool showMyLocation;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Column(
-        children: [
-          Container(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 16),
-              child: RoutingFavourites(
-                showBookmark: false,
-                onFavouriteTap: (point) async {
-                  await context.router.maybePop(RoutePointFavouriteItem(point));
-                },
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLTR = Directionality.of(context) == TextDirection.ltr;
+    return Column(
+      children: [
+        RoutingFavourites(
+          showBookmark: false,
+          onFavouriteTap: (point) async {
+            await context.router.maybePop(RoutePointFavouriteItem(point));
+          },
+        ),
+        Spacing.$4x.heightBox,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: SearchActions(
+            children: [
+              if (showMyLocation)
+                ContentRowV2(
+                  leading: Icon(
+                    isLTR ? TransportIcons.locationLTR : TransportIcons.locationRTL,
+                    color: context.colorsV2.accentActive,
+                    size: 22,
+                  ),
+                  text: ContentRowTextOptions(
+                    title: context.l10n.myLocation,
+                  ),
+                  onTap: () => context.router.maybePop(RoutePointMyLocation()),
+                ),
+              ContentRowV2(
+                leading: Icon(
+                  GeneralIcons.location,
+                  color: context.colorsV2.accentActive,
+                ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.specifyOnTheMap,
+                ),
+                onTap: () => _specifyOnTheMap(context),
               ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: SearchActions(
-              children: [
-                if (showMyLocation)
-                  Material(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    child: InkWell(
-                      onTap: () => context.router.maybePop(RoutePointMyLocation()),
-                      borderRadius: BorderRadius.circular(12),
-                      child: SearchActionRow(
-                        icon: 'assets/icons/svg/ic_actions_loc.svg',
-                        title: context.l10n.myLocation,
-                      ),
-                    ),
-                  ),
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  child: InkWell(
-                    onTap: () async {
-                      final result = await context.router.push(const RoutingMapSelectRoute());
-
-                      if (result != null) {
-                        await context.router.maybePop(result);
-                      }
-                    },
-                    child: SearchActionRow(
-                      icon: 'assets/icons/svg/ic_actions_map.svg',
-                      title: context.l10n.specifyOnTheMap,
-                    ),
-                  ),
+              ContentRowV2(
+                leading: Icon(
+                  SystemIcons.bookmark,
+                  color: context.colorsV2.accentActive,
                 ),
-                Material(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  child: InkWell(
-                    onTap: () async {
-                      await CommonFunctions.authOrOpen(
-                        context,
-                        callback: () async {
-                          if (!context.mounted) {
-                            return;
-                          }
-                          final result = await context.router.push(const FavouritesPickerRoute());
-
-                          if (result != null) {
-                            await context.router.maybePop(
-                              RoutePointFavouriteItem(result as FavouriteItem?),
-                            );
-                          }
-                        },
-                      );
-                    },
-                    child: SearchActionRow(
-                      icon: 'assets/icons/svg/ic_actions_fav.svg',
-                      title: context.l10n.findInFavorites,
-                    ),
-                  ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.findInFavorites,
                 ),
-              ],
-            ),
+                onTap: () => _onFavouriteTap(context),
+              ),
+            ],
           ),
-          RoutingHistory(
-            updatePoint: (point) {
-              context.router.maybePop(point);
-            },
-            searchByQuery: (query) {
-              ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(query);
-            },
-          ),
-        ],
-      );
+        ),
+        Spacing.$4x.heightBox,
+        RoutingHistory(
+          updatePoint: (point) {
+            context.router.maybePop(point);
+          },
+          searchByQuery: (query) {
+            ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(query);
+          },
+        ),
+      ],
+    );
+  }
+
+  Future<void> _specifyOnTheMap(BuildContext context) async {
+    final result = await const RoutingMapRoute().push(context);
+
+    if (result != null && context.mounted) {
+      context.pop(result);
+    }
+  }
+
+  Future<void> _onFavouriteTap(BuildContext context) async {
+    await CommonFunctions.authOrOpen(
+      context,
+      callback: () async {
+        if (context.mounted) {
+          final result = await context.router.push(const FavouritesPickerRoute());
+
+          if (result != null) {
+            await context.router.maybePop(
+              RoutePointFavouriteItem(result as FavouriteItem?),
+            );
+          }
+        }
+      },
+    );
+  }
 }

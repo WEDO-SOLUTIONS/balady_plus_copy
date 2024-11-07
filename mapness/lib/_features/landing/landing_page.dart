@@ -16,13 +16,20 @@ import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
+
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
+import 'package:mapness/shared/providers/beta_notification.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:mapness/shared/ui/loading/service_not_available_sheet.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
@@ -65,6 +72,30 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     _calculatePadding();
   }
 
+  void _showServiceNotAvilibleSheet() {
+    // Show not available sheet if service is not available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (rootNavigatorKey.currentContext?.mounted ?? false) {
+        showModalBottomSheet(
+          context: rootNavigatorKey.currentContext!,
+          backgroundColor: Colors.transparent,
+          builder: (_) => Builder(
+            builder: (ctx) => const ServiceNotAvailableSheet(),
+          ),
+        );
+      }
+    });
+  }
+
+  void _showBetaNotification() {
+    final wasBetaShown = ref.read(betaNotificationProvider);
+
+    if (!wasBetaShown) {
+      ref.read(betaNotificationProvider.notifier).setShown();
+      ToastOverlay.of(context).showBetaNotification();
+    }
+  }
+
   void _calculatePadding() {
     ref.watch(cameraPaddingProvider.notifier).resetPadding(
           defaultPadding: CameraSetPaddingMessage(
@@ -105,6 +136,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       }
 
       ref.read(freeRoamStarterProvider.notifier).reset();
+      AdvancedMetrics.instance.resumeMeasureBattery();
+    } else if (state == AppLifecycleState.paused) {
+      AdvancedMetrics.instance.pauseMeasureBattery();
     }
 
     super.didChangeAppLifecycleState(state);
@@ -118,6 +152,18 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
+    if (!ref.read(storiesOpenStateProvider)) {
+      Future(_showBetaNotification);
+    }
+
+    ref.listen(storiesOpenStateProvider, (_, isStoriesOpen) {
+      if (isStoriesOpen) {
+        ToastOverlay.of(context).hide();
+      } else {
+        _showBetaNotification();
+      }
+    });
+
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref

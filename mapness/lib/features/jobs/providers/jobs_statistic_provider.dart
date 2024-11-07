@@ -15,7 +15,7 @@ class JobStatistic extends _$JobStatistic {
 
   @override
   Future<JobStatisticModel?> build() async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(_metricEventName);
+    Metrics.logEvent(_metricEventName);
 
     mixpanel?.timeEvent(_metricEventName);
 

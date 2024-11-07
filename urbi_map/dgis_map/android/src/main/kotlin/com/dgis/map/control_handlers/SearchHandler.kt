@@ -1,40 +1,26 @@
 package com.dgis.map.control_handlers
 
 import android.content.res.Resources.NotFoundException
-import android.util.Log
-import com.dgis.map.CustomOverrides
 import com.dgis.map.FusedLocationSource
-import com.dgis.map.VendorConfig
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.Messages.*
-import org.json.JSONObject
-import org.json.JSONTokener
-import ru.dgis.sdk.Context
+import java.util.UUID
 import ru.dgis.sdk.DgisObjectId
-import ru.dgis.sdk.await
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
-import ru.dgis.sdk.positioning.DefaultLocationSource
-import java.net.URL
-import java.util.UUID
-import kotlin.concurrent.thread
 import ru.dgis.sdk.map.Map as DgisMap
-import kotlinx.coroutines.*
-import kotlin.Exception
 
 class SearchHandler(
-    private val map: DgisMap,
-    private val searchManager: SearchManager,
-    private val locationSource: FusedLocationSource,
+        private val map: DgisMap,
+        private val searchManager: SearchManager,
+        private val locationSource: FusedLocationSource,
 ) : AutoCloseable {
     private var objectSearchFuture: AutoCloseable? = null
     private var searchFuture: AutoCloseable? = null
     private var itemMarkerInfosFuture: AutoCloseable? = null
     private var suggestFuture: AutoCloseable? = null
-
-    private var objectLabelsJob: Job? = null
 
     private var pages = mutableMapOf<String, Page>()
     private var queries = mutableMapOf<String, SearchQuery>()
@@ -44,76 +30,74 @@ class SearchHandler(
         searchFuture?.close()
         suggestFuture?.close()
         itemMarkerInfosFuture?.close()
-        try {
-            objectLabelsJob?.cancel()
-        }
-        catch (e: Exception){
-            println("Error in objectLabelsJob")
-        }
     }
 
     companion object {
-        private val saRestrictions: List<GeoPoint> = listOf(
-            GeoPoint(latitude = 32.568765, longitude = 56.694472),
-            GeoPoint(latitude = 32.568765, longitude = 32.61185),
-            GeoPoint(latitude = 15.506104, longitude = 32.61185),
-            GeoPoint(latitude = 15.506104, longitude = 56.694472),
-        )
+        private val saRestrictions: List<GeoPoint> =
+                listOf(
+                        GeoPoint(latitude = 32.568765, longitude = 56.694472),
+                        GeoPoint(latitude = 32.568765, longitude = 32.61185),
+                        GeoPoint(latitude = 15.506104, longitude = 32.61185),
+                        GeoPoint(latitude = 15.506104, longitude = 56.694472),
+                )
     }
 
-    fun searchByDirectoryObjectId(
-        objectId: DgisObjectId,
-        result: Result<DirectoryObjectMessage>?
-    ) {
-        objectSearchFuture = searchManager.searchByDirectoryObjectId(objectId).apply {
-            onResult { response ->
-                if (response == null) {
-                    result?.error(NotFoundException("Object with id ${objectId.objectId} not found"))
-                    return@onResult
-                }
+    fun searchByDirectoryObjectId(objectId: DgisObjectId, result: Result<DirectoryObjectMessage>?) {
+        objectSearchFuture =
+                searchManager.searchByDirectoryObjectId(objectId).apply {
+                    onResult { response ->
+                        if (response == null) {
+                            result?.error(
+                                    NotFoundException(
+                                            "Object with id ${objectId.objectId} not found"
+                                    )
+                            )
+                            return@onResult
+                        }
 
-                result?.success(response.toMessage())
-            }
-            onError { result?.error(it) }
-        }
+                        result?.success(response.toMessage())
+                    }
+                    onError { result?.error(it) }
+                }
     }
 
     fun search(
-        queryText: String,
-        categories: List<RubricId>?,
-        spatialRestriction: List<GeoPoint>?,
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<SearchResultMessage>?
+            queryText: String,
+            categories: List<RubricId>?,
+            spatialRestriction: List<GeoPoint>?,
+            searchGeoRect: GeoRect?,
+            weekTimeMessage: WeekTimeSearchMessage? = null,
+            sortingType: SortingTypeMessage,
+            pageSize: Int,
+            result: Result<SearchResultMessage>?
     ) {
-        val queryBuilder = if (categories != null)
-            SearchQueryBuilder.fromQueryTextAndRubricIds(queryText, categories!!) else
-            SearchQueryBuilder.fromQueryText(queryText)
+        val queryBuilder =
+                if (categories != null)
+                        SearchQueryBuilder.fromQueryTextAndRubricIds(queryText, categories!!)
+                else SearchQueryBuilder.fromQueryText(queryText)
 
-        val query = queryBuilder
-            .setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize)
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-            .build()
+        val query =
+                queryBuilder
+                        .setSortingType(sortingType.toSortingType())
+                        .setPageSize(pageSize)
+                        .setDirectoryFilter(
+                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
+                        )
+                        .setAreaOfInterest(searchGeoRect)
+                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
+                        .build()
 
-        performSearch(
-            query = query,
-            result = result
-        )
+        performSearch(query = query, result = result)
     }
 
     fun searchByQuery(
-        queryId: SearchQueryMessage,
-        spatialRestriction: List<GeoPoint>?,
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<SearchResultMessage>?
+            queryId: SearchQueryMessage,
+            spatialRestriction: List<GeoPoint>?,
+            searchGeoRect: GeoRect?,
+            weekTimeMessage: WeekTimeSearchMessage? = null,
+            sortingType: SortingTypeMessage,
+            pageSize: Int,
+            result: Result<SearchResultMessage>?
     ) {
         if (this.queries[queryId.id] == null) {
             result?.error(IllegalArgumentException("SearchQuery with given id not exists"))
@@ -122,166 +106,132 @@ class SearchHandler(
 
         val searchQuery = this.queries[queryId.id]!!
 
-        val query = SearchQueryBuilder
-            .fromQuery(searchQuery)
-            .setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize)
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-            .build()
+        val query =
+                SearchQueryBuilder.fromQuery(searchQuery)
+                        .setSortingType(sortingType.toSortingType())
+                        .setPageSize(pageSize)
+                        .setDirectoryFilter(
+                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
+                        )
+                        .setAreaOfInterest(searchGeoRect)
+                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
+                        .build()
 
-        performSearch(
-            query = query,
-            result = result
-        )
+        performSearch(query = query, result = result)
     }
 
     fun searchByCategories(
-        categories: List<RubricId>,
-        spatialRestriction: List<GeoPoint>?,
-        searchGeoRect: GeoRect?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<SearchResultMessage>?
+            categories: List<RubricId>,
+            spatialRestriction: List<GeoPoint>?,
+            searchGeoRect: GeoRect?,
+            weekTimeMessage: WeekTimeSearchMessage? = null,
+            sortingType: SortingTypeMessage,
+            pageSize: Int,
+            result: Result<SearchResultMessage>?
     ) {
-        val query = SearchQueryBuilder
-            .fromRubricIds(categories)
-            .setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize)
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-            .build()
+        val query =
+                SearchQueryBuilder.fromRubricIds(categories)
+                        .setSortingType(sortingType.toSortingType())
+                        .setPageSize(pageSize)
+                        .setDirectoryFilter(
+                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
+                        )
+                        .setAreaOfInterest(searchGeoRect)
+                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
+                        .build()
 
-        performSearch(
-            query = query,
-            result = result
-        )
+        performSearch(query = query, result = result)
     }
 
     fun searchByParkCategory(
-        searchGeoRect: GeoRect?,
-        spatialRestriction: List<GeoPoint>?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<SearchResultMessage>?
+            searchGeoRect: GeoRect?,
+            spatialRestriction: List<GeoPoint>?,
+            weekTimeMessage: WeekTimeSearchMessage? = null,
+            sortingType: SortingTypeMessage,
+            pageSize: Int,
+            result: Result<SearchResultMessage>?
     ) {
-        val query = SearchQueryBuilder.fromQueryText("park")
-            .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
-            .setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize.toInt())
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-            .build()
+        val query =
+                SearchQueryBuilder.fromQueryText("park")
+                        .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
+                        .setSortingType(sortingType.toSortingType())
+                        .setPageSize(pageSize.toInt())
+                        .setDirectoryFilter(
+                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
+                        )
+                        .setAreaOfInterest(searchGeoRect)
+                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
+                        .build()
 
-        performSearch(
-            query = query,
-            result = result
-        )
+        performSearch(query = query, result = result)
     }
 
     fun searchByBeachCategory(
-        searchGeoRect: GeoRect?,
-        spatialRestriction: List<GeoPoint>?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        result: Result<SearchResultMessage>?
+            searchGeoRect: GeoRect?,
+            spatialRestriction: List<GeoPoint>?,
+            weekTimeMessage: WeekTimeSearchMessage? = null,
+            sortingType: SortingTypeMessage,
+            pageSize: Int,
+            result: Result<SearchResultMessage>?
     ) {
-        val query = SearchQueryBuilder.fromQueryText("beach")
-            .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
-            .setSortingType(sortingType.toSortingType())
-            .setPageSize(pageSize.toInt())
-            .setDirectoryFilter(DirectoryFilter(weekTimeMessage.toFilter(), emptyList()))
-            .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-            .build()
+        val query =
+                SearchQueryBuilder.fromQueryText("beach")
+                        .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
+                        .setSortingType(sortingType.toSortingType())
+                        .setPageSize(pageSize.toInt())
+                        .setDirectoryFilter(
+                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
+                        )
+                        .setAreaOfInterest(searchGeoRect)
+                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
+                        .build()
 
-        performSearch(
-            query = query,
-            result = result
-        )
+        performSearch(query = query, result = result)
     }
 
+    private fun performSearch(query: SearchQuery, result: Result<SearchResultMessage>?) {
+        searchFuture =
+                searchManager.search(query).apply {
+                    onResult { response ->
+                        this@SearchHandler.itemMarkerInfosFuture =
+                                response.itemMarkerInfos.apply {
+                                    onResult { items ->
+                                        val pageId = UUID.randomUUID().toString()
+                                        if (response.firstPage != null) {
+                                            this@SearchHandler.pages[pageId] = response.firstPage!!
+                                        }
 
-    private suspend fun resolveMarkerTitle(response: SearchResult, objectIds:  List<DgisObjectId>): List<UIMarkerInfo> {
-        return response.markerTitles(objectIds).map {
-            it.await()
-        }.flatten()
-    }
-
-    private fun performSearch(
-        query: SearchQuery,
-        result: Result<SearchResultMessage>?
-    ) {
-        searchFuture = searchManager.search(query).apply {
-            onResult { response ->
-                this@SearchHandler.itemMarkerInfosFuture = response.itemMarkerInfos.apply {
-                    onResult { items ->
-                        val pageId = UUID.randomUUID().toString()
-                        if (response.firstPage != null) {
-                            this@SearchHandler.pages[pageId] = response.firstPage!!
-                        }
-
-                        val scope = CoroutineScope(Dispatchers.Default)
-
-                        objectLabelsJob = scope.launch {
-                            try {
-                                val objectIds = items?.mapNotNull { it.objectId } ?: emptyList()
-                                val uiMarkerInfo = resolveMarkerTitle(response, objectIds)
-                                withContext(Dispatchers.Main) {
-                                    result?.success(
-                                        response.toMessage(pageId, map.camera, items, uiMarkerInfo)
-                                    )
+                                        result?.success(
+                                                response.toMessage(pageId, map.camera, items)
+                                        )
+                                    }
+                                    onError { error -> result?.error(error) }
                                 }
-                            } catch (e: Exception) {
-                                withContext(Dispatchers.Main) {
-                                    result?.success(
-                                        response.toMessage(pageId, map.camera, items, emptyList())
-                                    )
-                                }
-                            }
-                        }
-
                     }
-                    onError { error ->
-                        result?.error(error)
-                    }
+                    onError { error -> result?.error(error) }
                 }
-            }
-            onError { error ->
-                result?.error(error)
-            }
-        }
     }
 
     fun fetchNextPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
         if (this.pages[pageId.id] == null) {
             result?.error(IllegalArgumentException("Page with given id not exists"))
-//            return txtCilor = while. naturalOrder<>()
+            //            return txtCilor = while. naturalOrder<>()
         }
 
-        searchFuture = this.pages[pageId.id]!!.fetchNextPage().apply {
-            onResult {response ->
-                if (response != null) {
-                    val pageId = UUID.randomUUID().toString()
-                    this@SearchHandler.pages[pageId] = response
+        searchFuture =
+                this.pages[pageId.id]!!.fetchNextPage().apply {
+                    onResult { response ->
+                        if (response != null) {
+                            val pageId = UUID.randomUUID().toString()
+                            this@SearchHandler.pages[pageId] = response
 
-                    result?.success(
-                        response.toMessage(pageId)
-                    )
-                } else {
-                    result?.error(IllegalArgumentException("Failed to fetch page"))
+                            result?.success(response.toMessage(pageId))
+                        } else {
+                            result?.error(IllegalArgumentException("Failed to fetch page"))
+                        }
+                    }
+                    onError { error -> result?.error(error) }
                 }
-            }
-            onError { error ->
-                result?.error(error)
-            }
-        }
     }
 
     fun fetchPrevPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
@@ -290,23 +240,20 @@ class SearchHandler(
             return
         }
 
-        searchFuture = this.pages[pageId.id]!!.fetchPrevPage().apply {
-            onResult {response ->
-                if (response != null) {
-                    val pageId = UUID.randomUUID().toString()
-                    this@SearchHandler.pages[pageId] = response
+        searchFuture =
+                this.pages[pageId.id]!!.fetchPrevPage().apply {
+                    onResult { response ->
+                        if (response != null) {
+                            val pageId = UUID.randomUUID().toString()
+                            this@SearchHandler.pages[pageId] = response
 
-                    result?.success(
-                        response.toMessage(pageId)
-                    )
-                } else {
-                    result?.error(IllegalArgumentException("Failed to fetch page"))
+                            result?.success(response.toMessage(pageId))
+                        } else {
+                            result?.error(IllegalArgumentException("Failed to fetch page"))
+                        }
+                    }
+                    onError { error -> result?.error(error) }
                 }
-            }
-            onError { error ->
-                result?.error(error)
-            }
-        }
     }
 
     fun releasePage(pageId: PageIdMessage, result: Result<Void>?) {
@@ -320,55 +267,60 @@ class SearchHandler(
     }
 
     fun fetchSuggests(
-        queryText: String,
-        allowedResultTypes: List<SuggestedTypeMessage_>?,
-        searchGeoRect: GeoRect?,
-        result: Result<SuggestResultMessage>?
+            queryText: String,
+            allowedResultTypes: List<SuggestedTypeMessage_>?,
+            searchGeoRect: GeoRect?,
+            result: Result<SuggestResultMessage>?
     ) {
-        var suggestQueryBuilder = SuggestQueryBuilder.fromQueryText(queryText)
-            .setAreaOfInterest(searchGeoRect)
-            .setSpatialRestriction(saRestrictions)
+        var suggestQueryBuilder =
+                SuggestQueryBuilder.fromQueryText(queryText)
+                        .setAreaOfInterest(searchGeoRect)
+                        .setSpatialRestriction(saRestrictions)
 
         if (allowedResultTypes != null) {
-            suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
-                allowedResultTypes.map { it.type.toSuggestType() }
-            )
+            suggestQueryBuilder =
+                    suggestQueryBuilder.setAllowedResultTypes(
+                            allowedResultTypes.map { it.type.toSuggestType() }
+                    )
         }
 
         val suggestQuery = suggestQueryBuilder.build()
 
         suggestFuture?.close()
-        suggestFuture = searchManager.suggest(suggestQuery).apply {
-            onResult { response ->
-                this@SearchHandler.queries.clear()
-                val suggests = response.suggests.map {
-                    var queryId: String? = null
-                    if (it.handler.isPerformSearchHandler) {
-                        queryId = UUID.randomUUID().toString()
-                        this@SearchHandler.queries[queryId] = it.handler.asPerformSearchHandler!!.searchQuery
+        suggestFuture =
+                searchManager.suggest(suggestQuery).apply {
+                    onResult { response ->
+                        this@SearchHandler.queries.clear()
+                        val suggests =
+                                response.suggests.map {
+                                    var queryId: String? = null
+                                    if (it.handler.isPerformSearchHandler) {
+                                        queryId = UUID.randomUUID().toString()
+                                        this@SearchHandler.queries[queryId] =
+                                                it.handler.asPerformSearchHandler!!.searchQuery
+                                    }
+
+                                    it.toMessage(queryId)
+                                }
+
+                        result?.success(
+                                SuggestResultMessage.Builder().setSuggests(suggests).build()
+                        )
                     }
-
-                    it.toMessage(queryId)
+                    onError { result?.error(it) }
                 }
-
-                result?.success(
-                    SuggestResultMessage.Builder()
-                        .setSuggests(suggests)
-                        .build()
-                )
-            }
-            onError { result?.error(it) }
-        }
     }
 
     fun getDistanceTo(
-        points: List<DistanceRequestMessage>,
-        result: Result<List<DistanceResponseMessage>>?
+            points: List<DistanceRequestMessage>,
+            result: Result<List<DistanceResponseMessage>>?
     ) {
-        val location = locationSource.lastLocation ?: run {
-            result?.error(IllegalArgumentException("Last location unknown"))
-            return
-        }
+        val location =
+                locationSource.lastLocation
+                        ?: run {
+                            result?.error(IllegalArgumentException("Last location unknown"))
+                            return
+                        }
 
         val current = GeoPoint(location.latitude, location.longitude)
         val distance = points.map { it.toResponse(current) }

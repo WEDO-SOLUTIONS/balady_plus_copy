@@ -25,12 +25,10 @@ import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
 class RoutingRoutesPage extends ConsumerStatefulWidget {
-  final List<RouteParamsPoint?> points;
-  final List<String> labels;
+  final List<RouteParamsPointWithLabel> points;
 
   const RoutingRoutesPage({
     required this.points,
-    required this.labels,
     super.key,
   });
 
@@ -39,14 +37,12 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 }
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
-  late List<RouteParamsPoint?> points;
-  late List<String> labels;
+  late List<RouteParamsPointWithLabel> points;
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
-    labels = widget.labels;
   }
 
   @override
@@ -56,7 +52,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     final locationPermission = ref.read(locationProvider.notifier);
 
     /// if route from user location make sure he has location permission
-    if (widget.points.any((element) => element == null)) {
+    if (widget.points.map((e) => e.value).any((element) => element == null)) {
       locationPermission.checkLocationPermission(
         routeOnClose: RoutingRoutesRoute.name,
       );
@@ -125,14 +121,14 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                       ),
                       Expanded(
                         child: ABPoints(
-                          locations: labels,
+                          locations: points.map((e) => e.label).toList(),
                           onTap: _changeRoute,
                         ),
                       ),
                     ].insertBetween(Spacing.$3x.widthBox).toList(),
                   ),
                 ),
-                RoutingInfo(points: points),
+                RoutingInfo(points: points.map((e) => e.value).toList()),
               ],
             ),
           ),
@@ -150,7 +146,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
     setState(() {
       points = points.reversed.toList();
-      labels = labels.reversed.toList();
     });
   }
 
@@ -177,8 +172,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
-        labels: List.of(labels),
-
         onClose: () => context.router.maybePop(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
         externalContext: context,
@@ -188,12 +181,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
 
   /// Confirm the reordering of the points. Also close the bottom sheet
   void _onConfirm(
-    List<RouteParamsPoint?> points,
-    List<String> labels,
+    List<RouteParamsPointWithLabel> points,
   ) {
     setState(() {
       this.points = points;
-      this.labels = labels;
     });
     context.router.maybePop();
   }

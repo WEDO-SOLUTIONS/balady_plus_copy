@@ -50,7 +50,9 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
   Future<void> _dismiss({double? from}) async {
     await _controller.reverse(from: from);
     widget.onClose?.call();
-    await context.router.maybePop();
+    if (mounted && context.canPop()) {
+      await context.router.maybePop();
+    }
   }
 
   double _calculateRatio(double value) => value / MediaQuery.sizeOf(context).height;
