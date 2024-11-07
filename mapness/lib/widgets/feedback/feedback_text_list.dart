@@ -132,7 +132,10 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                         Padding(
                           padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
                           child: AppButton.close(
-                            onTap: () => _removeInput(i),
+                            onTap: () {
+                              _removeInput(i);
+                              fieldState.didChange(_inputs);
+                            },
                             buttonColorScheme: ButtonColorScheme.onColor,
                             padding: EdgeInsets.zero,
                             size: ButtonSize.medium,
@@ -148,7 +151,10 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                     buttonColorScheme: ButtonColorScheme.secondary,
                     primaryLabel: isPhoneField ? context.l10n.addPhoneNumber : context.l10n.add,
                     primaryIcon: isPhoneField ? null : GeneralIcons.plusCircle,
-                    onTap: _addInput,
+                    onTap: () {
+                      _addInput();
+                      fieldState.didChange(_inputs);
+                    },
                   ),
                 ),
               ],
