@@ -152,13 +152,15 @@ class RequestDetailsResponseModel {
     MainInfo? mainInfo,
     BurialInfo? burialInfo,
     TransportInfo? transportInfo,
+    CemeteryData? cemeteryData,
   }) {
     return RequestDetailsResponseModel(
       deceasedInfo: deceasedInfo ?? this.deceasedInfo,
       mainInfo: mainInfo ?? this.mainInfo,
       deathInfo: deathInfo ?? this.deathInfo,
         burialInfo:burialInfo??this.burialInfo,
-        transportInfo:transportInfo??this.transportInfo
+        transportInfo:transportInfo??this.transportInfo,
+        cemeteryData:cemeteryData??this.cemeteryData
     );
   }
 }

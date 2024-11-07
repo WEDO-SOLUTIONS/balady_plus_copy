@@ -310,11 +310,32 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     hint: "",
                                   )
                                 : SizedBox.shrink(),
-                            BurialDateHijri(),
-                            BurialDateGorgian(),
+
+
+
+
+                            BurialDateHijri(currentDate: state.requestDetailsModel?.burialInfo?.burialDate,isDeathDatesDisabled: state.isBurialDatesDisabled,onChanged:(String? date ){
+
+                              context
+                                  .read<EkramRequestTransportationBloc>()
+                                  .add(setBurialInfoEvent(burialInfo: BurialInfo(burialDate: date, gregorianBurialDate:CommonFunctions.hijriToGregorian(date))));
+
+                            } ,),
+
+
+                            BurialDateGorgian(currentDate: state.requestDetailsModel?.burialInfo?.gregorianBurialDate,isDeathDatesDisabled: state.isBurialDatesDisabled,onChanged:(String? date ){
+
+                              context
+                                  .read<EkramRequestTransportationBloc>()
+                                  .add(setBurialInfoEvent(burialInfo: BurialInfo(gregorianBurialDate: date, burialDate:CommonFunctions.gregorianToHijri(date))));
+
+                            } ,),
+
+
+
                             CustomLookUpLongDialog(
                               items: state.prayers ?? [],
-                              value: state.selectedPrayer,
+                              value: state.getParyerById(state.requestDetailsModel?.burialInfo?.prayId),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -322,9 +343,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+
                                   context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangePrayerEvent(item: item));
+                                      .read<
+                                      EkramRequestTransportationBloc>()
+                                      .add(setBurialInfoEvent(burialInfo:BurialInfo(prayId: item.id)));
+
+
                                 }
                               },
                               label: Helpers.translatingWord(
@@ -413,7 +438,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 : SizedBox.shrink(),
                             CustomLookUpLongDialog(
                               items: state.cemetryTypeItems ?? [],
-                              value: state.selectedCemetryType,
+                              value: state.getCemtryById(state.requestDetailsModel?.cemeteryData?.graveTypeId),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
@@ -425,6 +450,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeCemetryTypeItemsEvent(
                                           item: item));
+
+
                                 }
                               },
                               label: ("cemetry_type").tr(),

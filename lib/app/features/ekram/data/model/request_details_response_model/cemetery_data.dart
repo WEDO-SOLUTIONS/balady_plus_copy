@@ -36,4 +36,27 @@ class CemeteryData {
         'graveSizeName': graveSizeName,
         'ghuslInCemetry': ghuslInCemetry,
       };
+
+
+  CemeteryData copyWith({
+    int? cemeteryId,
+    String? cemeteryName,
+    int? graveTypeId,
+    String? graveTypeName,
+    int? graveSizeId,
+    String? graveSizeName,
+    bool? ghuslInCemetry,
+  }) {
+    return CemeteryData(
+      cemeteryId:cemeteryId?? this.cemeteryId,
+      cemeteryName:cemeteryName??this.cemeteryName,
+      graveTypeId:graveTypeId?? this.graveTypeId,
+      graveTypeName:graveTypeName?? this.graveTypeName,
+      graveSizeId:graveSizeId??this.graveSizeId,
+      graveSizeName:graveSizeName??this.graveSizeName,
+      ghuslInCemetry:ghuslInCemetry??this.ghuslInCemetry,
+    );
+  }
+
+
 }

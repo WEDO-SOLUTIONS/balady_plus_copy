@@ -384,6 +384,30 @@ class EkramRequestTransportationState extends Equatable {
   }
 
 
+  LookUpItem? getParyerById(int? id) {
+    if (prayers != null && id != null) {
+      for (int index = 0; index < prayers!.length; index++) {
+        if (prayers![index].id == id) {
+          return prayers![index];
+        }
+      }
+    }
+
+    return null;
+  }
+  LookUpItem? getCemtryById(int? id) {
+    if (cemetries != null && id != null) {
+      for (int index = 0; index < cemetries!.length; index++) {
+        if (cemetries![index].id == id) {
+          return cemetries![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+
   bool validateDeceasedInfoSection(bool ShowErrorMessage) {
     if (requestDetailsModel != null) {
       if (requestDetailsModel?.deceasedInfo?.firstName == null ||

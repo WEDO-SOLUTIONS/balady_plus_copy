@@ -228,6 +228,10 @@ class setTransportInfoEvent extends EkramRequestTransportationEvent {
   final TransportInfo? transportInfo;
   setTransportInfoEvent({this.transportInfo});
 }
+class setCemtryInfoEvent extends EkramRequestTransportationEvent {
+  final CemeteryData? cemeteryData;
+  setCemtryInfoEvent({this.cemeteryData});
+}
 
 class ChangeMosqueEvent extends EkramRequestTransportationEvent {
   final LookUpItem? item;

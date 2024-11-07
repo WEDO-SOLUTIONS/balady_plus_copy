@@ -44,6 +44,7 @@ import '../../../../new_appointment/presentation/core/models/lookup_list_model.d
 
 import '../../../data/model/request_details_response_model/SaveDeceasedInfoParams.dart';
 import '../../../data/model/request_details_response_model/burial_info.dart';
+import '../../../data/model/request_details_response_model/cemetery_data.dart';
 import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 import '../../../data/model/request_details_response_model/main_info.dart';
@@ -182,6 +183,8 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeDeathInfoEvent>(_changeDeathandBurialHandler);
     on<setBurialInfoEvent>(_changeBurialInfoHandler);
     on<setTransportInfoEvent>(_changeTansportInfoHandler);
+    on<setCemtryInfoEvent>(_changeCemtryInfoHandler);
+
 
     getCountries();
     getPrayers();
@@ -1021,10 +1024,9 @@ class EkramRequestTransportationBloc extends Bloc<
       cityID = getBurialCityId();
     }
 
-
     info = info.copyWith(
       isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity??true,
-      cityId: e.burialInfo?.isBurialInsideDeathCity == false? e.burialInfo?.cityId:cityID,
+      cityId: e.burialInfo?.isBurialInsideDeathCity == false? e.burialInfo?.cityId:cityID??-1,
       burialDate: e.burialInfo?.burialDate,
       gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
       prayId: e.burialInfo?.prayId,
@@ -1042,6 +1044,24 @@ class EkramRequestTransportationBloc extends Bloc<
 
   }
 
+  Future<void> _changeCemtryInfoHandler(setCemtryInfoEvent e, Emitter emitter) async {
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(cemeteryData: CemeteryData());
+
+    CemeteryData info = params.cemeteryData!;
+
+    info = info.copyWith(
+    );
+
+    params = params.copyWith(cemeteryData: info);
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
+
+  }
 
   Future<void> _changeTansportInfoHandler(setTransportInfoEvent e, Emitter emitter) async {
 
@@ -1088,6 +1108,10 @@ class EkramRequestTransportationBloc extends Bloc<
           burialCityId= deathInfo.corpseArrivalCityId;
         }
       }
+      if(burialCityId == null)
+        {
+          CommonFunctions.showError("chosedeathcity".tr());
+        }
 
       return burialCityId;
 
