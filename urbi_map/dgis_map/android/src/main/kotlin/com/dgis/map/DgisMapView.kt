@@ -1121,17 +1121,6 @@ class DgisMapView(
         result?.success(connected)
     }
 
-    override fun setBetterRouteEnabled(enabled: Boolean,   callback: (Result<Unit>) -> Unit){
-        navigationHandler.setBetterRouteEnabled(enabled)
-        callback(Result.success(Unit))
-    }
-
-
-    override fun getAndroidAutoConnectionState(callback: (Result<Boolean>) -> Unit) {
-        val connected = androidAutoHandler.getConnectionState()
-        callback(Result.success(connected))
-    }
-
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {
         packagesHandler.listPackages(result)
     }
