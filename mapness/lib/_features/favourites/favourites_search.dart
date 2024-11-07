@@ -38,7 +38,7 @@ class FavouritesSearch extends ConsumerWidget {
         );
         await onSearchTap(ref, context, object);
       },
-      onBackTap: () {
+      onClose: () {
         FocusScope.of(context).unfocus();
         context.pop();
       },
@@ -46,12 +46,13 @@ class FavouritesSearch extends ConsumerWidget {
       itemBuilder: (_, index) {
         final item = searchResult[index];
 
-        return ContentRow(
+        return ContentRowV2(
+          isDividerEnabled: index != searchResult.length - 1,
           onTap: () async => onSearchTap(ref, context, item),
-          options: ContentRowOptions(
-            leadingIcon: General16Icons.pin.icon(
-              color: context.color.textAndIconsStatusAccent,
-            ),
+          leading: GeneralIcons.location.icon(
+            color: context.colorsV2.accentActive,
+          ),
+          text: ContentRowTextOptions(
             title: item.title,
             subtitle: item.makeAddress(),
             subtitleExtra: item.workStatus!.desc,

@@ -9,7 +9,6 @@ import 'package:mapness/features/stories/ui/stories_fullscreen.dart';
 import 'package:mapness/features/stories/ui/story_args_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class StoriesScreen extends ConsumerStatefulWidget {
   const StoriesScreen({
@@ -37,9 +36,6 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
   void _onClose([int? index]) {
     widget.onClose?.call();
     ref.read(storyServiceProvider.notifier).resumeUpdate();
-    if (widget.type == StoryTypes.onboarding) {
-      ToastOverlay.of(context).showBetaNotification();
-    }
 
     context.pop<int?>(index);
   }

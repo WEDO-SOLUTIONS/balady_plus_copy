@@ -149,12 +149,15 @@ jobs:
           mkdir -p lib/l10n/generated
           flutter gen-l10n
 
-      - name: Setup requirements
-        env: # Set the secret as an environment variable
-          BALADY_UIKIT_DEPLOY_KEY: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY }}
-        run: |
-          echo "${BALADY_UIKIT_DEPLOY_KEY}" | base64 --decode > ${GITHUB_WORKSPACE}/.balady-uikit.key
-          chmod 600 ${GITHUB_WORKSPACE}/.balady-uikit.key
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
 
       - name: Setup dgis_map_platform_interface
         run: |
@@ -176,13 +179,9 @@ jobs:
         env:
           GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
         run: |
-          eval $(ssh-agent -s)
-          ssh-add ${GITHUB_WORKSPACE}/.balady-uikit.key
-
           cd mapness
           flutter pub get
           flutter pub run build_runner build --delete-conflicting-outputs
-          ssh-agent -k
           cd ../
           flutter pub get
 

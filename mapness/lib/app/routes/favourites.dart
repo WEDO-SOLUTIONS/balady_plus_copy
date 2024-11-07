@@ -31,8 +31,7 @@ class FavouritesRoute extends GoRouteData {
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
   @override
-  Widget build(BuildContext context, GoRouterState state) =>
-      const FavouritesPage();
+  Widget build(BuildContext context, GoRouterState state) => const FavouritesPage();
 
   Future<T?> pushToRoot<T>(BuildContext context) {
     context.popRouteUntilFirst();
@@ -48,7 +47,7 @@ class FavouritesSearchRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) => SearchScope(
-        named: SearchScopeEnum.map,
+        named: SearchScopeEnum.favourites,
         child: Material(
           child: FavouritesSearch(
             markerType: FavouriteItemMarkerType.values.firstWhere(

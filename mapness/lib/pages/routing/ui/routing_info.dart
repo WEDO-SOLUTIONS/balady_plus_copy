@@ -163,7 +163,11 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       valueListenable: _isNavTypeLoading,
       builder: (context, isLoading, child) {
         if (isLoading) {
-          return Center(child: Loading.large());
+          return Center(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
+            child: Loading.large(),
+          ));
         }
         return ValueListenableBuilder(
           valueListenable: _navType,

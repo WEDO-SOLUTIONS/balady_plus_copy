@@ -27,6 +27,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:mapness/widgets/app_feedback/app_feedback_card.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
@@ -91,12 +92,15 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         content: [
           Column(
             children: [
-              const SizedBox(height: uikit.Spacing.$4x),
+              const AppFeedbackCard(),
+
               const StoriesWidget(),
+
               const SizedBox(height: uikit.Spacing.$8x),
               // BSA-1108: See the instruction to revert here: https://github.com/urbi-ae/baladi/pull/1164
               // JoyParksCardV2(controller: widget.bottomSheetController),
               // const SizedBox(height: uikit.Spacing.$3x),
+
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
                 child: Row(

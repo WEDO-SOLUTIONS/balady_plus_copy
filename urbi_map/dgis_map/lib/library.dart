@@ -8,14 +8,6 @@ export 'dgis_map.dart';
 
 export 'dgis_map_controller.dart';
 
-export 'widgets/speed_info_widget.dart';
-
-export 'widgets/compass_control_widget.dart';
-
-export 'widgets/zoom_control_widget.dart';
-
-export 'widgets/message_widget.dart';
-
 export 'navi/free_roam_controller.dart';
 
 export 'navi/compass_controller.dart';
@@ -31,5 +23,5 @@ export 'navi/traffic_parking_controller.dart';
 export 'navi/zoom_controller.dart';
 
 /// Initialize DGis plugin with options
-Future<void> initialiseDGis({LogOptionsMessage? logOptions, VendorConfigMessage? config}) =>
-    PluginApi().initialize(logOptions, config);
+Future<void> initialiseDGis({LogOptionsMessage? logOptions, VendorConfigMessage? config, VendorConfigContentMessage? configContent}) =>
+    PluginApi().initialize(logOptions, config, configContent);
