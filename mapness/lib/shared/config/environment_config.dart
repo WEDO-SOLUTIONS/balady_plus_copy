@@ -37,7 +37,8 @@ class EnvironmentConfig {
     required this.appFeedbackApi,
   });
 
-  factory EnvironmentConfig.fromJson(Map<String, dynamic> json) => EnvironmentConfig(
+  factory EnvironmentConfig.fromJson(Map<String, dynamic> json) =>
+      EnvironmentConfig(
         proxy: json['proxy'] as String?,
         url: json['url'] as String,
         meteoblue: json['meteoblue'] as String,
@@ -50,6 +51,20 @@ class EnvironmentConfig {
         appFeedbackEnable: json['appFeedbackEnable'] as bool,
         appFeedbackApi: json['appFeedbackApi'] as String,
       );
+
+  Map<String, dynamic> toJson() => {
+        'proxy': proxy,
+        'url': url,
+        'meteoblue': meteoblue,
+        'weatherApi': weatherApi,
+        'jobsApi': jobsApi,
+        'twinsApi': twinsApi,
+        'baseApiDomain': baseApiDomain,
+        'shareEtaApi': shareEtaApi,
+        'feedbackApi': feedbackApi,
+        'appFeedbackEnable': appFeedbackEnable,
+        'appFeedbackApi': appFeedbackApi,
+      };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
