@@ -637,7 +637,5 @@ class ApiUrl {
   static String saveDeceasdInfo(int requestId) =>
       "v1/superapp-ekram-services/transport/$requestId/save-deceased-info";
 static String ekramTransportValidateSubmit(int requestId) => "v1/superapp-ekram-services/transport/$requestId/validate-and-submit";
-
-
-
+static String madinahEmirateApprovalStatus(int cemetryId , int id , int idType) => "v1/superapp-ekram-services/cemetery/deceased-burial-cemetery-approval/$cemetryId/$id/$idType";
 }

@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
 import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
@@ -10,6 +11,7 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.da
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_launduries_lookup.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_madinah_emirate_approval_statue.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_mosques_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_prayers.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_special_transport_reasons_lookup.dart';
@@ -85,6 +87,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetNationalities _getNationalities;
   final ApplyDeceasedTransport _applyDeceasedTransport;
   final GetDeathCities _deathCities;
+  final GetMadinahEmirateApprovalStatus _getMadinahEmirateApprovalStatus;
   final VerifyDeceased _verifyDeceased;
   final GetRequestDetails _getRequestDetails;
   final GetCountreies _getCountreies;
@@ -118,6 +121,8 @@ class EkramRequestTransportationBloc extends Bloc<
         _getRequestDetails = getRequestDetails,
         _saveDeceasedInfo = SaveDeceasedInfo(repository: sl()),
         _deathCities = GetDeathCities(repository: sl()),
+        _getMadinahEmirateApprovalStatus =
+            GetMadinahEmirateApprovalStatus(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
         super(EkramRequestTransportationState(
             isSpecialTransferNeeded: false,
@@ -146,6 +151,7 @@ class EkramRequestTransportationBloc extends Bloc<
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
 
     on<GetHospitalsEvent>(_getHospitalsHandler);
+    on<GetMadinahEmirateApprovalStatusEvent>(_getMadinahEmirateApprovalStatusHandler);
     on<GetCemetriesEvent>(_getCemetriesHandler);
     on<GetTransportationNamesEvent>(_getTransportationNamesHandler);
     on<GetLandriesEvent>(_getLaundriesHandler);
@@ -430,6 +436,29 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: "",
       ));
       return success.data?.result;
+    });
+  }
+
+  Future<void> _getMadinahEmirateApprovalStatusHandler(
+      GetMadinahEmirateApprovalStatusEvent e, Emitter emitter) async {
+    emitter(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getMadinahEmirateApprovalStatus([e.cemetryId,e.id,e.idType]);
+
+    failureOrSuccess.fold((failure) {
+      print("failure $failure");
+
+      emitter(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+    }, (success) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+madinahEmirateApprovalStatus: success.data!.result!.approvalStatusName!,
+madinahEmirateApprovalDate: success.data!.result!.approvalDate,
+        errorMessage: "",
+      ));
     });
   }
 

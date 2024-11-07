@@ -51,6 +51,8 @@ class EkramRequestTransportationState extends Equatable {
   final FileDataItem? letter;
   final String? deceassedDOBGorgian;
   final String? burialDateGregorian;
+  final String? madinahEmirateApprovalStatus;
+  final String? madinahEmirateApprovalDate;
   final String? deathDateGregorian;
   final String? deathDateHijri;
   final int? requestId;
@@ -61,6 +63,8 @@ class EkramRequestTransportationState extends Equatable {
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
       this.burialDateGregorian,
+      this.madinahEmirateApprovalStatus,
+      this.madinahEmirateApprovalDate,
       this.deathDateGregorian,
       this.deathDateHijri,
       this.isVerified,
@@ -165,6 +169,8 @@ class EkramRequestTransportationState extends Equatable {
     final FileDataItem? letter,
     final Nullable<String?>? deceassedDOBGorgian,
     final Nullable<String?>? burialDateGregorian,
+    final String? madinahEmirateApprovalStatus,
+    final String? madinahEmirateApprovalDate,
     final Nullable<String?>? deathDateGregorian,
     final Nullable<String?>? deathDateHijri,
     final int? requestId,
@@ -238,6 +244,8 @@ class EkramRequestTransportationState extends Equatable {
       burialDateGregorian: burialDateGregorian == null
           ? this.burialDateGregorian
           : burialDateGregorian.value,
+      madinahEmirateApprovalStatus: madinahEmirateApprovalStatus ?? this.madinahEmirateApprovalStatus,
+      madinahEmirateApprovalDate: madinahEmirateApprovalDate ?? this.madinahEmirateApprovalDate,
       deathDateGregorian: deathDateGregorian == null
           ? this.deathDateGregorian
           : deathDateGregorian.value,
@@ -290,6 +298,8 @@ class EkramRequestTransportationState extends Equatable {
         otherHospitalName,
         deceassedDOBGorgian,
         burialDateGregorian,
+        madinahEmirateApprovalStatus,
+        madinahEmirateApprovalDate,
         deathDateGregorian,
         deathDateHijri,
         deceassedDOBHijri,
