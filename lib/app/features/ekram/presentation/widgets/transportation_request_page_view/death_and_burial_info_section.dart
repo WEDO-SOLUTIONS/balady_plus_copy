@@ -450,8 +450,6 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeCemetryTypeItemsEvent(
                                           item: item));
-
-
                                 }
                               },
                               label: ("cemetry_type").tr(),

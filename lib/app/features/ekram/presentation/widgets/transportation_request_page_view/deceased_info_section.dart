@@ -30,6 +30,7 @@ import '../../../data/model/request_details_response_model/deceased_info.dart';
 
 
 class DeceasedInfoSection extends  StatelessWidget  {
+  const DeceasedInfoSection({super.key});
 
   @override
   Widget build(BuildContext context) {

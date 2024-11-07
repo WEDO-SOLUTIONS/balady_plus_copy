@@ -154,6 +154,8 @@ abstract class EkramRemoteDataSource {
       int requestId, SaveDeceasedInfoParams params);
   Future<ResponseBodyModel> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
+  Future<ResponseBodyModel> ekramTransportValidateSubmit(
+      int requestId);
   Future<ResponseBodyModel<MadinahEmirateApprovalStatusResponseModel>>
       madinahEmirateApprovalStatus(int cemetryId, int id, int idType);
 }
@@ -2590,6 +2592,57 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
             /*"Authorization": token*/
           },
         ),
+      );
+      final data = response.data;
+
+      return ResponseBodyModel.fromMap(data);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+  @override
+  Future<ResponseBodyModel> ekramTransportValidateSubmit(
+      int requestId) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.ekramTransportValidateSubmit(requestId),
+   
       );
       final data = response.data;
 
