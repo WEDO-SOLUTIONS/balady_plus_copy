@@ -48,7 +48,7 @@ extension EnvTypeExt on EnvType {
         EnvType.stg => 'momrahStaging',
         EnvType.pre => 'urbiPreprod',
         EnvType.prod => 'momrahProd',
-        EnvType.urbiPre => 'urbiPreProd',
+        EnvType.urbiPre => 'urbiPreprod',
       };
 
   EnvironmentConfig getLocalEnvConfig() => switch (this) {
