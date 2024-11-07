@@ -55,7 +55,7 @@ import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_madinah_emirate_approval_statue.dart';
 import '../../../domain/use_cases/get_request_details.dart';
 import '../../../domain/use_cases/save_deceased_info.dart';
-import '../../widgets/ekram_book_cemetry/agreement_section.dart';
+import '../../widgets/transportation_request_page_view/agreement_section.dart';
 
 
 part 'ekram_request_transportation_event.dart';
@@ -69,12 +69,13 @@ class EkramRequestTransportationBloc extends Bloc<
   PageController controller = PageController();
   // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
-     AgreementSection(),
+
     DeceasedVerificationSection(),
     DeceasedInfoSection(),
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
+     AgreementSection(),
 
   ];
 

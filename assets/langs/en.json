@@ -4459,5 +4459,6 @@
   "error_pin": "There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
-  "complianceFAQ": "Frequently asked questions"
+  "complianceFAQ": "Frequently asked questions",
+  "ekram_transportation_apply":"apply request for transport deceased"
 }
