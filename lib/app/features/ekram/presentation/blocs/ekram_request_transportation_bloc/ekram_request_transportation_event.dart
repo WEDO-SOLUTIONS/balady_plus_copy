@@ -114,6 +114,13 @@ class GetHospitalsEvent extends EkramRequestTransportationEvent {
   const GetHospitalsEvent({required this.city});
 }
 
+class GetMadinahEmirateApprovalStatusEvent extends EkramRequestTransportationEvent {
+final int cemetryId ;
+final String id ;
+final int idType ;
+ const GetMadinahEmirateApprovalStatusEvent({required this.cemetryId, required this.id , required this.idType});
+}
+
 class GetCemetriesEvent extends EkramRequestTransportationEvent {
   final CemetriesParams params;
   final int requestId;

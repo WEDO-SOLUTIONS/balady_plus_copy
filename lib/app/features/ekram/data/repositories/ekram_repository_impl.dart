@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_respons
 import 'package:balady_plus/app/features/ekram/data/model/deceased_transport_requests/transport_request_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
@@ -154,6 +155,24 @@ class EkramRepositoryImpl implements EkramRepository {
       applyDeceasedTransport(ApplyDeceasedParams params) async {
     try {
       final data = await remoteDataSource.applyDeceasedTransport(params);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+  @override
+   Future<Either<Failure,ResponseBodyModel<MadinahEmirateApprovalStatusResponseModel>>>
+      madinahEmirateApprovalStatus(int cemetryId, int id, int idType)  async {
+    try {
+      final data = await remoteDataSource.madinahEmirateApprovalStatus(cemetryId,id,idType);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

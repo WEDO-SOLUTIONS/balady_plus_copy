@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
@@ -72,6 +73,9 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<ApplyDeceasedResponse>>>
       applyDeceasedTransport(ApplyDeceasedParams params);
+
+  Future<Either<Failure,ResponseBodyModel<MadinahEmirateApprovalStatusResponseModel>>>
+      madinahEmirateApprovalStatus(int cemetryId, int id, int idType) ;
 
   Future<Either<Failure, ResponseBodyModel<TransportRequestResponseModel>>>
       getDeceasedTransportRequests(GetRequestsParams params);
