@@ -2,7 +2,7 @@ class CemetriesParams {
   int? deathCountryId;
   int? deathCityId;
   int? burialCityId;
-  dynamic specialTransportReasonId;
+  int? specialTransportReasonId;
   int? prayId;
   String? burialDate;
   String? deathDate;
@@ -10,30 +10,18 @@ class CemetriesParams {
   dynamic age;
 
   CemetriesParams({
-    this.deathCountryId,
-    this.deathCityId,
-    this.burialCityId,
-    this.specialTransportReasonId,
-    this.prayId,
-    this.burialDate,
-    this.deathDate,
-    this.graveTypeId,
-    this.age,
+   required this.deathCountryId,
+   required this.deathCityId,
+   required this.burialCityId,
+   required this.specialTransportReasonId,
+   required this.prayId,
+   required this.burialDate,
+   required this.deathDate,
+   required this.graveTypeId,
+   required this.age,
   });
 
-  factory CemetriesParams.fromJson(Map<String, dynamic> json) {
-    return CemetriesParams(
-      deathCountryId: json['deathCountryId'] as int?,
-      deathCityId: json['deathCityId'] as int?,
-      burialCityId: json['burialCityId'] as int?,
-      specialTransportReasonId: json['specialTransportReasonId'] as dynamic,
-      prayId: json['prayId'] as int?,
-      burialDate: json['burialDate'] as String?,
-      deathDate: json['deathDate'] as String?,
-      graveTypeId: json['graveTypeId'] as int?,
-      age: json['age'] as dynamic,
-    );
-  }
+
 
   Map<String, dynamic> toJson() => {
         'deathCountryId': deathCountryId,

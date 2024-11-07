@@ -5,6 +5,10 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/c
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget%20copy.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/get_cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/gorgian_date_widget.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/hijri_date_widget.dart';
@@ -70,7 +74,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             DeathDateGregorian(),
                             CustomLookUpLongDialog(
                               items: state.countries ?? [],
-                              value: state.selectedCountry,
+                              value: state.selectedDeathCountry,
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
@@ -81,7 +85,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 if (item != null) {
                                   context
                                       .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeCountryEvent(item: item));
+                                      .add(ChangeDeathCountryEvent(item: item));
                                 }
                               },
                               label:
@@ -89,45 +93,51 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: Helpers.translatingWord(
                                   "ekram_death_country"),
                             ),
-                            CustomLookUpLongDialog(
-                              items: state.cities ?? [],
-                              value: state.selectedCity,
-                              onEmptyList: () async {
-                                return context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .getCitiesHandler();
-                              },
-                              onChangeType: (LookUpItem? item) {
-                                print(item?.name);
-                                if (item != null) {
-                                  context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeDeathCityEvent(item: item));
-                                }
-                              },
-                              label: ("ekram_death_city").tr(),
-                              hint: ("ekram_death_city").tr(),
-                            ),
-                            CustomLookUpLongDialog(
-                              items: state.bodyArrivalCities ?? [],
-                              value: state.selectedBodyArrivalCity,
-                              onEmptyList: () async {
-                                return context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .getCitiesHandler();
-                              },
-                              onChangeType: (LookUpItem? item) {
-                                print(item?.name);
-                                if (item != null) {
-                                  context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangebodyArrivalCitiesEvent(
-                                          item: item));
-                                }
-                              },
-                              label: ("arrivalCity").tr(),
-                              hint: ("arrivalCity").tr(),
-                            ),
+                            state.selectedDeathCountry?.id == 1
+                                ? CustomLookUpLongDialog(
+                                    items: state.cities ?? [],
+                                    value: state.selectedDeathCity,
+                                    onEmptyList: () async {
+                                      return context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .getCitiesHandler();
+                                    },
+                                    onChangeType: (LookUpItem? item) {
+                                      print(item?.name);
+                                      if (item != null) {
+                                        context
+                                            .read<
+                                                EkramRequestTransportationBloc>()
+                                            .add(ChangeDeathCityEvent(
+                                                item: item));
+                                      }
+                                    },
+                                    label: ("ekram_death_city").tr(),
+                                    hint: ("ekram_death_city").tr(),
+                                  )
+                                : CustomLookUpLongDialog(
+                                    items: state.bodyArrivalCities ?? [],
+                                    value: state.selectedBodyArrivalCity,
+                                    onEmptyList: () async {
+                                      return context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .getCitiesHandler();
+                                    },
+                                    onChangeType: (LookUpItem? item) {
+                                      print(item?.name);
+                                      if (item != null) {
+                                        context
+                                            .read<
+                                                EkramRequestTransportationBloc>()
+                                            .add(ChangebodyArrivalCitiesEvent(
+                                                item: item));
+                                      }
+                                    },
+                                    label: ("arrivalCity").tr(),
+                                    hint: ("arrivalCity").tr(),
+                                  ),
                             CustomLookUpLongDialog(
                               items: state.hospitals ?? [],
                               value: state.selectedHospital,
@@ -135,7 +145,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetHospitalsEvent(
-                                        city: state.selectedCity ??
+                                        city: state.selectedDeathCity ??
                                             LookUpItem()));
                               },
                               onChangeType: (LookUpItem? item) {
@@ -162,8 +172,17 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   child: CustomRadioButtonEnd<bool>(
                                     title: ("burial_in_death_city").tr(),
                                     value: true,
-                                    currentSelected: true,
-                                    onChange: (bool item) {},
+                                    currentSelected:
+                                        state.isBurialInsideDeathCity == true,
+                                    onChange: (bool item) {
+                                      context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .add(
+                                              ChangeIsBurialInsideDeathCityEvent(
+                                                  isBurialInsideDeathCity:
+                                                      true));
+                                    },
                                     endRadio: false,
                                     unSelectedBackgroundColor:
                                         Colors.transparent,
@@ -177,8 +196,17 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   child: CustomRadioButtonEnd<bool>(
                                     title: ("burial_in_other_city").tr(),
                                     value: true,
-                                    currentSelected: false,
-                                    onChange: (bool item) {},
+                                    currentSelected:
+                                        state.isBurialInsideDeathCity == false,
+                                    onChange: (bool item) {
+                                      context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .add(
+                                              ChangeIsBurialInsideDeathCityEvent(
+                                                  isBurialInsideDeathCity:
+                                                      false));
+                                    },
                                     endRadio: false,
                                     unSelectedBackgroundColor:
                                         Colors.transparent,
@@ -187,26 +215,31 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            CustomLookUpLongDialog(
-                              items: state.cities ?? [],
-                              value: state.selectedBurialCity,
-                              isDisbaled: false,
-                              onEmptyList: () async {
-                                return context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .getCitiesHandler();
-                              },
-                              onChangeType: (LookUpItem? item) {
-                                print(item?.name);
-                                if (item != null) {
-                                  context
-                                      .read<EkramRequestTransportationBloc>()
-                                      .add(ChangeBurialCityEvent(item: item));
-                                }
-                              },
-                              label: "burial_city".tr(),
-                              hint: "",
-                            ),
+                            state.isBurialInsideDeathCity == false
+                                ? CustomLookUpLongDialog(
+                                    items: state.cities ?? [],
+                                    value: state.selectedBurialCity,
+                                    isDisbaled: false,
+                                    onEmptyList: () async {
+                                      return context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .getCitiesHandler();
+                                    },
+                                    onChangeType: (LookUpItem? item) {
+                                      print(item?.name);
+                                      if (item != null) {
+                                        context
+                                            .read<
+                                                EkramRequestTransportationBloc>()
+                                            .add(ChangeBurialCityEvent(
+                                                item: item));
+                                      }
+                                    },
+                                    label: "burial_city".tr(),
+                                    hint: "",
+                                  )
+                                : SizedBox.shrink(),
                             BurialDateHijri(),
                             BurialDateGorgian(),
                             CustomLookUpLongDialog(
@@ -258,11 +291,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             CustomRadioButtonEnd<bool>(
                               title: "yes".tr(),
                               value: true,
-                              currentSelected: true,
+                              currentSelected:
+                                  state.isSpecialTransferNeeded == true,
                               onChange: (bool item) {
-                                // context
-                                //     .read<EkramAddDeceasedBloc>()
-                                //     .add(ChangeIsNeedSpecialTransferEvent(isNeeded: true));
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(ChangeIsNeedSpecialTransferEvent(
+                                        isNeeded: true));
                               },
                               endRadio: false,
                               unSelectedBackgroundColor: Colors.transparent,
@@ -272,33 +307,40 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             CustomRadioButtonEnd<bool>(
                               title: "no".tr(),
                               value: true,
-                              currentSelected: false,
+                              currentSelected:
+                                  state.isSpecialTransferNeeded == false,
                               onChange: (bool item) {
-                                // context
-                                //     .read<EkramAddDeceasedBloc>()
-                                //     .add(ChangeIsNeedSpecialTransferEvent(isNeeded: false));
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(ChangeIsNeedSpecialTransferEvent(
+                                        isNeeded: false));
                               },
                               endRadio: false,
                               unSelectedBackgroundColor: Colors.transparent,
                               textSize: 16,
                             ),
-                            CustomLookUpLongDialog(
-                              items: state.specialTransportReasons ?? [],
-                              value: state.selectedSpecialTransportReason,
-                              onChangeType: (LookUpItem? item) {
-                                context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .add(ChangeSpecialTransportReasonsEvent(
-                                        item: item));
-                              },
-                              onEmptyList: () async {
-                                context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .getSpecialTransportReasons();
-                              },
-                              label: ("reasonForSpecialTransfer").tr(),
-                              hint: ("reasonForSpecialTransfer").tr(),
-                            ),
+                            state.isSpecialTransferNeeded ?? false
+                                ? CustomLookUpLongDialog(
+                                    items: state.specialTransportReasons ?? [],
+                                    value: state.selectedSpecialTransportReason,
+                                    onChangeType: (LookUpItem? item) {
+                                      context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .add(
+                                              ChangeSpecialTransportReasonsEvent(
+                                                  item: item));
+                                    },
+                                    onEmptyList: () async {
+                                      context
+                                          .read<
+                                              EkramRequestTransportationBloc>()
+                                          .getSpecialTransportReasons();
+                                    },
+                                    label: ("reasonForSpecialTransfer").tr(),
+                                    hint: ("reasonForSpecialTransfer").tr(),
+                                  )
+                                : SizedBox.shrink(),
                             CustomLookUpLongDialog(
                               items: state.cemetryTypeItems ?? [],
                               value: state.selectedCemetryType,
@@ -319,41 +361,108 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: ("cemetry_type").tr(),
                             ),
                             CustomLookUpLongDialog(
-                              items:  [],
-                              value: LookUpItem(),
-                              onEmptyList: () async {},
+                              items: state.cemetries ?? [],
+                              value: state.selectedCemetry,
+                              onEmptyList: () async {
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(GetCemetriesEvent(
+                                        params: CemetriesParams(
+                                            deathCountryId:
+                                                state.selectedDeathCountry?.id,
+                                            deathCityId:
+                                                state.selectedDeathCity?.id,
+                                            burialCityId:
+                                                state.selectedBurialCity?.id,
+                                            specialTransportReasonId: state
+                                                .selectedSpecialTransportReason
+                                                ?.id,
+                                            prayId: state.selectedPrayer?.id,
+                                            burialDate: state.burialDateHijri,
+                                            deathDate: state.deathDateHijri,
+                                            graveTypeId:
+                                                state.selectedCemetryType?.id,
+                                            age: state.requestDetailsModel
+                                                ?.deathInfo?.age),
+                                        requestId: state.requestId!));
+                              },
                               onChangeType: (LookUpItem? item) {
-                                if (item != null) {}
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeCemetryItemsEvent(item: item));
+                                }
                               },
                               label: ("cemeteryName").tr(),
                               hint: ("cemeteryName").tr(),
                             ),
                             CustomLookUpLongDialog(
-                              items: state.cemetryTypeItems ?? [],
-                              value: state.selectedCemetryType,
-                              onEmptyList: () async {},
+                              items: state.transportationNames ?? [],
+                              value: state.selectedTransportationName,
+                              onEmptyList: () async {
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(GetTransportationNamesEvent(
+                                        params: TransportationCompaniesParams(
+                                            cemeteryId:
+                                                state.selectedCemetry?.id,
+                                            deathCityId:
+                                                state.selectedDeathCity?.id),
+                                        requestId: state.requestId!));
+                              },
                               onChangeType: (LookUpItem? item) {
-                                if (item != null) {}
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeTransportationNameEvent(
+                                          item: item));
+                                }
                               },
                               label: ("ekram_orgnization_name").tr(),
                               hint: ("ekram_orgnization_name").tr(),
                             ),
                             CustomLookUpLongDialog(
-                              items: state.cemetryTypeItems ?? [],
-                              value: state.selectedCemetryType,
-                              onEmptyList: () async {},
+                              items: state.laundries ?? [],
+                              value: state.selectedlaundry,
+                              onEmptyList: () async {
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(GetLandriesEvent(
+                                        params: MosqueGhuslPlacesParams(
+                                            burialDate: state.burialDateHijri,
+                                            gender: state.requestDetailsModel
+                                                ?.deceasedInfo?.gender),
+                                        cityId: state.selectedBurialCity?.id));
+                              },
                               onChangeType: (LookUpItem? item) {
-                                if (item != null) {}
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeLandriesEvent(item: item));
+                                }
                               },
                               label: ("ekram_laundry").tr(),
                               hint: ("ekram_laundry").tr(),
                             ),
                             CustomLookUpLongDialog(
-                              items: state.cemetryTypeItems ?? [],
-                              value: state.selectedCemetryType,
-                              onEmptyList: () async {},
+                              items: state.mosques ?? [],
+                              value: state.selectedMosque,
+                              onEmptyList: () async {
+                                context
+                                    .read<EkramRequestTransportationBloc>()
+                                    .add(GetMosquesEvent(
+                                        params: MosqueGhuslPlacesParams(
+                                            burialDate: state.burialDateHijri,
+                                            gender: state.requestDetailsModel
+                                                ?.deceasedInfo?.gender),
+                                        cityId: state.selectedBurialCity?.id));
+                              },
                               onChangeType: (LookUpItem? item) {
-                                if (item != null) {}
+                                if (item != null) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeMosqueEvent(item: item));
+                                }
                               },
                               label: ("the_mosque").tr(),
                               hint: ("the_mosque").tr(),

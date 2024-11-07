@@ -148,9 +148,9 @@ abstract class EkramRemoteDataSource {
       int requestId, TransportationCompaniesParams params);
   Future<ResponseBodyModel> verifyDeceased(VerifyDeceasedParams params);
   Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(
-      String requestId);
+      int requestId);
   Future<ResponseBodyModel> saveDeceasedInfo(
-      String requestId, SaveDeceasedInfoParams params);
+      int requestId, SaveDeceasedInfoParams params);
   Future<ResponseBodyModel> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
 }
@@ -2453,7 +2453,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<RequestDetailsResponseModel>> requestDetails(
-      String requestId) async {
+      int requestId) async {
     Response? response;
 
     try {
@@ -2516,7 +2516,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<dynamic>> saveDeceasedInfo(String requestId, SaveDeceasedInfoParams params) async {
+  Future<ResponseBodyModel<dynamic>> saveDeceasedInfo(
+      int requestId, SaveDeceasedInfoParams params) async {
     Response? response;
 
     try {
@@ -2531,13 +2532,9 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       var data = response.data["data"]?["result"];
 
       final decodedResponse =
-      ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
+          ResponseBodyModel<int>.fromMap(response.data, parsedResult: data);
 
       return decodedResponse.toFuture();
-
-
-
-
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -2761,7 +2758,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio
-          .get(ApiUrl.cemetries(requestId), data: params.toJson());
+          .post(ApiUrl.cemetries(requestId), data: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2884,8 +2881,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-      response = await webService.dio
-          .get(ApiUrl.ekramLaundries(cityId), queryParameters: params.toJson());
+      response = await webService.dio.post(ApiUrl.ekramLaundries(cityId),
+          queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2944,7 +2941,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio
-          .get(ApiUrl.ekramMosques(cityId), queryParameters: params.toJson());
+          .post(ApiUrl.ekramMosques(cityId), queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -2995,14 +2992,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-  
-@override
+
+  @override
   Future<ResponseBodyModel<List<LookUpItem>>> getPrayers() async {
     Response response;
 
     try {
-      response = await webService.dio
-          .get(ApiUrl.prayers);
+      response = await webService.dio.get(ApiUrl.prayers);
 
       var data = response.data["data"]?["result"];
 

@@ -3,6 +3,8 @@ part of 'ekram_request_transportation_bloc.dart';
 class EkramRequestTransportationState extends Equatable {
   final String? errorMsg;
   final bool? isVerified;
+  final bool? isSpecialTransferNeeded ;
+  final bool? isBurialInsideDeathCity;
   final List<LookUpItem>? nationalIdTypes;
   final bool isdeceasedInfoReadOnly;
   final bool isBurialDatesDisabled;
@@ -11,7 +13,10 @@ class EkramRequestTransportationState extends Equatable {
   final String? burialDateHijri;
   final LookUpItem? selectedNationalIdType;
   final LookUpItem? selectedCemetryType;
+  final LookUpItem? selectedlaundry;
+  final LookUpItem? selectedMosque;
   final List<LookUpItem>? countries;
+  final List<LookUpItem>? cemetries;
   final List<LookUpItem>? prayers;
   final List<LookUpItem>? specialTransportReasons;
   final BlocStatus status;
@@ -22,18 +27,23 @@ class EkramRequestTransportationState extends Equatable {
   final List<LookUpItem>? hospitals;
   final List<LookUpItem>? nationalities;
   final List<LookUpItem>? cemetryTypeItems;
+  final List<LookUpItem>? laundries;
+  final List<LookUpItem>? mosques;
+  final List<LookUpItem>? transportationNames;
   final bool? agreement;
   final String? fullName;
   final String? mobileNumber;
   final String? requestType;
   final String? relation;
   final String? deathLocation;
-  final LookUpItem? selectedCity;
+  final LookUpItem? selectedDeathCity;
+  final LookUpItem? selectedTransportationName;
+  final LookUpItem? selectedCemetry;
   final LookUpItem? selectedPrayer;
   final LookUpItem? selectedSpecialTransportReason;
   final LookUpItem? selectedBurialCity;
   final LookUpItem? selectedBodyArrivalCity;
-  final LookUpItem? selectedCountry;
+  final LookUpItem? selectedDeathCountry;
   final LookUpItem? selectedHospital;
   final String? otherHospitalName;
   final LookUpItem? selectedNationality;
@@ -43,7 +53,7 @@ class EkramRequestTransportationState extends Equatable {
   final String? burialDateGregorian;
   final String? deathDateGregorian;
   final String? deathDateHijri;
-  final String? requestId;
+  final int? requestId;
   final String? deceasedId;
   final RequestDetailsResponseModel? requestDetailsModel;
   final bool? editInfoSection;
@@ -54,6 +64,8 @@ class EkramRequestTransportationState extends Equatable {
       this.deathDateGregorian,
       this.deathDateHijri,
       this.isVerified,
+      this.isSpecialTransferNeeded,
+      this.isBurialInsideDeathCity,
       this.requestId,
       this.deceasedId,
       this.deceassedDOBHijri,
@@ -65,6 +77,8 @@ class EkramRequestTransportationState extends Equatable {
       this.nationalIdTypes,
       this.selectedNationalIdType,
       this.selectedCemetryType,
+      this.selectedlaundry,
+      this.selectedMosque,
       this.status = BlocStatus.initial,
       this.errorMessage,
       this.currentPageValue = 0,
@@ -72,22 +86,28 @@ class EkramRequestTransportationState extends Equatable {
       this.bodyArrivalCities,
       this.hospitals,
       this.countries,
+      this.cemetries,
       this.prayers,
       this.specialTransportReasons,
       this.nationalities,
       this.cemetryTypeItems,
+      this.laundries,
+      this.mosques,
+      this.transportationNames,
       this.agreement,
       this.fullName,
       this.mobileNumber,
       this.requestType,
       this.relation,
       this.deathLocation,
-      this.selectedCity,
+      this.selectedDeathCity,
+      this.selectedTransportationName,
+      this.selectedCemetry,
       this.selectedPrayer,
       this.selectedSpecialTransportReason,
       this.selectedBurialCity,
       this.selectedBodyArrivalCity,
-      this.selectedCountry,
+      this.selectedDeathCountry,
       this.selectedHospital,
       this.otherHospitalName,
       this.selectedNationality,
@@ -103,10 +123,14 @@ class EkramRequestTransportationState extends Equatable {
     final bool? isBurialDatesDisabled,
     final bool? isDeathDatesDisabled,
     final bool? isVerified,
+    final bool? isSpecialTransferNeeded,
+    final bool? isBurialInsideDeathCity,
     final BlocStatus? status,
     final String? errorMsg,
     final LookUpItem? selectedNationalIdType,
     final LookUpItem? selectedCemetryType,
+    final LookUpItem? selectedlaundry,
+    final LookUpItem? selectedMosque,
     final List<LookUpItem>? nationalIdTypes,
     final String? errorMessage,
     final int? currentPageValue,
@@ -117,16 +141,22 @@ class EkramRequestTransportationState extends Equatable {
     final List<LookUpItem>? bodyArrivalCities,
     final List<LookUpItem>? hospitals,
     final List<LookUpItem>? countries,
+    final List<LookUpItem>? cemetries,
     final List<LookUpItem>? prayers,
     final List<LookUpItem>? specialTransportReasons,
     final List<LookUpItem>? nationalities,
     final List<LookUpItem>? cemetryTypeItems,
-    final LookUpItem? selectedCity,
+    final List<LookUpItem>? laundries,
+    final List<LookUpItem>? mosques,
+    final List<LookUpItem>? transportationNames,
+    final LookUpItem? selectedDeathCity,
+    final LookUpItem? selectedTransportationName,
+    final LookUpItem? selectedCemetry,
     final LookUpItem? selectedPrayer,
     final LookUpItem? selectedSpecialTransportReason,
     final LookUpItem? selectedBurialCity,
     final LookUpItem? selectedBodyArrivalCity,
-    final LookUpItem? selectedCountry,
+    final LookUpItem? selectedDeathCountry,
     final LookUpItem? selectedHospital,
     final String? otherHospitalName,
     final LookUpItem? selectedNationality,
@@ -137,7 +167,7 @@ class EkramRequestTransportationState extends Equatable {
     final Nullable<String?>? burialDateGregorian,
     final Nullable<String?>? deathDateGregorian,
     final Nullable<String?>? deathDateHijri,
-    final String? requestId,
+    final int? requestId,
     final String? deceasedId,
     final RequestDetailsResponseModel? requestDetailsModel,
     final bool? editInfoSection,
@@ -149,10 +179,16 @@ class EkramRequestTransportationState extends Equatable {
           isBurialDatesDisabled ?? this.isBurialDatesDisabled,
       isDeathDatesDisabled: isDeathDatesDisabled ?? this.isDeathDatesDisabled,
       isVerified: isVerified ?? this.isVerified,
+      isSpecialTransferNeeded:
+          isSpecialTransferNeeded ?? this.isSpecialTransferNeeded,
+      isBurialInsideDeathCity:
+          isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
       errorMsg: errorMsg ?? this.errorMsg,
       selectedNationalIdType:
           selectedNationalIdType ?? this.selectedNationalIdType,
       selectedCemetryType: selectedCemetryType ?? this.selectedCemetryType,
+      selectedlaundry: selectedlaundry ?? this.selectedlaundry,
+      selectedMosque: selectedMosque ?? this.selectedMosque,
       nationalIdTypes: nationalIdTypes ?? this.nationalIdTypes,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
@@ -164,17 +200,26 @@ class EkramRequestTransportationState extends Equatable {
       bodyArrivalCities: bodyArrivalCities ?? this.bodyArrivalCities,
       hospitals: hospitals ?? this.hospitals,
       countries: countries ?? this.countries,
+      cemetries: cemetries ?? this.cemetries,
       prayers: prayers ?? this.prayers,
-      specialTransportReasons: specialTransportReasons ?? this.specialTransportReasons,
+      specialTransportReasons:
+          specialTransportReasons ?? this.specialTransportReasons,
       nationalities: nationalities ?? this.nationalities,
       cemetryTypeItems: cemetryTypeItems ?? this.cemetryTypeItems,
-      selectedCity: selectedCity ?? this.selectedCity,
+      laundries: laundries ?? this.laundries,
+      mosques: mosques ?? this.mosques,
+      transportationNames: transportationNames ?? this.transportationNames,
+      selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
+      selectedTransportationName:
+          selectedTransportationName ?? this.selectedTransportationName,
+      selectedCemetry: selectedCemetry ?? this.selectedCemetry,
       selectedPrayer: selectedPrayer ?? this.selectedPrayer,
-      selectedSpecialTransportReason: selectedSpecialTransportReason ?? this.selectedSpecialTransportReason,
+      selectedSpecialTransportReason:
+          selectedSpecialTransportReason ?? this.selectedSpecialTransportReason,
       selectedBurialCity: selectedBurialCity ?? this.selectedBurialCity,
       selectedBodyArrivalCity:
           selectedBodyArrivalCity ?? this.selectedBodyArrivalCity,
-      selectedCountry: selectedCountry ?? this.selectedCountry,
+      selectedDeathCountry: selectedDeathCountry ?? this.selectedDeathCountry,
       selectedHospital: clearHospital == true
           ? null
           : selectedHospital ?? this.selectedHospital,
@@ -213,22 +258,29 @@ class EkramRequestTransportationState extends Equatable {
   List<Object?> get props => [
         cities,
         countries,
+        cemetries,
         prayers,
         specialTransportReasons,
         status,
         isVerified,
+        isSpecialTransferNeeded,
+        isBurialInsideDeathCity,
         requestDetailsModel,
         selectedNationalIdType,
         selectedCemetryType,
+        selectedlaundry,
+        selectedMosque,
         currentPageValue,
         relation,
         deathLocation,
-        selectedCity,
+        selectedDeathCity,
+        selectedTransportationName,
+        selectedCemetry,
         selectedPrayer,
         selectedSpecialTransportReason,
         selectedBurialCity,
         selectedBodyArrivalCity,
-        selectedCountry,
+        selectedDeathCountry,
         selectedHospital,
         selectedNationality,
         deceasedInfoDto,
@@ -245,15 +297,14 @@ class EkramRequestTransportationState extends Equatable {
         isDeathDatesDisabled,
         isBurialDatesDisabled,
         cemetryTypeItems,
+        laundries,
+        mosques,
+        transportationNames,
         bodyArrivalCities
       ];
 
   bool isNextButtonEnabled() {
-
-
     if (currentPageValue == 0) {
-
-
       return isVerified ?? false;
     }
 

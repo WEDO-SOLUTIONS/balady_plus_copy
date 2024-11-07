@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_respo
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
+import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/user_info_response_model.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/active_grave_request_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/apply_deceased_response.dart';
@@ -860,9 +861,9 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<RequestDetailsResponseModel>>>
-      requestDetails(String params) async {
+      requestDetails(int requestId) async {
     try {
-      final data = await remoteDataSource.requestDetails(params);
+      final data = await remoteDataSource.requestDetails(requestId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -899,7 +900,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(
-      String requestId, SaveDeceasedInfoParams params) async {
+      int requestId, SaveDeceasedInfoParams params) async {
     try {
       final data = await remoteDataSource.saveDeceasedInfo(requestId, params);
       return Right(data);
@@ -956,9 +957,9 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getTransportationCompaniesLookUp() async {
+      getTransportationCompaniesLookUp(int requestId , TransportationCompaniesParams params) async {
     try {
-      final data = await remoteDataSource.getCemeteryTypesLookUp();
+      final data = await remoteDataSource.getTransportationCompaniesLookUp( requestId, params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

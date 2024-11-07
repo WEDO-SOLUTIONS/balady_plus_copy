@@ -9,13 +9,13 @@ import '../repositories/ekram_repository.dart';
 
 import 'package:dartz/dartz.dart' show Either;
 
-class GetTransportationCompaniesLookUp extends UseCase<ResponseBodyModel<List<LookUpItem>>, NoParams> {
+class GetTransportationCompaniesLookUp extends UseCase<ResponseBodyModel<List<LookUpItem>>,  List<dynamic>> {
   final EkramRepository repository;
 
   GetTransportationCompaniesLookUp({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> call(
-      NoParams params) async {
-    return await repository.getTransportationCompaniesLookUp();
+      List<dynamic> params) async {
+    return await repository.getTransportationCompaniesLookUp(params[0],params[1]);
   }
 }
