@@ -123,9 +123,9 @@ class DashboardControlModel(
 
         val updatedCategories = EnumSet.copyOf(currentCategories).apply {
             if (roadCameras) {
-                removeAll(roadCameraCategories)
-            } else {
                 addAll(roadCameraCategories)
+            } else {
+                removeAll(roadCameraCategories)
             }
         }
 

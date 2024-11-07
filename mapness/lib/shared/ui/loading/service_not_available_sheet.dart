@@ -79,18 +79,7 @@ class ServiceNotAvailableSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(
-                height: Spacing.$10x,
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  primaryLabel: context.l10n.browseBaladyServicesKey,
-                  onTap: context.pop,
-                  buttonColorScheme: ButtonColorScheme.primary,
-                ),
-              ),
-              const SizedBox(
-                height: Spacing.$8x,
+                height: Spacing.$16x,
               ),
             ],
           ),

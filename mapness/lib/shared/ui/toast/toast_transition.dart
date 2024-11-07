@@ -56,7 +56,9 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
   }
 
   Future<void> _hide() async {
-    await _controller.reverse();
+    if (mounted) {
+      await _controller.reverse();
+    }
     if (_controller.isCompleted || _controller.isDismissed) {
       widget.hide();
     }

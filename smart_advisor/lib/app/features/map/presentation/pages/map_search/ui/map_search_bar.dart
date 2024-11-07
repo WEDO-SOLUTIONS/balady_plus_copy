@@ -66,6 +66,14 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     });
 
     return BaladySearchWithBackButton(
+      option: SearchTextBackOption(
+        text: context.l10n.cancel,
+        onPressed: () {
+          FocusScope.of(context).unfocus();
+          searcher.clear();
+          widget.onClose();
+        },
+      ),
       searchInput: BaladyInput.searchV2(
         focusNode: _focusNode,
         onChanged: (query) {
@@ -108,14 +116,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         hintColor: context.colorsV2.foregroundSoft,
         textFieldHeight: 40,
         textStyle: context.textStyleV3.bodySmallRegular,
-      ),
-      option: SearchTextBackOption(
-        text: context.l10n.cancel,
-        onPressed: () {
-          FocusScope.of(context).unfocus();
-          searcher.clear();
-          widget.onClose();
-        },
       ),
     );
   }

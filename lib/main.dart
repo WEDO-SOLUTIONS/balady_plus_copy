@@ -1,8 +1,8 @@
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-import 'package:flutter/material.dart' ;
-import 'package:localize_and_translate/localize_and_translate.dart'
-    show LocalizedApp;
+import 'package:flutter/material.dart';
+import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 import './app/core/utils/utils_exports.dart' show EnvType;
@@ -11,14 +11,14 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  unhandledExceptionBaladyLogs( () async {
+  unhandledExceptionBaladyLogs(() async {
+    AdvancedMetrics.instance.startMeasureStartup();
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
       await SentryFlutter.init(
-            (options) {
-          options.dsn =
-          'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+        (options) {
+          options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.tracesSampleRate = 1.0;

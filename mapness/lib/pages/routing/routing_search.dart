@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -80,11 +81,12 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
                 middleHeight: constraints.maxHeight * 0.7,
                 scrollableBody: (context, scrollController) {
                   scrollController.addListener(_unFocusOnScroll);
+                  final bgColor = context.colorsV2.backgroundSurface1;
 
-                  return Material(
-                    color: const Color(0xFFF4F4F5),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                  return ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                    child: Material(
+                      color: bgColor,
                       child: SearchScope(
                         named: SearchScopeEnum.routes,
                         child: CustomScrollView(
@@ -94,6 +96,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheet> {
                             SliverPersistentHeader(
                               delegate: RoutingSearchHeaderDelegate(
                                 placeholder: widget.placeholder,
+                                backgroundColor: bgColor,
                               ),
                               pinned: true,
                             ),
