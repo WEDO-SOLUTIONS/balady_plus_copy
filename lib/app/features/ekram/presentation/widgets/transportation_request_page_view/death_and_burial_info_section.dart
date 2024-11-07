@@ -25,6 +25,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
+import '../../../data/model/request_details_response_model/burial_info.dart';
 import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 
@@ -245,16 +246,15 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   child: CustomRadioButtonEnd<bool>(
                                     title: ("burial_in_death_city").tr(),
                                     value: true,
-                                    currentSelected:
-                                        state.isBurialInsideDeathCity == true,
+                                    currentSelected: state.requestDetailsModel?.burialInfo?.isBurialInsideDeathCity?? true,
                                     onChange: (bool item) {
+
+
                                       context
                                           .read<
                                               EkramRequestTransportationBloc>()
                                           .add(
-                                              setBurialInfoEvent(
-                                                  isBurialInsideDeathCity:
-                                                      true));
+                                              setBurialInfoEvent(burialInfo: BurialInfo(isBurialInsideDeathCity: true)));
                                     },
                                     endRadio: false,
                                     unSelectedBackgroundColor:
@@ -270,15 +270,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     title: ("burial_in_other_city").tr(),
                                     value: true,
                                     currentSelected:
-                                        state.isBurialInsideDeathCity == false,
+                                    state.requestDetailsModel?.burialInfo?.isBurialInsideDeathCity == false,
                                     onChange: (bool item) {
                                       context
                                           .read<
                                               EkramRequestTransportationBloc>()
                                           .add(
-                                              setBurialInfoEvent(
-                                                  isBurialInsideDeathCity:
-                                                      false));
+                                              setBurialInfoEvent(burialInfo: BurialInfo(isBurialInsideDeathCity: false,cityId: null,burialDestination: "OTHER_CITY")));
                                     },
                                     endRadio: false,
                                     unSelectedBackgroundColor:
@@ -288,10 +286,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            state.isBurialInsideDeathCity == false
+                            state.requestDetailsModel?.burialInfo?.isBurialInsideDeathCity == false
                                 ? CustomLookUpLongDialog(
                                     items: state.cities ?? [],
-                                    value: state.selectedBurialCity,
+                                    value: state.getCityById(state.requestDetailsModel?.burialInfo?.cityId),
                                     isDisbaled: false,
                                     onEmptyList: () async {
                                       return context
@@ -300,13 +298,12 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                           .getCitiesHandler();
                                     },
                                     onChangeType: (LookUpItem? item) {
-                                      print(item?.name);
+
                                       if (item != null) {
                                         context
                                             .read<
                                                 EkramRequestTransportationBloc>()
-                                            .add(ChangeBurialCityEvent(
-                                                item: item));
+                                            .add(setBurialInfoEvent(burialInfo:BurialInfo(isBurialInsideDeathCity: false,cityId: item.id)));
                                       }
                                     },
                                     label: "burial_city".tr(),

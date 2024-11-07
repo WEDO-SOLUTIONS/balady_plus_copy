@@ -41,11 +41,15 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/data/entities/file_data_item.dart';
 import '../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+
 import '../../../data/model/request_details_response_model/SaveDeceasedInfoParams.dart';
+import '../../../data/model/request_details_response_model/burial_info.dart';
+import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 import '../../../data/model/request_details_response_model/main_info.dart';
 import '../../../data/model/request_details_response_model/submitter_info.dart';
 import '../../../data/model/request_details_response_model/request_details_response_model.dart';
+import '../../../data/model/request_details_response_model/transport_info.dart';
 import '../../../domain/use_cases/get_death_cities.dart';
 import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_request_details.dart';
@@ -150,20 +154,20 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeLandriesEvent>(_changeLandriesHandler);
     on<ChangeMosqueEvent>(_changeMosqueHandler);
     on<ChangeTransportationNameEvent>(_changeTransportationNamesHandler);
-    on<AddDeceasedEvent>(_addDeceasedHandler);
-    on<DeleteDeceasedEvent>(_deleteDeceasedHandler);
-    on<EditDeceasedEvent>(_editDeceasedHandler);
+    // on<AddDeceasedEvent>(_addDeceasedHandler);
+    // on<DeleteDeceasedEvent>(_deleteDeceasedHandler);
+    // on<EditDeceasedEvent>(_editDeceasedHandler);
     on<AddFileEvent>(_addFileHandler);
     on<ChangeNationalIdDob>(_changeNationalIdDobHandler);
     on<ChangeBurialDateEvent>(_changeBurialDateEventHandler);
     on<ChangeDeathDateEvent>(_changeDeathDateEventHandler);
     on<ChangeIdEvent>(_changeIdHandler);
-    on<ChangeDeathCountryEvent>(_changeDeathCountryHandler);
+
     on<ChangeDeathCityEvent>(_changeCityHandler);
     on<ChangePrayerEvent>(_changePrayerHandler);
     on<ChangeSpecialTransportReasonsEvent>(
         _changeSpecialTransportReasonsHandler);
-    on<ChangeBurialCityEvent>(_changeBurialCityHandler);
+
     on<ChangeHospitalEvent>(_changeHospitalHandler);
     on<ChangebodyArrivalCitiesEvent>(_changebodyArrivalCitiesHandler);
 
@@ -175,6 +179,9 @@ class EkramRequestTransportationBloc extends Bloc<
     on<getRequestDetailsEvent>(_getRequestDetailsHandler);
     on<saveDeceasedInfoEvent>(_saveDeceasedInfoHandler);
     on<saveBurianDeathInfoEvent>(_saveDeceasedBurialInfoHandler);
+    on<ChangeDeathInfoEvent>(_changeDeathandBurialHandler);
+    on<setBurialInfoEvent>(_changeBurialInfoHandler);
+    on<setTransportInfoEvent>(_changeTansportInfoHandler);
 
     getCountries();
     getPrayers();
@@ -197,10 +204,6 @@ class EkramRequestTransportationBloc extends Bloc<
     ));
   }
 
-  Future<void> _changeDeathCountryHandler(
-      ChangeDeathCountryEvent e, Emitter emitter) async {
-    emitter(state.copyWith(selectedDeathCountry: e.item, errorMessage: ""));
-  }
 
   Future<void> _changeCityHandler(
       ChangeDeathCityEvent e, Emitter emitter) async {
@@ -235,7 +238,7 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<void> _changeTransportationNamesHandler(
       ChangeTransportationNameEvent e, Emitter emitter) async {
     emitter(
-        state.copyWith(selectedTransportationName: e.item, errorMessage: ""));
+        state.copyWith(selectedtransportation: e.item, errorMessage: ""));
   }
 
   Future<void> _changeSpecialTransportReasonsHandler(
@@ -555,7 +558,7 @@ class EkramRequestTransportationBloc extends Bloc<
       GetHospitalsEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getHospitals(e.city.id!);
+    final failureOrSuccess = await _getHospitals(e.cityId!);
 
     failureOrSuccess.fold((failure) {
       print("failure $failure");
@@ -573,7 +576,6 @@ class EkramRequestTransportationBloc extends Bloc<
       emitter(state.copyWith(
         status: BlocStatus.success,
         hospitals: success.data?.result,
-        selectedDeathCity: e.city,
         clearHospital: true,
         errorMessage: "",
       ));
@@ -623,7 +625,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _getLaundriesHandler(GetLandriesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getLaundires([e.cityId, e.params]);
+    final failureOrSuccess = await _getLaundires([e.transportId, e.params]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(
@@ -641,7 +643,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _getMosquesHandler(GetMosquesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getMosques([e.cityId, e.params]);
+    final failureOrSuccess = await _getMosques([e.transportId, e.params]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(
@@ -657,41 +659,41 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
-  Future<void> _addDeceasedHandler(AddDeceasedEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    List<DeceasedInfoDto> deceasedInfoDto = state.deceasedInfoDto ?? [];
-
-    DeceasedInfoDto info = e.data as DeceasedInfoDto;
-    deceasedInfoDto.add(info);
-
-    emitter(state.copyWith(
-        status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
-  }
-
-  Future<void> _editDeceasedHandler(
-      EditDeceasedEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    List<DeceasedInfoDto> deceasedInfoDto = state.deceasedInfoDto ?? [];
-
-    DeceasedInfoDto info = e.data as DeceasedInfoDto;
-    deceasedInfoDto[e.index] = info;
-
-    emitter(state.copyWith(
-        status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
-  }
-
-  Future<void> _deleteDeceasedHandler(
-      DeleteDeceasedEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    List<DeceasedInfoDto> deceasedInfoDto = state.deceasedInfoDto ?? [];
-
-    deceasedInfoDto.removeAt(e.index);
-
-    emitter(state.copyWith(
-        status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
-
-    CommonFunctions.showSuccess(trans("delete_deceassed_success"));
-  }
+  // Future<void> _addDeceasedHandler(AddDeceasedEvent e, Emitter emitter) async {
+  //   emitter(state.copyWith(status: BlocStatus.loading));
+  //   List<DeceasedInfoDto> deceasedInfoDto = state.deceasedInfoDto ?? [];
+  //
+  //   DeceasedInfoDto info = e.data as DeceasedInfoDto;
+  //   deceasedInfoDto.add(info);
+  //
+  //   emitter(state.copyWith(
+  //       status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
+  // }
+  //
+  // Future<void> _editDeceasedHandler(
+  //     EditDeceasedEvent e, Emitter emitter) async {
+  //   emitter(state.copyWith(status: BlocStatus.loading));
+  //   List<DeceasedInfoDto> deceasedInfoDto = state.deceasedInfoDto ?? [];
+  //
+  //   DeceasedInfoDto info = e.data as DeceasedInfoDto;
+  //   deceasedInfoDto[e.index] = info;
+  //
+  //   emitter(state.copyWith(
+  //       status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
+  // }
+  //
+  // Future<void> _deleteDeceasedHandler(
+  //     DeleteDeceasedEvent e, Emitter emitter) async {
+  //   emitter(state.copyWith(status: BlocStatus.loading));
+  //   List<DeceasedInfoDto> deceasedInfoDto = state.deceasedInfoDto ?? [];
+  //
+  //   deceasedInfoDto.removeAt(e.index);
+  //
+  //   emitter(state.copyWith(
+  //       status: BlocStatus.success, deceasedInfoDto: deceasedInfoDto));
+  //
+  //   CommonFunctions.showSuccess(trans("delete_deceassed_success"));
+  // }
 
   Future<void> _addFileHandler(AddFileEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
@@ -708,40 +710,40 @@ class EkramRequestTransportationBloc extends Bloc<
     hideKeyboard();
 
     emitter(state.copyWith(status: BlocStatus.loading));
-
-    final failureOrSuccess = await _applyDeceasedTransport(ApplyDeceasedParams(
-        deathCityId: state.selectedDeathCity?.id,
-        hospitalId: state.selectedHospital?.id,
-        relationship: state.relation,
-        locationAddress: state.deathLocation,
-        deathTransferStatusId: 3,
-        deceasedInfoDtoList: state.deceasedInfoDto,
-        hospitalOtherName:
-            state.selectedHospital?.id == -1 ? state.otherHospitalName : null,
-        letter: state.letter));
-
-    failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-    }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        errorMessage: "",
-      ));
-      NavigationService.navigatorKey.currentState!.pushReplacementNamed(
-          RouteName.successRoute,
-          arguments: SuccessScreenArgs(
-              type: PAGE_TYPE.ekramCemetry,
-              thanksMessage: success.data?.responseMessage));
-
-      CommonFunctions.sendUXCamEvent(UXCamEvents
-          .RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event);
-
-      CommonFunctions.sendUXCamEvent(
-          UXCamEvents.finishServiceBodyTransportation);
-    });
+    //
+    // final failureOrSuccess = await _applyDeceasedTransport(ApplyDeceasedParams(
+    //     deathCityId: state.selectedDeathCity?.id,
+    //     hospitalId: state.selectedHospital?.id,
+    //     relationship: state.relation,
+    //     locationAddress: state.deathLocation,
+    //     deathTransferStatusId: 3,
+    //     deceasedInfoDtoList: state.deceasedInfoDto,
+    //     hospitalOtherName:
+    //         state.selectedHospital?.id == -1 ? state.otherHospitalName : null,
+    //     letter: state.letter));
+    //
+    // failureOrSuccess.fold((failure) {
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.failure,
+    //     errorMessage: (failure as ServerFailure).errorMessage,
+    //   ));
+    // }, (success) {
+    //   emitter(state.copyWith(
+    //     status: BlocStatus.success,
+    //     errorMessage: "",
+    //   ));
+    //   NavigationService.navigatorKey.currentState!.pushReplacementNamed(
+    //       RouteName.successRoute,
+    //       arguments: SuccessScreenArgs(
+    //           type: PAGE_TYPE.ekramCemetry,
+    //           thanksMessage: success.data?.responseMessage));
+    //
+    //   CommonFunctions.sendUXCamEvent(UXCamEvents
+    //       .RequestsTransportingAndPreparingDeceased_Open_Success_Page_Event);
+    //
+    //   CommonFunctions.sendUXCamEvent(
+    //       UXCamEvents.finishServiceBodyTransportation);
+    // });
   }
 
   void cancelRequest() {
@@ -974,6 +976,94 @@ class EkramRequestTransportationBloc extends Bloc<
         requestDetailsModel: params));
   }
 
+  Future<void> _changeDeathandBurialHandler(ChangeDeathInfoEvent e, Emitter emitter) async {
+
+
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(
+      deathInfo: DeathInfo(countryId: 1),);
+
+    DeathInfo info = params.deathInfo!;
+
+    info = info.copyWith(
+        deathDate: e.deathInfo?.deathDate,
+        gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
+        countryId: e.deathInfo?.countryId?? (info.countryId ?? 1),
+        cityId: e.deathInfo?.cityId,
+        corpseArrivalCityId: e.deathInfo?.corpseArrivalCityId,
+        cityOther:e.deathInfo?.cityOther ,
+        hospitalId: e.deathInfo?.hospitalId,
+        showHospitalOther: e.deathInfo?.showHospitalOther,
+        hospitalOther: e.deathInfo?.hospitalOther,
+        caseContagious: e.deathInfo?.caseContagious
+    );
+
+    params = params.copyWith(deathInfo: info);
+
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
+
+  }
+
+
+
+  Future<void> _changeBurialInfoHandler(setBurialInfoEvent e, Emitter emitter) async {
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(burialInfo: BurialInfo(isBurialInsideDeathCity:true));
+    BurialInfo info = params.burialInfo!;
+    int? cityID;
+    if(e.burialInfo?.isBurialInsideDeathCity != false) {
+      cityID = getBurialCityId();
+    }
+
+
+    info = info.copyWith(
+      isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity??true,
+      cityId: e.burialInfo?.isBurialInsideDeathCity == false? e.burialInfo?.cityId:cityID,
+      burialDate: e.burialInfo?.burialDate,
+      gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
+      prayId: e.burialInfo?.prayId,
+      burialDestination: e.burialInfo?.burialDestination
+
+
+    );
+
+    params = params.copyWith(burialInfo: info);
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
+
+  }
+
+
+  Future<void> _changeTansportInfoHandler(setTransportInfoEvent e, Emitter emitter) async {
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(transportInfo: TransportInfo());
+
+    TransportInfo info = params.transportInfo!;
+
+    info = info.copyWith(
+    );
+
+    params = params.copyWith(transportInfo: info);
+
+    emitter(state.copyWith(
+        status: BlocStatus.success,
+        requestDetailsModel: params));
+
+
+  }
+
+
+
   bool isScreenEditable(RequestDetailsResponseModel? res) {
     if (res?.deceasedInfo?.deceasedDataSource == null ||
         res?.deceasedInfo?.deceasedDataSource == "MANUALLY") {
@@ -982,4 +1072,26 @@ class EkramRequestTransportationBloc extends Bloc<
       return false;
     }
   }
+
+  int? getBurialCityId(){
+    int? burialCityId;
+
+      DeathInfo? deathInfo = state.requestDetailsModel?.deathInfo;
+      if(deathInfo != null && deathInfo.countryId != null)
+      {
+        if(deathInfo.countryId==1 && deathInfo.cityId != null)
+        {
+          burialCityId= deathInfo.cityId;
+        }
+        else  if(deathInfo.countryId !=1 && deathInfo.corpseArrivalCityId != null)
+        {
+          burialCityId= deathInfo.corpseArrivalCityId;
+        }
+      }
+
+      return burialCityId;
+
+
+  }
+
 }

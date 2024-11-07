@@ -150,11 +150,15 @@ class RequestDetailsResponseModel {
     DeceasedInfo? deceasedInfo,
     DeathInfo? deathInfo,
     MainInfo? mainInfo,
+    BurialInfo? burialInfo,
+    TransportInfo? transportInfo,
   }) {
     return RequestDetailsResponseModel(
       deceasedInfo: deceasedInfo ?? this.deceasedInfo,
       mainInfo: mainInfo ?? this.mainInfo,
       deathInfo: deathInfo ?? this.deathInfo,
+        burialInfo:burialInfo??this.burialInfo,
+        transportInfo:transportInfo??this.transportInfo
     );
   }
 }

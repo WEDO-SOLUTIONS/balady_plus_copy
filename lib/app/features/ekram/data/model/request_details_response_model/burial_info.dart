@@ -12,6 +12,7 @@ class BurialInfo {
    int? approvalStatusId;
    String? approvalStatusName;
    String? approvalDate;
+  bool? isBurialInsideDeathCity;
 
   BurialInfo({
     this.permitNumber,
@@ -27,6 +28,7 @@ class BurialInfo {
     this.approvalStatusId,
     this.approvalStatusName,
     this.approvalDate,
+    this.isBurialInsideDeathCity,
   });
 
   factory BurialInfo.fromJson(Map<String, dynamic> json) => BurialInfo(
@@ -57,4 +59,22 @@ class BurialInfo {
         'burialDestination': burialDestination,
         'burialDestinationName': burialDestinationName,
       };
+
+  BurialInfo copyWith({  String? permitNumber,
+    String? burialDate,
+    String? gregorianBurialDate,
+    int? prayId,
+    String? ghuslMethod,
+    String? burialDestination,
+    int? cityId,
+    bool? isBurialInsideDeathCity,
+  }) => BurialInfo(  permitNumber: permitNumber ?? this.permitNumber,
+    burialDate: burialDate ?? this.burialDate,
+    gregorianBurialDate: gregorianBurialDate ?? this.gregorianBurialDate,
+    prayId: prayId ?? this.prayId,
+    ghuslMethod: ghuslMethod ?? this.ghuslMethod,
+    burialDestination: burialDestination ?? this.burialDestination,
+    cityId: cityId ?? this.cityId,
+    isBurialInsideDeathCity: isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
+  );
 }

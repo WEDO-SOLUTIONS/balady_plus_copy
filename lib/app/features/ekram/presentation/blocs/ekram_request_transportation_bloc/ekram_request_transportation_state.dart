@@ -47,7 +47,7 @@ class EkramRequestTransportationState extends Equatable {
   final LookUpItem? selectedHospital;
   final String? otherHospitalName;
   final LookUpItem? selectedNationality;
-  final List<DeceasedInfoDto>? deceasedInfoDto;
+  // final List<DeceasedInfoDto>? deceasedInfoDto;
   final FileDataItem? letter;
   final String? deceassedDOBGorgian;
   final String? burialDateGregorian;
@@ -111,7 +111,7 @@ class EkramRequestTransportationState extends Equatable {
       this.selectedHospital,
       this.otherHospitalName,
       this.selectedNationality,
-      this.deceasedInfoDto,
+      // this.deceasedInfoDto,
       this.requestDetailsModel,
       this.letter,
       this.editInfoSection});
@@ -160,7 +160,7 @@ class EkramRequestTransportationState extends Equatable {
     final LookUpItem? selectedHospital,
     final String? otherHospitalName,
     final LookUpItem? selectedNationality,
-    final List<DeceasedInfoDto>? deceasedInfoDto,
+    // final List<DeceasedInfoDto>? deceasedInfoDto,
     final bool? clearHospital,
     final FileDataItem? letter,
     final Nullable<String?>? deceassedDOBGorgian,
@@ -224,7 +224,7 @@ class EkramRequestTransportationState extends Equatable {
           ? null
           : selectedHospital ?? this.selectedHospital,
       selectedNationality: selectedNationality ?? this.selectedNationality,
-      deceasedInfoDto: deceasedInfoDto ?? this.deceasedInfoDto,
+      // deceasedInfoDto: deceasedInfoDto ?? this.deceasedInfoDto,
       letter: letter ?? this.letter,
       otherHospitalName: otherHospitalName ?? this.otherHospitalName,
       fullName: fullName ?? fullName,
@@ -283,7 +283,7 @@ class EkramRequestTransportationState extends Equatable {
         selectedDeathCountry,
         selectedHospital,
         selectedNationality,
-        deceasedInfoDto,
+        // deceasedInfoDto,
         letter,
         agreement,
         deceasedId,
