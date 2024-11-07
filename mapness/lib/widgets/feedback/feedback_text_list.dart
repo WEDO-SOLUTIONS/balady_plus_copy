@@ -23,6 +23,7 @@ class FeedbackTextListField extends StatefulWidget {
 
 class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   late final _inputs = List<String>.of(widget.field.oldValues);
+  late final _inputKeys = List<UniqueKey>.generate(_inputs.length, (i) => UniqueKey());
 
   late final _isRequired = widget.field.isRequired;
 
@@ -37,12 +38,14 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   void _addInput() {
     setState(() {
       _inputs.add('');
+      _inputKeys.add(UniqueKey());
     });
   }
 
   void _removeInput(int i) {
     setState(() {
       _inputs.removeAt(i);
+      _inputKeys.removeAt(i);
     });
   }
 
@@ -106,6 +109,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
               children: [
                 for (var i = 0; i < _inputs.length; i++) ...[
                   Row(
+                    key: _inputKeys[i],
                     children: [
                       Expanded(
                         child: FeedbackTextInput(
@@ -123,7 +127,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                           type: widget.field.type,
                         ),
                       ),
-                      if (_inputs.length > 1 && i != 0)
+                      if (i != 0)
                         Padding(
                           padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
                           child: AppButton.close(
