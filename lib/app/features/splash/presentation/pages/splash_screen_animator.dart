@@ -8,6 +8,11 @@ import '../../../../core/utils/constants/app_colors.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../widgets/splash_screen_animation.dart';
 
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+
+
 class SplashScreenAnimator extends StatefulWidget {
   final SplashScreenAnimation animation;
   final AnimationController controller;
@@ -36,17 +41,17 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
         height: double.maxFinite,
         child: Gif(
           image: AssetImage(image),
-          fps:10,
           fit: BoxFit.cover,
           autostart: Autostart.once,
           onFetchCompleted: () async {
             // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-            Future.delayed(const Duration(milliseconds: 3000)).then((e) {
+            Future.delayed(const Duration(milliseconds: 1300)).then((e) {
               sl<EntryPointCubit>().hideSplash();
               Navigator.of(context).pushNamedAndRemoveUntil(
                 RouteName.bottomNavigation,
-                (route) => false,
+                    (route) => false,
               );
+              slAuthentication<AuthenticationBloc>().add(CheckLoginAuthentication());
             });
           },
         ),
