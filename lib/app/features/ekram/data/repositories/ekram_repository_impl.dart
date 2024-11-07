@@ -323,9 +323,9 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getMosquesLookUp(int cityId, MosqueGhuslPlacesParams params) async {
+      getMosquesLookUp(int transportId,List<int> cityIds, MosqueGhuslPlacesParams params) async {
     try {
-      final data = await remoteDataSource.getMosquesLookUp(cityId, params);
+      final data = await remoteDataSource.getMosquesLookUp(transportId,cityIds, params);
 
       return Right(data);
     } on ServerException catch (error, stackTrace) {
@@ -343,9 +343,9 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>>
-      getLaundriesLookup(int cityId, MosqueGhuslPlacesParams params) async {
+      getLaundriesLookup(int transportId,List<int> cityIds, MosqueGhuslPlacesParams params) async {
     try {
-      final data = await remoteDataSource.getLaundriesLookUp(cityId, params);
+      final data = await remoteDataSource.getLaundriesLookUp(transportId,cityIds, params);
 
       return Right(data);
     } on ServerException catch (error, stackTrace) {

@@ -233,8 +233,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _changeTransportationNamesHandler(
       ChangeTransportationNameEvent e, Emitter emitter) async {
-    emitter(
-        state.copyWith(selectedTransportationName: e.item, errorMessage: ""));
+    emitter(state.copyWith(selectedtransportation: e.item, errorMessage: ""));
   }
 
   Future<void> _changeSpecialTransportReasonsHandler(
@@ -614,7 +613,7 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-        transportationNames: success.data?.result,
+        transportations: success.data?.result,
         errorMessage: "",
       ));
     });
@@ -622,7 +621,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _getLaundriesHandler(GetLandriesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getLaundires([e.cityId, e.params]);
+    final failureOrSuccess = await _getLaundires([e.transportId, e.params]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(

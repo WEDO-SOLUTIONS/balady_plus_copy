@@ -17,6 +17,6 @@ GetLaundriesLookup({required this.repository});
 @override
 Future<Either<Failure, ResponseBodyModel<List<LookUpItemLocationModel>>>> call(
 List<dynamic> params) async {
-return await repository.getLaundriesLookup(params[0], params[1]);
+return await repository.getLaundriesLookup(params[0], params[1], params[2]);
 }
 }
