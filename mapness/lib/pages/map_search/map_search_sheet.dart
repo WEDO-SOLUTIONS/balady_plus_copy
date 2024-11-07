@@ -126,7 +126,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       children: [
         Listener(
           behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) => _collapseBottomSheet(),
+          onPointerDown: (_) {
+            _unfocusSearchField();
+            _collapseBottomSheet();
+          },
         ),
         MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
         NotificationListener<ScrollNotification>(
@@ -296,8 +299,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       final goRouter = ref.read(goRouterProvider);
 
       if (goRouter.isCurrentRoute(SearchRoute.path)) {
-        _collapseBottomSheet();
         _unfocusSearchField();
+        _collapseBottomSheet();
       }
     });
   }
