@@ -916,6 +916,25 @@ class EkramRepositoryImpl implements EkramRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+  @override
+  Future<Either<Failure, ResponseBodyModel>> ekramTransportValidateSubmit(
+      int requestId) async {
+    try {
+      final data =
+          await remoteDataSource.ekramTransportValidateSubmit(requestId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 
   @override
   Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(

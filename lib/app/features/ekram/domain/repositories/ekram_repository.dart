@@ -154,6 +154,9 @@ abstract class EkramRepository {
   Future<Either<Failure, ResponseBodyModel>> saveDeathBurialInfo(
       int requestId, SaveDeathBurialInfoParams params);
 
+  Future<Either<Failure, ResponseBodyModel>> ekramTransportValidateSubmit(
+      int requestId);
+
   Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(
       int requestId, SaveDeceasedInfoParams params);
 
