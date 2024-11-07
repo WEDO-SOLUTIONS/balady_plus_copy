@@ -14,6 +14,7 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/get_mosques_look
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_prayers.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_special_transport_reasons_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_transportation_companies_lookup.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/save_death_burial_info.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/verify_deceased.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_verification_section.dart';
@@ -74,6 +75,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetCemetriesLookUp _getCemetries;
   final GetTransportationCompaniesLookUp _getTransportationNames;
   final GetLaundriesLookup _getLaundires;
+  final SaveDeathBurialInfo _saveDeathBurialInfo;
   final GetMosquesLookup _getMosques;
   final GetNationalities _getNationalities;
   final ApplyDeceasedTransport _applyDeceasedTransport;
@@ -96,6 +98,7 @@ class EkramRequestTransportationBloc extends Bloc<
   })  : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getHospitals = getHospitals,
         _getCemeteryTypesLookUp = getCemeteryTypesLookUp,
+        _saveDeathBurialInfo = SaveDeathBurialInfo(repository:sl()),
         _getCountreies = GetCountreies(repository: sl()),
         _getCemetries = GetCemetriesLookUp(repository: sl()),
         _getTransportationNames =
@@ -171,6 +174,7 @@ class EkramRequestTransportationBloc extends Bloc<
     on<SetApplicantInfoEvent>(_setApplicantInfoDataHanlder);
     on<getRequestDetailsEvent>(_getRequestDetailsHandler);
     on<saveDeceasedInfoEvent>(_saveDeceasedInfoHandler);
+    on<saveBurianDeathInfoEvent>(_saveDeceasedBurialInfoHandler);
 
     getCountries();
     getPrayers();
@@ -874,6 +878,34 @@ class EkramRequestTransportationBloc extends Bloc<
     var mainInfo = state.requestDetailsModel?.mainInfo;
     mainInfo?.transportCaseId = 3;
     final failureOrSuccess = await _saveDeceasedInfo([
+      state.requestId!,
+      SaveDeceasedInfoParams(mainInfo: mainInfo, deceasedInfo: deceasedInfo)
+    ]);
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+          isVerified: false));
+      return null;
+    }, (res) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        isVerified: true,
+        errorMessage: "",
+      ));
+      add(GoToNextPageEvent());
+    });
+  }
+  Future<void> _saveDeceasedBurialInfoHandler(
+      saveBurianDeathInfoEvent e, Emitter emitter) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+    var deceasedInfo = state.requestDetailsModel?.deceasedInfo;
+    deceasedInfo?.isMuslim ??= true;
+    deceasedInfo?.gender ??= "MALE";
+
+    var mainInfo = state.requestDetailsModel?.mainInfo;
+    mainInfo?.transportCaseId = 3;
+    final failureOrSuccess = await _saveDeathBurialInfo([
       state.requestId!,
       SaveDeceasedInfoParams(mainInfo: mainInfo, deceasedInfo: deceasedInfo)
     ]);

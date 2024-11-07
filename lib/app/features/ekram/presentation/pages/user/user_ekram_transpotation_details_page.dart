@@ -69,7 +69,7 @@ class _UsersEkramTransportationDetailsPageState
           getNationalities: sl(),
           applyDeceasedTransport: sl(),
           getCemeteryTypesLookUp: sl(),
-      )..add(getRequestDetailsEvent(requestId: "${params.requestId}")),//
+      )..add(getRequestDetailsEvent(requestId: params.requestId!)),//
 
       child: BlocConsumer<EkramRequestTransportationBloc, EkramRequestTransportationState>(
           listener: (context, state) {

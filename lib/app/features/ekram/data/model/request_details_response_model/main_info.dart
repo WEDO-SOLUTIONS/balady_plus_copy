@@ -13,13 +13,16 @@ class MainInfo {
     this.bodyRecipientInfo,
     this.needSpecialTransport,
     this.submitterInfo,
-     this.transportCaseName});
+     this.transportCaseName,
+     this.transportCaseId
+});
 
   MainInfo.fromJson(dynamic json) {
     submitterTypeId = json['submitterTypeId'];
     individualSubmitter = json['individualSubmitter'];
     submitterTypeName = json['submitterTypeName'];
     transportCaseName = json['transportCaseName'];
+    transportCaseId = json['transportCaseId'];
     bodyRecipientInfo = json['bodyRecipientInfo'] != null ? BodyRecipientInfo.fromJson(json['bodyRecipientInfo']) : null;
     needSpecialTransport = json['needSpecialTransport'];
     submitterInfo = json['submitterInfo'] != null ? SubmitterInfo.fromJson(json['submitterInfo']) : null;
@@ -28,6 +31,7 @@ class MainInfo {
   bool? individualSubmitter;
   String? submitterTypeName;
   String? transportCaseName;
+  int? transportCaseId;
   BodyRecipientInfo? bodyRecipientInfo;
   bool? needSpecialTransport;
   SubmitterInfo? submitterInfo;
@@ -38,12 +42,14 @@ class MainInfo {
     bool? individualSubmitter,
     String? submitterTypeName,
     String? transportCaseName,
+    int? transportCaseId,
     BodyRecipientInfo? bodyRecipientInfo,
     bool? needSpecialTransport,
     SubmitterInfo? submitterInfo,
   }) => MainInfo(  submitterTypeId: submitterTypeId ?? this.submitterTypeId,
     individualSubmitter: individualSubmitter ?? this.individualSubmitter,
     transportCaseName: transportCaseName??this.transportCaseName,
+    transportCaseId: transportCaseId??this.transportCaseId,
     submitterTypeName: submitterTypeName ?? this.submitterTypeName,
     bodyRecipientInfo: bodyRecipientInfo ?? this.bodyRecipientInfo,
     needSpecialTransport: needSpecialTransport ?? this.needSpecialTransport,
@@ -54,6 +60,7 @@ class MainInfo {
     map['submitterTypeId'] = submitterTypeId;
     map['individualSubmitter'] = individualSubmitter;
     map['submitterTypeName'] = submitterTypeName;
+    map['transportCaseId'] = transportCaseId;
     if (bodyRecipientInfo != null) {
       map['bodyRecipientInfo'] = bodyRecipientInfo?.toJson();
     }

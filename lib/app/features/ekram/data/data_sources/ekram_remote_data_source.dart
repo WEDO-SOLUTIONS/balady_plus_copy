@@ -2458,7 +2458,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
     try {
       response = await webService.dio.get(
-        ApiUrl.deceasedRequestDetails(requestId),
+        ApiUrl.deceasedRequestDetails("$requestId"),
         options: Options(
           headers: {
             /*"Authorization": token*/

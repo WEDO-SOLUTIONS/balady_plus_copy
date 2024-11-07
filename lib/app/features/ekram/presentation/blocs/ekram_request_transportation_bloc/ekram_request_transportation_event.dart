@@ -240,3 +240,6 @@ class getRequestDetailsEvent extends EkramRequestTransportationEvent {
 class saveDeceasedInfoEvent extends EkramRequestTransportationEvent {
   const saveDeceasedInfoEvent();
 }
+class saveBurianDeathInfoEvent extends EkramRequestTransportationEvent {
+  const saveBurianDeathInfoEvent();
+}
