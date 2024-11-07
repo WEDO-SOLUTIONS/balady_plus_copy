@@ -136,9 +136,9 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getPrayers();
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
-      int cityId, MosqueGhuslPlacesParams params);
+      int transportationId,List<int> cityIds, MosqueGhuslPlacesParams params);
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
-      int cityId, MosqueGhuslPlacesParams params);
+      int transportationId,List<int> cityIds, MosqueGhuslPlacesParams params);
   Future<ResponseBodyModel<List<LookUpItem>>>
       getSpecialTransportReasonsLookUp();
   Future<ResponseBodyModel<List<LookUpItem>>> getCemeteryTypesLookUp();
@@ -2877,11 +2877,12 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getLaundriesLookUp(
-      int cityId, MosqueGhuslPlacesParams params) async {
+      int transportId,List<int> cityIds, MosqueGhuslPlacesParams params) async {
     Response response;
 
     try {
-      response = await webService.dio.post(ApiUrl.ekramLaundries(cityId),
+      response = await webService.dio.post(ApiUrl.ekramLaundries(transportId),
+      data: {...cityIds},
           queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
@@ -2936,12 +2937,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<List<LookUpItemLocationModel>>> getMosquesLookUp(
-      int cityId, MosqueGhuslPlacesParams params) async {
+      int transportId, List<int> cityIds , MosqueGhuslPlacesParams params) async {
     Response response;
 
     try {
       response = await webService.dio
-          .post(ApiUrl.ekramMosques(cityId), queryParameters: params.toJson());
+          .post(ApiUrl.ekramMosques(transportId), 
+          data: {...cityIds},
+          queryParameters: params.toJson());
 
       var data = response.data["data"]?["result"];
 

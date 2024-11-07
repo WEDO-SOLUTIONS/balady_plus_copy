@@ -3,7 +3,7 @@ part of 'ekram_request_transportation_bloc.dart';
 class EkramRequestTransportationState extends Equatable {
   final String? errorMsg;
   final bool? isVerified;
-  final bool? isSpecialTransferNeeded ;
+  final bool? isSpecialTransferNeeded;
   final bool? isBurialInsideDeathCity;
   final List<LookUpItem>? nationalIdTypes;
   final bool isdeceasedInfoReadOnly;
@@ -29,7 +29,7 @@ class EkramRequestTransportationState extends Equatable {
   final List<LookUpItem>? cemetryTypeItems;
   final List<LookUpItem>? laundries;
   final List<LookUpItem>? mosques;
-  final List<LookUpItem>? transportationNames;
+  final List<LookUpItem>? transportations;
   final bool? agreement;
   final String? fullName;
   final String? mobileNumber;
@@ -37,7 +37,7 @@ class EkramRequestTransportationState extends Equatable {
   final String? relation;
   final String? deathLocation;
   final LookUpItem? selectedDeathCity;
-  final LookUpItem? selectedTransportationName;
+  final LookUpItem? selectedtransportation;
   final LookUpItem? selectedCemetry;
   final LookUpItem? selectedPrayer;
   final LookUpItem? selectedSpecialTransportReason;
@@ -93,7 +93,7 @@ class EkramRequestTransportationState extends Equatable {
       this.cemetryTypeItems,
       this.laundries,
       this.mosques,
-      this.transportationNames,
+      this.transportations,
       this.agreement,
       this.fullName,
       this.mobileNumber,
@@ -101,7 +101,7 @@ class EkramRequestTransportationState extends Equatable {
       this.relation,
       this.deathLocation,
       this.selectedDeathCity,
-      this.selectedTransportationName,
+      this.selectedtransportation,
       this.selectedCemetry,
       this.selectedPrayer,
       this.selectedSpecialTransportReason,
@@ -148,9 +148,9 @@ class EkramRequestTransportationState extends Equatable {
     final List<LookUpItem>? cemetryTypeItems,
     final List<LookUpItem>? laundries,
     final List<LookUpItem>? mosques,
-    final List<LookUpItem>? transportationNames,
+    final List<LookUpItem>? transportations,
     final LookUpItem? selectedDeathCity,
-    final LookUpItem? selectedTransportationName,
+    final LookUpItem? selectedtransportation,
     final LookUpItem? selectedCemetry,
     final LookUpItem? selectedPrayer,
     final LookUpItem? selectedSpecialTransportReason,
@@ -208,10 +208,10 @@ class EkramRequestTransportationState extends Equatable {
       cemetryTypeItems: cemetryTypeItems ?? this.cemetryTypeItems,
       laundries: laundries ?? this.laundries,
       mosques: mosques ?? this.mosques,
-      transportationNames: transportationNames ?? this.transportationNames,
+      transportations: transportations ?? this.transportations,
       selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
-      selectedTransportationName:
-          selectedTransportationName ?? this.selectedTransportationName,
+      selectedtransportation:
+          selectedtransportation ?? this.selectedtransportation,
       selectedCemetry: selectedCemetry ?? this.selectedCemetry,
       selectedPrayer: selectedPrayer ?? this.selectedPrayer,
       selectedSpecialTransportReason:
@@ -274,7 +274,7 @@ class EkramRequestTransportationState extends Equatable {
         relation,
         deathLocation,
         selectedDeathCity,
-        selectedTransportationName,
+        selectedtransportation,
         selectedCemetry,
         selectedPrayer,
         selectedSpecialTransportReason,
@@ -299,7 +299,7 @@ class EkramRequestTransportationState extends Equatable {
         cemetryTypeItems,
         laundries,
         mosques,
-        transportationNames,
+        transportations,
         bodyArrivalCities
       ];
 

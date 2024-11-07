@@ -446,7 +446,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             deathCityId:
                                                 state.selectedDeathCity?.id,
                                             burialCityId:
-                                                state.selectedBurialCity?.id,
+                                                state.selectedBurialCity?.id ??
+                                                    state.selectedDeathCity?.id,
                                             specialTransportReasonId: state
                                                 .selectedSpecialTransportReason
                                                 ?.id,
@@ -470,8 +471,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: ("cemeteryName").tr(),
                             ),
                             CustomLookUpLongDialog(
-                              items: state.transportationNames ?? [],
-                              value: state.selectedTransportationName,
+                              items: state.transportations ?? [],
+                              value: state.selectedtransportation,
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -505,7 +506,12 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             burialDate: state.burialDateHijri,
                                             gender: state.requestDetailsModel
                                                 ?.deceasedInfo?.gender),
-                                        cityId: state.selectedBurialCity?.id));
+                                        cityIds: [
+                                          state.selectedDeathCity?.id,
+                                          state.selectedBurialCity?.id
+                                        ],
+                                        transportId:
+                                            state.selectedtransportation?.id));
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
@@ -528,7 +534,12 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             burialDate: state.burialDateHijri,
                                             gender: state.requestDetailsModel
                                                 ?.deceasedInfo?.gender),
-                                        cityId: state.selectedBurialCity?.id));
+                                        cityIds: [
+                                          state.selectedDeathCity?.id,
+                                          state.selectedBurialCity?.id
+                                        ],
+                                        transportId:
+                                            state.selectedtransportation?.id));
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
