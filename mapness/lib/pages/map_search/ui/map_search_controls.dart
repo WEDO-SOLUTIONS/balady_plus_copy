@@ -14,7 +14,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class MapSearchSheetControls extends ConsumerWidget {
+class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
   final double? currentSize;
   final double collapsedSize;
@@ -29,40 +29,51 @@ class MapSearchSheetControls extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  MapSearchSheetControlsState createState() => MapSearchSheetControlsState();
+}
+
+class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> {
+
+  void _searchInArea() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.searchKeys.searchInThisArea,
+      group: MetricsConstants.searchTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    ref.read(searchInRectProvider.notifier).update();
+    ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final double screenHeight = MediaQuery.of(context).size.height;
 
     bool hideControls = false;
     double bottomPadding = 16;
 
     // Hide controls when the bottom sheet is expanded
-
-    final locationBottomSheet = (currentSize ?? 0) > 0.75;
+    final locationBottomSheet = (widget.currentSize ?? 0) > 0.75;
     hideControls = locationBottomSheet;
 
-    final double padding = (currentSize ?? 0) * screenHeight;
+    final double padding = (widget.currentSize ?? 0) * screenHeight;
 
     // Update Padding for the bottom sheet size
-
-    if ((currentSize ?? 0) > 0.28 && (currentSize ?? 0) < 0.4) {
+    if ((widget.currentSize ?? 0) > 0.28 && (widget.currentSize ?? 0) < 0.4) {
       // for a new feature you need to change and replace the magic number, now these numbers are taken by taking into account all the indents, the height of the bottom nav bar
-      bottomPadding = 16 + padding - screenPadding;
+      bottomPadding = 16 + padding - MapSearchSheetControls.screenPadding;
     } else {
       bottomPadding = 16;
     }
 
-    final visibleSearchArea = ref.watch(searchInRectProvider.select((value) => value.$2));
-
-    void _searchInArea() {
-      Metrics.logEventAdvanced(
-        MetricsConstants.searchKeys.searchInThisArea,
-        group: MetricsConstants.searchTag,
-        action: MetricAction.tap.toString(),
-      );
-
-      ref.read(searchInRectProvider.notifier).update();
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).searchInThisArea();
-    }
+    bool visibleSearchArea = false;
+    ref.watch(searchInRectProvider.select((value) {
+      if (visibleSearchArea != value.$2) {
+        setState(() {
+          visibleSearchArea = value.$2;
+        });
+      }
+    }));
 
     return IgnorePointer(
       ignoring: hideControls,
@@ -117,7 +128,7 @@ class MapSearchSheetControls extends ConsumerWidget {
                   ),
                 ),
               ),
-              SizedBox(height: collapsedSize),
+              SizedBox(height: widget.collapsedSize),
             ],
           ),
         ),
@@ -125,3 +136,4 @@ class MapSearchSheetControls extends ConsumerWidget {
     );
   }
 }
+
