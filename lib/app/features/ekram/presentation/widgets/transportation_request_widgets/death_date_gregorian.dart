@@ -7,28 +7,23 @@ import '../../blocs/ekram_add_deceased/ekram_add_deceased_bloc.dart';
 import '../ekram_book_cemetry/gorgian_date_widget.dart';
 
 class DeathDateGregorian extends StatelessWidget {
-  const DeathDateGregorian({super.key});
+  final Function(String?) onChanged;
+  String? currentDate;
+  bool ?isDeathDatesDisabled;
+  DeathDateGregorian({super.key,required this.onChanged,this.currentDate,this.isDeathDatesDisabled});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EkramRequestTransportationBloc,
-        EkramRequestTransportationState>(builder: (context, state) {
-      DateTime today = DateTime.now();
-      DateTime tomrrow = DateTime.now().add(Duration(days: 1));
-
-      return GorgianCalendarDateWidget(
-        minValue: today,
-        maxValue: tomrrow,
-        currentVlaue: state.deathDateGregorian,
-        isDisabled: state.isDeathDatesDisabled,
-        fieldName: Helpers.translatingWord("death_date_gorgian"),
-        isMandatory: true,
-        onChanged: (String? date) {
-          context
-              .read<EkramRequestTransportationBloc>()
-              .add(ChangeDeathDateEvent(gorgianDate: date));
-        },
-      );
-    });
+    DateTime today = DateTime.now();
+    DateTime tomrrow = DateTime.now().add(Duration(days: 1));
+    return GorgianCalendarDateWidget(
+      minValue: today,
+      maxValue: tomrrow,
+      currentVlaue: currentDate,
+      isDisabled: isDeathDatesDisabled??false,
+      fieldName: Helpers.translatingWord("death_date_gorgian"),
+      isMandatory: true,
+      onChanged: onChanged,
+    );
   }
 }

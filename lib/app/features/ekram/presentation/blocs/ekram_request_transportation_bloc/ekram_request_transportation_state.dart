@@ -47,7 +47,7 @@ class EkramRequestTransportationState extends Equatable {
   final LookUpItem? selectedHospital;
   final String? otherHospitalName;
   final LookUpItem? selectedNationality;
-  final List<DeceasedInfoDto>? deceasedInfoDto;
+  // final List<DeceasedInfoDto>? deceasedInfoDto;
   final FileDataItem? letter;
   final String? deceassedDOBGorgian;
   final String? burialDateGregorian;
@@ -115,7 +115,7 @@ class EkramRequestTransportationState extends Equatable {
       this.selectedHospital,
       this.otherHospitalName,
       this.selectedNationality,
-      this.deceasedInfoDto,
+      // this.deceasedInfoDto,
       this.requestDetailsModel,
       this.letter,
       this.editInfoSection});
@@ -164,7 +164,7 @@ class EkramRequestTransportationState extends Equatable {
     final LookUpItem? selectedHospital,
     final String? otherHospitalName,
     final LookUpItem? selectedNationality,
-    final List<DeceasedInfoDto>? deceasedInfoDto,
+    // final List<DeceasedInfoDto>? deceasedInfoDto,
     final bool? clearHospital,
     final FileDataItem? letter,
     final Nullable<String?>? deceassedDOBGorgian,
@@ -230,7 +230,7 @@ class EkramRequestTransportationState extends Equatable {
           ? null
           : selectedHospital ?? this.selectedHospital,
       selectedNationality: selectedNationality ?? this.selectedNationality,
-      deceasedInfoDto: deceasedInfoDto ?? this.deceasedInfoDto,
+      // deceasedInfoDto: deceasedInfoDto ?? this.deceasedInfoDto,
       letter: letter ?? this.letter,
       otherHospitalName: otherHospitalName ?? this.otherHospitalName,
       fullName: fullName ?? fullName,
@@ -291,7 +291,7 @@ class EkramRequestTransportationState extends Equatable {
         selectedDeathCountry,
         selectedHospital,
         selectedNationality,
-        deceasedInfoDto,
+        // deceasedInfoDto,
         letter,
         agreement,
         deceasedId,
@@ -334,6 +334,53 @@ class EkramRequestTransportationState extends Equatable {
     return true;
   }
 
+
+
+
+
+
+  LookUpItem? getCityById(int? id) {
+
+    if (cities != null && id != null) {
+      for (int index = 0; index < cities!.length; index++) {
+        if (cities![index].id == id) {
+          return cities![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  LookUpItem? getHosptialById(int? id) {
+
+    if (hospitals != null && id != null) {
+      for (int index = 0; index < hospitals!.length; index++) {
+        if (hospitals![index].id == id) {
+          return hospitals![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+
+
+  LookUpItem? getCountryById(int? id) {
+    id ??= 1;
+    if (countries != null) {
+      for (int index = 0; index < countries!.length; index++) {
+        if (countries![index].id == id) {
+          return countries![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+
   LookUpItem? getNationalityById(int? id) {
     if (nationalities != null && id != null) {
       for (int index = 0; index < nationalities!.length; index++) {
@@ -345,6 +392,7 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
+
 
   bool validateDeceasedInfoSection(bool ShowErrorMessage) {
     if (requestDetailsModel != null) {

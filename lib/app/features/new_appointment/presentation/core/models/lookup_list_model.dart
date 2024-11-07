@@ -83,7 +83,7 @@ class LookUpItem {
       id: json["id"] == null ? null : json["id"],
       name: json["name"] == null ? null : json["name"],
       fillInfo: json["fillInfo"],
-      isOther: json["isOther"],
+      isOther: json["other"],
       localCountry: json["localCountry"]);
 
   Map<String, dynamic> toJson() => {

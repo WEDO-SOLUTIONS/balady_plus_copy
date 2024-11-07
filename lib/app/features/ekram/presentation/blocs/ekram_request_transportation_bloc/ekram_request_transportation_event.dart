@@ -42,9 +42,10 @@ class ChangeCemetryTypeEvent extends EkramRequestTransportationEvent {
   const ChangeCemetryTypeEvent({this.item});
 }
 
-class ChangeDeathCountryEvent extends EkramRequestTransportationEvent {
-  final LookUpItem item;
-  const ChangeDeathCountryEvent({required this.item});
+class ChangeDeathInfoEvent extends EkramRequestTransportationEvent {
+  final DeathInfo? deathInfo ;
+
+  const ChangeDeathInfoEvent({required this.deathInfo});
 }
 
 class ChangeDeathCityEvent extends EkramRequestTransportationEvent {
@@ -110,8 +111,8 @@ class GetNationalitiesEvent extends EkramRequestTransportationEvent {
 }
 
 class GetHospitalsEvent extends EkramRequestTransportationEvent {
-  final LookUpItem city;
-  const GetHospitalsEvent({required this.city});
+  final int? cityId;
+  const GetHospitalsEvent({required this.cityId});
 }
 
 class GetMadinahEmirateApprovalStatusEvent extends EkramRequestTransportationEvent {
@@ -221,10 +222,18 @@ class ChangeIsNeedSpecialTransferEvent extends EkramRequestTransportationEvent {
   const ChangeIsNeedSpecialTransferEvent({this.isNeeded});
 }
 
-class ChangeIsBurialInsideDeathCityEvent
-    extends EkramRequestTransportationEvent {
+class ChangeIsBurialInsideDeathCityEvent extends EkramRequestTransportationEvent {
   final bool? isBurialInsideDeathCity;
+
   const ChangeIsBurialInsideDeathCityEvent({this.isBurialInsideDeathCity});
+}
+class setBurialInfoEvent extends EkramRequestTransportationEvent {
+  final BurialInfo? burialInfo;
+  setBurialInfoEvent({this.burialInfo});
+}
+class setTransportInfoEvent extends EkramRequestTransportationEvent {
+  final TransportInfo? transportInfo;
+  setTransportInfoEvent({this.transportInfo});
 }
 
 class ChangeMosqueEvent extends EkramRequestTransportationEvent {
@@ -264,3 +273,5 @@ class saveDeceasedInfoEvent extends EkramRequestTransportationEvent {
 class saveBurianDeathInfoEvent extends EkramRequestTransportationEvent {
   const saveBurianDeathInfoEvent();
 }
+
+
