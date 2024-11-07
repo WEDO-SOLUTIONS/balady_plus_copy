@@ -1,8 +1,9 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
-    show  BlocProvider, MultiBlocProvider;
+    show BlocProvider, MultiBlocProvider;
 
 import '../../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -18,8 +19,25 @@ import 'mapness_page.dart';
 
 import 'package:balady_authorization/auth_package.dart';
 
-class BottomNavigationPage extends StatelessWidget {
+class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
+
+  @override
+  State<BottomNavigationPage> createState() => _BottomNavigationPageState();
+}
+
+class _BottomNavigationPageState extends State<BottomNavigationPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) {
+        Navigator.of(context).pushNamed(
+          RouteName.splashScreen,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

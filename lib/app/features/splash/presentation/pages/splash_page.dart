@@ -1,7 +1,4 @@
-import 'package:balady_authorization/auth_package.dart';
-import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_screen_animator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
@@ -91,17 +88,6 @@ class _SplashPageState extends State<SplashPage>
 
   @override
   Widget build(BuildContext context) {
-    return BaladyAuthorizationWidget(
-      authenticated: (LoginDataModel data) {
-        sl<EntryPointCubit>().onLoginV2(data: data);
-      },
-      unAuthenticatedState: (data) {
-        sl<EntryPointCubit>().clearAuth();
-      },
-      linkWithNafaz: () {
-        sl<EntryPointCubit>().onLoginNfaaz();
-      },
-      child: SplashScreenAnimator(controller: _controller),
-    );
+    return SplashScreenAnimator(controller: _controller);
   }
 }
