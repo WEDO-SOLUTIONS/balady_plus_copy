@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
@@ -15,70 +17,78 @@ class AgreementSection extends StatelessWidget {
     return BlocBuilder<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
       builder: (context, state) {
-        return Card(
-          elevation: 0.0,
-          color: Color(0x80E6EFEF),
-          margin: EdgeInsets.all(20),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      SvgPicture.asset(IconPath.vdSummuryPledge),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Text("vd_pledges".tr())
-                    ],
-                  ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  CustomTextWidget(
-                    ("pledges_condtions").tr().replaceAll(
-                        "{}", CommonProperties.userInfo?.getFullName() ?? ""),
-                    fontColor: AppColor.blackModern700Light,
-                    maxLines: 90,
-                    height: 1.3,
-                    textAlign: TextAlign.start,
-                  ),
-                  CustomVerticalSpace(height: 8),
-                  Container(
-                      padding: EdgeInsets.all(12),
-                      decoration:
-                          BoxDecoration(borderRadius: BorderRadius.circular(8)),
-                      child: Row(
-                        children: [
-                          Checkbox(
-                            value: state.agreement ?? false,
-                            activeColor: AppColor.primary900Light,
-                            onChanged: (newVal) {
-                              context
-                                  .read<EkramRequestTransportationBloc>()
-                                  .add(ChangeAgreementEvent(isagree: newVal));
-                            },
-                          ),
-                          Flexible(
-                            child: CustomTextWidget(
-                              ("vd_consent_check").tr(),
-                              fontColor: AppColor.primary700Light,
-                              fontSize: 12,
-                              maxLines: 10,
-                              fontWeight: AppFontWeight.semiBold,
-                              height: 1.3,
+        return Column(
+          children: [
+            Expanded(
+              child: Card(
+                elevation: 0.0,
+                color: Colors.white,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Container(
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            SvgPicture.asset(IconPath.vdSummuryPledge),
+                            SizedBox(
+                              width: 10,
                             ),
+                            Text("vd_pledges".tr())
+                          ],
+                        ),
+                        CustomVerticalSpace(height: 8),
+                        Container(
+                          padding: EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              color: Color(0x80E6EFEF)),
+                          child: Row(
+                            children: [
+                              Checkbox(
+                                value: state.agreement ?? false,
+                                activeColor: AppColor.primary900Light,
+                                onChanged: (newVal) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(ChangeAgreementEvent(
+                                          isagree: newVal));
+                                },
+                              ),
+                              Flexible(
+                                child: CustomTextWidget(
+                                  ("pledges_condtions").tr(),
+                                  fontColor: AppColor.gray,
+                                  fontSize: 12,
+                                  maxLines: 10,
+                                  fontWeight: AppFontWeight.semiBold,
+                                  height: 1.3,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ))
-                ],
+                        ),
+                        Spacer(),
+                        SafeArea(
+                          child: ElevatedButtonWidget.primaryCustom(
+                            onPressed: () async {
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(RouteName.ekramSuccessScreen,
+                                      arguments: state.requestId);
+                            },
+                            text: "ekram_transportation_apply".tr(),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         );
       },
     );

@@ -19,6 +19,7 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/get_transportati
 import 'package:balady_plus/app/features/ekram/domain/use_cases/save_death_burial_info.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/verify_deceased.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/agreement_section.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/deceased_verification_section.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_page_view/emirate_approval_info_section.dart';
 import 'package:balady_plus/app/features/ekram_inquiry_service/domain/use_cases/get_ekram_identity_types.dart';
@@ -58,7 +59,6 @@ import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_request_details.dart';
 import '../../../domain/use_cases/save_deceased_info.dart';
 
-
 part 'ekram_request_transportation_event.dart';
 
 part 'ekram_request_transportation_state.dart';
@@ -70,6 +70,7 @@ class EkramRequestTransportationBloc extends Bloc<
   PageController controller = PageController();
   // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
+    AgreementSection(),
     DeceasedVerificationSection(),
     DeceasedInfoSection(),
     const ApplicantInfoSection(),
@@ -106,7 +107,7 @@ class EkramRequestTransportationBloc extends Bloc<
   })  : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getHospitals = getHospitals,
         _getCemeteryTypesLookUp = getCemeteryTypesLookUp,
-        _saveDeathBurialInfo = SaveDeathBurialInfo(repository:sl()),
+        _saveDeathBurialInfo = SaveDeathBurialInfo(repository: sl()),
         _getCountreies = GetCountreies(repository: sl()),
         _getCemetries = GetCemetriesLookUp(repository: sl()),
         _getTransportationNames =
@@ -151,7 +152,8 @@ class EkramRequestTransportationBloc extends Bloc<
     // on<GetNationalitiesEvent>(_getNationalitiesHandler);
 
     on<GetHospitalsEvent>(_getHospitalsHandler);
-    on<GetMadinahEmirateApprovalStatusEvent>(_getMadinahEmirateApprovalStatusHandler);
+    on<GetMadinahEmirateApprovalStatusEvent>(
+        _getMadinahEmirateApprovalStatusHandler);
     on<GetCemetriesEvent>(_getCemetriesHandler);
     on<GetTransportationNamesEvent>(_getTransportationNamesHandler);
     on<GetLandriesEvent>(_getLaundriesHandler);
@@ -191,7 +193,6 @@ class EkramRequestTransportationBloc extends Bloc<
     on<setTransportInfoEvent>(_changeTansportInfoHandler);
     on<setCemtryInfoEvent>(_changeCemtryInfoHandler);
 
-
     getCountries();
     getPrayers();
     getNationalitiesHandler();
@@ -212,7 +213,6 @@ class EkramRequestTransportationBloc extends Bloc<
       relation: e.text,
     ));
   }
-
 
   Future<void> _changeCityHandler(
       ChangeDeathCityEvent e, Emitter emitter) async {
@@ -246,8 +246,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<void> _changeTransportationNamesHandler(
       ChangeTransportationNameEvent e, Emitter emitter) async {
-    emitter(
-        state.copyWith(selectedtransportation: e.item, errorMessage: ""));
+    emitter(state.copyWith(selectedtransportation: e.item, errorMessage: ""));
   }
 
   Future<void> _changeSpecialTransportReasonsHandler(
@@ -443,7 +442,8 @@ class EkramRequestTransportationBloc extends Bloc<
       GetMadinahEmirateApprovalStatusEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getMadinahEmirateApprovalStatus([e.cemetryId,e.id,e.idType]);
+    final failureOrSuccess =
+        await _getMadinahEmirateApprovalStatus([e.cemetryId, e.id, e.idType]);
 
     failureOrSuccess.fold((failure) {
       print("failure $failure");
@@ -455,8 +455,8 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-madinahEmirateApprovalStatus: success.data!.result!.approvalStatusName!,
-madinahEmirateApprovalDate: success.data!.result!.approvalDate,
+        madinahEmirateApprovalStatus: success.data!.result!.approvalStatusName!,
+        madinahEmirateApprovalDate: success.data!.result!.approvalDate,
         errorMessage: "",
       ));
     });
@@ -930,6 +930,7 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
       add(GoToNextPageEvent());
     });
   }
+
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
@@ -1008,110 +1009,89 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
         requestDetailsModel: params));
   }
 
-  Future<void> _changeDeathandBurialHandler(ChangeDeathInfoEvent e, Emitter emitter) async {
-
-
-
+  Future<void> _changeDeathandBurialHandler(
+      ChangeDeathInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(
-      deathInfo: DeathInfo(countryId: 1),);
+      deathInfo: DeathInfo(countryId: 1),
+    );
 
     DeathInfo info = params.deathInfo!;
 
     info = info.copyWith(
         deathDate: e.deathInfo?.deathDate,
         gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
-        countryId: e.deathInfo?.countryId?? (info.countryId ?? 1),
+        countryId: e.deathInfo?.countryId ?? (info.countryId ?? 1),
         cityId: e.deathInfo?.cityId,
         corpseArrivalCityId: e.deathInfo?.corpseArrivalCityId,
-        cityOther:e.deathInfo?.cityOther ,
+        cityOther: e.deathInfo?.cityOther,
         hospitalId: e.deathInfo?.hospitalId,
         showHospitalOther: e.deathInfo?.showHospitalOther,
         hospitalOther: e.deathInfo?.hospitalOther,
-        caseContagious: e.deathInfo?.caseContagious
-    );
+        caseContagious: e.deathInfo?.caseContagious);
 
     params = params.copyWith(deathInfo: info);
 
-
     emitter(state.copyWith(
-        status: BlocStatus.success,
-        requestDetailsModel: params));
-
-
+        status: BlocStatus.success, requestDetailsModel: params));
   }
 
-
-
-  Future<void> _changeBurialInfoHandler(setBurialInfoEvent e, Emitter emitter) async {
-
+  Future<void> _changeBurialInfoHandler(
+      setBurialInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
-    params ??= RequestDetailsResponseModel(burialInfo: BurialInfo(isBurialInsideDeathCity:true));
+    params ??= RequestDetailsResponseModel(
+        burialInfo: BurialInfo(isBurialInsideDeathCity: true));
     BurialInfo info = params.burialInfo!;
     int? cityID;
-    if(e.burialInfo?.isBurialInsideDeathCity != false) {
+    if (e.burialInfo?.isBurialInsideDeathCity != false) {
       cityID = getBurialCityId();
     }
 
     info = info.copyWith(
-      isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity??true,
-      cityId: e.burialInfo?.isBurialInsideDeathCity == false? e.burialInfo?.cityId:cityID??-1,
-      burialDate: e.burialInfo?.burialDate,
-      gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
-      prayId: e.burialInfo?.prayId,
-      burialDestination: e.burialInfo?.burialDestination
-
-
-    );
+        isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ?? true,
+        cityId: e.burialInfo?.isBurialInsideDeathCity == false
+            ? e.burialInfo?.cityId
+            : cityID ?? -1,
+        burialDate: e.burialInfo?.burialDate,
+        gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
+        prayId: e.burialInfo?.prayId,
+        burialDestination: e.burialInfo?.burialDestination);
 
     params = params.copyWith(burialInfo: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success,
-        requestDetailsModel: params));
-
-
+        status: BlocStatus.success, requestDetailsModel: params));
   }
 
-  Future<void> _changeCemtryInfoHandler(setCemtryInfoEvent e, Emitter emitter) async {
-
+  Future<void> _changeCemtryInfoHandler(
+      setCemtryInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(cemeteryData: CemeteryData());
 
     CemeteryData info = params.cemeteryData!;
 
-    info = info.copyWith(
-    );
+    info = info.copyWith();
 
     params = params.copyWith(cemeteryData: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success,
-        requestDetailsModel: params));
-
-
+        status: BlocStatus.success, requestDetailsModel: params));
   }
 
-  Future<void> _changeTansportInfoHandler(setTransportInfoEvent e, Emitter emitter) async {
-
+  Future<void> _changeTansportInfoHandler(
+      setTransportInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(transportInfo: TransportInfo());
 
     TransportInfo info = params.transportInfo!;
 
-    info = info.copyWith(
-    );
+    info = info.copyWith();
 
     params = params.copyWith(transportInfo: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success,
-        requestDetailsModel: params));
-
-
+        status: BlocStatus.success, requestDetailsModel: params));
   }
-
-
 
   bool isScreenEditable(RequestDetailsResponseModel? res) {
     if (res?.deceasedInfo?.deceasedDataSource == null ||
@@ -1122,29 +1102,22 @@ madinahEmirateApprovalDate: success.data!.result!.approvalDate,
     }
   }
 
-  int? getBurialCityId(){
+  int? getBurialCityId() {
     int? burialCityId;
 
-      DeathInfo? deathInfo = state.requestDetailsModel?.deathInfo;
-      if(deathInfo != null && deathInfo.countryId != null)
-      {
-        if(deathInfo.countryId==1 && deathInfo.cityId != null)
-        {
-          burialCityId= deathInfo.cityId;
-        }
-        else  if(deathInfo.countryId !=1 && deathInfo.corpseArrivalCityId != null)
-        {
-          burialCityId= deathInfo.corpseArrivalCityId;
-        }
+    DeathInfo? deathInfo = state.requestDetailsModel?.deathInfo;
+    if (deathInfo != null && deathInfo.countryId != null) {
+      if (deathInfo.countryId == 1 && deathInfo.cityId != null) {
+        burialCityId = deathInfo.cityId;
+      } else if (deathInfo.countryId != 1 &&
+          deathInfo.corpseArrivalCityId != null) {
+        burialCityId = deathInfo.corpseArrivalCityId;
       }
-      if(burialCityId == null)
-        {
-          CommonFunctions.showError("chosedeathcity".tr());
-        }
+    }
+    if (burialCityId == null) {
+      CommonFunctions.showError("chosedeathcity".tr());
+    }
 
-      return burialCityId;
-
-
+    return burialCityId;
   }
-
 }
