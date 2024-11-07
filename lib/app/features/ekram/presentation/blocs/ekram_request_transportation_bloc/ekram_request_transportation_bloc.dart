@@ -51,7 +51,6 @@ import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_request_details.dart';
 import '../../../domain/use_cases/save_deceased_info.dart';
 
-
 part 'ekram_request_transportation_event.dart';
 
 part 'ekram_request_transportation_state.dart';
@@ -98,7 +97,7 @@ class EkramRequestTransportationBloc extends Bloc<
   })  : _getEkramIdentityTypes = GetEkramIdentityTypes(repository: sl()),
         _getHospitals = getHospitals,
         _getCemeteryTypesLookUp = getCemeteryTypesLookUp,
-        _saveDeathBurialInfo = SaveDeathBurialInfo(repository:sl()),
+        _saveDeathBurialInfo = SaveDeathBurialInfo(repository: sl()),
         _getCountreies = GetCountreies(repository: sl()),
         _getCemetries = GetCemetriesLookUp(repository: sl()),
         _getTransportationNames =
@@ -615,7 +614,7 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-        cemetries: success.data?.result,
+        transportationNames: success.data?.result,
         errorMessage: "",
       ));
     });
@@ -871,15 +870,12 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<void> _saveDeceasedInfoHandler(
       saveDeceasedInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    var deceasedInfo = state.requestDetailsModel?.deceasedInfo;
-    deceasedInfo?.isMuslim ??= true;
-    deceasedInfo?.gender ??= "MALE";
 
-    var mainInfo = state.requestDetailsModel?.mainInfo;
-    mainInfo?.transportCaseId = 3;
     final failureOrSuccess = await _saveDeceasedInfo([
       state.requestId!,
-      SaveDeceasedInfoParams(mainInfo: mainInfo, deceasedInfo: deceasedInfo)
+      SaveDeceasedInfoParams(
+          mainInfo: state.requestDetailsModel?.mainInfo,
+          deceasedInfo: state.requestDetailsModel?.deceasedInfo)
     ]);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
@@ -896,15 +892,14 @@ class EkramRequestTransportationBloc extends Bloc<
       add(GoToNextPageEvent());
     });
   }
+
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
     var deceasedInfo = state.requestDetailsModel?.deceasedInfo;
-    deceasedInfo?.isMuslim ??= true;
-    deceasedInfo?.gender ??= "MALE";
 
     var mainInfo = state.requestDetailsModel?.mainInfo;
-    mainInfo?.transportCaseId = 3;
+
     final failureOrSuccess = await _saveDeathBurialInfo([
       state.requestId!,
       SaveDeceasedInfoParams(mainInfo: mainInfo, deceasedInfo: deceasedInfo)
@@ -940,8 +935,8 @@ class EkramRequestTransportationBloc extends Bloc<
         secondName: e.item?.secondName,
         thirdName: e.item?.thirdName,
         fourthName: e.item?.fourthName,
-        isMuslim: e.item?.isMuslim,
-        gender: e.item?.gender);
+        isMuslim: e.item?.isMuslim ?? true,
+        gender: e.item?.gender ?? "MALE");
     params = params.copyWith(deceasedInfo: info);
 
     emitter(state.copyWith(
@@ -955,8 +950,7 @@ class EkramRequestTransportationBloc extends Bloc<
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(
         deceasedInfo: DeceasedInfo(gender: "MALE", isMuslim: true),
-        mainInfo: MainInfo());
-
+        mainInfo: MainInfo(transportCaseId: 3));
     MainInfo info = params.mainInfo!;
     SubmitterInfo submitter = SubmitterInfo(
         fullName: state.fullName,
@@ -965,6 +959,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
     info = info.copyWith(
       submitterInfo: submitter,
+      transportCaseId: 3,
     );
     params = params.copyWith(mainInfo: info);
 

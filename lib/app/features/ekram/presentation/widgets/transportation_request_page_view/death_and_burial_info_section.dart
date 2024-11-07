@@ -373,7 +373,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             deathCityId:
                                                 state.selectedDeathCity?.id,
                                             burialCityId:
-                                                state.selectedBurialCity?.id,
+                                                state.selectedBurialCity?.id ??
+                                                    state.selectedDeathCity?.id,
                                             specialTransportReasonId: state
                                                 .selectedSpecialTransportReason
                                                 ?.id,
