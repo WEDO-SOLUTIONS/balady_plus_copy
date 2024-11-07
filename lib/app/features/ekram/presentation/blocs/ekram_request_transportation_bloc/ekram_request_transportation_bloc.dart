@@ -4,9 +4,7 @@ import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart'
 import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
-import 'package:balady_plus/app/features/ekram/domain/entities/get_cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetery_types_lookup.dart';
-import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_launduries_lookup.dart';
@@ -57,6 +55,7 @@ import '../../../../../core/utils/nullable.dart';
 import '../../../domain/use_cases/get_madinah_emirate_approval_statue.dart';
 import '../../../domain/use_cases/get_request_details.dart';
 import '../../../domain/use_cases/save_deceased_info.dart';
+import '../../widgets/ekram_book_cemetry/agreement_section.dart';
 
 
 part 'ekram_request_transportation_event.dart';
@@ -70,11 +69,13 @@ class EkramRequestTransportationBloc extends Bloc<
   PageController controller = PageController();
   // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
+     AgreementSection(),
     DeceasedVerificationSection(),
     DeceasedInfoSection(),
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
+
   ];
 
   final GetCemeteryTypesLookUp _getCemeteryTypesLookUp;
