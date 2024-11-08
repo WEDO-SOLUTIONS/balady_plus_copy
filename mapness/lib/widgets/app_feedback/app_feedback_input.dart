@@ -12,6 +12,7 @@ class AppFeedbackInput extends HookWidget {
   const AppFeedbackInput({required this.textController, this.isValid, super.key});
 
   static const _initMaxLines = 4;
+  static const _maxCharsAllowed = 1000;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class AppFeedbackInput extends HookWidget {
 
       maxLines.value = lines > _initMaxLines ? lines : _initMaxLines;
 
-      isValid?.call(textController.text.isNotEmpty && textController.text.length <= 1000);
+      isValid?.call(textController.text.isNotEmpty && textController.text.length <= _maxCharsAllowed);
     }
 
     useEffect(() {
@@ -60,8 +61,8 @@ class AppFeedbackInput extends HookWidget {
                   autofocus: true,
                   hintText: context.l10n.appFeedbackTellUsMore,
                   maxLines: maxLinesValue,
-                  maxLength: 1000,
-                  onValidate: (v) => v != null && v.length != 10
+                  maxLength: _maxCharsAllowed,
+                  onValidate: (v) => v != null && v.length != _maxCharsAllowed
                       ? null
                       : context
                           .l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
