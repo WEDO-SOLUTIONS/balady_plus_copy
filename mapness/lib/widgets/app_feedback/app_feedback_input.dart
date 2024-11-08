@@ -63,7 +63,7 @@ class AppFeedbackInput extends HookWidget {
                     hintText: context.l10n.appFeedbackTellUsMore,
                     maxLines: maxLinesValue,
                     maxLength: _maxCharsAllowed,
-                    isDisposed: false,
+                    // isDisposed: false,
                     onValidate: (v) => v != null && v.length != _maxCharsAllowed
                         ? null
                         : context.l10n
