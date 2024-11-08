@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
@@ -47,7 +49,7 @@ class StoriesRepo extends _$StoriesRepo {
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data as List<int>);
-    await mixpanel?.track('StoriesRepo: _fetch');
+    unawaited(mixpanel?.track('StoriesRepo: _fetch'));
     return storiesResponse;
   }
 }
