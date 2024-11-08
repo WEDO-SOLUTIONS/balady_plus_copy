@@ -28,8 +28,12 @@ class StoriesRepo extends _$StoriesRepo {
   Future<StoriesResponse> build() async {
     final dio = await ref.watch(dGisNetworkProvider.future);
 
-    final subscription =
-        ref.read(dgisControllerProvider.notifier).visibleRectSubject.whereNotNull().listen((event) async {
+    final subscription = ref
+        .read(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .whereNotNull()
+        .debounceTime(const Duration(seconds: 1))
+        .listen((event) async {
       if (_isUpdatePaused) {
         return;
       }
