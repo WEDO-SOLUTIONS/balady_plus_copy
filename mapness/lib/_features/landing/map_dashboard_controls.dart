@@ -25,32 +25,32 @@ class MapDashboardControls extends ConsumerStatefulWidget {
 }
 
 class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
-  late double _bottomPadding;
+  late ValueNotifier<double> _bottomPadding;
 
   @override
   void initState() {
     super.initState();
-    _bottomPadding = widget.scrollController.sheetHeight;
+    _bottomPadding = ValueNotifier(widget.scrollController.sheetHeight);
     widget.scrollController.addListener(update);
   }
 
   @override
   void dispose() {
     widget.scrollController.removeListener(update);
+    _bottomPadding.dispose();
     super.dispose();
   }
 
   void update() {
-    setState(() {
-      _bottomPadding = widget.scrollController.sheetHeight;
-    });
+    _bottomPadding.value = widget.scrollController.sheetHeight;
   }
 
   bool _shouldHideControls(double screenHeight) {
     final freeRoamState = ref.watch(freeRoamStarterProvider);
     final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
-    final isSheetCoversHalfOfTheScreen = widget.scrollController.viewportHeight < _bottomPadding + screenHeight / 2;
+    final isSheetCoversHalfOfTheScreen =
+        widget.scrollController.viewportHeight < _bottomPadding.value + screenHeight / 2;
     final isSheetStateOpen = widget.scrollController.state == uikit.ThreeStateBottomSheet.open;
     final isSheetScrolledForHalfOfTheState = widget.scrollController.interpolation > 0.5;
 
@@ -60,86 +60,89 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    final freeRoamState = ref.watch(freeRoamStarterProvider);
-    final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
-    final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
-    final screenHeight = MediaQuery.of(context).size.height;
+  Widget build(BuildContext context) => ValueListenableBuilder<double>(
+        valueListenable: _bottomPadding,
+        builder: (context, bottomPadding, child) {
+          final freeRoamState = ref.watch(freeRoamStarterProvider);
+          final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
+          final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
+          final screenHeight = MediaQuery.of(context).size.height;
 
-    final bool areControlsVisible =
-        !_shouldHideControls(screenHeight) && widget.scrollController.viewportHeight > _bottomPadding + 200;
+          final bool areControlsVisible =
+              !_shouldHideControls(screenHeight) && widget.scrollController.viewportHeight > bottomPadding + 200;
 
-    return SizedBox(
-      height: screenHeight,
-      child: Visibility(
-        visible: areControlsVisible,
-        child: SafeArea(
-          bottom: false,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Directionality(
-                textDirection: TextDirection.ltr,
-                child: Expanded(
-                  child: OverflowBox(
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        left: uikit.Spacing.$3x,
-                        top: uikit.Spacing.$3x,
-                        right: uikit.Spacing.$3x,
-                        bottom: _bottomPadding,
-                      ),
-                      child: Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Spacer(),
-                              const IndoorControl(),
-                              const Spacer(),
-                              const EtaSharingControl(),
-                              uikit.Spacing.$4x.heightBox,
-                              SizedBox(
-                                height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                    ? controlsHeight * (1 - widget.scrollController.interpolation)
-                                    : 0,
-                              )
-                            ],
+          return SizedBox(
+            height: screenHeight,
+            child: Visibility(
+              visible: areControlsVisible,
+              child: SafeArea(
+                bottom: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Directionality(
+                      textDirection: TextDirection.ltr,
+                      child: Expanded(
+                        child: OverflowBox(
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: uikit.Spacing.$3x,
+                              top: uikit.Spacing.$3x,
+                              right: uikit.Spacing.$3x,
+                              bottom: bottomPadding,
+                            ),
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    const Spacer(),
+                                    const IndoorControl(),
+                                    const Spacer(),
+                                    const EtaSharingControl(),
+                                    uikit.Spacing.$4x.heightBox,
+                                    SizedBox(
+                                      height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                                          ? controlsHeight * (1 - widget.scrollController.interpolation)
+                                          : 0,
+                                    )
+                                  ],
+                                ),
+                                const Spacer(),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const LayersControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    const TrafficControl(),
+                                    const Spacer(),
+                                    const ZoomControl(),
+                                    const Spacer(),
+                                    const CompassControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    ComplianceBuildingLegend(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    const FollowControl(),
+                                    uikit.Spacing.$4x.heightBox,
+                                    SizedBox(
+                                      height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                                          ? controlsHeight * (1 - widget.scrollController.interpolation)
+                                          : 0,
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                          const Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const LayersControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const TrafficControl(),
-                              const Spacer(),
-                              const ZoomControl(),
-                              const Spacer(),
-                              const CompassControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              ComplianceBuildingLegend(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const FollowControl(),
-                              uikit.Spacing.$4x.heightBox,
-                              SizedBox(
-                                height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                    ? controlsHeight * (1 - widget.scrollController.interpolation)
-                                    : 0,
-                              ),
-                            ],
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+            ),
+          );
+        },
+      );
 }

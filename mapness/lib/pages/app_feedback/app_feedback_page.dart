@@ -105,7 +105,7 @@ class AppFeedbackPage extends HookConsumerWidget {
                           : ActionModel(
                               icon: SystemIcons.arrowCornerLeftLarge,
                               onPressed: () {
-                                if (isBackConfirmationValue) {
+                                if (isBackConfirmationValue && textController.text.isNotEmpty) {
                                   _showConfirmDialog(context);
                                 } else {
                                   context.pop();

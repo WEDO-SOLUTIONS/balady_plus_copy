@@ -32,6 +32,7 @@ class AppFeedbackCard extends ConsumerWidget {
                       child: Image.asset(
                         'assets/images/wavinghand.png',
                         width: Spacing.$8x,
+                        matchTextDirection: true,
                         package: PackageConfig.packageName,
                       ),
                     ),

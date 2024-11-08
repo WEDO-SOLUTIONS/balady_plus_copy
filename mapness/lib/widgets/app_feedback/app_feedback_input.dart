@@ -12,6 +12,7 @@ class AppFeedbackInput extends HookWidget {
   const AppFeedbackInput({required this.textController, this.isValid, super.key});
 
   static const _initMaxLines = 4;
+  static const _maxCharsAllowed = 1000;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +32,7 @@ class AppFeedbackInput extends HookWidget {
 
       maxLines.value = lines > _initMaxLines ? lines : _initMaxLines;
 
-      isValid?.call(textController.text.isNotEmpty && textController.text.length <= 1000);
+      isValid?.call(textController.text.isNotEmpty && textController.text.length <= _maxCharsAllowed);
     }
 
     useEffect(() {
@@ -39,37 +40,40 @@ class AppFeedbackInput extends HookWidget {
       return () => textController.removeListener(calculateMaxLines);
     }, [textController]);
 
-    return Padding(
-      padding: const EdgeInsets.all(Spacing.$4x),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          WidgetLabel(
-            label: context.l10n.appFeedbackLeaveAMessage,
-            labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
-              color: context.colorsV2.foregroundDefault,
-            ),
-          ),
-          Column(
-            children: [
-              ValueListenableBuilder<int>(
-                valueListenable: maxLines,
-                builder: (context, maxLinesValue, _) => BaladyInput(
-                  controller: textController,
-                  focusNode: focusNode,
-                  autofocus: true,
-                  hintText: context.l10n.appFeedbackTellUsMore,
-                  maxLines: maxLinesValue,
-                  maxLength: 1000,
-                  onValidate: (v) => v != null && v.length != 10
-                      ? null
-                      : context
-                          .l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
-                ),
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            WidgetLabel(
+              label: context.l10n.appFeedbackLeaveAMessage,
+              labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
+                color: context.colorsV2.foregroundDefault,
               ),
-            ],
-          )
-        ],
+            ),
+            Column(
+              children: [
+                ValueListenableBuilder<int>(
+                  valueListenable: maxLines,
+                  builder: (context, maxLinesValue, _) => BaladyInput(
+                    controller: textController,
+                    focusNode: focusNode,
+                    autofocus: true,
+                    hintText: context.l10n.appFeedbackTellUsMore,
+                    maxLines: maxLinesValue,
+                    maxLength: _maxCharsAllowed,
+                    // isDisposed: false,
+                    onValidate: (v) => v != null && v.length != _maxCharsAllowed
+                        ? null
+                        : context.l10n
+                            .appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

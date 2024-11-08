@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+
 import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/_features/weather/data/datasources/web_service_weather.dart';
@@ -74,7 +75,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
     } catch (e) {
       log('WEATHER API EXCEPTION $e');
     }
-    await mixpanel?.track('WebServiceWeather: getForecastData');
+    unawaited(mixpanel?.track('WebServiceWeather: getForecastData'));
     return null;
   }
 }
