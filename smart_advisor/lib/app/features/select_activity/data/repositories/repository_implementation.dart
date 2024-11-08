@@ -1,3 +1,4 @@
+import 'package:smart_advisor/app/features/select_activity/data/models/activity_details_info.dart';
 import 'package:smart_advisor/app/features/select_activity/data/models/work_flow_model.dart';
 
 import 'package:smart_advisor/app/features/select_activity/domain/entities/work_flow_request_params.dart';
@@ -123,6 +124,17 @@ class ActivitesRepositoryImplementation implements ActivitesRepository {
       WorkFlowRequestParams params) async {
     try {
       final data = await remoteDataSource.getWorkFlow(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ActivityDetailsInfo>> getActivityInfo(
+      int params) async {
+    try {
+      final data = await remoteDataSource.getActivityDetailsInfo(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

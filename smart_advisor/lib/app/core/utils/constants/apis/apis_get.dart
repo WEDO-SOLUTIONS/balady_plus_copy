@@ -54,4 +54,6 @@ class ApiUrls {
       "v1/cis-selfrating-services/acitivities/${activityId}/inspection-clauses";
 
   static String submitRatingItems = "v1/cis-selfrating-services/evaluation";
+
+  static String activityDetailsInfo(int id) => "v1/$_proxy/activities/$id";
 }

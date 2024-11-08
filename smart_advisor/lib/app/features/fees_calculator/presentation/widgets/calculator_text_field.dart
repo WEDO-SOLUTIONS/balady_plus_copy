@@ -9,13 +9,16 @@ class CalculatorCustomTextField extends StatelessWidget {
   final Function onChanged;
   final bool isEnabled;
   final String? value;
+  final Color? color;
 
-  const CalculatorCustomTextField(
-      {required this.onChanged,
-      required this.title,
-      this.suffix,
-      this.isEnabled = true,
-      this.value});
+  const CalculatorCustomTextField({
+    required this.onChanged,
+    required this.title,
+    this.suffix,
+    this.isEnabled = true,
+    this.value,
+    this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,11 +41,12 @@ class CalculatorCustomTextField extends StatelessWidget {
           },
           decoration: InputDecoration(
             suffixText: suffix,
+            hintText: title,
             hintStyle: TextStyle(color: Colors.grey[400], fontSize: 16),
             filled: true,
             enabled: isEnabled,
-
-            fillColor: Colors.white, // Background color of the text field
+            fillColor:
+                color ?? Colors.white, // Background color of the text field
             contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12), // Rounded corners

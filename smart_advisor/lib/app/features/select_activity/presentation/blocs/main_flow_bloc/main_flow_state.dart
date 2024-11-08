@@ -57,6 +57,9 @@ class MainFlowState extends Equatable {
   final List<ActivityCount>? detailedCount;
   final List<ActivityCount>? categoryCount;
   final int? step1Selection;
+
+  final BlocStatus activityDetailsStatus;
+
   const MainFlowState(
       {this.step1Selection,
       this.isicsCount,
@@ -71,6 +74,7 @@ class MainFlowState extends Equatable {
       this.districtsStatus = BlocStatus.initial,
       this.workFlowStatus = BlocStatus.initial,
       this.detailsStatus = BlocStatus.initial,
+      this.activityDetailsStatus = BlocStatus.initial,
       this.cities,
       this.districts,
       this.selectedCity,
@@ -104,6 +108,7 @@ class MainFlowState extends Equatable {
 
   @override
   List<Object?> get props => [
+        activityDetailsStatus,
         categoryCount,
         step1Selection,
         isicsCount,
@@ -152,7 +157,8 @@ class MainFlowState extends Equatable {
       ];
 
   MainFlowState copyWith(
-      {final List<ActivityCount>? categoryCount,
+      {final BlocStatus? activityDetailsStatus,
+      final List<ActivityCount>? categoryCount,
       final int? step1Selection,
       final List<ActivityCount>? isicsCount,
       final List<ActivityCount>? detailedCount,
@@ -198,6 +204,8 @@ class MainFlowState extends Equatable {
       bool? clearDistrict,
       String? locationOption}) {
     return MainFlowState(
+      activityDetailsStatus:
+          activityDetailsStatus ?? this.activityDetailsStatus,
       categoryCount: categoryCount ?? this.categoryCount,
       step1Selection: step1Selection ?? this.step1Selection,
       isicsCount: isicsCount ?? this.isicsCount,
@@ -264,13 +272,14 @@ class MainFlowState extends Equatable {
   }
 
   bool isNextDisabled() {
-    if (workFlowStatus == BlocStatus.loading || status == BlocStatus.loading)
+    if (workFlowStatus == BlocStatus.loading || status == BlocStatus.loading) {
       return true;
+    }
     // if (currentPage == 1 && selectedSector == null) return true;
     if (currentPage == 0 && step1Selection == null) return true;
-
-    if (currentPage == 1 && selectedCategory == null) return true;
-    if (currentPage == 2 && selectedIsic == null) return true;
+    if (currentPage == 1 && selectedSector == null) return true;
+    if (currentPage == 2 && selectedCategory == null) return true;
+    // if (currentPage == 3 && selectedIsic == null) return true;
     if (currentPage == 3 && selectedActivity == null) return true;
     if (currentPage == 5 && gisResponse == null) return true;
     if (currentPage == 7 && selectedArea == null) return true;

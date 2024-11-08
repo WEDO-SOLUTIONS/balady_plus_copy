@@ -34,17 +34,18 @@ class ResponseData<T> {
 
   factory ResponseData.fromMap(Map<String, dynamic> json, {T? parsedResult}) =>
       ResponseData(
-          responseCode: json["responseCode"] != null
-              ? json["responseCode"].toString()
-              : json["responseCode"],
-          beRequestId: json["beRequestId"],
-          correlationId: json["correlationId"],
-          responseMessage: json["responseMessage"].runtimeType == String
-              ? json["responseMessage"]
-              : json["responseMessage"] != null
-                  ? json["responseMessage"].firstOrNull
-                  : null,
-          result: parsedResult ?? json["result"]);
+        responseCode: json["responseCode"] != null
+            ? json["responseCode"].toString()
+            : json["responseCode"],
+        beRequestId: json["beRequestId"],
+        correlationId: json["correlationId"],
+        responseMessage: json["responseMessage"].runtimeType == String
+            ? json["responseMessage"]
+            : json["responseMessage"] != null
+                ? json["responseMessage"].firstOrNull
+                : null,
+        result: parsedResult ?? json["result"],
+      );
 
   String? getRefResponseMessage() {
     if (beRequestId != null)

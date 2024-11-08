@@ -23,6 +23,8 @@ import '../../../weather_alerts/presentation/bloc/weather_alerts_cubit.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../../presentation/dialogs/need_login_dialog.dart';
+
 class BaladyServices {
   final WebService webService;
 
@@ -242,11 +244,23 @@ class BaladyServices {
 
   static void openIssueLicense() {
     NavigationService.navigatorKey.currentState
-        ?.pushNamed(RouteName.commercialLicensePage);
+        ?.pushNamed(RouteName.commercialLicenseServicePage);
   }
 
   static void openChatGPT() {
-    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
+    if (CommonProperties.isLoggedIn) {
+      NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
+    } else {
+      showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  NavigationService.navigatorKey.currentState
+                      ?.pushNamed(RouteName.chatbot);
+                }
+              }));
+    }
   }
 
   static void openObjections() {

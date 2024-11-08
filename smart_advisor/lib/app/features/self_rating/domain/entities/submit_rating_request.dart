@@ -132,4 +132,6 @@ class InspectionSubClausesList {
         "CommentForNonCompliance": commentForNonCompliance,
         "ComplianceStatus": complianceStatus,
       };
+
+  String getClausesName() => clauseName?.trim() ?? "";
 }

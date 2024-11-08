@@ -79,3 +79,13 @@ class ChangeAreaValueEvent extends CalculatorEvent {
   final String data;
   const ChangeAreaValueEvent({required this.data});
 }
+
+class ChangeUnitCountEvent extends CalculatorEvent {
+  final String data;
+  const ChangeUnitCountEvent({required this.data});
+}
+
+class ChangeAccomodationTypeEvent extends CalculatorEvent {
+  final LookUpItem item;
+  const ChangeAccomodationTypeEvent({required this.item});
+}

@@ -1,6 +1,8 @@
 import 'package:smart_advisor/app/features/select_activity/data/models/work_flow_model.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/entities/work_flow_request_params.dart';
 
+import '../models/activity_details_info.dart';
+import '../models/new_activites_model.dart';
 import '/app/core/utils/constants/apis/apis_get.dart';
 import '/app/core/utils/extensions/delay.dart';
 import '/app/features/_shared_feature_/presentation/models/lookUp_response_model.dart';
@@ -41,6 +43,8 @@ abstract class ActivitesRemoteDataSource {
   Future<List<LookUpItemModel>> getDistricts(int cityId);
 
   Future<List<WorkFlowModel>> getWorkFlow(WorkFlowRequestParams params);
+
+  Future<ActivityDetailsInfo> getActivityDetailsInfo(int id);
 }
 
 class ActivitesRemoteDataSourceImplementation
@@ -116,6 +120,19 @@ class ActivitesRemoteDataSourceImplementation
 
   @override
   Future<LookUpResponseModel> getSectors() async {
+    final uniqueIds = <int>{};
+
+    var r = allRegulationsData
+        .where((regulation) =>
+            uniqueIds.add(regulation.categoryId)) // Ensures uniqueness
+        .map((regulation) => LookUpItemModel(
+            id: regulation.categoryId,
+            name: regulation.categoryName,
+            count: regulation.categorySum))
+        .toList();
+
+    return LookUpResponseModel(items: r);
+
     try {
       final response = await webService.dio.get(
         ApiUrls.getSectors,
@@ -145,6 +162,22 @@ class ActivitesRemoteDataSourceImplementation
   @override
   Future<List<LookUpItemModel>> getCategories(
       CategoriesRequestParams params) async {
+    final uniqueSubCategoryIds = <int>{};
+
+    var subCategories = allRegulationsData
+        .where((regulation) =>
+            regulation.categoryId == params.sectorID && // Filter by categoryId
+            uniqueSubCategoryIds.add(regulation
+                .subCategoryId!)) // Ensures uniqueness of subCategoryId
+        .map((regulation) => LookUpItemModel(
+              id: regulation.subCategoryId,
+              name: regulation.subCategory,
+              count: regulation.subCategorySum,
+            ))
+        .toList();
+
+    return subCategories;
+
     return [
       LookUpItemModel(id: 1, name: "مواد غذائية / مشروبات"),
       LookUpItemModel(id: 2, name: "خدمات غذائية / ترفيهية / إحتفالية"),
@@ -258,6 +291,22 @@ class ActivitesRemoteDataSourceImplementation
   @override
   Future<List<LookUpItemModel>> getActivites(
       ActivityRequestParams params) async {
+    final uniqueActivityIds = <int>{};
+
+    var activities = allRegulationsData
+        .where((regulation) =>
+            regulation.subCategoryId ==
+                params.isicId && // Filter by subCategoryId
+            uniqueActivityIds.add(regulation
+                .dActivitiesId)) // Ensures uniqueness of dActivitiesId
+        .map((regulation) => LookUpItemModel(
+              id: regulation.dActivitiesId,
+              name: regulation.dActivitiesName,
+              count: regulation.activitiesSum,
+            ))
+        .toList();
+
+    return activities;
     try {
       final response = await webService.dio.get(
         ApiUrls.getActivites(params.isicId),
@@ -351,6 +400,33 @@ class ActivitesRemoteDataSourceImplementation
                   (e) => WorkFlowModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
+    } on DioError catch (error) {
+      throw ServerException(error.toString());
+    } catch (ex) {
+      print(ex);
+      if (ex is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errorsServerError".tr());
+      }
+    }
+  }
+
+  @override
+  Future<ActivityDetailsInfo> getActivityDetailsInfo(int id) async {
+    try {
+      final response =
+          await webService.dio.get(ApiUrls.activityDetailsInfo(id));
+      print(response.data);
+
+      final result = ResponseBodyModel<ActivityDetailsInfo>.fromMap(
+              response.data,
+              parsedResult:
+                  ActivityDetailsInfo.fromJson(response.data["data"]["result"]))
+          .data
+          ?.result;
+
+      return result!;
     } on DioError catch (error) {
       throw ServerException(error.toString());
     } catch (ex) {

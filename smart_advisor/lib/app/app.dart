@@ -23,7 +23,9 @@ class SmartAdvisorApp extends StatelessWidget {
       child: Scaffold(
         body: Navigator(
           // Initial route
+
           key: NavigationService.navigatorKey,
+
           initialRoute: RouteName.onbording,
           // Route generation from package
           onGenerateRoute: AppRouter.allRoutes,

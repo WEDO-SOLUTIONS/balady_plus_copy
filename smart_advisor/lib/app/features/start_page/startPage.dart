@@ -23,12 +23,20 @@ class _StartpageState extends State<Startpage> {
         image:
             "packages/smart_advisor/smart_advisor_assets/images/startpageC1.png",
         title: "فتح محل تجاري ",
-        subtitle: "تعرف على اشتراطات ومخالفات الرخص التجارية"),
+        subtitle: "تعرف على اشتراطات ومخالفات الرخص التجارية",
+        isDisabled: false),
     Startpagemodel(
         image:
             "packages/smart_advisor/smart_advisor_assets/images/startpageC2.png",
         title: "بناء بيت",
-        subtitle: "تعرف على اشتراطات الرخص الانشائية"),
+        subtitle: "تعرف على اشتراطات الرخص الانشائية",
+        isDisabled: true),
+    Startpagemodel(
+        image:
+            "packages/smart_advisor/smart_advisor_assets/images/startpageC4.png",
+        title: "الحفريات",
+        subtitle: "تعرف على أنواع التشوه البصري وطريقة معالجته",
+        isDisabled: true),
     /*  Startpagemodel(
         image:
             "packages/smart_advisor/smart_advisor_assets/images/startpageC3.png",

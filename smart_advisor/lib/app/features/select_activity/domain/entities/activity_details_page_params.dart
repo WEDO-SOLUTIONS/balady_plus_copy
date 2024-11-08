@@ -24,6 +24,7 @@ class ActivityDetailsPageParams {
   EntityActivityDetailsResponse? entityActivityDetailsResponse;
   SuggestedAreaModel? suggestedArea;
   List<WorkFlowModel>? workFlow;
+  String? atmOption;
   bool? isFromHome;
 
   // Constructor
@@ -38,11 +39,13 @@ class ActivityDetailsPageParams {
       this.sector,
       this.suggestedArea,
       this.workFlow,
-      this.isFromHome});
+      this.isFromHome,
+      this.atmOption});
 
   // copyWith method
   ActivityDetailsPageParams copyWith(
-      {double? area,
+      {String? atmOption,
+      double? area,
       GisDataResponse? gisData,
       LookUpItem? activityId,
       List<AddetionalActivityItem>? addetionalActivites,
@@ -54,6 +57,7 @@ class ActivityDetailsPageParams {
       List<WorkFlowModel>? workFlow,
       bool? isFromHome}) {
     return ActivityDetailsPageParams(
+        atmOption: atmOption ?? this.atmOption,
         workFlow: workFlow ?? this.workFlow,
         sector: sector ?? this.sector,
         permits: permits ?? this.permits,
