@@ -206,9 +206,9 @@ class _NewHomePageState extends State<NewHomePage> {
                                           ),
                                           GestureDetector(
                                             onTap: () {
-                                              Navigator.of(context).pushNamed(
+                                              /*Navigator.of(context).pushNamed(
                                                 RouteName.mainFlowPage,
-                                              );
+                                              );*/
 
                                               //   Navigator.of(context).pushNamed(
                                               //     RouteName.newDetails,
