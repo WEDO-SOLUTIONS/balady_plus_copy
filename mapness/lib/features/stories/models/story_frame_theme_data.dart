@@ -52,9 +52,21 @@ class StoryFrameThemeData {
       'route1' => baseTheme.copyWith(),
       'route2' => baseTheme.copyWith(),
       'route3' => baseTheme.copyWith(),
-      'onboarding1' => baseTheme.copyWith(),
-      'onboarding2' => baseTheme.copyWith(),
-      'onboarding3' => baseTheme.copyWith(),
+      'onboarding1' => baseTheme.copyWith(
+          titleStyle: textTheme.h2SemiBold.copyWith(
+            color: AppColor.white,
+          ),
+        ),
+      'onboarding2' => baseTheme.copyWith(
+          titleStyle: textTheme.h2SemiBold.copyWith(
+            color: AppColor.white,
+          ),
+        ),
+      'onboarding3' => baseTheme.copyWith(
+          titleStyle: textTheme.h2SemiBold.copyWith(
+            color: AppColor.white,
+          ),
+        ),
       _ => baseTheme,
     };
   }

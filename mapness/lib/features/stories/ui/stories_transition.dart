@@ -50,14 +50,16 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
   Future<void> _dismiss({double? from}) async {
     await _controller.reverse(from: from);
     widget.onClose?.call();
-    context.pop();
+    if (mounted && context.canPop()) {
+      context.pop();
+    }
   }
 
   double _calculateRatio(double value) => value / MediaQuery.sizeOf(context).height;
 
   @override
   Widget build(BuildContext context) => PopScope(
-        onPopInvoked: (didPop) async {
+        onPopInvokedWithResult: (didPop, _) async {
           if (didPop) {
             await _dismiss();
           }

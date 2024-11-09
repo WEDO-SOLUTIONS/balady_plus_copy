@@ -1,4 +1,4 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,25 +13,18 @@ class SearchActions extends StatelessWidget {
   final List<Widget> children;
 
   @override
-  Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: ListView.separated(
-          shrinkWrap: true,
-          padding: EdgeInsets.zero,
-          physics: const NeverScrollableScrollPhysics(),
-          itemBuilder: (context, index) => children[index],
-          separatorBuilder: (context, index) => const Padding(
-            padding: EdgeInsets.only(right: 52),
-            child: Divider(
-              height: 1,
-              thickness: 1,
-              color: NonThemeColor.color53,
-            ),
+  Widget build(BuildContext context) => ClipRRect(
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        child: Material(
+          color: context.colorsV2.neutralContainerDefault,
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+          child: ListView.builder(
+            shrinkWrap: true,
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+            physics: const NeverScrollableScrollPhysics(),
+            itemBuilder: (context, index) => children[index],
+            itemCount: children.length,
           ),
-          itemCount: children.length,
         ),
       );
 }

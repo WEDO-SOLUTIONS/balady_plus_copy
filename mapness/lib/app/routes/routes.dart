@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:mapness/app/routes/app_feedback.dart';
 import 'package:mapness/app/routes/dark_map.dart';
 import 'package:mapness/app/routes/esri_layers.dart';
 import 'package:mapness/app/routes/eta.dart';
@@ -61,4 +62,5 @@ final $appRoutes = [
   ...$darkMapRoutes,
   ...$languagePickerRoutes,
   ...$voiceSettingsRoutes,
+  ...$appFeedbackRoutes
 ];
