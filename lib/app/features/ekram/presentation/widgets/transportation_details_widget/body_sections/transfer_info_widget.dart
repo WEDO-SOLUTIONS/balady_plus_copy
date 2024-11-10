@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/ekram/presentation/blocs/request_details_bloc/request_details_bloc_bloc.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/driver_extra_data_bloc/extra_data_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -10,7 +10,7 @@ class TransferInfoWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<RequestDetailsBloc, RequestDetailsState>(
+    return BlocBuilder<ExtraDataBloc, ExtraDataState>(
       builder: (context, state) {
         return CustomEnhancedExpansionPanelWidget(
           expanded: true,

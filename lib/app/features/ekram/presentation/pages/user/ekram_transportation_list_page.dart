@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show
         EkramTransporationCardWidget,
-        EkramRequestsBloc,
+        TransportRequestsBloc,
         ShowFilterEvent,
         GetMoreDeceasedTransportRequestsEvent,
         GetDeceasedTransportRequestsEvent,
@@ -63,16 +63,11 @@ class _EkramTransportationListPageState
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EkramRequestsBloc(
+      create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
           isDriver: false)
         ..add(GetDeceasedTransportRequestsEvent(isDriver: false)),
-      child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
+      child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
@@ -83,7 +78,7 @@ class _EkramTransportationListPageState
               if (_scrollContrller.position.maxScrollExtent ==
                   _scrollContrller.offset) {
                 context
-                    .read<EkramRequestsBloc>()
+                    .read<TransportRequestsBloc>()
                     .add(GetMoreDeceasedTransportRequestsEvent(isDriver: true));
               }
             });
@@ -96,7 +91,7 @@ class _EkramTransportationListPageState
               bottom: AppBarSeachBar(
                 onChanged: (value) {
                   _debouncer.run(() {
-                    context.read<EkramRequestsBloc>().add(
+                    context.read<TransportRequestsBloc>().add(
                         GetDeceasedTransportRequestsEvent(
                             isDriver: false, text: value));
                   });
@@ -107,10 +102,11 @@ class _EkramTransportationListPageState
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
-                    onTap: () => NavigationService.navigatorKey.currentState!
+                    onTap: () =>
+                        NavigationService.navigatorKey.currentState!
                         .pushNamed(
                             RouteName.EkramRequestTransportationStartService,
-                            arguments: context.read<EkramRequestsBloc>()),
+                            arguments: context.read<TransportRequestsBloc>()),
                     child: CircleIcon(
                       backgroundColor: AppColor.primary50Light,
                       icon: IconPath.add,
@@ -121,7 +117,9 @@ class _EkramTransportationListPageState
                 ),
                 FilterIcon(
                   onTap: () async {
-                    context.read<EkramRequestsBloc>().add(ShowFilterEvent());
+                    context
+                        .read<TransportRequestsBloc>()
+                        .add(ShowFilterEvent());
                   },
                 ),
               ],
@@ -157,12 +155,17 @@ class _EkramTransportationListPageState
                                   ekramTransportationItem:
                                       state.deceasedRequestItems![index],
                                   OnDetailsPress: () {
-                                    context.read<EkramRequestsBloc>().add(
-                                        GetDeceasedTransportRequestDetailsEvent(
-                                            isDriver: false,
-                                            requestId: state
-                                                .deceasedRequestItems![index]
-                                                .requestId!));
+
+
+                                    NavigationService.navigatorKey.currentState!
+                                        .pushNamed(RouteName.driverEkramTransportationDetailsScreen,arguments:state
+                                        .deceasedRequestItems![index] );
+
+
+
+
+
+
                                   },
                                 ),
                                 CustomVerticalSpace(
@@ -188,7 +191,7 @@ class _EkramTransportationListPageState
                 if (state.status == BlocStatus.retry)
                   ReloadWidget(
                     onTab: () {
-                      context.read<EkramRequestsBloc>().add(
+                      context.read<TransportRequestsBloc>().add(
                           GetDeceasedTransportRequestsEvent(isDriver: false));
                     },
                   ),

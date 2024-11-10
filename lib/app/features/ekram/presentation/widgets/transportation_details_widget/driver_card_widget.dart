@@ -38,13 +38,13 @@ class DriverCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                        child: EkramHeaderAndDescWidget(
+                        child: EkramHeaderAndDescWidget_With_Background(
                       title: trans('driver'),
                       details: item.transferDriverName ?? "",
                     )),
                     CustomHorizontalSpace(width: 12),
                     Expanded(
-                        child: EkramHeaderAndDescWidget(
+                        child: EkramHeaderAndDescWidget_With_Background(
                       title: trans('carModel'),
                       details: item.carModel ?? "",
                     ))
@@ -54,13 +54,13 @@ class DriverCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                        child: EkramHeaderAndDescWidget(
+                        child: EkramHeaderAndDescWidget_With_Background(
                       title: trans('carName'),
                       details: item.carBrand ?? "",
                     )),
                     CustomHorizontalSpace(width: 12),
                     Expanded(
-                        child: EkramHeaderAndDescWidget(
+                        child: EkramHeaderAndDescWidget_With_Background(
                       title: trans('manufacturingYear'),
                       details: item.carManufacturingYear.toString() ?? "",
                     ))
@@ -70,7 +70,7 @@ class DriverCardWidget extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                        child: EkramHeaderAndDescWidget(
+                        child: EkramHeaderAndDescWidget_With_Background(
                       title: trans('carBoard'),
                       details: item.carDashboardDetailsAr ?? "",
                     )),
@@ -82,7 +82,7 @@ class DriverCardWidget extends StatelessWidget {
                           CommonFunctions.call(item.driverMobileNumber);
                         }
                       },
-                      child: EkramHeaderAndDescWidget(
+                      child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('driverMobile'),
                         details: item.driverMobileNumber ?? "",
                       ),

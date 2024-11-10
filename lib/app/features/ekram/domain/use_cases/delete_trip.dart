@@ -6,11 +6,12 @@ import '../../../../core/services/local/use_case.dart';
 import '../../data/model/add_trip_params.dart';
 import '../repositories/ekram_repository.dart';
 
-class DeleteTrip extends UseCase<ResponseBodyModel, int> {
+class DeleteTrip extends UseCase<ResponseBodyModel, List<dynamic>> {
   final EkramRepository repository;
   DeleteTrip({required this.repository});
   @override
-  Future<Either<Failure, ResponseBodyModel>> call(int params) async {
-    return await repository.deleteTrip(params);
+  Future<Either<Failure, ResponseBodyModel>> call(List<dynamic> parms) async {
+
+    return await repository.deleteTrip(parms[0],parms[1]);
   }
 }

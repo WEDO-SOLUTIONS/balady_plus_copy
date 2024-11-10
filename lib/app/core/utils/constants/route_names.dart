@@ -293,8 +293,8 @@ class RouteName {
   static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
   static const ekramRequestTransportationScreen =
       'RequestsTransportingAndPreparingDeceased_Create_Details_Page';
-  static const ekramTransportationDetailsScreen =
-      'RequestsTransportingAndPreparingDeceased_Details_Page';
+  static const IdenticalListPage =
+      'IdenticalListPage';
   static const driverEkramTransportationDetailsScreen =
       'FuneralDriver_Details_Page';
 
@@ -377,6 +377,7 @@ class RouteName {
   static const SucessfullScreen = 'Sucessfull_Screen';
   static const chatHistoryDetailsRoute = 'chat_history_details';
 
+
 }
 
 class EtmamRoutesNames {
@@ -445,6 +446,8 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
 
 
 }

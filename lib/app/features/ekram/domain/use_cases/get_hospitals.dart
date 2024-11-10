@@ -12,7 +12,7 @@ class GetHospitals extends UseCase<ResponseBodyModel<List<LookUpItem>>, int> {
   GetHospitals({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> call(
-      int params) async {
-    return await repository.getHospitals(params);
+      int cityId) async {
+    return await repository.getHospitals(cityId);
   }
 }

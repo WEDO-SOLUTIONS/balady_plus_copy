@@ -50,6 +50,7 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
+import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
@@ -418,13 +419,14 @@ class CommonFunctions {
   }
 
   static String getFormattedTimeEkram(String? timeStr,
-      {Duration? subtractedDuration}) {
+      {Duration? subtractedDuration,String? formate}) {
+
     String formattedTime = "";
     print(timeStr);
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-          DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
+          DateFormat(formate??"hh:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
           .format(tempTime)
           .toString();
@@ -447,7 +449,7 @@ class CommonFunctions {
     String formattedTime = "";
     try {
       String biddingEndingTime = timeStr ?? "";
-      DateTime tempTime = DateFormat("yyyy/M/dd H:mm").parse(biddingEndingTime);
+      DateTime tempTime = DateFormat("yyyy/M/dd").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
     } catch (error, stackTrace) {
@@ -620,6 +622,7 @@ class CommonFunctions {
     String? body,
     bool authorization = false,
     String? corelationId,
+        String? xserviceId,
   }) {
     //var encodedURL = Uri.encodeComponent(url);
 
@@ -627,6 +630,7 @@ class CommonFunctions {
     message = url + method;
 
     if (corelationId != null) message += corelationId;
+    if (xserviceId != null) message += xserviceId;
     if (authorization) message += 'Bearer ${CommonProperties.token}';
 
     if (body != null) {
@@ -1382,7 +1386,16 @@ class CommonFunctions {
         if (serviceId == 2) {
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
-        } else {
+        }
+        else if(serviceId==0)
+          {
+            NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
+                builder: (context) => ViewAPIGEEImageScreen(imgUrl: fileUrl,xServiceId: "${serviceId!}",)));
+          }
+
+        else {
+
+
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
         }
@@ -1597,6 +1610,57 @@ class CommonFunctions {
       return '<span class="ui-messages-detail ng-tns-c1-19 ng-star-inserted">Dear beneficiary, you can find out the accredited real estate brokers in the Ejar network through the following link <a target="_balnk" href="https://www.ejar.sa/ar/certified-offices"> Click Here </a> Or download the Real Estate Brokers application<a target="_balnk" href="https://apps.apple.com/us/app/%D9%88%D8%B3%D8%B7%D8%A7%D8%A1-%D8%B9%D9%82%D8%A7%D8%B1%D9%8A%D9%88%D9%86/id1306579731"> IOS </a> Or <a target="_balnk" href="https://play.google.com/store/apps/details?id=sa.ejar.waset"> Android </a></span>';
     }
   }
+
+
+
+  static String? hijriToGregorian(String? hijriDate ) {
+
+    try
+    {
+      if(hijriDate != null && hijriDate.isNotEmpty) {
+        List<int> dateSplitted =
+        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate)
+            .split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        var gDate = HijriCalendar();
+        DateTime gorgianDate = gDate.hijriToGregorian(
+            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+        String gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
+        return gorgian;
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
+  static String? gregorianToHijri(String? gorgianDate ) {
+
+    try
+    {
+      if(gorgianDate != null && gorgianDate.isNotEmpty) {
+        List<int> dateSplitted = CommonFunctions.replaceArabicNumberWithEnglish(gorgianDate).split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        String hijri = HijriCalendar.fromDate(
+            DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
+            .toFormat("yyyy/mm/dd");
+
+        return CommonFunctions.replaceArabicNumberWithEnglish(hijri);
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
 
   static String getIssueCrWarning3() {
     if (CommonFunctions.isAppAR) {

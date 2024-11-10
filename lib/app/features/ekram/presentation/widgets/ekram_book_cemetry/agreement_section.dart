@@ -6,10 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/radio_buttons/custom_check_box_widget.dart';
-import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../../vd/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../blocs/ekram_book_cemetry/ekram_book_cemetry_bloc.dart';
@@ -40,7 +37,7 @@ class AgreementSection extends StatelessWidget {
                       const CustomVerticalSpace(
                         height: 16,
                       ),
-                      const DeceasedInfo(),
+                      const DeceasedInfoWidget(),
                       const CustomVerticalSpace(
                         height: 16,
                       ),
@@ -114,8 +111,8 @@ class ApplicationInfo extends StatelessWidget {
   }
 }
 
-class DeceasedInfo extends StatelessWidget {
-  const DeceasedInfo({
+class DeceasedInfoWidget extends StatelessWidget {
+  const DeceasedInfoWidget({
     Key? key,
   }) : super(key: key);
 
@@ -271,8 +268,8 @@ class DeceasedInfo extends StatelessWidget {
   }
 }
 
-class BurialInfo extends StatelessWidget {
-  const BurialInfo({
+class BurialInfoWidget extends StatelessWidget {
+  const BurialInfoWidget({
     Key? key,
   }) : super(key: key);
 

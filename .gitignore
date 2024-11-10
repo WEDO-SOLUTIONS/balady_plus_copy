@@ -163,3 +163,4 @@ reports/
 
 # FVM Version Cache
 .fvm/
+/ios/Podfile

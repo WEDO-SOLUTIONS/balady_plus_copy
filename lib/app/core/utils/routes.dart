@@ -61,9 +61,10 @@ import '../../features/create_compliance/presentation/pages/otp_page/compliance_
 import '../../features/create_compliance/presentation/pages/submit_compliance_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_page.dart';
 import '../../features/ekram/presentation/pages/book_cemetry/ekram_book_cemetry_start_service.dart';
-import '../../features/ekram/presentation/pages/user/ekram_ekramRequest_transportation_start_service.dart';
+import '../../features/ekram/presentation/pages/driver/location_selector.dart';
+import '../../features/ekram/presentation/pages/user/ekram_request_transportation_start_service.dart';
 import '../../features/ekram/presentation/pages/user/user_ekram_transpotation_details_page.dart';
-import '../../features/ekram/presentation/pages/driver/driver_transportation_list_page.dart';
+import '../../features/ekram/presentation/pages/driver/transport_request_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_booking_list_page.dart';
 import '../../features/ekram/presentation/pages/ekram_cemetry_details_page.dart';
 import '../../features/ekram/presentation/pages/ekram_home_page.dart';
@@ -71,9 +72,9 @@ import '../../features/ekram/presentation/pages/ekram_select_type_page.dart';
 import '../../features/ekram/presentation/pages/ekram_success_screen.dart';
 import '../../features/ekram/presentation/pages/user/ekram_map_page.dart';
 import '../../features/ekram/presentation/pages/user/ekram_orders_page.dart';
-import '../../features/ekram/presentation/pages/user/ekram_request_transportation_page.dart';
+import '../../features/ekram/presentation/pages/user/ekram_request_transportation_page_new.dart';
 import '../../features/ekram/presentation/pages/user/ekram_transportation_list_page.dart';
-import '../../features/ekram/presentation/pages/driver/ekram_transpotation_details_page.dart';
+import '../../features/ekram/presentation/pages/driver/identical_list_page.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_details.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_cemetries/inquiry_cemetry_result.dart';
 import '../../features/ekram_inquiry_service/presentation/pages/inquiry_graves/inquiry_grave_details.dart';
@@ -297,6 +298,9 @@ class Routes {
 
     EtmamRoutesNames.biddingReleationTypes: (context) => BiddingTypeDialog(),
 
+
+
+
 //! Etmam End
   };
   static Map<String, Widget Function(BuildContext)> routesApp = {
@@ -381,7 +385,7 @@ class Routes {
     RouteName.inappWebview: (context) => const InAppWebViewPage(),
 
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
-    RouteName.apigeeImageFullScreen: (context) => const ViewAPIGEEImageScreen(),
+    RouteName.apigeeImageFullScreen: (context) =>  ViewAPIGEEImageScreen(),
 
     RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
@@ -552,7 +556,7 @@ class Routes {
         const EkramTransportationListPage(),
 
     RouteName.driverEkramTransportationListScreen: (context) =>
-        const DriverEkramTransportationListPage(),
+        const TransportRequestListPage(),
 
     RouteName.ekramBookingListScreen: (context) => const EkramBookingListPage(),
 
@@ -562,10 +566,12 @@ class Routes {
     RouteName.ekramRequestTransportationScreen: (context) =>
         const EkramRequestTransportationPage(),
 
+
+
     RouteName.ekramSuccessScreen: (context) => const EkramSuccessPage(),
 
-    RouteName.ekramTransportationDetailsScreen: (context) =>
-        const EkramTransportationDetailsPage(),
+    RouteName.IdenticalListPage: (context) =>
+        const IdenticalListPage(),
 
     RouteName.driverEkramTransportationDetailsScreen: (context) =>
         const UsersEkramTransportationDetailsPage(),
@@ -612,6 +618,9 @@ class Routes {
     RouteName.chatbot: (context) => const ChatBotScreen(),
     RouteName.chatHistoryDetailsRoute: (context) =>
     const ChatHistoryDetails(),
+
+
+
 
     RouteName.surveyReportInqueryOverView: (context) =>
         const SurveyReportOverviewScreen(),
