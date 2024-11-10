@@ -1618,16 +1618,19 @@ class CommonFunctions {
     try
     {
       if(hijriDate != null && hijriDate.isNotEmpty) {
+
         List<int> dateSplitted =
-        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate)
+        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
             .split("/")
             .map((e) => int.parse(e))
             .toList();
         var gDate = HijriCalendar();
         DateTime gorgianDate = gDate.hijriToGregorian(
             dateSplitted[0], dateSplitted[1], dateSplitted[2]);
-        String gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
-        return gorgian;
+        String? gorgian  = DateFormat('yyyy/MM/dd').format(gorgianDate);
+
+
+        return CommonFunctions.padHijriDate(gorgian);
       }
       return null;
     }
@@ -1639,18 +1642,14 @@ class CommonFunctions {
   }
 
   static String? gregorianToHijri(String? gorgianDate ) {
-
     try
     {
       if(gorgianDate != null && gorgianDate.isNotEmpty) {
-        List<int> dateSplitted = CommonFunctions.replaceArabicNumberWithEnglish(gorgianDate).split("/")
-            .map((e) => int.parse(e))
-            .toList();
+        List<int> dateSplitted = gorgianDate!.split("/").map((e) => int.parse(e)).toList();
         String hijri = HijriCalendar.fromDate(
             DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
             .toFormat("yyyy/mm/dd");
-
-        return CommonFunctions.replaceArabicNumberWithEnglish(hijri);
+        return CommonFunctions.padHijriDate(hijri);
       }
       return null;
     }

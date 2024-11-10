@@ -1037,7 +1037,9 @@ class EkramRequestTransportationBloc extends Bloc<
     params = params.copyWith(deathInfo: info);
 
     emitter(state.copyWith(
+       hospitals: isCityChanged(e.deathInfo?.cityId)==true?[]:null,
         status: BlocStatus.success, requestDetailsModel: params));
+
   }
 
   Future<void> _changeBurialInfoHandler(
@@ -1161,5 +1163,21 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: "",
       ));
     });
+  }
+
+
+  bool isCityChanged(int? newCityId)
+  {
+    if(newCityId != null) {
+      if (state.requestDetailsModel?.deathInfo?.cityId != newCityId) {
+        return true;
+      }
+      else if (state.requestDetailsModel?.deathInfo?.corpseArrivalCityId !=
+          newCityId) {
+        return true;
+      }
+    }
+    return false;
+
   }
 }
