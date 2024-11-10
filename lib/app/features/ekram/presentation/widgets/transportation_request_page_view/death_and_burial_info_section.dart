@@ -82,7 +82,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                               context
                                   .read<EkramRequestTransportationBloc>()
-                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(deathDate:  CommonFunctions.replaceArabicNumberWithEnglish(date!), gregorianDeathDate:CommonFunctions.hijriToGregorian(date))));
+                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(deathDate:  CommonFunctions.padHijriDate(date!), gregorianDeathDate:CommonFunctions.hijriToGregorian(date))));
 
                             } ,),
 
@@ -92,7 +92,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                               context
                                   .read<EkramRequestTransportationBloc>()
-                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(gregorianDeathDate: CommonFunctions.replaceArabicNumberWithEnglish(date!),deathDate: CommonFunctions.gregorianToHijri(date))));
+                                  .add(ChangeDeathInfoEvent(deathInfo: DeathInfo(gregorianDeathDate: CommonFunctions.padHijriDate(date!),deathDate: CommonFunctions.gregorianToHijri(date))));
 
                             } ,),
 
