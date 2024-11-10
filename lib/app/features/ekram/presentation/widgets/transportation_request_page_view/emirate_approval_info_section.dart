@@ -15,6 +15,11 @@ class EmirateApprovalInfoSection extends StatelessWidget {
     return BlocBuilder<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
       builder: (context, state) {
+        context.read<EkramRequestTransportationBloc>().add(
+            GetMadinahEmirateApprovalStatusEvent(
+                cemetryId: state.selectedCemetry?.id,
+                id: state.deceasedId,
+                idType: state.selectedNationalIdType?.id));
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -51,18 +56,20 @@ class EmirateApprovalInfoSection extends StatelessWidget {
                               ],
                             ),
                             CustomTextFieldWidget(
-                                label:
-                                    "ekram_emirate_burial_city_approval_status"
-                                        .tr(),
-                                        initialValue: '',
-                                        readOnly: true,
-                                        ),
+                              label: "ekram_baquie_approval_date".tr(),
+                              initialValue:
+                                  state.madinahEmirateApprovalDate ?? '',
+                              disabledColor: AppColor.grey900Light,
+                              readOnly: true,
+                            ),
                             CustomTextFieldWidget(
-                                label: "ekram_emirate_burial_city_approval_date"
-                                    .tr(),
+                                label: "ekram_baquie_approval_status".tr(),
+                                initialValue:
+                                    state.madinahEmirateApprovalStatus ?? '',
+                                readOnly: true,
+                                disabledColor: AppColor.grey900Light,
                                 suffixIcon: SvgPicture.asset(
                                   IconPath.calendar,
-                                  color: Colors.black,
                                   width: 30,
                                   height: 30,
                                 ),
@@ -78,9 +85,13 @@ class EmirateApprovalInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-             EkramPreviousNextButtons(btnPressed: (){
-               context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
-             },)
+            EkramPreviousNextButtons(
+              btnPressed: () {
+                context
+                    .read<EkramRequestTransportationBloc>()
+                    .add(GoToNextPageEvent());
+              },
+            )
           ],
         );
       },

@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/ekram/data/model/apply_deceased/grave_a
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_transport_requests/transport_request_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/ekram_attachment_response.dart';
+import 'package:balady_plus/app/features/ekram/data/model/ekram_transport_validate_submit_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
@@ -918,10 +919,10 @@ class EkramRepositoryImpl implements EkramRepository {
   }
   @override
   Future<Either<Failure, ResponseBodyModel>> ekramTransportValidateSubmit(
-      int requestId) async {
+      int requestId , EkramTransportValidateSubmitParams params) async {
     try {
       final data =
-          await remoteDataSource.ekramTransportValidateSubmit(requestId);
+          await remoteDataSource.ekramTransportValidateSubmit(requestId,params);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

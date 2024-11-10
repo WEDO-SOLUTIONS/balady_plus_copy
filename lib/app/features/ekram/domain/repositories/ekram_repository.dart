@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/data/model/ekram_transport_validate_submit_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
 import 'package:balady_plus/app/features/ekram/data/model/request_details_response_model/request_details_response_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
@@ -155,7 +156,7 @@ abstract class EkramRepository {
       int requestId, SaveDeathBurialInfoParams params);
 
   Future<Either<Failure, ResponseBodyModel>> ekramTransportValidateSubmit(
-      int requestId);
+      int requestId , EkramTransportValidateSubmitParams params);
 
   Future<Either<Failure, ResponseBodyModel>> saveDeceasedInfo(
       int requestId, SaveDeceasedInfoParams params);

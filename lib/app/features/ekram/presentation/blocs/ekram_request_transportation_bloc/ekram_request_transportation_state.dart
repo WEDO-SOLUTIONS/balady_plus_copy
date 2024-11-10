@@ -244,8 +244,10 @@ class EkramRequestTransportationState extends Equatable {
       burialDateGregorian: burialDateGregorian == null
           ? this.burialDateGregorian
           : burialDateGregorian.value,
-      madinahEmirateApprovalStatus: madinahEmirateApprovalStatus ?? this.madinahEmirateApprovalStatus,
-      madinahEmirateApprovalDate: madinahEmirateApprovalDate ?? this.madinahEmirateApprovalDate,
+      madinahEmirateApprovalStatus:
+          madinahEmirateApprovalStatus ?? this.madinahEmirateApprovalStatus,
+      madinahEmirateApprovalDate:
+          madinahEmirateApprovalDate ?? this.madinahEmirateApprovalDate,
       deathDateGregorian: deathDateGregorian == null
           ? this.deathDateGregorian
           : deathDateGregorian.value,
@@ -315,13 +317,12 @@ class EkramRequestTransportationState extends Equatable {
 
   bool isNextButtonEnabled() {
     if (currentPageValue == 0) {
-      return isVerified ?? false;
+      // return isVerified ?? false;
     }
 
     if (currentPageValue == 1) {
       return validateDeceasedInfoSection(false);
     } else if (currentPageValue == 2) {
-
       return true;
     } else if (currentPageValue == 3) {
       return true;
@@ -330,13 +331,7 @@ class EkramRequestTransportationState extends Equatable {
     return true;
   }
 
-
-
-
-
-
   LookUpItem? getCityById(int? id) {
-
     if (cities != null && id != null) {
       for (int index = 0; index < cities!.length; index++) {
         if (cities![index].id == id) {
@@ -349,7 +344,6 @@ class EkramRequestTransportationState extends Equatable {
   }
 
   LookUpItem? getHosptialById(int? id) {
-
     if (hospitals != null && id != null) {
       for (int index = 0; index < hospitals!.length; index++) {
         if (hospitals![index].id == id) {
@@ -360,8 +354,6 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
-
-
 
   LookUpItem? getCountryById(int? id) {
     id ??= 1;
@@ -376,7 +368,6 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-
   LookUpItem? getNationalityById(int? id) {
     if (nationalities != null && id != null) {
       for (int index = 0; index < nationalities!.length; index++) {
@@ -389,7 +380,6 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-
   LookUpItem? getParyerById(int? id) {
     if (prayers != null && id != null) {
       for (int index = 0; index < prayers!.length; index++) {
@@ -401,6 +391,7 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
+
   LookUpItem? getCemtryById(int? id) {
     if (cemetries != null && id != null) {
       for (int index = 0; index < cemetries!.length; index++) {
@@ -412,6 +403,7 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
+
   LookUpItem? getCemtryTypeById(int? id) {
     if (cemetryTypeItems != null && id != null) {
       for (int index = 0; index < cemetryTypeItems!.length; index++) {
@@ -435,6 +427,7 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
+
   LookUpItem? getTransportTypeById(int? id) {
     if (transportations != null && id != null) {
       for (int index = 0; index < transportations!.length; index++) {
@@ -471,25 +464,15 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-
-
-
-
   int? getselectedDeathCity() {
-   if(requestDetailsModel?.deathInfo?.cityId != null) {
-     return requestDetailsModel?.deathInfo?.cityId!;
-   }
-   else  if(requestDetailsModel?.deathInfo?.corpseArrivalCityId != null) {
-     return requestDetailsModel?.deathInfo?.corpseArrivalCityId!;
-   }
+    if (requestDetailsModel?.deathInfo?.cityId != null) {
+      return requestDetailsModel?.deathInfo?.cityId!;
+    } else if (requestDetailsModel?.deathInfo?.corpseArrivalCityId != null) {
+      return requestDetailsModel?.deathInfo?.corpseArrivalCityId!;
+    }
 
     return null;
   }
-
-
-
-
-
 
   bool validateDeceasedInfoSection(bool ShowErrorMessage) {
     if (requestDetailsModel != null) {

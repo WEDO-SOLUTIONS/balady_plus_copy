@@ -116,9 +116,9 @@ class GetHospitalsEvent extends EkramRequestTransportationEvent {
 }
 
 class GetMadinahEmirateApprovalStatusEvent extends EkramRequestTransportationEvent {
-final int cemetryId ;
-final String id ;
-final int idType ;
+final int? cemetryId ;
+final String? id ;
+final int? idType ;
  const GetMadinahEmirateApprovalStatusEvent({required this.cemetryId, required this.id , required this.idType});
 }
 
@@ -126,6 +126,12 @@ class GetCemetriesEvent extends EkramRequestTransportationEvent {
   final CemetriesParams params;
   final int requestId;
   const GetCemetriesEvent({required this.params, required this.requestId});
+}
+
+class ekramTransportValidateSubmitEvent extends EkramRequestTransportationEvent {
+  final EkramTransportValidateSubmitParams params;
+  final int requestId;
+  const ekramTransportValidateSubmitEvent({required this.params, required this.requestId});
 }
 
 class GetTransportationNamesEvent extends EkramRequestTransportationEvent {

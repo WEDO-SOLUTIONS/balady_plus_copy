@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/ekram/data/model/baqie_approval_response.dart';
 import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/deceased_request_details_model.dart';
+import 'package:balady_plus/app/features/ekram/data/model/ekram_transport_validate_submit_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/look_up_item_location_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/driver/trip_details_model.dart';
 import 'package:balady_plus/app/features/ekram/data/model/madinah_emirate_approval_status.dart';
@@ -161,7 +162,7 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<MadinahEmirateApprovalStatusResponseModel>>
       madinahEmirateApprovalStatus(int cemetryId, int id, int idType);
   Future<ResponseBodyModel> ekramTransportValidateSubmit(
-      int requestId);
+      int requestId, EkramTransportValidateSubmitParams params);
 }
 
 class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
@@ -3123,13 +3124,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel> ekramTransportValidateSubmit(int requestId) async {
+  Future<ResponseBodyModel> ekramTransportValidateSubmit(int requestId , EkramTransportValidateSubmitParams params) async {
     Response? response;
 
     try {
       response = await webService.dio.get(
         ApiUrl.ekramTransportValidateSubmit(requestId),
-
+        data: params.toJson()
       );
       final data = response.data;
 
