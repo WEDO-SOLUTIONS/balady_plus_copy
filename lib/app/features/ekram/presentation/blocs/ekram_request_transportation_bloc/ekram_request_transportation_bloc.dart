@@ -76,8 +76,7 @@ class EkramRequestTransportationBloc extends Bloc<
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
-        const EmirateApprovalInfoSection(),
-    AgreementSection(),
+         AgreementSection(),
   ];
 
   final GetCemeteryTypesLookUp _getCemeteryTypesLookUp;
@@ -114,13 +113,11 @@ class EkramRequestTransportationBloc extends Bloc<
         _getCountreies = GetCountreies(repository: sl()),
         _getCemetries = GetCemetriesLookUp(repository: sl()),
         _ekramTransportValidateSubmit = EkramTransportValidateSubmit(repository: sl()),
-        _getTransportationNames =
-            GetTransportationCompaniesLookUp(repository: sl()),
+        _getTransportationNames =GetTransportationCompaniesLookUp(repository: sl()),
         _getLaundires = GetLaundriesLookup(repository: sl()),
         _getMosques = GetMosquesLookup(repository: sl()),
         _getPrayers = GetPrayers(repository: sl()),
-        _getSpecialTransportReasons =
-            GetSpecialTransportReasonsLookUp(repository: sl()),
+        _getSpecialTransportReasons =GetSpecialTransportReasonsLookUp(repository: sl()),
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         _getRequestDetails = getRequestDetails,
@@ -625,11 +622,18 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+
       emitter(state.copyWith(
         status: BlocStatus.success,
-        cemetries: success.data?.result,
         errorMessage: "",
       ));
+
+      NavigationService.navigatorKey.currentState!
+          .pushNamed(RouteName.ekramSuccessScreen,
+          arguments: state.requestId);
+
+
+
     });
   }
 
@@ -800,7 +804,7 @@ class EkramRequestTransportationBloc extends Bloc<
       add(getRequestDetailsEvent(requestId: state.requestId!));
     }
 
-    hideKeyboard();
+
   }
 
   Future<void> _goToPreviousPageHandler(

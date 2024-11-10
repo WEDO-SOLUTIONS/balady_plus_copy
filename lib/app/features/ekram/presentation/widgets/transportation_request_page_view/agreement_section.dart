@@ -94,9 +94,7 @@ class AgreementSection extends StatelessWidget {
                                               locationAddress: '',
                                               amanaCode: ''),
                                       requestId: state.requestId!));
-                              NavigationService.navigatorKey.currentState!
-                                  .pushNamed(RouteName.ekramSuccessScreen,
-                                      arguments: state.requestId);
+
                             },
                             text: "ekram_transportation_apply".tr(),
                           ),
