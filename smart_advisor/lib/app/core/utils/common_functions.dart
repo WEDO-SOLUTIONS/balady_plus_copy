@@ -12,6 +12,7 @@ import 'package:smart_advisor/app/core/utils/constants/apis/env_types.dart';
 import 'package:smart_advisor/app/features/shared_features/widgets/webview_page.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import './utils_exports.dart' show AppConfig, AppLanguage;
+import 'constants/app_colors.dart';
 
 class CommonFunctions {
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
@@ -24,6 +25,9 @@ class CommonFunctions {
       try {
         BotToast.showSimpleNotification(
             title: error,
+            titleStyle: const TextStyle(
+              color: AppColor.white,
+            ),
             backgroundColor: const Color.fromARGB(255, 204, 51, 51),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));

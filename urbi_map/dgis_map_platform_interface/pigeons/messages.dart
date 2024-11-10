@@ -773,11 +773,12 @@ class DynamicFilterMessage {
 }
 
 class ItemMarkerInfoMessage {
-  ItemMarkerInfoMessage(this.objectId, this.geoPoint, this.floorInfo);
+  ItemMarkerInfoMessage(this.objectId, this.geoPoint, this.floorInfo, this.title);
 
   final DgisObjectIdMessage? objectId;
   final GeoPointWithElevationMessage geoPoint;
   final FloorInfoMessage? floorInfo;
+  final String? title;
 }
 
 class SearchResultMessage {
@@ -789,7 +790,6 @@ class SearchResultMessage {
     this.searchResultType,
     this.dynamicFilters,
     this.autoUseFirstResult,
-    this.markersWithLabel,
   );
 
   final PageMessage? firstPage;
@@ -799,7 +799,6 @@ class SearchResultMessage {
   final SearchResultTypeMessage searchResultType;
   final List<DynamicFilterMessage?> dynamicFilters;
   final bool autoUseFirstResult;
-  final List<UiMarkerInfoMessage?>? markersWithLabel;
 }
 
 class UiMarkerInfoMessage {
@@ -1162,6 +1161,12 @@ class BetterRouteSettingsMessage {
   final int betterRouteLengthThreshold;
   final int routeSearchDelay;
 }
+
+class VendorConfigContentMessage {
+  const VendorConfigContentMessage(this.content);
+  final String content;
+}
+
 
 @ConfigurePigeon(
   PigeonOptions(
@@ -1574,5 +1579,5 @@ abstract class FlutterMapApi {
 @HostApi()
 abstract class PluginApi {
   @async
-  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage);
+  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
 }

@@ -1,0 +1,71 @@
+import 'dart:convert';
+
+import 'package:battery_plus/battery_plus.dart';
+import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
+
+/// Battery usage metrics
+class BatteryUsage {
+  /// Battery usage metrics in percentage per hour
+  /// Example: 0.1 %/h
+  final double batteryUsage;
+
+  /// Time that the app is running
+  /// Example: 36000 ms
+  final double sessionDuration;
+
+  /// Location latitude and longitude
+  /// Example: [37.7749, 122.4194] or null
+  /// If the location is null, the location is not available or the error occurred
+  final List<double>? location;
+
+  /// Active processes
+  /// Example: [com.google.maps, com.mapbox.navigation]
+  final List<String> activeProcesses;
+
+  /// Device state
+  /// Example: charging, discharging
+  final BatteryState deviceState;
+
+  /// Is the device is safe mode
+  /// Example: true, false
+  final bool isInBatterySaveMode;
+
+  const BatteryUsage({
+    required this.batteryUsage,
+    required this.sessionDuration,
+    required this.activeProcesses,
+    required this.deviceState,
+    required this.isInBatterySaveMode,
+    this.location,
+  });
+
+  /// Convert the object to a Map
+  Map<String, dynamic> toJson() => {
+        AdvancedMetricsConstants.keys.batteryUsage: batteryUsage,
+        AdvancedMetricsConstants.keys.sessionDuration: sessionDuration,
+        AdvancedMetricsConstants.keys.location: location,
+        AdvancedMetricsConstants.keys.activeProcesses: activeProcesses,
+        AdvancedMetricsConstants.keys.deviceState: deviceState.name,
+        AdvancedMetricsConstants.keys.isInBatterySaveMode: isInBatterySaveMode,
+      };
+
+  /// Convert the object to a JSON string
+  String toJsonString() => jsonEncode(toJson());
+
+  /// Create a BatteryUsage object from a JSON object
+  factory BatteryUsage.fromJson(String jsonString) {
+    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+    return BatteryUsage(
+      batteryUsage: json[AdvancedMetricsConstants.keys.batteryUsage],
+      sessionDuration: json[AdvancedMetricsConstants.keys.sessionDuration],
+      location: json[AdvancedMetricsConstants.keys.location],
+      activeProcesses: json[AdvancedMetricsConstants.keys.activeProcesses],
+      deviceState: json[AdvancedMetricsConstants.keys.deviceState],
+      isInBatterySaveMode: json[AdvancedMetricsConstants.keys.isInBatterySaveMode],
+    );
+  }
+
+  @override
+  String toString() =>
+      '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}. 1. Battery Usage: $batteryUsage %/min, 2. The app worked for: $sessionDuration ms, 3. Location: $location, 4. Active Processes: $activeProcesses, 5. Device State: $deviceState, 6. Is in Battery Save Mode: $isInBatterySaveMode';
+}

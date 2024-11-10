@@ -1,7 +1,10 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/shimmer_card%20copy.dart';
 import 'package:smart_advisor/app/features/select_activity/presentation/widgets/bottom_buttons.dart';
+import 'package:smart_advisor/app/features/self_rating/presentation/pages/rating_item_page.dart';
 
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../shared_features/new_app_bar.dart';
 import '../../data/models/rating_items_response.dart';
 import '../bloc/rating_bloc.dart';
@@ -28,6 +31,7 @@ class _RatingItemsPageState extends State<RatingItemsPage> {
   }
 
   int _currentPage = 0;
+  final ScrollController _controller = ScrollController();
 
   @override
   Widget build(BuildContext context) {
@@ -41,67 +45,42 @@ class _RatingItemsPageState extends State<RatingItemsPage> {
         },
         child: BlocBuilder<RatingBloc, RatingState>(
           builder: (context, state) {
-            final key = state.sortedItems?.keys.elementAt(_currentPage);
-            final items = state.sortedItems?[key] ?? [];
+            return Scaffold(
+                backgroundColor: AppColor.backgroundColor,
+                body: Stack(
+                  children: [
+                    if (state.status != BlocStatus.loading)
+                      Column(
+                        children: [
+                          ClausesAppBar(
+                            title: "تقييم منشأتي",
+                          ),
+                          //  if (widget.args.isFromHome == true)
 
-            return Stack(
-              children: [
-                Container(
-                  height: 400,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        const Color(0xFFF8FFEC)
-                            .withOpacity(0.73), // Lightest color with opacity
-                        const Color(0xFFEBE9FF)
-                            .withOpacity(0.52), // Mid color with opacity
-                        const Color(0xFFEAF6D8).withOpacity(0.73),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      stops: const [
-                        0.0,
-                        0.5,
-                        1.0
-                      ], // Adjust the stop points for smooth gradient transition
-                    ),
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(20),
-                      bottomRight: Radius.circular(20),
-                    ),
-                  ),
-                ),
-                Scaffold(
-                  backgroundColor: AppColor.backgroundColor,
-                  body: Column(
-                    children: [
-                      NewAppBar(
-                        title: "تقييم منشأتى",
-                        showClose: true,
-                      ),
-                      //  if (widget.args.isFromHome == true)
-                      StepperWidget(
-                        currentStep: _currentPage,
-                        totalSteps: state.sortedItems?.length ?? 1,
-                      ),
-                      if (state.itemsStatus == BlocStatus.loading)
-                        const Shimmer2VerticalList(),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: PageView.builder(
-                            itemCount: state.sortedItems?.length ?? 0,
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (ctx, i) {
-                              // Access the key and value at the current index
-
-                              return SingleChildScrollView(
+                          StepperWidget(
+                            currentStep: _currentPage,
+                            totalSteps: state.sortedItems?.length ?? 1,
+                          ),
+                          if (state.itemsStatus == BlocStatus.failure)
+                            Align(
+                                alignment: Alignment.center,
+                                child: ReloadWidget(
+                                  onTab: () {
+                                    context
+                                        .read<RatingBloc>()
+                                        .add(const GetRatings());
+                                  },
+                                )),
+                          if (state.itemsStatus == BlocStatus.loading)
+                            const Shimmer2VerticalList(),
+                          if (state.itemsStatus == BlocStatus.success &&
+                              state.status != BlocStatus.loading)
+                            Expanded(
+                              child: SingleChildScrollView(
                                 child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      state.getClausesName(key ?? 0),
+                                      "حدد حالة امتثالك للبنود الاساسية التالية",
                                       style: AppStyle.accentBoldStyle.copyWith(
                                           fontWeight: FontWeight.w600,
                                           fontSize: 16),
@@ -110,73 +89,160 @@ class _RatingItemsPageState extends State<RatingItemsPage> {
                                       height: 16,
                                     ),
                                     MediaQuery.removePadding(
-                                      removeTop: true,
                                       context: context,
+                                      removeTop: true,
                                       child: ListView.builder(
-                                        itemCount: items.length,
+                                        itemCount:
+                                            state.sortedItems?.keys.length ?? 0,
                                         shrinkWrap: true,
                                         physics:
                                             const NeverScrollableScrollPhysics(),
-                                        itemBuilder: (ctx, j) {
-                                          return RatingWidgetItem(
-                                            item: items[j],
-                                            onSelect: (value) {
-                                              context.read<RatingBloc>().add(
-                                                  ChangeItemRating(
-                                                      ratnig: value,
-                                                      i: key ?? 0,
-                                                      j: j));
+                                        itemBuilder: (ctx, index) {
+                                          final key = state.sortedItems?.keys
+                                              .elementAt(index);
+                                          final items =
+                                              state.sortedItems?[key] ?? [];
+                                          return GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (ctx) =>
+                                                          RatingItemPage(
+                                                            items: items,
+                                                            title: key ??
+                                                                "" /*state
+                                                                .getClausesName(
+                                                                    key ?? 0)*/
+                                                            ,
+                                                          ))).then((v) {
+                                                if (v != null) {
+                                                  context
+                                                      .read<RatingBloc>()
+                                                      .add(UpdateItemsRatings(
+                                                        items: v,
+                                                        key: key ?? "",
+                                                      ));
+                                                }
+                                              });
                                             },
+                                            child: ClauseNameGroupItem(
+                                                clauseName: key ??
+                                                    "" /*state
+                                                    .getClausesName(key ?? 0)*/
+                                                ,
+                                                totalSubClauses: items
+                                                    .where((e) =>
+                                                        e.isDuplicated != true)
+                                                    .length,
+                                                noOfNonComplianceItem: state
+                                                    .getNoOfNonCompliaanceReason(
+                                                        items)),
                                           );
                                         },
                                       ),
-                                    ),
+                                    )
                                   ],
                                 ),
-                              );
-                            },
+                              ),
+                            ),
+
+                          /*  Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: PageView.builder(
+                                itemCount: state.sortedItems?.length ?? 0,
+                                scrollDirection: Axis.horizontal,
+                                physics: NeverScrollableScrollPhysics(),
+                                itemBuilder: (ctx, i) {
+                                  // Access the key and value at the current index
+                      
+                                  return SingleChildScrollView(
+                                    controller: _controller,
+                                    child: Column(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        //state.getClausesName(key ?? 0)
+                                        MediaQuery.removePadding(
+                                          removeTop: true,
+                                          context: context,
+                                          child: ListView.builder(
+                                            itemCount: items.length,
+                                            shrinkWrap: true,
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            itemBuilder: (ctx, j) {
+                                              return RatingWidgetItem(
+                                                item: items[j],
+                                                onSelect: (value) {
+                                                  context.read<RatingBloc>().add(
+                                                      ChangeItemRating(
+                                                          ratnig: value,
+                                                          i: key ?? 0,
+                                                          j: j));
+                                                },
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                          ),*/
+
+                          Container(
+                            height: 100,
+                            padding: EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color: AppColor.white,
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: CustomButton(
+                                btnHeight: 52,
+                                isDisabled:
+                                    state.itemsStatus == BlocStatus.loading ||
+                                        isNextDisabled(state.sortedItems?.values
+                                                .expand((e) => e)
+                                                .toList() ??
+                                            []),
+                                onPress: () {
+                                  context
+                                      .read<RatingBloc>()
+                                      .add(SubmitRatings());
+                                },
+                                text: "النتيجة"),
+                          )
+                        ],
+                      ),
+                    if (state.status == BlocStatus.loading)
+                      Align(
+                        alignment: Alignment.center,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              CircularProgressIndicator(
+                                color: AppColor.statusAccentColor,
+                              ),
+                              SizedBox(
+                                height: 16,
+                              ),
+                              Text(
+                                "جاري إحتساب درجة الإمتثال",
+                                style: AppStyle.somarSemiBold.copyWith(
+                                    color: Color(0xff465463), fontSize: 16),
+                              )
+                            ],
                           ),
                         ),
-                      ),
-                      CustomBottomButtons(
-                        isNextOnly: _currentPage == 0,
-                        isNextDisabled: isNextDisabled(items),
-                        onNext: () {
-                          int temp = _currentPage + 1;
-                          try {
-                            final key = state.sortedItems?.keys.elementAt(temp);
-                            if (key != null) {
-                              _currentPage++;
-                              setState(() {});
-                            } else {
-                              context.read<RatingBloc>().add(SubmitRatings());
-                            }
-                          } catch (ex) {
-                            context.read<RatingBloc>().add(SubmitRatings());
-                          }
-                        },
-                        onPrev: () {
-                          int temp = _currentPage - 1;
-                          try {
-                            final key = state.sortedItems?.keys.elementAt(temp);
-                            if (key != null) {
-                              _currentPage--;
-                              setState(() {});
-                            }
-                          } catch (ex) {}
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                if (state.status == BlocStatus.loading)
-                  Center(
-                    child: CircularProgressIndicator(
-                      color: AppColor.statusAccentColor,
-                    ),
-                  )
-              ],
-            );
+                      )
+                  ],
+                ));
           },
         ),
       ),
@@ -194,178 +260,6 @@ class _RatingItemsPageState extends State<RatingItemsPage> {
     }
 
     return isValid;
-  }
-}
-
-class RatingWidgetItem extends StatelessWidget {
-  final RatingItemsResponseItem item;
-  final Function(int value) onSelect;
-
-  const RatingWidgetItem({
-    super.key,
-    required this.item,
-    required this.onSelect,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.only(right: 16, left: 16, top: 16, bottom: 16),
-      alignment: Alignment.center,
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: AppColor.white,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          width: 1,
-          color: const Color(0xffE2E9F0),
-        ),
-      ),
-      child: Column(
-        children: [
-          Text(
-            item.subClauseName ?? "",
-            style: AppStyle.textRegularRomanStyle.copyWith(
-              color: const Color(0xA1465463),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              ComponentItem(
-                isClauseValidated: item.isClausesValidated == 0,
-                index: 0,
-                onTap: () => onSelect(0),
-                text: "ممتثل",
-                icon:
-                    'packages/smart_advisor/smart_advisor_assets/icons/svg/user-smile-fill@2x.svg',
-              ),
-              ComponentItem(
-                isClauseValidated: item.isClausesValidated == 2,
-                index: 2,
-                onTap: () => onSelect(2),
-                text: "غير ممتثل",
-                icon:
-                    'packages/smart_advisor/smart_advisor_assets/icons/svg/emotion-sad-fill.svg',
-              ),
-              ComponentItem(
-                isClauseValidated: item.isClausesValidated == 1,
-                index: 1,
-                onTap: () => onSelect(1),
-                text: "لا ينطبق",
-                icon:
-                    'packages/smart_advisor/smart_advisor_assets/icons/svg/Info.svg',
-              ),
-            ],
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class ComponentItem extends StatelessWidget {
-  final bool? isClauseValidated;
-  final String text;
-  final String icon;
-  final Function onTap;
-  final int index;
-
-  const ComponentItem(
-      {super.key,
-      this.isClauseValidated,
-      required this.text,
-      required this.onTap,
-      required this.index,
-      required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => onTap(),
-      child: Container(
-        height: 38,
-        padding: const EdgeInsets.all(8),
-        margin: const EdgeInsets.only(top: 8),
-        decoration: BoxDecoration(
-          color: getColorBg(index, isClauseValidated ?? false),
-          borderRadius: BorderRadius.circular(10),
-          border: Border.all(
-            width: 1,
-            color: getColorBorder(index, isClauseValidated ?? false),
-          ),
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            SvgPicture.asset(
-              icon,
-              color: getColorBorder(index, isClauseValidated ?? false),
-            ),
-            const SizedBox(
-              width: 4,
-            ),
-            Text(
-              text,
-              style: AppStyle.textRegularRomanStyle.copyWith(
-                fontSize: 12,
-                color: isClauseValidated == true
-                    ? getTextColor(index)
-                    : const Color(0xA1465463),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Function to determine border color based on selection
-  Color getColorBorder(int index, bool isSelected) {
-    switch (index) {
-      case 0:
-        return isSelected ? const Color(0xFF568F64) : const Color(0xFFD7DEE4);
-      case 1:
-        return isSelected ? const Color(0x9E1E2A36) : const Color(0xFFD7DEE4);
-      case 2:
-        return isSelected ? const Color(0xFFFFA726) : const Color(0xFFD7DEE4);
-      default:
-        return const Color(0xFFE2E9F0);
-    }
-  }
-
-  // Function to determine background color based on selection
-  Color getColorBg(int index, bool isSelected) {
-    switch (index) {
-      case 0:
-        return isSelected
-            ? const Color(0x15568F64)
-            : const Color(0xFFF8FAFC); // Light Green
-      case 1:
-        return isSelected
-            ? const Color(0x10568F64)
-            : const Color(0xFFF8FAFC); // Light Gray
-      case 2:
-        return isSelected ? const Color(0x1AFA8B64) : const Color(0xFFF8FAFC);
-
-      /// Light Orange
-      default:
-        return const Color(0xFFF8FAFC);
-    }
-  }
-
-  // Function to determine text color based on selection
-  Color getTextColor(int index) {
-    switch (index) {
-      case 0:
-        return const Color(0xFF568F64); // Green
-      case 1:
-        return const Color(0xFFA7A7A7); // Gray
-      case 2:
-        return const Color(0xFFFFA726); // Orange
-      default:
-        return const Color(0xFFA7A7A7);
-    }
   }
 }
 
@@ -480,6 +374,175 @@ class StepBar extends StatelessWidget {
             backgroundColor: Color(0xffDDE1EC), // Background color
             color: const Color(0xff568F64), // Active progress color
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class ClauseNameGroupItem extends StatelessWidget {
+  final int? noOfNonComplianceItem;
+  final int totalSubClauses;
+
+  final String clauseName;
+
+  const ClauseNameGroupItem(
+      {this.noOfNonComplianceItem,
+      required this.clauseName,
+      required this.totalSubClauses});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      margin: EdgeInsets.all(8.0),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16.0),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.2),
+            blurRadius: 10,
+            offset: Offset(0, 5),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: Row(
+                  children: [
+                    Image.asset(
+                      "packages/smart_advisor/smart_advisor_assets/icons/png/clause_icon.png",
+                      height: 45,
+                      width: 45,
+                    ),
+                    SizedBox(
+                      width: 8,
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            clauseName ?? "",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black87,
+                            ),
+                          ),
+                          SizedBox(height: 4.0),
+                          Row(
+                            children: [
+                              Text(
+                                '${totalSubClauses} بنود',
+                                style: AppStyle.footNoteMediumStyle.copyWith(
+                                    color: Color(
+                                      0xff637381,
+                                    ),
+                                    fontSize: 14),
+                              ),
+                              SizedBox(width: 8.0),
+                              if (noOfNonComplianceItem != null)
+                                Text(
+                                  '${noOfNonComplianceItem} بنود غير ممتثله',
+                                  style:
+                                      AppStyle.textRegularRomanStyle.copyWith(
+                                          color: Color(
+                                            0xffFB923C,
+                                          ),
+                                          fontSize: 14),
+                                ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(
+                Icons.arrow_forward_ios,
+                color: Color(0xff1C252E),
+                size: 14,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ClausesAppBar extends StatelessWidget {
+  final String title;
+  const ClausesAppBar({
+    super.key,
+    required this.title,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 120,
+      decoration: const BoxDecoration(
+        gradient: RadialGradient(
+          colors: [
+            Color(0x3398FCFF), // 20% opacity
+            Color(0x00ADC587), // 0% opacity
+          ],
+          radius:
+              1.0, // Adjust the radius to control the spread of the gradient
+          center: Alignment.topLeft, // Set the center of the gradient
+        ),
+      ),
+      child: Padding(
+        padding: EdgeInsets.only(
+          top: MediaQuery.of(context).padding.top,
+          bottom: 12,
+          left: 12,
+        ),
+        child: Column(
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                IconButton(
+                  onPressed: () {
+                    NavigationService.navigatorKey.currentState!.pop(context);
+                  },
+                  icon: SvgPicture.asset(
+                    IconPath.newBackIcon,
+                    width: 24,
+                    height: 24,
+                    color: AppColor.textPrimaryColor, //statusAccentColor,
+                  ),
+                ),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          title,
+                          maxLines: 1,
+                          style: AppStyle.callout1BoldStyle
+                              .copyWith(color: AppColor.textPrimaryColor),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );

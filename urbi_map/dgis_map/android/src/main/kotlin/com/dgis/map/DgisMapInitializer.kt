@@ -2,6 +2,8 @@ package com.dgis.map
 
 import android.annotation.SuppressLint
 import android.content.Context
+import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.Messages.VendorConfigContentMessage
 import ru.dgis.sdk.DGis
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.map.CalloutVisualizationMode
@@ -11,6 +13,7 @@ import ru.dgis.sdk.platform.LogLevel
 import ru.dgis.sdk.Context as SdkContext
 import ru.dgis.sdk.platform.LogOptions
 import ru.dgis.sdk.platform.VendorConfigFromAsset
+import ru.dgis.sdk.platform.VendorConfigFromString
 import ru.dgis.sdk.positioning.LocationSource
 import ru.dgis.sdk.positioning.registerPlatformLocationSource
 import ru.dgis.sdk.positioning.registerPlatformMagneticSource
@@ -26,7 +29,8 @@ object DgisMapInitializer {
 
     fun init(
         appContext: Context,
-        vendorConfig: VendorConfig,
+        vendorConfig: Messages.VendorConfigMessage?,
+        vendorConfigContentMessage: VendorConfigContentMessage? = null,
         logOptions: LogOptions? = null,
     ) {
         if (sdkContext != null) {
@@ -34,19 +38,27 @@ object DgisMapInitializer {
             return
         }
 
+        ///TODO(ve): remove after refactorig android auto
         val vendorConfigFile = when (vendorConfig) {
-            VendorConfig.URBI_PRE_PROD -> "flutter_assets/assets/maps/configs/urbi-pre-prod-vendor-config.jsonx"
-            VendorConfig.MOMRAH_PROD -> "flutter_assets/assets/maps/configs/momrah-prod-vendor-config.jsonx"
-            VendorConfig.MOMRAH_STG -> "flutter_assets/assets/maps/configs/momrah-staging-vendor-config.jsonx"
+            Messages.VendorConfigMessage.URBI_PRE_PROD -> "flutter_assets/assets/maps/configs/urbi-pre-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_PROD -> "flutter_assets/assets/maps/configs/momrah-prod-vendor-config.jsonx"
+            Messages.VendorConfigMessage.MOMRAH_STG -> "flutter_assets/assets/maps/configs/momrah-staging-vendor-config.jsonx"
+            null -> "flutter_assets/assets/maps/configs/momrah-prod-vendor-config.jsonx"
+        }
+
+        val config = when{
+            (vendorConfigContentMessage!=null) -> ru.dgis.sdk.platform.VendorConfig(
+                fromString =VendorConfigFromString(vendorConfigContentMessage.content),
+            )
+            else ->ru.dgis.sdk.platform.VendorConfig(
+                fromAsset = VendorConfigFromAsset(
+                    vendorConfigFile
+                ))
         }
 
         sdkContext = DGis.initialize(
             appContext,
-            vendorConfig = ru.dgis.sdk.platform.VendorConfig(
-                fromAsset = VendorConfigFromAsset(
-                    vendorConfigFile
-                )
-            ),
+            vendorConfig = config,
             logOptions = logOptions ?: LogOptions(
                 systemLevel = LogLevel.ERROR, customLevel = LogLevel.ERROR
             ),

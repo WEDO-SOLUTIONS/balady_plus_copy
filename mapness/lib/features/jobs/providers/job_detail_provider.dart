@@ -14,11 +14,9 @@ class JobDetail extends _$JobDetail {
 
   @override
   Future<JobModel?> build({required String id}) async {
-    ref.read(urbiMetricsProvider.notifier).logEvent(
+    Metrics.logEvent(
       _metricEventName,
-      {
-        'id': id,
-      },
+      extras: {'id': id},
     );
     mixpanel?.timeEvent(_metricEventName);
     final dio = await ref.read(dgisHmacNetwrokProvider.future);

@@ -13,6 +13,7 @@ import 'package:smart_advisor/app/features/select_activity/domain/use_cases/get_
 import 'package:smart_advisor/app/features/select_activity/domain/use_cases/get_work_flow.dart';
 import 'package:smart_advisor/app/features/select_activity/presentation/pages/steps/step1.dart';
 import 'package:smart_advisor/app/features/select_activity/presentation/pages/steps/step12.dart';
+import 'package:smart_advisor/app/features/self_rating/presentation/dialogs/rating_dialog.dart';
 
 import '../../../../../core/services/local/use_case.dart';
 import '../../../../details/domain/entities/entity_activity_details_response.dart';
@@ -28,11 +29,15 @@ import '../../../domain/entities/permit_request_params.dart';
 import '../../../domain/entities/permits_activites_response.dart';
 import '../../../domain/entities/rubrics_request_params.dart';
 import '../../../domain/use_cases/get_Isics.dart';
+import '../../../domain/use_cases/get_activity_details_info.dart';
 import '../../../domain/use_cases/get_addetional_activites.dart';
 import '../../../domain/use_cases/get_categories.dart';
 import '../../../domain/use_cases/get_permits.dart';
 import '../../../domain/use_cases/get_rubrics.dart';
 import '../../../domain/use_cases/get_sectors.dart';
+import '../../pages/steps/new_select_steps/step1.dart';
+import '../../pages/steps/new_select_steps/step2.dart';
+import '../../pages/steps/new_select_steps/step3.dart';
 import '../../pages/steps/step10.dart';
 import '../../pages/steps/step13.dart';
 import '../../pages/steps/step2.dart';
@@ -66,10 +71,13 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
   final List<Widget> steps = [
     Step1Page(),
     // Step2Page(),
-    Step3Page(),
+    NewStep1Page(),
+    NewStep2Page(),
+    NewStep3Page(),
+    // Step3Page(), categories
     //Step4Page(),
-    Step5Page(),
-    Step6Page(),
+    // Step5Page(),
+    // Step6Page(),
     Step8Page(),
     Step10Page(),
     Step9Page(),
@@ -91,6 +99,7 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
   final GetWorkFlowUc _getWorkFlowUc;
   final GetEntityActivityDetailssUc _getEntityActivityDetailssUc;
   final GetGISDataUC _getGISDataUC;
+  final GetActivityDetailsInfo _getActivityDetailsInfo;
 
   ActivitesPageParams? args;
 
@@ -106,9 +115,11 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         _getDistricts = GetDistrictsUc(repository: sl()),
         _getWorkFlowUc = GetWorkFlowUc(repository: sl()),
         _getGISDataUC = GetGISDataUC(repository: sl()),
+        _getActivityDetailsInfo = GetActivityDetailsInfo(repository: sl()),
         _getEntityActivityDetailssUc =
             GetEntityActivityDetailssUc(repository: sl()),
         super(const MainFlowState()) {
+    on<GetActivityInfoDetails>(getActivityDetails);
     on<NextPageEvent>(nextPageHandler);
     on<GetGISDataEvent>(getGISDataHandler);
 
@@ -158,6 +169,19 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
             categoriesStatus: BlocStatus.success,
             categories: success,
           ));
+          emit(state.copyWith(status: BlocStatus.loading));
+          int currentPage = state.currentPage + 1;
+          if (success.length == 1) {
+            currentPage++;
+            print("GGSDSDSD ${success}");
+            add(ChangeValuesEvent(selectedCategory: success.first));
+            add(const GetActivitesEvent());
+          }
+          controller.jumpToPage(
+            currentPage,
+          );
+          emit(state.copyWith(
+              status: BlocStatus.success, currentPage: currentPage));
         },
       );
     });
@@ -216,7 +240,8 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
       emit(state.copyWith(activitesStatus: BlocStatus.loading));
 
       final failureOrSuccess = await _getActivites(ActivityRequestParams(
-        isicId: state.selectedIsic?.id ?? 0,
+        // isicId: state.selectedIsic?.id ?? 0,
+        isicId: state.selectedCategory?.id ?? 0,
       ));
       await failureOrSuccess.fold(
         (failure) async {
@@ -232,22 +257,22 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
             activitesStatus: BlocStatus.success,
             activites: success,
           ));
-          emit(state.copyWith(
-            status: BlocStatus.loading,
-          ));
 
-          int currentPage = state.currentPage + 1;
           if (success.length == 1) {
-            add(ChangeValuesEvent(activity: success.first));
-            currentPage++;
-            add(const GetAddetionalActivites());
-          }
-          controller.jumpToPage(
-            currentPage,
-          );
+            emit(state.copyWith(
+              status: BlocStatus.loading,
+            ));
+            int currentPage = state.currentPage + 1;
 
-          emit(state.copyWith(
-              status: BlocStatus.success, currentPage: currentPage));
+            add(ChangeValuesEvent(activity: success.first));
+            add(const GetAddetionalActivites());
+            controller.jumpToPage(
+              currentPage,
+            );
+
+            emit(state.copyWith(
+                status: BlocStatus.success, currentPage: currentPage));
+          }
         },
       );
     });
@@ -276,7 +301,7 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
 
             emit(state.copyWith(
                 status: BlocStatus.success, currentPage: currentPage));
-            add(const GetPermitsEvent());
+            add(const GetActivityInfoDetails());
           }
         },
         (success) async {
@@ -390,6 +415,36 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         detailedCount: detailsList));
   }
 
+  void getActivityDetails(GetActivityInfoDetails event, Emitter emit) async {
+    emit(state.copyWith(activityDetailsStatus: BlocStatus.loading));
+
+    final failureOrSuccess =
+        await _getActivityDetailsInfo(state.selectedActivity?.id ?? 0);
+    await failureOrSuccess.fold(
+      (failure) async {
+        print(failure);
+        emit(state.copyWith(activityDetailsStatus: BlocStatus.closeLoading));
+        emit(state.copyWith(
+          activityDetailsStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) async {
+        LookUpItem? selectedActivity = state.selectedActivity;
+
+        selectedActivity?.isATM = success.isAtm;
+        selectedActivity?.maxArea = (success.maximumArea ?? 0).toDouble();
+        selectedActivity?.minArea = (success.minimumArea ?? 0).toDouble();
+
+        emit(state.copyWith(
+            activityDetailsStatus: BlocStatus.success,
+            selectedActivity: selectedActivity));
+
+        add(const GetPermitsEvent());
+      },
+    );
+  }
+
   void getDetailsHandler(GetDetailsEvent event, Emitter emit) async {
     emit(state.copyWith(detailsStatus: BlocStatus.loading));
 
@@ -454,19 +509,19 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
           workFlow: success,
         ));
 
-        NavigationService.navigatorKey.currentState!
-            .pushNamed(RouteName.newDetails,
-                arguments: ActivityDetailsPageParams(
-                  workFlow: success,
-                  activityId: state.selectedActivity,
-                  addetionalActivites: state.addetionalActivitesResponse,
-                  permits: state.permits,
-                  sector: state.selectedSector,
-                  gisData: state.gisResponse,
-                  gisRequest: state.request,
-                  entityActivityDetailsResponse: state.details,
-                  suggestedArea: state.selectedArea,
-                ));
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.newDetails,
+            arguments: ActivityDetailsPageParams(
+                workFlow: success,
+                activityId: state.selectedActivity,
+                addetionalActivites: state.addetionalActivitesResponse,
+                permits: state.permits,
+                sector: state.selectedSector,
+                gisData: state.gisResponse,
+                gisRequest: state.request,
+                entityActivityDetailsResponse: state.details,
+                suggestedArea: state.selectedArea,
+                atmOption: state.atmOption));
       },
     );
   }
@@ -592,9 +647,28 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
   void nextPageHandler(NextPageEvent event, Emitter emit) async {
     print("ffefe ${state.currentPage}");
 
-    if (state.currentPage == 2) {
-      add(const GetActivitesEvent());
-    } /*else if (state.currentPage == 3 && state.step1Selection == 1) {
+    if (state.step1Selection == 1 && state.currentPage == 0) {
+      await showModalBottomSheet(
+        backgroundColor: const Color(0xff000000),
+        isScrollControlled: true,
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (BuildContext ctx) {
+          return RatingDialog(onSelection: () async {
+            add(const GetSectorEvent());
+
+            int currentPage = state.currentPage + 1;
+            controller.jumpToPage(
+              currentPage,
+            );
+            emit(state.copyWith(
+                status: BlocStatus.success, currentPage: currentPage));
+          });
+        },
+      );
+    } else if (state.currentPage == 1) {
+      add(const GetCategoriesEvent());
+    }
+    /*else if (state.currentPage == 3 && state.step1Selection == 1) {
       int currentPage = state.currentPage + 2;
 
       controller.jumpToPage(
@@ -632,27 +706,17 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         currentPage,
       );
 
-      /* if (currentPage == 1) {
-        add(const GetSectorEvent());
-      }*/
-
       if (currentPage == 1) {
-        add(const GetCategoriesEvent());
+        add(const GetSectorEvent());
       }
 
-      /*if (currentPage == 2) {
-      add(const GetRubricsEvent());
-    }*/
-
-      if (currentPage == 2) {
-        add(const GetIsicsEvent());
+      if (currentPage == 3) {
+        add(const GetActivitesEvent());
       }
-
       //if (currentPage == 4) {}
       if (currentPage == 6) {
-        add(const GetPermitsEvent());
+        add(const GetActivityInfoDetails());
       }
-
       emit(
           state.copyWith(status: BlocStatus.success, currentPage: currentPage));
     }
@@ -694,9 +758,9 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
       case 1:
         return "فتح محل / منشأة تجارية";
       case 2:
-        return state.selectedCategory?.name ?? "";
+        return state.selectedSector?.name ?? "";
       case 3:
-        return state.selectedIsic?.name ?? "";
+        return state.selectedCategory?.name ?? "";
         ;
       case 4:
         return state.selectedActivity?.name ?? "";

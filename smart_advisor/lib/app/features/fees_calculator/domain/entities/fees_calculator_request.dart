@@ -8,11 +8,11 @@ class FeesCalculatorRequest {
   final int? licensePeriod;
   final double? shopArea;
   final String? cleanOption;
-  final dynamic unitCount;
-  final dynamic accommodationTypeId;
+  final String? unitCount;
+  final int? accommodationTypeId;
   final List<Permit>? permits;
   final List<Board>? boards;
-  final dynamic atmFeesPaid;
+  final String? atmFeesPaid;
   final String? crNumber;
   List<AddetionalActivityItem>? addetionalActivites;
 
@@ -71,15 +71,19 @@ class FeesCalculatorRequest {
           "boards": boards == null
               ? []
               : List<dynamic>.from(boards!.map((x) => x.toJson())),
-        "atmFeesPaid": atmFeesPaid,
+        "atmFeesPaid": atmFeesPaid != null
+            ? atmFeesPaid == "ATTACH"
+                ? true
+                : false
+            : null,
         "crNumber": crNumber,
-        /*  if (addetionalActivites != null && addetionalActivites!.isNotEmpty)
+        if (addetionalActivites != null && addetionalActivites!.isNotEmpty)
           "additionalActivities": addetionalActivites == null
               ? []
               : List<dynamic>.from(addetionalActivites!.map((x) => {
-                    "ActivityId": x.activityId.toString(),
-                    "Area": x.area.toString()
-                  })),*/
+                    "activityId": x.activityId.toString(),
+                    "area": x.area.toString(),
+                  })),
       };
 }
 
@@ -99,7 +103,7 @@ class Board {
 
   Map<String, dynamic> toJson() => {
         "typeId": typeId,
-        "area": area,
+        "area": area.toString(),
       };
 }
 

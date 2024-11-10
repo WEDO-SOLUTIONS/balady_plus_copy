@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -41,10 +40,10 @@ class PoiHeader extends ConsumerWidget {
     String subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
 
     // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
-    if (prefixMapping.containsKey(subTitle.toCapitalized())) {
+    if (prefixMapping.containsKey(subTitle.toLowerCase())) {
       subTitle = switch (direction) {
         TextDirection.ltr => subTitle,
-        TextDirection.rtl => prefixMapping[subTitle.toCapitalized()]!,
+        TextDirection.rtl => prefixMapping[subTitle.toLowerCase()]!,
       };
     }
 

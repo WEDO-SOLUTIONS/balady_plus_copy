@@ -3,6 +3,7 @@ library smart_advisor;
 import 'package:flutter/material.dart';
 import 'package:smart_advisor/app/app.dart';
 import 'package:smart_advisor/app/core/services/services_exports.dart';
+import 'package:smart_advisor/app/features/select_activity/data/models/new_activites_model.dart';
 
 import 'app/core/dependency_injection/injection_container.dart';
 import 'app/features/onboarding/pages/onbordingPage.dart';
@@ -17,7 +18,7 @@ class SmartAdvisor {
     try {
       ctx = context;
       env = envType == EnvType.prod ? utils.EnvType.prod : utils.EnvType.stg;
-
+      loadRegulationsData();
       initialize(env);
 
       Navigator.push(

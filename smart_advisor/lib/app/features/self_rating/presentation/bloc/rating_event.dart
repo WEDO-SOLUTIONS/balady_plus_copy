@@ -22,3 +22,9 @@ class ChangeItemRating extends RatingEvent {
   const ChangeItemRating(
       {required this.ratnig, required this.i, required this.j});
 }
+
+class UpdateItemsRatings extends RatingEvent {
+  final List<RatingItemsResponseItem> items;
+  final String key;
+  const UpdateItemsRatings({required this.items, required this.key});
+}

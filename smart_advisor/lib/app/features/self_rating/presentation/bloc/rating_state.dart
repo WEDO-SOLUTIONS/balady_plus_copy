@@ -5,7 +5,7 @@ class RatingState extends Equatable {
   final BlocStatus itemsStatus;
   final String? errorMessage;
   final RatingItemsResponseModel? items;
-  final Map<int, List<RatingItemsResponseItem>>? sortedItems;
+  final Map<String, List<RatingItemsResponseItem>>? sortedItems;
   // Constructor
   const RatingState(
       {this.status = BlocStatus.initial,
@@ -20,7 +20,7 @@ class RatingState extends Equatable {
       BlocStatus? itemsStatus,
       String? errorMessage,
       RatingItemsResponseModel? items,
-      Map<int, List<RatingItemsResponseItem>>? sortedItems}) {
+      Map<String, List<RatingItemsResponseItem>>? sortedItems}) {
     return RatingState(
         items: items ?? this.items,
         status: status ?? this.status,
@@ -33,19 +33,28 @@ class RatingState extends Equatable {
   List<Object?> get props =>
       [status, errorMessage, itemsStatus, items, sortedItems];
 
-  Map<int, List<RatingItemsResponseItem>> getRatingsItems(
+  Map<String, List<RatingItemsResponseItem>> getRatingsItems(
       final RatingItemsResponseModel? items) {
-    Map<int, List<RatingItemsResponseItem>> data = {};
+    Map<String, List<RatingItemsResponseItem>> data = {};
 
     for (int i = 0; i < (items?.result?.length ?? 0); i++) {
       RatingItemsResponseItem item = items!.result![i];
 
-      if (data.containsKey(item.clauseNo)) {
-        List<RatingItemsResponseItem> ratings = data[item.clauseNo] ?? [];
-        ratings.add(item);
-        data.putIfAbsent(item.clauseNo!, () => ratings);
+      if (!data.containsKey(item.getClausesName())) {
+        // If clauseName not in the map, initialize with the current item
+        data[item.getClausesName()] = [item];
       } else {
-        data.putIfAbsent(item.clauseNo!, () => [item]);
+        // Check for duplicate subClauseName under the same clauseName
+        bool isDuplicate = data[item.getClausesName()]!.any(
+            (existingItem) => existingItem.subClauseName == item.subClauseName);
+
+        if (isDuplicate) {
+          item.isDuplicated = true; // Mark as duplicate
+        } else {
+          item.isDuplicated =
+              false; // Ensure unique items have false as default
+        }
+        data[item.getClausesName()]!.add(item);
       }
     }
 
@@ -57,9 +66,19 @@ class RatingState extends Equatable {
       RatingItemsResponseItem item = items!.result![i];
 
       if (item.clauseNo == clauseNo) {
-        return item.clauseName ?? "";
+        return item.getClausesName();
       }
     }
     return "";
+  }
+
+  int? getNoOfNonCompliaanceReason(List<RatingItemsResponseItem> items) {
+    int no = items.where((e) => e.isClausesValidated == 2).length;
+
+    if (items.firstOrNull?.isSaved == true) {
+      return no;
+    } else {
+      return null;
+    }
   }
 }

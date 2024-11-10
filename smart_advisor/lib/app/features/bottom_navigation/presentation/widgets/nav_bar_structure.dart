@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../../../core/services/services_exports.dart' show NavigationService;
-import '../../../../core/utils/utils_exports.dart' show ContextConversion;
+import '../../../../core/utils/utils_exports.dart'
+    show  ContextConversion;
 
 class BottomNavBarStructure extends StatelessWidget {
   final double height;
@@ -49,7 +50,7 @@ class BottomNavBarStructure extends StatelessWidget {
     );
   }
 
-  BuildContext get context => NavigationService.navigatorKey.currentContext!;
+  BuildContext get context => NavigationService.bottomNavKey.currentContext!;
 
   double get width => context.screenWidth;
 }

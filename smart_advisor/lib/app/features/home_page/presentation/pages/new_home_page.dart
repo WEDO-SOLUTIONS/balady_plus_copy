@@ -154,55 +154,77 @@ class _NewHomePageState extends State<NewHomePage> {
                                   Container(
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 16),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            Navigator.of(context).pushNamed(
-                                              RouteName.mainFlowPage,
-                                            );
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () {
+                                              Navigator.of(context).pushNamed(
+                                                RouteName.mainFlowPage,
+                                              );
 
-                                            //   Navigator.of(context).pushNamed(
-                                            //     RouteName.newDetails,
-                                            //      arguments:
-                                            //          ActivityDetailsPageParams());
-                                          },
-                                          child: HomeCardItems(
-                                            title: homeCardItems[0].title,
-                                            image: homeCardItems[0].image,
-                                            isLast: false,
+                                              //   Navigator.of(context).pushNamed(
+                                              //     RouteName.newDetails,
+                                              //      arguments:
+                                              //          ActivityDetailsPageParams());
+                                            },
+                                            child: HomeCardItems(
+                                              title: homeCardItems[0].title,
+                                              image: homeCardItems[0].image,
+                                              isDisabled:
+                                                  homeCardItems[0].isDisabled,
+                                              isLast: false,
+                                            ),
                                           ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: () {
-                                            //  if (!Platform.isAndroid) {
-                                            Navigator.of(context)
-                                                .push(MaterialPageRoute(
-                                                    builder: (ctx) => PDFViewer(
-                                                          text:
-                                                              'اشتراطات إنشاء المباني السكنية',
-                                                          url:
-                                                              'https://apps.balady.gov.sa/BALADYCDN/Content/Construction/ashtratatanshaalmbanyalsknytmalqrar3.pdf',
-                                                        )));
-                                            // }
-                                            /*else {
-                                              CommonFunctions.openWebView(
-                                                  context: context,
-                                                  title:
-                                                      'اشتراطات إنشاء المباني السكنية',
-                                                  URL:
-                                                      'https://apps.balady.gov.sa/BALADYCDN/Content/Construction/ashtratatanshaalmbanyalsknytmalqrar3.pdf');
-                                          }*/
-                                          },
-                                          child: HomeCardItems(
-                                            title: homeCardItems[1].title,
-                                            image: homeCardItems[1].image,
-                                            isLast: false,
+                                          const SizedBox(
+                                            width: 11,
                                           ),
-                                        )
-                                      ],
+                                          GestureDetector(
+                                            onTap: () {
+                                              /* Navigator.of(context)
+                                                  .push(MaterialPageRoute(
+                                                      builder: (ctx) => PDFViewer(
+                                                            text:
+                                                                'اشتراطات إنشاء المباني السكنية',
+                                                            url:
+                                                                'https://apps.balady.gov.sa/BALADYCDN/Content/Construction/ashtratatanshaalmbanyalsknytmalqrar3.pdf',
+                                                          )));*/
+                                            },
+                                            child: HomeCardItems(
+                                              title: homeCardItems[1].title,
+                                              image: homeCardItems[1].image,
+                                              isDisabled:
+                                                  homeCardItems[1].isDisabled,
+                                              isLast: false,
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 11,
+                                          ),
+                                          GestureDetector(
+                                            onTap: () {
+                                              /*Navigator.of(context).pushNamed(
+                                                RouteName.mainFlowPage,
+                                              );*/
+
+                                              //   Navigator.of(context).pushNamed(
+                                              //     RouteName.newDetails,
+                                              //      arguments:
+                                              //          ActivityDetailsPageParams());
+                                            },
+                                            child: HomeCardItems(
+                                              title: homeCardItems[2].title,
+                                              image: homeCardItems[2].image,
+                                              isDisabled:
+                                                  homeCardItems[2].isDisabled,
+                                              isLast: false,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
                                   /* SizedBox(

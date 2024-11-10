@@ -120,14 +120,24 @@ class _Step9PageState extends State<Step9Page> {
                             ),
                           ),
                         ],
-                        if (state.permitsStatus == BlocStatus.failure)
+                        if (state.permitsStatus == BlocStatus.failure ||
+                            state.activityDetailsStatus == BlocStatus.failure)
                           Align(
                             alignment: Alignment.center,
                             child: ReloadWidget(
                               onTab: () {
-                                context
-                                    .read<MainFlowBloc>()
-                                    .add(const GetPermitsEvent());
+                                if (state.permitsStatus == BlocStatus.failure) {
+                                  context
+                                      .read<MainFlowBloc>()
+                                      .add(const GetPermitsEvent());
+                                }
+
+                                if (state.activityDetailsStatus ==
+                                    BlocStatus.failure) {
+                                  context
+                                      .read<MainFlowBloc>()
+                                      .add(const GetActivityInfoDetails());
+                                }
                               },
                             ),
                           ),

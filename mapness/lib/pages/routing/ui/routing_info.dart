@@ -94,12 +94,23 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     final dgisController = ref.read(dgisControllerProvider).valueOrNull;
     final carConnected = await ref.read(carConnectionProvider.future);
 
+    //TODO(scroollocker): !IMPORTANT! Change this logic when we have more than 2 points
+    int finishPointIndex = 1;
     if (widget.points.length < 2 && widget.points[1] != null) {
       _isNavTypeLoading.value = false;
       return;
     }
 
-    final finishPoint = widget.points[1]!;
+    if (widget.points.length == 2 && widget.points[1] == null) {
+      finishPointIndex = 0;
+    }
+
+    if (widget.points[finishPointIndex] == null) {
+      _isNavTypeLoading.value = false;
+      return;
+    }
+
+    final finishPoint = widget.points[finishPointIndex]!;
     final dgisObjectId = finishPoint.dgisObjectId;
 
     if (location == null || dgisController == null || dgisObjectId == null) {
@@ -163,7 +174,11 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       valueListenable: _isNavTypeLoading,
       builder: (context, isLoading, child) {
         if (isLoading) {
-          return Center(child: Loading.large());
+          return Center(
+              child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
+            child: Loading.large(),
+          ));
         }
         return ValueListenableBuilder(
           valueListenable: _navType,

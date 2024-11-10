@@ -80,6 +80,10 @@ class IconPath {
       "packages/smart_advisor/smart_advisor_assets/images/commercial_background.png";
   static const constructionsBackground =
       "packages/smart_advisor/smart_advisor_assets/images/constructions_background.png";
+
+  static const drillingBackground =
+      "packages/smart_advisor/smart_advisor_assets/images/drilling_background.png";
+
   static const newBackIcon =
       "packages/smart_advisor/smart_advisor_assets/icons/svg/ArrowCornerRightL.svg";
 

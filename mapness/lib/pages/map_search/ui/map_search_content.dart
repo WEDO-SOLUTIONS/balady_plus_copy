@@ -117,8 +117,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         hasScrollBody: false,
         child: SafeArea(
           top: false,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 196),
+          child: Center(
             child: Loading(
               orientation: Axis.vertical,
               size: LoaderSize.large,
@@ -128,13 +127,10 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         ),
       ),
       suggest: (suggest) => SliverToBoxAdapter(
-        child: Container(
-          color: Colors.white,
-          child: SafeArea(
-            top: false,
-            child: MapSuggestList(
-              suggest: suggest,
-            ),
+        child: SafeArea(
+          top: false,
+          child: MapSuggestList(
+            suggest: suggest,
           ),
         ),
       ),
