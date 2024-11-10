@@ -30,7 +30,7 @@ class EkramRequestTransportationState extends Equatable {
   final List<LookUpItem>? laundries;
   final List<LookUpItem>? mosques;
   final List<LookUpItem>? transportations;
-  final bool? agreement;
+  final bool? agreementChecked;
   final String? fullName;
   final String? mobileNumber;
   final String? requestType;
@@ -98,7 +98,7 @@ class EkramRequestTransportationState extends Equatable {
       this.laundries,
       this.mosques,
       this.transportations,
-      this.agreement,
+      this.agreementChecked,
       this.fullName,
       this.mobileNumber,
       this.requestType,
@@ -138,7 +138,7 @@ class EkramRequestTransportationState extends Equatable {
     final List<LookUpItem>? nationalIdTypes,
     final String? errorMessage,
     final int? currentPageValue,
-    final bool? agreement,
+    final bool? agreementChecked,
     final String? relation,
     final String? deathLocation,
     final List<LookUpItem>? cities,
@@ -199,7 +199,7 @@ class EkramRequestTransportationState extends Equatable {
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
       currentPageValue: currentPageValue ?? this.currentPageValue,
-      agreement: agreement ?? this.agreement,
+      agreementChecked: agreementChecked ?? this.agreementChecked,
       relation: relation ?? this.relation,
       deathLocation: deathLocation ?? this.deathLocation,
       cities: cities ?? this.cities,
@@ -295,7 +295,7 @@ class EkramRequestTransportationState extends Equatable {
         selectedNationality,
         // deceasedInfoDto,
         letter,
-        agreement,
+        agreementChecked,
         deceasedId,
         otherHospitalName,
         deceassedDOBGorgian,
@@ -317,7 +317,7 @@ class EkramRequestTransportationState extends Equatable {
 
   bool isNextButtonEnabled() {
     if (currentPageValue == 0) {
-       return isVerified ?? false;
+      return isVerified ?? false;
     }
 
     if (currentPageValue == 1) {

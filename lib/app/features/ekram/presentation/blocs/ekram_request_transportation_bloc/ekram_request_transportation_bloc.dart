@@ -70,13 +70,12 @@ class EkramRequestTransportationBloc extends Bloc<
   PageController controller = PageController();
   // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
-
     DeceasedVerificationSection(),
     DeceasedInfoSection(),
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
-         AgreementSection(),
+    AgreementSection(),
   ];
 
   final GetCemeteryTypesLookUp _getCemeteryTypesLookUp;
@@ -112,12 +111,15 @@ class EkramRequestTransportationBloc extends Bloc<
         _saveDeathBurialInfo = SaveDeathBurialInfo(repository: sl()),
         _getCountreies = GetCountreies(repository: sl()),
         _getCemetries = GetCemetriesLookUp(repository: sl()),
-        _ekramTransportValidateSubmit = EkramTransportValidateSubmit(repository: sl()),
-        _getTransportationNames =GetTransportationCompaniesLookUp(repository: sl()),
+        _ekramTransportValidateSubmit =
+            EkramTransportValidateSubmit(repository: sl()),
+        _getTransportationNames =
+            GetTransportationCompaniesLookUp(repository: sl()),
         _getLaundires = GetLaundriesLookup(repository: sl()),
         _getMosques = GetMosquesLookup(repository: sl()),
         _getPrayers = GetPrayers(repository: sl()),
-        _getSpecialTransportReasons =GetSpecialTransportReasonsLookUp(repository: sl()),
+        _getSpecialTransportReasons =
+            GetSpecialTransportReasonsLookUp(repository: sl()),
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         _getRequestDetails = getRequestDetails,
@@ -204,7 +206,7 @@ class EkramRequestTransportationBloc extends Bloc<
   Future<void> _changeAgreementHandler(
       ChangeAgreementEvent e, Emitter emitter) async {
     emitter(state.copyWith(
-      agreement: e.isagree,
+      agreementChecked: e.isagree,
     ));
   }
 
@@ -611,10 +613,12 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
     });
   }
+
   Future<void> _ekramTransportValidateSubmitHandler(
       ekramTransportValidateSubmitEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _ekramTransportValidateSubmit([e.requestId, e.params]);
+    final failureOrSuccess =
+        await _ekramTransportValidateSubmit([e.requestId, e.params]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(
@@ -622,18 +626,13 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-
       emitter(state.copyWith(
         status: BlocStatus.success,
         errorMessage: "",
       ));
 
       NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.ekramSuccessScreen,
-          arguments: state.requestId);
-
-
-
+          .pushNamed(RouteName.ekramSuccessScreen, arguments: state.requestId);
     });
   }
 
@@ -803,8 +802,6 @@ class EkramRequestTransportationBloc extends Bloc<
     if (nextPage == 1) {
       add(getRequestDetailsEvent(requestId: state.requestId!));
     }
-
-
   }
 
   Future<void> _goToPreviousPageHandler(
@@ -1037,9 +1034,9 @@ class EkramRequestTransportationBloc extends Bloc<
     params = params.copyWith(deathInfo: info);
 
     emitter(state.copyWith(
-       hospitals: isCityChanged(e.deathInfo?.cityId)==true?[]:null,
-        status: BlocStatus.success, requestDetailsModel: params));
-
+        hospitals: isCityChanged(e.deathInfo?.cityId) == true ? [] : null,
+        status: BlocStatus.success,
+        requestDetailsModel: params));
   }
 
   Future<void> _changeBurialInfoHandler(
@@ -1165,19 +1162,15 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
-
-  bool isCityChanged(int? newCityId)
-  {
-    if(newCityId != null) {
+  bool isCityChanged(int? newCityId) {
+    if (newCityId != null) {
       if (state.requestDetailsModel?.deathInfo?.cityId != newCityId) {
         return true;
-      }
-      else if (state.requestDetailsModel?.deathInfo?.corpseArrivalCityId !=
+      } else if (state.requestDetailsModel?.deathInfo?.corpseArrivalCityId !=
           newCityId) {
         return true;
       }
     }
     return false;
-
   }
 }
