@@ -632,8 +632,9 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: "",
       ));
 
-      NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.ekramSuccessScreen, arguments: state.requestId);
+      NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.ekramSuccessScreen,
+          arguments: "${state.requestId}");
     });
   }
 
