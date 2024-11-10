@@ -50,7 +50,7 @@ class AgreementSection extends StatelessWidget {
                           child: Row(
                             children: [
                               Checkbox(
-                                value: state.agreement ?? false,
+                                value: state.agreementChecked ?? false,
                                 activeColor: AppColor.primary900Light,
                                 onChanged: (newVal) {
                                   context
@@ -74,7 +74,7 @@ class AgreementSection extends StatelessWidget {
                         ),
                         Spacer(),
                         SafeArea(
-                          child: ElevatedButtonWidget.primaryCustom(
+                          child: ElevatedButtonWidget.custom(
                             onPressed: () async {
                               context
                                   .read<EkramRequestTransportationBloc>()
@@ -94,8 +94,9 @@ class AgreementSection extends StatelessWidget {
                                               locationAddress: '',
                                               amanaCode: ''),
                                       requestId: state.requestId!));
-
                             },
+                            isDisabled:
+                                state.agreementChecked == false ? true : false,
                             text: "ekram_transportation_apply".tr(),
                           ),
                         )
