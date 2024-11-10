@@ -3011,7 +3011,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.madinahEmirateApprovalStatus(cemetryId, id, idType),
       );
 
@@ -3128,7 +3128,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     Response? response;
 
     try {
-      response = await webService.dio.get(
+      response = await webService.dio.post(
         ApiUrl.ekramTransportValidateSubmit(requestId),
         data: params.toJson()
       );

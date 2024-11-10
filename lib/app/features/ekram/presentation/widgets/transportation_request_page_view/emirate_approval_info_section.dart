@@ -12,14 +12,14 @@ class EmirateApprovalInfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var bloc = context.read<EkramRequestTransportationBloc>();
+    bloc.add(GetMadinahEmirateApprovalStatusEvent(
+        cemetryId: bloc.state.requestDetailsModel?.cemeteryData?.cemeteryId,
+        id: bloc.state.deceasedId,
+        idType: bloc.state.selectedNationalIdType?.id));
     return BlocBuilder<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
       builder: (context, state) {
-        context.read<EkramRequestTransportationBloc>().add(
-            GetMadinahEmirateApprovalStatusEvent(
-                cemetryId: state.selectedCemetry?.id,
-                id: state.deceasedId,
-                idType: state.selectedNationalIdType?.id));
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -55,28 +55,39 @@ class EmirateApprovalInfoSection extends StatelessWidget {
                                 )
                               ],
                             ),
-                            CustomTextFieldWidget(
-                              label: "ekram_baquie_approval_date".tr(),
-                              initialValue:
-                                  state.madinahEmirateApprovalDate ?? '',
-                              disabledColor: AppColor.grey900Light,
-                              readOnly: true,
-                            ),
-                            CustomTextFieldWidget(
-                                label: "ekram_baquie_approval_status".tr(),
-                                initialValue:
-                                    state.madinahEmirateApprovalStatus ?? '',
-                                readOnly: true,
-                                disabledColor: AppColor.grey900Light,
-                                suffixIcon: SvgPicture.asset(
-                                  IconPath.calendar,
-                                  width: 30,
-                                  height: 30,
-                                ),
-                                onChanged: (String? text) {},
-                                onValidate: (String? value) {
-                                  return null;
-                                }),
+                            state.madinahEmirateApprovalStatus != null &&
+                                    state.madinahEmirateApprovalDate != null
+                                ? Column(
+                                    children: [
+                                      CustomTextFieldWidget(
+                                        label:
+                                            "ekram_baquie_approval_date".tr(),
+                                        initialValue:
+                                            state.madinahEmirateApprovalDate ??
+                                                '',
+                                        disabledColor: AppColor.grey900Light,
+                                        readOnly: true,
+                                      ),
+                                      CustomTextFieldWidget(
+                                          label: "ekram_baquie_approval_status"
+                                              .tr(),
+                                          initialValue: state
+                                                  .madinahEmirateApprovalStatus ??
+                                              '',
+                                          readOnly: true,
+                                          disabledColor: AppColor.grey900Light,
+                                          suffixIcon: SvgPicture.asset(
+                                            IconPath.calendar,
+                                            width: 30,
+                                            height: 30,
+                                          ),
+                                          onChanged: (String? text) {},
+                                          onValidate: (String? value) {
+                                            return null;
+                                          }),
+                                    ],
+                                  )
+                                : Text(state.errorMessage!)
                           ],
                         ),
                       ),
