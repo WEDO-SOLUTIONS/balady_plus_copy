@@ -82,7 +82,7 @@ class DeathInfo {
         'showHospitalOther': showHospitalOther,
         'caseContagious': caseContagious,
         'deathByQasas': deathByQasas,
-        'age': age?.toJson(),
+        'age': null,
       };
 
   DeathInfo copyWith({  String? deathDate,
