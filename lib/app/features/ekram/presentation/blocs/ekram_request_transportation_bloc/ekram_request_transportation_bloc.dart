@@ -129,6 +129,7 @@ class EkramRequestTransportationBloc extends Bloc<
             GetMadinahEmirateApprovalStatus(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
         super(EkramRequestTransportationState(
+            agreementChecked: false,
             isSpecialTransferNeeded: false,
             isBurialInsideDeathCity: true,
             fullName: CommonProperties.userInfo?.arName ?? "",
