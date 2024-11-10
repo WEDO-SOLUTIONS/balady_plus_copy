@@ -129,6 +129,7 @@ class EkramRequestTransportationBloc extends Bloc<
             GetMadinahEmirateApprovalStatus(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
         super(EkramRequestTransportationState(
+            agreementChecked: false,
             isSpecialTransferNeeded: false,
             isBurialInsideDeathCity: true,
             fullName: CommonProperties.userInfo?.arName ?? "",
@@ -631,8 +632,9 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: "",
       ));
 
-      NavigationService.navigatorKey.currentState!
-          .pushNamed(RouteName.ekramSuccessScreen, arguments: state.requestId);
+      NavigationService.navigatorKey.currentState!.pushNamed(
+          RouteName.ekramSuccessScreen,
+          arguments: "${state.requestId}");
     });
   }
 
@@ -1142,8 +1144,8 @@ class EkramRequestTransportationBloc extends Bloc<
       GetMadinahEmirateApprovalStatusEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess =
-        await _getMadinahEmirateApprovalStatus([e.cemetryId, e.id, e.idType]);
+    final failureOrSuccess = await _getMadinahEmirateApprovalStatus(
+        [e.cemetryId, int.parse(e.id!), e.idType]);
 
     failureOrSuccess.fold((failure) {
       print("failure $failure");
@@ -1155,9 +1157,9 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-        madinahEmirateApprovalStatus: success.data!.result!.approvalStatusName!,
-        madinahEmirateApprovalDate: success.data!.result!.approvalDate,
-        errorMessage: "",
+        madinahEmirateApprovalStatus: success.data?.result?.approvalStatusName,
+        madinahEmirateApprovalDate: success.data?.result?.approvalDate,
+        errorMessage: success.data?.result?.message,
       ));
     });
   }
