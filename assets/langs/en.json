@@ -4450,5 +4450,6 @@
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
   "complianceFAQ": "Frequently asked questions",
   "complaince_save_clause":"Save Clause",
-  "complinace_clause": "Clause"
+  "complinace_clause": "Clause",
+  "complaince_edit_clause":"Edit Clause"
 }
