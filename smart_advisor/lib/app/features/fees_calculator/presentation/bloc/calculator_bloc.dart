@@ -51,6 +51,9 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     on<ChangePermitNoOfVeichlesEvent>(changePermitNoOfVeichles);
     on<DeleteBoardItemEvent>(DeleteBoardItemHandler);
     on<ChangeAreaValueEvent>(changeAreaValue);
+
+    on<ChangeUnitCountEvent>(changeUnitCount);
+    on<ChangeAccomodationTypeEvent>(changeAccomodationType);
   }
 
   void changeAreaValue(ChangeAreaValueEvent event, Emitter emit) async {
@@ -149,6 +152,18 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     emit(state.copyWith(status: BlocStatus.success, cleanOption: event.item));
   }
 
+  void changeAccomodationType(
+      ChangeAccomodationTypeEvent event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(
+        status: BlocStatus.success, acomodationType: event.item));
+  }
+
+  void changeUnitCount(ChangeUnitCountEvent event, Emitter emit) async {
+    emit(state.copyWith(unitCount: event.data));
+  }
+
   void changeLicenseYearsHandler(ChangeLicenseYears event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -179,6 +194,18 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
         longitude: args.gisRequest?.lon.toString(),
         latitude: args.gisRequest?.lat.toString(),
         activityId: args.activityId?.id,
+        permits: args.permits
+                ?.where((e) => e.isSelected == true)
+                .map((e) => Permit(
+                    nonFoodVehicleCount: e.nonFoodVehicleCount,
+                    permitName: e.name,
+                    permitTypeId: e.permitTypeId,
+                    sideWalk: SideWalk(
+                        days: e.days,
+                        width: e.width?.toInt() ?? 0,
+                        length: e.length?.toInt())))
+                .toList() ??
+            [],
         addetionalActivites: args.addetionalActivites
                 ?.where((e) => e.isSelected == true)
                 .toList() ??
@@ -186,7 +213,10 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
         licensePeriod: state.selectedPeriod?.id,
         shopArea: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
             .toDouble(),
+        atmFeesPaid: args.atmOption,
         cleanOption: state.cleanOption?.idStr,
+        unitCount: state.unitCount,
+        accommodationTypeId: state.acomodationType?.id,
         boards: state.boards
             ?.map(
                 (x) => Board(area: double.tryParse(x.area ?? ""), typeId: x.id))

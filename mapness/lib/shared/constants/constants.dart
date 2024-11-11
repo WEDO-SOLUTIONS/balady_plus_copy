@@ -16,4 +16,10 @@ class MapnessConstants {
   static const camerasOn = 'camerasOn';
   static const analyticsTripStopped = 'tripStopped';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+  ///config region
+  static const envConfigBoxKey = 'envConfigKey';
+  static const envTypeKey = 'envTypeKey';
+  static const vendorConfigKey = 'vendorConfigKey';
+  static const firebaseAppEnvConfigKey = 'app_env_config';
+
 }

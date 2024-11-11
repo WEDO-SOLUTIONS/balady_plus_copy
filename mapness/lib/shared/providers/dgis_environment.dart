@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:mapness/shared/config/environment_config.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,18 +18,11 @@ class DgisEnvironment extends _$DgisEnvironment {
 
   @override
   Future<EnvironmentConfig> build() async {
-    final box = await ref.watch(hiveProvider('envType').future);
-    final envType = box.get('envType');
-
-    final env = _env ??
-        switch (envType) {
-          'dev' => DgisEnv.urbiDev,
-          'stg' => DgisEnv.momrahStaging,
-          'pre' => DgisEnv.urbiPreprod,
-          'prod' => DgisEnv.momrahProd,
-          'urbiPre' => DgisEnv.urbiPreprod,
-          _ => DgisEnv.urbiPreprod,
-        };
-    return env.getConfig();
+    final box =
+        await ref.watch(hiveProvider(MapnessConstants.envConfigBoxKey).future);
+    final envConfig = box.get(MapnessConstants.firebaseAppEnvConfigKey);
+    final envType = box.get(MapnessConstants.envTypeKey);
+    final envTypeJsonKey = _env?.name ?? envType;
+    return EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
   }
 }

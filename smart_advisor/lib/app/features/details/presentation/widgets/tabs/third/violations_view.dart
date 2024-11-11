@@ -72,13 +72,15 @@ class _ViolationsViewState extends State<ViolationsView> {
                   const Shimmer2VerticalList(
                     height: 50,
                   ),
-                if (state.violationStatus == BlocStatus.failure)
+                if (state.violationStatus == BlocStatus.failure &&
+                    violationSelection == 0)
                   ReloadWidget(
                     onTab: () {
                       context.read<DetailsBloc>().add(GetViolationsListEvent());
                     },
                   ),
-                if (state.vdViolationStatus == BlocStatus.failure)
+                if (state.vdViolationStatus == BlocStatus.failure &&
+                    violationSelection == 1)
                   ReloadWidget(
                     onTab: () {
                       context.read<DetailsBloc>().add(GetViolationVD());

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:smart_advisor/app/core/services/services_exports.dart';
 import 'package:smart_advisor/app/core/utils/extensions/context_conversion.dart';
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
-import 'package:smart_advisor/app/features/self_rating/presentation/pages/result_page.dart';
+import 'package:smart_advisor/app/features/self_rating/presentation/pages/result_page.dart'
+    as resultPage;
 
 import '../../data/models/rating_items_response.dart';
 import '../../domain/entities/submit_rating_request.dart';
@@ -30,12 +31,26 @@ class RatingBloc extends Bloc<RatingEvent, RatingState> {
     on<GetRatings>(getRatingsItems);
     on<SubmitRatings>(submitRatingsItems);
     on<ChangeItemRating>(changeRatingItem);
+    on<UpdateItemsRatings>(updateItemsRatingsHandler);
     add(const GetRatings());
+  }
+
+  void updateItemsRatingsHandler(UpdateItemsRatings event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+    Map<String, List<RatingItemsResponseItem>>? sortedItems = state.sortedItems;
+    List<RatingItemsResponseItem> items = event.items;
+    items = items.map((e) {
+      e.isSaved = true;
+      return e;
+    }).toList();
+    sortedItems![event.key] = items;
+
+    emit(state.copyWith(status: BlocStatus.success, sortedItems: sortedItems));
   }
 
   void changeRatingItem(ChangeItemRating event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    Map<int, List<RatingItemsResponseItem>>? sortedItems = state.sortedItems;
+    Map<String, List<RatingItemsResponseItem>>? sortedItems = state.sortedItems;
     sortedItems![event.i]?[event.j].isClausesValidated = event.ratnig;
 
     emit(state.copyWith(status: BlocStatus.success, sortedItems: sortedItems));
@@ -74,7 +89,7 @@ class RatingBloc extends Bloc<RatingEvent, RatingState> {
     state.sortedItems?.entries.forEach(((e) {
       e.value.forEach((r) {
         list.add(InspectionSubClausesList(
-          clauseName: "",
+          clauseName: r.getClausesName(),
           clauseNo: r.clauseNo.toString(),
           commentForNonCompliance: "",
           inspectionTypeNo: r.inspectionTypeNo,
@@ -108,7 +123,7 @@ class RatingBloc extends Bloc<RatingEvent, RatingState> {
         ));
 
         NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
-            builder: (ctx) => ResultPage(
+            builder: (ctx) => resultPage.ResultPage(
                 value: success,
                 nonCompliance:
                     list.where((e) => e.complianceStatus == 2).toList())));

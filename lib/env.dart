@@ -68,7 +68,7 @@ abstract class AppEnv {
     configLoading();
     await Initializer.init();
     NotificationService.init(initScheduled: true);
-    NotificationService.configure();
+    await NotificationService.configure();
   }
 
   static void configLoading() {

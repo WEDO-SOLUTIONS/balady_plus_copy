@@ -28,7 +28,9 @@ class _MainFlowPageState extends State<MainFlowPage> {
               state.detailsStatus == BlocStatus.failure ||
               state.workFlowStatus == BlocStatus.failure ||
               state.isicsStatus == BlocStatus.failure ||
-              state.detailsStatus == BlocStatus.failure) {
+              state.detailsStatus == BlocStatus.failure ||
+              state.addetionalActivitesStatus == BlocStatus.failure ||
+              state.activityDetailsStatus == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
           }
         },
@@ -99,7 +101,10 @@ class _MainFlowPageState extends State<MainFlowPage> {
                       ),
                       if (state.districtsStatus == BlocStatus.loading ||
                           state.status == BlocStatus.loading ||
-                          state.workFlowStatus == BlocStatus.loading)
+                          state.workFlowStatus == BlocStatus.loading ||
+                          state.addetionalActivitesStatus ==
+                              BlocStatus.loading ||
+                          state.activityDetailsStatus == BlocStatus.loading)
                         Center(
                           child: CircularProgressIndicator(
                             color: AppColor.statusAccentColor,

@@ -4,8 +4,10 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'routes.g.dart';
@@ -19,6 +21,11 @@ class Routes extends _$Routes {
     required RouteSearchOptionsMessage navType,
     bool? showOnlyActiveRoute,
   }) async {
+    await AdvancedMetrics.instance.startRouteCalculation(
+      startPoint != null ? [startPoint.latitude, startPoint.longitude] : null,
+      finishPoint != null ? [finishPoint.latitude, finishPoint.longitude] : null,
+    );
+
     final dgisController = ref.watch(dgisControllerProvider);
     final searchOptions = ref.watch(navigatorRouteSettingsProvider);
 
@@ -37,6 +44,7 @@ class Routes extends _$Routes {
     final routesCompleter = Completer<List<RouteInfo>>();
     final subscribtion = dgisController.value?.routesInfoChangedEvents.listen((event) async {
       await dgisController.value?.showRoutes();
+      await AdvancedMetrics.instance.stopRouteCalculation(track: ref.read(urbiAnalyticsProvider).track);
       routesCompleter.complete(event.routes);
     });
     Timer(const Duration(minutes: 2), () {

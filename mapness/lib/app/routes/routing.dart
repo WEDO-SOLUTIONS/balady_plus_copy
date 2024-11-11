@@ -133,12 +133,14 @@ class RoutingRoutesRoute extends GoRouteData {
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: RoutingRoutesPage(
           points: [
-            startPoint,
-            finishPoint,
-          ],
-          labels: [
-            startLabel,
-            finishLabel,
+            RouteParamsPointWithLabel(
+              value: startPoint,
+              label: startLabel,
+            ),
+            RouteParamsPointWithLabel(
+              value: finishPoint,
+              label: finishLabel,
+            ),
           ],
         ),
       );

@@ -30,6 +30,7 @@ class LookUpItem {
   String? idStr;
   String? area;
   bool? isATM;
+  int? count;
 
   LookUpItem(
       {required this.id,
@@ -38,7 +39,8 @@ class LookUpItem {
       this.area,
       this.maxArea,
       this.minArea,
-      this.isATM});
+      this.isATM,
+      this.count});
 
   LookUpItem copyWith({int? id, String? name, String? idStr, String? area}) =>
       LookUpItem(
@@ -46,7 +48,8 @@ class LookUpItem {
           name: name ?? this.name,
           idStr: idStr ?? this.idStr,
           area: area ?? this.area,
-          isATM: isATM ?? this.isATM);
+          isATM: isATM ?? this.isATM,
+          count: count ?? this.count);
 
   factory LookUpItem.fromJson(Map<String, dynamic> json) => LookUpItem(
       id: json["id"],

@@ -43,7 +43,12 @@ class ChangeValuesEvent extends MainFlowEvent {
       this.locationOption,
       this.contractOption,
       this.contractType,
-      this.atmOption, this.step1Selection});
+      this.atmOption,
+      this.step1Selection});
+}
+
+class GetActivityInfoDetails extends MainFlowEvent {
+  const GetActivityInfoDetails();
 }
 
 class GetActivitesEvent extends MainFlowEvent {
@@ -97,9 +102,8 @@ class GetWorkFlowEvent extends MainFlowEvent {
   const GetWorkFlowEvent();
 }
 
-
-class GetDetailsEvent extends MainFlowEvent { 
- const  GetDetailsEvent(); 
+class GetDetailsEvent extends MainFlowEvent {
+  const GetDetailsEvent();
 }
 
 class GetGISDataEvent extends MainFlowEvent {

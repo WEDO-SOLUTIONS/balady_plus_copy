@@ -22,7 +22,8 @@ class LookUpItemModel extends LookUpItem {
       required super.name,
       super.maxArea,
       super.minArea,
-      super.isATM});
+      super.isATM,
+      super.count});
 
   factory LookUpItemModel.fromJson(Map<String, dynamic> json) =>
       LookUpItemModel(

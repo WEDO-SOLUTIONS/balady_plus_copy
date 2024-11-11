@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:flutter/material.dart';
 import 'package:gif/gif.dart';
@@ -7,6 +8,11 @@ import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../entry_point/presentation/cubit/auth_cubit.dart';
 import '../widgets/splash_screen_animation.dart';
+
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+
 
 class SplashScreenAnimator extends StatefulWidget {
   final SplashScreenAnimation animation;
@@ -36,17 +42,16 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
         height: double.maxFinite,
         child: Gif(
           image: AssetImage(image),
-          fps:10,
+          fps: 10,
           fit: BoxFit.cover,
           autostart: Autostart.once,
           onFetchCompleted: () async {
             // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
             Future.delayed(const Duration(milliseconds: 3000)).then((e) {
               sl<EntryPointCubit>().hideSplash();
-              Navigator.of(context).pushNamedAndRemoveUntil(
-                RouteName.bottomNavigation,
-                (route) => false,
-              );
+              Navigator.of(context).pop();
+              // NavigationService.navigatorKey.currentState!.pop();
+              slAuthentication<AuthenticationBloc>().add(CheckLoginAuthentication());
             });
           },
         ),

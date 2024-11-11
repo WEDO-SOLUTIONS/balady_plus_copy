@@ -30,6 +30,8 @@ class RatingItemsResponseItem {
   final int? clauseNo;
   final String? clauseName;
   int? isClausesValidated;
+  bool? isDuplicated;
+  bool? isSaved;
 
   RatingItemsResponseItem(
       {this.pxObjClass,
@@ -39,7 +41,9 @@ class RatingItemsResponseItem {
       this.subClauseName,
       this.clauseNo,
       this.clauseName,
-      this.isClausesValidated});
+      this.isClausesValidated,
+      this.isSaved,
+      this.isDuplicated});
 
   RatingItemsResponseItem copyWith(
           {String? pxObjClass,
@@ -49,7 +53,9 @@ class RatingItemsResponseItem {
           String? subClauseName,
           int? clauseNo,
           String? clauseName,
-          int? isClausesValidated}) =>
+          int? isClausesValidated,
+          bool? isSaved,
+          bool? isDuplicated}) =>
       RatingItemsResponseItem(
           pxObjClass: pxObjClass ?? this.pxObjClass,
           nonComplianceReasonList:
@@ -59,22 +65,26 @@ class RatingItemsResponseItem {
           subClauseName: subClauseName ?? this.subClauseName,
           clauseNo: clauseNo ?? this.clauseNo,
           clauseName: clauseName ?? this.clauseName,
-          isClausesValidated: isClausesValidated ?? this.isClausesValidated);
+          isClausesValidated: isClausesValidated ?? this.isClausesValidated,
+          isSaved: isSaved ?? this.isSaved,
+          isDuplicated: isDuplicated ?? this.isDuplicated);
 
   factory RatingItemsResponseItem.fromJson(Map<String, dynamic> json) =>
       RatingItemsResponseItem(
-        pxObjClass: json["pxObjClass"],
-        nonComplianceReasonList: json["NonComplianceReasonList"] == null
-            ? []
-            : List<NonComplianceReasonList>.from(
-                json["NonComplianceReasonList"]!
-                    .map((x) => NonComplianceReasonList.fromJson(x))),
-        subClauseNo: json["SubClauseNo"],
-        inspectionTypeNo: json["InspectionTypeNo"],
-        subClauseName: json["SubClauseName"],
-        clauseNo: json["ClauseNo"],
-        clauseName: json["ClauseName"],
-      );
+          pxObjClass: json["pxObjClass"],
+          nonComplianceReasonList: json["NonComplianceReasonList"] == null
+              ? []
+              : List<NonComplianceReasonList>.from(
+                  json["NonComplianceReasonList"]!
+                      .map((x) => NonComplianceReasonList.fromJson(x))),
+          subClauseNo: json["SubClauseNo"],
+          inspectionTypeNo: json["InspectionTypeNo"],
+          subClauseName: json["SubClauseName"],
+          clauseNo: json["ClauseNo"],
+          clauseName: json["ClauseName"],
+          isClausesValidated: 1);
+
+  String getClausesName() => clauseName?.trim() ?? "";
 }
 
 class NonComplianceReasonList {
