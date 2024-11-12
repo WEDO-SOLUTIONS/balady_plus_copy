@@ -1,5 +1,3 @@
-import 'package:adjust_sdk/adjust.dart';
-import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +18,6 @@ void main() async {
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
-      AdjustConfig config = new AdjustConfig('tung4x27vt34', AdjustEnvironment.sandbox);
-Adjust.initSdk(config);
       await SentryFlutter.init(
         (options) {
           options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
