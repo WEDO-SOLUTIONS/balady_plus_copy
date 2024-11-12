@@ -33,10 +33,12 @@ class AdvancedMetrics {
 
   // Startup time measurement
   Stopwatch? _startupMeasure;
+  LoadType? loadType;
   LoadTimeMetrics? _loadTimeMetrics;
 
-  void startMeasureStartup() {
-    _startupMeasure = Stopwatch()..start();
+  void startMeasureStartup([LoadType? type]) {
+    loadType ??= type;
+    _startupMeasure ??= Stopwatch()..start();
   }
 
   Future<void> stopMeasureStartup({required TrackEvent track}) async {
@@ -47,6 +49,7 @@ class AdvancedMetrics {
       try {
         _loadTimeMetrics = LoadTimeMetrics(
           loadTime: duration,
+          loadType: loadType ?? LoadType.unknown,
           location: await _getLocation(),
         );
         await track(
@@ -136,7 +139,6 @@ class AdvancedMetrics {
         isInBatterySaveMode: await Battery().isInBatterySaveMode,
       );
       await _saveBatteryUsage(batteryUsageMetrics);
-      print(batteryUsageMetrics.toString());
     }
   }
 
@@ -162,7 +164,6 @@ class AdvancedMetrics {
       final jsonString = _lostGpsLast!.toJsonString();
       await sharedPrefs.setString(_lostGpsKey, jsonString);
     }
-    print(_lostGpsLast.toString());
   }
 
   Future<void> addRestoreGPS({required TrackEvent track}) async {
@@ -271,7 +272,7 @@ class AdvancedMetrics {
     try {
       final location = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(milliseconds: 300),
+        timeLimit: const Duration(seconds: 2),
       );
       return [location.latitude, location.longitude];
     } catch (e) {
