@@ -94,7 +94,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
         name: widget.field.id,
         valueTransformer: (values) {
           if (values == null) {
-            return [];
+            return List<String>.empty();
           }
 
           return values
