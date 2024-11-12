@@ -1,3 +1,4 @@
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
 import 'package:mapness/entry_point.dart';
@@ -13,6 +14,10 @@ import 'package:flutter/material.dart' ;
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+      final status = await AppTrackingTransparency.requestTrackingAuthorization();
+
    AdvancedMetrics.instance.startMeasureStartup();
   unhandledExceptionBaladyLogs( () async {
   await runMapnessApp(() async {
@@ -37,9 +42,9 @@ void main() async {
           options.environment = sl<EnvType>().name;
         },
         appRunner: () => runApp(
-          const MapnessProviderScope(
+           MapnessProviderScope(
             child: LocalizedApp(
-              child: App(),
+              child: App(status: status),
             ),
           ),
         ),
