@@ -212,8 +212,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
                 .toList() ??
             [],
         licensePeriod: state.selectedPeriod?.id,
-        shopArea: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
-            .toDouble(),
+        shopArea: double.tryParse(state.totalArea ?? ""),
         atmFeesPaid: args.atmOption,
         cleanOption: state.cleanOption?.idStr,
         unitCount: state.unitCount,
