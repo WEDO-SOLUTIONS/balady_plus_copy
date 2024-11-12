@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:flutter/services.dart';
+
+import '../../../data/models/activity_item_model.dart';
 import '/app/features/home/home_exports.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
 import 'package:equatable/equatable.dart' show Equatable;
@@ -40,16 +45,44 @@ class AddetionalActivityBloc
           ));
         },
         (success) async {
-          print(success);
+          List<AddetionalActivityItem> res = success ?? [];
+
+          res = success;
+          try {
+            res = await sortOriginalByCount(res);
+          } catch (ex) {}
           emit(state.copyWith(
             addetionalActivitesStatus: BlocStatus.success,
-            addetionalActivitesResponse: success,
+            addetionalActivitesResponse: res,
           ));
         },
       );
     });
     on<ToggleAddetionalActivity>(getZonesHandler);
     add(const GetAddetionalActivites());
+  }
+
+  Future<List<AddetionalActivityItem>> sortOriginalByCount(
+      List<AddetionalActivityItem> originalList) async {
+    final String isicsDetails = await rootBundle.loadString(
+        'packages/smart_advisor/smart_advisor_assets/files/Detailed_Count_Sorted.json');
+    var data1 = await json.decode(isicsDetails);
+
+    List<ActivityCount> detailsList = [];
+    for (var item in data1) {
+      detailsList.add(ActivityCount.fromJson(item));
+    }
+
+    final countMap = {for (var item in detailsList) item.id: item.count};
+
+    // Sort the original list based on the count in countMap
+    return originalList.toList()
+      ..sort((a, b) {
+        final countA =
+            countMap[a.activityId] ?? 0; // Default to 0 if id is not found
+        final countB = countMap[b.activityId] ?? 0;
+        return countB.compareTo(countA); // Sort in descending order by count
+      });
   }
 
   void getZonesHandler(ToggleAddetionalActivity event, Emitter emit) async {

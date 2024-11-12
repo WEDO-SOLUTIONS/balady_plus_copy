@@ -340,7 +340,6 @@ class _MapPageState extends State<MapPage> {
   Future<void> _objectTapListener(TapEvent event) async {
     if (event is ObjectTapEvent) {
       await controller.setHighlighted([event.dgisObjectId.toMessage()]);
-
       controller.removeAllMarkers();
       controller.addMarker(Marker(
           id: "1",

@@ -93,7 +93,7 @@ class _Step2PageState extends State<Step2Page> {
                                   child: OptionButton(
                                     isSelected: state.selectedSector?.id ==
                                         items![index].id,
-                                    text: items?[index].name ?? "",
+                                    text: items[index].name ?? "",
                                     iconPath:
                                         "packages/smart_advisor/smart_advisor_assets/icons/svg/${items[index].id}.svg",
                                     onTap: () {

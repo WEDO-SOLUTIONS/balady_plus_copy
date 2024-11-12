@@ -28,9 +28,7 @@ class ViolatingCommercialActivities extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              dataModel.isCritical == "true"
-                  ? "مخالفة جسيمة"
-                  : "مخالفة غير جسيمة",
+              dataModel.isCritical == "true" ? "جسيمة" : "غير جسيمة",
               style: AppStyle.textRegularRomanStyle.copyWith(
                   color: dataModel.isCritical == "true"
                       ? const Color(0xffE0373D)
@@ -100,6 +98,12 @@ class ViolatingCommercialActivities extends StatelessWidget {
                                 text:
                                     "${dataModel.fineAmount.toString() ?? ""} ",
                                 style: AppStyle.calloutBoldStyle),
+                            if ((dataModel.unitType ?? "").isNotEmpty)
+                              TextSpan(
+                                text: " / ",
+                                style: AppStyle.captionRomanStyle
+                                    .copyWith(color: AppColor.textPrimaryColor),
+                              ),
                             TextSpan(
                               text: dataModel.unitType ?? "",
                               style: AppStyle.captionRomanStyle

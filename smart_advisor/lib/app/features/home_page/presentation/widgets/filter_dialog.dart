@@ -46,7 +46,7 @@ class _FilterDialogState extends State<FilterDialog> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'تصفيه ',
+                    'تصفية ',
                     style: AppStyle.heading2BoldStyle,
                   ),
                   GestureDetector(
@@ -117,7 +117,7 @@ class _FilterDialogState extends State<FilterDialog> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'مخالفات جسيمه',
+                          'جسيمة',
                           style: AppStyle.footNoteMediumStyle.copyWith(
                               color: AppColor.textPrimaryColor, fontSize: 16),
                         ),
@@ -153,7 +153,7 @@ class _FilterDialogState extends State<FilterDialog> {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'مخالفات غير جسيمه',
+                          'غير جسيمة',
                           style: AppStyle.footNoteMediumStyle.copyWith(
                               color: AppColor.textPrimaryColor, fontSize: 16),
                         ),
@@ -168,7 +168,7 @@ class _FilterDialogState extends State<FilterDialog> {
               CustomButton(
                 btnWidth: 361,
                 btnColor: AppColor.primary,
-                text: "تصفيه",
+                text: "تصفية",
                 onPress: () {
                   Navigator.pop(context, selection);
                 },

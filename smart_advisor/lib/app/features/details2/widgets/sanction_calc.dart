@@ -7,13 +7,16 @@ class SanctionCalc extends StatefulWidget {
   final int index;
   final bool isCritical;
   final Function onChangeOccurence;
-
+  final String? correction;
+  final int? noOfOccurences;
   const SanctionCalc(
       {super.key,
       required this.price,
       required this.onChangeOccurence,
       required this.isCritical,
-      required this.index});
+      required this.index,
+      required this.correction,
+      required this.noOfOccurences});
 
   @override
   State<SanctionCalc> createState() => _SanctionCalcState();
@@ -87,12 +90,22 @@ class _SanctionCalcState extends State<SanctionCalc> {
                 text: TextSpan(
                   children: [
                     TextSpan(
-                      text: widget.price == "0" && widget.isCritical == false
+                      text: ((widget.price == "0" &&
+                              widget.isCritical ==
+                                  false) /*||
+                              (widget.correction == "true" &&
+                                  widget.noOfOccurences == 1)*/
+                          )
                           ? "إنذار"
                           : widget.price,
                       style: AppStyle.calloutBoldStyle,
                     ),
-                    if (widget.price != "0")
+                    if (!((widget.price == "0" &&
+                            widget.isCritical ==
+                                false) /*||
+                        (widget.correction == "true" &&
+                            widget.noOfOccurences == 1)*/
+                        ))
                       TextSpan(
                         text: ' ريال / للرخصة ',
                         style: AppStyle.captionRomanStyle

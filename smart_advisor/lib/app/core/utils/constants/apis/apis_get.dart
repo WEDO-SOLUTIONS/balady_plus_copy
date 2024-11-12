@@ -26,7 +26,7 @@ class ApiUrls {
   static String calculateFees = "v1/$_proxy/commercial/calculator/calculate";
 
   static String getZones(int activityId) =>
-      "v1/$_proxy/gis/actvities/$activityId/restriced-zones";
+      "v1/$_proxy/gis/activities/$activityId/restriced-zones";
   static String validatePoint = "v1/$_proxy/commercial/prohibitive-zones";
   static String gisInfo = "v1/$_proxy/gis/location";
 

@@ -42,7 +42,7 @@ class RatingState extends Equatable {
 
       if (!data.containsKey(item.getClausesName())) {
         // If clauseName not in the map, initialize with the current item
-        data[item.getClausesName()] = [item];
+        data[item.getClausesName()!] = [item];
       } else {
         // Check for duplicate subClauseName under the same clauseName
         bool isDuplicate = data[item.getClausesName()]!.any(
