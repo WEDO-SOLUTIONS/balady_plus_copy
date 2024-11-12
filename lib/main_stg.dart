@@ -9,23 +9,22 @@ import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
-import 'package:flutter/material.dart' ;
+import 'package:flutter/material.dart';
 
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  WidgetsFlutterBinding.ensureInitialized();
 
-      final status = await AppTrackingTransparency.requestTrackingAuthorization();
+  final status = await AppTrackingTransparency.requestTrackingAuthorization();
 
-   AdvancedMetrics.instance.startMeasureStartup();
-  unhandledExceptionBaladyLogs( () async {
-  await runMapnessApp(() async {
-    await AppEnv.setupEnv(EnvType.stg);
+  AdvancedMetrics.instance.startMeasureStartup();
+  unhandledExceptionBaladyLogs(() async {
+    await runMapnessApp(() async {
+      await AppEnv.setupEnv(EnvType.stg);
 
-    await setupMapness(EnvType.stg);
+      await setupMapness(EnvType.stg);
 
-    unhandledExceptionBaladyLogs(() async {
       await SentryFlutter.init(
         (options) {
           options.dsn =
@@ -42,7 +41,7 @@ void main() async {
           options.environment = sl<EnvType>().name;
         },
         appRunner: () => runApp(
-           MapnessProviderScope(
+          MapnessProviderScope(
             child: LocalizedApp(
               child: App(status: status),
             ),
@@ -50,8 +49,5 @@ void main() async {
         ),
       );
     });
-
-
-  });
   });
 }
