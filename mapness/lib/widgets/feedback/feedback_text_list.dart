@@ -92,6 +92,17 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
 
     return FormBuilderField<List<String>>(
         name: widget.field.id,
+        valueTransformer: (values) {
+          if (values == null) {
+            return [];
+          }
+
+          return values
+              .where(
+                (value) => value.trim().isNotEmpty,
+              )
+              .toList();
+        },
         validator: (values) {
           if (_isRequired && values == null) {
             return FormBuilderValidators.required()(values);
