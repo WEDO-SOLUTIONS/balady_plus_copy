@@ -24,7 +24,6 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_card.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 

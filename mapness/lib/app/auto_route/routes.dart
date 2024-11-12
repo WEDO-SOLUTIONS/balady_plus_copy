@@ -78,6 +78,11 @@ class Routes {
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
+          path: '/feedback',
+          page: AppFeedbackRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
           path: '/language_pick_sheet',
           page: LanguagePickSheetRoute.page,
           fullscreenDialog: true,

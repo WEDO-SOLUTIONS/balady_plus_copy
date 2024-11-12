@@ -1,9 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/app/routes/app_feedback.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -17,7 +17,7 @@ class AppFeedbackCard extends ConsumerWidget {
 
     return env?.appFeedbackEnable == true
         ? GestureDetector(
-            onTap: () => context.push(AppFeedbackRoute.path),
+            onTap: () => context.router.push(const AppFeedbackRoute()),
             child: Padding(
               padding: const EdgeInsets.all(Spacing.$3x),
               child: DecoratedBox(

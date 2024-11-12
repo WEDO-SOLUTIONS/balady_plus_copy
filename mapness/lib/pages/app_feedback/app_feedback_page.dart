@@ -1,10 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
@@ -13,6 +13,7 @@ import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_input.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_success.dart';
 
+@RoutePage()
 class AppFeedbackPage extends HookConsumerWidget {
   const AppFeedbackPage({super.key});
 
@@ -35,7 +36,7 @@ class AppFeedbackPage extends HookConsumerWidget {
                   child: Text(context.l10n.appFeedbackLeave),
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    context.pop();
+                    context.router.back();
                   },
                 ),
               ],
@@ -108,7 +109,7 @@ class AppFeedbackPage extends HookConsumerWidget {
                                 if (isBackConfirmationValue && textController.text.isNotEmpty) {
                                   _showConfirmDialog(context);
                                 } else {
-                                  context.pop();
+                                  context.router.maybePop();
                                 }
                               },
                             ),
