@@ -22,19 +22,12 @@ import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
-  const RoutingPointsPage({
-    this.collapseInitially = false,
-    super.key,
-  });
-
-  /// open page with collapsed bottom sheet
-  final bool collapseInitially;
+  const RoutingPointsPage();
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (context, constraints) => RoutingPointsSheet(
           biggestHeight: constraints.biggest.height,
-          collapseInitially: collapseInitially,
         ),
       );
 }
@@ -42,12 +35,10 @@ class RoutingPointsPage extends StatelessWidget {
 class RoutingPointsSheet extends ConsumerStatefulWidget {
   const RoutingPointsSheet({
     required this.biggestHeight,
-    required this.collapseInitially,
     super.key,
   });
 
   final double biggestHeight;
-  final bool collapseInitially;
 
   @override
   ConsumerState<RoutingPointsSheet> createState() => _RoutingPointsSheetState();
@@ -82,7 +73,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
@@ -96,7 +86,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    final initialExpansion = widget.collapseInitially ? Expansion.collapsed : Expansion.middle;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Stack(
@@ -112,7 +101,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
               Expansion.expanded,
               Expansion.middle,
             },
-            initialExpansion: initialExpansion,
+            initialExpansion: Expansion.middle,
             middleHeight: middleHeightFraction * widget.biggestHeight,
             collapsedHeight: controlsBottomExtent,
             scrollableBody: (context, scrollController) => Material(
