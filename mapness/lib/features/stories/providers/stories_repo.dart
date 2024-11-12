@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:geobase/geobase.dart' as gb;
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
@@ -26,8 +28,12 @@ class StoriesRepo extends _$StoriesRepo {
   Future<StoriesResponse> build() async {
     final dio = await ref.watch(dGisNetworkProvider.future);
 
-    final subscription =
-        ref.read(dgisControllerProvider.notifier).visibleRectSubject.whereNotNull().listen((event) async {
+    final subscription = ref
+        .read(dgisControllerProvider.notifier)
+        .visibleRectSubject
+        .whereNotNull()
+        .debounceTime(const Duration(seconds: 1))
+        .listen((event) async {
       if (_isUpdatePaused) {
         return;
       }
@@ -47,7 +53,7 @@ class StoriesRepo extends _$StoriesRepo {
 
     final rawResponse = await dio.get(url, options: defaultCacheOptions);
     final storiesResponse = StoriesResponse.fromBuffer(rawResponse.data as List<int>);
-    await mixpanel?.track('StoriesRepo: _fetch');
+    unawaited(mixpanel?.track('StoriesRepo: _fetch'));
     return storiesResponse;
   }
 }

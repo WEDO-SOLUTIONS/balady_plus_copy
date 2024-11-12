@@ -199,14 +199,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         isRtl: isRtl,
       );
 
+      if (mapObjectManager.markers.isEmpty) {
+        await computeCameraPosition(
+          markers,
+          ref.read(cameraPositionProvider),
+          ref.read(cameraPositionProvider.notifier).animateTo,
+        );
+      }
+
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
 
-      await computeCameraPosition(
-        markers,
-        ref.read(cameraPositionProvider),
-        ref.read(cameraPositionProvider.notifier).animateTo,
-      );
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await mapObjectManager.removeAllMarkers();
     }

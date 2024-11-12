@@ -47,6 +47,82 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           config: .github/reviewers.yml # Config file location override
 
+  notify-reviewers:
+    name: Notify reviewers
+    if: ${{ !github.event.pull_request.draft }}
+    runs-on: [self-hosted, Linux]
+    needs: auto-request-review
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Send notification
+        env:
+          MM_CHANNEL_ID: ${{ secrets.MM_REVIEWERS_CHANNEL_ID }}
+          MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
+          MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
+          MM_MAPPING_FILE: ${{ github.workspace }}/.github/mm_mapping.yml
+        run: |
+          # Get info about PR
+          PR_TITLE="${{ github.event.pull_request.title }}"
+          PR_URL="${{ github.event.pull_request.html_url }}"
+          PR_API_URL="${{ github.event.pull_request.url }}"
+          PR_BRANCH="${{ github.event.pull_request.head.ref }}"
+          PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          EVENT_ACTION="${{ github.event.action }}"
+
+          # Get reviewers
+          REVIEWERS=$(curl -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" ${PR_API_URL}/requested_reviewers | jq -r '.users // [] | map(.login) | join(" ")')
+
+          # If no reviewers, exiting
+          if [ -z "${REVIEWERS}" ]; then
+            echo "No reviewers to notify."
+            exit 0
+          fi
+
+          # Get mattermost usernames from github usernames
+          MENTION_REVIEWERS=""
+          NOT_FOUND_REVIEWERS=""
+          for reviewer in ${REVIEWERS}; do
+            mattermost_user="$(reviewer=${reviewer} yq e '.[env(reviewer)] // ""' ${{ env.MM_MAPPING_FILE }})"
+            if [ -n "${mattermost_user}" ]; then
+              MENTION_REVIEWERS+="@${mattermost_user} "
+              echo "Mattermost user ${mattermost_user} for reviewer ${reviewer}"
+            else
+              NOT_FOUND_REVIEWERS+="${reviewer} "
+              echo "Couldn't map github username to mattermost for ${reviewer}"
+            fi
+          done
+
+          # Create message depending on action type
+          if [ "${EVENT_ACTION}" == "opened" ] || [ "${EVENT_ACTION}" == "reopened" ] || [ "${EVENT_ACTION}" == "ready_for_review" ]; then
+            MESSAGE="${MENTION_REVIEWERS}\n\
+          You were assigned as a reviewer:\n\
+          **Pull request**: [${PR_TITLE}](${PR_URL})\n"
+          elif [ "${EVENT_ACTION}" == "synchronize" ]; then
+            MESSAGE="${MENTION_REVIEWERS}\n\
+          There are some changes:\n\
+          **Pull request**: [${PR_TITLE}](${PR_URL})\n"
+          fi
+
+          # Send notification mentioning reviewers
+          curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
+            \"channel_id\": \"${MM_CHANNEL_ID}\", \
+            \"message\": \"\
+          ${MESSAGE}\
+          **Branch**: ${PR_BRANCH}\n\
+          **Author**: ${PR_AUTHOR}\
+          \"\
+          }"
+
+          # Send notification if we couldn't map some reviewers to mattermost users
+          if [ -n "${NOT_FOUND_REVIEWERS}" ]; then
+            curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
+              \"channel_id\": \"${MM_CHANNEL_ID}\", \
+              \"message\": \"Can't map github users to mattermost: $NOT_FOUND_REVIEWERS\"\
+            }"
+          fi
+
   linter:
     runs-on: [self-hosted, Linux]
     name: Lint flutter code
