@@ -12,6 +12,7 @@ class AppFeedbackInput extends HookWidget {
   const AppFeedbackInput({required this.textController, this.isValid, super.key});
 
   static const _initMaxLines = 4;
+  static const _maxLinesAllowed = 20;
   static const _maxCharsAllowed = 1000;
 
   @override
@@ -30,7 +31,7 @@ class AppFeedbackInput extends HookWidget {
 
       final int lines = (textController.text.length / charsPerLine).ceil();
 
-      maxLines.value = lines > _initMaxLines ? lines : _initMaxLines;
+      maxLines.value = lines.clamp(_initMaxLines, _maxLinesAllowed);
 
       isValid?.call(textController.text.isNotEmpty && textController.text.length <= _maxCharsAllowed);
     }
@@ -63,7 +64,7 @@ class AppFeedbackInput extends HookWidget {
                     hintText: context.l10n.appFeedbackTellUsMore,
                     maxLines: maxLinesValue,
                     maxLength: _maxCharsAllowed,
-                    // isDisposed: false,
+                    isDisposed: false,
                     onValidate: (v) => v != null && v.length != _maxCharsAllowed
                         ? null
                         : context.l10n
