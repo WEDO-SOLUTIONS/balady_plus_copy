@@ -15,7 +15,11 @@ import androidx.car.app.model.Row
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.model.PlaceListNavigationTemplate
 import com.dgis.map.R
+import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.coordinates.Latitude
+import ru.dgis.sdk.coordinates.Longitude
 import ru.dgis.sdk.directory.DirectoryObject
+import ru.dgis.sdk.geometry.distance
 import kotlin.math.PI
 import kotlin.math.asin
 import kotlin.math.cos
@@ -71,14 +75,17 @@ class PlaceListScreen(
 
                     val address = makeAddress(item)
                     val text = SpannableString("  \n$address")
-                    val distance = getDistance(
-                        markerPosition.latitude.value,
-                        markerPosition.longitude.value,
-                        myLocation.latitude,
-                        myLocation.longitude
-                    )
 
-                    val distanceSpan = DistanceSpan.create(distance)
+                    val distanceInMeters = markerPosition.distance(
+                        GeoPoint(
+                            Latitude(myLocation.latitude),
+                            Longitude(myLocation.longitude)
+                        )
+                    ).value.toDouble()
+
+                    val distanceSpan = DistanceSpan.create(
+                        createDistance(distanceInMeters)
+                    )
                     text.setSpan(distanceSpan, 0, 1, Spanned.SPAN_INCLUSIVE_INCLUSIVE)
 
                     itemList.addItem(
@@ -111,18 +118,14 @@ class PlaceListScreen(
         ).joinToString()
     }
 
-    private fun getDistance(lat1: Double, lon1: Double, lat2: Double, lon2: Double): Distance {
-        val a =
-            0.5 - cos((lat2 - lat1) * p) / 2 + cos(lat1 * p) * cos(lat2 * p) * (1 - cos((lon2 - lon1) * p)) / 2
-        val b = (2 * r * asin(sqrt(a))) * 1000
-
+    private fun createDistance(distanceInMeter: Double): Distance {
         val unit: Int
         val distance: Double
-        if (b >= 1000) {
-            distance = b / 1000.0
+        if (distanceInMeter >= 1000) {
+            distance = distanceInMeter / 1000.0
             unit = Distance.UNIT_KILOMETERS_P1
         } else {
-            distance = round(b / 10) * 10
+            distance = round(distanceInMeter / 10) * 10
             unit = Distance.UNIT_METERS
         }
         return Distance.create(distance, unit)

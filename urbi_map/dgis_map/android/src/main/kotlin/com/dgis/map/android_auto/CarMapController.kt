@@ -214,9 +214,11 @@ class CarMapController(
             RouteSearchPoint(GeoPoint(it.latitude, it.longitude))
         } ?: return
 
-        val finishPoint = RouteSearchPoint(
+        val finishPoint = if (objectId != null) RouteSearchPoint(
             GeoPoint(latitude, longitude),
-            objectId = DgisObjectId(objectId?.objectId ?: 0, objectId?.entranceId ?: 0),
+            objectId = DgisObjectId(objectId.objectId, objectId.entranceId),
+        ) else RouteSearchPoint(
+            GeoPoint(latitude, longitude)
         )
         val options = RouteSearchOptions(CarRouteSearchOptions())
         routeEditor.setRouteParams(
