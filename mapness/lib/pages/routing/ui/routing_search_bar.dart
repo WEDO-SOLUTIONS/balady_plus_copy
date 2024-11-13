@@ -100,7 +100,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             action: MetricAction.tap.toString(),
           );
           FocusScope.of(context).unfocus();
-          context.router.back();
+          context.router.maybePop();
         },
       ),
     );
