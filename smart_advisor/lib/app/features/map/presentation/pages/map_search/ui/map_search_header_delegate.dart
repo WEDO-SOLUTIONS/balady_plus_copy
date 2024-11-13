@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart' hide SearchBar;
+/*import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
@@ -64,3 +64,4 @@ class DashboardHeader extends ConsumerWidget {
         ),
       );
 }
+*/

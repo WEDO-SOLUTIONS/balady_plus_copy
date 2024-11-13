@@ -1,3 +1,5 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -20,32 +22,56 @@ class MapSuggestList extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final suggests = suggest.suggests.whereType<SuggestMessage>().toList();
     final myLocation = ref.watch(locationProvider);
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemBuilder: (context, index) => SuggestItem(
-        suggest: suggests[index],
-        myLocation:
-            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-        isLast: index == suggests.length - 1,
-        onObjectTap: (object) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.searchKeys.suggestion,
-            group: MetricsConstants.searchTag,
-            action: MetricAction.tap.toString(),
-            props: {
-              'object': object.id!.objectId,
-            },
-          );
+    final contentColor = context.colorsV2.backgroundSurface4;
 
-          PoiMapRoute.open(
-            ref.read(goRouterProvider),
-            object.id!.objectId,
-            zoom: 18,
-          );
-        },
+    void onObjectTap(DirectoryObjectMessage object) {
+      final objectId = object.id?.objectId;
+      if (objectId != null) {
+        Metrics.logEventAdvanced(
+          MetricsConstants.searchKeys.suggestion,
+          group: MetricsConstants.searchTag,
+          action: MetricAction.tap.toString(),
+          props: {
+            'object': objectId,
+          },
+        );
+
+        PoiMapRoute.open(
+          ref.read(goRouterProvider),
+          objectId,
+          zoom: 18,
+        );
+      }
+    }
+
+    return Padding(
+      padding: const EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        bottom: Spacing.$4x,
       ),
-      itemCount: suggests.length,
+      child: Material(
+        clipBehavior: Clip.antiAlias,
+        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+        color: contentColor,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+          child: ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+            itemBuilder: (context, index) => SuggestItem(
+              suggest: suggests[index],
+              myLocation: myLocation == null
+                  ? null
+                  : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+              isLast: index == suggests.length - 1,
+              onObjectTap: onObjectTap,
+            ),
+            itemCount: suggests.length,
+          ),
+        ),
+      ),
     );
   }
 }

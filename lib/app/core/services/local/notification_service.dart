@@ -113,7 +113,7 @@ class NotificationService {
 
   static void cancelAll() => _notifications.cancelAll();
 
-  static void configure() async {
+  static Future<void> configure() async {
     try {
       await Firebase.initializeApp();
     } catch (error, stackTrace) {

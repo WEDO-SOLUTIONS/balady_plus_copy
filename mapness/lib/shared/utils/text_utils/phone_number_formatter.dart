@@ -30,9 +30,16 @@ import 'package:flutter/services.dart';
 
 class PhoneNumberFormatter extends TextInputFormatter {
   static const _arabicCountyCode = '966';
+  static const arabicPhoneNumberMinLength = 12;
 
   final String countyCode;
   const PhoneNumberFormatter({this.countyCode = _arabicCountyCode});
+
+  /// Formats the given [text] by removing any non-digit characters.
+  ///
+  /// TODO(ilyasov): extract to a separate utility class.
+  static String formatPure(String text) => text.replaceAll(RegExp(r'\D'), '');
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
@@ -50,13 +57,13 @@ class PhoneNumberFormatter extends TextInputFormatter {
       digitsOnly = digitsOnly.replaceFirst(countyCode, '');
     }
     for (; i < min(digitsOnly.length, 10); i++) {
-      if (i == 3) {
+      if (i == 2) {
         formatted.write(') ');
       }
-      if (i == 6) {
+      if (i == 5) {
         formatted.write('-');
       }
-      if (i == 8) {
+      if (i == 7) {
         formatted.write('-');
       }
 

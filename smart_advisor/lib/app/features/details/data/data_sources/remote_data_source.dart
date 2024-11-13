@@ -92,9 +92,9 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
       EntityViolationActivityRequestParams params) async {
     try {
       final response = await webService.dio.get(
-          ApiUrls.getViolationEntityActivity(params.activityId),
-          queryParameters: params.toMap(),
-          options: Options(headers: {"Authorization": "11"}));
+        ApiUrls.getViolationEntityActivity(params.activityId),
+        queryParameters: params.toMap(),
+      );
       print(response.data);
 
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
@@ -122,9 +122,9 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
       EntityViolationActivityDetailsRequestParams params) async {
     try {
       final response = await webService.dio.get(
-          ApiUrls.getViolationEntityActivityDetails(params.activityID),
-          queryParameters: params.toMap(),
-          options: Options(headers: {"Authorization": "11"}));
+        ApiUrls.getViolationEntityActivityDetails(params.activityID),
+        queryParameters: params.toMap(),
+      );
       print(response.data);
 
       final result =
@@ -153,9 +153,9 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
       ViolationDetailsVdRequestParams params) async {
     try {
       final response = await webService.dio.get(
-          ApiUrls.getViolationDetailsVD(params.activityId),
-          queryParameters: params.toMap(),
-          options: Options(headers: {"Authorization": "11"}));
+        ApiUrls.getViolationDetailsVD(params.activityId),
+        queryParameters: params.toMap(),
+      );
       print(response.data);
 
       final result = ResponseBodyModel.fromMap(response.data).data?.result;

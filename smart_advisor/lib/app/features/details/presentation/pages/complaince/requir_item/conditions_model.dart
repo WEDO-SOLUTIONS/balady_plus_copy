@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+//import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 
 class ConditionsModel {
   final String desc;
@@ -16,11 +16,15 @@ class ConditionsModel {
   }
 
   factory ConditionsModel.fromMap(Map<String, dynamic> map) {
+    return ConditionsModel(map['desc'] as String, "");
+  }
+
+  /*factory ConditionsModel.fromMap(Map<String, dynamic> map) {
     return ConditionsModel(
       map['desc'] as String,
       '${RemoteConfig.baladyBaseUrl}/BaladyCDN/Mobile/${map['photo']}',
     );
-  }
+  }*/
 
   String toJson() => json.encode(toMap());
 

@@ -6,6 +6,7 @@ import 'package:smart_advisor/app/features/shared_features/widgets/webview_page.
 import '../../../core/utils/constants/app_style.dart';
 import '../../../core/utils/utils_exports.dart';
 import '../../documents/general_commercial_conditions.dart';
+import 'package:smart_advisor/app/features/home_page/presentation/pages/pdf_viwer.dart';
 
 class TextItemHtmlComponent extends StatelessWidget {
   final String description;
@@ -32,13 +33,16 @@ class TextItemHtmlComponent extends StatelessWidget {
               return GeneralCommercialConditionPage();
             }));
           } else {
-            Navigator.push(context, MaterialPageRoute(builder: (ctx) {
+            /* Navigator.push(context, MaterialPageRoute(builder: (ctx) {
               return WebViewPage(
                 url: url ?? "",
                 title: "details".tr(),
               );
-            }));
-            /* ;*/
+            }));*/
+
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (ctx) =>
+                    PDFViewer(url: url?.trim() ?? "", text: "details".tr())));
           }
         },
         style: {

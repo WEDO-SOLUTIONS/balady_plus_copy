@@ -1,14 +1,15 @@
 package com.dgis.map.control_handlers
 
-import android.view.View
 import com.dgis.map.control_handlers.navigation_controls.DashboardControlModel
 import com.dgis.map.control_handlers.navigation_controls.MessageControlModel
 import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
+import com.dgis.map.extensions.toRouteSearchOptionsMessage
 import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
 import com.dgis.map.map_api.Messages.BetterRouteSettingsMessage
+import com.dgis.map.map_api.Messages.NavigationStateMessage
 import com.dgis.map.map_api.Messages.Result
 import com.dgis.map.map_api.Messages.SoundToggleType
 import io.flutter.plugin.common.EventChannel
@@ -35,13 +36,12 @@ import ru.dgis.sdk.Context as SdkContext
 
 class NavigationHandler(
     sdkContext: SdkContext,
-    private val navigationView: NavigationView,
+    private val navigationManager: NavigationManager,
     private val eventSink: EventChannel.EventSink,
     private val map: Map,
 ) : AutoCloseable {
-    private val navigationManager = NavigationManager(sdkContext)
     private val voicesManager = getVoiceManager(sdkContext)
-    private lateinit var dashboardControlModel: DashboardControlModel
+    private var dashboardControlModel: DashboardControlModel
 
     private val stateClosable: AutoCloseable
     private val routeInfoCloseable: AutoCloseable
@@ -70,13 +70,11 @@ class NavigationHandler(
 
     init {
         navigationManager.mapManager.addMap(map)
-        navigationView.visibility = View.INVISIBLE
 
         navigationManager.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
         navigationManager.routeSourceSettings.calloutVisualizationMode =
             CalloutVisualizationMode.MULTIPLE_ROUTES
         navigationManager.routeMapSettings.onRouteDisplayFlags.add(RouteMapObjectDisplayFlag.IMMERSIVE_ROUTE_PARTS)
-
 
         dashboardControlModel = DashboardControlModel(
             navigationManager.uiModel,
@@ -161,7 +159,7 @@ class NavigationHandler(
         dashboardControlModel.muteOtherSounds(mute)
     }
 
-    fun saveNavigationState(result: Result<ByteArray>?)  {
+    fun saveNavigationState(result: Result<ByteArray>?) {
         val state = PackedNavigationState.fromModel(model = this.navigationManager.uiModel)
         result?.success(state.toBytes())
     }
@@ -186,6 +184,21 @@ class NavigationHandler(
         }
     }
 
+    fun getCurrentNavigationState(result: Result<NavigationStateMessage>) {
+        val state = when (navigationManager.uiModel.state) {
+            State.NAVIGATION, State.ROUTE_SEARCH -> Messages.NavigationState.NAVIGATION
+            State.FINISHED -> Messages.NavigationState.FINISH
+            State.DISABLED -> Messages.NavigationState.DISABLED
+        }
+        val options =
+            navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions?.toRouteSearchOptionsMessage()
+                ?: Messages.RouteSearchOptionsMessage.CAR
+        result.success(
+            NavigationStateMessage.Builder().setState(state)
+                .setRouteSearchOptions(options).build()
+        )
+    }
+
     fun startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
@@ -206,7 +219,6 @@ class NavigationHandler(
             ),
             trafficRoute = route
         )
-        navigationView.visibility = View.VISIBLE
 
         result?.success(null)
     }
@@ -235,7 +247,6 @@ class NavigationHandler(
             ),
             trafficRoute = route
         )
-        navigationView.visibility = View.VISIBLE
 
         result?.success(null)
     }
@@ -243,7 +254,6 @@ class NavigationHandler(
     fun stopNavigation() {
         navigationManager.stop()
         resetCamera()
-        navigationView.visibility = View.INVISIBLE
     }
 
     fun startFreeRoam(speedRangeZoom: Messages.SpeedRangeZoom) {
@@ -358,6 +368,11 @@ class NavigationHandler(
             Duration.ofSeconds(settings.betterRouteTimeCostThreshold)
         navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold =
             RouteDistance(settings.betterRouteLengthThreshold)
+    }
+    
+    fun setBetterRouteEnabled(enabled: Boolean) {
+        navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled =
+        enabled
     }
 
     fun calcPositionForRoute(

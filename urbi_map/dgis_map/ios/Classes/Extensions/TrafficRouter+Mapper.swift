@@ -25,6 +25,30 @@ extension RouteSearchOptionsMessage {
     
 }
 
+extension RouteSearchOptions {
+    func toRouteSearchOptions() -> RouteSearchOptionsMessage {
+        switch self {
+        case .bicycle:
+            return .bicycle
+        case .car:
+            return .car
+        case .publicTransport:
+            return .publicTransport
+        case .pedestrian:
+            return .pedestrian
+        case .scooter:
+            return .scooter
+        case .truck:
+            return .truck
+        case .taxi:
+            return .taxi
+        @unknown default:
+            return .car
+        }
+    }
+    
+}
+
 extension BearingMessage {
     func toBearing() -> Bearing {
         return Bearing(value: Double(truncating: self.value))

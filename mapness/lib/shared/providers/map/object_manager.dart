@@ -99,6 +99,9 @@ class MapObjectManager extends _$MapObjectManager {
 
   /// -- MARKER --
   String? currentMarkerIcon;
+
+  List<Marker> get markers => _markers;
+
   final _markers = <Marker>[];
 
   Marker? markerByGeoPoint(LatLng geoPoint) => _markers.firstWhereOrNull(

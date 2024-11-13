@@ -21,22 +21,22 @@ class AddetionalActivityItemModel extends AddetionalActivityItem {
     required super.isicName,
     required super.masterActivityId,
     required super.masterActivityName,
-    required super.maxArea,
-    required super.minArea,
+    super.maxArea,
+    super.minArea,
     required super.homogeneous,
   });
 
   factory AddetionalActivityItemModel.fromJson(Map<String, dynamic> json) =>
       AddetionalActivityItemModel(
-        activityId: json["activityId"],
-        activityName: json["activityName"],
-        isicNumber: json["isicNumber"],
-        isicName: json["isicName"],
-        masterActivityId: json["masterActivityId"],
-        masterActivityName: json["masterActivityName"],
-        maxArea: json["maxArea"]?.toDouble(),
-        minArea: json["minArea"]?.toDouble(),
-        homogeneous: json["homogeneous"],
+        activityId: json["activityId"] ?? 0,
+        activityName: json["activityName"] ?? "",
+        isicNumber: json["isicNumber"] ?? 0,
+        isicName: json["isicName"] ?? "",
+        masterActivityId: json["masterActivityId"] ?? 0,
+        masterActivityName: json["masterActivityName"] ?? "",
+        maxArea: json["maxArea"]?.toDouble() ?? 0,
+        minArea: json["minArea"]?.toDouble() ?? 0,
+        homogeneous: json["homogeneous"] ?? false,
       );
 
   Map<String, dynamic> toJson() => {

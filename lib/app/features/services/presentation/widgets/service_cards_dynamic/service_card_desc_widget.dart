@@ -14,6 +14,7 @@ import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../core/utils/common_functions.dart';
@@ -177,15 +178,21 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                         ),
                                       ),
                                       const SizedBox(width: 8),
-                                      Text(
-                                        viewModel.servicesCardsDetails!
-                                                .fieldTargetCategories ??
-                                            '',
-                                        style: AppStyle
-                                            .complianceFirstSubmitSubtitleStyle
-                                            .copyWith(color: Colors.black),
+                                      Expanded(
+                                        child: Text(
+                                          viewModel.servicesCardsDetails!
+                                              .fieldTargetCategories ??
+                                              '',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          softWrap: false,
+                                          style: AppStyle
+                                              .complianceFirstSubmitSubtitleStyle
+                                              .copyWith(color: Colors.black),
+                                        ),
                                       ),
-                                      const Spacer(),
+
+
                                       Container(
                                         decoration: const BoxDecoration(
                                             gradient: LinearGradient(
@@ -473,23 +480,31 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                                                 .all(
                                                                 16.0),
                                                             child: InkWell(
-                                                              onTap: () {
-                                                                Navigator.of(
-                                                                    context)
-                                                                    .pushNamed(
-                                                                  RouteName
-                                                                      .inappWebview,
-                                                                  arguments: (
-                                                                  requestNum:
-                                                                  'fines_penalties'
-                                                                      .tr(),
-                                                                  url: viewModel
-                                                                      .servicesCardsDetails
-                                                                      ?.fieldServiceRequirements,
-                                                                  isObjections:
-                                                                  false
-                                                                  ),
-                                                                );
+                                                              onTap: () async {
+
+
+                                                                print(viewModel
+                                                                    .servicesCardsDetails
+                                                                !.fieldServiceRequirements);
+                                                                if (viewModel
+                                                                    .servicesCardsDetails
+                                                                !.fieldServiceRequirements != null&&!await launchUrl(Uri.parse(viewModel
+                                                                    .servicesCardsDetails
+                                                                    !.fieldServiceRequirements!.replaceAll("\n", "")))) {
+                                                                throw Exception('Could not launch url');
+                                                                }
+
+                                                                // Navigator.of(
+                                                                //     context).pushNamed(RouteName.inappWebview, arguments: (requestNum:
+                                                                //   'fines_penalties'
+                                                                //       .tr(),
+                                                                //   url: viewModel
+                                                                //       .servicesCardsDetails
+                                                                //       ?.fieldServiceRequirements,
+                                                                //   isObjections:
+                                                                //   false
+                                                                //   ),
+                                                                // );
                                                               },
                                                               child: Row(
                                                                 children: [
@@ -603,10 +618,14 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                             showDivider: false,
                                           ),
 
+
+
                                         CostumeListTile(
                                             onTap: () {
 
+
                                                 CommonFunctions.openComplianceFaq("${viewModel.serviceId}");
+
                                             },
                                             leading: Icon(
                                               Icons.question_mark,

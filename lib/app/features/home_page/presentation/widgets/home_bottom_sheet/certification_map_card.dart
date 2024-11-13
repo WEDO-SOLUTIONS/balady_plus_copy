@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
@@ -125,7 +126,7 @@ class CertificationMapCard extends StatelessWidget {
                     GestureDetector(
                       onTap: () {
                         NavigationService.navigatorKey.currentState!
-                            .pushNamed(RouteName.QAPage,arguments: "11429");
+                            .pushNamed(RouteName.QAPage,arguments: RemoteConfig.MunicipalServicesIDs["create_complianceLocation"]["id"]);
                       },
                       child: CustomTextWidget(
                         "check_faq".tr(),

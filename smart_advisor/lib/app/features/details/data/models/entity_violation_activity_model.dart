@@ -53,7 +53,7 @@ class EntityViolationActivityModel {
         regulationName: json["RegulationName"],
         isCritical: json["IsCritical"],
         linkId: json["LinkID"],
-        fineAmount: json["FineAmount"],
+        fineAmount: json["FineAmount"] ?? 0,
         violatorList: json["ViolatorList"] == null
             ? []
             : List<ViolatorList>.from(

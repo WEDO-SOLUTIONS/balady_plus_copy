@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import '/app/core/utils/constants/paths/icon_paths.dart';
 import '/app/features/start_page/startPage.dart';
 import '/app/features/_shared_feature_/presentation/widgets/custom_widgets/customTextField.dart';
-import '/app/core/utils/constants/language.dart';
 
 class SectorHeader extends StatelessWidget {
   const SectorHeader({super.key});
@@ -25,7 +24,7 @@ class SectorHeader extends StatelessWidget {
         },
         child: Container(
           height: 280,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               // color: AppColor.statusAccentColor,
               image: const DecorationImage(
                   image: AssetImage(
@@ -61,7 +60,7 @@ class SectorHeader extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Column(

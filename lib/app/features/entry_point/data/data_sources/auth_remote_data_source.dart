@@ -220,11 +220,12 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           "id_token_hint": sl<EntryPointCubit>().state.token?.idToken ?? '',
           "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
         },
+
       );
       EndSessionResponse? response = await _appAuth.endSession(
         endSessionRequest,
       );
-
+  
       return response!;
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

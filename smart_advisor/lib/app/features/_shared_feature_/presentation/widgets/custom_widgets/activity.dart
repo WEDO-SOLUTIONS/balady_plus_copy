@@ -61,7 +61,7 @@ class Activity extends StatelessWidget {
                   backgroundColor: const Color(0xff000000),
                   isScrollControlled: true,
                   context: context,
-                  builder: (BuildContext context) => const HomePage(),
+                  builder: (BuildContext context) => const NewHomePage(),
                 );
               },
               //activities

@@ -15,7 +15,6 @@ class FeedbackBoolToggle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final border = BorderSide(color: context.colorsV2.borderMuted);
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
       decoration: BoxDecoration(border: Border(bottom: border, top: border)),
@@ -30,9 +29,7 @@ class FeedbackBoolToggle extends StatelessWidget {
           FormBuilderField<bool>(
             name: field.id,
             initialValue: false,
-
-            /// it should be string, not json boolean, lol. Probably fixed sometime
-            valueTransformer: (value) => value.toString(),
+            valueTransformer: (value) => value,
             builder: (fieldState) => Toggle(
               value: fieldState.value ?? false,
               onChanged: fieldState.didChange,

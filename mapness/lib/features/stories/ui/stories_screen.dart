@@ -36,6 +36,7 @@ class _StoriesScreenState extends ConsumerState<StoriesScreen> {
   void _onClose([int? index]) {
     widget.onClose?.call();
     ref.read(storyServiceProvider.notifier).resumeUpdate();
+
     context.pop<int?>(index);
   }
 

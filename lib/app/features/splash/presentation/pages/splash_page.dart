@@ -1,13 +1,10 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_screen_animator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiMode, SystemUiOverlay;
 
 import '../../../../core/base/base_view_model.dart';
-import '../../../../core/dependency_injection/dependency_injection_exports.dart'
-    show sl;
 import '../../../../core/utils/app_analytics_events.dart';
 
 import '../../../force_update/presentation/core/force_update_view_model.dart';
@@ -35,7 +32,7 @@ class _SplashPageState extends State<SplashPage>
     );
 
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 2000),
+      duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
     _controller.forward();
@@ -52,11 +49,13 @@ class _SplashPageState extends State<SplashPage>
         // );
         // final entryPointBridge = sl<EntryPointBridge>();
         // entryPointBridge(params);
-        if (!CommonFunctions.changeSpalsh()) {
-          sl<EntryPointCubit>().hideSplash();
-        }
+        // if (!CommonFunctions.changeSpalsh()) {
+        // sl<EntryPointCubit>().hideSplash();
+        // }
         //   CommonFunctions.sendUrbiMapLogs();
         //  }
+
+        // after splash screen completed check the version info to show the force update dialog
         checkVersionInfo();
       } else {}
     });
@@ -66,14 +65,14 @@ class _SplashPageState extends State<SplashPage>
     try {
       locator<ForceUpdateViewModel>().getVersionInfo();
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   @override
@@ -84,7 +83,6 @@ class _SplashPageState extends State<SplashPage>
     );
     _controller.removeStatusListener((status) {});
     _controller.dispose();
-
     super.dispose();
   }
 

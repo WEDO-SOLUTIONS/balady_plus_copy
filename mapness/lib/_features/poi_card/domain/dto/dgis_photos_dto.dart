@@ -4,11 +4,9 @@ part 'dgis_photos_dto.g.dart';
 
 @JsonSerializable()
 class DgisPhotosDto {
-
   DgisPhotosDto({required this.albums, required this.items});
 
-  factory DgisPhotosDto.fromJson(Map<String, dynamic> json) =>
-      _$DgisPhotosDtoFromJson(json);
+  factory DgisPhotosDto.fromJson(Map<String, dynamic> json) => _$DgisPhotosDtoFromJson(json);
   List<Album> albums;
   List<Item> items;
 
@@ -17,7 +15,6 @@ class DgisPhotosDto {
 
 @JsonSerializable()
 class Item {
-
   Item({
     required this.id,
     required this.url,
@@ -51,24 +48,28 @@ class Item {
 
 @JsonSerializable()
 class PreviewUrls {
-  // String? medium;
+  @JsonKey(name: '100x100')
+  final String? small;
+
+  @JsonKey(name: '100x')
+  final String? smallByWidth;
+
+  @JsonKey(name: 'x100')
+  final String? smallByHeight;
 
   PreviewUrls({
     this.small,
-    // this.medium,
+    this.smallByWidth,
+    this.smallByHeight,
   });
 
-  factory PreviewUrls.fromJson(Map<String, dynamic> json) =>
-      _$PreviewUrlsFromJson(json);
-  @JsonKey(name: '100x100')
-  String? small;
+  factory PreviewUrls.fromJson(Map<String, dynamic> json) => _$PreviewUrlsFromJson(json);
 
   Map<String, dynamic> toJson() => _$PreviewUrlsToJson(this);
 }
 
 @JsonSerializable()
 class Copyright {
-
   Copyright({
     required this.type,
     required this.value,
@@ -79,8 +80,7 @@ class Copyright {
     this.providerIcon,
   });
 
-  factory Copyright.fromJson(Map<String, dynamic> json) =>
-      _$CopyrightFromJson(json);
+  factory Copyright.fromJson(Map<String, dynamic> json) => _$CopyrightFromJson(json);
   String type;
   String value;
   String? url;
@@ -94,7 +94,6 @@ class Copyright {
 
 @JsonSerializable()
 class Owner {
-
   Owner({
     required this.id,
     required this.publicId,
@@ -113,7 +112,6 @@ class Owner {
 
 @JsonSerializable()
 class Album {
-
   Album({required this.id, required this.name, required this.count});
 
   factory Album.fromJson(Map<String, dynamic> json) => _$AlbumFromJson(json);

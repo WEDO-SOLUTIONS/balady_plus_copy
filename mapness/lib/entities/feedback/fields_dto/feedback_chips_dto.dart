@@ -12,6 +12,7 @@ class FeedbackChipsDto extends FeedbackBaseDto {
     required this.label,
     required this.variants,
     super.isHidden = false,
+    super.setOnMap = false,
   });
 
   @override

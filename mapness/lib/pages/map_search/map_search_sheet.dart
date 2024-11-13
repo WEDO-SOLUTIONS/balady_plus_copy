@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -43,7 +45,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   ConsumerState<MapSearchSheet> createState() => _MapSearchSheetState();
 }
 
-class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
+class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
   late final DgisBottomSheetController _dgisSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
@@ -61,6 +63,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     _dgisSheetController = DgisBottomSheetController();
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
     _setupTapListener();
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -76,10 +79,18 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      _unfocusSearchField();
+    }
+  }
+
+  @override
   void dispose() {
     _keyboardVisible.cancel();
     _dgisSheetController.dispose();
     _streamSubscription?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -113,63 +124,59 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     return Stack(
       alignment: Alignment.bottomLeft,
       children: [
+        Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) => _collapseBottomSheet(),
+        ),
         MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
         NotificationListener<ScrollNotification>(
           onNotification: _onNotification,
           child: DgisBottomSheet(
-            key: const Key('MAP SEARCH SHEET KEY'),
-            showBarrier: false,
-            controller: _dgisSheetController,
-            initialExpansion: _initialExpansion,
-            availableExpansions: const {
-              Expansion.hidden,
-              Expansion.middle,
-              Expansion.expanded,
-              Expansion.collapsed,
-            },
-            onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
-            middleHeight: widget.biggestHeight * 0.8,
-            collapsedHeight: collapsedHeight,
-            scrollableBody: (context, scrollController) {
-              /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
-              /// https://www.youtube.com/watch?v=L_WoOkDAqbM
-              scrollController.addListener(_unfocusOnScroll);
-
-              return ClipRRect(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(16),
-                ),
-                child: Material(
-                  color: Colors.white,
-                  child: SearchScope(
-                    named: SearchScopeEnum.map,
-                    child: CustomScrollView(
-                      controller: scrollController,
-                      physics: const ClampingScrollPhysics(),
-                      slivers: [
-                        SliverPersistentHeader(
-                          delegate: MapSearchHeaderDelegate(
-                            requestFocus: widget.requestFocus,
-                            onClose: onClose,
+              key: const Key('MAP SEARCH SHEET KEY'),
+              showBarrier: false,
+              controller: _dgisSheetController,
+              initialExpansion: _initialExpansion,
+              availableExpansions: const {
+                Expansion.hidden,
+                Expansion.middle,
+                Expansion.expanded,
+                Expansion.collapsed,
+              },
+              onExpansionChanged: (expansion, {byUser = false}) => _onExpansionChanged(expansion),
+              middleHeight: widget.biggestHeight * 0.8,
+              collapsedHeight: collapsedHeight,
+              scrollableBody: (context, scrollController) {
+                final bgColor = context.colorsV2.backgroundSurface1;
+                return ClipRRect(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(RadiusBorder.xl),
+                  ),
+                  child: Material(
+                    color: bgColor,
+                    child: SearchScope(
+                      named: SearchScopeEnum.map,
+                      child: CustomScrollView(
+                        controller: scrollController,
+                        physics: const ClampingScrollPhysics(),
+                        slivers: [
+                          SliverPersistentHeader(
+                            delegate: MapSearchHeaderDelegate(
+                              backgroundColor: bgColor,
+                              requestFocus: widget.requestFocus,
+                              onClose: onClose,
+                            ),
+                            pinned: true,
                           ),
-                          pinned: true,
-                        ),
-                        MapSearchContent(
-                          scrollController: scrollController,
-                        ),
-                      ],
+                          MapSearchContent(
+                            scrollController: scrollController,
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              }),
         ),
-        Container(
-          height: bottomSafeArea + 10,
-          width: double.maxFinite,
-          color: Colors.white,
-        )
       ],
     );
   }
@@ -193,14 +200,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
         isRtl: isRtl,
       );
 
+      if (mapObjectManager.markers.isEmpty) {
+        await computeCameraPosition(
+          markers,
+          ref.read(cameraPositionProvider),
+          ref.read(cameraPositionProvider.notifier).animateTo,
+        );
+      }
+
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
 
-      await computeCameraPosition(
-        markers,
-        ref.read(cameraPositionProvider),
-        ref.read(cameraPositionProvider.notifier).animateTo,
-      );
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await mapObjectManager.removeAllMarkers();
     }
@@ -229,12 +239,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
-      _unfocusOnScroll();
+      _unfocusSearchField();
     }
     return true;
   }
 
-  void _unfocusOnScroll() {
+  void _unfocusSearchField() {
     if (kbVisibilityController.isVisible) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
@@ -252,7 +262,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
     // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
     // we will get set wrong [Expansion] value
-    Future.delayed(Durations.short1).then((_) {
+    Future.delayed(Durations.short2).then((_) {
       _dgisSheetController.animateTo(Expansion.expanded);
     });
   }
@@ -286,9 +296,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       final goRouter = ref.read(goRouterProvider);
 
       if (goRouter.isCurrentRoute(SearchRoute.path)) {
-        _dgisSheetController.animateTo(Expansion.collapsed);
-        _unfocusOnScroll();
+        _collapseBottomSheet();
+        _unfocusSearchField();
       }
     });
+  }
+
+  void _collapseBottomSheet() {
+    _dgisSheetController.animateTo(Expansion.collapsed);
   }
 }

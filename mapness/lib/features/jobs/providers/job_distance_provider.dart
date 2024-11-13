@@ -15,10 +15,9 @@ class JobDistance extends _$JobDistance {
   @override
   Future<JobDistanceInfo?> build(double lat, double lon) async {
     final dgisController = await ref.watch(dgisControllerProvider.future);
-
-    ref.read(urbiMetricsProvider.notifier).logEvent(
+    Metrics.logEvent(
       _metricEventName,
-      {
+      extras: {
         'lat': lat.toString(),
         'lon': lon.toString(),
       },

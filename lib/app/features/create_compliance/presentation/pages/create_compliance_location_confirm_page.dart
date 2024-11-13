@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/profile_features/delegators/delegators_exports.dart';
@@ -58,7 +59,7 @@ class _ServiceCardsPageState extends State<CreateComplianceLocationPage> {
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 11429,
+            serviceId: RemoteConfig.MunicipalServicesIDs["create_complianceLocation"]["id"],
           ),
         ),
       ],

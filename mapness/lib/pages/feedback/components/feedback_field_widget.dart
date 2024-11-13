@@ -7,10 +7,11 @@ import 'package:mapness/widgets/feedback/feedback_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_images.dart';
 import 'package:mapness/widgets/feedback/feedback_schedule_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_text_field.dart';
+import 'package:mapness/widgets/feedback/feedback_text_list.dart';
 
 /// please note that all widgets shoud be inside [FormBuilder] since it manages state.
 /// Dont forget to implement [valueTransformer] for fields with some custom type
-class FeedbackFieldWidget extends StatelessWidget {
+class FeedbackFieldWidget extends StatefulWidget {
   final FeedbackBaseEntity field;
 
   const FeedbackFieldWidget({
@@ -19,33 +20,47 @@ class FeedbackFieldWidget extends StatelessWidget {
   });
 
   @override
+  State<FeedbackFieldWidget> createState() => _FeedbackFieldWidgetState();
+}
+
+class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget> with AutomaticKeepAliveClientMixin {
+  @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     // TODO(Demezy): figure out how not to typecast. Or blame stupid type system.
     // wonderful type inference, mmm
-    return switch (field) {
+    super.build(context);
+    return switch (widget.field) {
       /// various string inputs like phone, etc
-      FeedbackTextEntity() => FeedbackInput(field: field as FeedbackTextEntity),
+      FeedbackTextEntity() => FeedbackInput(key: ValueKey(widget.field.id), field: widget.field as FeedbackTextEntity),
+
+      /// various string inputs like phone, etc
+      FeedbackTextListEntity() =>
+        FeedbackTextListField(key: ValueKey(widget.field.id), field: widget.field as FeedbackTextListEntity),
 
       /// bool
-      FeedbackBoolToggleEntity() => FeedbackBoolToggle(field: field as FeedbackBoolToggleEntity),
+      FeedbackBoolToggleEntity() =>
+        FeedbackBoolToggle(key: ValueKey(widget.field.id), field: widget.field as FeedbackBoolToggleEntity),
 
       /// upload photos
-      FeedbackImageInputEntity() => FeedbackImages(field: field as FeedbackImageInputEntity),
+      FeedbackImageInputEntity() =>
+        FeedbackImages(key: ValueKey(widget.field.id), field: widget.field as FeedbackImageInputEntity),
 
       /// select one of many
-      FeedbackChipsEntity() => FeedbackChips(field: field as FeedbackChipsEntity),
+      FeedbackChipsEntity() =>
+        FeedbackChips(key: ValueKey(widget.field.id), field: widget.field as FeedbackChipsEntity),
 
       /// working days, breaks, schedule
-      FeedbackScheduleEntity() => FeedbackScheduleWidget(field: field as FeedbackScheduleEntity),
+      FeedbackScheduleEntity() =>
+        FeedbackScheduleWidget(key: ValueKey(widget.field.id), field: widget.field as FeedbackScheduleEntity),
 
       /// Handle unknown fields (if i.e. backend does not increase api version but change protocol)
       /// since field is required make form invalid
       FeedbackUnknownEntity(isRequired: final isRequired) when isRequired => FormBuilderField<void>(
-          name: field.id,
+          name: widget.field.id,
 
           /// make form invalid
-          validator: (_) => 'ACHTUNG',
+          validator: (_) => 'UNKNOWN_REQUIRED_FIELD',
           builder: (_) => Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Spacing.$4x),
@@ -58,16 +73,19 @@ class FeedbackFieldWidget extends StatelessWidget {
 
       /// if field is not required, than make it valid
       _ => FormBuilderField<void>(
-          name: field.id,
+          name: widget.field.id,
           builder: (_) => Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(Spacing.$4x),
               color: Colors.grey,
             ),
             padding: const EdgeInsets.all(Spacing.$4x),
-            child: Text('Unknown field but not required - id: ${field.id}'),
+            child: Text('Unknown field but not required - id: ${widget.field.id}'),
           ),
         ),
     };
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

@@ -1015,6 +1015,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func restoreNavigationStateState(_ state: FlutterStandardTypedData, speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.restoreNavigationState(state: state, speedRangeZoom: speedRangeZoom, completion: completion)
     }
+
+    func getCurrentNavigationState(completion: @escaping (NavigationStateMessage?, FlutterError?) -> Void) {
+        self.navigationHandler?.getCurrentNavigationState(completion: completion)
+    }
     
     func onCompassClicked(completion: @escaping (FlutterError?) -> Void) {
         self.compassControlHandler?.onClicked()
@@ -1158,6 +1162,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
+    func setBetterRouteEnabledEnabled(_ enabled: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+        navigationHandler?.setBetterRouteEnabled(enabled: enabled.boolValue)
+        completion(nil)
+    }
+
     func toggleVoiceInstructionToggleType(_ toggleType: SoundToggleType, completion: @escaping (FlutterError?) -> Void) {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
         completion(nil)
@@ -1197,5 +1206,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func voicePlayWelcomeId(_ id: String, completion: @escaping (FlutterError?) -> Void) {
         completion(nil)
+    }
+
+    func getAndroidAutoConnectionState(completion: @escaping (NSNumber?, FlutterError?) -> Void) {
+        completion(NSNumber(value: false), nil)
     }
 }

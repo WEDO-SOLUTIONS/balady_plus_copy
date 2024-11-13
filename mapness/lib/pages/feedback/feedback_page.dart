@@ -80,16 +80,15 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     }
 
     final isFormValid = formState.saveAndValidate();
+
     // if for any reason validation has not been triggered, than this will do it
     // and disable button until form valid. But actually step is redundant in current configuration.
     if (!isFormValid) {
       return;
     }
-    final fields = formState.value.entries;
-    print('>>>>>>>>>>>>>>>>>>>>>>>>>>>');
-    print(fields);
-    // print(jsonEncode(formState.value));
-    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<');
+    final fields = formState.value.entries
+        .map((entry) => MapEntry(entry.key, formState.getTransformedValue(entry.key, fromSaved: true)))
+        .toList();
 
     /// tweak to pass compex structure through gorouter.
     /// Id guarantee that old provider would be disposed if new form filled,

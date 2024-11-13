@@ -52,10 +52,11 @@ class DgisMapView(
     private var searchHandler: SearchHandler? = null
     private var routeHandler: RouteHandler? = null
     private var weatherHandler: WeatherHandler? = null
+    private val navigationManager = DgisMapInitializer.getNavigationManager()
     private val navigationHandler by unsafeLazy {
         NavigationHandler(
             sdkContext = sdkContext,
-            navigationView = mapView.findViewById(R.id.navigationView),
+            navigationManager = navigationManager,
             eventSink = eventSink,
             map = map!!,
         )
@@ -76,6 +77,8 @@ class DgisMapView(
     private val eventSink = QueuingEventSink()
     private val eventStreamHandler = DgisStreamHandler(eventSink)
 
+    private val androidAutoHandler = AndroidAutoHandler(context, eventSink)
+
     private val closables = mutableListOf<AutoCloseable>()
 
     init {
@@ -92,11 +95,11 @@ class DgisMapView(
         locationControlHandler?.close()
         indoorControlHandler?.close()
         searchHandler?.close()
-        locationSource.deactivate()
         visibleRectHandler?.close()
         compassControlHandler?.close()
         trafficAndParkingControlHandler?.close()
-        packagesHandler?.close()
+        packagesHandler.close()
+        androidAutoHandler.close()
     }
 
     override fun initialize(result: ApiResult<InitializeMessage>) {
@@ -301,9 +304,10 @@ class DgisMapView(
         }
 
         val area = map.camera.visibleArea
-        if(area is PolygonGeometry) {
+        if (area is PolygonGeometry) {
             val polygonArea = area as PolygonGeometry
-            val contours = polygonArea.contours.map { element -> element.map { e -> e.toMessage() } }
+            val contours =
+                polygonArea.contours.map { element -> element.map { e -> e.toMessage() } }
             result?.success(
                 PolygonGeometryMessage
                     .Builder()
@@ -758,6 +762,10 @@ class DgisMapView(
         navigationHandler.saveNavigationState(result = result)
     }
 
+    override fun getCurrentNavigationState(result: Messages.Result<NavigationStateMessage>) {
+        navigationHandler.getCurrentNavigationState(result)
+    }
+
     override fun restoreNavigationState(
         state: ByteArray,
         speedRangeZoom: SpeedRangeZoom,
@@ -821,7 +829,7 @@ class DgisMapView(
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         result?.success(null)
     }
-    
+
     override fun overlappedBy(
         outerRect: GeoRectMessage,
         innerRect: GeoRectMessage,
@@ -964,7 +972,10 @@ class DgisMapView(
         result?.success(null)
     }
 
-    override fun toggleVoiceInstruction(toggleType: SoundToggleType, result: Messages.Result<Void>?) {
+    override fun toggleVoiceInstruction(
+        toggleType: SoundToggleType,
+        result: Messages.Result<Void>?
+    ) {
         navigationHandler.toggleVoiceInstruction(toggleType)
         result?.success(null)
     }
@@ -1008,10 +1019,8 @@ class DgisMapView(
         visibleRectHandler = VisibleRectHandler(map, eventSink)
         searchHandler = SearchHandler(
             map,
-            sdkContext,
             SearchManager.createOnlineManager(sdkContext),
             locationSource,
-            DgisMapPlugin.vendorConfig,
         )
         compassControlHandler = CompassControlHandler(map, eventSink)
         trafficAndParkingControlHandler =
@@ -1098,6 +1107,18 @@ class DgisMapView(
     ) {
         navigationHandler.setBetterRouteSettings(message)
         result?.success(null)
+    }
+
+    override fun setBetterRouteEnabled(enabled: Boolean, result: Messages.Result<Void?>?){
+        navigationHandler.setBetterRouteEnabled(enabled)
+        result?.success(null)
+    }
+
+    override fun getAndroidAutoConnectionState(
+        result: Messages.Result<Boolean>?
+    ) {
+        val connected = androidAutoHandler.getConnectionState()
+        result?.success(connected)
     }
 
     override fun listPackages(result: Messages.Result<List<PackageMessage>>?) {

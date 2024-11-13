@@ -38,7 +38,6 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
   ChatBotDataSourcesImplementation({required this.webService});
 
   @override
-  @override
   Future<bool> chatBotIsEnabled() async {
     Response? response;
     try {

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+  <!-- Navigation -->
+  <string name="better_route_alert_title">Better Route</string>
+  <string name="better_route_alert_subtitle">-%1$d min</string>
+  <string name="better_route_alert_close_action">Close</string>
+  <string name="better_route_alert_choose_action">Choose</string>
+  <string name="stop_navigation_action">End trip</string>
+  <string name="rerouting_message">Rerouting…</string>
+  <string name="location_signal_lost_message">GPS signal lost.\nTrying to reconnect…</string>
+  <string name="end_trip_alert_title">You arrived</string>
+  <string name="end_trip_alert_action">End trip</string>
+  <string name="start_navigation_message">Please stop the car and start navigation in the Balady app on your phone</string>
+
+  <!-- Permission request -->
+  <string name="location_permission_request_message">Please stop the car and allow Balady to access your location on your phone</string>
+  <string name="grant_access_action">Grant Access</string>
+</resources>

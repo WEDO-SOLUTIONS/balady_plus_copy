@@ -1,7 +1,7 @@
 enum EnvType {
   dev(domain: "https://apiservicesstg.balady.gov.sa/"),
-  stg(domain: "http://test.test/api/"),
-  prod(domain: "http://test.test/api/"),
+  stg(domain: "https://apiservicesstg.balady.gov.sa/"),
+  prod(domain: "https://apiservices.balady.gov.sa/"),
   ;
 
   const EnvType({required this.domain});

@@ -19,8 +19,7 @@ class _ViewDMSImageScreenState extends State<ViewDMSImageScreen> {
       children: [
         PhotoView(
           imageProvider: NetworkImage(url, headers: {
-            "verifyingKEY": CommonFunctions.hashRequest(url, "GET"),
-
+            "verifyingKEY": CommonFunctions.hashRequest(url, "GET")
 
             //  "Authorization":
             //      "Bearer ${locator<AuthService>().accessToken}"

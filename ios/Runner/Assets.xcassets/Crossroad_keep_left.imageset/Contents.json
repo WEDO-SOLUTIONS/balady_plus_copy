@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "Crossroad_keep_left.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

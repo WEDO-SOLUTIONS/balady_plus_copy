@@ -528,12 +528,14 @@ class AddMarkersWithPhotoMessage {
 
 class LayerPointObjectMessage {
   LayerPointObjectMessage({required this.position, required this.attributes});
+
   GeoPointWithElevationMessage position;
   final Map<String?, String?> attributes;
 }
 
 class AddLayerPointObjectsMessage {
   AddLayerPointObjectsMessage(this.objects);
+
   final List<LayerPointObjectMessage?> objects;
 }
 
@@ -771,11 +773,12 @@ class DynamicFilterMessage {
 }
 
 class ItemMarkerInfoMessage {
-  ItemMarkerInfoMessage(this.objectId, this.geoPoint, this.floorInfo);
+  ItemMarkerInfoMessage(this.objectId, this.geoPoint, this.floorInfo, this.title);
 
   final DgisObjectIdMessage? objectId;
   final GeoPointWithElevationMessage geoPoint;
   final FloorInfoMessage? floorInfo;
+  final String? title;
 }
 
 class SearchResultMessage {
@@ -787,7 +790,6 @@ class SearchResultMessage {
     this.searchResultType,
     this.dynamicFilters,
     this.autoUseFirstResult,
-    this.markersWithLabel,
   );
 
   final PageMessage? firstPage;
@@ -797,7 +799,6 @@ class SearchResultMessage {
   final SearchResultTypeMessage searchResultType;
   final List<DynamicFilterMessage?> dynamicFilters;
   final bool autoUseFirstResult;
-  final List<UiMarkerInfoMessage?>? markersWithLabel;
 }
 
 class UiMarkerInfoMessage {
@@ -988,6 +989,7 @@ class LogOptionsMessage {
 
 class RouteSearchPointMessage {
   RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
+
   final GeoPointMessage coordinates;
   final BearingMessage? course;
   final DgisObjectIdMessage objectId;
@@ -996,11 +998,13 @@ class RouteSearchPointMessage {
 
 class LevelIdMessage {
   LevelIdMessage(this.value);
+
   final int value;
 }
 
 class BearingMessage {
   BearingMessage(this.value);
+
   final double value;
 }
 
@@ -1067,6 +1071,7 @@ class WeatherMapMessage {
     required this.rasterTileUri,
     required this.enabled,
   });
+
   final WeatherMapType? type;
   final String? layerName;
   final String? rasterTileUri;
@@ -1108,6 +1113,19 @@ class SpeedRangeZoom {
   final double styleZoomValue;
 }
 
+enum NavigationState {
+  navigation,
+  finish,
+  disabled,
+}
+
+class NavigationStateMessage {
+  NavigationStateMessage(this.state, this.routeSearchOptions);
+
+  final NavigationState state;
+  final RouteSearchOptionsMessage routeSearchOptions;
+}
+
 /// Represents the types of sound toggles.
 ///
 /// The [SoundToggleType] enum defines three types of sound toggles:
@@ -1138,10 +1156,17 @@ class BetterRouteSettingsMessage {
     required this.betterRouteLengthThreshold,
     required this.routeSearchDelay,
   });
+
   final int betterRouteTimeCostThreshold;
   final int betterRouteLengthThreshold;
   final int routeSearchDelay;
 }
+
+class VendorConfigContentMessage {
+  const VendorConfigContentMessage(this.content);
+  final String content;
+}
+
 
 @ConfigurePigeon(
   PigeonOptions(
@@ -1437,6 +1462,9 @@ abstract class MapApi {
   Uint8List saveNavigationState();
 
   @async
+  NavigationStateMessage getCurrentNavigationState();
+
+  @async
   void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
 
   @async
@@ -1532,6 +1560,12 @@ abstract class MapApi {
 
   @async
   void setBetterRouteSettings(BetterRouteSettingsMessage message);
+
+  @async
+  void setBetterRouteEnabled(bool enabled);
+
+  @async
+  bool getAndroidAutoConnectionState();
 }
 
 @FlutterApi()
@@ -1545,5 +1579,5 @@ abstract class FlutterMapApi {
 @HostApi()
 abstract class PluginApi {
   @async
-  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage);
+  void initialize(LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
 }

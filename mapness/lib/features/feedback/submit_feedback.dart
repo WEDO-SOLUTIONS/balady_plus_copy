@@ -52,10 +52,10 @@ Future<void> submitFeedback(
     );
     log(response.data.toString());
   } on DioException catch (e) {
-    print(e.response?.statusCode?.toString() ?? '');
+    log(e.response?.statusCode?.toString() ?? '');
     // print(e.toString());
-    print('request data: ${jsonEncode(e.requestOptions.data)}');
-    print('response data: ${jsonEncode(e.response?.data)}');
+    log('request data: ${jsonEncode(e.requestOptions.data)}');
+    log('response data: ${jsonEncode(e.response?.data)}');
     rethrow;
   } catch (e) {
     log(e.toString());

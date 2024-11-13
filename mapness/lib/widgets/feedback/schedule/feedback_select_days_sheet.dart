@@ -102,7 +102,7 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                     state:
                         workingHours.days.contains(day) ? BaladyCheckBoxState.checked : BaladyCheckBoxState.unchecked,
                     disable: lockedDays.contains(day),
-                    dayName: day.localizedShortName(context.l10n),
+                    dayName: day.localizedName(context.l10n),
                     onTap: () => _handleOnDayTap(day),
                   ),
               ],
@@ -120,10 +120,15 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
     /// since this widget is in other tree we could not directly listen to updates.
     /// Fortunately there is no flow where update comes from outside => we could assume
     /// that both in sync.
+    if (!mounted) {
+      return;
+    }
     setState(
-      () => widget.fieldState.didChange(
-        widget.fieldState.value!.replace(fieldIndex, updatedField),
-      ),
+      () {
+        widget.fieldState.didChange(
+          widget.fieldState.value!.replace(fieldIndex, updatedField),
+        );
+      },
     );
   }
 
@@ -155,6 +160,10 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
           ),
       },
     );
+    if (!mounted) {
+      return;
+    }
+    setState(() {});
   }
 }
 

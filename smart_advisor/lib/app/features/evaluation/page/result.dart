@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../core/services/local/navigation_services.dart';
+import '../../home_page/presentation/pages/new_home_page.dart';
 import '/app/core/utils/constants/language.dart';
 
 import 'package:flutter_svg/svg.dart';
@@ -8,8 +9,6 @@ import '/app/core/utils/constants/paths/icon_paths.dart';
 import '/app/features/evaluation/widget/resulte_wedgit.dart';
 import '/app/features/shared_features/widgets/app_bar.dart';
 import '/app/features/shared_features/widgets/custom_button.dart';
-
-import '../../home_page/presentation/pages/homePage.dart';
 
 class Result extends StatelessWidget {
   const Result({super.key});
@@ -112,7 +111,7 @@ class Result extends StatelessWidget {
                 onPress: () {
                   NavigationService.navigatorKey.currentState!
                       .push(MaterialPageRoute(builder: (ctx) {
-                    return HomePage();
+                    return NewHomePage();
                   }));
                 },
                 text: ("back_main").tr(),

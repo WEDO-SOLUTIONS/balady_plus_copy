@@ -20,6 +20,8 @@ class EnvironmentConfig {
   final String shareEtaApi;
   // TODO(Demezy): very probably will be changed in the future
   final String feedbackApi;
+  final bool appFeedbackEnable;
+  final String appFeedbackApi;
 
   EnvironmentConfig({
     required this.url,
@@ -30,8 +32,24 @@ class EnvironmentConfig {
     required this.baseApiDomain,
     required this.shareEtaApi,
     required this.feedbackApi,
-    this.proxy,
+    required this.proxy,
+    required this.appFeedbackEnable,
+    required this.appFeedbackApi,
   });
+
+  factory EnvironmentConfig.fromJson(Map<String, dynamic> json) => EnvironmentConfig(
+        proxy: json['proxy'] as String?,
+        url: json['url'] as String,
+        meteoblue: json['meteoblue'] as String,
+        weatherApi: json['weatherApi'] as String,
+        jobsApi: json['jobsApi'] as String,
+        twinsApi: json['twinsApi'] as String,
+        baseApiDomain: json['baseApiDomain'] as String,
+        shareEtaApi: json['shareEtaApi'] as String,
+        feedbackApi: json['feedbackApi'] as String,
+        appFeedbackEnable: json['appFeedbackEnable'] as bool,
+        appFeedbackApi: json['appFeedbackApi'] as String,
+      );
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
@@ -45,6 +63,8 @@ class EnvironmentConfig {
 
         /// swagger: https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/docs/
         feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
+        appFeedbackApi: '',
+        appFeedbackEnable: true,
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -56,6 +76,9 @@ class EnvironmentConfig {
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
         feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
+        appFeedbackApi: '',
+        appFeedbackEnable: true,
+        proxy: null,
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -67,6 +90,9 @@ class EnvironmentConfig {
         baseApiDomain: 'urbi.ae',
         shareEtaApi: 'https://geostream-urbi-lifestyle.momrah.gov.sa',
         feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api/2.0/',
+        appFeedbackApi: '',
+        appFeedbackEnable: true,
+        proxy: null,
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -81,5 +107,7 @@ class EnvironmentConfig {
 
         /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
         feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae/api/2.0/',
+        appFeedbackApi: '',
+        appFeedbackEnable: true,
       );
 }

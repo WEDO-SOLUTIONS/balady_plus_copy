@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/routes/stories.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -43,7 +44,14 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   void _openStory(BuildContext context, String id) {
     Metrics.logEventAdvanced(MetricsConstants.exploreKeys.storyBanner,
         group: MetricsConstants.exploreTag, action: MetricAction.tap.name, props: {'id': id});
-    StoriesRoute.openById(context, storyId: id);
+
+    ref.read(storiesOpenStateProvider.notifier).open();
+
+    StoriesRoute.openById(
+      context,
+      storyId: id,
+      onClose: ref.read(storiesOpenStateProvider.notifier).close,
+    );
   }
 
   @override
