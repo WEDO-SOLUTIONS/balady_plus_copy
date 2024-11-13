@@ -158,8 +158,8 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       final start = points[0];
       final finish = points[1];
 
-      RoutingRoutesRoute(
-        points: [
+      context.router.push(
+        RoutingRoutesRoute(points: [
           RouteParamsPointWithLabel(
             value: start.latitude != null && start.longitude != null
                 ? RouteParamsPoint(
@@ -184,7 +184,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
                 : null,
             label: finish.title(context.l10n) ?? '',
           ),
-        ],
+        ]),
       );
 
       points[1] = RoutePointFavouriteItem(null);
