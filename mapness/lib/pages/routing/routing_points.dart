@@ -22,7 +22,7 @@ import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
-  const RoutingPointsPage();
+  const RoutingPointsPage({super.key});
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(

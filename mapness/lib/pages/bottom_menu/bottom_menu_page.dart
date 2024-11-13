@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
+import 'package:mapness/widgets/bottom_menu/default_icon.dart';
+import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 @RoutePage()
@@ -18,7 +21,7 @@ class BottomMenuPage extends ConsumerStatefulWidget {
 class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
   final List<PageRouteInfo<dynamic>> _buildRoutes = [
     const LandingRoute(),
-    RoutingPointsRoute(),
+    const RoutingPointsRoute(),
     const MapnessServicesRoute(),
     const ProfileRoute(),
   ];
@@ -29,7 +32,7 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
         builder: (_, tabsRouter, route) => Column(
           children: [
             Expanded(
-              child: IndexedStack(
+              child: LazyIndexedStack(
                 index: route.activeIndex,
                 children: tabsRouter,
               ),
@@ -59,9 +62,9 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
                 ),
                 items: [
                   BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
+                    icon: AppBottomNavigationBarItem(
                       selected: route.activeIndex == 0,
-                      iconBuilder: (ctx, isSelected) => _DefaultIcon(
+                      iconBuilder: (ctx, isSelected) => DefaultIcon(
                         icon: GeneralIcons.pin,
                         selected: isSelected,
                       ),
@@ -70,9 +73,9 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
                     label: '',
                   ),
                   BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
+                    icon: AppBottomNavigationBarItem(
                       selected: route.activeIndex == 1,
-                      iconBuilder: (ctx, isSelected) => _DefaultIcon(
+                      iconBuilder: (ctx, isSelected) => DefaultIcon(
                         icon: GeneralIcons.route,
                         selected: isSelected,
                       ),
@@ -81,9 +84,9 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
                     label: '',
                   ),
                   BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
+                    icon: AppBottomNavigationBarItem(
                       selected: route.activeIndex == 2,
-                      iconBuilder: (ctx, isSelected) => _DefaultIcon(
+                      iconBuilder: (ctx, isSelected) => DefaultIcon(
                         icon: GeneralIcons.dashboard,
                         selected: isSelected,
                       ),
@@ -92,7 +95,7 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
                     label: '',
                   ),
                   BottomNavigationBarItem(
-                    icon: _BottomNavigationBarItem(
+                    icon: AppBottomNavigationBarItem(
                       selected: route.activeIndex == 3,
                       iconBuilder: (context, selected) => ProfileImageWidget(
                         dimension: 24,
@@ -108,71 +111,6 @@ class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
               ),
             ),
           ],
-        ),
-      );
-}
-
-class _BottomNavigationBarItem extends StatelessWidget {
-  final bool selected;
-  final Widget Function(BuildContext, bool) iconBuilder;
-  final String? label;
-
-  const _BottomNavigationBarItem({
-    required this.selected,
-    required this.iconBuilder,
-    this.label,
-  });
-
-  @override
-  Widget build(BuildContext context) =>
-      Padding(
-        padding: const EdgeInsets.only(top: 2),
-        child: Column(
-          children: [
-            iconBuilder.call(context, selected),
-            const SizedBox(height: 2),
-            _DefaultLabel(
-              label: label!,
-              selected: selected,
-            ),
-          ],
-        ),
-      );
-}
-
-class _DefaultIcon extends StatelessWidget {
-  final IconData icon;
-  final bool selected;
-
-  const _DefaultIcon({
-    required this.icon,
-    required this.selected,
-  });
-
-  @override
-  Widget build(BuildContext context) =>
-      Icon(
-        icon,
-        size: 24,
-        color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
-      );
-}
-
-class _DefaultLabel extends StatelessWidget {
-  final String label;
-  final bool selected;
-
-  const _DefaultLabel({
-    required this.label,
-    required this.selected,
-  });
-
-  @override
-  Widget build(BuildContext context) =>
-      Text(
-        label,
-        style: context.textStyleV3.captionSmallMedium.copyWith(
-          color: selected ? context.colorsV2.accentDefault : context.colorsV2.foregroundSoft,
         ),
       );
 }
