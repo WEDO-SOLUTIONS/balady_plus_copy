@@ -34,7 +34,7 @@ class CarSearchHandler(private val searchManager: SearchManager) : AutoCloseable
                 .setPageSize(pageSize).setSpatialRestriction(saRestrictions).build()
 
         searchFuture = searchManager.search(query).apply {
-            onResult { searchResult -> resultCallback(searchResult.firstPage!!.items) }
+            onResult { searchResult -> resultCallback(searchResult.firstPage?.items ?: emptyList()) }
             onError { errorCallback?.invoke(it) }
         }
     }
