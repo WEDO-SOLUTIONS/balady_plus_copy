@@ -119,63 +119,21 @@ Map<String, dynamic> servicesConfig = {
   ],
   "municipal_services": [
     {
-      "id": 11124,
-      "icon": "license_query",
+      "id": 206,
+      "icon": "submit_compliance",
       "3d_icon": null,
-      "order": 6,
+      "order": 4,
       "isNew": false,
-      "requireLogin": false,
       "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.constructionLicenseOverView
-      },
-      "ar": {
-        "title": "inquiry_construction_license",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "inquiry_construction_license",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 11428,
-      "icon": "license_query",
-      "3d_icon": null,
-      "order": 6,
-      "isNew": false,
-      "requireLogin": false,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.surveyReportInqueryOverView
-      },
-      "ar": {
-        "title": "survey_report_inquery",
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "survey_report_inquery", "description": null, "tag": null}
-    },
-    {
-      "id": 11134,
-      "icon": "license_query",
-      "3d_icon": null,
-      "order": 6,
-      "isNew": false,
       "requireLogin": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.commercialLicenseOverView},
+      "action": {"type": "page", "value": RouteName.createCompliancePage},
       "ar": {
-        "title": "CommerciallicenseQuery",
+        "title": "compliance_certificate",
         "description": null,
         "tag": null
       },
       "en": {
-        "title": "CommerciallicenseQuery",
+        "title": "compliance_certificate",
         "description": null,
         "tag": null
       }
@@ -256,26 +214,6 @@ Map<String, dynamic> servicesConfig = {
       },
       "en": {
         "title": "service_provide_services",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 206,
-      "icon": "submit_compliance",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.createCompliancePage},
-      "ar": {
-        "title": "compliance_certificate",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "compliance_certificate",
         "description": null,
         "tag": null
       }
@@ -426,6 +364,68 @@ Map<String, dynamic> servicesConfig = {
       },
       "en": {
         "title": "classification_certificate_verify",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 11124,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.constructionLicenseOverView
+      },
+      "ar": {
+        "title": "inquiry_construction_license",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "inquiry_construction_license",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 11428,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.surveyReportInqueryOverView
+      },
+      "ar": {
+        "title": "survey_report_inquery",
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "survey_report_inquery", "description": null, "tag": null}
+    },
+    {
+      "id": 11134,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.commercialLicenseOverView},
+      "ar": {
+        "title": "CommerciallicenseQuery",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "CommerciallicenseQuery",
         "description": null,
         "tag": null
       }
