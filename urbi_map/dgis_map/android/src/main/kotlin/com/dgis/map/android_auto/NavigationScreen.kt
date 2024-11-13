@@ -173,7 +173,9 @@ class NavigationScreen(
 
             NavigationState.DISABLED -> {
                 customRenderer.clear()
-                navigationManager.navigationEnded()
+                if (!isEndTripShown) {
+                    stopNavigation()
+                }
             }
 
             NavigationState.REROUTING -> {
@@ -189,11 +191,7 @@ class NavigationScreen(
     }
 
     override fun onEtaUpdated(eta: EtaModel?) {
-        if (eta == null) {
-            destinationTravelEstimate = null
-            destination = null
-            return
-        }
+        if (eta == null) return
 
         val distance: Double
         val unit: Int
@@ -252,6 +250,7 @@ class NavigationScreen(
         tripBuilder.setLoading(false)
         tripBuilder.setCurrentRoad(maneuver.roadName)
         navigationManager.updateTrip(tripBuilder.build())
+        invalidate()
     }
 
     override fun onLocationStateChanged(state: LocationState) {
@@ -334,7 +333,7 @@ class NavigationScreen(
         if (destination?.name != null) {
             endTripAlert.setSubtitle(destination!!.name!!)
         }
-        endTripAlert.addAction(endTripAction.build()).setCallback(object :AlertCallback{
+        endTripAlert.addAction(endTripAction.build()).setCallback(object : AlertCallback {
             override fun onCancel(reason: Int) {}
             override fun onDismiss() {
                 isEndTripShown = false

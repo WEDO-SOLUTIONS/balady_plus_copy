@@ -16,4 +16,10 @@
   <!-- Permission request -->
   <string name="location_permission_request_message">يرجى إيقاف السيارة والسماح لتطبيق بلدي بالوصول إلى موقعك على هاتفك</string>
   <string name="grant_access_action">السماح بالوصول</string>
+
+  <!-- Search -->
+  <string name="searchNothingFound">لم يتم العثور على شيء. حاول تغيير البحث أو تغيير الموقع</string>
+
+  <!-- Common -->
+  <string name="youDontSeemToHaveInternetDescription">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
 </resources>

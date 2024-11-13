@@ -2,7 +2,6 @@ package com.dgis.map.android_auto
 
 import androidx.car.app.model.DateTimeWithZone
 import com.dgis.map.DgisMapInitializer
-import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraAnimationType
@@ -14,6 +13,7 @@ import ru.dgis.sdk.navigation.InstructionManeuver
 import ru.dgis.sdk.navigation.NavigationManager
 import ru.dgis.sdk.navigation.NavigationVoice
 import ru.dgis.sdk.navigation.PackedNavigationState
+import ru.dgis.sdk.navigation.RouteBuildOptions
 import ru.dgis.sdk.navigation.RouteInfo
 import ru.dgis.sdk.navigation.State
 import ru.dgis.sdk.navigation.duration
@@ -37,7 +37,7 @@ import kotlin.math.max
 
 class CarNavigationHandler(
     private val navigationManager: NavigationManager,
-    private val searchManager: SearchManager,
+    private val searchHandler: CarSearchHandler,
 ) : AutoCloseable {
 
     interface NavigationListener {
@@ -107,12 +107,12 @@ class CarNavigationHandler(
         // Destination
         val routeBuildOptions = navigationManager.uiModel.route.routeBuildOptions
         if (destination == null && state == State.NAVIGATION && routeBuildOptions != null) {
-            searchManager.searchByDirectoryObjectId(routeBuildOptions.finishPoint.objectId).apply {
-                onResult {
+            searchHandler.searchByDirectoryObjectId(
+                routeBuildOptions.finishPoint.objectId,
+                resultCallback = {
                     destination = it?.title
                     updateEta()
-                }
-            }
+                })
         }
     }
 
@@ -304,6 +304,13 @@ class CarNavigationHandler(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
         )
         navigationManager.mapFollowController.setFollow(true)
+    }
+
+    fun startNavigation(routeBuildOptions: RouteBuildOptions, trafficRoute: TrafficRoute) {
+        navigationManager.start(
+            routeBuildOptions = routeBuildOptions,
+            trafficRoute = trafficRoute
+        )
     }
 
     fun startNavigationSimulation() {
