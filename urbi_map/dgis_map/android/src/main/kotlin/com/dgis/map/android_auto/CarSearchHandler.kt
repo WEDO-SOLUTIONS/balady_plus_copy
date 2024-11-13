@@ -1,0 +1,54 @@
+package com.dgis.map.android_auto
+
+import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.directory.DirectoryObject
+import ru.dgis.sdk.directory.SearchManager
+import ru.dgis.sdk.directory.SearchQueryBuilder
+import ru.dgis.sdk.directory.SortingType
+import java.lang.Exception
+
+class CarSearchHandler(private val searchManager: SearchManager) : AutoCloseable {
+
+    private var searchFuture: AutoCloseable? = null
+
+    fun searchByDirectoryObjectId(
+        objectId: DgisObjectId,
+        resultCallback: (result: DirectoryObject?) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)? = null
+    ) {
+        searchManager.searchByDirectoryObjectId(objectId).apply {
+            onResult { resultCallback(it) }
+            onError { errorCallback?.invoke(it) }
+        }
+    }
+
+    fun search(
+        queryText: String,
+        pageSize: Int,
+        resultCallback: (result: List<DirectoryObject>) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)? = null
+    ) {
+        val query =
+            SearchQueryBuilder.fromQueryText(queryText).setSortingType(SortingType.BY_DISTANCE)
+                .setPageSize(pageSize).setSpatialRestriction(saRestrictions).build()
+
+        searchFuture = searchManager.search(query).apply {
+            onResult { searchResult -> resultCallback(searchResult.firstPage!!.items) }
+            onError { errorCallback?.invoke(it) }
+        }
+    }
+
+    companion object {
+        private val saRestrictions: List<GeoPoint> = listOf(
+            GeoPoint(latitude = 32.568765, longitude = 56.694472),
+            GeoPoint(latitude = 32.568765, longitude = 32.61185),
+            GeoPoint(latitude = 15.506104, longitude = 32.61185),
+            GeoPoint(latitude = 15.506104, longitude = 56.694472),
+        )
+    }
+
+    override fun close() {
+        searchFuture?.close()
+    }
+}
