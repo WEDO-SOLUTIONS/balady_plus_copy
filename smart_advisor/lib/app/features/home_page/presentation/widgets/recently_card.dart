@@ -1,10 +1,7 @@
 import '../../../select_activity/domain/entities/activity_details_page_params.dart';
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
-import '/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class HomeRecentCard extends StatelessWidget {
   final Function onPress;
@@ -24,7 +21,7 @@ class HomeRecentCard extends StatelessWidget {
         margin: const EdgeInsetsDirectional.only(bottom: 0, end: 16),
         padding: const EdgeInsets.only(left: 12, right: 21, top: 12, bottom: 0),
         width: MediaQuery.of(context).size.width * 0.75,
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: AppColor.white,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),

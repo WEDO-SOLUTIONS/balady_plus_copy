@@ -1,6 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
 
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
 
 import '/app/core/utils/constants/app_colors.dart';
@@ -27,7 +27,7 @@ class _ChatBotWidgetState extends State<ChatBotWidget> {
         builder: (context, state) {
           return GestureDetector(
             onTap: () {
-              BaladyServices.openChatGPT();
+              // BaladyServices.openChatGPT();
             },
             child: Container(
               margin: EdgeInsets.all(30),

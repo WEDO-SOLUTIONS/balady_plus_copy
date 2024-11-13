@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:smart_advisor/app/core/utils/constants/app_style.dart';
 
 class CalculatorItem extends StatelessWidget {
   final String title;
@@ -14,18 +15,13 @@ class CalculatorItem extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
           color: const Color(0xffFFFFFF),
-          border: Border.all(color: const Color(0xffEAEAEE)),
-          borderRadius: const BorderRadius.all(Radius.circular(9))),
+          //  border: Border.all(color: const Color(0xffEAEAEE)),
+          borderRadius: const BorderRadius.all(Radius.circular(16))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(title,
-              textAlign: TextAlign.start,
-              style: GoogleFonts.cairo(
-                color: const Color(0xFF17263D),
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
-              )),
+              textAlign: TextAlign.start, style: AppStyle.textRegularStyle),
           Row(
             children: [
               Text(subTitle,

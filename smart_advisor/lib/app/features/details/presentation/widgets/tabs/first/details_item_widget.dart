@@ -54,12 +54,26 @@ class DetailsItemWidget extends StatelessWidget {
                           .toString() ??
                       "",
                 ),
-                DetailsItem(
-                  title: "totalActiveLicense".tr(),
-                  subTitle: state
-                          .entityActivityDetailsResponse?.totalActiveLicense
-                          .toString() ??
-                      "",
+                Padding(
+                  padding: const EdgeInsets.only(left: 48),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      DetailsItem(
+                        title: "totalActiveLicense".tr(),
+                        subTitle: state.entityActivityDetailsResponse
+                                ?.totalActiveLicense
+                                .toString() ??
+                            "",
+                      ),
+                      DetailsItem(
+                          subTitle: state
+                                  .entityActivityDetailsResponse?.isicCode
+                                  .toString() ??
+                              "",
+                          title: 'النشاط'),
+                    ],
+                  ),
                 ),
 
                 /*DetailsItem(
@@ -120,7 +134,7 @@ class DetailsItem extends StatelessWidget {
           Text(
             subTitle,
             style: AppStyle.footNoteMediumStyle
-                .copyWith(color: AppColor.textTertiaryColor, fontSize: 16),
+                .copyWith(color: AppColor.textSecondaryColor, fontSize: 16),
           ),
           const SizedBox(
             height: 10,

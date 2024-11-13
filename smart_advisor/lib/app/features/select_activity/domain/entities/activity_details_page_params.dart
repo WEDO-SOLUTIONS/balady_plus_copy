@@ -1,7 +1,10 @@
+import 'package:smart_advisor/app/core/utils/extensions/json_conversion.dart';
 import 'package:smart_advisor/app/features/details/data/models/entity_activity_details_response_model.dart';
 import 'package:smart_advisor/app/features/map/data/models/gis_data_response_model.dart';
 import 'package:smart_advisor/app/features/select_activity/data/models/addetional_activites_response_model.dart';
+import 'package:smart_advisor/app/features/select_activity/domain/entities/suggested_area_model.dart';
 
+import '../../data/models/work_flow_model.dart';
 import '/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
 import '/app/features/map/domain/entities/gis_data_request.dart';
 import '/app/features/map/domain/entities/gis_data_response.dart';
@@ -19,6 +22,10 @@ class ActivityDetailsPageParams {
   List<AddetionalActivityItem>? addetionalActivites;
   List<PermitItem>? permits;
   EntityActivityDetailsResponse? entityActivityDetailsResponse;
+  SuggestedAreaModel? suggestedArea;
+  List<WorkFlowModel>? workFlow;
+  String? atmOption;
+  bool? isFromHome;
 
   // Constructor
   ActivityDetailsPageParams(
@@ -29,19 +36,29 @@ class ActivityDetailsPageParams {
       this.gisRequest,
       this.permits,
       this.entityActivityDetailsResponse,
-      this.sector});
+      this.sector,
+      this.suggestedArea,
+      this.workFlow,
+      this.isFromHome,
+      this.atmOption});
 
   // copyWith method
   ActivityDetailsPageParams copyWith(
-      {double? area,
+      {String? atmOption,
+      double? area,
       GisDataResponse? gisData,
       LookUpItem? activityId,
       List<AddetionalActivityItem>? addetionalActivites,
       GISDataRequest? gisRequest,
       List<PermitItem>? permits,
       EntityActivityDetailsResponse? entityActivityDetailsResponse,
-      LookUpItem? sector}) {
+      LookUpItem? sector,
+      SuggestedAreaModel? suggestedArea,
+      List<WorkFlowModel>? workFlow,
+      bool? isFromHome}) {
     return ActivityDetailsPageParams(
+        atmOption: atmOption ?? this.atmOption,
+        workFlow: workFlow ?? this.workFlow,
         sector: sector ?? this.sector,
         permits: permits ?? this.permits,
         area: area ?? this.area,
@@ -50,7 +67,9 @@ class ActivityDetailsPageParams {
         activityId: activityId ?? this.activityId,
         entityActivityDetailsResponse:
             entityActivityDetailsResponse ?? this.entityActivityDetailsResponse,
-        addetionalActivites: addetionalActivites ?? this.addetionalActivites);
+        suggestedArea: suggestedArea ?? this.suggestedArea,
+        addetionalActivites: addetionalActivites ?? this.addetionalActivites,
+        isFromHome: isFromHome ?? this.isFromHome);
   }
 
   // toJson method
@@ -69,6 +88,10 @@ class ActivityDetailsPageParams {
       'permits': permits
           ?.map((e) => e.toJson())
           .toList(), // Assuming PermitItem has toJson method
+
+      'suggestedArea': suggestedArea?.toJson(),
+
+      'workFlow': workFlow?.map((e) => e.toJson()).toList(),
     };
   }
 
@@ -94,6 +117,15 @@ class ActivityDetailsPageParams {
           ? (json['permits'] as List)
               .map((e) => PermitItem.fromJson(e))
               .toList() // Assuming PermitItem has fromJson method
+          : null,
+
+      workFlow: json['workFlow'] != null
+          ? (json['workFlow'] as List)
+              .map((e) => WorkFlowModel.fromJson(e))
+              .toList() // Assuming PermitItem has fromJson method
+          : null,
+      suggestedArea: json['suggestedArea'] != null
+          ? SuggestedAreaModel.fromJson(json['suggestedArea'])
           : null,
       entityActivityDetailsResponse: json['entityActivityDetailsResponse'] !=
               null

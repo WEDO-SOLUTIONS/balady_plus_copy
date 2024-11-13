@@ -1,7 +1,6 @@
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
-import 'package:bloc/bloc.dart';
-import 'package:flutter/material.dart';
-
+import '../../../select_activity/domain/use_cases/get_work_flow.dart';
+import '../../domain/entities/violation_details_Vd_request_params.dart';
+import '../../domain/use_cases/violation_details_vd.dart';
 import '/app/core/dependency_injection/dependency_injection_exports.dart';
 import '/app/core/errors/errors_exports.dart';
 import '/app/core/services/services_exports.dart';
@@ -13,31 +12,39 @@ import '/app/features/details/domain/use_cases/get_regulations.dart';
 import '/app/features/details/presentation/bloc/details_event.dart';
 import '/app/features/details/presentation/bloc/details_state.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
+import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
+
 import '../../data/models/entity_violation_activity_details_model.dart';
 import '../../domain/entities/entity_violation_activity_details_request_params.dart';
 import '../../domain/entities/entity_violation_activity_request_params.dart';
-import '../../domain/entities/violation_details_vd_request_params.dart';
 import '../../domain/use_cases/get_violation_details.dart';
 import '../../domain/use_cases/get_violation_entity_activity_detailes.dart';
-import '../../domain/use_cases/violation_details_vd.dart';
 import '../widgets/tabs/third/Details.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   ActivityDetailsPageParams args;
   final GetRegulationsUc _getRegulationsUc;
   final GetEntityActivityDetailssUc _getEntityActivityDetailssUc;
-  final GetViolationEntityActivityDetailsUC _getViolationEntityActivityDetailsUC;
+  final GetViolationEntityActivityDetailsUC
+      _getViolationEntityActivityDetailsUC;
 
   final GetViolationDetailsUC _getViolationDetails;
 
   final GetViolationVDUC _getViolationVD;
 
+  final GetWorkFlowUc _getWorkFlowUc;
+
   DetailsBloc({required this.args})
       : _getViolationVD = GetViolationVDUC(repository: sl()),
         _getRegulationsUc = GetRegulationsUc(repository: sl()),
-        _getEntityActivityDetailssUc = GetEntityActivityDetailssUc(repository: sl()),
-        _getViolationEntityActivityDetailsUC = GetViolationEntityActivityDetailsUC(repository: sl()),
+        _getEntityActivityDetailssUc =
+            GetEntityActivityDetailssUc(repository: sl()),
+        _getViolationEntityActivityDetailsUC =
+            GetViolationEntityActivityDetailsUC(repository: sl()),
         _getViolationDetails = GetViolationDetailsUC(repository: sl()),
+        _getWorkFlowUc = GetWorkFlowUc(repository: sl()),
         super(DetailsState()) {
     on<GetRegulationsEvent>(_getRegulations);
     on<GetEntityActivityDetailsEvent>(_getEntityActivityDetails);
@@ -47,7 +54,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
     add(GetEntityActivityDetailsEvent());
   }
 
-  void _getViolationDetailsHanlder(GetViolationDetailsEvent event, Emitter emit) async {
+  void _getViolationDetailsHanlder(
+      GetViolationDetailsEvent event, Emitter emit) async {
     showModalBottomSheet(
       backgroundColor: const Color(0xff000000),
       isScrollControlled: true,
@@ -60,19 +68,21 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
 
     return;
     emit(state.copyWith(violationDetailsStatus: BlocStatus.loading));
-    final result = await _getViolationDetails(EntityViolationActivityDetailsRequestParams(
-        activityID: args.activityId?.id ?? 0,
-        violationID: event.item.linkId ?? "",
-        latitude: args.gisRequest?.lat ?? 0,
-        longitude: args.gisRequest?.lon ?? 0,
-        municipalityId: int.tryParse(args.gisData?.municipalityId ?? "") ?? 0,
-        submunicipalityId: int.tryParse(args.gisData?.subMunicipalityId ?? "") ?? 0,
-        isVillage: true,
-        noOfOccurences: 1));
+    final result = await _getViolationDetails(
+        EntityViolationActivityDetailsRequestParams(
+            activityID: args.activityId?.id ?? 0,
+            violationID: event.item.linkId ?? "",
+            latitude: args.gisRequest?.lat ?? 0,
+            longitude: args.gisRequest?.lon ?? 0,
+            municipalityId: args.gisData?.municipalityId ?? "",
+            submunicipalityId: args.gisData?.subMunicipalityId ?? "",
+            isVillage: true,
+            noOfOccurences: 1));
 
     result.fold((failure) {
       emit(state.copyWith(
-          violationDetailsStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          violationDetailsStatus: BlocStatus.failure,
+          regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
       emit(state.copyWith(violationDetailsStatus: BlocStatus.success));
 
@@ -91,19 +101,22 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   void _getViolationsList(GetViolationsListEvent event, Emitter emit) async {
     if (state.violationStatus == BlocStatus.success) return;
     emit(state.copyWith(violationStatus: BlocStatus.loading));
-    final result = await _getViolationEntityActivityDetailsUC(EntityViolationActivityRequestParams(
-        activityId: args.activityId?.id ?? 0,
-        latitude: args.gisRequest?.lat ?? 0,
-        longitude: args.gisRequest?.lon ?? 0,
-        municipalityId: args.gisData?.municipalityId ?? "",
-        submunicipalityId: args.gisData?.subMunicipalityId ?? "",
-        isVillage: args.gisData?.isVillage ?? false));
+    final result = await _getViolationEntityActivityDetailsUC(
+        EntityViolationActivityRequestParams(
+            activityId: args.activityId?.id ?? 0,
+            latitude: args.gisRequest?.lat ?? 0,
+            longitude: args.gisRequest?.lon ?? 0,
+            municipalityId: args.gisData?.municipalityId ?? "",
+            submunicipalityId: args.gisData?.subMunicipalityId ?? "",
+            isVillage: args.gisData?.isVillage ?? false));
 
     result.fold((failure) {
       emit(state.copyWith(
-          violationStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          violationStatus: BlocStatus.failure,
+          regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
-      emit(state.copyWith(violationStatus: BlocStatus.success, violations: success));
+      emit(state.copyWith(
+          violationStatus: BlocStatus.success, violations: success));
     });
   }
 
@@ -115,34 +128,44 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
         lat: args.gisRequest?.lat ?? 0,
         lng: args.gisRequest?.lon ?? 0,
         serviceType: 1004,
-        area: args.area ?? 0));
+        area: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
+            .toDouble()));
 
     result.fold((failure) {
       emit(state.copyWith(
-          regulationStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          regulationStatus: BlocStatus.failure,
+          regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
-      emit(state.copyWith(regulationStatus: BlocStatus.success, regulationResponse: success));
+      emit(state.copyWith(
+          regulationStatus: BlocStatus.success, regulationResponse: success));
     });
   }
 
-  void _getEntityActivityDetails(GetEntityActivityDetailsEvent event, Emitter emit) async {
+  void _getEntityActivityDetails(
+      GetEntityActivityDetailsEvent event, Emitter emit) async {
     try {
       if (state.entityActivityDetailsStatus == BlocStatus.success) return;
       emit(state.copyWith(entityActivityDetailsStatus: BlocStatus.loading));
-      final result = await _getEntityActivityDetailssUc(EntityActivityDetailRequestParams(
-          mainActivityId: args.activityId?.id ?? 0,
-          latitude: args.gisRequest?.lat ?? 0,
-          longitude: args.gisRequest?.lon ?? 0,
-          serviceType: 1004,
-          shopArea: args.area ?? 0));
+      final result = await _getEntityActivityDetailssUc(
+          EntityActivityDetailRequestParams(
+              mainActivityId: args.activityId?.id ?? 0,
+              latitude: args.gisRequest?.lat ?? 0,
+              longitude: args.gisRequest?.lon ?? 0,
+              serviceType: 1004,
+              shopArea:
+                  ((args.suggestedArea?.to ?? args.suggestedArea?.from) ?? 0)
+                      .toDouble()));
 
       result.fold((failure) {
         emit(state.copyWith(
             entityActivityDetailsStatus: BlocStatus.failure,
-            entityActivityDetailsErrorMsg: (failure as ServerFailure).errorMessage));
+            entityActivityDetailsErrorMsg:
+                (failure as ServerFailure).errorMessage));
       }, (success) {
         args = args.copyWith(entityActivityDetailsResponse: success);
-        emit(state.copyWith(entityActivityDetailsStatus: BlocStatus.success, entityActivityDetailsResponse: success));
+        emit(state.copyWith(
+            entityActivityDetailsStatus: BlocStatus.success,
+            entityActivityDetailsResponse: success));
 
         sharedPrefs.saveRecentlyOpened(args);
       });
@@ -150,7 +173,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
   }
 
   void _getVDViolation(GetViolationVD event, Emitter emit) async {
-    print("GGGGHHH ${args.gisData?.municipalityId} ${args.gisData?.subMunicipalityId}");
+    print(
+        "GGGGHHH ${args.gisData?.municipalityId} ${args.gisData?.subMunicipalityId}");
     emit(state.copyWith(vdViolationStatus: BlocStatus.loading));
     final result = await _getViolationVD(ViolationDetailsVdRequestParams(
         activityId: args.activityId?.id ?? 0,
@@ -162,14 +186,18 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
 
     result.fold((failure) {
       emit(state.copyWith(
-          vdViolationStatus: BlocStatus.failure, regulationErrorMsg: (failure as ServerFailure).errorMessage));
+          vdViolationStatus: BlocStatus.failure,
+          regulationErrorMsg: (failure as ServerFailure).errorMessage));
     }, (success) {
-      emit(state.copyWith(vdViolationStatus: BlocStatus.success, vdViolationList: success));
+      emit(state.copyWith(
+          vdViolationStatus: BlocStatus.success, vdViolationList: success));
     });
   }
 
   Future<String?> getComplinaceData(BuildContext context) async {
-    final String d = await BaladyServices.getBuildingCompliance(context, args.gisRequest!.lat, args.gisRequest!.lon);
-    return d;
+    return "";
+    /*  final String? d = await BaladyServices.getBuildingCompliance(
+        context, args.gisRequest!.lat, args.gisRequest!.lon);
+    return d;*/
   }
 }

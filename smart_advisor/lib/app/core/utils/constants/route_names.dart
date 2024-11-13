@@ -20,4 +20,13 @@ class RouteName {
   static const qrDetails = '/QrScanPage';
 
   static const calculatorResultsPage = 'CalculatorResultPage';
+
+  static const mainFlowPage = 'MainFlowPage';
+
+  static const violationPage = 'violationPage';
+  static const regulationPage = 'resulationPage';
+
+  static const newDetails = 'newDetails';
+
+  static const ratingItemsPage = 'RatingItemsPage';
 }

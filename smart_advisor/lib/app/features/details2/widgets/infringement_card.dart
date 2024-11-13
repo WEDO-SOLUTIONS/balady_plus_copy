@@ -33,13 +33,11 @@ class _InfringementCardState extends State<InfringementCard> {
               children: [
                 Expanded(
                     child: Text(
-                        widget.isCritical == "true"
-                            ? "مخالفة جسيمة"
-                            : "مخالفة غير جسيمة",
+                        widget.isCritical == true ? "جسيمة" : "غير جسيمة",
                         style: AppStyle.textRegularRomanStyle.copyWith(
-                            color: widget.isCritical == "true"
+                            color: widget.isCritical == true
                                 ? const Color(0xffE0373D)
-                                : const Color(0xffbe890e)))),
+                                : AppColor.textPrimaryColor))),
               ],
             ),
             subtitle: Text(

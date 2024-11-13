@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../shared_features/widgets/webview_page.dart';
@@ -9,8 +9,6 @@ import '/app/features/_shared_feature_/presentation/widgets/custom_widgets/gener
 import '/app/features/details/presentation/bloc/details_bloc.dart';
 import '/app/features/details/presentation/bloc/details_state.dart';
 import '/app/features/fees_calculator/presentation/pages/calculator_page.dart';
-import '/app/features/home/presentation/pages/home_page.dart';
-import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
 import '/app/features/shared_features/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,8 +17,8 @@ import 'package:flutter_svg/svg.dart';
 
 import '/app/core/utils/constants/language.dart';
 import '/app/features/_shared_feature_/presentation/widgets/custom_widgets/Requirements_fines_View.dart';
-import 'package:url_launcher/link.dart';
-import 'package:url_launcher/url_launcher.dart';
+// import 'package:url_launcher/link.dart';
+// import 'package:url_launcher/url_launcher.dart';
 
 class DetailsUserGuide extends StatelessWidget {
   const DetailsUserGuide({super.key});
@@ -356,7 +354,7 @@ class DetailsUserGuide extends StatelessWidget {
                   btnColor: AppColor.statusAccentColor,
                   textColor: AppColor.white,
                   onPress: () {
-                    BaladyServices.openIssueLicense();
+                    //  BaladyServices.openIssueLicense();
                   },
                   text: ("apply_commercial_license").tr(),
                 ),

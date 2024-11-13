@@ -9,12 +9,14 @@ class ActivityItemCard extends StatelessWidget {
   final String id;
   final String name;
   final int index;
+  final bool isSelected;
   final Function onPress;
   const ActivityItemCard(
       {super.key,
       required this.id,
       required this.name,
       required this.index,
+      required this.isSelected,
       required this.onPress});
 
   @override
@@ -25,6 +27,9 @@ class ActivityItemCard extends StatelessWidget {
         margin: const EdgeInsets.only(bottom: 12),
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
+          border: isSelected
+              ? Border.all(color: const Color(0xff568F64), width: 1.5)
+              : null,
           color: AppColor.surfaceTertairyColor,
           borderRadius: const BorderRadius.all(Radius.circular(12)),
         ),
@@ -42,7 +47,7 @@ class ActivityItemCard extends StatelessWidget {
             const SizedBox(
               width: 16,
             ),
-            SvgPicture.asset(IconPath.arrowLeftSide)
+            //   SvgPicture.asset(IconPath.arrowLeftSide)
           ],
         ),
       ),

@@ -20,8 +20,8 @@ class AddetionalActivityItem {
   String isicName;
   int masterActivityId;
   String masterActivityName;
-  double maxArea;
-  double minArea;
+  double? maxArea;
+  double? minArea;
   bool homogeneous;
   bool? isSelected;
   double? area;
@@ -33,8 +33,8 @@ class AddetionalActivityItem {
       required this.isicName,
       required this.masterActivityId,
       required this.masterActivityName,
-      required this.maxArea,
-      required this.minArea,
+       this.maxArea,
+       this.minArea,
       required this.homogeneous,
       this.isSelected,
       this.area});

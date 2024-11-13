@@ -26,7 +26,7 @@ class _CanBeObjectedToCardState extends State<CanBeObjectedToCard> {
           Expanded(
             child: ListTile(
               title: Text(
-                "قابله للاعتراض",
+                "قابلة للاعتراض",
                 style: AppStyle.textRegularRomanStyle
                     .copyWith(color: AppColor.textPrimaryColor),
               ),

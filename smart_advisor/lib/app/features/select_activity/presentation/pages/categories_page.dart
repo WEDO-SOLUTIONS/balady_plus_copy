@@ -100,6 +100,7 @@ class _CategoriesPageState extends State<CategoriesPage> {
                                         itemCount: items.length ?? 0,
                                         itemBuilder: (context, index) {
                                           return ActivityItemCard(
+                                            isSelected: false,
                                             id: items?[index].id.toString() ??
                                                 "",
                                             name: items?[index].name ?? "",

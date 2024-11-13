@@ -3,7 +3,11 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:smart_advisor/app/core/services/services_exports.dart';
 import 'package:smart_advisor/app/core/utils/utils_exports.dart';
+import 'package:smart_advisor/app/features/map/data/enums/map_enums.dart';
 
+import '../../data/models/map_requests_params.dart';
+import '../../data/models/point_layers_data.dart';
+import '../../domain/use_cases/get_imtethal_layer.dart';
 import '../pages/area_page.dart';
 import '/app/core/dependency_injection/injection_container.dart';
 import '/app/core/errors/failures.dart';
@@ -31,6 +35,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   final GetZonesUC _getZonesUC;
   final ValidatePointUC _validatePointUC;
   final GetGISDataUC _getGISDataUC;
+  final GetImtethalLayer _getImtethalLayer;
 
   final ActivityDetailsPageParams args;
 
@@ -38,11 +43,44 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       : _getZonesUC = GetZonesUC(repository: sl()),
         _validatePointUC = ValidatePointUC(repository: sl()),
         _getGISDataUC = GetGISDataUC(repository: sl()),
+        _getImtethalLayer = GetImtethalLayer(repository: sl()),
         super(const MapState()) {
     on<GetZonesEvent>(getZonesHandler);
     on<ValidatePointEvent>(validatePointHandler);
     on<GetGISDataEvent>(getGISDataHandler);
     on<ClearGISDataEvent>(clearGISDataHandler);
+    on<GetLayersEvent>(getLayersHandler);
+  }
+
+  void getLayersHandler(GetLayersEvent event, Emitter emit) async {
+    emit(state.copyWith(layerStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await _getImtethalLayer.call(MapRequestParams(
+      layer: GISMapLayers.BSAimtithalBuildingsCertificateL,
+      southWestLongitude: event.southWestLongitude,
+      southWestLlatitude: event.southWestLlatitude,
+      northEastLongitude: event.northEastLongitude,
+      northEastLatitude: event.northEastLatitude,
+    ));
+
+    await failureOrSuccess.fold(
+      (failure) async {
+        print(failure);
+        emit(state.copyWith(
+          layerStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) async {
+        print(success);
+        emit(state.copyWith(
+          layerStatus: BlocStatus.success,
+          layerData: success,
+        ));
+      },
+    );
+
+    emit(state.copyWith(layerStatus: BlocStatus.success));
   }
 
   void clearGISDataHandler(ClearGISDataEvent event, Emitter emit) async {
@@ -98,15 +136,29 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           errorMessage: (failure as ServerFailure).errorMessage,
         ));
 
-        CommonFunctions.showError((failure as ServerFailure).errorMessage);
+        CommonFunctions.showError((failure).errorMessage);
       },
       (success) async {
         emit(state.copyWith(
           validatePointStatus: BlocStatus.success,
           valiadtePoints: success,
         ));
-
-        add(GetGISDataEvent(lat: event.lat, lon: event.lon));
+        bool valid = false;
+        for (var element in success) {
+          if (element.allowed == true) {
+            valid = true;
+            break;
+          }
+        }
+        if (success.isEmpty) {
+          valid = true;
+        }
+        if (valid)
+          add(GetGISDataEvent(lat: event.lat, lon: event.lon));
+        else {
+          CommonFunctions.showError(
+              "منطقة حظر! لا يمكن مزاولة هذا النشاط في هذه المنطقة.");
+        }
       },
     );
   }

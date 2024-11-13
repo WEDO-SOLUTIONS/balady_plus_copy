@@ -48,6 +48,7 @@ class ActivitesBloc extends Bloc<ActivitesEvent, ActivitesState> {
         },
       );
     });
+
     add(const GetActivitesEvent());
   }
 }

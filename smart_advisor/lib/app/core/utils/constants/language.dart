@@ -113,6 +113,12 @@ class Language {
       "متطلبات موافقة المديرية العامة للدفاع المدني المبدئية على الترخيص الفوري للمكاتب الإدارية التي مساحتها أقل من (930م)";
   static String files_title_2 =
       "الاشتراطات والمتطلبات التالية خاصة بالمكاتب الادارية التي مساحتها أقل من (930م) ولا يزيد عدد مستخدميها على (٥٠) شخصاً في نطاق مكاني واحد.";
+  static String welcome = "مرحباً بك في المستشار الذكي";
+  static String doYouNeedadvice = "  مالذي تحتاج إلى استشارة فيه؟";
+  static String needSpecialAdvice = "مالذي تحتاج إلى استشارة فيه؟";
+  static String previousConsultations = "استشارات سابقه";
+
+  //Previous consultations
 
   // Full map of translations
   static final Map<String, String> _translations = {
@@ -219,12 +225,17 @@ class Language {
     "location_establihsment": locationEstablishment,
     "no_data_found": noDataFound,
     "files_title_1": files_title_1,
-    "files_title_2": files_title_2
+    "files_title_2": files_title_2,
+    "welcome": welcome,
+    "doYouNeedadvice": doYouNeedadvice,
+    "needSpecialAdvice": needSpecialAdvice,
+    "previousConsultations": previousConsultations,
+    //needadvice
   };
 
   // Translation function to get the variable by name
   static String translate(String key) {
-    return _translations[key] ?? "Translation not found";
+    return _translations[key] ?? "Error";
   }
 }
 

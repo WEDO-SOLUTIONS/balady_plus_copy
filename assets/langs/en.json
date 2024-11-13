@@ -4448,5 +4448,8 @@
   "error_pin":"There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
-  "complianceFAQ": "Frequently asked questions"
+  "complianceFAQ": "Frequently asked questions",
+  "complaince_save_clause":"Save Clause",
+  "complinace_clause": "Clause",
+  "complaince_edit_clause":"Edit Clause"
 }
