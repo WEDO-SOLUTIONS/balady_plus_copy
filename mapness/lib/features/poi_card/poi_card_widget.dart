@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -31,7 +30,7 @@ import 'package:mapness/features/poi_card/widgets/footer/poi_card_footer.dart';
 import 'package:mapness/features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
-import 'package:mapness/features/poi_card/widgets/poi_card_map_controls.dart';
+import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_widget.dart';
 import 'package:mapness/features/poi_card/widgets/poi_loading_sheet.dart';
@@ -239,7 +238,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     return Stack(
       children: [
-        MapControls(bottomSheetController: _bottomSheetController),
+        PoiCardMapControlsWrapper(bottomSheetController: _bottomSheetController),
         Directionality(
           textDirection: Directionality.of(context),
           child: SafeArea(
@@ -487,46 +486,4 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
       ),
     );
   }
-}
-
-class MapControls extends StatelessWidget {
-  final StatefulBottomSheetController<PoiCardBottomSheetState> bottomSheetController;
-
-  const MapControls({
-    required this.bottomSheetController,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) => ListenableBuilder(
-        listenable: bottomSheetController,
-        builder: (context, child) {
-          if (child == null) {
-            return const SizedBox.shrink();
-          }
-          final state = bottomSheetController.state;
-          final interpolation = bottomSheetController.interpolation;
-
-          final hideControls = state.index + interpolation > PoiCardBottomSheetState.halfOpen.index;
-          final opacity =
-              hideControls ? max(0.0, 1 - state.index + (1 - Curves.decelerate.transform(interpolation) * 3)) : 1.0;
-
-          if (opacity == 0.0) {
-            return const SizedBox.shrink();
-          }
-
-          final height = MediaQuery.sizeOf(context).height;
-          return IgnorePointer(
-            ignoring: hideControls,
-            child: Opacity(
-              opacity: opacity,
-              child: SizedBox(
-                height: height - bottomSheetController.sheetHeight - bottomSheetController.componentSizes.topHeader,
-                child: child,
-              ),
-            ),
-          );
-        },
-        child: const PoiCardMapControls(),
-      );
 }
