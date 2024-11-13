@@ -139,8 +139,7 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
                                       ),
                                       const SizedBox(height: 16),
                                       CalculatorCustomTextField(
-                                        title:
-                                            'المساحه المتوقعه للنشاط الرئيسي للمحل',
+                                        title: "المساحة الكلية للمنشأة / المحل",
                                         suffix: 'متر مربع',
                                         value: (widget.args.suggestedArea?.to ??
                                                 widget
@@ -182,7 +181,7 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
                                       ],
                                       const SizedBox(height: 16),
                                       CustomTextDisplay(
-                                        title: 'المساحه الكليه للمنشاه',
+                                        title: 'مساحة النشاط الرئيسي',
                                         value: state.getTotalArea().toString(),
                                         unit: 'متر مربع',
                                       ),
@@ -379,6 +378,12 @@ class _FeesCalculatorPageState extends State<FeesCalculatorPage> {
                                             (state.acomodationType == null)) {
                                           CommonFunctions.showError(
                                               "الرجاء إدخال الفئة");
+                                        } else if (state.getTotalArea() < 0) {
+                                          CommonFunctions.showError(
+                                              "مساحة المحل أقل من مجموع مساحات الأنشطة الإضافية");
+                                        } else if (state.getTotalArea() == 0) {
+                                          CommonFunctions.showError(
+                                              "مساحة النشاط الرئيسي يجب أن تكون أكبر من الصفر");
                                         } else {
                                           context
                                               .read<CalculatorBloc>()

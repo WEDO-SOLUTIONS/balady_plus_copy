@@ -74,10 +74,8 @@ class DetailsBloc extends Bloc<DetailsEvent, DetailsState> {
             violationID: event.item.linkId ?? "",
             latitude: args.gisRequest?.lat ?? 0,
             longitude: args.gisRequest?.lon ?? 0,
-            municipalityId:
-                int.tryParse(args.gisData?.municipalityId ?? "") ?? 0,
-            submunicipalityId:
-                int.tryParse(args.gisData?.subMunicipalityId ?? "") ?? 0,
+            municipalityId: args.gisData?.municipalityId ?? "",
+            submunicipalityId: args.gisData?.subMunicipalityId ?? "",
             isVillage: true,
             noOfOccurences: 1));
 

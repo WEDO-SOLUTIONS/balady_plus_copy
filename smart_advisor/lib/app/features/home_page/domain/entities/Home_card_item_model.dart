@@ -16,13 +16,13 @@ List<HomeCardItemModel> homeCardItems = [
     isDisabled: false,
   ),
   HomeCardItemModel(
-    title: 'الحفريات',
-    image: IconPath.drillingBackground,
+    title: 'البناء و الأراضي',
+    image: IconPath.constructionsBackground,
     isDisabled: true,
   ),
   HomeCardItemModel(
-    title: 'البناء و الأراضي',
-    image: IconPath.constructionsBackground,
+    title: 'الحفريات',
+    image: IconPath.drillingBackground,
     isDisabled: true,
   ),
 

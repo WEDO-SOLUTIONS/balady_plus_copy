@@ -38,8 +38,9 @@ class WorkFlowRequestParams {
       if (additionalActivities.isNotEmpty)
         'additionalActivities': additionalActivities.join(","),
       'entityType': entityType,
-      'contractOption': contractOption,
-      'contractType': contractType,
+      'contractOption':
+          contractOption == "Undefined" ? "ATTACH" : contractOption,
+      'contractType': contractType == "Undefined" ? "EJAR" : contractType,
       if (atmFeesOption != null) 'atmFeesOption': atmFeesOption,
     };
   }

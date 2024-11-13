@@ -71,7 +71,7 @@ class IssueLicenseCard extends StatelessWidget {
                 height: 8,
               ),
               Text(
-                  "السجل التجاري متطلب اساسي لإصدار الرخصة الخاصة بعملك، في حال لم يكن لديك سجل تجاري، يمكنك بدء إجراءات التسجيل من خلال",
+                  "السجل التجاري الذي يحتوي على النشاط المراد اصدار الترخيص له متطلب اساسي لإصدار الرخصة الخاصة بعملك، في حال لم يكن لديك سجل تجاري، يمكنك بدء إجراءات التسجيل من خلال",
                   style: AppStyle.textRegularStyle.copyWith(
                       color: AppColor.textSecondaryColor,
                       fontSize: 14,
