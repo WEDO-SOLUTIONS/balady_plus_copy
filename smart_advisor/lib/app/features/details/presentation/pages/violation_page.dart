@@ -43,7 +43,7 @@ class _ViolationPageState extends State<ViolationPage> {
             ),
             Column(
               children: [
-                NewAppBar(title: "المخالفات"),
+                NewAppBar(title: "قوائم التفحص"),
                 ViolationsView(),
               ],
             ),

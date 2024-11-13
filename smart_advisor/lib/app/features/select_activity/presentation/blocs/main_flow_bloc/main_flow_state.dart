@@ -272,9 +272,9 @@ class MainFlowState extends Equatable {
   }
 
   bool isNextDisabled() {
-    if (workFlowStatus == BlocStatus.loading || status == BlocStatus.loading) {
+    print("GGGGGGG ${currentPage}");
+    if (workFlowStatus == BlocStatus.loading || status == BlocStatus.loading)
       return true;
-    }
     // if (currentPage == 1 && selectedSector == null) return true;
     if (currentPage == 0 && step1Selection == null) return true;
     if (currentPage == 1 && selectedSector == null) return true;

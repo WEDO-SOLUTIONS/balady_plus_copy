@@ -91,22 +91,22 @@ class _ViolationsViewState extends State<ViolationsView> {
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Selection(
+                          /* Selection(
                             currentSelect: violationSelection,
                             onSelect: (int index) {
                               setState(() {
                                 violationSelection = index;
                               });
                             },
-                          ),
-                          const SizedBox(
+                          ),*/
+                          /*  const SizedBox(
                             height: 24,
-                          ),
+                          ),*/
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                "كل المخالفات",
+                                "جميع القوائم",
                                 style: AppStyle.somarSemiBold,
                               ),
                               FilterButton(
@@ -429,14 +429,14 @@ class Selection extends StatelessWidget {
 class FilterButton extends StatelessWidget {
   final Function onTap;
   final bool? isCritical;
-  const FilterButton({this.isCritical, required this.onTap});
+  const FilterButton({super.key, this.isCritical, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () => onTap(),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30), // Rounded corners
           border: Border.all(
@@ -448,7 +448,7 @@ class FilterButton extends StatelessWidget {
             SvgPicture.asset(
               IconPath.filterIcon, // Filter icon
             ),
-            SizedBox(width: 8), // Space between text and icon
+            const SizedBox(width: 8), // Space between text and icon
 
             Text(
               'تصفية النتائج', // Text

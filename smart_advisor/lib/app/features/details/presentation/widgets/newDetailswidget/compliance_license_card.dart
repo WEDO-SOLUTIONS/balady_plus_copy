@@ -117,7 +117,7 @@ class ComplianceLicenseCard extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            "عرض قائمة المخالفات",
+                            "عرض قوائم التفحص",
                             style: AppStyle.footNoteRomanStyle.copyWith(
                               color: AppColor.primary,
                             ),

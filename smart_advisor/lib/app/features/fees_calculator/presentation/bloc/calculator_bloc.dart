@@ -126,6 +126,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
     List<AddetionalActivityItem> addetionalActivitesResponse =
         state.addetionalActivitesResponse ?? [];
     addetionalActivitesResponse.removeWhere((e) => e.activityId == event.index);
+
     emit(state.copyWith(
         status: BlocStatus.success,
         addetionalActivitesResponse: addetionalActivitesResponse));
@@ -194,7 +195,7 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
         longitude: args.gisRequest?.lon.toString(),
         latitude: args.gisRequest?.lat.toString(),
         activityId: args.activityId?.id,
-        permits: args.permits
+        permits: state.permits
                 ?.where((e) => e.isSelected == true)
                 .map((e) => Permit(
                     nonFoodVehicleCount: e.nonFoodVehicleCount,
@@ -206,13 +207,12 @@ class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
                         length: e.length?.toInt())))
                 .toList() ??
             [],
-        addetionalActivites: args.addetionalActivites
+        addetionalActivites: state.addetionalActivitesResponse
                 ?.where((e) => e.isSelected == true)
                 .toList() ??
             [],
         licensePeriod: state.selectedPeriod?.id,
-        shopArea: (args.suggestedArea?.to ?? args.suggestedArea?.from ?? 0)
-            .toDouble(),
+        shopArea: double.tryParse(state.totalArea ?? ""),
         atmFeesPaid: args.atmOption,
         cleanOption: state.cleanOption?.idStr,
         unitCount: state.unitCount,

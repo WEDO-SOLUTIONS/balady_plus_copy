@@ -3721,6 +3721,7 @@
   "ekram_retrive_data_success_msg": "You can complete the application information",
   "ekram_retrive_grave_data_success_msg": "There is a previous cemetery reservation for the deceased {}, and you can complete the entry of transportation and processing request for the same deceased",
   "ekram_deceased_id": "Decreased ID number",
+  "ekram_baquie_approval_date": "Date of approval by the Emirate of Medina",
   "ekram_step4_title": "Location data and attachments",
   "add_deceassed_success": "The deceased's information has been added successfully",
   "ekram_print_deceased_data": "Deceased data",
@@ -4460,5 +4461,9 @@
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
   "complianceFAQ": "Frequently asked questions",
-  "ekram_transportation_apply":"apply request for transport deceased"
+  "ekram_transportation_apply":"apply request for transport deceased",
+  "complianceFAQ": "Frequently asked questions",
+  "complaince_save_clause":"Save Clause",
+  "complinace_clause": "Clause",
+  "complaince_edit_clause":"Edit Clause"
 }
