@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart' as uikitExt;
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,7 +17,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 @RoutePage()
@@ -121,6 +120,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: Column(
@@ -142,54 +142,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                               ],
                             ),
                           ),
-                          uikit.AppButton.close(onTap: _onClose),
+                          uikit.AppButton.close(
+                            onTap: _onClose,
+                          ),
                         ],
                       ),
                     ),
-                    const Center(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(vertical: 6),
-                        child: SheetDragger(),
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                context.l10n.pointToMap,
-                                style: context.textStyle.heading2.copyWith(
-                                  color: context.color.textAndIconsBasePrimary,
-                                ),
-                              ),
-                              Text(
-                                context.l10n.moveMap,
-                                style: context.textStyle.footNote.copyWith(
-                                  color: context.color.textAndIconsBaseTertiary,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        AppCloseButton(
-                          onPressed: () {
-                            Metrics.logEventAdvanced(
-                              MetricsConstants.routesKeys.specifyOnMapExit,
-                              group: MetricsConstants.routesTag,
-                              action: MetricAction.tap.toString(),
-                            );
-
-                            context.router.back();
-                          },
-                        ),
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    uikit.Spacing.$2x.heightBox,
+                    uikit.Spacing.$3x.heightBox,
                     _NearestObject(
                       nearestObject: nearestObject,
                     ),
