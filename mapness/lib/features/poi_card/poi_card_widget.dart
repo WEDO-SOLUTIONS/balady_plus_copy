@@ -140,7 +140,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
             case 2:
               _tabType.value = PoiTabsType.inBuilding;
-              _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen);
+              _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
           }
         }
       },

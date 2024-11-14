@@ -1,11 +1,10 @@
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
 class PhotoViewerWidget extends StatefulWidget {
   final List<String>? photoPaths;
@@ -24,18 +23,16 @@ class PhotoViewerWidget extends StatefulWidget {
 class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   static const backgroundColor = Color(0xff0B1218);
   String _title = '';
-  late final PhotoViewController _scaleController;
   late PageController pageController;
   late ValueNotifier<bool> isAppBarVisible;
+  late final MultiImageProvider multiImageProvider;
 
   @override
   void initState() {
     super.initState();
-    _scaleController = PhotoViewController()
-      // We skip first event because the first event is send when the page is loaded
-      // But we don't want to hide UI from the start
-      ..outputStateStream.skip(1).listen(listener);
+    multiImageProvider = MultiImageProvider(widget.photoPaths?.map((path) => NetworkImage(path)).toList() ?? []);
     pageController = PageController(initialPage: widget.currentPhotoIndex);
+    pageController.addListener(updateTitle);
     isAppBarVisible = ValueNotifier(true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
@@ -50,14 +47,15 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
     _title = getTitle(widget.currentPhotoIndex);
   }
 
-  void listener(PhotoViewControllerValue value) {
-    // According to design we need to hide UI on the zoom
-    isAppBarVisible.value = false;
+  void updateTitle() {
+    setState(() {
+      _title = getTitle(pageController.page?.round() ?? 0);
+    });
   }
 
   @override
   void dispose() {
-    _scaleController.dispose();
+    pageController.removeListener(updateTitle);
     super.dispose();
   }
 
@@ -78,36 +76,23 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
             ),
           ),
         ),
-        child: GestureDetector(
-          onTap: () => isAppBarVisible.value = !isAppBarVisible.value,
-          child: DecoratedBox(
-            decoration: const BoxDecoration(color: backgroundColor),
-            child: Stack(
-              children: [
-                PhotoViewGallery.builder(
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    builder: (ctx, index) {
-                      final photo = widget.photoPaths![index];
-                      return PhotoViewGalleryPageOptions(
-                        imageProvider: NetworkImage(photo),
-                        initialScale: PhotoViewComputedScale.contained * 1,
-                        minScale: PhotoViewComputedScale.contained * 1,
-                        maxScale: PhotoViewComputedScale.covered * 4.1,
-                        heroAttributes: PhotoViewHeroAttributes(tag: photo),
-                        controller: _scaleController,
-                      );
-                    },
-                    itemCount: widget.photoPaths?.length ?? 0,
-                    backgroundDecoration: const BoxDecoration(color: backgroundColor),
-                    pageController: pageController,
-                    allowImplicitScrolling: true,
-                    onPageChanged: (i) {
-                      setState(() {
-                        _title = getTitle(i);
-                      });
-                    }),
-              ],
-            ),
+        child: DecoratedBox(
+          decoration: const BoxDecoration(color: backgroundColor),
+          child: Stack(
+            children: [
+              EasyImageViewPager(
+                easyImageProvider: multiImageProvider,
+                pageController: pageController,
+                doubleTapZoomable: true,
+                onScaleChanged: (zoom) {
+                  if (zoom > 1) {
+                    isAppBarVisible.value = false;
+                  } else {
+                    isAppBarVisible.value = true;
+                  }
+                },
+              ),
+            ],
           ),
         ),
       );
