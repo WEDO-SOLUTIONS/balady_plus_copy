@@ -1,8 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
@@ -64,49 +66,59 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.only(top: Spacing.$2x),
-        child: CustomScrollView(
-          controller: scrollController,
-          physics: const BouncingScrollPhysics(),
-          scrollBehavior: const CupertinoScrollBehavior(),
-          shrinkWrap: true,
-          slivers: [
-            PagedSliverList<int, OrganizationItem>.separated(
-              shrinkWrapFirstPageIndicators: true,
-              pagingController: pagingController,
-              builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
-                itemBuilder: (context, item, index) => ContentWrapper(
-                  color: context.color.surfaceBasePrimary,
-                  children: [
-                    ContentRow(
-                      onTap: () {
-                        final id = item.id;
-                        if (id == null) {
-                          return;
-                        }
-                        context.pop();
-                        PoiMapRoute.open(
-                          ref.read(goRouterProvider),
-                          int.parse(id),
-                          zoom: widget.cameraConfig?.zoom,
-                          bearing: widget.cameraConfig?.bearing,
-                          tilt: widget.cameraConfig?.tilt,
-                          latLng: widget.closestPoint,
-                        );
-                      },
-                      options: ContentRowOptions(
-                        title: item.title,
-                        subtitle: item.rubricsNames,
-                        subtitleExtra: item.addressComment,
-                      ),
-                    )
-                  ],
+        child: ColoredBox(
+          color: context.colorsV2.backgroundSurface4,
+          child: Padding(
+            padding: const EdgeInsets.all(Spacing.$4x),
+            child: CustomScrollView(
+              controller: scrollController,
+              physics: const BouncingScrollPhysics(),
+              scrollBehavior: const CupertinoScrollBehavior(),
+              shrinkWrap: true,
+              slivers: [
+                PagedSliverList<int, OrganizationItem>.separated(
+                  shrinkWrapFirstPageIndicators: true,
+                  pagingController: pagingController,
+                  builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+                    itemBuilder: (context, item, index) => Material(
+                      clipBehavior: Clip.antiAlias,
+                      shape: smoothBorder(RadiusBorder.xl),
+                      color: context.color.surfaceBasePrimary,
+                      child: Padding(
+
+                          /// TODO: use [Spacing.$1x] or [ContentWrapper] in the feature then ImpellerValidationBreak is fixed.
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x),
+                          child: ContentRow(
+                            onTap: () {
+                              final id = item.id;
+                              if (id == null) {
+                                return;
+                              }
+                              context.pop();
+                              PoiMapRoute.open(
+                                ref.read(goRouterProvider),
+                                int.parse(id),
+                                zoom: widget.cameraConfig?.zoom,
+                                bearing: widget.cameraConfig?.bearing,
+                                tilt: widget.cameraConfig?.tilt,
+                                latLng: widget.closestPoint,
+                              );
+                            },
+                            options: ContentRowOptions(
+                              title: item.title,
+                              subtitle: item.rubricsNames,
+                              subtitleExtra: item.addressComment,
+                            ),
+                          )),
+                    ),
+                  ),
+                  separatorBuilder: (context, index) => Spacing.$4x.heightBox,
                 ),
-              ),
-              separatorBuilder: (context, index) => Spacing.$4x.heightBox,
+                SliverToBoxAdapter(
+                    child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
+              ],
             ),
-            SliverToBoxAdapter(
-                child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox),
-          ],
+          ),
         ),
       );
 
