@@ -50,15 +50,15 @@ class CustomModalRoute<T> extends PageRoute<T> {
   /// Specifies the duration for the forward transition animation.
   ///
   /// The duration is set based on the value defined in [CustomRouteType], defaulting
-  /// to 300 milliseconds if no value is provided.
+  /// to 0 milliseconds if no value is provided.
   @override
-  Duration get transitionDuration => Duration(milliseconds: routeType.durationInMilliseconds ?? 300);
+  Duration get transitionDuration => Duration(milliseconds: routeType.durationInMilliseconds ?? 0);
 
   /// Specifies the duration for the reverse transition animation (when the route is popped).
   ///
-  /// This is also set based on [CustomRouteType], defaulting to 300 milliseconds.
+  /// This is also set based on [CustomRouteType], defaulting to 0 milliseconds.
   @override
-  Duration get reverseTransitionDuration => Duration(milliseconds: routeType.reverseDurationInMilliseconds ?? 300);
+  Duration get reverseTransitionDuration => Duration(milliseconds: routeType.reverseDurationInMilliseconds ?? 0);
 
   /// Whether the route is opaque, meaning it fully covers the previous route.
   ///
@@ -103,7 +103,7 @@ class CustomModalRoute<T> extends PageRoute<T> {
   @override
   Widget buildTransitions(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation,
       Widget child) {
-    final transitionsBuilder = routeType.transitionsBuilder ?? _defaultTransitionsBuilder;
+    final transitionsBuilder = _defaultTransitionsBuilder;
     return transitionsBuilder(context, animation, secondaryAnimation, child);
   }
 
