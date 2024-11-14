@@ -5,10 +5,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
-import android.os.Build
 import android.util.Log
 import android.view.Surface
-import androidx.annotation.RequiresApi
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
@@ -47,9 +45,14 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     override fun onCreateScreen(intent: Intent): Screen {
         setupLocale()
         navigationScreen = NavigationScreen(carContext, carMapController, customRenderer)
+        val navigationState = carMapController.getCurrentNavigationState()
 
         if (carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
+            if (navigationState == NavigationState.DISABLED) {
+                carContext.getCarService(ScreenManager::class.java)
+                    .push(StartNavigationMessageScreen(carContext))
+            }
             return RequestPermissionScreen(
                 carContext, carMapController::onLocationOPermissionGranted
             )
@@ -68,6 +71,11 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
                 carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
                 return PlaceListScreen(carContext, carMapController, query)
             }
+        }
+
+        if (navigationState == NavigationState.DISABLED) {
+            carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
+            return StartNavigationMessageScreen(carContext)
         }
         return navigationScreen!!
     }

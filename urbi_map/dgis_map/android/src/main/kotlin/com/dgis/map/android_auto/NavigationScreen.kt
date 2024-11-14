@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
+import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.Alert
@@ -12,7 +13,6 @@ import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.car.app.model.CarText
 import androidx.car.app.model.Distance
-import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.NavigationManager
 import androidx.car.app.navigation.NavigationManagerCallback
@@ -51,7 +51,7 @@ class NavigationScreen(
     init {
         navigationManager = carContext.getCarService(NavigationManager::class.java).apply {
             setNavigationManagerCallback(object : NavigationManagerCallback {
-                override fun onStopNavigation() = stopNavigation()
+                override fun onStopNavigation() = stopNavigation(bySystem = true)
                 override fun onAutoDriveEnabled() = mapController.startNavigationSimulation()
             })
         }
@@ -87,9 +87,6 @@ class NavigationScreen(
         get() = navigationState == NavigationState.NAVIGATION || navigationState == NavigationState.REROUTING
 
     override fun onGetTemplate(): Template {
-        if (navigationState == NavigationState.DISABLED && !isEndTripShown) {
-            return createStartNavigationMessageTemplate()
-        }
         val actionStrip = ActionStrip.Builder()
         val trafficAction = Action.Builder().setIcon(
             CarIcon.Builder(
@@ -172,7 +169,11 @@ class NavigationScreen(
     override fun onNavigationStateChanged(state: NavigationState) {
         navigationState = state
         when (state) {
-            NavigationState.NAVIGATION -> navigationManager.navigationStarted()
+            NavigationState.NAVIGATION -> {
+                tryPopStartNavigationMessageScreen()
+                navigationManager.navigationStarted()
+            }
+
             NavigationState.FINISHED -> {
                 customRenderer.clear()
                 showEndTrip()
@@ -186,6 +187,7 @@ class NavigationScreen(
             }
 
             NavigationState.REROUTING -> {
+                tryPopStartNavigationMessageScreen()
                 val tripBuilder = Trip.Builder()
                 if (destination != null && destinationTravelEstimate != null) {
                     tripBuilder.addDestination(destination!!, destinationTravelEstimate!!)
@@ -195,6 +197,13 @@ class NavigationScreen(
             }
         }
         invalidate()
+    }
+
+    private fun tryPopStartNavigationMessageScreen() {
+        val topScreen = carContext.getCarService(ScreenManager::class.java).top
+        if (topScreen is StartNavigationMessageScreen) {
+            topScreen.finish()
+        }
     }
 
     override fun onEtaUpdated(eta: EtaModel?) {
@@ -311,7 +320,7 @@ class NavigationScreen(
         customRenderer.render(CustomRendererData(speedInfo))
     }
 
-    private fun stopNavigation() {
+    private fun stopNavigation(bySystem: Boolean = false) {
         navigationState = NavigationState.DISABLED
         speedInfo = SpeedInfoModel()
         step = null
@@ -323,6 +332,10 @@ class NavigationScreen(
         val notification = NavigationCarAppService.getDefaultNotification(carContext)
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
+        val screenManager = carContext.getCarService(ScreenManager::class.java)
+        if (!bySystem && screenManager.top is NavigationScreen) {
+            screenManager.push(StartNavigationMessageScreen(carContext))
+        }
     }
 
     private fun openFavorites() {
@@ -499,16 +512,6 @@ class NavigationScreen(
     private fun buildStopNavigationAction(): Action {
         return Action.Builder().setTitle(getString(R.string.stop_navigation_action))
             .setOnClickListener { stopNavigation() }.build()
-    }
-
-    private fun createStartNavigationMessageTemplate(): Template {
-        val icon = CarIcon.Builder(
-            IconCompat.createWithResource(
-                carContext, R.drawable.logo
-            )
-        ).build()
-        return MessageTemplate.Builder(getString(R.string.start_navigation_message)).setIcon(icon)
-            .build()
     }
 
     private companion object {

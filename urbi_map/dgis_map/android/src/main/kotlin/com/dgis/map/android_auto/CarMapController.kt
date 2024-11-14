@@ -262,6 +262,10 @@ class CarMapController(
         return locationSource.lastLocation
     }
 
+    fun getCurrentNavigationState(): NavigationState {
+        return navigationHandler.getCurrentNavigationState()
+    }
+
     override fun close() {
         closeables.forEach(AutoCloseable::close)
         map?.close()

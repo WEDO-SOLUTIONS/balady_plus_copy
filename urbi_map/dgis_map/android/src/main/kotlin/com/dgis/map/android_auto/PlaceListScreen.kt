@@ -92,7 +92,7 @@ class PlaceListScreen(
                                 markerPosition.longitude.value,
                                 item.id
                             )
-                            carContext.getCarService(ScreenManager::class.java).pop()
+                            carContext.getCarService(ScreenManager::class.java).popToRoot()
                         }.build()
                     )
                 }

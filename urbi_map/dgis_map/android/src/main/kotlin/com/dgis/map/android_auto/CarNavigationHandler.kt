@@ -2,6 +2,8 @@ package com.dgis.map.android_auto
 
 import androidx.car.app.model.DateTimeWithZone
 import com.dgis.map.DgisMapInitializer
+import com.dgis.map.extensions.toRouteSearchOptionsMessage
+import com.dgis.map.map_api.Messages
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraAnimationType
@@ -344,6 +346,15 @@ class CarNavigationHandler(
 
     fun stopNavigation() {
         navigationManager.stop()
+    }
+
+    fun getCurrentNavigationState(): NavigationState {
+        return when (navigationManager.uiModel.state) {
+            State.NAVIGATION -> NavigationState.NAVIGATION
+            State.ROUTE_SEARCH -> NavigationState.REROUTING
+            State.FINISHED -> NavigationState.FINISHED
+            State.DISABLED -> NavigationState.DISABLED
+        }
     }
 
     override fun close() {
