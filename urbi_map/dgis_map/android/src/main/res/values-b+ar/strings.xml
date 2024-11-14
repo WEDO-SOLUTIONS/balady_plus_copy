@@ -21,5 +21,8 @@
   <string name="searchNothingFound">لم يتم العثور على شيء. حاول تغيير البحث أو تغيير الموقع</string>
 
   <!-- Common -->
-  <string name="youDontSeemToHaveInternetDescription">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
+  <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>
+  <string name="you_dont_seem_to_have_internet_description">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
+  <string name="meter">م</string>
+  <string name="kilometer">كم</string>
 </resources>

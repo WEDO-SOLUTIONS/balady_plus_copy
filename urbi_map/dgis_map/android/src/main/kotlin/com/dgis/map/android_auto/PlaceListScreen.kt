@@ -21,11 +21,8 @@ import ru.dgis.sdk.coordinates.Longitude
 import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.geometry.distance
 import kotlin.math.PI
-import kotlin.math.asin
-import kotlin.math.cos
 import kotlin.math.min
 import kotlin.math.round
-import kotlin.math.sqrt
 
 class PlaceListScreen(
     carContext: CarContext, private val mapController: CarMapController, private val query: String
@@ -61,7 +58,7 @@ class PlaceListScreen(
             PlaceListScreenState.Error -> {
                 template.setLoading(false)
                 val itemList = ItemList.Builder()
-                    .setNoItemsMessage(getString(R.string.youDontSeemToHaveInternetDescription))
+                    .setNoItemsMessage(getString(R.string.you_dont_seem_to_have_internet_description))
                 template.setItemList(itemList.build())
             }
 

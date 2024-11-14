@@ -21,5 +21,8 @@
   <string name="searchNothingFound">Nothing found. Try changing the query or changing the location</string>
 
   <!-- Common -->
-  <string name="youDontSeemToHaveInternetDescription">You don\'t seem to have internet connection. Please check the connection</string>
+  <string name="driving_notification_title">Driving with Balady</string>
+  <string name="you_dont_seem_to_have_internet_description">You don\'t seem to have internet connection. Please check the connection</string>
+  <string name="meter">m</string>
+  <string name="kilometer">km</string>
 </resources>
