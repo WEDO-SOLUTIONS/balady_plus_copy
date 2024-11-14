@@ -95,7 +95,6 @@ class Routes {
         page: BottomMenuRoute.page,
         initial: true,
         barrierDismissible: false,
-        transitionsBuilder: TransitionsBuilders.noTransition,
         customRouteBuilder: RouteBuilders.customModalSheetBuilder,
         children: [
           CustomRoute(

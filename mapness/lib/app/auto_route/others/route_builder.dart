@@ -3,6 +3,25 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/others/transparent_barrier.dart';
 
+/// CustomModalRoute We need to pass [transitionBuilder] to animate the opening of screens,
+/// this is for those cases when we want the background to work correctly.
+/// There was a decision to create AppRoute, so as not to overwrite always [customRouteBuilder] for such cases
+class AppRoute<T> extends CustomRoute<T> {
+  AppRoute({
+    required PageInfo page,
+    super.fullscreenDialog,
+    super.barrierDismissible,
+    super.path,
+    RouteTransitionsBuilder? transitionsBuilder,
+  }) : super(
+          page: page,
+          customRouteBuilder: <T>(context, child, page) => CustomModalRoute<T>(
+            page: page,
+            routeType: CustomRouteType(transitionsBuilder: transitionsBuilder),
+          ),
+        );
+}
+
 class RouteBuilders {
   /// Creates a modal bottom sheet route (ModalBottomSheetRoute),
   /// using colors from the UI kit for the modal surface.

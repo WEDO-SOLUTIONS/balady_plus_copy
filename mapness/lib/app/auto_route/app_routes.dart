@@ -52,56 +52,48 @@ class AppRouter extends RootStackRouter {
               path: 'request_location',
               page: LocationErrorSheetRoute.page,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'path_nav',
               page: PathNavRoute.page,
               fullscreenDialog: true,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'search',
               page: SearchRoute.page,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'routing_map',
               page: RoutingMapSelectRoute.page,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'poi_card',
               page: PoiCardWidgetRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'deeplink',
               page: DeeplinkRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'routing_routes',
               page: RoutingRoutesRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'eta_roue',
               page: EtaRouteRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'weather_router',
               page: WeatherRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               page: RoutingSearchSheetRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'road_panel_sheet',
@@ -111,63 +103,51 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.fadeIn,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'free_roam',
               page: FreeRoamRoute.page,
               fullscreenDialog: true,
-              opaque: false,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'road_closure',
               page: RoadClosureRoute.page,
-              opaque: false,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'auto_start_settings',
               page: AutostartSettingsSheetRoute.page,
-              opaque: false,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'layers_details',
               page: LayersDetailsWidgetRoute.page,
               fullscreenDialog: true,
-              opaque: false,
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'shared_my_location',
               barrierDismissible: false,
               page: ShareMyLocationRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'iwish/:iwishId/card',
               barrierDismissible: false,
               page: IwishPlaceCardRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'iwish/:iwishId/feedback',
               barrierDismissible: false,
               page: IwishFeedbackContainerRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'iwish/:iwishId/comment',
               barrierDismissible: false,
               page: IwishFeedbackCommentRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
-              customRouteBuilder: RouteBuilders.customModalSheetBuilder,
             ),
             CustomRoute(
               path: 'layers_sheet',
