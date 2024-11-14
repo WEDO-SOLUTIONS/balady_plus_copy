@@ -51,7 +51,7 @@ class NavigationScreen(
     init {
         navigationManager = carContext.getCarService(NavigationManager::class.java).apply {
             setNavigationManagerCallback(object : NavigationManagerCallback {
-                override fun onStopNavigation() = stopNavigation()
+                override fun onStopNavigation() = stopNavigation(bySystem = true)
                 override fun onAutoDriveEnabled() = mapController.startNavigationSimulation()
             })
         }
@@ -320,7 +320,7 @@ class NavigationScreen(
         customRenderer.render(CustomRendererData(speedInfo))
     }
 
-    private fun stopNavigation() {
+    private fun stopNavigation(bySystem: Boolean = false) {
         navigationState = NavigationState.DISABLED
         speedInfo = SpeedInfoModel()
         step = null
@@ -333,7 +333,7 @@ class NavigationScreen(
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
         val screenManager = carContext.getCarService(ScreenManager::class.java)
-        if (screenManager.top is NavigationScreen) {
+        if (!bySystem && screenManager.top is NavigationScreen) {
             screenManager.push(StartNavigationMessageScreen(carContext))
         }
     }
