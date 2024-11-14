@@ -2,8 +2,8 @@ class EntityViolationActivityDetailsRequestParams {
   int activityID;
   double latitude;
   double longitude;
-  int municipalityId;
-  int submunicipalityId;
+  String municipalityId;
+  String submunicipalityId;
   String violationID;
   int noOfOccurences;
 

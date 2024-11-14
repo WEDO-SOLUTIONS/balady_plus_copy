@@ -38,6 +38,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.5"
+  adjust_sdk:
+    dependency: "direct main"
+    description:
+      name: adjust_sdk
+      sha256: e262e27a76a2b86c283b95774a7393566bea52d2a6ba6581c754147302c9f175
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.2"
   analyzer:
     dependency: transitive
     description:
@@ -78,6 +86,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
+  app_tracking_transparency:
+    dependency: "direct main"
+    description:
+      name: app_tracking_transparency
+      sha256: "64d9745931e565790abdea91b518ac8dc3cebe6d0d0aaf7119343271b983259a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.6"
   archive:
     dependency: "direct main"
     description:
@@ -121,20 +137,19 @@ packages:
   balady_authorization:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: cc6098223963df8033a85501e73fdc99575c6ed8
-      url: "git@github.com:urbi-ae/balady_authorization.git"
-    source: git
-    version: "0.0.28"
+      name: balady_authorization
+      sha256: "5c88b8265eed77d46a585f69dbe77d3a041242f26710511b1e3822d9e16d2699"
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
+    version: "0.0.30"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: aae82ab0a913d1542eadbaa4368a7954a9736f5b42a83b3d6e1e600aba85a991
+      sha256: "467b71f16de08548734a31dcf1ef9538d645e15c78f7b2040bd1956e76f09ec0"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.0.3"
+    version: "3.0.0"
   battery_plus:
     dependency: "direct main"
     description:
@@ -448,6 +463,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  cupertino_stepper:
+    dependency: transitive
+    description:
+      name: cupertino_stepper
+      sha256: "124690b8b23db7b43fc6d547688e42a9f3d73c8f46d0b210568e98a04b5645b2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.1"
   curl_logger_dio_interceptor:
     dependency: "direct main"
     description:
@@ -582,6 +605,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.0"
+  enhance_stepper:
+    dependency: transitive
+    description:
+      name: enhance_stepper
+      sha256: "7e670d0131818fc52cfd3c0df9d85ed1fd446478cff9e980fc036a462b604010"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   equatable:
     dependency: "direct main"
     description:
@@ -2811,11 +2842,67 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "26.2.14"
+  syncfusion_flutter_pdf:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_pdf
+      sha256: "59a1173dc34a1fac0a41aff7a2bb6f3c1578f1bfd749ea8b24379018434ba5a5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_flutter_pdfviewer:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_pdfviewer
+      sha256: ca336f30c1c92318879c45096c6c893331a4b8e883f9b34339f8c40b3d9a848e
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.1.41"
+  syncfusion_flutter_signaturepad:
+    dependency: transitive
+    description:
+      name: syncfusion_flutter_signaturepad
+      sha256: "5f8955d4ee64f342b389928111ebfad041e75003415eedee802f3af1d4ce7036"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
   syncfusion_localizations:
     dependency: "direct main"
     description:
       name: syncfusion_localizations
       sha256: "99c3586b2502d2bc4b4c8286c83061b8bf2b5c9e4617433b7576f3d1409d099e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_pdfviewer_macos:
+    dependency: transitive
+    description:
+      name: syncfusion_pdfviewer_macos
+      sha256: "1eec60fe44cc357072a0b872e4b0a82edef741463fda2b3a95a6973d7a615ec1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_pdfviewer_platform_interface:
+    dependency: transitive
+    description:
+      name: syncfusion_pdfviewer_platform_interface
+      sha256: e128a2875226dc1d922ac0366d0804aa0ee7a52be23799cc6d84d78fd32ce092
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_pdfviewer_web:
+    dependency: transitive
+    description:
+      name: syncfusion_pdfviewer_web
+      sha256: "5625c2e658e5d680ea240ea5f5daedf6a0acd563cec026a38b8cb5643783ce4f"
+      url: "https://pub.dev"
+    source: hosted
+    version: "26.2.14"
+  syncfusion_pdfviewer_windows:
+    dependency: transitive
+    description:
+      name: syncfusion_pdfviewer_windows
+      sha256: f6c56fea4b77ada9d7ddab6ed67a4a25317a2efd1007309e8938c01f1d952b20
       url: "https://pub.dev"
     source: hosted
     version: "26.2.14"

@@ -1,3 +1,10 @@
+import 'package:smart_advisor/app/features/details/presentation/pages/new_details.dart';
+import 'package:smart_advisor/app/features/details/presentation/pages/regulations_page.dart';
+import 'package:smart_advisor/app/features/home_page/presentation/pages/new_home_page.dart';
+
+import '../../features/details/presentation/pages/violation_page.dart';
+import '../../features/select_activity/presentation/pages/main_flow_page.dart';
+import '../../features/self_rating/presentation/pages/ratings_page.dart';
 import '/app/features/details/presentation/pages/entity_details.dart';
 import '/app/features/fees_calculator/domain/entities/fees_calculator_response.dart';
 import '/app/features/documents/Appendix_No1.dart';
@@ -7,10 +14,8 @@ import '/app/features/map/presentation/pages/map_page.dart';
 import '/app/features/qr_scan/presentation/pages/qr_scan_page.dart';
 import '/app/features/select_activity/domain/entities/activites_page_params.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
-import '/app/features/select_activity/domain/entities/addetional_activites_page_params.dart';
 import '/app/features/select_activity/domain/entities/categories_page_params.dart';
 import '/app/features/select_activity/domain/entities/isics_page_params.dart';
-import '/app/features/select_activity/domain/entities/permits_page_params.dart';
 import '/app/features/select_activity/presentation/pages/categories_page.dart';
 import '/app/features/select_activity/presentation/pages/sectors_page.dart';
 import '/app/features/onboarding/pages/onbordingPage.dart';
@@ -42,7 +47,7 @@ class AppRouter {
 
       // Home Page
       case RouteName.home:
-        return MaterialPageRoute(builder: (_) => const HomePage());
+        return MaterialPageRoute(builder: (_) => const NewHomePage());
 
       // Sectors Page
       case RouteName.sectors:
@@ -50,7 +55,7 @@ class AppRouter {
 
       //onbording
       case RouteName.onbording:
-        return MaterialPageRoute(builder: (_) => const Onbordingpage());
+        return MaterialPageRoute(builder: (_) => const NewHomePage());
 
       //Categories Page
       case RouteName.categoriesPage:
@@ -136,6 +141,35 @@ class AppRouter {
         return MaterialPageRoute(
             builder: (_) => const CommercialConditionRegulation());
 
+      case RouteName.mainFlowPage:
+        return MaterialPageRoute(builder: (_) => const MainFlowPage());
+
+      case RouteName.violationPage:
+        ActivityDetailsPageParams args =
+            settings.arguments as ActivityDetailsPageParams;
+        return MaterialPageRoute(
+            builder: (_) => ViolationPage(
+                  args: args,
+                ));
+
+      case RouteName.regulationPage:
+        ActivityDetailsPageParams args =
+            settings.arguments as ActivityDetailsPageParams;
+        return MaterialPageRoute(
+            builder: (_) => RegulationsPage(
+                  args: args,
+                ));
+
+      case RouteName.newDetails:
+        ActivityDetailsPageParams args =
+            settings.arguments as ActivityDetailsPageParams;
+        return MaterialPageRoute(builder: (_) => NewDetails(args: args));
+
+      case RouteName.ratingItemsPage:
+        ActivityDetailsPageParams args =
+            settings.arguments as ActivityDetailsPageParams;
+        return MaterialPageRoute(builder: (_) => RatingItemsPage(args: args));
+
       // error page
       default:
         return MaterialPageRoute(builder: (_) => const SizedBox());
@@ -153,7 +187,7 @@ class AppRouter {
 
       // Home Page
       case RouteName.home:
-        return (context) => const HomePage();
+        return (context) => const NewHomePage();
 
       // Sectors Page
       case RouteName.sectors:
@@ -237,6 +271,9 @@ class AppRouter {
 
       case RouteName.CommercialConditionRegulation:
         return (context) => const CommercialConditionRegulation();
+
+      case RouteName.mainFlowPage:
+        return (context) => const MainFlowPage();
 
       // error page
       default:

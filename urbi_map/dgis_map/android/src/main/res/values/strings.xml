@@ -16,4 +16,13 @@
   <!-- Permission request -->
   <string name="location_permission_request_message">Please stop the car and allow Balady to access your location on your phone</string>
   <string name="grant_access_action">Grant Access</string>
+
+  <!-- Search -->
+  <string name="searchNothingFound">Nothing found. Try changing the query or changing the location</string>
+
+  <!-- Common -->
+  <string name="driving_notification_title">Driving with Balady</string>
+  <string name="you_dont_seem_to_have_internet_description">You don\'t seem to have internet connection. Please check the connection</string>
+  <string name="meter">m</string>
+  <string name="kilometer">km</string>
 </resources>

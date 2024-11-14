@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -31,10 +33,35 @@ import '../app/core/utils/utils_exports.dart' show EnvType;
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
 class App extends StatelessWidget {
-  const App({super.key});
+  final TrackingStatus status;
+  const App({super.key, required this.status});
 
   @override
   Widget build(BuildContext context) {
+    if (kDebugMode) {
+      print(status.name);
+    }
+String statusText;
+switch (status) {
+  case TrackingStatus.authorized:
+  statusText = 'Tracking status authorized';
+  break;
+  case TrackingStatus.denied:
+  statusText = 'Tracking status denied';
+  break;
+  case TrackingStatus.notDetermined:
+  statusText = 'Tracking status notDetermined';
+  break;
+  case TrackingStatus.notSupported:
+  statusText = 'Tracking status notSupported';
+  break;
+  case TrackingStatus.restricted:
+  statusText = 'Tracking status restricted';
+  break;
+  default:
+  statusText = 'default condition';
+}
+
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
           enableAdvancedGestureRecognition: true,
@@ -175,20 +202,19 @@ class AppWidgetState extends State<AppWidget> {
               ),
               outlinedButtonTheme: OutlinedButtonThemeData(
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: AppColor.primary900Light,
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 8,
-                  ),
-                  minimumSize: const Size(double.infinity, 34),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  side: const BorderSide(
-                    width: .8,
-                    color: AppColor.primary900Light,
-                  )
-                ),
+                    foregroundColor: AppColor.primary900Light,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    minimumSize: const Size(double.infinity, 34),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    side: const BorderSide(
+                      width: .8,
+                      color: AppColor.primary900Light,
+                    )),
               ),
             ),
             builder: EasyLoading.init(builder: BotToastInit()),

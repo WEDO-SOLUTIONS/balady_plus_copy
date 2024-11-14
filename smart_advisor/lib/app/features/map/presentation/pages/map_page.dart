@@ -108,6 +108,7 @@ import 'package:async/async.dart';
 import 'package:smart_advisor/app/features/documents/general_commercial_conditions.dart';
 
 import '../../../_shared_feature_/presentation/widgets/custom_widgets/customTextField.dart';
+import '../widgets/tag_map.dart';
 import '/app/core/utils/utils_exports.dart';
 import '/app/features/map/presentation/bloc/map_bloc.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
@@ -137,8 +138,17 @@ class _MapPageState extends State<MapPage> {
   late MapBloc bloc = MapBloc(args: widget.args);
   ValueNotifier<List<SuggestMessage>?> suggests = ValueNotifier(null);
   CancelableOperation? _searchOperation;
+  StreamSubscription? _debounce;
+  VisibleRectEvent? _lastHandledEvent;
+  CameraPositionMessage? _lastCameraPosition;
+  CameraPositionMessage? _lastRectPosition;
+  final _subscriptions = <StreamSubscription>[];
 
   Timer? _searchClearDebounce;
+  static GeoRectMessage saRect = GeoRectMessage(
+    northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+  );
   bool isLoading = false;
   void clearSearch() {
     _searchClearDebounce?.cancel();
@@ -245,6 +255,7 @@ class _MapPageState extends State<MapPage> {
         value: bloc,
         child: BlocConsumer<MapBloc, MapState>(
           listener: (context, state) {
+            print("Listener $state");
             if (state.zonesStatus == BlocStatus.success) {
               state.zones?.forEach((zone) {
                 Polygon p = Polygon(
@@ -259,9 +270,14 @@ class _MapPageState extends State<MapPage> {
                 controller.addPolygon(p);
               });
             }
+            if (state.layerStatus == BlocStatus.success) {
+              print("PolyLines success");
+              addPolylineWithPoint(state.layerData);
+            }
           },
           listenWhen: (previous, current) =>
-              previous.zonesStatus != current.zonesStatus,
+              previous.zonesStatus != current.zonesStatus ||
+              previous.layerStatus != current.layerStatus,
           builder: (context, state) {
             return Scaffold(
               appBar: CustomAppBar(
@@ -277,6 +293,8 @@ class _MapPageState extends State<MapPage> {
                         initCameraPositionPoint();
                       }),
                     ),
+                    Positioned(bottom: 300, left: 12, child: const TagMap()),
+
                     /* GestureDetector(
                       onTap: () {
                         //  MapSearchSheet
@@ -298,7 +316,7 @@ class _MapPageState extends State<MapPage> {
                       ),
                     ),*/
                     if (state.gisDataStatus == BlocStatus.success)
-                      Align(
+                      const Align(
                           alignment: Alignment.bottomCenter,
                           child: SelectAddress()),
                     if (state.gisDataStatus == BlocStatus.loading ||
@@ -322,7 +340,6 @@ class _MapPageState extends State<MapPage> {
   Future<void> _objectTapListener(TapEvent event) async {
     if (event is ObjectTapEvent) {
       await controller.setHighlighted([event.dgisObjectId.toMessage()]);
-
       controller.removeAllMarkers();
       controller.addMarker(Marker(
           id: "1",
@@ -365,13 +382,26 @@ class _MapPageState extends State<MapPage> {
       controller.objectTapEvents.listen(
         _objectTapListener,
       );
-      GeoPointMessage _kingdomTower =
+
+      _subscriptions.add(
+        controller.visibleRectEvents.listen(
+          _visibleRectChangeListener,
+        ),
+      );
+
+      /* _subscriptions.add(
+        controller.cameraPositionEvents.listen(
+          _cameraPositionChangeListener,
+        ),
+      );*/
+
+      GeoPointMessage kingdomTower =
           GeoPointMessage(latitude: 24.712301, longitude: 46.674175);
 
       try {
         Position p = await Geolocator.getCurrentPosition(
-            timeLimit: Duration(seconds: 10));
-        _kingdomTower =
+            timeLimit: const Duration(seconds: 3));
+        kingdomTower =
             GeoPointMessage(latitude: p.latitude, longitude: p.longitude);
       } catch (ex) {}
 
@@ -379,12 +409,12 @@ class _MapPageState extends State<MapPage> {
         isLoading = false;
       });
       bloc.add(GetZonesEvent(
-          lat: _kingdomTower.latitude, lon: _kingdomTower.longitude));
+          lat: kingdomTower.latitude, lon: kingdomTower.longitude));
 
       await controller.moveCamera(
           CameraPositionMessage(
               point:
-                  _kingdomTower /*GeoPointMessage(latitude: p.latitude, longitude: p.longitude)*/,
+                  kingdomTower /*GeoPointMessage(latitude: p.latitude, longitude: p.longitude)*/,
               zoom: 15,
               tilt: 0,
               bearing: 0),
@@ -394,6 +424,79 @@ class _MapPageState extends State<MapPage> {
       // ignore: avoid_catches_without_on_clauses, avoid_types_as_parameter_names, non_constant_identifier_names
     } catch (ex) {
       debugPrint('Error setting camera position point: $ex');
+    }
+  }
+
+  // When move camera map any change zoom in, zoom out ...
+  void _visibleRectChangeListener(VisibleRectEvent event) async {
+    if ((!await controller.containsRect(
+        saRect, event.visibleRect.geoRectMessage()))) {
+      if (_lastRectPosition != null) {
+        await controller.setCameraPosition(_lastRectPosition!);
+      }
+    } else {
+      _lastRectPosition = _lastCameraPosition;
+    }
+    _lastHandledEvent = event;
+    //  if (searchOnCameraMove && selectedPointId.value == null) {
+    // start Timer when stop move camera  call search funcation
+    _startRequestTimer(event.visibleRect.zoom);
+    //  }
+  }
+
+  void _startRequestTimer(double oldZoom) {
+    if (_debounce != null) {
+      unawaited(_debounce!.cancel());
+      _clearDebounce();
+    }
+    _debounce = Stream.fromFuture(
+      Future.delayed(
+        const Duration(milliseconds: 1000),
+      ),
+    ).listen((_) async {
+      //  this.oldZoom = oldZoom;
+      // if (this.oldZoom.toInt() != zoomValue.toInt()) {
+      //  zoomValue = oldZoom;
+
+      bloc.add(GetLayersEvent(
+        northEastLatitude: _lastHandledEvent!.visibleRect.northEastLat,
+        northEastLongitude: _lastHandledEvent!.visibleRect.northEastLon,
+        southWestLongitude: _lastHandledEvent!.visibleRect.southWestLon,
+        southWestLlatitude: _lastHandledEvent!.visibleRect.southWestLat,
+      ));
+      //  if (selectedCustomCategory.value == null) callSearch();
+      //   }
+    });
+    _subscriptions.add(_debounce!);
+  }
+
+  void _clearDebounce() {
+    _subscriptions.remove(_debounce);
+    _debounce = null;
+  }
+
+  void addPolylineWithPoint(List? pointList) async {
+    print("PolyLines $pointList");
+    if (pointList != null && pointList.isNotEmpty) {
+      final List<Polyline> polylines = [];
+      for (var element in pointList) {
+        for (List<GeoPointMessage> i in element.pathsGoogle) {
+          int id = int.parse(element.id);
+          String idPolyline = "${id.toString()}+$i";
+          polylines.add(
+            Polyline(
+              id: idPolyline,
+              options: PolylineOptionsMessage(
+                  points: i, width: 2, color: 0xff358281),
+              onTap: () {},
+            ),
+          );
+        }
+      }
+      //  await controller.removeAllMarkers();
+      await clearAll();
+      print("PolyLines $polylines");
+      unawaited(controller.addPolylines(polylines));
     }
   }
 }

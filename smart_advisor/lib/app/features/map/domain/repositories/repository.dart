@@ -1,3 +1,5 @@
+import '../../data/models/map_requests_params.dart';
+import '../../data/models/point_layers_data.dart';
 import '/app/features/map/domain/entities/get_zones_request.dart';
 import '/app/features/map/domain/entities/gis_data_request.dart';
 import '/app/features/map/domain/entities/gis_data_response.dart';
@@ -15,4 +17,6 @@ abstract class SmartAdvisorMapRepository {
       ValidatePointRequest params);
 
   Future<Either<Failure, GisDataResponse>> getGISData(GISDataRequest params);
+  Future<Either<Failure, List<PointLayersData>?>> getPointsInLayers(
+      MapRequestParams params);
 }

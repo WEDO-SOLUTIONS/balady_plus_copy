@@ -28,13 +28,11 @@ class ViolatingCommercialActivities extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              dataModel.isCritical == "true"
-                  ? "مخالفة جسيمة"
-                  : "مخالفة غير جسيمة",
+              dataModel.isCritical == "true" ? "جسيمة" : "غير جسيمة",
               style: AppStyle.textRegularRomanStyle.copyWith(
                   color: dataModel.isCritical == "true"
                       ? const Color(0xffE0373D)
-                      : const Color(0xffbe890e)),
+                      : AppColor.textPrimaryColor),
             ),
             const SizedBox(
               height: 5,
@@ -48,7 +46,7 @@ class ViolatingCommercialActivities extends StatelessWidget {
               height: 12,
             ),
             Container(
-              child: Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -76,8 +74,7 @@ class ViolatingCommercialActivities extends StatelessWidget {
               height: 6,
             ),
             Container(
-                height: 40,
-                width: double.infinity,
+                // height: 40,
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                     color: AppColor.surfaceSecondaryColor,
@@ -90,18 +87,30 @@ class ViolatingCommercialActivities extends StatelessWidget {
                       style: AppStyle.captionRomanStyle
                           .copyWith(color: AppColor.textSecondaryColor),
                     ),
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          TextSpan(
-                              text: "${dataModel.fineAmount.toString() ?? ""} ",
-                              style: AppStyle.calloutBoldStyle),
-                          TextSpan(
-                            text: dataModel.unitType ?? "",
-                            style: AppStyle.captionRomanStyle
-                                .copyWith(color: AppColor.textPrimaryColor),
-                          ),
-                        ],
+                    SizedBox(
+                      width: 16,
+                    ),
+                    Flexible(
+                      child: RichText(
+                        text: TextSpan(
+                          children: [
+                            TextSpan(
+                                text:
+                                    "${dataModel.fineAmount.toString() ?? ""} ",
+                                style: AppStyle.calloutBoldStyle),
+                            if ((dataModel.unitType ?? "").isNotEmpty)
+                              TextSpan(
+                                text: " / ",
+                                style: AppStyle.captionRomanStyle
+                                    .copyWith(color: AppColor.textPrimaryColor),
+                              ),
+                            TextSpan(
+                              text: dataModel.unitType ?? "",
+                              style: AppStyle.captionRomanStyle
+                                  .copyWith(color: AppColor.textPrimaryColor),
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   ],

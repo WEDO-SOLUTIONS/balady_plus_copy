@@ -1,8 +1,10 @@
 package com.dgis.map.android_auto
 
+import android.graphics.Color
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
+import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.Alert
@@ -11,7 +13,6 @@ import androidx.car.app.model.CarColor
 import androidx.car.app.model.CarIcon
 import androidx.car.app.model.CarText
 import androidx.car.app.model.Distance
-import androidx.car.app.model.MessageTemplate
 import androidx.car.app.model.Template
 import androidx.car.app.navigation.NavigationManager
 import androidx.car.app.navigation.NavigationManagerCallback
@@ -23,6 +24,10 @@ import androidx.car.app.navigation.model.RoutingInfo
 import androidx.car.app.navigation.model.Step
 import androidx.car.app.navigation.model.TravelEstimate
 import androidx.car.app.navigation.model.Trip
+import androidx.car.app.notification.CarAppExtender
+import androidx.car.app.notification.CarNotificationManager
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
@@ -40,15 +45,17 @@ class NavigationScreen(
 ) : Screen(carContext), CarNavigationHandler.NavigationListener {
 
     private val navigationManager: NavigationManager
+    private val carNotificationManager: CarNotificationManager
     private val appManager: AppManager
 
     init {
         navigationManager = carContext.getCarService(NavigationManager::class.java).apply {
             setNavigationManagerCallback(object : NavigationManagerCallback {
-                override fun onStopNavigation() = stopNavigation()
+                override fun onStopNavigation() = stopNavigation(bySystem = true)
                 override fun onAutoDriveEnabled() = mapController.startNavigationSimulation()
             })
         }
+        carNotificationManager = CarNotificationManager.from(carContext)
         appManager = carContext.getCarService(AppManager::class.java)
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
@@ -80,9 +87,6 @@ class NavigationScreen(
         get() = navigationState == NavigationState.NAVIGATION || navigationState == NavigationState.REROUTING
 
     override fun onGetTemplate(): Template {
-        if (navigationState == NavigationState.DISABLED && !isEndTripShown) {
-            return createStartNavigationMessageTemplate()
-        }
         val actionStrip = ActionStrip.Builder()
         val trafficAction = Action.Builder().setIcon(
             CarIcon.Builder(
@@ -165,7 +169,11 @@ class NavigationScreen(
     override fun onNavigationStateChanged(state: NavigationState) {
         navigationState = state
         when (state) {
-            NavigationState.NAVIGATION -> navigationManager.navigationStarted()
+            NavigationState.NAVIGATION -> {
+                tryPopStartNavigationMessageScreen()
+                navigationManager.navigationStarted()
+            }
+
             NavigationState.FINISHED -> {
                 customRenderer.clear()
                 showEndTrip()
@@ -173,10 +181,13 @@ class NavigationScreen(
 
             NavigationState.DISABLED -> {
                 customRenderer.clear()
-                navigationManager.navigationEnded()
+                if (!isEndTripShown) {
+                    stopNavigation()
+                }
             }
 
             NavigationState.REROUTING -> {
+                tryPopStartNavigationMessageScreen()
                 val tripBuilder = Trip.Builder()
                 if (destination != null && destinationTravelEstimate != null) {
                     tripBuilder.addDestination(destination!!, destinationTravelEstimate!!)
@@ -188,12 +199,15 @@ class NavigationScreen(
         invalidate()
     }
 
-    override fun onEtaUpdated(eta: EtaModel?) {
-        if (eta == null) {
-            destinationTravelEstimate = null
-            destination = null
-            return
+    private fun tryPopStartNavigationMessageScreen() {
+        val topScreen = carContext.getCarService(ScreenManager::class.java).top
+        if (topScreen is StartNavigationMessageScreen) {
+            topScreen.finish()
         }
+    }
+
+    override fun onEtaUpdated(eta: EtaModel?) {
+        if (eta == null) return
 
         val distance: Double
         val unit: Int
@@ -222,6 +236,7 @@ class NavigationScreen(
             return
         }
 
+        val previousStep = step
         step = Step.Builder(maneuver.roadName).setManeuver(
             getManeuverWithExitNumberAndAngle(
                 carContext, maneuver.type, maneuver.iconId, maneuver.roundAboutExitNumber
@@ -241,6 +256,7 @@ class NavigationScreen(
                 )
             ).setRoad(nextManeuver.roadName).build()
 
+        // TODO(Sergei): move update trip and send notification to separate methods
         val tripBuilder = Trip.Builder()
         val stepTravelEstimate =
             TravelEstimate.Builder(remainingDistance, maneuver.arrivalTime).build()
@@ -252,6 +268,23 @@ class NavigationScreen(
         tripBuilder.setLoading(false)
         tripBuilder.setCurrentRoad(maneuver.roadName)
         navigationManager.updateTrip(tripBuilder.build())
+
+        val unitString = when (unit) {
+            Distance.UNIT_KILOMETERS -> getString(R.string.kilometer)
+            else -> getString(R.string.meter)
+        }
+        val shouldNotify =
+            previousStep != null && (step?.road != previousStep.road || step?.maneuver?.type != previousStep.maneuver?.type)
+        carNotificationManager.notify(
+            NavigationCarAppService.notificationId,
+            getNavigationNotification(
+                "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
+                maneuver.roadName,
+                maneuver.iconId,
+                shouldNotify,
+            ),
+        )
+        invalidate()
     }
 
     override fun onLocationStateChanged(state: LocationState) {
@@ -287,7 +320,7 @@ class NavigationScreen(
         customRenderer.render(CustomRendererData(speedInfo))
     }
 
-    private fun stopNavigation() {
+    private fun stopNavigation(bySystem: Boolean = false) {
         navigationState = NavigationState.DISABLED
         speedInfo = SpeedInfoModel()
         step = null
@@ -296,7 +329,13 @@ class NavigationScreen(
         destination = null
         destinationTravelEstimate = null
         navigationManager.navigationEnded()
+        val notification = NavigationCarAppService.getDefaultNotification(carContext)
+        carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
+        val screenManager = carContext.getCarService(ScreenManager::class.java)
+        if (!bySystem && screenManager.top is NavigationScreen) {
+            screenManager.push(StartNavigationMessageScreen(carContext))
+        }
     }
 
     private fun openFavorites() {
@@ -334,7 +373,7 @@ class NavigationScreen(
         if (destination?.name != null) {
             endTripAlert.setSubtitle(destination!!.name!!)
         }
-        endTripAlert.addAction(endTripAction.build()).setCallback(object :AlertCallback{
+        endTripAlert.addAction(endTripAction.build()).setCallback(object : AlertCallback {
             override fun onCancel(reason: Int) {}
             override fun onDismiss() {
                 isEndTripShown = false
@@ -386,6 +425,25 @@ class NavigationScreen(
             maneuver.setRoundaboutExitNumber(exitNumber ?: 1)
         }
         return maneuver.build()
+    }
+
+    private fun getNavigationNotification(
+        title: String,
+        text: String,
+        iconResourceId: Int,
+        shouldNotify: Boolean,
+    ): NotificationCompat.Builder {
+        return NotificationCompat.Builder(
+            carContext, NavigationCarAppService.channelId
+        ).setColorized(true).setColor(Color.parseColor("#147674")).setContentTitle(title)
+            .setContentText(text).setSmallIcon(
+                IconCompat.createWithResource(carContext, iconResourceId)
+            ).setOnlyAlertOnce(!shouldNotify).setOngoing(true)
+            .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_NAVIGATION).extend(
+                CarAppExtender.Builder().setColor(CarColor.PRIMARY).setSmallIcon(iconResourceId)
+                    .setImportance(NotificationManagerCompat.IMPORTANCE_HIGH).build()
+            )
     }
 
     private val zoomInAction = Action.Builder().setIcon(
@@ -454,16 +512,6 @@ class NavigationScreen(
     private fun buildStopNavigationAction(): Action {
         return Action.Builder().setTitle(getString(R.string.stop_navigation_action))
             .setOnClickListener { stopNavigation() }.build()
-    }
-
-    private fun createStartNavigationMessageTemplate(): Template {
-        val icon = CarIcon.Builder(
-            IconCompat.createWithResource(
-                carContext, R.drawable.logo
-            )
-        ).build()
-        return MessageTemplate.Builder(getString(R.string.start_navigation_message))
-            .setIcon(icon).build()
     }
 
     private companion object {

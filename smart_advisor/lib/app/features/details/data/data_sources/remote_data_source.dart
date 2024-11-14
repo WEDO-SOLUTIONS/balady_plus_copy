@@ -1,4 +1,4 @@
-import 'package:dio/dio.dart' show DioException, Options;
+import 'package:dio/dio.dart' show DioError, Options;
 
 import '/app/core/utils/constants/apis/apis_get.dart';
 import '/app/core/utils/constants/language.dart';
@@ -45,7 +45,7 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
 
       return RegulationResponseModel.fromJson(result);
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString());
     } catch (ex) {
       print(ex);
@@ -66,7 +66,7 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
 
       return EntityActivityDetailsResponseModel.fromJson(result);
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString());
     } catch (ex) {
       print(ex);
@@ -82,8 +82,10 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
   Future<List<EntityViolationActivityModel>> getEntityViolationActivity(
       EntityViolationActivityRequestParams params) async {
     try {
-      final response = await webService.dio.get(ApiUrls.getViolationEntityActivity(params.activityId),
-          queryParameters: params.toMap(), options: Options(headers: {"Authorization": "11"}));
+      final response = await webService.dio.get(
+        ApiUrls.getViolationEntityActivity(params.activityId),
+        queryParameters: params.toMap(),
+      );
       print(response.data);
 
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
@@ -93,7 +95,7 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
                   (e) => EntityViolationActivityModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString());
     } catch (ex) {
       print(ex);
@@ -109,8 +111,10 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
   Future<EntityViolationActivityDetailsModel> getEntityViolationActivityDetails(
       EntityViolationActivityDetailsRequestParams params) async {
     try {
-      final response = await webService.dio.get(ApiUrls.getViolationEntityActivityDetails(params.activityID),
-          queryParameters: params.toMap(), options: Options(headers: {"Authorization": "11"}));
+      final response = await webService.dio.get(
+        ApiUrls.getViolationEntityActivityDetails(params.activityID),
+        queryParameters: params.toMap(),
+      );
       print(response.data);
 
       final result = ResponseBodyModel<EntityViolationActivityDetailsModel>.fromMap(response.data,
@@ -119,7 +123,7 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
           ?.result;
 
       return result!;
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString());
     } catch (ex) {
       print(ex);
@@ -134,8 +138,10 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
   @override
   Future<List<ViolationDetailsVdModel>> getEntityViolationDetailsVd(ViolationDetailsVdRequestParams params) async {
     try {
-      final response = await webService.dio.get(ApiUrls.getViolationDetailsVD(params.activityId),
-          queryParameters: params.toMap(), options: Options(headers: {"Authorization": "11"}));
+      final response = await webService.dio.get(
+        ApiUrls.getViolationDetailsVD(params.activityId),
+        queryParameters: params.toMap(),
+      );
       print(response.data);
 
       final result = ResponseBodyModel.fromMap(response.data).data?.result;
@@ -144,7 +150,7 @@ class DetailsRemoteDataSourceImplementation implements DetailsRemoteDataSource {
               ?.map<ViolationDetailsVdModel>((e) => ViolationDetailsVdModel.fromJson(e as Map<String, dynamic>))
               .toList() ??
           [];
-    } on DioException catch (error) {
+    } on DioError catch (error) {
       throw ServerException(error.toString());
     } catch (ex) {
       print(ex);

@@ -19,14 +19,14 @@ class ApiUrls {
   static String getrubrics(int id) =>
       "v1/$_proxy/commercial/lookups/categories/$id/rubrics";
 
-  static String getIsics(int id) => "v1/$_proxy/commercial/rubrics/$id/isics";
+  static String getIsics(int id) => "v1/$_proxy/commercial/rubrics";
   static String getActivites(int id) =>
       "v1/$_proxy/commercial/isics/$id/activities";
 
   static String calculateFees = "v1/$_proxy/commercial/calculator/calculate";
 
   static String getZones(int activityId) =>
-      "v1/$_proxy/gis/actvities/$activityId/restriced-zones";
+      "v1/$_proxy/gis/activities/$activityId/restriced-zones";
   static String validatePoint = "v1/$_proxy/commercial/prohibitive-zones";
   static String gisInfo = "v1/$_proxy/gis/location";
 
@@ -42,4 +42,18 @@ class ApiUrls {
 
   static String getViolationDetailsVD(int activityId) =>
       "v1/$_proxy/cis/activities/$activityId/vd/violation-details";
+  static String getMapLayers = "v1/gis-urbi-services/layers";
+
+  static String getCities() => "v1/$_proxy/cities";
+
+  static String getDistricts(int cityId) => "v1/$_proxy/districts/$cityId";
+
+  static String getWorkFlow = "v1/$_proxy/commercial/work-flows";
+
+  static String selfRatingItems(int activityId) =>
+      "v1/cis-selfrating-services/acitivities/${activityId}/inspection-clauses";
+
+  static String submitRatingItems = "v1/cis-selfrating-services/evaluation";
+
+  static String activityDetailsInfo(int id) => "v1/$_proxy/activities/$id";
 }

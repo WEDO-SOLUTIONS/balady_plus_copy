@@ -7,6 +7,7 @@ import 'package:smart_advisor/app/features/details/presentation/violation_detail
 
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../_shared_feature_/presentation/widgets/shimmer_card copy.dart';
+import '../../../../../details2/widgets/correction_period.dart';
 import '../../../../../select_activity/domain/entities/activity_details_page_params.dart';
 import '../../../violation_details_bloc/violation_details_bloc.dart';
 import '/app/core/utils/constants/app_colors.dart';
@@ -154,6 +155,8 @@ class _DetailsState extends State<ViolationDetails> {
                               height: 6,
                             ),
                             SanctionCalc(
+                              noOfOccurences: state.noOfOccurences,
+                              correction: state.response?.isCorrectionNeeded,
                               isCritical: state.response?.isCritical == "true",
                               price: state.response?.totalFineAmount ?? "",
                               index: state.noOfOccurences - 1,
