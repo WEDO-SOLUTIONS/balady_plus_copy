@@ -1,5 +1,7 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/base/base_view.dart';
@@ -83,7 +85,80 @@ class _MSRBody extends State<MSRBody> {
               ),
               // Request Info Section
               RequestInfoSection(),
-              // attachment section
+
+              // add Action to upload attachment hear
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Upload',
+                    style: TextStyle(
+                      color: AppColor.blackModern700Light,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                      FileDataItem? file =
+                          await CommonFunctions.pickFile(context);
+                      if (file != null) {
+                        if ((file.sizeInMB * 1000) <= 5000) {
+                          model.setFile(file);
+                        } else {
+                          CommonFunctions.showError("file_max_size".tr());
+                        }
+                      }
+                    },
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 6),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(16)),
+                        border: Border.all(
+                          color: AppColor.primary800Light,
+                        ),
+                        color: Colors.transparent,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          SvgPicture.asset(
+                            IconPath.add,
+                            width: 20,
+                            height: 20,
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'attachment'.tr(),
+                            style: const TextStyle(
+                              color: AppColor.primary800Light,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${'attachment_message_typ'.tr()} jpg,jpeg,pdf,zip,tif,tiff,bmp,gif,png ${'attachment_message_size'.tr()} 5MB',
+                    style: const TextStyle(
+                      color: AppColor.blackModern700Light,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+
+              // displae attachment section from API
               if (model.attachments.isNotEmpty)
                 AttachmentList(
                   attachments: model.attachments,

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:collection/collection.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -17,6 +18,10 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class NewMSRDetailsViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();
   final dataModel = locator<NewMSRViewModel>();
+
+
+
+  FileDataItem? file;
 
   SpecializedClassification? get splClassifications =>
       dataModel.splClassifications;
@@ -113,8 +118,13 @@ class NewMSRDetailsViewModel extends BaseViewModel {
     }
   }
 
+  void setFile (FileDataItem file) {
+    this.file = file;
+    notifyListeners();
+  }
+
   void submit() {
-    dataModel.submitRequest();
+    dataModel.submitRequest(file);
   }
 
   validateForm() {
