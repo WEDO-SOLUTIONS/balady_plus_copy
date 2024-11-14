@@ -186,8 +186,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           ),
         ]),
       );
-
-      points[1] = RoutePointFavouriteItem(null);
     }
   }
 
@@ -196,7 +194,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     final value = await context.router.push(RoutingSearchSheetRoute(
       placeholder: index == 0 ? context.l10n.from : context.l10n.to,
       showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
-      initialQuery: query
+      initialQuery: query,
     ));
 
     if (value != null && value is RoutePoint) {
