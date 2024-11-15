@@ -12,6 +12,9 @@ class AppRoute<T> extends CustomRoute<T> {
     super.fullscreenDialog,
     super.barrierDismissible,
     super.path,
+    super.guards,
+    super.usesPathAsKey,
+    super.fullMatch,
     RouteTransitionsBuilder? transitionsBuilder,
   }) : super(
           page: page,

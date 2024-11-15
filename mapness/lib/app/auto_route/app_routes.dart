@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/others/poi_route_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 
@@ -70,6 +71,7 @@ class AppRouter extends RootStackRouter {
               path: 'poi_card',
               page: PoiCardWidgetRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+              guards: const [PoiRouteGuard()]
             ),
             CustomRoute(
               path: 'deeplink',

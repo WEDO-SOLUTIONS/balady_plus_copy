@@ -162,6 +162,10 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   @override
   void dispose() {
+    _bottomSheetAspectRatio.dispose();
+    _hideControls.dispose();
+    _bottomSheetHeight.dispose();
+    _bottomSheetController.dispose();
     _tabController.dispose();
     _tabType.dispose();
     super.dispose();
