@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -90,13 +91,13 @@ class _ImageRemoveButton extends StatelessWidget {
         child: Container(
           height: 18,
           width: 18,
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Color.fromRGBO(0, 0, 0, 0.6),
+            color: AppColor.black.withOpacity(0.6),
           ),
           child: Center(
             child: Icon(
-              Icons.close_rounded,
+              SystemIcons.closeSmall,
               color: context.colorsV2.backgroundSurface1,
               size: 16,
             ),
