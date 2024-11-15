@@ -32,7 +32,7 @@ class PermitItemCard extends StatelessWidget {
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
+            //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Checkbox(
                 shape: RoundedRectangleBorder(
@@ -49,20 +49,10 @@ class PermitItemCard extends StatelessWidget {
                 width: 8,
               ),
               Flexible(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: AppStyle.textRegularStyle
-                          .copyWith(color: AppColor.textPrimaryColor),
-                    ),
-                    Text(
-                      isFreeOfCharge != true ? "برسوم" : "بدون رسوم",
-                      style: AppStyle.textRegularStyle
-                          .copyWith(color: AppColor.textSecondaryColor),
-                    ),
-                  ],
+                child: Text(
+                  title,
+                  style: AppStyle.textRegularStyle
+                      .copyWith(color: AppColor.textPrimaryColor),
                 ),
               ),
             ],

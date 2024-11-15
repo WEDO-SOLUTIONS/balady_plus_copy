@@ -81,7 +81,7 @@ class ComLicenseInfo {
   final List<BoardsInfo>? boardsInfo;
   final ActivityInfo? activityInfo;
   final String? entityType;
-  final dynamic? shopArea;
+  final double? shopArea;
   final ShopInfo? shopInfo;
   final dynamic vehicleInfo;
   final LocationInfo? locationInfo;
@@ -118,7 +118,7 @@ class ComLicenseInfo {
     List<BoardsInfo>? boardsInfo,
     ActivityInfo? activityInfo,
     String? entityType,
-    dynamic? shopArea,
+    double? shopArea,
     ShopInfo? shopInfo,
     dynamic vehicleInfo,
     LocationInfo? locationInfo,
@@ -163,7 +163,7 @@ class ComLicenseInfo {
             ? null
             : ActivityInfo.fromJson(json["activityInfo"]),
         entityType: json["entityType"],
-        shopArea: json["shopArea"],
+        shopArea: json["shopArea"]?.toDouble(),
         shopInfo: json["shopInfo"] == null
             ? null
             : ShopInfo.fromJson(json["shopInfo"]),
@@ -238,7 +238,7 @@ class MainActivity {
   final String? isicName;
   final int? activityDetailId;
   final String? activityDetailName;
-  final dynamic? area;
+  final double? area;
 
   MainActivity({
     this.sectorId,
@@ -261,7 +261,7 @@ class MainActivity {
     String? isicName,
     int? activityDetailId,
     String? activityDetailName,
-    int? area,
+    double? area,
   }) =>
       MainActivity(
         sectorId: sectorId ?? this.sectorId,
@@ -284,7 +284,7 @@ class MainActivity {
         isicName: json["isicName"],
         activityDetailId: json["activityDetailId"],
         activityDetailName: json["activityDetailName"],
-        area: json["area"],
+        area: json["area"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
@@ -303,7 +303,7 @@ class MainActivity {
 class BoardsInfo {
   final int? typeId;
   final String? typeName;
-  final dynamic? area;
+  final double? area;
 
   BoardsInfo({
     this.typeId,
@@ -314,7 +314,7 @@ class BoardsInfo {
   BoardsInfo copyWith({
     int? typeId,
     String? typeName,
-    dynamic? area,
+    double? area,
   }) =>
       BoardsInfo(
         typeId: typeId ?? this.typeId,
@@ -325,7 +325,7 @@ class BoardsInfo {
   factory BoardsInfo.fromJson(Map<String, dynamic> json) => BoardsInfo(
         typeId: json["typeId"],
         typeName: json["typeName"],
-        area: json["area"],
+        area: json["area"]?.toDouble(),
       );
 
   Map<String, dynamic> toJson() => {

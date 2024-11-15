@@ -1,8 +1,6 @@
 import 'package:smart_advisor/app/core/utils/constants/language.dart';
 import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
-import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/shimmer_card.dart';
 
-import '../../../../core/services/local/navigation_services.dart';
 import '../../../_shared_feature_/presentation/widgets/shimmer_card copy.dart';
 import '../widgets/detaIils_app_bar.dart';
 import '/app/core/utils/constants/app_colors.dart';
@@ -17,7 +15,6 @@ import '/app/features/details/presentation/widgets/tabs/third/violations_view.da
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import '../widgets/inspectionitems.dart';
 import '../widgets/violation_view.dart';
 import 'complaince/complaince_page.dart';
@@ -55,7 +52,7 @@ class _EntityDetailsState extends State<EntityDetails> {
         child: BlocBuilder<DetailsBloc, DetailsState>(
           builder: (context, state) {
             return Scaffold(
-              backgroundColor: Colors.transparent,
+              backgroundColor: const Color(0xFFF6F8FB),
               body: Column(
                 children: [
                   DetailsAppBar(

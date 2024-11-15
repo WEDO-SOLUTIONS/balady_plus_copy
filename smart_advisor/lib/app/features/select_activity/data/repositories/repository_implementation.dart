@@ -1,3 +1,8 @@
+import 'package:smart_advisor/app/features/select_activity/data/models/activity_details_info.dart';
+import 'package:smart_advisor/app/features/select_activity/data/models/work_flow_model.dart';
+
+import 'package:smart_advisor/app/features/select_activity/domain/entities/work_flow_request_params.dart';
+
 import '/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
 import '/app/features/select_activity/domain/entities/activity_request_params.dart';
 import '/app/features/select_activity/domain/entities/categories_request_params.dart';
@@ -24,7 +29,8 @@ class ActivitesRepositoryImplementation implements ActivitesRepository {
       final data = await remoteDataSource.getAddetionalActivites(params);
       return Right(data);
     } on ServerException catch (error) {
-      return Left(ServerFailure(error.errorMessage));
+      return Left(
+          ServerFailure(error.errorMessage, errorCode: error.errorCode));
     }
   }
 
@@ -87,6 +93,48 @@ class ActivitesRepositoryImplementation implements ActivitesRepository {
       ActivityRequestParams params) async {
     try {
       final data = await remoteDataSource.getActivites(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<LookUpItem>>> getCities() async {
+    try {
+      final data = await remoteDataSource.getCities();
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<LookUpItem>>> getDistricts(int cityId) async {
+    try {
+      final data = await remoteDataSource.getDistricts(cityId);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<WorkFlowModel>>> getWorkFlow(
+      WorkFlowRequestParams params) async {
+    try {
+      final data = await remoteDataSource.getWorkFlow(params);
+      return Right(data);
+    } on ServerException catch (error) {
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ActivityDetailsInfo>> getActivityInfo(
+      int params) async {
+    try {
+      final data = await remoteDataSource.getActivityDetailsInfo(params);
       return Right(data);
     } on ServerException catch (error) {
       return Left(ServerFailure(error.errorMessage));

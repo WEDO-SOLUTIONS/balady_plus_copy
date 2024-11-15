@@ -29,6 +29,13 @@ class AppStyle {
     color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
+  //new
+  static final headingBoldStyle = TextStyle(
+    fontSize: 24.0,
+    fontWeight: FontWeight.w700,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
 
   static final heading2BoldStyle = TextStyle(
     fontSize: 18.0,
@@ -84,10 +91,30 @@ class AppStyle {
     color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );
-
+//textRegularRomanStyle
   static final textlargeRegularStyle = TextStyle(
     fontSize: 16.0,
     fontWeight: FontWeight.w400,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
+//new
+  static final textMediumStyle = TextStyle(
+    fontSize: 12.0,
+    fontWeight: FontWeight.w500,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
+  static final somarSemiBold = TextStyle(
+    fontSize: 18.0,
+    fontWeight: FontWeight.w600,
+    color: AppColor.textPrimaryColor,
+    fontFamily: fontFamily,
+  );
+
+  static final callout1BoldStyle = TextStyle(
+    fontSize: 16.0,
+    fontWeight: FontWeight.w600,
     color: AppColor.textPrimaryColor,
     fontFamily: fontFamily,
   );

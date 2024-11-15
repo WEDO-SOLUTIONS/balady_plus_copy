@@ -1,4 +1,4 @@
-import 'dart:async';
+/*import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -134,13 +134,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
               /// some buggy behavior with ScrollViewKeyboardDismissBehavior.onDrag
               /// https://www.youtube.com/watch?v=L_WoOkDAqbM
               scrollController.addListener(_unfocusOnScroll);
-              const bgColor = Colors.white;
+
               return ClipRRect(
                 borderRadius: const BorderRadius.vertical(
                   top: Radius.circular(16),
                 ),
                 child: Material(
-                  color: bgColor,
+                  color: Colors.white,
                   child: SearchScope(
                     named: SearchScopeEnum.map,
                     child: CustomScrollView(
@@ -151,7 +151,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
                           delegate: MapSearchHeaderDelegate(
                             requestFocus: widget.requestFocus,
                             onClose: onClose,
-                            backgroundColor: bgColor,
                           ),
                           pinned: true,
                         ),
@@ -282,3 +281,4 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
     });
   }
 }
+*/

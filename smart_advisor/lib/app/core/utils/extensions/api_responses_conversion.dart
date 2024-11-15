@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' show Response;
+import 'package:smart_advisor/app/features/_shared_feature_/presentation/models/response_body_model.dart';
 import '/app/core/utils/constants/language.dart';
 
 import '../utils_exports.dart' show ApiResponse, Log, ResponseDataInMapFormat;
@@ -6,6 +7,7 @@ import '../utils_exports.dart' show ApiResponse, Log, ResponseDataInMapFormat;
 extension APIResponsesConversion on ApiResponse {
   String getErrorMessage([Response? response]) {
     final serverErrorMessage = _handleServerErrorMessage(response);
+    print(serverErrorMessage);
     "Server-Error-Message: $serverErrorMessage".errorLog();
     switch (this) {
       case ApiResponse.deadlineExceeded:
@@ -36,21 +38,21 @@ extension APIResponsesConversion on ApiResponse {
 
   String? _handleServerErrorMessage(Response? response) {
     String? message;
-    if (response != null &&
-        response.data != null &&
-        response.data is ResponseDataInMapFormat) {
-      message = _checkErrorMessage(response.data);
-    }
-    return message;
-  }
-
-  String? _checkErrorMessage(ResponseDataInMapFormat response) {
-    String? message;
-    if (response["Message"] != null && response["Message"].isNotEmpty) {
-      message = response['Message'];
-      if (message!.contains("Invalid user name or password")) {
-        message = "errorInvalidCredentials".tr();
+    if (response != null && response.data != null) {
+      ResponseBodyModel? m;
+      try {
+        m = ResponseBodyModel.fromMap(response.data);
+      } catch (error, stackTrace) {
+        /* LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );*/
       }
+      message =
+          m?.data?.getRefResponseMessage() ?? ("errors_server_error_1").tr();
     }
     return message;
   }

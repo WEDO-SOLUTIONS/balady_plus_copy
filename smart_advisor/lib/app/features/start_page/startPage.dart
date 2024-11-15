@@ -23,12 +23,20 @@ class _StartpageState extends State<Startpage> {
         image:
             "packages/smart_advisor/smart_advisor_assets/images/startpageC1.png",
         title: "فتح محل تجاري ",
-        subtitle: "تعرف على اشتراطات ومخالفات الرخص التجارية"),
+        subtitle: "تعرف على اشتراطات ومخالفات الرخص التجارية",
+        isDisabled: false),
     Startpagemodel(
         image:
             "packages/smart_advisor/smart_advisor_assets/images/startpageC2.png",
         title: "بناء بيت",
-        subtitle: "تعرف على اشتراطات الرخص الانشائية"),
+        subtitle: "تعرف على اشتراطات الرخص الانشائية",
+        isDisabled: true),
+    Startpagemodel(
+        image:
+            "packages/smart_advisor/smart_advisor_assets/images/startpageC4.png",
+        title: "الحفريات",
+        subtitle: "تعرف على أنواع التشوه البصري وطريقة معالجته",
+        isDisabled: true),
     /*  Startpagemodel(
         image:
             "packages/smart_advisor/smart_advisor_assets/images/startpageC3.png",
@@ -104,7 +112,7 @@ class _StartpageState extends State<Startpage> {
                     textAlign: TextAlign.center,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 MediaQuery.removePadding(
@@ -126,9 +134,15 @@ class _StartpageState extends State<Startpage> {
                             backgroundColor: const Color(0xff000000),
                             isScrollControlled: true,
                             builder: (ctx) {
-                              return InternetDialog();
+                              return const InternetDialog();
                             },
                           );
+                        } else if (currentIndex == 1) {
+                          CommonFunctions.openWebView(
+                              context: context,
+                              title: 'اشتراطات إنشاء المباني السكنية',
+                              URL:
+                                  'https://apps.balady.gov.sa/BALADYCDN/Content/Construction/ashtratatanshaalmbanyalsknytmalqrar3.pdf');
                         }
                       },
                       child: StartPageItemCard(

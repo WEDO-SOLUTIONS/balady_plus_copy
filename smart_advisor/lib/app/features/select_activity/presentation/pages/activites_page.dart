@@ -13,7 +13,7 @@ import '/app/features/select_activity/presentation/blocs/activites_bloc/activite
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '/app/core/utils/constants/language.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+//import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../_shared_feature_/presentation/widgets/custom_widgets/customTextField.dart';
 import '../../../shared_features/widgets/app_bar.dart';
@@ -103,29 +103,29 @@ class _ActivitesPageState extends State<ActivitesPage> {
                                         itemCount: items.length ?? 0,
                                         itemBuilder: (context, index) {
                                           return ActivityItemCard(
+                                            isSelected: false,
                                             id: items?[index].id.toString() ??
                                                 "",
                                             name: items?[index].name ?? "",
                                             index: index,
                                             onPress: () async {
-                                              bool isSuccess =
+                                              /*   bool isSuccess =
                                                   await BaladyServices
                                                       .checkLocationSettings(
                                                           context);
-                                              if (isSuccess) {
-                                                NavigationService
-                                                    .navigatorKey.currentState!
-                                                    .popAndPushNamed(
-                                                        RouteName.mapPage,
-                                                        arguments:
-                                                            ActivityDetailsPageParams(
-                                                                sector: widget
-                                                                    .args
-                                                                    .sector,
-                                                                activityId: state
-                                                                        .isics![
-                                                                    index]));
-                                              }
+                                              if (isSuccess) {*/
+                                              NavigationService
+                                                  .navigatorKey.currentState!
+                                                  .popAndPushNamed(
+                                                      RouteName.mapPage,
+                                                      arguments:
+                                                          ActivityDetailsPageParams(
+                                                              sector: widget
+                                                                  .args.sector,
+                                                              activityId:
+                                                                  state.isics![
+                                                                      index]));
+                                              //  }
                                             },
                                           );
                                         },

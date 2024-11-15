@@ -1,4 +1,4 @@
-import 'package:dgis_map/library.dart';
+/*import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
@@ -65,3 +65,4 @@ class MapSearchResults extends ConsumerWidget {
     );
   }
 }
+*/

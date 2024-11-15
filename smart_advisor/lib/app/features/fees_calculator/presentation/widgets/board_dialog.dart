@@ -1,4 +1,9 @@
+import 'package:flutter_svg/svg.dart';
+import 'package:smart_advisor/app/core/utils/constants/app_colors.dart';
+import 'package:smart_advisor/app/core/utils/utils_exports.dart';
+
 import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/constants/app_style.dart';
 import '/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
 import '/app/features/fees_calculator/presentation/widgets/calculator_drop_down.dart';
 import '/app/features/fees_calculator/presentation/widgets/calculator_text_field.dart';
@@ -39,12 +44,42 @@ class _BoardDialogState extends State<BoardDialog> {
         ),
       ),
       child: Padding(
-        padding: const EdgeInsets.only(top: 45, right: 16, left: 26),
+        padding: const EdgeInsets.only(top: 16, right: 16, left: 26),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Container(
+              height: 4,
+              width: 40,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(9),
+                color: AppColor.surfaceMidContrast,
+              ),
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  "اللوحات",
+                  style: AppStyle.heading2BoldStyle,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    NavigationService.navigatorKey.currentState!.pop();
+                  },
+                  child: SvgPicture.asset(
+                      "packages/smart_advisor/smart_advisor_assets/icons/svg/Button.svg"),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 16,
+            ),
             CalculatorDropdown(
-              title: "",
+              title: "نوع اللوحة",
               onSelect: (LookUpItem item) {
                 board = item;
               },
@@ -59,6 +94,7 @@ class _BoardDialogState extends State<BoardDialog> {
               },
               title: "المساحة",
               suffix: "متر مربع",
+              color: AppColor.surfaceSecondaryColor,
             ),
             const SizedBox(
               height: 32,
@@ -72,6 +108,8 @@ class _BoardDialogState extends State<BoardDialog> {
                     NavigationService.navigatorKey.currentState!.pop(
                       context,
                     );
+                  } else {
+                    CommonFunctions.showError("يجب إدخال المساحة ونوع اللوحة");
                   }
                 },
                 text: "إضافة")

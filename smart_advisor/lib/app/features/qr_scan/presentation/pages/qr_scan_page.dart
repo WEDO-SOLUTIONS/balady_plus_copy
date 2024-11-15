@@ -69,6 +69,9 @@ class _QrScanPageState extends State<QrScanPage> {
         listener: (context, state) {
           if (state.qrStatus == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
+            Timer(const Duration(seconds: 3), () async {
+              controller.resumeCamera();
+            });
           }
         },
         child: BlocBuilder<QRBloc, QrState>(
@@ -79,26 +82,23 @@ class _QrScanPageState extends State<QrScanPage> {
               ),
               body: Stack(
                 children: <Widget>[
-                  Expanded(
-                    flex: 4,
-                    child: QRView(
-                      key: qrKey,
-                      onQRViewCreated: (QRViewController c) {
-                        setState(() {
-                          controller = c;
-                        });
-                        controller.scannedDataStream.listen((scanData) async {
-                          scanResult = scanData.code!;
-                          checkBarcode(context);
-                        });
-                      },
-                      overlay: QrScannerOverlayShape(
-                        borderColor: Colors.red,
-                        borderRadius: 10,
-                        borderLength: 30,
-                        borderWidth: 10,
-                        cutOutSize: 300,
-                      ),
+                  QRView(
+                    key: qrKey,
+                    onQRViewCreated: (QRViewController c) {
+                      setState(() {
+                        controller = c;
+                      });
+                      controller.scannedDataStream.listen((scanData) async {
+                        scanResult = scanData.code!;
+                        checkBarcode(context);
+                      });
+                    },
+                    overlay: QrScannerOverlayShape(
+                      borderColor: Colors.red,
+                      borderRadius: 10,
+                      borderLength: 30,
+                      borderWidth: 10,
+                      cutOutSize: 300,
                     ),
                   ),
                   if (state.qrStatus == BlocStatus.loading)

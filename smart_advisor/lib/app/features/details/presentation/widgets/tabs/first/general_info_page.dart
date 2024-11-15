@@ -95,7 +95,7 @@ class GeneralInfoPage extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              ApprovalsWidget(),
+              const ApprovalsWidget(),
               const SizedBox(
                 height: 30,
               ),

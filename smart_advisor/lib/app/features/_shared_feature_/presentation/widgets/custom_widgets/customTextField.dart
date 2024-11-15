@@ -4,7 +4,6 @@ import 'package:smart_advisor/app/core/utils/constants/app_style.dart';
 import '/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class Textfield extends StatelessWidget {
   final Function? onChanged;
@@ -28,10 +27,10 @@ class Textfield extends StatelessWidget {
     return Container(
       height: 56,
       //  padding: const EdgeInsetsDirectional.symmetric(horizontal: 16),
-      decoration: const BoxDecoration(
-        color: Colors.white, // color ?? const Color(0xffE8EBEF),
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-      ),
+      decoration: BoxDecoration(
+          color: Colors.white, // color ?? const Color(0xffE8EBEF),
+          borderRadius: const BorderRadius.all(Radius.circular(12)),
+          border: Border.all(color: const Color(0xFFF1F1F1))),
       child: Stack(
         children: [
           TextFormField(
@@ -45,7 +44,7 @@ class Textfield extends StatelessWidget {
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
               errorBorder: InputBorder.none,
-              hintText: title ?? 'ابحث هنا ...',
+              hintText: title ?? 'ابحث هنا عن ....',
 
               hintStyle: AppStyle.textlargeRegularStyle
                   .copyWith(color: AppColor.textSecondaryColor),

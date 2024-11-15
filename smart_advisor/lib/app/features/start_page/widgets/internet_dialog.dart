@@ -1,10 +1,7 @@
-import 'package:smart_advisor/smart_advisor.dart';
-
 import '../../../core/services/local/navigation_services.dart';
+import '../../home_page/presentation/pages/new_home_page.dart';
 import '/app/core/utils/utils_exports.dart';
-import '/app/features/home_page/presentation/pages/homePage.dart';
 import '/app/features/shared_features/widgets/custom_button.dart';
-import '/app/features/start_page/widgets/happy_news.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -30,7 +27,7 @@ class InternetDialog extends StatelessWidget {
           child: Column(
             // crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               Row(
@@ -70,7 +67,7 @@ class InternetDialog extends StatelessWidget {
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 25,
               ),
               CustomButton(
@@ -82,7 +79,8 @@ class InternetDialog extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const HomePage()),
+                      MaterialPageRoute(
+                          builder: (context) => const NewHomePage()),
                     );
                   },
                   text: 'حسناً فهمت'),

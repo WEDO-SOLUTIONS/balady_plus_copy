@@ -1,4 +1,4 @@
-import 'package:dgis_map/library.dart';
+/*import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -52,3 +52,4 @@ class MapSuggestList extends ConsumerWidget {
     );
   }
 }
+*/

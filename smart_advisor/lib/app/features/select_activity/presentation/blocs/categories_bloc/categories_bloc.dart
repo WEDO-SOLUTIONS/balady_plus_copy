@@ -47,6 +47,7 @@ class CategoriesBloc extends Bloc<CategoriesEvent, CategoriesState> {
         },
       );
     });
+
     add(const GetCategoriesEvent());
   }
 }
