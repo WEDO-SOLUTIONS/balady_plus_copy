@@ -367,6 +367,7 @@
   "objection_details_objections_list": "أسباب الاعتراض",
   "objection_create_request": "طلب اعتراض",
   "objection_create_reason": "سبب الاعتراض",
+  "objection_create_reason_required": "سبب الاعتراض مطلوب",
   "transaction_card_license_details": "التفاصيل",
   "transaction_card_license_apply": "تقديم طلب اعتراض",
   "no_transactions_requests": "لا يوجد معاملات قابلة للاعتراض",
