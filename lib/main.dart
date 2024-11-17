@@ -1,4 +1,3 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
@@ -11,10 +10,8 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   unhandledExceptionBaladyLogs(() async {
     AdvancedMetrics.instance.startMeasureStartup();
-    final status = await AppTrackingTransparency.requestTrackingAuthorization();
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
@@ -35,9 +32,9 @@ void main() async {
         appRunner: () => runApp(
           SentryScreenshotWidget(
             child: SentryUserInteractionWidget(
-              child:  MapnessProviderScope(
+              child:  const MapnessProviderScope(
                 child: LocalizedApp(
-                  child: App(status:status),
+                  child: const App(),
                 ),
               ),
             ),

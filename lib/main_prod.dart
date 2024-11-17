@@ -15,17 +15,11 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 
 void main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-
   unhandledExceptionBaladyLogs( () async {
-        final status = await AppTrackingTransparency.requestTrackingAuthorization();
-
     AdvancedMetrics.instance.startMeasureStartup();
     await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.prod);
-
     await setupMapness(EnvType.prod);
-
     await SentryFlutter.init(
       (options) {
         options.dsn =
@@ -42,7 +36,7 @@ void main() async {
         options.environment = sl<EnvType>().name;
       },
       appRunner: () =>
-          runApp( MapnessProviderScope(child: LocalizedApp(child: App(status:status)))),
+          runApp( MapnessProviderScope(child: LocalizedApp(child: App()))),
     );
   });
   });
