@@ -1,5 +1,4 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
+import 'package:flutter/material.dart' show runApp;
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -15,6 +14,7 @@ void main() async {
   await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.urbiPre);
     await setupMapness(EnvType.urbiPre);
+
     await SentryFlutter.init(
       (options) {
         options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
@@ -29,7 +29,7 @@ void main() async {
         options.captureFailedRequests = true;
         options.environment = sl<EnvType>().name;
       },
-      appRunner: () => runApp( const MapnessProviderScope(child: LocalizedApp(child: const App()))),
+      appRunner: () => runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
     );
   });
 }
