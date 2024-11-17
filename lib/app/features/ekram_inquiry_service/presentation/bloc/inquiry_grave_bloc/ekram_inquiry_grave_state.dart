@@ -75,7 +75,7 @@ class EkramInquiryGraveState extends Equatable {
   }
 
   bool isFormValid() {
-    if (selectedNationalIdType != null && (nationalId?.isEmpty ?? true))
+    if (selectedNationalIdType == null || (nationalId?.isEmpty ?? true))
       return false;
 
     if (fullName?.isEmpty ?? true) return false;

@@ -91,15 +91,16 @@ class EkramBookCemetryBloc
         _getNationalities = GetNationalities(repository: sl()),
         _getCountreies = GetCountreies(repository: sl()),
         _getEkramCities = GetEkramCities(repository: sl()),
-        super(EkramBookCemetryState(
-          isMuslim: true,
-          isFetus: false,
-          isPandemicDeath: false,
-          fullName: CommonProperties.userInfo?.arName ?? "",
-          mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
-          requestType: trans("ekram_request_type"),
-          selectedCemetryType: LookUpItem(name: 'any_type'.tr(), id: 0),
-        )) {
+        super(
+          EkramBookCemetryState(
+            isMuslim: true,
+            isFetus: false,
+            isPandemicDeath: false,
+            fullName: CommonProperties.userInfo?.arName ?? "",
+            mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
+            requestType: trans("ekram_request_type"),
+          ),
+        ) {
     on<EkramBookCemetryEvent>((event, emit) {});
     on<ChangeAgreementEvent>(_changeAgreementHandler);
 
@@ -614,8 +615,7 @@ class EkramBookCemetryBloc
     }, (success) {
       emit(state.copyWith(
         status: BlocStatus.success,
-        cemetryTypeItems: success.data?.result
-          ?..add(LookUpItem(name: 'any_type'.tr(), id: 0)),
+        cemetryTypeItems: success.data?.result,
         errorMessage: "",
       ));
       return success.data?.result;

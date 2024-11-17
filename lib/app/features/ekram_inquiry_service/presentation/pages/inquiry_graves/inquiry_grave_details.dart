@@ -41,7 +41,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
       ),
       body: BlocProvider(
         create: (context) =>
-            EkramInquiryGraveBloc()..add(GetEkramCitiesEvent()),
+            EkramInquiryGraveBloc()..add(const GetEkramCitiesEvent()),
         child: BlocConsumer<EkramInquiryGraveBloc, EkramInquiryGraveState>(
           listener: (context, state) {
             print(state);
@@ -57,6 +57,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                   child: SingleChildScrollView(
                     child: Column(children: [
                       CustomTextFieldWidget(
+                        isRequired: true,
                         label: "name".tr(),
                         onChanged: (String? val) {
                           context
@@ -136,7 +137,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                           onPressed: () {
                             context
                                 .read<EkramInquiryGraveBloc>()
-                                .add(FindCemetriesEvent());
+                                .add(const FindCemetriesEvent());
                           },
                           text: "searchButton".tr())
                     ]),
