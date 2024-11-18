@@ -48,8 +48,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 
-GlobalKey key = GlobalKey<_ContentState>();
-
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {
   final DgisObjectIdMessage objectId;
@@ -71,7 +69,6 @@ class PoiCardWidgetPage extends StatelessWidget {
           biggestHeight: constraints.biggest.height,
           biggestWidth: constraints.biggest.width,
           closestPoint: closestPoint,
-          key: key,
         ),
       );
 }
@@ -83,7 +80,6 @@ class _Content extends ConsumerStatefulWidget {
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
-    super.key,
   });
 
   final DgisObjectIdMessage objectId;
@@ -295,7 +291,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
             bottom: false,
             child: StatefulBottomSheet(
               animateOpening: false,
-              key: const Key('POI CARD SHEET KEY'),
               scrollController: _bottomSheetController,
               topHeader: PoiPhotosHeader(
                 objectId: objectId,
