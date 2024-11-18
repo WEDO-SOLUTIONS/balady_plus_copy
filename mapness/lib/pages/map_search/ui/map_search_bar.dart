@@ -60,7 +60,8 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
     ref.listen(searchProvider(scope.value), (previous, next) {
-      if (next.searchText.isEmpty) {
+
+      if(next.searchText.isEmpty){
         ref.read(searchInRectProvider.notifier).update();
       }
 
@@ -82,13 +83,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             props: {
               'query': query,
             },
-          );
-        },
-        onTap: () {
-          _controller.selection = TextSelection.fromPosition(
-            TextPosition(
-              offset: _controller.text.length,
-            ),
           );
         },
         onSubmitted: (query) async {
