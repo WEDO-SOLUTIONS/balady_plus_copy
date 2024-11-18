@@ -212,8 +212,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void _objectTapListener(TapEvent event) {
     if (context.router.isRouteActive(RoutingMapSelectRoute.name)) {
       return;
-    } else if (context.router.isRouteActive(RoutingRoutesRoute.name)) {
-      return;
     } else if (context.router.isRouteActive(SearchRoute.name)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
