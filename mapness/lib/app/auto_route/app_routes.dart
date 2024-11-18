@@ -1,13 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/others/poi_route_guard.dart';
+import 'package:mapness/app/auto_route/guards/onboard_route_guard.dart';
+import 'package:mapness/app/auto_route/guards/poi_route_guard.dart';
 import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 
 import 'app_routes.gr.dart';
-import 'others/onboard_route_guard.dart';
-
 final appRouterProvider = Provider((ref) => AppRouter(ref));
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
