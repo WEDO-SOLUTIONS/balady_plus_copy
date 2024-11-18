@@ -57,6 +57,14 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
             markerType: .model
         ))
         
+        try? map.camera.setPosition(
+            point: GeoPoint(
+                latitude: 24.712301, longitude: 46.674175
+            ),
+            zoom: Zoom(value: 17)
+        )
+        myLocationControlModel?.onClicked()
+        
         self.map = map
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
