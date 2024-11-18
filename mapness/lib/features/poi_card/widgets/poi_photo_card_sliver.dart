@@ -9,8 +9,8 @@ import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
 
-class PoiPhotoCard extends ConsumerWidget {
-  const PoiPhotoCard({required this.objectId, super.key});
+class PoiPhotoCardSliver extends ConsumerWidget {
+  const PoiPhotoCardSliver({required this.objectId, super.key});
   final int objectId;
 
   List<QuiltedGridTile> get _pattern2 => const [
@@ -107,21 +107,25 @@ class PoiPhotoCard extends ConsumerWidget {
     final photos = ref.watch(poiPhotoProvider(objectId));
 
     if (photos.hasError) {
-      return ErrorMessage(
-        onRetry: () => ref.invalidate(poiPhotoProvider(objectId)),
+      return SliverToBoxAdapter(
+        child: ErrorMessage(
+          onRetry: () => ref.invalidate(poiPhotoProvider(objectId)),
+        ),
       );
     }
 
     if (photos.isLoading) {
-      return Shimmer.fromColors(
-        baseColor: Colors.grey[200]!,
-        highlightColor: Colors.grey[100]!,
-        child: Container(
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.only(
-              topRight: Radius.circular(16),
-              topLeft: Radius.circular(16),
+      return SliverToBoxAdapter(
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey[200]!,
+          highlightColor: Colors.grey[100]!,
+          child: const DecoratedBox(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(16),
+                topLeft: Radius.circular(16),
+              ),
             ),
           ),
         ),
@@ -131,25 +135,25 @@ class PoiPhotoCard extends ConsumerWidget {
     final photoItems = photos.requireValue.items;
     final photosUrls = photoItems.map((e) => e.url).toList();
 
-    return GridView.custom(
-      shrinkWrap: true,
-      primary: false,
+    return SliverPadding(
       padding: const EdgeInsets.only(bottom: 64),
-      gridDelegate: SliverQuiltedGridDelegate(
-        crossAxisCount: 6,
-        mainAxisSpacing: 4,
-        crossAxisSpacing: 4,
-        pattern: _calcPattern(photoItems.length),
-      ),
-      childrenDelegate: SliverChildBuilderDelegate(
-        childCount: photoItems.length,
-        (context, index) => ClipRRect(
-          borderRadius: BorderRadius.circular(RadiusBorder.xs),
-          child: LoadingShimmerImage(
-            imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
-            fit: BoxFit.cover,
-            onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls),
+      sliver: SliverGrid(
+        delegate: SliverChildBuilderDelegate(
+          childCount: photoItems.length,
+          (context, index) => ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.xs),
+            child: LoadingShimmerImage(
+              imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
+              fit: BoxFit.cover,
+              onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls),
+            ),
           ),
+        ),
+        gridDelegate: SliverQuiltedGridDelegate(
+          crossAxisCount: 6,
+          mainAxisSpacing: 4,
+          crossAxisSpacing: 4,
+          pattern: _calcPattern(photoItems.length),
         ),
       ),
     );
