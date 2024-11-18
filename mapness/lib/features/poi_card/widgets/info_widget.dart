@@ -45,8 +45,9 @@ class InfoWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final data = objectInfo;
+
     if (data == null) {
-      return const SizedBox();
+      return const SizedBox.shrink();
     }
 
     final briefInfo = ref.watch(
