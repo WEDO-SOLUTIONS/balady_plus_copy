@@ -149,7 +149,7 @@ class EtaUtils {
             unawaited(ref.read(dgisControllerProvider).valueOrNull?.hideRoutes());
           }
 
-          await appRouter.push(const BottomMenuRoute());
+          await appRouter.navigate(const LandingRoute());
         }
         // Get old stream token and stream id
         final oldToken = EtaStreamStorage().state.streamToken;

@@ -6,12 +6,16 @@ import 'package:mapness/app/auto_route/others/route_builder.dart';
 import 'package:mapness/app/auto_route/routes.dart';
 
 import 'app_routes.gr.dart';
-final appRouterProvider = Provider((ref) => AppRouter(ref));
+
+final appRouterProvider = Provider((ref) => AppRouter(ref, rootNavigatorKey));
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @AutoRouterConfig(replaceInRouteName: 'Page,Route')
 class AppRouter extends RootStackRouter {
-  AppRouter(this.ref);
+  AppRouter(
+    this.ref,
+    GlobalKey<NavigatorState> navigatorKey,
+  ) : super(navigatorKey: navigatorKey);
 
   final Ref ref;
 

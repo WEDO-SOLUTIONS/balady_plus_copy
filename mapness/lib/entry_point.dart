@@ -258,7 +258,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ? LoadingOverlay(
                     child: ToastOverlay(
                       child: GlobalScopes(
-                        key: rootNavigatorKey,
                         child: child,
                       ),
                     ),
