@@ -33,7 +33,6 @@ class MapSearchSheetControls extends ConsumerStatefulWidget {
 }
 
 class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> {
-
   void _searchInArea() {
     Metrics.logEventAdvanced(
       MetricsConstants.searchKeys.searchInThisArea,
@@ -68,9 +67,9 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
 
     bool visibleSearchArea = false;
     ref.watch(searchInRectProvider.select((value) {
-      if (visibleSearchArea != value.$2) {
+      if (visibleSearchArea != value.isButtonVisible) {
         setState(() {
-          visibleSearchArea = value.$2;
+          visibleSearchArea = value.isButtonVisible;
         });
       }
     }));
@@ -136,4 +135,3 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
     );
   }
 }
-

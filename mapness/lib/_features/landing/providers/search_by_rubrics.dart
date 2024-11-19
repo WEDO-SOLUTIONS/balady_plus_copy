@@ -38,7 +38,7 @@ class SearchByRubrics extends _$SearchByRubrics {
       return null;
     }
 
-    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect = ref.watch(searchInRectProvider.select((value) => value.rect));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     unawaited(performSearch(
