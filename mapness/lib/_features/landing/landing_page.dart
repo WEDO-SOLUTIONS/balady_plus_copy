@@ -17,7 +17,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
-
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -213,6 +212,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     if (context.router.isRouteActive(RoutingMapSelectRoute.name)) {
       return;
     } else if (context.router.isRouteActive(SearchRoute.name)) {
+      return;
+    } else if (context.router.isRouteActive(RoutingRoutesRoute.name)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
       context.router.back();
