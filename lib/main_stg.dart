@@ -16,12 +16,12 @@ import 'app/events_logs/balady_logs.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   final status = await AppTrackingTransparency.requestTrackingAuthorization();
 
   unhandledExceptionBaladyLogs(() async {
     AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
-    
+
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.stg);
 

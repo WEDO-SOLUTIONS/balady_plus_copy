@@ -20,7 +20,7 @@ void main() async {
   unhandledExceptionBaladyLogs(() async {
     AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
-    
+
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.dev);
 
