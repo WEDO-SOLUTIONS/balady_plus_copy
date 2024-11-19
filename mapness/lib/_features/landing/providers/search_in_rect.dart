@@ -63,6 +63,10 @@ class SearchInRect extends _$SearchInRect {
     );
   }
 
+  void searchInThisAreaSwitch(bool value) {
+    state = state.copyWith(isSearchInThisAreaRequest: value);
+  }
+
   bool _buttonVisible(GeoRectMessage? oldRect, GeoRectMessage newRect) {
     final zoom = ref.read(cameraPositionProvider)?.zoom;
     if (oldRect == null || (zoom != null && zoom == 14)) {

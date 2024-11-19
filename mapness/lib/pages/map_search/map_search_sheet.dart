@@ -207,10 +207,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ref.read(cameraPositionProvider.notifier).animateTo,
         );
       }
-
-      await mapObjectManager.removeAllMarkers();
+      if (!ref.read(searchInRectProvider).isSearchInThisAreaRequest) {
+        ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(false);
+        await mapObjectManager.removeAllMarkers();
+      }
       await mapObjectManager.addMarkers(markers);
-
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await mapObjectManager.removeAllMarkers();
     }
