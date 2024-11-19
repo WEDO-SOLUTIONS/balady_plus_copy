@@ -310,8 +310,8 @@ class NewMSRViewModel extends BaseViewModel {
     }
   }
 
-  void submitRequest(FileDataItem? file) async {
-    showLoading();
+
+  Future<void> submitRequest(FileDataItem? file) async {
     final response = await createRequest(file);
 
     if (response) {

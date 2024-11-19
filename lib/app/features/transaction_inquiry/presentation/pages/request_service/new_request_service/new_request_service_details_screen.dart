@@ -93,61 +93,93 @@ class _MSRBody extends State<MSRBody> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const SizedBox(height: 16),
-                  const Text(
-                    'Upload',
-                    style: TextStyle(
+                  Text(
+                    'attachment'.tr(),
+                    style: const TextStyle(
                       color: AppColor.blackModern700Light,
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  InkWell(
-                    onTap: () async {
-                      FileDataItem? file =
-                          await CommonFunctions.pickFile(context);
-                      if (file != null) {
-                        if ((file.sizeInMB * 1000) <= 5000) {
-                          model.setFile(file);
-                        } else {
-                          CommonFunctions.showError("file_max_size".tr());
-                        }
-                      }
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 6),
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(16)),
-                        border: Border.all(
-                          color: AppColor.primary800Light,
-                        ),
-                        color: Colors.transparent,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            IconPath.add,
-                            width: 20,
-                            height: 20,
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'attachment'.tr(),
-                            style: const TextStyle(
-                              color: AppColor.primary800Light,
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
+                  model.file == null
+                      ? InkWell(
+                          onTap: () async {
+                            FileDataItem? file = await CommonFunctions.pickFile(
+                              context,
+                            );
+                            if (file != null) {
+                              if ("jpg,jpeg,pdf,png"
+                                  .contains(file.fileName.split(".").last)) {
+                                if ((file.sizeInMB * 1000) <= 5000) {
+                                  model.setFile(file);
+                                } else {
+                                  CommonFunctions.showError(
+                                      "file_max_size".tr());
+                                }
+                              } else {
+                                CommonFunctions.showError("${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png");
+                              }
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              border: Border.all(
+                                color: AppColor.primary800Light,
+                              ),
+                              color: Colors.transparent,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SvgPicture.asset(
+                                  IconPath.add,
+                                  width: 20,
+                                  height: 20,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'attachment'.tr(),
+                                  style: const TextStyle(
+                                    color: AppColor.primary800Light,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        )
+                      : Row(
+                          children: [
+                            Flexible(
+                              fit: FlexFit.tight,
+                              child: Text(
+                                model.file!.fileName,
+                                style: const TextStyle(
+                                  color: AppColor.primary900Light,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 3,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            IconButton(
+                              onPressed: () {
+                                model.setFile(null);
+                              },
+                              color: AppColor.error,
+                              icon: const Icon(Icons.close),
+                            ),
+                          ],
+                        ),
                   const SizedBox(height: 6),
                   Text(
-                    '${'attachment_message_typ'.tr()} jpg,jpeg,pdf,zip,tif,tiff,bmp,gif,png ${'attachment_message_size'.tr()} 5MB',
+                    '${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png ${'attachment_message_size'.tr()} 5MB',
                     style: const TextStyle(
                       color: AppColor.blackModern700Light,
                       fontSize: 16,
