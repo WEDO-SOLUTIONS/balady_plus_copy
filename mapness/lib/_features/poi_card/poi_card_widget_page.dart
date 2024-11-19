@@ -290,7 +290,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           child: SafeArea(
             bottom: false,
             child: StatefulBottomSheet(
-              animateOpening: false,
               scrollController: _bottomSheetController,
               topHeader: PoiPhotosHeader(
                 objectId: objectId,
