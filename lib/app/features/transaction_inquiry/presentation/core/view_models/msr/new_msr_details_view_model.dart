@@ -13,20 +13,19 @@ import '../../services/customer_voice_repository.dart';
 import 'new_msr_view_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-
-
 class NewMSRDetailsViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();
   final dataModel = locator<NewMSRViewModel>();
-
-
 
   FileDataItem? file;
 
   SpecializedClassification? get splClassifications =>
       dataModel.splClassifications;
+
   List<DropDownItem> get splTypeList => dataModel.splTypeList;
+
   DropDownItem? get splType => dataModel.splType;
+
   set splType(DropDownItem? data) {
     SpecializedClassificationItem? e = splClassifications?.splClassificationList
         ?.firstWhereOrNull((element) => element.id == data?.id);
@@ -38,7 +37,9 @@ class NewMSRDetailsViewModel extends BaseViewModel {
   }
 
   List<DropDownItem> get splBusinessTypeList => dataModel.splBusinessTypeList;
+
   DropDownItem? get splBusinessType => dataModel.splBusinessType;
+
   set splBusinessType(DropDownItem? data) {
     SplBusinessType? e = selectedSplDetails?.splBusinessType
         ?.firstWhereOrNull((element) => element.ID == data?.id);
@@ -61,22 +62,30 @@ class NewMSRDetailsViewModel extends BaseViewModel {
       dataModel.selectedSplDetails = data;
 
   SubMainClassification? get selectedSplDetails => dataModel.selectedSplDetails;
+
   SpecializedClassificationItem? get selectedSplItem =>
       dataModel.selectedSplItem;
+
   SplBusinessType? get selectedSplBusinessItem =>
       dataModel.selectedSplBusinessItem;
 
   set selectedSplBusinessItem(SplBusinessType? data) =>
       dataModel.selectedSplBusinessItem = data;
+
   String? get desc => dataModel.desc;
+
   set desc(String? data) => dataModel.desc = data;
+
   List<AttachmentData> get attachments => dataModel.attachments;
+
   set attachments(List<AttachmentData> data) => dataModel.attachments = data;
 
   SelectedLocation get selectedLocation => dataModel.selectedLocation;
+
   GisLocationResult? get gisLocation => dataModel.gisLocation;
 
   bool get isFormValid => dataModel.isFormValid;
+
   set isFormValid(bool data) => dataModel.isFormValid = data;
 
 // Form
@@ -118,13 +127,18 @@ class NewMSRDetailsViewModel extends BaseViewModel {
     }
   }
 
-  void setFile (FileDataItem file) {
+  void setFile(FileDataItem? file) {
     this.file = file;
     notifyListeners();
   }
 
-  void submit() {
-    dataModel.submitRequest(file);
+  void submit() async {
+    isLoading = true;
+    notifyListeners();
+    await dataModel.submitRequest(file);
+    isLoading = false;
+    notifyListeners();
+
   }
 
   validateForm() {
@@ -163,14 +177,14 @@ class NewMSRDetailsViewModel extends BaseViewModel {
         notifyListeners();
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   bool showSPLBuisinessTypeOption() {
