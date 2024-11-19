@@ -111,7 +111,7 @@ class RoutingHeader extends ConsumerWidget {
       props: {'id': point.entity?.id, 'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'},
     );
 
-    final index = points.indexWhere((element) => element is RoutePointFavouriteItem);
+    final index = points.indexWhere((element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject);
     points[index] = RoutePointFavouriteItem(point);
     updatePoints(points);
   }
