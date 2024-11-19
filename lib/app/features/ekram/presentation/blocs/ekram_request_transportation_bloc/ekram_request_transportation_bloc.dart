@@ -71,11 +71,11 @@ class EkramRequestTransportationBloc extends Bloc<
   // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     DeceasedVerificationSection(),
-    DeceasedInfoSection(),
+    const DeceasedInfoSection(),
     const ApplicantInfoSection(),
     const DeathAndBurialInfoSection(),
     const EmirateApprovalInfoSection(),
-    AgreementSection(),
+    const AgreementSection(),
   ];
 
   final GetCemeteryTypesLookUp _getCemeteryTypesLookUp;
@@ -793,6 +793,16 @@ class EkramRequestTransportationBloc extends Bloc<
       GoToNextPageEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.performing) return;
     int nextPage = state.currentPageValue + 1;
+    if (state.requestDetailsModel?.burialInfo?.cityId != null) {
+      if (nextPage == 4) {
+        state
+                    .getCityById(state.requestDetailsModel?.burialInfo?.cityId)!
+                    .needApproval ??
+                false
+            ? null
+            : nextPage++;
+      }
+    }
     emitter(state.copyWith(
       status: BlocStatus.performing,
     ));
@@ -930,7 +940,7 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      add(GoToNextPageEvent());
+      add(const GoToNextPageEvent());
     });
   }
 
@@ -959,7 +969,7 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      add(GoToNextPageEvent());
+      add(const GoToNextPageEvent());
     });
   }
 

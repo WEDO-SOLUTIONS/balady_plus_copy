@@ -67,6 +67,7 @@ class LookUpItem {
   LookUpItem(
       {this.id,
       this.name,
+      this.needApproval,
       this.isOther,
       this.fillInfo,
       this.localCountry,
@@ -75,6 +76,7 @@ class LookUpItem {
   int? id;
   String? name;
   bool? isOther;
+  bool? needApproval;
   bool? fillInfo;
   bool? localCountry;
   bool? isDisblaed;
@@ -84,6 +86,7 @@ class LookUpItem {
       name: json["name"] == null ? null : json["name"],
       fillInfo: json["fillInfo"],
       isOther: json["other"],
+      needApproval: json["needApproval"],
       localCountry: json["localCountry"]);
 
   Map<String, dynamic> toJson() => {
