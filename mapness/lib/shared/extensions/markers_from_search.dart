@@ -65,12 +65,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
-    // final type = mapMarkerMapper.getMarkerType(rubricIds)
-    // final markerIconPath = searchState.markerType?.iconPath;
-    // final icon = markerIconPath != null
-    //     ? markerIconPath.markerIcon(size: 32)
-    //     : LayersSvgPaths.basicMarker.markerIcon(size: 16);
-
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       if (markerInfo != null) {
         final objectId = markerInfo.objectId?.objectId;

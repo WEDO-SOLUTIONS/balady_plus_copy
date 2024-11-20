@@ -194,7 +194,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final markers = await searchState.results.getMarkers(
         router: ref.read(goRouterProvider),
-        // icon: icon,
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
       );

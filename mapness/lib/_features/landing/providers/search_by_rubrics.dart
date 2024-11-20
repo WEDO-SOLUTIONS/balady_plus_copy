@@ -100,11 +100,7 @@ class SearchByRubrics extends _$SearchByRubrics {
     );
     final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
-    // final selectedFilter = ref.read(searchByRubricsQueryProvider);
     final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-    // final markerIconPath = selectedFilter?.markerType?.iconPath;
-    // final icon =
-    //     markerIconPath != null ? markerIconPath.markerIcon(size: 32) : LayersSvgPaths.basicMarker.markerIcon(size: 16);
 
     final markers = await value.getMarkers(
       router: ref.read(goRouterProvider),
