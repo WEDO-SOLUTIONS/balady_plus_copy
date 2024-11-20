@@ -23,6 +23,7 @@ class FeedbackTextListField extends StatefulWidget {
 
 class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   late final _inputs = List<String>.of(widget.field.oldValues);
+  late final _inputKeys = List<UniqueKey>.generate(_inputs.length, (i) => UniqueKey());
 
   late final _isRequired = widget.field.isRequired;
 
@@ -37,12 +38,14 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   void _addInput() {
     setState(() {
       _inputs.add('');
+      _inputKeys.add(UniqueKey());
     });
   }
 
   void _removeInput(int i) {
     setState(() {
       _inputs.removeAt(i);
+      _inputKeys.removeAt(i);
     });
   }
 
@@ -89,6 +92,17 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
 
     return FormBuilderField<List<String>>(
         name: widget.field.id,
+        valueTransformer: (values) {
+          if (values == null) {
+            return List<String>.empty();
+          }
+
+          return values
+              .where(
+                (value) => value.trim().isNotEmpty,
+              )
+              .toList();
+        },
         validator: (values) {
           if (_isRequired && values == null) {
             return FormBuilderValidators.required()(values);
@@ -106,6 +120,8 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
               children: [
                 for (var i = 0; i < _inputs.length; i++) ...[
                   Row(
+                    key: _inputKeys[i],
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
                         child: FeedbackTextInput(
@@ -123,13 +139,17 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                           type: widget.field.type,
                         ),
                       ),
-                      if (_inputs.length > 1 && i != 0)
+                      if (i != 0)
                         Padding(
                           padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
                           child: AppButton.close(
-                            onTap: () => _removeInput(i),
+                            onTap: () {
+                              _removeInput(i);
+                              fieldState.didChange(_inputs);
+                            },
                             buttonColorScheme: ButtonColorScheme.onColor,
                             padding: EdgeInsets.zero,
+                            size: ButtonSize.medium,
                           ),
                         ),
                     ],
@@ -142,7 +162,10 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                     buttonColorScheme: ButtonColorScheme.secondary,
                     primaryLabel: isPhoneField ? context.l10n.addPhoneNumber : context.l10n.add,
                     primaryIcon: isPhoneField ? null : GeneralIcons.plusCircle,
-                    onTap: _addInput,
+                    onTap: () {
+                      _addInput();
+                      fieldState.didChange(_inputs);
+                    },
                   ),
                 ),
               ],

@@ -125,7 +125,10 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       children: [
         Listener(
           behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) => _collapseBottomSheet(),
+          onPointerDown: (_) {
+            _unfocusSearchField();
+            _collapseBottomSheet();
+          },
         ),
         MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
         NotificationListener<ScrollNotification>(
@@ -293,8 +296,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen((_) {
       if (context.router.isRouteActive(SearchRoute.name)) {
-        _collapseBottomSheet();
         _unfocusSearchField();
+        _collapseBottomSheet();
       }
     });
   }
