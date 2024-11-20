@@ -186,7 +186,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     setState(() {
       this.points = points;
     });
-    context.router.maybePop();
+    context.router.back();
   }
 
   void _onClose() {

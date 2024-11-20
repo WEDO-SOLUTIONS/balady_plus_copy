@@ -69,7 +69,7 @@ class SigninPage extends ConsumerWidget {
                             if (!context.mounted) {
                               return;
                             }
-                            await context.router.maybePop();
+                            context.router.back();
                           },
                           label: context.l10n.signIn,
                           textColor: AppColor.authSubtitleColorV2,
@@ -98,7 +98,7 @@ class SigninPage extends ConsumerWidget {
               action: MetricAction.tap.toString(),
             );
 
-            context.router.maybePop();
+            context.router.back();
           },
           child: Container(
             height: Spacing.$10x,
