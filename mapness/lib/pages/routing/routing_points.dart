@@ -186,6 +186,11 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           ),
         ]),
       );
+
+      points = [
+        RoutePointMyLocation(),
+        RoutePointDirectoryObject(null),
+      ];
     }
   }
 
