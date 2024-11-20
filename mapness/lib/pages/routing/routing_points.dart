@@ -45,6 +45,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   static const controlsBottomExtent = 136.0;
+  static const _bottomSheetAspectRatios = [.1, .38, .931];
 
   List<RoutePoint> points = [
     RoutePointMyLocation(),
@@ -60,7 +61,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   @override
   void initState() {
     bottomSheetController = StatefulBottomSheetController(
-      behavior: AspectRatioSnappingBehavior(aspectRatios: [.1, .38, .931]),
+      behavior: AspectRatioSnappingBehavior(aspectRatios: _bottomSheetAspectRatios),
       stateMapper: const ThreeStateMapper(),
       initialState: ThreeStateBottomSheet.open,
     );
