@@ -186,162 +186,165 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Stack(
-        children: [
-          SafeArea(
-            bottom: false,
-            child: Stack(
-              children: [
-                ValueListenableBuilder(
+    return PopScope(
+      canPop: false,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Stack(
+          children: [
+            SafeArea(
+              bottom: false,
+              child: Stack(
+                children: [
+                  ValueListenableBuilder(
+                    valueListenable: _navigationState,
+                    builder: (context, state, child) {
+                      if (state == PathNavState.finished) {
+                        return GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            final value = _expansionNotifier.value;
+                            if (value) {
+                              _expansionNotifier.value = !value;
+                            }
+                          },
+                          child: const SizedBox.expand(),
+                        );
+                      }
+                      return const SizedBox();
+                    },
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const SizedBox(height: 6, width: double.maxFinite),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                        child: Directionality(
+                          // Here we set the text direction according to the current locale to display the correct direction of the widget.
+                          textDirection: Directionality.of(context),
+                          child: Consumer(
+                            builder: (context, ref, child) {
+                              final message = ref.watch(pathNavMessageProvider);
+                              final maneuver = ref.watch(pathNavManeuverProvider);
+                              final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
+                              final info = ref.watch(pathNavSpeedInfoProvider);
+
+                              // This made to remove yellow lines under the text
+                              return Material(
+                                type: MaterialType.transparency,
+                                color: Colors.transparent,
+                                child: uikit.BaladyManeuverAndLimit(
+                                  isPedestrian: isPedestrian,
+                                  speedInfo: uikit.LimitsModel(
+                                    speed: info.speed,
+                                    speedExceed: info.speedExceed,
+                                    speedLimit: info.speedLimit,
+                                  ),
+                                  maneuver: maneuver != null
+                                      ? uikit.BaladyManeuverModel(
+                                          distance: maneuver.distance,
+                                          instruction: maneuver.instruction?.toUIKit(),
+                                          roadName: maneuver.roadName,
+                                          unit: maneuver.unit,
+                                        )
+                                      : null,
+                                  message: message != null
+                                      ? uikit.ManeuverMessageModel(
+                                          comment: message.state.toMessage(context.l10n),
+                                          state: message.state.toUIKit(),
+                                        )
+                                      : null,
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Padding(
+                        padding: padding,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (widget.navType == RouteSearchOptionsMessage.pedestrian)
+                              const IndoorControl()
+                            else
+                              const SizedBox.shrink(),
+                            const ZoomControl(),
+                          ],
+                        ),
+                      ),
+                      const Spacer(),
+                      const Padding(
+                        padding: padding,
+                        child: CompassControl(),
+                      ),
+                      const SizedBox(height: 8),
+                      const Padding(
+                        padding: padding,
+                        child: PathNavFollowControl(),
+                      ),
+                      const Spacer(),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            if (isEtaExpanded)
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                },
+                child: SizedBox.expand(
+                  child: ColoredBox(
+                    color: AppColor.black.withOpacity(0.4),
+                  ),
+                ),
+              ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: Directionality(
+                // Here we set the text direction according to the current locale to display the correct direction of the widget.
+                textDirection: Directionality.of(context),
+                child: ValueListenableBuilder(
                   valueListenable: _navigationState,
                   builder: (context, state, child) {
-                    if (state == PathNavState.finished) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          final value = _expansionNotifier.value;
-                          if (value) {
-                            _expansionNotifier.value = !value;
-                          }
-                        },
-                        child: const SizedBox.expand(),
-                      );
+                    switch (state) {
+                      case PathNavState.running:
+                        return Align(
+                          alignment: Alignment.bottomCenter,
+                          child: EtaSheet(
+                            onEndTripPressed: _endTripAndShowHome,
+                            onRoutePressed: _onShowRoutePressed,
+                            onBetterRouteAccept: () => _acceptBetterRoute(context),
+                            onBetterRouteReject: () => _rejectBetterRoute(context),
+                            betterRouteDurationProfit: _betterRouteDurationProfit,
+                            onSizeChanged: _onSizeChanged,
+                          ),
+                        );
+                      case PathNavState.paused:
+                        return EtaContinue(
+                          onTap: _onContinuePressed,
+                          onSizeChanged: _onSizeChanged,
+                        );
+                      case PathNavState.finished:
+                        return EtaFinished(
+                          expansionNotifier: _expansionNotifier,
+                          onEndTripPressed: _endTripAndShowHome,
+                          onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                          onSizeChanged: _onSizeChanged,
+                        );
                     }
-                    return const SizedBox();
                   },
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const SizedBox(height: 6, width: double.maxFinite),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                      child: Directionality(
-                        // Here we set the text direction according to the current locale to display the correct direction of the widget.
-                        textDirection: Directionality.of(context),
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            final message = ref.watch(pathNavMessageProvider);
-                            final maneuver = ref.watch(pathNavManeuverProvider);
-                            final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
-                            final info = ref.watch(pathNavSpeedInfoProvider);
-
-                            // This made to remove yellow lines under the text
-                            return Material(
-                              type: MaterialType.transparency,
-                              color: Colors.transparent,
-                              child: uikit.BaladyManeuverAndLimit(
-                                isPedestrian: isPedestrian,
-                                speedInfo: uikit.LimitsModel(
-                                  speed: info.speed,
-                                  speedExceed: info.speedExceed,
-                                  speedLimit: info.speedLimit,
-                                ),
-                                maneuver: maneuver != null
-                                    ? uikit.BaladyManeuverModel(
-                                        distance: maneuver.distance,
-                                        instruction: maneuver.instruction?.toUIKit(),
-                                        roadName: maneuver.roadName,
-                                        unit: maneuver.unit,
-                                      )
-                                    : null,
-                                message: message != null
-                                    ? uikit.ManeuverMessageModel(
-                                        comment: message.state.toMessage(context.l10n),
-                                        state: message.state.toUIKit(),
-                                      )
-                                    : null,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: padding,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (widget.navType == RouteSearchOptionsMessage.pedestrian)
-                            const IndoorControl()
-                          else
-                            const SizedBox.shrink(),
-                          const ZoomControl(),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    const Padding(
-                      padding: padding,
-                      child: CompassControl(),
-                    ),
-                    const SizedBox(height: 8),
-                    const Padding(
-                      padding: padding,
-                      child: PathNavFollowControl(),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          if (isEtaExpanded)
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-              },
-              child: SizedBox.expand(
-                child: ColoredBox(
-                  color: AppColor.black.withOpacity(0.4),
-                ),
               ),
             ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Directionality(
-              // Here we set the text direction according to the current locale to display the correct direction of the widget.
-              textDirection: Directionality.of(context),
-              child: ValueListenableBuilder(
-                valueListenable: _navigationState,
-                builder: (context, state, child) {
-                  switch (state) {
-                    case PathNavState.running:
-                      return Align(
-                        alignment: Alignment.bottomCenter,
-                        child: EtaSheet(
-                          onEndTripPressed: _endTripAndShowHome,
-                          onRoutePressed: _onShowRoutePressed,
-                          onBetterRouteAccept: () => _acceptBetterRoute(context),
-                          onBetterRouteReject: () => _rejectBetterRoute(context),
-                          betterRouteDurationProfit: _betterRouteDurationProfit,
-                          onSizeChanged: _onSizeChanged,
-                        ),
-                      );
-                    case PathNavState.paused:
-                      return EtaContinue(
-                        onTap: _onContinuePressed,
-                        onSizeChanged: _onSizeChanged,
-                      );
-                    case PathNavState.finished:
-                      return EtaFinished(
-                        expansionNotifier: _expansionNotifier,
-                        onEndTripPressed: _endTripAndShowHome,
-                        onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
-                        onSizeChanged: _onSizeChanged,
-                      );
-                  }
-                },
-              ),
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
