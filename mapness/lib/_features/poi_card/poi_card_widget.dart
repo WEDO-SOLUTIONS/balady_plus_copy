@@ -189,9 +189,11 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
     /// loading progress indicator
     if (state.isLoading) {
-      return const Align(
+      return Align(
         alignment: Alignment.bottomCenter,
-        child: PoiLoadingSheet(),
+        child: PoiLoadingSheet(
+          objectId: widget.objectId,
+        ),
       );
     }
 
