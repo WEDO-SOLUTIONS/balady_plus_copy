@@ -19,6 +19,7 @@ import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -270,6 +271,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           group: MetricsConstants.poiTag,
           action: MetricAction.tap.toString(),
         );
+
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
 
         final userLocation = ref.read(locationProvider);
         PoiMapRoute.open(
