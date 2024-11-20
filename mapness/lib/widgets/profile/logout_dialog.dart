@@ -19,64 +19,67 @@ class LogoutDialog extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Align(
-      alignment: Alignment.bottomCenter,
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              decoration: BoxDecoration(color: const Color(0xffFFFFFF), borderRadius: BorderRadius.circular(14)),
-              width: double.infinity,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Text(title,
-                        textAlign: TextAlign.center,
-                        style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBaseSecondary)),
-                  ),
-                  const Divider(
-                    color: Color(0x3c3c435c),
-                  ),
-                  InkWell(
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0).copyWith(top: 8),
-                      child: Text(
-                        logOutText,
-                        style: context.textStyle.callout.copyWith(
-                          color: context.color.textAndIconsStatusNegative,
+  Widget build(BuildContext context) => Material(
+    color: Colors.transparent,
+    child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.horizontalPaddingInsideWrapper),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                decoration: BoxDecoration(color: const Color(0xffFFFFFF), borderRadius: BorderRadius.circular(14)),
+                width: double.infinity,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Text(title,
+                          textAlign: TextAlign.center,
+                          style: context.textStyle.footNote.copyWith(color: context.color.textAndIconsBaseSecondary)),
+                    ),
+                    const Divider(
+                      color: Color(0x3c3c435c),
+                    ),
+                    InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0).copyWith(top: 8),
+                        child: Text(
+                          logOutText,
+                          style: context.textStyle.callout.copyWith(
+                            color: context.color.textAndIconsStatusNegative,
+                          ),
                         ),
                       ),
+                      onTap: () => onLogout?.call(),
                     ),
-                    onTap: () => onLogout?.call(),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            InkWell(
-              child: Container(
-                decoration: BoxDecoration(color: const Color(0xffFFFFFF), borderRadius: BorderRadius.circular(14)),
-                alignment: Alignment.center,
-                width: double.infinity,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    cancelText,
-                    style: context.textStyle.callout.copyWith(
-                      color: context.color.textAndIconsBasePrimary,
+              const SizedBox(
+                height: 8,
+              ),
+              InkWell(
+                child: Container(
+                  decoration: BoxDecoration(color: const Color(0xffFFFFFF), borderRadius: BorderRadius.circular(14)),
+                  alignment: Alignment.center,
+                  width: double.infinity,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Text(
+                      cancelText,
+                      style: context.textStyle.callout.copyWith(
+                        color: context.color.textAndIconsBasePrimary,
+                      ),
                     ),
                   ),
                 ),
+                onTap: () => onCancel?.call(),
               ),
-              onTap: () => onCancel?.call(),
-            ),
-          ],
-        ),
-      ));
+            ],
+          ),
+        )),
+  );
 }
