@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:mapness/entities/search/models/rubric_marker_info.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
-import 'package:mapness/shared/lib/search/rubric_marker_info.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'rubric_marker_type_mapper.g.dart';
 
