@@ -57,7 +57,7 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                   color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.router.back(),
+                  onPressed: () => context.router.popForced(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
