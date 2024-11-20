@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -41,7 +41,7 @@ class PoiLoadingSheet extends ConsumerWidget {
                   onClose: () {
                     ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                     ref.read(highlightProvider.notifier).removeHighlight(objectId);
-                    context.pop();
+                    context.router.back();
                   },
                 ),
               ),
