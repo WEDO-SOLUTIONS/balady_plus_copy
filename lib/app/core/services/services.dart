@@ -212,7 +212,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 205,
-      "icon": "general_inquiries",
+      "icon": "cities_services",
       "3d_icon": null,
       "order": 4,
       "isNew": false,
@@ -350,7 +350,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 11124,
-      "icon": "license_query",
+      "icon": "construction_license_query",
       "3d_icon": null,
       "order": 6,
       "isNew": false,
@@ -392,7 +392,7 @@ Map<String, dynamic> servicesConfig = {
     },
     {
       "id": 11134,
-      "icon": "license_query",
+      "icon": "commercial_license_query",
       "3d_icon": null,
       "order": 6,
       "isNew": false,
