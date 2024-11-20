@@ -94,9 +94,9 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
 
         final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
         final delta = state == ThreeStateBottomSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
+        final isFreeRoamStart = freeRoamState.canStart && !freeRoamState.isAutorun;
         return AnimatedCrossFade(
-          crossFadeState:
-              freeRoamState.canStart && !freeRoamState.isAutorun ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+          crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
           firstChild: Padding(
             padding: const EdgeInsets.all(Spacing.$4x),
             child: Row(
