@@ -6,6 +6,7 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/favourites.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -95,6 +96,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             group: MetricsConstants.exploreTag,
           );
 
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+
           const FavouritesRoute().push(context);
         },
       ),
@@ -105,6 +108,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             'filter': quickFilter.name,
           },
         );
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+
         ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
