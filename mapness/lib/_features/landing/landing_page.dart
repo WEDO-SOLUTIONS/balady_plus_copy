@@ -209,9 +209,13 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _objectTapListener(TapEvent event) {
+    const routingRoutePath = RoutingRoutesRoute.name;
+
     if (context.router.isRouteActive(RoutingMapSelectRoute.name)) {
       return;
     } else if (context.router.isRouteActive(SearchRoute.name)) {
+      return;
+    } else if (context.router.isRouteActive(PathNavRoute.name)) {
       return;
     } else if (context.router.isRouteActive(RoutingRoutesRoute.name)) {
       return;
@@ -228,6 +232,10 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           });
 
       if (context.mounted) {
+        if (context.router.currentPath == routingRoutePath) {
+          context.router.back();
+        }
+
         context.router.push(
           PoiCardWidgetRoute(
             objectId: DgisObjectIdMessage(

@@ -76,6 +76,7 @@ class Routes {
           path: '/voice_settings',
           page: VoiceSettingsRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder
         ),
         CustomRoute(
           path: '/feedback',
@@ -86,7 +87,6 @@ class Routes {
           path: '/language_pick_sheet',
           page: LanguagePickSheetRoute.page,
           fullscreenDialog: true,
-          opaque: false,
         ),
       ];
 

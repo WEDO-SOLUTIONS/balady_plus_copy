@@ -30,8 +30,8 @@ class RoutingSearchHistory extends ConsumerWidget {
       children: [
         RoutingFavourites(
           showBookmark: false,
-          onFavouriteTap: (point) async {
-            await context.router.maybePop(RoutePointFavouriteItem(point));
+          onFavouriteTap: (point) {
+            context.router.popForced(RoutePointFavouriteItem(point));
           },
         ),
         Spacing.$4x.heightBox,
@@ -91,7 +91,7 @@ class RoutingSearchHistory extends ConsumerWidget {
     final result = await context.router.push(const RoutingMapSelectRoute());
 
     if (result != null) {
-      await context.router.maybePop(result);
+      context.router.popForced(result);
     }
   }
 
@@ -103,7 +103,7 @@ class RoutingSearchHistory extends ConsumerWidget {
           final result = await context.router.push(const FavouritesPickerRoute());
 
           if (result != null) {
-            await context.router.maybePop(
+            context.router.popForced(
               RoutePointFavouriteItem(result as FavouriteItem?),
             );
           }
