@@ -512,7 +512,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-
   final instance = FirebaseRemoteConfig.instance;
   await instance.ensureInitialized();
   await instance.fetchAndActivate();
@@ -545,8 +544,6 @@ Future<void> setupMapness(EnvType envType) async {
   final envConfigResponse = instance.getValue(MapnessConstants.firebaseAppEnvConfigKey);
   final envJsonString = jsonEncode(jsonDecode(envConfigResponse.asString()));
   await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
-
-
 }
 
 class MapnessLogger {

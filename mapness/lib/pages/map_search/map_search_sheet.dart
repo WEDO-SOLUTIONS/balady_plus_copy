@@ -26,6 +26,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -188,15 +189,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
-      final markerIconPath = searchState.markerType?.iconPath;
-      final icon = markerIconPath != null
-          ? markerIconPath.markerIcon(size: 32)
-          : LayersSvgPaths.basicMarker.markerIcon(size: 16);
+      final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final markers = await searchState.results.getMarkers(
         router: ref.read(goRouterProvider),
-        icon: icon,
+        // icon: icon,
+        iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
       );
 
@@ -210,7 +209,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
-
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await mapObjectManager.removeAllMarkers();
     }

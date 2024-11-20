@@ -59,14 +59,24 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
 
   Future<List<Marker>> getMarkers({
     required GoRouter router,
-    MarkerIconMessage? icon,
+    required MapMarkersType? Function(Set<int>) iconResolver,
+    // MarkerIconMessage? icon,
     bool withLabel = true,
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
+    // final type = mapMarkerMapper.getMarkerType(rubricIds)
+    // final markerIconPath = searchState.markerType?.iconPath;
+    // final icon = markerIconPath != null
+    //     ? markerIconPath.markerIcon(size: 32)
+    //     : LayersSvgPaths.basicMarker.markerIcon(size: 16);
+
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       if (markerInfo != null) {
         final objectId = markerInfo.objectId?.objectId;
+        final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
+        final rubrics = Set<int>.from(cleanupRubrics);
+        final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
         markers.add(
           Marker(
             id: objectId?.toString() ?? _invalidMarkerId,
@@ -89,7 +99,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 ),
               ),
               position: markerInfo.geoPoint,
-              icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(),
+              icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(size: 16),
             ),
           ),
         );
