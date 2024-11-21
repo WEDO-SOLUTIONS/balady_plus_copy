@@ -6,6 +6,11 @@ import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'rubric_marker_type_mapper.g.dart';
 
+/// Provider that maps rubric marker types from remote configuration.
+///
+/// This provider fetches the marker types from Firebase Remote Config and
+/// decodes them into a list of [RubricMarkerInfo] objects
+
 @Riverpod(keepAlive: true)
 class RubricMarkerMapper extends _$RubricMarkerMapper {
   @override
@@ -18,6 +23,9 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
     return decoded.map((e) => RubricMarkerInfo.fromJson(e)).toList();
   }
 
+  /// Returns the most relevant marker type based on the provided set of rubric IDs.
+  ///
+  /// Works based on intersection of rubric IDs from config with the rubric form marker info.
   MapMarkersType? getMarkerType(Set<int> rubricIds) {
     if (stateOrNull == null || rubricIds.isEmpty) {
       return null;

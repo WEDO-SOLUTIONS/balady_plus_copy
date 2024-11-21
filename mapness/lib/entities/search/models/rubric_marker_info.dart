@@ -11,7 +11,10 @@ part 'rubric_marker_info.g.dart';
 /// - [rubricIds]: A set of rubric IDs associated with the marker.
 @JsonSerializable()
 class RubricMarkerInfo {
+  /// The type of the marker.
   final MapMarkersType type;
+
+  /// A set of rubric IDs associated with the marker.
   final Set<int> rubricIds;
 
   const RubricMarkerInfo({
