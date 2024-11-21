@@ -4,13 +4,6 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 
 class ErrorSheet extends StatelessWidget {
-  const ErrorSheet({
-    required this.onRetry,
-    this.buttonLabel,
-    this.errorLabel,
-    super.key,
-  });
-
   /// action how to recover state
   final VoidCallback onRetry;
 
@@ -20,29 +13,44 @@ class ErrorSheet extends StatelessWidget {
   /// error label (localized default: somethingWentWrong)
   final String? errorLabel;
 
+  final VoidCallback? onClose;
+
+  const ErrorSheet({
+    required this.onRetry,
+    this.buttonLabel,
+    this.errorLabel,
+    this.onClose,
+    super.key,
+  });
+
   @override
-  Widget build(BuildContext context) => Material(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 6),
-                child: SheetDragger(),
+  Widget build(BuildContext context) => GestureDetector(
+        onVerticalDragEnd: (_) {
+          onClose?.call();
+        },
+        child: Material(
+          color: Colors.white,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(16),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 6),
+                  child: SheetDragger(),
+                ),
               ),
-            ),
-            const SizedBox(height: Spacing.$1x),
-            BaseErrorWidget(
-              onRetry: onRetry,
-              buttonLabel: buttonLabel,
-              errorLabel: errorLabel,
-            ),
-          ],
+              const SizedBox(height: Spacing.$1x),
+              BaseErrorWidget(
+                onRetry: onRetry,
+                buttonLabel: buttonLabel,
+                errorLabel: errorLabel,
+              ),
+            ],
+          ),
         ),
       );
 }
