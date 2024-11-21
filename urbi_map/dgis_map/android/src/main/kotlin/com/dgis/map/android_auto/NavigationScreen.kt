@@ -167,6 +167,7 @@ class NavigationScreen(
     }
 
     override fun onNavigationStateChanged(state: NavigationState) {
+        val prevState = navigationState
         navigationState = state
         when (state) {
             NavigationState.NAVIGATION -> {
@@ -181,7 +182,7 @@ class NavigationScreen(
 
             NavigationState.DISABLED -> {
                 customRenderer.clear()
-                if (!isEndTripShown) {
+                if (prevState != NavigationState.DISABLED && !isEndTripShown) {
                     stopNavigation()
                 }
             }
