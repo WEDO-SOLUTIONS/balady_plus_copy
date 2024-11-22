@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_expression_function_bodies
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -10,26 +8,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/indoor_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
-import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
-import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
-import 'package:mapness/pages/path_nav/lib/utils.dart';
-import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
-import 'package:mapness/pages/path_nav/ui/eta_finished.dart';
-import 'package:mapness/pages/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -39,7 +27,13 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
+import 'package:mapness/shared/ui/notifier_size/size_reporter.dart';
+import 'package:mapness/shared/ui/notifier_size/size_widget_notifier.dart';
+import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
+import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
+import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/widgets/path_nav/ui/parking_banner.dart';
+import 'package:mapness/widgets/path_nav/ui/path_nav_map_controls.dart';
 import 'package:urbi_analytics/logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -60,13 +54,13 @@ class PathNavPage extends ConsumerStatefulWidget {
 }
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
-  static const padding = EdgeInsets.symmetric(horizontal: 12);
-
   late StreamSubscription? _naviEventsListener;
   final _navigationState = ValueNotifier(PathNavState.running);
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   double heightOfEta = 90.0;
   final _expansionNotifier = ValueNotifier<bool>(false);
+
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(uikit.Spacing.$3x);
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -106,6 +100,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     _naviEventsListener?.cancel();
+    _bottomHeightNotifier.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -191,104 +186,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       textDirection: TextDirection.ltr,
       child: Stack(
         children: [
-          SafeArea(
-            bottom: false,
-            child: Stack(
-              children: [
-                ValueListenableBuilder(
-                  valueListenable: _navigationState,
-                  builder: (context, state, child) {
-                    if (state == PathNavState.finished) {
-                      return GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onTap: () {
-                          final value = _expansionNotifier.value;
-                          if (value) {
-                            _expansionNotifier.value = !value;
-                          }
-                        },
-                        child: const SizedBox.expand(),
-                      );
-                    }
-                    return const SizedBox();
-                  },
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    const SizedBox(height: 6, width: double.maxFinite),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                      child: Directionality(
-                        // Here we set the text direction according to the current locale to display the correct direction of the widget.
-                        textDirection: Directionality.of(context),
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            final message = ref.watch(pathNavMessageProvider);
-                            final maneuver = ref.watch(pathNavManeuverProvider);
-                            final isPedestrian = widget.navType == RouteSearchOptionsMessage.pedestrian;
-                            final info = ref.watch(pathNavSpeedInfoProvider);
-
-                            // This made to remove yellow lines under the text
-                            return Material(
-                              type: MaterialType.transparency,
-                              color: Colors.transparent,
-                              child: uikit.BaladyManeuverAndLimit(
-                                isPedestrian: isPedestrian,
-                                speedInfo: uikit.LimitsModel(
-                                  speed: info.speed,
-                                  speedExceed: info.speedExceed,
-                                  speedLimit: info.speedLimit,
-                                ),
-                                maneuver: maneuver != null
-                                    ? uikit.BaladyManeuverModel(
-                                        distance: maneuver.distance,
-                                        instruction: maneuver.instruction?.toUIKit(),
-                                        roadName: maneuver.roadName,
-                                        unit: maneuver.unit,
-                                      )
-                                    : null,
-                                message: message != null
-                                    ? uikit.ManeuverMessageModel(
-                                        comment: message.state.toMessage(context.l10n),
-                                        state: message.state.toUIKit(),
-                                      )
-                                    : null,
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: padding,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          if (widget.navType == RouteSearchOptionsMessage.pedestrian)
-                            const IndoorControl()
-                          else
-                            const SizedBox.shrink(),
-                          const ZoomControl(),
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    const Padding(
-                      padding: padding,
-                      child: CompassControl(),
-                    ),
-                    const SizedBox(height: 8),
-                    const Padding(
-                      padding: padding,
-                      child: PathNavFollowControl(),
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-              ],
-            ),
+          PathNavMapControls(
+            bottomHeightNotifier: _bottomHeightNotifier,
+            navigationState: _navigationState,
+            expansionNotifier: _expansionNotifier,
+            navType: widget.navType,
           ),
           if (isEtaExpanded)
             GestureDetector(
@@ -306,39 +208,56 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             bottom: 0,
             right: 0,
             left: 0,
-            child: Directionality(
-              // Here we set the text direction according to the current locale to display the correct direction of the widget.
-              textDirection: Directionality.of(context),
-              child: ValueListenableBuilder(
-                valueListenable: _navigationState,
-                builder: (context, state, child) {
-                  switch (state) {
-                    case PathNavState.running:
-                      return Align(
-                        alignment: Alignment.bottomCenter,
-                        child: EtaSheet(
-                          onEndTripPressed: _endTripAndShowHome,
-                          onRoutePressed: _onShowRoutePressed,
-                          onBetterRouteAccept: () => _acceptBetterRoute(context),
-                          onBetterRouteReject: () => _rejectBetterRoute(context),
-                          betterRouteDurationProfit: _betterRouteDurationProfit,
-                          onSizeChanged: _onSizeChanged,
-                        ),
-                      );
-                    case PathNavState.paused:
-                      return EtaContinue(
-                        onTap: _onContinuePressed,
-                        onSizeChanged: _onSizeChanged,
-                      );
-                    case PathNavState.finished:
-                      return EtaFinished(
-                        expansionNotifier: _expansionNotifier,
-                        onEndTripPressed: _endTripAndShowHome,
-                        onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
-                        onSizeChanged: _onSizeChanged,
-                      );
-                  }
-                },
+            child: NotificationListener<SizeWidgetNotification>(
+              onNotification: (notifierSize) {
+                WidgetsBinding.instance.addPostFrameCallback((_) {
+                  if (!isEtaExpanded) {
+                    _bottomHeightNotifier.value = notifierSize.size.height + uikit.Spacing.$3x;
+               }
+                });
+
+                return true;
+              },
+              child: SizeReporter(
+                child: Column(
+                  children: [
+                    const ParkingBanner(),
+                    Directionality(
+                      textDirection: Directionality.of(context),
+                      child: ValueListenableBuilder(
+                        valueListenable: _navigationState,
+                        builder: (context, state, child) {
+                          switch (state) {
+                            case PathNavState.running:
+                              return Align(
+                                alignment: Alignment.bottomCenter,
+                                child: EtaSheet(
+                                  onEndTripPressed: _endTripAndShowHome,
+                                  onRoutePressed: _onShowRoutePressed,
+                                  onBetterRouteAccept: () => _acceptBetterRoute(context),
+                                  onBetterRouteReject: () => _rejectBetterRoute(context),
+                                  betterRouteDurationProfit: _betterRouteDurationProfit,
+                                  onSizeChanged: _onSizeChanged,
+                                ),
+                              );
+                            case PathNavState.paused:
+                              return EtaContinue(
+                                onTap: _onContinuePressed,
+                                onSizeChanged: _onSizeChanged,
+                              );
+                            case PathNavState.finished:
+                              return EtaFinished(
+                                expansionNotifier: _expansionNotifier,
+                                onEndTripPressed: _endTripAndShowHome,
+                                onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                                onSizeChanged: _onSizeChanged,
+                              );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
