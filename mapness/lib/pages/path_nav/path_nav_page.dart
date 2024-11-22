@@ -16,6 +16,7 @@ import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -357,6 +358,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     if (_navigationState.value != PathNavState.finished) {
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingHalfway);
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
@@ -425,6 +427,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     switch (event) {
       case NavigationEvent.finished:
         ref.read(urbiAnalyticsProvider).track('tripCompleted');
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingCompleted);
         _navigationState.value = PathNavState.finished;
         unawaited(
           clearNavigationState(),
