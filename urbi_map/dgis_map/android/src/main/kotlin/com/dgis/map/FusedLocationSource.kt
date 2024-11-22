@@ -82,23 +82,20 @@ class FusedLocationSource(private val context: Context) : LocationSource {
                 val callback = (object : LocationCallback() {
                     override fun onLocationResult(result: LocationResult) {
                         val userLocation = result.lastLocation
-                        val isLocationInsideKSA = userLocation != null && saRect.contains(
-                            GeoPoint(
-                                userLocation.latitude,
-                                userLocation.longitude
-                            )
+                        fun isLocationInsideKSA(location: Location): Boolean = saRect.contains(
+                            GeoPoint(location.latitude, location.longitude)
                         )
                         // Use mocked location if user location is outside KSA
-                        if (isLocationInsideKSA) {
+                        if (userLocation == null || isLocationInsideKSA(userLocation)) {
                             listener.onLocationChanged(result.locations.toTypedArray())
                             lastLocation = result.lastLocation
                         } else {
-                            val location = Location(null).apply {
+                            userLocation.apply {
                                 latitude = 24.712899222459676
                                 longitude = 46.631036554650116
                             }
-                            listener.onLocationChanged(arrayOf(location))
-                            lastLocation = location
+                            listener.onLocationChanged(arrayOf(userLocation))
+                            lastLocation = userLocation
                         }
                     }
                 }).also {
