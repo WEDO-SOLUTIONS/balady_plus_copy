@@ -44,6 +44,7 @@ fun ItemMarkerInfo.toMessage(): ItemMarkerInfoMessage {
             .setFloorInfo(this.floorInfo?.toMessage())
             .setGeoPoint(this.geoPoint.toMessage())
             .setTitle(this.title)
+            .setRubricIds(this.rubricIds.map { it.value })
             .build()
 }
 
