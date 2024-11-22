@@ -15,8 +15,8 @@ import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
-import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/path_nav_ext.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class FreeRoamPage extends ConsumerStatefulWidget {

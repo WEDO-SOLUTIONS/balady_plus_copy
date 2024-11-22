@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
-import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 
 import 'layout_size_wrapper.dart';
 

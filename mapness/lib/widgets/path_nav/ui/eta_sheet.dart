@@ -16,14 +16,14 @@ import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
-import 'package:mapness/pages/path_nav/lib/utils.dart';
-import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/widgets/path_nav/lib/utils.dart';
+import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 
 import 'layout_size_wrapper.dart';
 
