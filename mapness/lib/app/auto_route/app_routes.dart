@@ -85,7 +85,7 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
-              path: 'eta_roue',
+              path: 'eta_route/:lat/:lon',
               page: EtaRouteRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),

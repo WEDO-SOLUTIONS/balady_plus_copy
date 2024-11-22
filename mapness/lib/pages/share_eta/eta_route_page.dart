@@ -19,8 +19,6 @@ import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
 class EtaRoutePage extends ConsumerStatefulWidget {
-  static const tokenKey = 'token';
-  static const streamKey = 'stream';
   static const latKey = 'lat';
   static const lonKey = 'lon';
 
@@ -28,8 +26,8 @@ class EtaRoutePage extends ConsumerStatefulWidget {
   final double? longitude;
   const EtaRoutePage({
     super.key,
-    this.latitude,
-    this.longitude,
+    @PathParam(latKey) this.latitude,
+    @PathParam(lonKey) this.longitude,
   });
 
   @override

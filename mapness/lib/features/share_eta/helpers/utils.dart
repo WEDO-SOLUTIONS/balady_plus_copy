@@ -14,7 +14,6 @@ import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
-import 'package:mapness/pages/share_eta/eta_route_page.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -102,12 +101,6 @@ class EtaUtils {
 
     if (type == 'eta') {
       try {
-        final uriPath = Uri(path: EtaRouteRoute.name, queryParameters: {
-          EtaRoutePage.tokenKey: tokenId,
-          EtaRoutePage.streamKey: streamId,
-          if (latitude != null) EtaRoutePage.latKey: latitude.toString(),
-          if (longitude != null) EtaRoutePage.lonKey: longitude.toString(),
-        });
         if (latitude != null && longitude != null) {
           await ref.read(cameraPositionProvider.notifier).animateTo(
                 CameraPositionMessage(
@@ -127,7 +120,7 @@ class EtaUtils {
         }
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-        unawaited(ref.read(appRouterProvider).pushNamed(uriPath.toString()));
+        unawaited(ref.read(appRouterProvider).push(EtaRouteRoute(latitude: latitude, longitude: longitude)));
       } catch (e) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showEtaExpired(rootNavigatorKey.currentContext!);
