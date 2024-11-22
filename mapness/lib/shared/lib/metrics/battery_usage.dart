@@ -54,27 +54,36 @@ class BatteryUsage {
   String toJsonString() => jsonEncode(toJson());
 
   /// Create a BatteryUsage object from a JSON object
-  factory BatteryUsage.fromJson(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
+  static BatteryUsage? fromJson(String jsonString) {
+    try {
+      final json = jsonDecode(jsonString) as Map<String, dynamic>;
 
-    final batteryUsage = json[AdvancedMetricsConstants.keys.batteryUsage] as double;
-    final sessionDuration = json[AdvancedMetricsConstants.keys.sessionDuration] as double;
-    final location = (json[AdvancedMetricsConstants.keys.location] as List<dynamic>).map((e) => e as double).toList();
-    final activeProcesses =
-        (json[AdvancedMetricsConstants.keys.activeProcesses] as List<dynamic>).map((e) => e as String).toList();
-    final deviceState =
-        BatteryState.values.firstWhereOrNull((e) => json[AdvancedMetricsConstants.keys.deviceState] == e.name) ??
-            BatteryState.unknown;
-    final isInBatterySaveMode = json[AdvancedMetricsConstants.keys.isInBatterySaveMode] as bool;
+      final batteryUsage = json[AdvancedMetricsConstants.keys.batteryUsage] as double;
+      final deviceState =
+          BatteryState.values.firstWhereOrNull((e) => json[AdvancedMetricsConstants.keys.deviceState] == e.name) ??
+              BatteryState.unknown;
+      final isInBatterySaveMode = json[AdvancedMetricsConstants.keys.isInBatterySaveMode] as bool;
+      final sessionDuration = json[AdvancedMetricsConstants.keys.sessionDuration] as double;
 
-    return BatteryUsage(
-      batteryUsage: batteryUsage,
-      sessionDuration: sessionDuration,
-      location: location,
-      activeProcesses: activeProcesses,
-      deviceState: deviceState,
-      isInBatterySaveMode: isInBatterySaveMode,
-    );
+      final location = json.containsKey(AdvancedMetricsConstants.keys.location)
+          ? (json[AdvancedMetricsConstants.keys.location] as List<dynamic>).map((e) => e as double).toList()
+          : null;
+      final activeProcesses = json.containsKey(AdvancedMetricsConstants.keys.activeProcesses)
+          ? (json[AdvancedMetricsConstants.keys.activeProcesses] as List<dynamic>).map((e) => e as String).toList()
+          : <String>[];
+
+      return BatteryUsage(
+        batteryUsage: batteryUsage,
+        sessionDuration: sessionDuration,
+        location: location,
+        activeProcesses: activeProcesses,
+        deviceState: deviceState,
+        isInBatterySaveMode: isInBatterySaveMode,
+      );
+    } catch (e) {
+      print('BatteryUsage fromJson ${e.toString()}');
+      return null;
+    }
   }
 
   @override

@@ -33,11 +33,11 @@ class AdvancedMetrics {
 
   // Startup time measurement
   Stopwatch? _startupMeasure;
-  LoadType? loadType;
+  LoadType? _loadType;
   LoadTimeMetrics? _loadTimeMetrics;
 
   void startMeasureStartup([LoadType? type]) {
-    loadType ??= type;
+    _loadType ??= type;
     _startupMeasure ??= Stopwatch()..start();
   }
 
@@ -49,7 +49,7 @@ class AdvancedMetrics {
       try {
         _loadTimeMetrics = LoadTimeMetrics(
           loadTime: duration,
-          loadType: loadType ?? LoadType.unknown,
+          loadType: _loadType ?? LoadType.unknown,
           location: await _getLocation(),
         );
         await track(
@@ -66,7 +66,7 @@ class AdvancedMetrics {
   // Battery usage measurement
   Stopwatch? _appRuntime;
   Timer? _batteryTimer;
-  final _batteryDuration = const Duration(seconds: 15);
+  static const _batteryDuration = Duration(seconds: 10);
   int? _batteryInitial;
 
   Future<void> sendPreviousSessionBatteryUsage({required TrackEvent track}) async {
@@ -74,15 +74,17 @@ class AdvancedMetrics {
     final jsonString = sharedPrefs.getString(AdvancedMetricsConstants.batteryUsage);
     if (jsonString != null) {
       final metrics = BatteryUsage.fromJson(jsonString);
-      try {
-        await track(
-          AdvancedMetricsConstants.batteryUsage,
-          properties: metrics.toJson(),
-        );
-        await sharedPrefs.remove(AdvancedMetricsConstants.batteryUsage);
-        print(metrics.toString());
-      } catch (e) {
-        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+      if (metrics != null) {
+        try {
+          await track(
+            AdvancedMetricsConstants.batteryUsage,
+            properties: metrics.toJson(),
+          );
+          await sharedPrefs.remove(AdvancedMetricsConstants.batteryUsage);
+          print(metrics.toString());
+        } catch (e) {
+          print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
+        }
       }
     }
   }
@@ -120,11 +122,21 @@ class AdvancedMetrics {
     if (_appRuntime != null && _batteryInitial != null) {
       final duration = _appRuntime!.elapsedMilliseconds;
       int level = -1;
+      BatteryState state = BatteryState.unknown;
+      bool isInBatterySaveMode = false;
       try {
         level = await Battery().batteryLevel;
+        state = await Battery().batteryState;
+        isInBatterySaveMode = await Battery().isInBatterySaveMode;
       } catch (e) {
         print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.batteryUsage}::${e.toString()}');
         return;
+      }
+      List<double>? location;
+      try {
+        location = await _getLocation();
+      } catch (e) {
+        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.keys.location}::${e.toString()}');
       }
 
       final levelDiff = _batteryInitial! - level;
@@ -133,10 +145,10 @@ class AdvancedMetrics {
       final batteryUsageMetrics = BatteryUsage(
         batteryUsage: batteryUsage,
         sessionDuration: duration.toDouble(),
-        location: await _getLocation(),
+        location: location,
         activeProcesses: [],
-        deviceState: await Battery().batteryState,
-        isInBatterySaveMode: await Battery().isInBatterySaveMode,
+        deviceState: state,
+        isInBatterySaveMode: isInBatterySaveMode,
       );
       await _saveBatteryUsage(batteryUsageMetrics);
     }
@@ -179,26 +191,36 @@ class AdvancedMetrics {
 
   Future<void> sendLostGPS({required TrackEvent track}) async {
     if (_lostGpsLast != null) {
-      await track(
-        AdvancedMetricsConstants.lostGps,
-        properties: _lostGpsLast!.toJson(),
-      );
-      print(_lostGpsLast.toString());
-      _lostGpsLast = null;
-      await _lostGPSClean();
-      return;
+      try {
+        await track(
+          AdvancedMetricsConstants.lostGps,
+          properties: _lostGpsLast!.toJson(),
+        );
+        print(_lostGpsLast.toString());
+        _lostGpsLast = null;
+        await _lostGPSClean();
+        return;
+      } catch (e) {
+        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}');
+      }
     }
 
     final sharedPrefs = await SharedPreferences.getInstance();
     final jsonString = sharedPrefs.getString(_lostGpsKey);
     if (jsonString != null) {
       final metrics = LostGpsMetrics.fromJson(jsonString);
-      await track(
-        AdvancedMetricsConstants.lostGps,
-        properties: metrics.toJson(),
-      );
-      print(metrics.toString());
-      await _lostGPSClean();
+      if (metrics != null) {
+        try {
+          await track(
+            AdvancedMetricsConstants.lostGps,
+            properties: metrics.toJson(),
+          );
+          print(metrics.toString());
+          await _lostGPSClean();
+        } catch (e) {
+          print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.lostGps}::${e.toString()}');
+        }
+      }
     }
   }
 
@@ -229,11 +251,16 @@ class AdvancedMetrics {
         duration: duration,
         route: route,
       );
-      await track(
-        AdvancedMetricsConstants.routeCalculationTime,
-        properties: routeCalculation.toJson(),
-      );
-      print(routeCalculation.toString());
+      try {
+        await track(
+          AdvancedMetricsConstants.routeCalculationTime,
+          properties: routeCalculation.toJson(),
+        );
+        print(routeCalculation.toString());
+      } catch (e) {
+        print(
+            '${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.routeCalculationTime}::${e.toString()}');
+      }
     }
   }
 
@@ -259,20 +286,25 @@ class AdvancedMetrics {
         query: _searchQuery!,
         searchQuery: _searchQueryType!,
       );
-      await track(
-        AdvancedMetricsConstants.searchDuration,
-        properties: searchResponse.toJson(),
-      );
-      print(searchResponse.toString());
+      try {
+        await track(
+          AdvancedMetricsConstants.searchDuration,
+          properties: searchResponse.toJson(),
+        );
+        print(searchResponse.toString());
+      } catch (e) {
+        print('${AdvancedMetricsConstants.debugConsole}::${AdvancedMetricsConstants.searchDuration}::${e.toString()}');
+      }
     }
   }
 
   // General
+  static const _timeout = Duration(seconds: 2);
   Future<List<double>?> _getLocation() async {
     try {
       final location = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
-        timeLimit: const Duration(seconds: 2),
+        timeLimit: _timeout,
       );
       return [location.latitude, location.longitude];
     } catch (e) {
