@@ -41,7 +41,7 @@ class PoiLoadingSheet extends ConsumerWidget {
                   onClose: () {
                     ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                     ref.read(highlightProvider.notifier).removeHighlight(objectId);
-                    context.router.back();
+                    context.router.popForced();
                   },
                 ),
               ),

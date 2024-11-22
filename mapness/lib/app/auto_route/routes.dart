@@ -85,7 +85,6 @@ class Routes {
         CustomRoute(
           path: '/language_pick_sheet',
           page: LanguagePickSheetRoute.page,
-          fullscreenDialog: true,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
       ];

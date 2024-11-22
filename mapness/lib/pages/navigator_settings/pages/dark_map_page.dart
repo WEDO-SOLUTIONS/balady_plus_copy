@@ -43,7 +43,7 @@ class _DarkMapPage extends ConsumerState<DarkMapPage> {
                   color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.router.maybePop(),
+                  onPressed: () => context.router.popForced(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),

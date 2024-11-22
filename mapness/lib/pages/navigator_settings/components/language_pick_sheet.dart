@@ -19,6 +19,7 @@ class LanguagePickSheetPage extends StatelessWidget {
 
     return DraggableScrollableSheet(
       expand: false,
+      initialChildSize: 0.35,
       builder: (context, controller) => Scaffold(
         body: DecoratedBox(
           decoration: BoxDecoration(
@@ -49,7 +50,7 @@ class LanguagePickSheetPage extends StatelessWidget {
                     ),
                     AppButton.close(
                       padding: EdgeInsets.zero,
-                      onTap: () => context.router.maybePop(),
+                      onTap: () => context.router.popForced(),
                       color: colorsV2.neutralDefault.withOpacity(0.12),
                       iconColor: colorsV2.foregroundSoft,
                       innerPadding: const EdgeInsets.all(Spacing.$2x),

@@ -212,7 +212,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
               assetImage: 'assets/images_svg/happy_face.svg',
               package: PackageConfig.packageName,
-              onRetry: () => context.router.maybePop(),
+              onRetry: () => context.router.popForced(),
             )
           ],
         );
@@ -369,7 +369,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
                   ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                   ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
-                  context.router.back();
+                  context.router.popForced();
                 },
               ),
               content: [
