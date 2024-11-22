@@ -218,7 +218,7 @@ class ShareEta extends _$ShareEta {
         ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
       })
       ..onDispose(() {
-        _stopSharingCurrent();
+        stopSharingCurrent();
 
         _websocketStatusSubscription?.close();
         _locationSubscription?.cancel();
@@ -315,7 +315,7 @@ class ShareEta extends _$ShareEta {
     }
   }
 
-  Future<void> _stopSharingCurrent() async {
+  Future<void> stopSharingCurrent() async {
     final tokenId = EtaStreamStorage().state.streamToken;
     final xStreamData = EtaStreamStorage().state.xStreamData;
 
