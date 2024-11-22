@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -47,7 +48,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
-// import 'package:sliver_tools/sliver_tools.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 GlobalKey key = GlobalKey<_ContentState>();
 
@@ -133,7 +134,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     _tabController.addListener(
       () {
         if (_tabController.indexIsChanging) {
-          _bottomSheetController.position.restoreOffset(0);
+          _bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeInExpo);
           switch (_tabController.index) {
             case 0:
               _tabType.value = PoiTabsType.info;
@@ -246,6 +247,7 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
           child: SafeArea(
             child: StatefulBottomSheet(
               scrollController: _bottomSheetController,
+              backgroundColor: context.colorsV2.backgroundSurface4,
               backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
               topHeader: PoiPhotosHeader(objectId: objectId),
               footer: PoiCardFooter(
@@ -325,27 +327,28 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
               ),
               sliverBeforeContent: ValueListenableBuilder(
                 valueListenable: _tabType,
-
-                /// TODO (Daniel): Create new SliverAnimatedSwitcher which works with large paint extents
-                builder: (context, tabType, _) => switch (tabType) {
-                  PoiTabsType.info => SliverToBoxAdapter(
-                      child: InfoWidget(
-                        objectInfo: poiCardState?.gisObjectIdMessage,
-                        qrTradeLicense: poiCardState?.qrTradeLicense,
-                        onEntrancesTap: () => poiActions.toggleEntrances(
-                          data,
-                          () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                          widget.closestPoint,
+                builder: (context, tabType, _) => SliverAnimatedSwitcher(
+                  duration: Durations.medium2,
+                  child: switch (tabType) {
+                    PoiTabsType.info => SliverToBoxAdapter(
+                        child: InfoWidget(
+                          objectInfo: poiCardState?.gisObjectIdMessage,
+                          qrTradeLicense: poiCardState?.qrTradeLicense,
+                          onEntrancesTap: () => poiActions.toggleEntrances(
+                            data,
+                            () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                            widget.closestPoint,
+                          ),
                         ),
                       ),
-                    ),
-                  PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
-                  PoiTabsType.inBuilding => PoiInBuildingSliver(
-                      state: poiCardState,
-                      objectId: widget.objectId,
-                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
-                    ),
-                },
+                    PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
+                    PoiTabsType.inBuilding => PoiInBuildingSliver(
+                        state: poiCardState,
+                        objectId: widget.objectId,
+                        bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                      ),
+                  },
+                ),
               ),
             ),
           ),

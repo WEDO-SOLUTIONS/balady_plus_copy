@@ -66,46 +66,28 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
   }
 
   @override
-  Widget build(BuildContext context) => DecoratedSliver(
-        decoration: BoxDecoration(color: context.colorsV2.backgroundSurface4),
-        sliver: SliverPadding(
-          padding: const EdgeInsets.all(Spacing.$4x),
-          sliver: PagedSliverList<int, OrganizationItem>.separated(
-            shrinkWrapFirstPageIndicators: true,
-            pagingController: pagingController,
-            builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
-              itemBuilder: (context, item, index) => Material(
-                clipBehavior: Clip.antiAlias,
-                shape: smoothBorder(RadiusBorder.xl),
-                color: context.color.surfaceBasePrimary,
-                child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-                    child: ContentRow(
-                      onTap: () {
-                        final id = item.id;
-                        if (id == null) {
-                          return;
-                        }
-                        context.pop();
-                        PoiMapRoute.open(
-                          ref.read(goRouterProvider),
-                          int.parse(id),
-                          zoom: widget.cameraConfig?.zoom,
-                          bearing: widget.cameraConfig?.bearing,
-                          tilt: widget.cameraConfig?.tilt,
-                          latLng: widget.closestPoint,
-                        );
-                      },
-                      options: ContentRowOptions(
-                        title: item.title,
-                        subtitle: item.rubricsNames,
-                        subtitleExtra: item.addressComment,
-                      ),
-                    )),
-              ),
+  Widget build(BuildContext context) => SliverPadding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        sliver: PagedSliverList<int, OrganizationItem>.separated(
+          shrinkWrapFirstPageIndicators: true,
+          pagingController: pagingController,
+          builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+            itemBuilder: (context, item, index) => OrganizationWidget(
+              item: item,
+              onTap: (id) {
+                context.pop();
+                PoiMapRoute.open(
+                  ref.read(goRouterProvider),
+                  int.parse(id),
+                  zoom: widget.cameraConfig?.zoom,
+                  bearing: widget.cameraConfig?.bearing,
+                  tilt: widget.cameraConfig?.tilt,
+                  latLng: widget.closestPoint,
+                );
+              },
             ),
-            separatorBuilder: (context, index) => Spacing.$4x.heightBox,
           ),
+          separatorBuilder: (context, index) => Spacing.$4x.heightBox,
         ),
       );
 
@@ -135,4 +117,38 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
       }
     }
   }
+}
+
+class OrganizationWidget extends StatelessWidget {
+  final OrganizationItem item;
+  final void Function(String id)? onTap;
+
+  const OrganizationWidget({
+    required this.item,
+    this.onTap,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) => Material(
+        clipBehavior: Clip.antiAlias,
+        shape: smoothBorder(RadiusBorder.xl),
+        color: context.color.surfaceBasePrimary,
+        child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+            child: ContentRow(
+              onTap: () {
+                final id = item.id;
+                if (id == null) {
+                  return;
+                }
+                onTap?.call(id);
+              },
+              options: ContentRowOptions(
+                title: item.title,
+                subtitle: item.rubricsNames,
+                subtitleExtra: item.addressComment,
+              ),
+            )),
+      );
 }

@@ -1,5 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -17,8 +17,6 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
-
-import 'footer/footer_style.dart';
 
 class InfoWidget extends ConsumerWidget {
   final DirectoryObjectMessage? objectInfo;
@@ -115,14 +113,9 @@ class InfoWidget extends ConsumerWidget {
     );
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: footerHeight),
-        child: ColoredBox(
-            color: context.colorsV2.backgroundSurface4,
-            child: PoiContent(
-              padding: const EdgeInsets.all(Spacing.$4x),
-              data: poiContentData,
-            )),
+      child: PoiContent(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        data: poiContentData,
       ),
     );
   }
