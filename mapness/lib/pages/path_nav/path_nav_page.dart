@@ -101,6 +101,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     WidgetsBinding.instance.removeObserver(this);
     _naviEventsListener?.cancel();
     _bottomHeightNotifier.dispose();
+    _betterRouteDurationProfit.dispose();
+    _navigationState.dispose();
+    _expansionNotifier.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -213,7 +216,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 WidgetsBinding.instance.addPostFrameCallback((_) {
                   if (!isEtaExpanded) {
                     _bottomHeightNotifier.value = notifierSize.size.height + uikit.Spacing.$3x;
-               }
+                  }
                 });
 
                 return true;
@@ -221,7 +224,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               child: SizeReporter(
                 child: Column(
                   children: [
-                    const ParkingBanner(),
+                    ParkingBanner(navigationState: _navigationState),
                     Directionality(
                       textDirection: Directionality.of(context),
                       child: ValueListenableBuilder(

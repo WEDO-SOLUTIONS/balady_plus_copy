@@ -42,7 +42,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _TrafficControl(
+         if (isTrafficVisable) _TrafficControl(
             isEnabled: isTrafficEnabled,
             trafficState: trafficNotifier,
             isVisable: isTrafficVisable,
