@@ -114,7 +114,7 @@ class DeeplinkPage extends ConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.router.back();
+    context.router.popForced();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }

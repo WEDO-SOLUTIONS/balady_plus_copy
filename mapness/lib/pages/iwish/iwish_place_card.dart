@@ -112,7 +112,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
                                     IwishInfo(
                                       iwish: entity,
                                       distance: distance,
-                                      onClose: () => context.router.maybePop(),
+                                      onClose: () => context.router.popForced(),
                                     ),
                                     const SizedBox(height: 8),
                                     IwishStateLabel(state: entity.state),

@@ -38,7 +38,7 @@ class FeedbackFailureWidget extends StatelessWidget {
             title: screenTitle,
             leading: ActionModel(
               icon: SystemIcons.arrowCornerLeftLarge,
-              onPressed: context.router.back,
+              onPressed: context.router.popForced,
             ),
             colorEnabled: context.colorsV2.accentDefault,
             colorDisabled: context.colorsV2.foregroundDefault,

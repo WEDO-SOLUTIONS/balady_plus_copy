@@ -76,7 +76,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
                 },
                 onExpansionChanged: (expansion, {byUser = false}) {
                   if (expansion == Expansion.hidden && context.mounted) {
-                    context.maybePop();
+                    context.router.popForced();
                   }
                 },
                 middleHeight: constraints.maxHeight * 0.7,

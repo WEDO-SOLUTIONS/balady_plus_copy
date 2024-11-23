@@ -471,10 +471,10 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
         builder: (context, ref, _) => EtaWatchingSheet(
           onStopWatchingPressed: () {
             stopStreaming();
-            context.router.maybePop();
+            context.router.popForced();
             // Extra close call for close the bottom sheet
             if (_metaInfo?.payload?.type == StreamType.eta) {
-              context.router.maybePop();
+              context.router.popForced();
             }
           },
         ),

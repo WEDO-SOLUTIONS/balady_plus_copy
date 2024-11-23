@@ -289,7 +289,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         )
         .removeAllMarkers();
     ref.read(searchInRectProvider.notifier).update();
-    context.router.back();
+    context.router.popForced();
   }
 
   Future<void> _setupTapListener() async {

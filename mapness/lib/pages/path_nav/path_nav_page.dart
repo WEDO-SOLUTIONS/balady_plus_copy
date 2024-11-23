@@ -135,7 +135,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
     } catch (e) {
       await clearNavigationState();
-      context.router.back();
+      context.router.popForced();
     }
   }
 

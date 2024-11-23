@@ -70,7 +70,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        context.maybePop();
+        context.router.popForced();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
           actionText: context.l10n.tryAgain,
@@ -164,7 +164,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.router.back();
+    context.router.popForced();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }

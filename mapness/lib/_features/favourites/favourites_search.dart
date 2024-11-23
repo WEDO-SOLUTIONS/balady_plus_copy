@@ -64,7 +64,7 @@ class FavouritesSearch extends ConsumerWidget {
       },
       onClose: () {
         FocusScope.of(context).unfocus();
-        context.router.back();
+        context.router.popForced();
       },
       itemCount: searchResult.length,
       itemBuilder: (_, index) {
@@ -95,7 +95,7 @@ class FavouritesSearch extends ConsumerWidget {
       FavouriteItemMarkerType.work => repo.setWork(favItem),
     };
     if (context.mounted && context.router.canPop()) {
-      context.router.back();
+      context.router.popForced();
     }
   }
 }

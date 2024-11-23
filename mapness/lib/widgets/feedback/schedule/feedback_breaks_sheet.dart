@@ -160,7 +160,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetClose,
                   buttonColorScheme: ButtonColorScheme.tertiary,
-                  onTap: () => context.router.back(),
+                  onTap: () => context.router.popForced,
                 ),
               ),
               const SizedBox(width: 8),
@@ -229,7 +229,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       _isNoBreaksSelected ? null : selectedStartEnd,
     );
 
-    context.router.back();
+    context.router.popForced();
   }
 }
 

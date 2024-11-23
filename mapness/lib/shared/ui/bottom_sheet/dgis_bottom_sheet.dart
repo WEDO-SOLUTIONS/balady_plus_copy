@@ -902,7 +902,7 @@ class _DgisBottomSheetState extends State<DgisBottomSheet>
     final lowestAvailableExpansion = _lowestAvailableExpansion();
     if (_expansion == lowestAvailableExpansion) {
       if (result != null) {
-        await context.router.maybePop(result);
+        context.router.popForced(result);
       }
     } else {
       /// Пришлось сделать такую реализацию, на новом боттом щите Дани это уйдет.

@@ -122,10 +122,11 @@ class AppRouter extends RootStackRouter {
               page: AutostartSettingsSheetRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
-            AppRoute(
+            CustomRoute(
               path: 'layers_details',
               page: LayersDetailsWidgetRoute.page,
               fullscreenDialog: true,
+              opaque: false,
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(

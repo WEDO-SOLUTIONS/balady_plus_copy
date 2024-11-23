@@ -132,7 +132,7 @@ class AuthorizedWidget extends ConsumerWidget {
               titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
               customActionWidget: AppButton.close(
                 color: context.color.surfaceContrastLow,
-                onTap: context.router.back,
+                onTap: context.router.popForced,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
                 padding: EdgeInsets.zero,
               ),
@@ -146,9 +146,9 @@ class AuthorizedWidget extends ConsumerWidget {
                   if (isPermanentlyDenied) {
                     // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
                     // permissions"
-                    context.router.maybePop(true);
+                    context.router.popForced(true);
                   } else {
-                    context.router.maybePop();
+                    context.router.popForced();
                     _updateAvatar(ref);
                   }
                 },

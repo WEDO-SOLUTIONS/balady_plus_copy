@@ -63,7 +63,7 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
     }
 
     if (context.router.canPop()) {
-      context.router.maybePop();
+      context.router.popForced();
     }
 
     context.router.navigateNamed(location);

@@ -40,7 +40,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               streetName: selectedPoint?.streetName,
                               parcelNo: selectedPoint?.parcelCode,
                               stageNo: selectedPoint?.phase,
-                              onClose: () => context.router.maybePop(),
+                              onClose: () => context.router.popForced(),
                             ),
                           );
                         case final InvestmentSites? selectedPoint:
@@ -58,7 +58,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               opportunityNumber: selectedPoint?.opportunityNumber,
                               subMunicipality: selectedPoint?.subMunicipalityId,
                               mainActivity: selectedPoint?.mainActivityName,
-                              onClose: () => context.router.maybePop(),
+                              onClose: () => context.router.popForced(),
                             ),
                           );
                         case final BuildingComplianceCertificate? selectedPoint:
@@ -70,7 +70,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                               targetBuildingType: selectedPoint?.targetBuildingType,
                               streetName: selectedPoint?.streetName,
                               stageNo: selectedPoint?.stageno,
-                              onClose: () => context.router.maybePop(),
+                              onClose: () => context.router.popForced(),
                             ),
                           );
                         default:
@@ -78,7 +78,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
                       }
                     },
                     error: (error) {
-                      context.router.maybePop();
+                      context.router.popForced();
                       return buildShimmer();
                     },
                     loading: (_) => buildShimmer(),

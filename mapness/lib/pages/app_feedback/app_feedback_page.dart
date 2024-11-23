@@ -36,7 +36,7 @@ class AppFeedbackPage extends HookConsumerWidget {
                   child: Text(context.l10n.appFeedbackLeave),
                   onPressed: () {
                     Navigator.of(ctx).pop();
-                    context.router.back();
+                    context.router.popForced();
                   },
                 ),
               ],
@@ -109,7 +109,7 @@ class AppFeedbackPage extends HookConsumerWidget {
                                 if (isBackConfirmationValue && textController.text.isNotEmpty) {
                                   _showConfirmDialog(context);
                                 } else {
-                                  context.router.maybePop();
+                                  context.router.popForced();
                                 }
                               },
                             ),

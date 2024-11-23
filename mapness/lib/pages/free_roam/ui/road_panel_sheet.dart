@@ -221,7 +221,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
         .then((_) {
       sheetController.addListener(() {
         if (sheetController.isAttached && sheetController.size < .1) {
-          context.router.maybePop();
+          context.router.popForced();
         }
       });
     });

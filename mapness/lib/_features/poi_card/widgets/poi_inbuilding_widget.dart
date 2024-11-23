@@ -82,7 +82,7 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
                         if (id == null) {
                           return;
                         }
-                        context.router.maybePop();
+                        context.router.popForced();
                         context.router.push(
                           PoiCardWidgetRoute(
                             objectId: DgisObjectIdMessage(

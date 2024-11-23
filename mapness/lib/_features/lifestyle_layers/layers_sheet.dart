@@ -174,7 +174,7 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
   void _layersControllerListener() {
     if (_isShown && _layersController.size < .01) {
       _isShown = false;
-      context.router.back();
+      context.router.popForced();
     }
   }
 

@@ -57,7 +57,7 @@ class ClosureCard extends StatelessWidget {
                       ),
                     ),
                     CustomCloseButton(
-                      onClose: () => context.router.maybePop(),
+                      onClose: () => context.router.popForced(),
                     ),
                   ],
                 ),

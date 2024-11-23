@@ -267,7 +267,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       ref.read(searchInRectProvider.notifier).update();
       searchObjectManager = null;
     });
-    ref.read(appRouterProvider).maybePop();
+    ref.read(appRouterProvider).popForced();
   }
 
   Future<void> _setupTapListener() async {

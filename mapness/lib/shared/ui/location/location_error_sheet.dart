@@ -49,7 +49,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
     final result = await ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
 
     if (result && mounted) {
-      await context.router.maybePopTop(result);
+      context.router.popForced(result);
     }
   }
 
@@ -69,10 +69,10 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                     ? () {
                         ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                         CommonFunctions.locationDialogShowed = false;
-                        context.router.maybePop(widget.routeOnClose);
+                        context.router.popForced(widget.routeOnClose);
                       }
                     : () {
-                  context.maybePop();
+                  context.router.popForced();
                 },
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,

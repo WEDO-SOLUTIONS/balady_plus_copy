@@ -36,7 +36,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                   title: context.l10n.helpCenter,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
-                    onPressed: () => context.router.maybePop(),
+                    onPressed: () => context.router.popForced(),
                     icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),

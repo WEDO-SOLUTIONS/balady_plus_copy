@@ -49,7 +49,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                   text: ContentRowTextOptions(
                     title: context.l10n.myLocation,
                   ),
-                  onTap: () => context.router.maybePop(RoutePointMyLocation()),
+                  onTap: () => context.router.popForced(RoutePointMyLocation()),
                 ),
               ContentRowV2(
                 leading: Icon(
@@ -77,7 +77,7 @@ class RoutingSearchHistory extends ConsumerWidget {
         Spacing.$4x.heightBox,
         RoutingHistory(
           updatePoint: (point) {
-            context.router.maybePop(point);
+            context.router.popForced(point);
           },
           searchByQuery: (query) {
             ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).fetchSuggest(query);

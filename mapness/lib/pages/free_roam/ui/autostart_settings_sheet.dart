@@ -158,7 +158,7 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
       sheetController.addListener(() {
         if (sheetController.isAttached && sheetController.size < .1 && context.router.canPop()) {
           ref.read(freeRoamStarterProvider.notifier).setShown();
-          context.router.maybePop();
+          context.router.popForced();
         }
       });
     });

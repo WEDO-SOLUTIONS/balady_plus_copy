@@ -51,7 +51,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                   TextButton(
                     child: const Text('Cancel'),
                     onPressed: () {
-                      context.router.maybePop();
+                      context.router.popForced();
                     },
                   ),
                   const Spacer(),
@@ -79,7 +79,7 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
                     child: const Text('Accept'),
                     onPressed: () async {
                       final image = await controller.onCropImage();
-                      await context.router.maybePop(image?.bytes);
+                      context.router.popForced(image?.bytes);
                     },
                   ),
                   const Spacer(),

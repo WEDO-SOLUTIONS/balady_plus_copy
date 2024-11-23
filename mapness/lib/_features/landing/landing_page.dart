@@ -220,7 +220,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     } else if (context.router.isRouteActive(RoutingRoutesRoute.name)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
-      context.router.back();
+      context.router.popForced();
     }
 
     if (event is ObjectTapEvent) {
@@ -233,7 +233,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
       if (context.mounted) {
         if (context.router.currentPath == routingRoutePath) {
-          context.router.back();
+          context.router.popForced();
         }
 
         context.router.push(

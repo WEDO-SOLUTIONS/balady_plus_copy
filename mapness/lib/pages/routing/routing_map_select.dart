@@ -199,13 +199,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
 
     switch (nearestObject) {
       case DGisNearestObject(nearestPoint: final nearestPoint):
-        context.router.maybePopTop(
+        context.router.popForced(
           // We need to pass the coordinates of the nearest point
           // because coordinates of object like street or districts are so far from the selected point
           RoutePointCoordinates(nearestPoint.geoPoint),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):
-        context.router.maybePopTop(
+        context.router.popForced(
           RoutePointCoordinates(geoPoint),
         );
     }
@@ -218,7 +218,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
       action: MetricAction.tap.toString(),
     );
 
-    context.router.back();
+    context.router.popForced();
   }
 }
 

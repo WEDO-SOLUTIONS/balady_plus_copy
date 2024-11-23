@@ -147,7 +147,7 @@ class Data extends ConsumerWidget {
                 _closeButton(
                   onTap: () async {
                     await ref.switchOffWeatherLayers();
-                    await context.router.maybePop();
+                    context.router.popForced();
                   },
                 ),
 

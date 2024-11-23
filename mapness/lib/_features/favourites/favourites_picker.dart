@@ -67,7 +67,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          context.router.back();
+                          context.router.popForced();
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
@@ -119,7 +119,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                                 index == (state.items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
                             child: FavouriteItemWidget(
                               key: ValueKey(item.id),
-                              onTap: () => context.router.maybePop(item),
+                              onTap: () => context.router.popForced(item),
                               isEditing: false,
                               isDeletable: false,
                               item: item,

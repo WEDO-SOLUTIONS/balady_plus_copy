@@ -144,7 +144,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             leading: InkWell(
               onTap: () {
                 if (!isEditing) {
-                  context.router.maybePop();
+                  context.router.popForced();
                 } else {
                   toggleEditing();
                 }
