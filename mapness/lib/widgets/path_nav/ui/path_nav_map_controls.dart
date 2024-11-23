@@ -10,6 +10,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
+import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
@@ -69,36 +70,40 @@ class PathNavMapControls extends StatelessWidget {
                         final isPedestrian = navType == RouteSearchOptionsMessage.pedestrian;
                         final info = ref.watch(pathNavSpeedInfoProvider);
 
-                        // This made to remove yellow lines under the text
-                        return Material(
-                          type: MaterialType.transparency,
-                          color: Colors.transparent,
-                          child: uikit.BaladyManeuverAndLimit(
-                            isPedestrian: isPedestrian,
-                            speedInfo: uikit.LimitsModel(
-                              speed: info.speed,
-                              speedExceed: info.speedExceed,
-                              speedLimit: info.speedLimit,
+                          // This made to remove yellow lines under the text
+                          return Material(
+                            type: MaterialType.transparency,
+                            color: Colors.transparent,
+                            child: uikit.BaladyManeuverAndLimit(
+                              isPedestrian: isPedestrian,
+                              speedInfo: uikit.LimitsModel(
+                                speed: info.speed,
+                                speedExceed: info.speedExceed,
+                                speedLimit: info.speedLimit,
+                              ),
+                              maneuver: maneuver != null
+                                  ? uikit.BaladyManeuverModel(
+                                      distance: maneuver.distance,
+                                      instruction: maneuver.instruction?.toUIKit(),
+                                      roadName: maneuver.roadName,
+                                      unit: maneuver.unit,
+                                    )
+                                  : null,
+                              message: message != null
+                                  ? uikit.ManeuverMessageModel(
+                                      comment: message.state.toMessage(context.l10n),
+                                      state: message.state.toUIKit(),
+                                    )
+                                  : null,
                             ),
-                            maneuver: maneuver != null
-                                ? uikit.BaladyManeuverModel(
-                                    distance: maneuver.distance,
-                                    instruction: maneuver.instruction?.toUIKit(),
-                                    roadName: maneuver.roadName,
-                                    unit: maneuver.unit,
-                                  )
-                                : null,
-                            message: message != null
-                                ? uikit.ManeuverMessageModel(
-                                    comment: message.state.toMessage(context.l10n),
-                                    state: message.state.toUIKit(),
-                                  )
-                                : null,
-                          ),
-                        );
-                      },
+                          );
+                        },
+                      ),
                     ),
                   ),
+                const Padding(
+                  padding: padding,
+                  child: TrafficParkingControl(),
                 ),
                 const Spacer(),
                 Padding(
