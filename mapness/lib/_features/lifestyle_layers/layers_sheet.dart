@@ -64,7 +64,8 @@ class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTic
           InkWell(
             splashColor: Colors.transparent,
             onTap: _hideLayersPanel,
-            child: const SizedBox(
+            child: Container(
+              color: context.staticColor.surfaceOverlayModal,
               width: double.maxFinite,
               height: double.maxFinite,
             ),

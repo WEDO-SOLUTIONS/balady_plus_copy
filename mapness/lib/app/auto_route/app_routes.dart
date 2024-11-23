@@ -156,11 +156,7 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'layers_sheet',
               transitionsBuilder: TransitionsBuilders.fadeIn,
-              fullscreenDialog: true,
-              allowSnapshotting: false,
-              barrierDismissible: false,
               page: LayersSheetRoute.page,
-              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
               path: 'feedback/:objectId',
