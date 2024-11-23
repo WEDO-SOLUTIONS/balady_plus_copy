@@ -18,6 +18,9 @@ class AppFeedbackPage extends HookConsumerWidget {
   const AppFeedbackPage({super.key});
 
   void _showConfirmDialog(BuildContext context) {
+    if (!context.mounted) {
+      return;
+    }
     showCupertinoDialog(
         context: context,
         builder: (ctx) => CupertinoAlertDialog(

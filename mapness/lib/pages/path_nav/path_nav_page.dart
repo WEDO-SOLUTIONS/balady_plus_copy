@@ -19,7 +19,6 @@ import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
@@ -490,10 +489,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _stopActiveSharing() async {
-    final tokenId = EtaStreamStorage().state.streamToken;
-    final xStreamData = EtaStreamStorage().state.xStreamData;
-    if (tokenId != null && xStreamData != null) {
-      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, xStreamData);
-    }
+    await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
   }
 }

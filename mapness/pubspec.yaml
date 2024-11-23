@@ -157,6 +157,7 @@ dev_dependencies:
   riverpod_lint: ^2.1.1
   # import custom_lint too as riverpod_lint depends on it
   custom_lint: ^0.5.8
+  go_router_builder: ^2.3.4
   json_serializable: ^6.7.1
   very_good_analysis: ^5.1.0
   cached_build_runner: ^0.0.7
