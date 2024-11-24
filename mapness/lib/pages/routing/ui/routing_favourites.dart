@@ -25,7 +25,7 @@ class RoutingFavourites extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final onFavouritesTap = () async {
       if (showBookmark) {
-        await CommonFunctions.authOrOpen(
+        await CommonFunctions.authAndOpen(
           context,
           callback: () async {
             final result = await context.router.push(const FavouritesPickerRoute());
@@ -42,7 +42,7 @@ class RoutingFavourites extends ConsumerWidget {
       final favouritesState = await ref.read(favouriteCacheProvider.future);
       final home = favouritesState.home;
       if (home == null) {
-        await CommonFunctions.authOrOpen(
+        await CommonFunctions.authAndOpen(
           context,
           callback: () async {
             await context.router.push(
@@ -65,7 +65,7 @@ class RoutingFavourites extends ConsumerWidget {
       final favouritesState = await ref.read(favouriteCacheProvider.future);
       final work = favouritesState.work;
       if (work == null) {
-        await CommonFunctions.authOrOpen(
+        await CommonFunctions.authAndOpen(
           context,
           callback: () async {
             await context.router.push(
