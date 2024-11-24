@@ -4,14 +4,34 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'advert_metrics.g.dart';
 
-enum AdvertMetircsKeys { exploreLandingEngagement, exploreLandingRoute, exploreSearch, navigationRoutingStartedJorney }
+enum AdvertMetircsKeys {
+  /// event: explore_landing_engage
+  exploreLandingEngagement,
+
+  /// event: explore_landing_engage
+  exploreLandingRoute,
+
+  /// event: navigation_routing_search-initiated
+  exploreSearch,
+
+  /// event: navigation_routing_started-journey
+  navigationRoutingStartedJorney,
+
+  /// event: navigation_routing_completed-journey
+  navigationRoutingCompleted,
+
+  /// event: navigation_routing_halfway-journey
+  navigationRoutingHalfway
+}
 
 extension AdvertMetircsKeysEx on AdvertMetircsKeys {
   String get event => switch (this) {
-        AdvertMetircsKeys.exploreLandingEngagement => 'explore_landing_engagement',
-        AdvertMetircsKeys.exploreLandingRoute => 'explore_landing_route',
-        AdvertMetircsKeys.exploreSearch => 'explore_search',
-        AdvertMetircsKeys.navigationRoutingStartedJorney => 'navigation_routing_started_jorney'
+        AdvertMetircsKeys.exploreLandingEngagement => 'g1f5nk',
+        AdvertMetircsKeys.exploreLandingRoute => 'g1f5nk',
+        AdvertMetircsKeys.exploreSearch => 'wldgmt',
+        AdvertMetircsKeys.navigationRoutingStartedJorney => '5yfcni',
+        AdvertMetircsKeys.navigationRoutingCompleted => '9fxp9f',
+        AdvertMetircsKeys.navigationRoutingHalfway => 'dgxg78',
       };
 }
 
@@ -20,8 +40,8 @@ class AdvertMetrics extends _$AdvertMetrics {
   @override
   void build() {}
 
-  void sendTextEvent(String event) {
-    final eventMetric = AdjustEvent(event);
+  void sendTextEvent(String token) {
+    final eventMetric = AdjustEvent(token);
     Adjust.trackEvent(eventMetric);
   }
 
