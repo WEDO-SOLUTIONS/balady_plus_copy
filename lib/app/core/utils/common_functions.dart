@@ -325,7 +325,6 @@ class CommonFunctions {
   }
 
   static String getDateNoDash(String? dateStr) {
-    String formattedDate = "";
 
     String year = dateStr?.substring(0, 4) ?? "";
     String month = dateStr?.substring(4, 6) ?? "";
