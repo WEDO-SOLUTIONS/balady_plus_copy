@@ -33,9 +33,11 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  context.l10n.automaticallyEnableParkinglayer,
-                  style: context.textStyleV3.h3SemiBold,
+                Expanded(
+                  child: Text(
+                    "context. l10n. automaticallyEnableParkinglayer dflkd lkdldfl kdlf ",
+                    style: context.textStyleV3.h3SemiBold,
+                  ),
                 ),
                 AppButton(
                   size: ButtonSize.small,
