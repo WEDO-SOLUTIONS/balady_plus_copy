@@ -78,7 +78,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
                 context.pop();
                 PoiMapRoute.open(
                   ref.read(goRouterProvider),
-                  int.parse(id),
+                  id,
                   zoom: widget.cameraConfig?.zoom,
                   bearing: widget.cameraConfig?.bearing,
                   tilt: widget.cameraConfig?.tilt,
@@ -121,7 +121,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
 
 class OrganizationWidget extends StatelessWidget {
   final OrganizationItem item;
-  final void Function(String id)? onTap;
+  final void Function(int id)? onTap;
 
   const OrganizationWidget({
     required this.item,
@@ -138,7 +138,13 @@ class OrganizationWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
             child: ContentRow(
               onTap: () {
-                final id = item.id;
+                final itemId = item.id;
+
+                if (itemId == null) {
+                  return;
+                }
+
+                final id = int.tryParse(itemId);
                 if (id == null) {
                   return;
                 }

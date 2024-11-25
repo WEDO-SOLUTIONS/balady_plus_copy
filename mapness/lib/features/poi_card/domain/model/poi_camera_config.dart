@@ -17,9 +17,7 @@ class PoiCameraConfig {
     if (identical(this, other)) {
       return true;
     }
-    if (other.runtimeType != runtimeType) {
-      return false;
-    }
+
     return other is PoiCameraConfig && other.zoom == zoom && other.tilt == tilt && other.bearing == bearing;
   }
 

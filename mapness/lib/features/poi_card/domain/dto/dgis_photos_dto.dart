@@ -64,31 +64,6 @@ class PreviewUrls {
 }
 
 @JsonSerializable()
-class Copyright {
-  String type;
-  String value;
-  String? url;
-  String? providerIcon;
-  String code;
-  String icon;
-  String title;
-
-  Copyright({
-    required this.type,
-    required this.value,
-    required this.code,
-    required this.icon,
-    required this.title,
-    this.url,
-    this.providerIcon,
-  });
-
-  factory Copyright.fromJson(Map<String, dynamic> json) => _$CopyrightFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CopyrightToJson(this);
-}
-
-@JsonSerializable()
 class Owner {
   String id;
   String publicId;

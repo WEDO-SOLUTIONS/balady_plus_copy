@@ -48,7 +48,6 @@ class PoiCardState {
         'gisObjectIdMessage': gisObjectIdMessage?.toJson(),
         'organizations': organizations?.toJson(),
         'tradeLicense': tradeLicense?.toJson(),
-        'qrTradeLicense': qrTradeLicense?.toJson(),
         'showEntrances': showEntrances,
         'isLoading': isLoading,
         'timestamp': DateTime.now().millisecondsSinceEpoch,

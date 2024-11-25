@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+
 import 'package:mapness/features/poi_card/data/qr_license_service.dart';
 
 abstract class QrLicenseDataSource {
@@ -38,13 +38,9 @@ class _QrLicenseDataSource implements QrLicenseDataSource {
 
       return ((result as Response<Map>).data?['data'] as Map)['result'] as Map<String, dynamic>;
     } on DioException catch (error) {
-      if (kDebugMode) {
-        print('[licenseDetails] DioError $error');
-      }
+      print('[licenseDetails] DioError $error');
     } catch (error) {
-      if (kDebugMode) {
-        print('[licenseDetails] $error');
-      }
+      print('[licenseDetails] $error');
     }
     return null;
   }
