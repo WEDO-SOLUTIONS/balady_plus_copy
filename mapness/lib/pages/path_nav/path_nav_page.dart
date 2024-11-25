@@ -27,11 +27,10 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
-import 'package:mapness/shared/ui/notifier_size/size_reporter.dart';
-import 'package:mapness/shared/ui/notifier_size/size_widget_notifier.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_map_controls.dart';
 import 'package:urbi_analytics/logger.dart';
@@ -211,56 +210,50 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             bottom: 0,
             right: 0,
             left: 0,
-            child: NotificationListener<SizeWidgetNotification>(
-              onNotification: (notifierSize) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  if (!isEtaExpanded) {
-                    _bottomHeightNotifier.value = notifierSize.size.height + uikit.Spacing.$3x;
-                  }
-                });
-
-                return true;
+            child: MeasureSize(
+              onChange: (size) {
+                if (!isEtaExpanded) {
+                  _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
+                }
               },
-              child: SizeReporter(
-                child: Column(
-                  children: [
-                    ParkingBanner(navigationState: _navigationState),
-                    Directionality(
-                      textDirection: Directionality.of(context),
-                      child: ValueListenableBuilder(
-                        valueListenable: _navigationState,
-                        builder: (context, state, child) {
-                          switch (state) {
-                            case PathNavState.running:
-                              return Align(
-                                alignment: Alignment.bottomCenter,
-                                child: EtaSheet(
-                                  onEndTripPressed: _endTripAndShowHome,
-                                  onRoutePressed: _onShowRoutePressed,
-                                  onBetterRouteAccept: () => _acceptBetterRoute(context),
-                                  onBetterRouteReject: () => _rejectBetterRoute(context),
-                                  betterRouteDurationProfit: _betterRouteDurationProfit,
-                                  onSizeChanged: _onSizeChanged,
-                                ),
-                              );
-                            case PathNavState.paused:
-                              return EtaContinue(
-                                onTap: _onContinuePressed,
-                                onSizeChanged: _onSizeChanged,
-                              );
-                            case PathNavState.finished:
-                              return EtaFinished(
-                                expansionNotifier: _expansionNotifier,
+              child: Column(
+                children: [
+                  ParkingBanner(navigationState: _navigationState),
+                  Directionality(
+                    textDirection: Directionality.of(context),
+                    child: ValueListenableBuilder(
+                      valueListenable: _navigationState,
+                      builder: (context, state, child) {
+                        switch (state) {
+                          case PathNavState.running:
+                            return Align(
+                              alignment: Alignment.bottomCenter,
+                              child: EtaSheet(
                                 onEndTripPressed: _endTripAndShowHome,
-                                onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                                onRoutePressed: _onShowRoutePressed,
+                                onBetterRouteAccept: () => _acceptBetterRoute(context),
+                                onBetterRouteReject: () => _rejectBetterRoute(context),
+                                betterRouteDurationProfit: _betterRouteDurationProfit,
                                 onSizeChanged: _onSizeChanged,
-                              );
-                          }
-                        },
-                      ),
+                              ),
+                            );
+                          case PathNavState.paused:
+                            return EtaContinue(
+                              onTap: _onContinuePressed,
+                              onSizeChanged: _onSizeChanged,
+                            );
+                          case PathNavState.finished:
+                            return EtaFinished(
+                              expansionNotifier: _expansionNotifier,
+                              onEndTripPressed: _endTripAndShowHome,
+                              onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                              onSizeChanged: _onSizeChanged,
+                            );
+                        }
+                      },
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

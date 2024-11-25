@@ -13,6 +13,7 @@ import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -34,6 +35,7 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
     final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
     final betterRouteSettingsNotifier = ref.read(betterRouteSuggestionsProvider.notifier);
     final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+    final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
 
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
@@ -109,6 +111,20 @@ class _SettingsPageState extends ConsumerState<NavigatorSettingsPage> {
                                   actionWidget: ContentRowActionOptions(
                                     enabledToggle: true,
                                     toggleInitialValue: betterRouteSettings,
+                                  ),
+                                ),
+                              ),
+                              ContentRow(
+                                onToggle: (_) {
+                                  ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: !(autoEnableParking ?? false));
+                                },
+                                options: ContentRowOptions(
+                                  title: l10n.automaticParkingLayer,
+                                  dividerEnabled: true,
+                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                  actionWidget: ContentRowActionOptions(
+                                    enabledToggle: true,
+                                    toggleInitialValue: autoEnableParking ?? false,
                                   ),
                                 ),
                               ),
