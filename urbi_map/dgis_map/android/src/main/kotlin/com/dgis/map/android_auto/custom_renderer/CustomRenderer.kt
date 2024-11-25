@@ -52,7 +52,6 @@ class CustomRenderer {
     private fun draw(customRendererData: CustomRendererData, canvas: Canvas) {
         val speedInfo = customRendererData.speedInfo
         drawSpeed(speedInfo.currentSpeed, canvas)
-        drawSpeedLimit(speedInfo.speedLimit, speedInfo.speedLimitExceeded, canvas)
     }
 
     private fun drawSpeed(speed: Int, canvas: Canvas) {
@@ -60,13 +59,13 @@ class CustomRenderer {
             color = Color.WHITE
             style = Paint.Style.FILL
         }
-        val centerX = canvas.width - 75f
-        val centerY = 75f + controlsOffset
-        canvas.drawCircle(centerX, centerY, 32f, paint)
+        val centerX = canvas.width - 45f
+        val centerY = 30f + controlsOffset
+        canvas.drawCircle(centerX, centerY, 20f, paint)
         paint.apply {
             color = Color.BLACK
             style = Paint.Style.FILL
-            textSize = 28f
+            textSize = 18f
             textAlign = Paint.Align.CENTER
         }
         canvas.drawText("$speed", centerX, centerY + paint.textSize / 3, paint)
