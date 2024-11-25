@@ -1,0 +1,15 @@
+import 'package:dartz/dartz.dart' show Either;
+import 'package:balady_plus/app/core/errors/failures.dart';
+import 'package:balady_plus/app/core/services/local/use_case.dart';
+import '../../commercial_license_exports.dart';
+import '../../data/models/qr/qr_lookup_model.dart';
+
+class GetMalls extends UseCase<QrLookUpResponseModel, String> {
+  final CrRepository repository;
+
+  GetMalls({required this.repository});
+  @override
+  Future<Either<Failure, QrLookUpResponseModel>> call(String params) async {
+    return await repository.getMalls(params: params);
+  }
+}
