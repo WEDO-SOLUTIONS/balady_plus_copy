@@ -14,6 +14,7 @@ import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 
 class ParkingBanner extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
@@ -55,6 +56,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
     final eta = ref.watch(pathNavEtaProvider);
     final distance = double.tryParse(eta?.distanceEta ?? '--');
     final navigatorType = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
+    final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
 
     final layersNotifier = ref.watch(layersControlsProvider.notifier);
     final layers = ref.watch(layersControlsProvider);
@@ -73,6 +75,10 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
     const borderSizeS = BorderRadius.all(Radius.circular(RadiusBorder.s));
 
     if (widget.navigationState.value == PathNavState.finished || layers.selectedType == LayerType.parkingLots) {
+      return const SizedBox.shrink();
+    }
+
+    if (autoEnableParking != null) {
       return const SizedBox.shrink();
     }
 
@@ -101,6 +107,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
           sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
         }
 
+        ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
         layersNotifier.toggleParking();
       },
       child: Directionality(
