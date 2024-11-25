@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:flutter/material.dart';
@@ -30,6 +32,7 @@ class _NewRequestDetailsScreen extends State<NewRequestDetailsScreen> {
   void initState() {
     super.initState();
     model.validateForm();
+    model.file = null;
   }
 
   @override
@@ -94,7 +97,7 @@ class _MSRBody extends State<MSRBody> {
                 children: [
                   const SizedBox(height: 16),
                   Text(
-                    'attachment'.tr(),
+                    "${'attachment'.tr()} ( ${'Optional'.tr()} )",
                     style: const TextStyle(
                       color: AppColor.blackModern700Light,
                       fontSize: 16,
@@ -108,13 +111,13 @@ class _MSRBody extends State<MSRBody> {
                               context,
                             );
                             if (file != null) {
-                              if ("jpg,jpeg,pdf,png"
-                                  .contains(file.fileName.split(".").last)) {
-                                if ((file.sizeInMB * 1000) <= 5000) {
+                              if ("jpg,jpeg,pdf,png".contains(file.fileName.split(".").last)) {
+                                var i = (log(file.bytes!.length) / log(1000)).floor();
+                                 int sizeInMB =  (file.bytes!.length / pow(1000, i)).toInt();
+                                if (sizeInMB <= 5) {
                                   model.setFile(file);
                                 } else {
-                                  CommonFunctions.showError(
-                                      "file_max_size".tr());
+                                  CommonFunctions.showError('${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png ${'attachment_message_size'.tr()} 5MB');
                                 }
                               } else {
                                 CommonFunctions.showError("${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png");
@@ -135,14 +138,8 @@ class _MSRBody extends State<MSRBody> {
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                SvgPicture.asset(
-                                  IconPath.add,
-                                  width: 20,
-                                  height: 20,
-                                ),
-                                const SizedBox(width: 4),
                                 Text(
-                                  'attachment'.tr(),
+                                  'attachFileButton'.tr(),
                                   style: const TextStyle(
                                     color: AppColor.primary800Light,
                                     fontSize: 16,
