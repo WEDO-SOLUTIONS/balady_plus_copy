@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
 import 'package:mapness/app/routes/path_nav.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/app/routes/sound_settings.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
@@ -211,12 +212,20 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription = dgisController.objectTapEvents.listen((_) {
+    _streamSubscription = dgisController.objectTapEvents.listen((event) {
       final goRouter = ref.read(goRouterProvider);
 
       if (goRouter.isCurrentRoute(PathNavRoute.path)) {
         if (_isExpanded) {
           ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+        } else {
+          if (event is ObjectTapEvent) {
+            PoiMapRoute.open(
+              ref.read(goRouterProvider),
+              event.dgisObjectId.objectId,
+              latLng: event.latLng,
+            );
+          }
         }
       }
     });
