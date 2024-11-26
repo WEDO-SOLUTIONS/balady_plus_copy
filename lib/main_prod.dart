@@ -3,6 +3,7 @@ import 'package:flutter/material.dart' ;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -18,9 +19,9 @@ void main() async {
     WidgetsFlutterBinding.ensureInitialized();
 
   unhandledExceptionBaladyLogs( () async {
-        final status = await AppTrackingTransparency.requestTrackingAuthorization();
+    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
+    final status = await AppTrackingTransparency.requestTrackingAuthorization();
 
-    AdvancedMetrics.instance.startMeasureStartup();
     await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.prod);
 

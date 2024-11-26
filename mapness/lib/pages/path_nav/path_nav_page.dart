@@ -13,6 +13,7 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -45,11 +46,11 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 @RoutePage()
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
-  final bool restoreFromState;
+  final PathNavPageInitAction? initAction;
 
   const PathNavPage({
     required this.navType,
-    required this.restoreFromState,
+    required this.initAction,
     super.key,
   });
 
@@ -148,9 +149,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    if (widget.restoreFromState) {
+    if (widget.initAction == PathNavPageInitAction.restoreFromState) {
       await restoreNavigationState();
-    } else {
+    } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       await dgisController.startNavigation(
         SpeedRangeZoom(
           maxSpeedRange: 5,
@@ -423,17 +424,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Notify the listeners about the end of the trip
   void _naviEvent(NavigationEvent event) {
-    switch (event) {
-      case NavigationEvent.finished:
-        ref.read(urbiAnalyticsProvider).track('tripCompleted');
-        _navigationState.value = PathNavState.finished;
-        unawaited(
-          clearNavigationState(),
-        );
-      case NavigationEvent.disabled:
-        if (_navigationState.value != PathNavState.finished) {
-          _endTripAndShowHome();
-        }
+    if (event == NavigationEvent.finished) {
+      ref.read(urbiAnalyticsProvider).track('tripCompleted');
+      _navigationState.value = PathNavState.finished;
+      unawaited(
+        clearNavigationState(),
+      );
+    } else if (event == NavigationEvent.disabled) {
+      if (_navigationState.value != PathNavState.finished) {
+        _endTripAndShowHome();
+      }
     }
   }
 

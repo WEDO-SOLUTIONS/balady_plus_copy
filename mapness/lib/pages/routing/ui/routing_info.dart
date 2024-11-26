@@ -234,7 +234,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     context.router.push(
       PathNavRoute(
         navType: navigatingType,
-        restoreFromState: false,
+        initAction: PathNavPageInitAction.startNavigation,
       ),
     );
   }

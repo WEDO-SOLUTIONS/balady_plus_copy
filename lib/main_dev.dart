@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart' show Bloc;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizedApp;
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/metrics/load_time.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-
-import './app/core/services/services_exports.dart' show SimpleBlocObserver;
 import './app/core/utils/utils_exports.dart' show EnvType;
 import './app/app.dart';
 import './env.dart';
@@ -18,6 +18,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   unhandledExceptionBaladyLogs(() async {
+    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
 
     await runMapnessApp(() async {

@@ -290,10 +290,22 @@ class NavigationHandler(
             }
 
             State.NAVIGATION -> {
+                eventSink.success(
+                    mapOf(
+                        "event" to Event.navigationEvent.name,
+                        "state" to Event.stateNavigation
+                    )
+                )
                 isNavigating = true
             }
 
             State.ROUTE_SEARCH -> {
+                eventSink.success(
+                    mapOf(
+                        "event" to Event.navigationEvent.name,
+                        "state" to Event.stateRouteSearch
+                    )
+                )
                 isNavigating = true
             }
         }
@@ -433,5 +445,7 @@ private enum class Event {
 
         val stateDisabled = "disabled";
         val stateFinished = "finished";
+        val stateNavigation = "navigation";
+        val stateRouteSearch = "routeSearch";
     }
 }

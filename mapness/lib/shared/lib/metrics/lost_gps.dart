@@ -39,12 +39,17 @@ class LostGpsMetrics {
   Map<String, dynamic> fromJsonString(String jsonString) => jsonDecode(jsonString) as Map<String, dynamic>;
 
   /// Create a LostGpsMetrics object from a JSON map
-  factory LostGpsMetrics.fromJson(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    return LostGpsMetrics(
-      duration: json[AdvancedMetricsConstants.keys.lostGpsDuration] as int?,
-      location: (json[AdvancedMetricsConstants.keys.location] as List<dynamic>).map((e) => e as double).toList(),
-    );
+  static LostGpsMetrics? fromJson(String jsonString) {
+    try {
+      final json = jsonDecode(jsonString) as Map<String, dynamic>;
+      return LostGpsMetrics(
+        duration: json[AdvancedMetricsConstants.keys.lostGpsDuration] as int?,
+        location: (json[AdvancedMetricsConstants.keys.location] as List<dynamic>).map((e) => e as double).toList(),
+      );
+    } catch (e) {
+      print('LostGpsMetrics fromJson error: $e');
+    }
+    return null;
   }
 
   @override

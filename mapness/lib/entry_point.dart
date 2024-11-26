@@ -111,12 +111,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
+  StreamSubscription? _navigationEventsListener;
 
   @override
   void initState() {
     super.initState();
     initMixpanel();
     initDeepLinks();
+    listenNavigationEvents();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -140,6 +142,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   void dispose() {
     _linkSubscription?.cancel();
     _locationListener?.close();
+    _navigationEventsListener?.cancel();
 
     super.dispose();
   }
@@ -149,13 +152,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
 
     if (state != null) {
+      final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
           ref.read(appRouterProvider).push(
                 PathNavRoute(
-                  navType: RouteSearchOptionsMessageExt.fromString(type!),
+                  navType: routeSearchOptions,
                   restoreFromState: true,
+                    initAction: PathNavPageInitAction.restoreFromState
                 ),
               );
         } else {
@@ -164,8 +169,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               _locationListener?.close();
               ref.read(appRouterProvider).push(
                 PathNavRoute(
-                  navType: RouteSearchOptionsMessageExt.fromString(type!),
-                  restoreFromState: true,
+                  navType: routeSearchOptions, initAction: PathNavPageInitAction.restoreFromState
                 ),
               );
             }
@@ -175,7 +179,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  // TODO(Sergei): add NavigationState listening, when navigation start from AA, CarPlay is implemented
   Future<void> checkNavigationState() async {
     final controller = await ref.read(dgisControllerProvider.future);
     final navStateMessage = await controller.getCurrentNavigationState();
@@ -183,6 +186,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (navStateMessage.state == NavigationState.navigation) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
+        final router = ref.read(goRouterProvider);
         if (location != null) {
           ref.read(appRouterProvider).push(
                 PathNavRoute(
@@ -318,6 +322,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         print('_linkSubscription $uri');
       }
       openAppLink(uri);
+    });
+  }
+
+  Future<void> listenNavigationEvents() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
+      final router = ref.read(goRouterProvider);
+      final matches = router.routerDelegate.currentConfiguration.matches;
+      final isNavPage = matches.last.matchedLocation == PathNavRoute.path;
+      final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
+      if (navigation && !isNavPage) {
+        final navStateMessage = await dgisController.getCurrentNavigationState();
+        PathNavRoute.open(ref.read(goRouterProvider), navStateMessage.routeSearchOptions);
+      }
     });
   }
 
@@ -519,7 +537,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-
   final instance = FirebaseRemoteConfig.instance;
   await instance.ensureInitialized();
   await instance.fetchAndActivate();
@@ -552,8 +569,6 @@ Future<void> setupMapness(EnvType envType) async {
   final envConfigResponse = instance.getValue(MapnessConstants.firebaseAppEnvConfigKey);
   final envJsonString = jsonEncode(jsonDecode(envConfigResponse.asString()));
   await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
-
-
 }
 
 class MapnessLogger {
