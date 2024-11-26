@@ -35,6 +35,7 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
                     style: context.textStyleV3.h3SemiBold,
                   ),
                 ),
+                Spacing.$3x.widthBox,
                 AppButton(
                   size: ButtonSize.small,
                   buttonColorScheme: ButtonColorScheme.tertiary,
