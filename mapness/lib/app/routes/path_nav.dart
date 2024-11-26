@@ -40,7 +40,7 @@ class PathNavRoute extends GoRouteData {
       _extraRouteSearchOptions: navType,
       _extraInitAction: initAction,
     };
-    router.go(location, extra: extra);
+    router.push(location, extra: extra);
   }
 }
 

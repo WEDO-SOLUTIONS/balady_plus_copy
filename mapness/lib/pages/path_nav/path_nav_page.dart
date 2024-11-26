@@ -340,10 +340,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
       _navigationState.value = PathNavState.finished;
-      unawaited(
-        clearNavigationState(),
-      );
-    } else if (event == NavigationEvent.disabled) {
+      ref.read(layersControlsProvider.notifier).hideParking();
+        unawaited(
+          clearNavigationState(),
+        );
+      } else if (event == NavigationEvent.disabled) {
       if (_navigationState.value != PathNavState.finished) {
         _endTripAndShowHome();
       }

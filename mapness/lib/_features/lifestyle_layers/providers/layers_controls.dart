@@ -429,6 +429,15 @@ class LayersControls extends _$LayersControls {
     }
   }
 
+  Future<void> hideParking() async {
+    await _viewPortSubscription?.cancel();
+
+    await _removeMapObjects();
+
+    setSelection();
+    await ref.read(parkingStateProvider.notifier).hideParking();
+  }
+
   MapRequestParams _createParams(
     VisibleRect visibleRect,
     LayerType layer,

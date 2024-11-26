@@ -11,7 +11,6 @@ import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/events.dart';
 import 'package:mapness/app/routes/kiblah.dart';
@@ -157,7 +156,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     final mappness = MapObjectManagerSettings.mappness();
     ref
       ..watch(currentRouteProvider.select((value) => null))
-      ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
       ..listen(currentRouteProvider, (_, next) {
         if (next?.currentPath == KiblahRoute.path) {
