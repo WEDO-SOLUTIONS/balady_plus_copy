@@ -58,10 +58,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
     final navigatorType = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
     final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
 
-    final layersNotifier = ref.watch(layersControlsProvider.notifier);
     final layers = ref.watch(layersControlsProvider);
-
-    final sharedPrefs = ref.read(sharedPrefsProvider);
 
     const boxShadow = [
       BoxShadow(
@@ -101,14 +98,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
 
     return GestureDetector(
       onTap: () {
-        final parkingEnabled = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
-
-        if (layers.selectedType != LayerType.parkingLots && parkingEnabled == false) {
-          sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-        }
-
         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
-        layersNotifier.toggleParking();
       },
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),

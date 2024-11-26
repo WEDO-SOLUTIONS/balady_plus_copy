@@ -3,11 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/routes/parking_bottom_sheet.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
@@ -32,11 +28,6 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
 
     final parkingState = ref.watch(parkingStateProvider);
 
-    final layersNotifier = ref.watch(layersControlsProvider.notifier);
-    final layers = ref.watch(layersControlsProvider);
-
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-
     final isParkingEnabled = parkingState.visible;
 
     return SizedBox(
@@ -59,14 +50,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
                 return;
               }
 
-              final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
-
-              if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
-                sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-              }
-
               ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: !autoEnableParking);
-              layersNotifier.toggleParking();
             },
           )
         ],
