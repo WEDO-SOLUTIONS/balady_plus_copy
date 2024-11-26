@@ -9,9 +9,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ParkingLotRow extends ConsumerWidget {
   final ParkingFilter type;
+
   const ParkingLotRow({
-    required this.type,
-  });
+    required this.type, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

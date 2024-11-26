@@ -4,10 +4,6 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
@@ -35,7 +31,7 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
               children: [
                 Expanded(
                   child: Text(
-                    "context. l10n. automaticallyEnableParkinglayer dflkd lkdldfl kdlf ",
+                    context.l10n.automaticallyEnableParkinglayer,
                     style: context.textStyleV3.h3SemiBold,
                   ),
                 ),
@@ -65,18 +61,6 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
                       primaryLabel: context.l10n.yes,
                       buttonColorScheme: ButtonColorScheme.primary,
                       onTap: () {
-                        final sharedPrefs = ref.read(sharedPrefsProvider);
-                        final parkingEnabledFreeRoam =
-                            sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
-
-                        final layersNotifier = ref.read(layersControlsProvider.notifier);
-                        final layers = ref.read(layersControlsProvider);
-
-                        if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
-                          sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-                        }
-
-                        layersNotifier.toggleParking();
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
                         context.pop();
                       },
