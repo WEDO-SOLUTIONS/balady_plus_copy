@@ -83,6 +83,11 @@ class Routes {
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
+          path: '/photo_viewer',
+          page: PhotoViewerRoute.page,
+          transitionsBuilder: TransitionsBuilders.fadeIn,
+        ),
+        CustomRoute(
           path: '/language_pick_sheet',
           page: LanguagePickSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
