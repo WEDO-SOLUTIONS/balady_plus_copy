@@ -341,6 +341,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       case NavigationEvent.finished:
         ref.read(urbiAnalyticsProvider).track('tripCompleted');
         _navigationState.value = PathNavState.finished;
+        ref.read(layersControlsProvider.notifier).hideParking();
         unawaited(
           clearNavigationState(),
         );

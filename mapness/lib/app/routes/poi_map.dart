@@ -59,7 +59,7 @@ class PoiMapRoute extends GoRouteData {
     if (PoiMapRoute.isSameRoute(router)) {
       router.pushReplacement(poiMapRoute.location);
     } else {
-      router.push(poiMapRoute.location);
+      router.go(poiMapRoute.location);
     }
   }
 

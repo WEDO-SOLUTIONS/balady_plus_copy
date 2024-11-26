@@ -81,6 +81,7 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
                       },
                     ),
                   ),
+                  Spacing.$3x.heightBox
                 ],
               ),
             ),

@@ -37,7 +37,7 @@ class PathNavRoute extends GoRouteData {
       'data': navType,
       'restoreFromState': false,
     };
-    router.go(location, extra: extra);
+    router.push(location, extra: extra);
   }
 }
 

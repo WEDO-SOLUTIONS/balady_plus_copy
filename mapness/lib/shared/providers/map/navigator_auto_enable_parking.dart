@@ -1,6 +1,6 @@
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigator_auto_enable_parking.g.dart';
@@ -12,7 +12,11 @@ class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
   @override
   bool? build() {
     ref.onDispose(() {
-      ref.read(layersControlsProvider.notifier).toggleParking();
+      final layers = ref.read(layersControlsProvider);
+
+      if (layers.selectedType == LayerType.parkingLots) {
+        ref.read(layersControlsProvider.notifier).hideParking();
+      }
     });
 
     final sharedPrefs = ref.read(sharedPrefsProvider);
@@ -28,11 +32,13 @@ class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
   void toggleAutoEnableParking({required bool value}) {
     state = value;
 
-    ref.read(sharedPrefsProvider)
-      ..setBool(MapnessConstants.parkingEnabledFreeRoam, true)
-      ..setBool(_autoEnableParkingKey, state ?? false);
+    ref.read(sharedPrefsProvider).setBool(_autoEnableParkingKey, state ?? false);
 
-    ref.read(layersControlsProvider.notifier).toggleParking();
+    if (value) {
+      ref.read(layersControlsProvider.notifier).enableParking();
+    } else {
+      ref.read(layersControlsProvider.notifier).hideParking();
+    }
   }
 }
 
