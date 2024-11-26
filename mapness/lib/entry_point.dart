@@ -117,12 +117,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
+  StreamSubscription? _navigationEventsListener;
 
   @override
   void initState() {
     super.initState();
     initMixpanel();
     initDeepLinks();
+    listenNavigationEvents();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // Update MediaQueryInfoProvider with the initial MediaQuery
@@ -146,6 +148,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   void dispose() {
     _linkSubscription?.cancel();
     _locationListener?.close();
+    _navigationEventsListener?.cancel();
 
     super.dispose();
   }
@@ -155,19 +158,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
 
     if (state != null) {
-      final extra = {
-        'data': RouteSearchOptionsMessageExt.fromString(type!),
-        'restoreFromState': true,
-      };
+      final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
+      final router = ref.read(goRouterProvider);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
-          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+          PathNavRoute.open(router, routeSearchOptions, initAction: PathNavPageInitAction.restoreFromState);
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+              PathNavRoute.open(router, routeSearchOptions, initAction: PathNavPageInitAction.restoreFromState);
             }
           });
         }
@@ -175,25 +176,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  // TODO(Sergei): add NavigationState listening, when navigation start from AA, CarPlay is implemented
   Future<void> checkNavigationState() async {
     final controller = await ref.read(dgisControllerProvider.future);
     final navStateMessage = await controller.getCurrentNavigationState();
 
     if (navStateMessage.state == NavigationState.navigation) {
-      final extra = {
-        'data': navStateMessage.routeSearchOptions,
-        'restoreFromState': false,
-      };
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
+        final router = ref.read(goRouterProvider);
         if (location != null) {
-          ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+          PathNavRoute.open(router, navStateMessage.routeSearchOptions);
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              ref.read(goRouterProvider).go(const PathNavRoute().location, extra: extra);
+              PathNavRoute.open(router, navStateMessage.routeSearchOptions);
             }
           });
         }
@@ -337,6 +334,20 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         print('_linkSubscription $uri');
       }
       openAppLink(uri);
+    });
+  }
+
+  Future<void> listenNavigationEvents() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
+      final router = ref.read(goRouterProvider);
+      final matches = router.routerDelegate.currentConfiguration.matches;
+      final isNavPage = matches.last.matchedLocation == PathNavRoute.path;
+      final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
+      if (navigation && !isNavPage) {
+        final navStateMessage = await dgisController.getCurrentNavigationState();
+        PathNavRoute.open(ref.read(goRouterProvider), navStateMessage.routeSearchOptions);
+      }
     });
   }
 
@@ -512,7 +523,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-
   final instance = FirebaseRemoteConfig.instance;
   await instance.ensureInitialized();
   await instance.fetchAndActivate();
@@ -545,8 +555,6 @@ Future<void> setupMapness(EnvType envType) async {
   final envConfigResponse = instance.getValue(MapnessConstants.firebaseAppEnvConfigKey);
   final envJsonString = jsonEncode(jsonDecode(envConfigResponse.asString()));
   await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
-
-
 }
 
 class MapnessLogger {
