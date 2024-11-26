@@ -91,7 +91,6 @@ class ApplicantInfoSection extends StatelessWidget {
                                         ?.relationship ??
                                     "",
                                 hintText: "ekramRelationShip".tr(),
-                                keyboardType: TextInputType.phone,
                                 onChanged: (String? text) {
                                   if (text != null) {
                                     context
@@ -114,11 +113,11 @@ class ApplicantInfoSection extends StatelessWidget {
                               hint: "",
                             ),
                             Container(
-                              padding: EdgeInsets.all(10),
+                              padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(15.0),
-                                  color: Color(0x0e7fa891)),
-                              child: Text(
+                                  color: const Color(0x0e7fa891)),
+                              child: const Text(
                                 'لحالات النقل من غير المستشفى، يرجى مراجعة الجهات ذات العلاقة:\n\u2022 مراجعة الشرطة للوفاة داخل المنزل.\n\u2022 مراجعة المرور للوفاة بسبب حادث.\n\u2022 مراجعة الدفاع المدني بسبب حادث غير مروري.\n',
                                 style: TextStyle(color: Color(0xff155F75)),
                               ),
@@ -134,7 +133,7 @@ class ApplicantInfoSection extends StatelessWidget {
             EkramPreviousNextButtons(btnPressed: () {
               context
                   .read<EkramRequestTransportationBloc>()
-                  .add(saveDeceasedInfoEvent());
+                  .add(const saveDeceasedInfoEvent());
             })
           ],
         );

@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/transport_request_item.dart';
 
-class TransportRequestItemModel{
+class TransportRequestItemModel {
   TransportRequestItemModel({
     this.requestId,
     this.subMunicipalityName,
@@ -15,6 +15,7 @@ class TransportRequestItemModel{
     this.cemeteryName,
     this.hospitalName,
     this.gender,
+    this.genderName,
     this.isMuslim,
     this.requestDate,
     this.assignDriverDate,
@@ -41,7 +42,8 @@ class TransportRequestItemModel{
     this.tripable,
     this.draft,
     this.transferring,
-    this.done,});
+    this.done,
+  });
 
   TransportRequestItemModel.fromJson(dynamic json) {
     requestId = json['requestId'];
@@ -57,6 +59,7 @@ class TransportRequestItemModel{
     cemeteryName = json['cemeteryName'];
     hospitalName = json['hospitalName'];
     gender = json['gender'];
+    genderName = json['genderName'];
     isMuslim = json['isMuslim'];
     requestDate = json['requestDate'];
     deathDate = json['deathDate'];
@@ -98,6 +101,7 @@ class TransportRequestItemModel{
   String? cemeteryName;
   String? hospitalName;
   String? gender;
+  String? genderName;
   bool? isMuslim;
   String? requestDate;
   String? assignDriverDate;
@@ -125,6 +129,4 @@ class TransportRequestItemModel{
   bool? draft;
   bool? transferring;
   bool? done;
-
-
 }

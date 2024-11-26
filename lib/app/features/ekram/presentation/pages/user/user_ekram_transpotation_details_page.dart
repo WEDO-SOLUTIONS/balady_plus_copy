@@ -27,7 +27,6 @@ class UsersEkramTransportationDetailsPage extends StatefulWidget {
 
 class _UsersEkramTransportationDetailsPageState
     extends State<UsersEkramTransportationDetailsPage> {
-
   AddTripBloc? bloc;
   ExtraDataBloc? extraDataBloc;
   @override
@@ -36,7 +35,6 @@ class _UsersEkramTransportationDetailsPageState
     super.initState();
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.detailsServiceBodyTransportation);
-
   }
 
   @override
@@ -44,41 +42,45 @@ class _UsersEkramTransportationDetailsPageState
     TransportRequestItemModel params =
         ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
 
-    params.requestId = 4617335922;
-     bloc ??= AddTripBloc(
-      deleteTrip: sl(),
-      completeTrip: sl(),
-      getTrips: sl(),
-      editTrip: sl(),
-      getTripStations: sl(),
-      model: params,
-      context: context,
-      addTrip: sl(),
-      updateDriverLocation: sl())
-       ..add(GetTripsEvent());
+    // params.requestId = 4617335922;
+    bloc ??= AddTripBloc(
+        deleteTrip: sl(),
+        completeTrip: sl(),
+        getTrips: sl(),
+        editTrip: sl(),
+        getTripStations: sl(),
+        model: params,
+        context: context,
+        addTrip: sl(),
+        updateDriverLocation: sl())
+      ..add(const GetTripsEvent());
 
-    extraDataBloc=  ExtraDataBloc(getGhuslEmployees: sl(),getDeceasedAttachment: sl(),uploadAttachment: sl(), editAdditionalData: sl(),deleteAttachment: sl());
-    extraDataBloc!.add(GetDeceasedAttachmentEvent(requestId: params.requestId!));
-
+    extraDataBloc = ExtraDataBloc(
+        getGhuslEmployees: sl(),
+        getDeceasedAttachment: sl(),
+        uploadAttachment: sl(),
+        editAdditionalData: sl(),
+        deleteAttachment: sl());
+    extraDataBloc!
+        .add(GetDeceasedAttachmentEvent(requestId: params.requestId!));
 
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
-          getCities: sl(),
-          getRequestDetails: sl(),
-          getHospitals: sl(),
-          getNationalities: sl(),
-          applyDeceasedTransport: sl(),
-          getCemeteryTypesLookUp: sl(),
-      )..add(getRequestDetailsEvent(requestId: params.requestId!)),//
+        getCities: sl(),
+        getRequestDetails: sl(),
+        getHospitals: sl(),
+        getNationalities: sl(),
+        applyDeceasedTransport: sl(),
+        getCemeteryTypesLookUp: sl(),
+      )..add(getRequestDetailsEvent(requestId: params.requestId!)), //
 
-      child: BlocConsumer<EkramRequestTransportationBloc, EkramRequestTransportationState>(
-          listener: (context, state) {
-
-            if (state.status == BlocStatus.failure) {
-              CommonFunctions.showError(state.errorMessage ?? "");
-            }
-          },
-        builder: (context, state){return Scaffold(
+      child: BlocConsumer<EkramRequestTransportationBloc,
+          EkramRequestTransportationState>(listener: (context, state) {
+        if (state.status == BlocStatus.failure) {
+          CommonFunctions.showError(state.errorMessage ?? "");
+        }
+      }, builder: (context, state) {
+        return Scaffold(
           backgroundColor: AppColor.white2,
           appBar: DetailsHeader(
             titleWidget: Row(
@@ -92,7 +94,6 @@ class _UsersEkramTransportationDetailsPageState
                   fontWeight: AppFontWeight.bold,
                   fontColor: AppColor.blackModern700Light,
                 ),
-
               ],
             ),
           ),
@@ -106,9 +107,8 @@ class _UsersEkramTransportationDetailsPageState
                     children: [
                       Row(
                         children: [
-
                           CustomTextWidget(
-                           "${"posters_permit_request_id".tr()} ${params.requestId}",
+                            "${"posters_permit_request_id".tr()} ${params.requestId}",
                             fontColor: AppColor.blackModern500Light,
                             fontSize: 12,
                             fontWeight: AppFontWeight.bold,
@@ -122,19 +122,40 @@ class _UsersEkramTransportationDetailsPageState
                     ],
                   ),
                   Constants.verticalSpaceSmall,
-                  DeceasedInfoWidget_new(item:state.requestDetailsModel?.deceasedInfo),
-                  SizedBox(height: 20,),
-                   ApplicantInfoWidget(item:state.requestDetailsModel?.mainInfo),
-                   SizedBox(height: 20,),
-                   BurialInfoWidget(deathInfo:state.requestDetailsModel?.deathInfo ,burialInfo: state.requestDetailsModel?.burialInfo,cemeteryData: state.requestDetailsModel?.cemeteryData,transportInfo: state.requestDetailsModel?.transportInfo,),
-                  SizedBox(height: 20,),
-                  AttachmentInfoWidget(bloc:extraDataBloc, requestId: params.requestId!,model: state.requestDetailsModel?.locationInfo,),
-                  SizedBox(height: 20,),
-                  DriversInfoWidget(bloc: bloc,),
+                  DeceasedInfoWidget_new(
+                      item: state.requestDetailsModel?.deceasedInfo),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  ApplicantInfoWidget(
+                      item: state.requestDetailsModel?.mainInfo),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  BurialInfoWidget(
+                    deathInfo: state.requestDetailsModel?.deathInfo,
+                    burialInfo: state.requestDetailsModel?.burialInfo,
+                    cemeteryData: state.requestDetailsModel?.cemeteryData,
+                    transportInfo: state.requestDetailsModel?.transportInfo,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  AttachmentInfoWidget(
+                    bloc: extraDataBloc,
+                    requestId: params.requestId!,
+                    model: state.requestDetailsModel?.locationInfo,
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  DriversInfoWidget(
+                    bloc: bloc,
+                  ),
 
-
-
-                  SizedBox(height: 30,)
+                  const SizedBox(
+                    height: 30,
+                  )
                   // TransferInfo
                   // DriversInfo
                   //  DriversInfoWidget(),
@@ -144,15 +165,12 @@ class _UsersEkramTransportationDetailsPageState
                   //
                   // BurialInfo
                   //  ,
-
                 ],
               ),
             ),
           ),
         );
-          }
-
-        ),
+      }),
     );
   }
 }

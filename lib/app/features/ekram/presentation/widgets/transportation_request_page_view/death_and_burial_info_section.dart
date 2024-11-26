@@ -212,7 +212,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             Column(
                               children: [
                                 CustomTextFieldWidget(
-                                    label: "${"hospital_name".tr()}*",
+                                    label: "hospital_name".tr(),
                                     initialValue: state.requestDetailsModel?.deathInfo?.hospitalOther,
                                     hintText: "hospital_name".tr(),
                                     onChanged: (String? text) {

@@ -339,6 +339,39 @@ class EkramRequestTransportationBloc extends Bloc<
         deceassedDOBHijri: Nullable(CommonFunctions.padHijriDate(hijri))));
   }
 
+  String? validateNationalId(String? input) {
+    if (state.selectedNationalIdType?.id == 1) {
+      if (!(input?.startsWith("1") ?? false) ||
+          (input?.length ?? 0) < 10 ||
+          (input?.length ?? 0) > 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if (state.selectedNationalIdType?.id == 3) {
+      if (!(input?.startsWith("2") ?? false) ||
+          (input?.length ?? 0) < 10 ||
+          (input?.length ?? 0) > 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if (state.selectedNationalIdType?.id == 9 ||
+        state.selectedNationalIdType?.id == 10) {
+      if ((input?.startsWith("2") ?? false) ||
+          (input?.startsWith("1") ?? false) ||
+          (input?.length ?? 0) < 10 ||
+          (input?.length ?? 0) > 10) {
+        return "wrong_input_data".tr();
+      } else {
+        return null;
+      }
+    } else if ((input?.length ?? 0) > 10) {
+      return "wrong_input_data".tr();
+    }
+    return null;
+  }
+
   Future<List<LookUpItem>?> getCemetryTypeItemsHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -581,8 +614,7 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
     }, (success) {
       print("Succ3ess $success");
-      success.data?.result
-          ?.insert(0, LookUpItem(id: -1, name: trans("other_hospital")));
+      success.data?.result;
       print("Succ3ess 555 ${success.data?.result?.length}");
 
       emitter(state.copyWith(

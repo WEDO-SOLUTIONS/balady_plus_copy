@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
@@ -51,6 +52,16 @@ class _EkramRequestTransportationStartServiceState
         body: Column(
           children: [
             const Expanded(child: ServiceCardDescDynamicWidget()),
+            Container(
+                height: 100,
+                padding: const EdgeInsets.all(8.0),
+                margin: const EdgeInsets.all(8.0),
+                decoration: const BoxDecoration(
+                    color: AppColor.grayLight,
+                    borderRadius: BorderRadius.all(Radius.circular(15.0))),
+                child: const Text(
+                    'تشارككم وزارة البلديات والإسكان أحزانكم في وفاة فقيدكم، وتتقدم بخالص التعازي والمواساة لأسرته الكريمة، راجين لكم الصبر و السلوان',
+                    textAlign: TextAlign.center)),
             Container(
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(

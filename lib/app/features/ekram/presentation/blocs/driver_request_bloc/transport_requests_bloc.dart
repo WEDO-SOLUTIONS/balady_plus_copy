@@ -50,7 +50,7 @@ class TransportRequestsBloc
 
     final failureOrSuccess = await _getDeceasedTransportRequests(
         GetRequestsParams(
-            page: state.currentPage + 1, size: 10, isDriver: true));
+            page: state.currentPage + 1, size: 10, isDriver: state.isDriver));
 
     failureOrSuccess.fold((failure) {
       String? errorCode = (failure as ServerFailure).errorCode;

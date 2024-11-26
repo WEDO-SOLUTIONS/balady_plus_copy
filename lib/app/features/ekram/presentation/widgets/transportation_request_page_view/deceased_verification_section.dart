@@ -15,17 +15,15 @@ import '../../../../../core/services/local/helpers.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class DeceasedVerificationSection extends StatelessWidget {
-   DeceasedVerificationSection({super.key});
+  DeceasedVerificationSection({super.key});
 
-  final TextEditingController? decesssedIdentity= TextEditingController();
+  final TextEditingController? decesssedIdentity = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-
     return BlocConsumer<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
-      listener: (context, state) {
-      },
+      listener: (context, state) {},
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -86,26 +84,40 @@ class DeceasedVerificationSection extends StatelessWidget {
                             ),
                             CustomTextFieldWidget(
                               label: "ekram_decesssed_identity".tr(),
-                              isDigitsOnly: true,
-                             controller :decesssedIdentity,
-                              keyboardType: TextInputType.number,
+                              isDigitsOnly: state.selectedNationalIdType?.id ==
+                                          1 ||
+                                      state.selectedNationalIdType?.id == 3 ||
+                                      state.selectedNationalIdType?.id == 9 ||
+                                      state.selectedNationalIdType?.id == 10
+                                  ? true
+                                  : false,
+                              controller: decesssedIdentity,
+                              keyboardType: state.selectedNationalIdType?.id ==
+                                          1 ||
+                                      state.selectedNationalIdType?.id == 3 ||
+                                      state.selectedNationalIdType?.id == 9 ||
+                                      state.selectedNationalIdType?.id == 10
+                                  ? TextInputType.number
+                                  : TextInputType.text,
                               onChanged: (String? val) {
-                                if(val != null) {
+                                if (val != null) {
                                   decesssedIdentity?.text = val;
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeIdEvent(deceasedId: val));
                                 }
                               },
+                              onValidate: context
+                                  .read<EkramRequestTransportationBloc>()
+                                  .validateNationalId,
                             ),
-                            DeceasedBirthdateHijri(),
-                            DeceasedBirthdateGregorian(),
+                            const DeceasedBirthdateHijri(),
+                            const DeceasedBirthdateGregorian(),
                             ElevatedButtonWidget.primaryCustomBorder(
                               onPressed: () async {
-
                                 context
                                     .read<EkramRequestTransportationBloc>()
-                                    .add(VerifyDeceasedEvent());
+                                    .add(const VerifyDeceasedEvent());
                               },
                               text: "verify".tr(),
                             )
@@ -117,9 +129,13 @@ class DeceasedVerificationSection extends StatelessWidget {
                 ),
               ),
             ),
-             EkramPreviousNextButtons(btnPressed: (){
-               context.read<EkramRequestTransportationBloc>().add(GoToNextPageEvent());
-             },)
+            EkramPreviousNextButtons(
+              btnPressed: () {
+                context
+                    .read<EkramRequestTransportationBloc>()
+                    .add(const GoToNextPageEvent());
+              },
+            )
           ],
         );
       },

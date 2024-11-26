@@ -80,7 +80,7 @@ class EkramTransporationCardWidget extends StatelessWidget {
                   ),
                   RequestParameter(
                     title: 'sex'.tr(),
-                    value: ekramTransportationItem.gender ?? "",
+                    value: ekramTransportationItem.genderName ?? "",
                   ),
                   RequestParameter(
                     title: 'ekramReligion'.tr(),
