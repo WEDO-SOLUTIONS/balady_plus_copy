@@ -51,29 +51,41 @@ class CustomRenderer {
 
     private fun draw(customRendererData: CustomRendererData, canvas: Canvas) {
         val speedInfo = customRendererData.speedInfo
+        val speedLimit = speedInfo.speedLimit
+        if (speedLimit != null && speedLimit != 0) {
+            drawSpeedLimit(speedLimit, speedInfo.speedLimitExceeded, canvas)
+        }
         drawSpeed(speedInfo.currentSpeed, canvas)
     }
 
     private fun drawSpeed(speed: Int, canvas: Canvas) {
         paint.apply {
+            color = Color.TRANSPARENT
+            style = Paint.Style.FILL
+            setShadowLayer(2f, 0f, 0f, Color.parseColor("#12000000"))
+        }
+        val centerX = canvas.width - 120f
+        val centerY = canvas.height - 46f
+        canvas.drawCircle(centerX, centerY, 36f, paint)
+        paint.apply {
             color = Color.WHITE
             style = Paint.Style.FILL
+            clearShadowLayer()
         }
-        val centerX = canvas.width - 45f
-        val centerY = 30f + controlsOffset
-        canvas.drawCircle(centerX, centerY, 20f, paint)
+        canvas.drawCircle(centerX, centerY, 32f, paint)
         paint.apply {
+            reset()
             color = Color.BLACK
             style = Paint.Style.FILL
-            textSize = 18f
+            textSize = 28f
             textAlign = Paint.Align.CENTER
         }
         canvas.drawText("$speed", centerX, centerY + paint.textSize / 3, paint)
     }
 
-    private fun drawSpeedLimit(speedLimit: Int?, exceeded: Boolean, canvas: Canvas) {
-        val centerX = canvas.width - 39f
-        val centerY = 39f + controlsOffset
+    private fun drawSpeedLimit(speedLimit: Int, exceeded: Boolean, canvas: Canvas) {
+        val centerX = canvas.width - 169f
+        val centerY = canvas.height - 46f
         if (exceeded) {
             paint.apply {
                 color = Color.RED
@@ -100,8 +112,7 @@ class CustomRenderer {
             textSize = 24f
             textAlign = Paint.Align.CENTER
         }
-        val value = speedLimit?.toString() ?: "--"
-        canvas.drawText(value, centerX, centerY + paint.textSize / 3, paint)
+        canvas.drawText(speedLimit.toString(), centerX, centerY + paint.textSize / 3, paint)
     }
 
     private fun clearCanvas(canvas: Canvas) {
