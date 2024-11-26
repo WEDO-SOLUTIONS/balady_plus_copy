@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
+import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_tab_bar.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';

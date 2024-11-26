@@ -13,7 +13,6 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -40,6 +39,8 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 import 'package:urbi_analytics/logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
+
+enum PathNavPageInitAction { startNavigation, restoreFromState }
 
 /// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
 /// You don't need to add black background to make the app similar to the other app

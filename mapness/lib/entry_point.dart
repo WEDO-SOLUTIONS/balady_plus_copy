@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -31,6 +32,7 @@ import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functionds.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -159,8 +161,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           ref.read(appRouterProvider).push(
                 PathNavRoute(
                   navType: routeSearchOptions,
-                  restoreFromState: true,
-                    initAction: PathNavPageInitAction.restoreFromState
+                  initAction: PathNavPageInitAction.restoreFromState,
                 ),
               );
         } else {
@@ -186,12 +187,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (navStateMessage.state == NavigationState.navigation) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
-        final router = ref.read(goRouterProvider);
         if (location != null) {
           ref.read(appRouterProvider).push(
                 PathNavRoute(
                   navType: navStateMessage.routeSearchOptions,
-                  restoreFromState: false,
+                  initAction: null,
                 ),
               );
         } else {
@@ -201,7 +201,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               ref.read(appRouterProvider).push(
                     PathNavRoute(
                       navType: navStateMessage.routeSearchOptions,
-                      restoreFromState: false,
+                      initAction: null,
                     ),
                   );
             }
@@ -328,13 +328,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
-      final router = ref.read(goRouterProvider);
-      final matches = router.routerDelegate.currentConfiguration.matches;
-      final isNavPage = matches.last.matchedLocation == PathNavRoute.path;
+      final matches = context.router.matcher.collection;
+      final isNavPage = matches.routes.last.name == PathNavRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       if (navigation && !isNavPage) {
         final navStateMessage = await dgisController.getCurrentNavigationState();
-        PathNavRoute.open(ref.read(goRouterProvider), navStateMessage.routeSearchOptions);
+        await context.router.push(
+          PathNavRoute(
+            navType: navStateMessage.routeSearchOptions,
+            initAction: null,
+          ),
+        );
       }
     });
   }
