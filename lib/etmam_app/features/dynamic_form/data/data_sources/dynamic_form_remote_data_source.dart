@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:balady_plus/app/core/errors/errors_exports.dart' as balday;
+import 'package:balady_plus/app/core/errors/failures.dart' ;
 import 'package:http_parser/http_parser.dart';
 
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
@@ -173,6 +175,7 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
     print("HEREEEE");
     print("${ApiUrl.getFormFieldsData}/${params.fieldId}");
     try {
+
       response = await webService.dio.post(
           "${ApiUrl.getFormFieldsData}/${params.fieldId}",
           data: params.toMap(),
@@ -205,7 +208,12 @@ class DynamicFormRemoteDataSourceImpl extends DynamicFormRemoteDataSource {
           stackTrace: stackTrace.toString(),
         ),
       );
+
       print(error);
+      if( error is balday.NoInternetConnectionException){
+        rethrow;
+      }
+
       throw ServerException(
         error.toString(),
         statusCode: error.response?.statusCode,
