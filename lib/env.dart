@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
     as diEtmam show initialize;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart'
     show BoxShadow, Color, Colors, WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
@@ -32,13 +33,23 @@ abstract class AppEnv {
     ///  await _deleteAppDir();
     // await _deleteCacheDir();
     WidgetsFlutterBinding.ensureInitialized();
-      final status = await AppTrackingTransparency.requestTrackingAuthorization();
+    final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config =
         AdjustConfig('tung4x27vt34', AdjustEnvironment.sandbox);
     config.fbAppId = "1668346683733303";
-    if (status == TrackingStatus.authorized) {
+    if (Platform.isIOS) {
+      if (status == TrackingStatus.authorized) {
+        Adjust.initSdk(config);
+      }
+    } else {
       Adjust.initSdk(config);
     }
+    Adjust.getGoogleAdId().then((googleAdId) {
+      if (kDebugMode) {
+        print(googleAdId);
+      }
+      // Use googleAdId string value.
+    });
 
     /// force app to be only portrait
     SystemChrome.setPreferredOrientations([
