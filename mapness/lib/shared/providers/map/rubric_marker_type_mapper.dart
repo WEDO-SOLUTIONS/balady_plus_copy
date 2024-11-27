@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:firebase_remote_config/firebase_remote_config.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/entities/search/models/rubric_marker_info.dart';
 import 'package:mapness/shared/constants/remote_config_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
@@ -26,10 +27,9 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
       final List<dynamic> decoded = jsonDecode(markerTypeValue);
 
       return decoded.map((e) => RubricMarkerInfo.fromJson(e)).toList();
-    } on Exception catch (_) {
-      // TODO(ilyasov): log the exception to the crashlytics
-
+    } on Exception catch (e, stackTrace) {
       // if there is an Exception (CheckedFromJsonException e.g.), return an empty list
+      FlutterUxcam.reportExceptionEvent(e, stackTrace);
       return List<RubricMarkerInfo>.empty();
     } on Object catch (_) {
       rethrow;
