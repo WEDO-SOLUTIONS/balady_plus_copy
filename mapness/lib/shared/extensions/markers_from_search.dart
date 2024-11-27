@@ -60,12 +60,12 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
   Future<List<Marker>> getMarkers({
     required GoRouter router,
     required MapMarkersType? Function(Set<int>) iconResolver,
-    // MarkerIconMessage? icon,
     bool withLabel = true,
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
-    for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo
+        in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       if (markerInfo != null) {
         final objectId = markerInfo.objectId?.objectId;
         final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
@@ -76,11 +76,15 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             id: objectId?.toString() ?? _invalidMarkerId,
             onTap: () {
               Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
-                  group: MetricsConstants.poiTag, action: MetricAction.tap.toString(), props: {_propertyKey: objectId});
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {_propertyKey: objectId});
               PoiMapRoute.open(router, objectId!);
             },
             options: MarkerOptionsMessage(
-              text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
+              text: withLabel && markerInfo.title != null
+                  ? _breakLineInTwo(_removeComma(markerInfo.title!))
+                  : null,
               textStyle: MarkerTextStyleMessage(
                 color: 0xff1E2A36,
                 fontSize: 13,
@@ -89,7 +93,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 strokeColor: 0xD3FFFFFF,
                 strokeWidth: 1.25,
                 textPlacement: MarkerTextPlacementMessage(
-                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
+                  placement: isRtl
+                      ? TextPlacementMessage.leftCenter
+                      : TextPlacementMessage.rightCenter,
                 ),
               ),
               position: markerInfo.geoPoint,
