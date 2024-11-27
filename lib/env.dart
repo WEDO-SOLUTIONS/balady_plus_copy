@@ -35,7 +35,7 @@ abstract class AppEnv {
     WidgetsFlutterBinding.ensureInitialized();
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
     AdjustConfig config =
-        AdjustConfig('tung4x27vt34', AdjustEnvironment.sandbox);
+        AdjustConfig('tung4x27vt34',(type == EnvType.prod) ? AdjustEnvironment.production:AdjustEnvironment.sandbox);
     config.fbAppId = "1668346683733303";
     if (Platform.isIOS) {
       if (status == TrackingStatus.authorized) {
