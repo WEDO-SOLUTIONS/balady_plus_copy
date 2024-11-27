@@ -494,7 +494,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "municipal_health", "description": null, "tag": null},
       "en": {"title": "municipal_health", "description": null, "tag": null}
     },*/
-    {
+    /*{
       "id": 305,
       "icon": "municpal_housing",
       "3d_icon": null,
@@ -508,7 +508,7 @@ Map<String, dynamic> servicesConfig = {
       },
       "ar": {"title": "municpal_housing", "description": null, "tag": null},
       "en": {"title": "municpal_housing", "description": null, "tag": null}
-    },
+    },*/
     {
       "id": 306,
       "icon": "municipal_ewaa",
