@@ -38,14 +38,15 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
             maxLines: 1,
             textAlign: TextAlign.start,
           ),
-          if (subtitleIcon != null) ...[
-            const SizedBox(width: Spacing.$1x),
-            Icon(
-              subtitleIcon,
-              color: context.color.textAndIconsBaseSecondary,
-              size: 24,
+          if (subtitleIcon != null)
+            Padding(
+              padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+              child: Icon(
+                subtitleIcon,
+                color: context.color.textAndIconsBaseSecondary,
+                size: 24,
+              ),
             )
-          ]
         ],
       ),
     );

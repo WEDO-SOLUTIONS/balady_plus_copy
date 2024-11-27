@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -51,42 +52,43 @@ class PoiHeader extends ConsumerWidget {
     final subtitleIcon = _getParkingIcon(data);
     final title = address?.buildingName ?? data.title;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
-      decoration: const ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
+    return DecoratedBox(
+      decoration: ShapeDecoration(
+        color: context.colorsV2.backgroundScreen,
+        shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(RadiusBorder.xl),
             topRight: Radius.circular(RadiusBorder.xl),
           ),
         ),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CardHeader(
-            title: CardHeaderWidget(child: TitleComponent(title: title)),
-            onTapClose: onTapClose,
-            subTitle: CardHeaderWidget(
-              child: SubtitleComponent(
-                subtitle: subTitle,
-                subtitleIcon: subtitleIcon,
+      child: Padding(
+        padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CardHeader(
+              title: CardHeaderWidget(child: TitleComponent(title: title)),
+              onTapClose: onTapClose,
+              subTitle: CardHeaderWidget(
+                child: SubtitleComponent(
+                  subtitle: subTitle,
+                  subtitleIcon: subtitleIcon,
+                ),
               ),
             ),
-          ),
-          if (workingHours?.title != null)
-            WorktimeComponent(
-              worktime: workingHours!.title,
+            if (workingHours?.title != null)
+              WorktimeComponent(
+                worktime: workingHours!.title,
+              ),
+            TabComponent(
+              tabController: tabController,
+              objectId: data.id?.objectId ?? 0,
+              poiCardState: poiCardState,
             ),
-          TabComponent(
-            tabController: tabController,
-            objectId: data.id?.objectId ?? 0,
-            poiCardState: poiCardState,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

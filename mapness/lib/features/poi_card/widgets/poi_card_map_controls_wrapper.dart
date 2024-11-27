@@ -18,14 +18,12 @@ class PoiCardMapControlsWrapper extends StatefulWidget {
 }
 
 class _PoiCardMapControlsWrapperState extends State<PoiCardMapControlsWrapper> with TickerProviderStateMixin {
+  final ValueNotifier<bool> ignoreControls = ValueNotifier(false);
   late final AnimationController opacityAnimation;
-
-  bool hideControls = false;
-  double opacity = 1.0;
 
   @override
   void initState() {
-    opacityAnimation = AnimationController(vsync: this, value: opacity);
+    opacityAnimation = AnimationController(vsync: this, value: 1.0);
     widget.bottomSheetController.addListener(updateOpacity);
 
     super.initState();
@@ -35,8 +33,9 @@ class _PoiCardMapControlsWrapperState extends State<PoiCardMapControlsWrapper> w
     final state = widget.bottomSheetController.state;
     final interpolation = widget.bottomSheetController.interpolation;
 
-    hideControls = state.index + interpolation > PoiCardBottomSheetState.halfOpen.index;
-    opacity = hideControls ? max(0.0, 1 - state.index + (1 - Curves.decelerate.transform(interpolation) * 3)) : 1.0;
+    ignoreControls.value = state.index + interpolation > PoiCardBottomSheetState.halfOpen.index;
+    final opacity =
+        ignoreControls.value ? max(0.0, 1 - state.index + (1 - Curves.decelerate.transform(interpolation) * 3)) : 1.0;
     opacityAnimation.value = opacity;
   }
 
@@ -60,27 +59,15 @@ class _PoiCardMapControlsWrapperState extends State<PoiCardMapControlsWrapper> w
   }
 
   @override
-  Widget build(BuildContext context) => ListenableBuilder(
-        listenable: widget.bottomSheetController,
-        builder: (context, child) {
-          final height = MediaQuery.sizeOf(context).height;
-          return RepaintBoundary(
-            child: IgnorePointer(
-              ignoring: hideControls,
-              child: FadeTransition(
-                opacity: opacityAnimation,
-                child: SizedBox(
-                  height: opacity == 0.0
-                      ? 0.0
-                      : height -
-                          widget.bottomSheetController.sheetHeight -
-                          widget.bottomSheetController.componentSizes.topHeader,
-                  child: child,
-                ),
-              ),
-            ),
-          );
-        },
-        child: const PoiCardMapControls(),
+  Widget build(BuildContext context) => ValueListenableBuilder(
+        valueListenable: ignoreControls,
+        builder: (context, ignore, child) => IgnorePointer(
+          ignoring: ignore,
+          child: child,
+        ),
+        child: FadeTransition(
+          opacity: opacityAnimation,
+          child: const PoiCardMapControls(),
+        ),
       );
 }

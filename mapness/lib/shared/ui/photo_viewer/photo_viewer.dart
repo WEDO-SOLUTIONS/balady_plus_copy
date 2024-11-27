@@ -22,7 +22,7 @@ class PhotoViewerWidget extends StatefulWidget {
 
 class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   static const backgroundColor = Color(0xff0B1218);
-  String _title = '';
+  final ValueNotifier<String> title = ValueNotifier('');
   late PageController pageController;
   late ValueNotifier<bool> isAppBarVisible;
   late final MultiImageProvider multiImageProvider;
@@ -35,22 +35,18 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
     pageController.addListener(updateTitle);
     isAppBarVisible = ValueNotifier(true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        _title = getTitle(widget.currentPhotoIndex);
-      });
+      title.value = getTitle(widget.currentPhotoIndex);
     });
   }
 
   @override
   void didUpdateWidget(covariant PhotoViewerWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    _title = getTitle(widget.currentPhotoIndex);
+    title.value = getTitle(widget.currentPhotoIndex);
   }
 
   void updateTitle() {
-    setState(() {
-      _title = getTitle(pageController.page?.round() ?? 0);
-    });
+    title.value = getTitle(pageController.page?.round() ?? 0);
   }
 
   @override
@@ -70,7 +66,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
               extendBodyBehindAppBar: true,
               appBar: isAppBarVisible
                   // TODO: Update when BaladyTopBar starts supporting background color
-                  ? _PhotoAppBar(title: _title)
+                  ? _PhotoAppBar(title: title)
                   : null,
               body: child,
             ),
@@ -114,7 +110,7 @@ const _appBarBackground = [
 ];
 
 class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final ValueNotifier<String> title;
 
   const _PhotoAppBar({
     required this.title,
@@ -135,22 +131,24 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
           ),
-          BaladyTopBar(
-            textStyle: context.textStyle.callout.copyWith(color: Colors.white),
-            title: title,
+          ValueListenableBuilder(
+              valueListenable: title,
+              builder: (context, value, _) => BaladyTopBar(
+                    textStyle: context.textStyle.callout.copyWith(color: Colors.white),
+                    title: value,
 
-            /// TODO(ui_kit): Fix leading in UIKIT
-            leading: Container(
-              padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-              alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-              child: const Icon(
-                SystemIcons.arrowCornerLeftSmall,
-                color: Colors.white,
-                size: 24,
-              ),
-            ),
-            onLeadingPressed: () => context.pop(),
-          ),
+                    /// TODO(ui_kit): Fix leading in UIKIT
+                    leading: Container(
+                      padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                      alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+                      child: const Icon(
+                        SystemIcons.arrowCornerLeftSmall,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                    onLeadingPressed: () => context.pop(),
+                  )),
         ],
       );
 

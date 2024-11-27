@@ -7,8 +7,10 @@ import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 class QrLicenseService {
   QrLicenseService({required this.dio}) {
     (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
+      /// Create a http client with default settings for fetching a qr license
+      const defaultClientTimeout = Duration(seconds: 3);
       final client = HttpClient()
-        ..idleTimeout = const Duration(seconds: 3)
+        ..idleTimeout = defaultClientTimeout
         ..badCertificateCallback = (cert, host, port) => true;
       return client;
     };

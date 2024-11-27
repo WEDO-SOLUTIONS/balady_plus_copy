@@ -35,8 +35,8 @@ class _QrLicenseDataSource implements QrLicenseDataSource {
           },
         ),
       );
-
-      return ((result as Response<Map>).data?['data'] as Map)['result'] as Map<String, dynamic>;
+      // TODO: refactor to dto model
+      return ((result as Response<Map?>).data?['data'] as Map?)?['result'] as Map<String, dynamic>?;
     } on DioException catch (error) {
       print('[licenseDetails] DioError $error');
     } catch (error) {
