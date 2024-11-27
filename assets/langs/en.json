@@ -373,6 +373,7 @@
   "objection_details_objections_list": "Objection reasons",
   "objection_create_request": "Objection request",
   "objection_create_reason": "Objection reason",
+  "objection_create_reason_required": "Objection reason is required",
   "transaction_card_license_details": "Details",
   "transaction_card_license_apply": "Submitting an objection request",
   "no_transactions_requests": "No objectionable transactions",

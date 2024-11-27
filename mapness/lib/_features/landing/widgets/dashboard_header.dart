@@ -11,6 +11,7 @@ import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -92,7 +93,10 @@ class _DashboardMenu extends ConsumerWidget {
                     filterType: FilterType.custom,
                     title: context.l10n.go,
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                    onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
+                    onTap: () {
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+                      FreeRoamRoute.open(ref.watch(goRouterProvider));
+                    },
                   ),
                 ],
               ),
@@ -127,6 +131,9 @@ class DashboardHeader extends ConsumerWidget {
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
+
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results

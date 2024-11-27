@@ -158,7 +158,7 @@ class Generalinfowidget extends StatelessWidget {
               ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(vertical: 16, horizontal: 32),
+                    const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 decoration: BoxDecoration(
                   color: AppColor.white.withOpacity(0.10),
                   borderRadius: const BorderRadius.all(Radius.circular(12)),
@@ -166,80 +166,106 @@ class Generalinfowidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: AppColor.white.withOpacity(0.12),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(16)),
-                          ),
-                          child: SvgPicture.asset(
-                            IconPath.location1Icon,
-                            color: AppColor.white,
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "الحي",
-                              style: AppStyle.textRegularRomanStyle.copyWith(
-                                  color: AppColor.white.withOpacity(0.67),
-                                  fontSize: 12),
-                            ),
-                            const SizedBox(
-                              height: 4,
-                            ),
-                            Text(
-                              "${context.read<DetailsBloc>().args.gisData?.districtName ?? ""}",
-                              style: AppStyle.textRegularRomanStyle.copyWith(
-                                  color: AppColor.white, fontSize: 14),
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
-                    const Divider(
-                        height: 10, thickness: 1, color: AppColor.white),
-                    Row(
-                      children: [
-                        Container(
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
                             padding: const EdgeInsets.all(16),
                             decoration: BoxDecoration(
-                              color: AppColor.white.withOpacity(0.10),
+                              color: AppColor.white.withOpacity(0.12),
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(16)),
                             ),
                             child: SvgPicture.asset(
-                              IconPath.area1Icon,
+                              IconPath.location1Icon,
                               color: AppColor.white,
-                            )),
-                        const SizedBox(
-                          width: 12,
-                        ),
-                        Column(
-                          children: [
-                            Text(
-                              "المساحة",
-                              style: AppStyle.textRegularRomanStyle.copyWith(
-                                  color: AppColor.white.withOpacity(0.67),
-                                  fontSize: 12),
                             ),
-                            const SizedBox(
-                              height: 4,
+                          ),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "الحي",
+                                      style: AppStyle.textRegularRomanStyle
+                                          .copyWith(
+                                              color: AppColor.white
+                                                  .withOpacity(0.67),
+                                              fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  "${context.read<DetailsBloc>().args.gisData?.districtName ?? ""}",
+                                  style: AppStyle.textRegularRomanStyle
+                                      .copyWith(
+                                          color: AppColor.white, fontSize: 14),
+                                )
+                              ],
                             ),
-                            Text(
-                              "${context.read<DetailsBloc>().args.suggestedArea?.getItem() ?? ""}",
-                              style: AppStyle.textRegularRomanStyle.copyWith(
-                                  color: AppColor.white, fontSize: 14),
-                            )
-                          ],
-                        ),
-                      ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Divider(
+                        height: 10, thickness: 1, color: AppColor.white),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: AppColor.white.withOpacity(0.10),
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(16)),
+                              ),
+                              child: SvgPicture.asset(
+                                IconPath.area1Icon,
+                                color: AppColor.white,
+                              )),
+                          const SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "المساحة",
+                                      style: AppStyle.textRegularRomanStyle
+                                          .copyWith(
+                                              color: AppColor.white
+                                                  .withOpacity(0.67),
+                                              fontSize: 12),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 4,
+                                ),
+                                Text(
+                                  "${context.read<DetailsBloc>().args.suggestedArea?.getItem() ?? ""}",
+                                  style: AppStyle.textRegularRomanStyle
+                                      .copyWith(
+                                          color: AppColor.white, fontSize: 14),
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   ],
                 ),

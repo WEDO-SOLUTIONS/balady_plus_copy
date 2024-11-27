@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.net.Uri
 import android.util.Log
 import android.view.Surface
 import androidx.car.app.AppManager
+import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.ScreenManager
 import androidx.car.app.SessionInfo
@@ -43,15 +45,88 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     override fun onCreateScreen(intent: Intent): Screen {
         setupLocale()
         navigationScreen = NavigationScreen(carContext, carMapController, customRenderer)
+        val navigationState = carMapController.getCurrentNavigationState()
 
-        return if (carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            carMapController.onLocationOPermissionGranted()
-            navigationScreen!!
-        } else {
+        if (carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
-            RequestPermissionScreen(
+            if (navigationState == NavigationState.DISABLED) {
+                carContext.getCarService(ScreenManager::class.java)
+                    .push(StartNavigationMessageScreen(carContext))
+            }
+            return RequestPermissionScreen(
                 carContext, carMapController::onLocationOPermissionGranted
             )
+        }
+
+        carMapController.onLocationOPermissionGranted()
+        if (intent.action == CarContext.ACTION_NAVIGATE && intent.dataString != null) {
+            val geoPoint = parseGeoPoint(intent.dataString!!)
+            if (geoPoint != null) {
+                carMapController.setRouteParams(geoPoint.first, geoPoint.second)
+                return navigationScreen!!
+            }
+
+            val query = parseNavigationQuery(intent.dataString!!)
+            if (query != null) {
+                carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
+                return PlaceListScreen(carContext, carMapController, query)
+            }
+        }
+
+        if (navigationState == NavigationState.DISABLED) {
+            carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
+            return StartNavigationMessageScreen(carContext)
+        }
+        return navigationScreen!!
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        if (intent.action == CarContext.ACTION_NAVIGATE) {
+            handleNavigationIntent(intent)
+        }
+    }
+
+    private fun handleNavigationIntent(intent: Intent) {
+        carMapController.stopNavigation()
+
+        val data = intent.dataString ?: return
+        val point = parseGeoPoint(data)
+        if (point != null) {
+            carMapController.setRouteParams(point.first, point.second)
+            return
+        }
+
+        val query = parseNavigationQuery(data) ?: return
+        val placeListScreen = PlaceListScreen(carContext, carMapController, query)
+        val screenManager = carContext.getCarService(ScreenManager::class.java)
+        if (screenManager.top is PlaceListScreen) {
+            screenManager.pop()
+        }
+        screenManager.push(placeListScreen)
+    }
+
+    private fun parseGeoPoint(data: String): Pair<Double, Double>? {
+        val geo = data.substringAfter("geo:").substringBefore("?")
+        val parts = geo.split(",")
+        if (parts.size != 2) return null
+        return try {
+            val latitude = parts[0].toDouble()
+            val longitude = parts[1].toDouble()
+            if (latitude != 0.0 && longitude != 0.0) Pair(latitude, longitude) else null
+        } catch (e: NumberFormatException) {
+            // Values are not Doubles
+            null
+        }
+    }
+
+    private fun parseNavigationQuery(data: String): String? {
+        val query = data.substringAfter("q=", "")
+        if (query.isEmpty()) return null
+        return try {
+            val result = Uri.decode(query)
+            result?.replace("+", " ")?.ifEmpty { null }
+        } catch (e: Exception) {
+            null
         }
     }
 

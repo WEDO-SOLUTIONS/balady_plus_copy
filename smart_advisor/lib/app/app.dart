@@ -32,5 +32,23 @@ class SmartAdvisorApp extends StatelessWidget {
         ),
       ),
     );
+
+    return MaterialApp(
+      title: Language.appName,
+      debugShowCheckedModeBanner: false,
+      navigatorKey: NavigationService.navigatorKey,
+      theme: ThemeData(
+          primaryColor: AppColor.blue,
+          scaffoldBackgroundColor: AppColor.white,
+          fontFamily: AppConfig.appFontType,
+          appBarTheme: const AppBarTheme(backgroundColor: AppColor.white)),
+      builder: BotToastInit(),
+      navigatorObservers: [BotToastNavigatorObserver()],
+      localizationsDelegates: translator.delegates,
+      locale: translator.activeLocale,
+      supportedLocales: translator.locals(),
+      home: Onbordingpage(),
+      onGenerateRoute: AppRouter.allRoutes,
+    );
   }
 }

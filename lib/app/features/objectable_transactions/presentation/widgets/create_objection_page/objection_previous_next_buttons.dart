@@ -35,18 +35,15 @@ class ObjectionsNextButtons extends StatelessWidget {
                       : () {
                           if (!isLastPage) {
                             if (state.currentPageValue == 2) {
-                              if (state.reasons?.firstOrNull?.notes
-                                      ?.isNotEmpty ??
-                                  false)
-                                context
-                                    .read<CreateObjectionBloc>()
-                                    .add(GoToNextPageEvent());
-                              else {
-                                CommonFunctions.showError(
-                                        "must_enter_one_reason_for_objection"
-                                            .tr())
-                                    .tr();
-                              }
+
+
+                            if(validateForm(state)== true) {
+                              context
+                                  .read<CreateObjectionBloc>()
+                                  .add(GoToNextPageEvent());
+                            }
+
+
                             } else
                               context
                                   .read<CreateObjectionBloc>()
@@ -67,4 +64,38 @@ class ObjectionsNextButtons extends StatelessWidget {
       },
     );
   }
+
+  bool validateForm(CreateObjectionState state)
+  {
+    if(state.reasons != null) {
+      for (int index = 0; index < state.reasons!.length; index++) {
+
+        if (state.reasons?[index].notes
+            ?.isNotEmpty ?? false) {
+          if (state.reasons?[index].file == null) {
+            CommonFunctions.showError("municipalAdvisorAttachmentsRequired".tr());
+            return false;
+          }
+        }
+        else {
+
+          CommonFunctions.showError(
+              "objection_create_reason_required".tr());
+          return false;
+
+        }
+      }
+
+    }
+    else
+    {
+      CommonFunctions.showError(
+          "must_enter_one_reason_for_objection".tr());
+      return false;
+    }
+
+    return true;
+  }
+
+
 }

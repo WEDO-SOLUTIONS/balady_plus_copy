@@ -16,11 +16,12 @@ class NewAppBar extends StatelessWidget {
       height: 120,
       child: Padding(
         padding: EdgeInsets.only(
-          top: MediaQuery.of(context).padding.top,
-          bottom: 12,
-          left: 12,
-        ),
+            top: MediaQuery.of(context).padding.top,
+            bottom: 12,
+            left: showClose ? 14 : 24),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

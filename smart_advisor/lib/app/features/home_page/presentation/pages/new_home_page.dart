@@ -100,6 +100,9 @@ class _NewHomePageState extends State<NewHomePage> {
                                     children: [
                                       SvgPicture.asset(
                                           IconPath.ArrowCornerRight),
+                                      const SizedBox(
+                                        width: 5,
+                                      ),
                                       SvgPicture.asset(IconPath.baladyLogo),
                                     ],
                                   ),

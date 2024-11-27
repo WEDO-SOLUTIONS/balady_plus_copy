@@ -5,17 +5,12 @@ import 'package:mapness/shared/lib/geo/geo_utils.dart';
 Future<void> computeCameraPosition(
   List<Marker> markers,
   CameraPositionMessage? cameraPosition,
+  Position? userLocation,
   Future<void> Function(CameraPositionMessage) animateTo,
 ) async {
   var location = cameraPosition?.point;
-  if (cameraPosition == null || location == null) {
-    try {
-      final position = await Geolocator.getCurrentPosition();
-      location = GeoPointMessage(latitude: position.latitude, longitude: position.longitude);
-      // ignore: avoid_catches_without_on_clauses
-    } catch (_) {
-      location = null;
-    }
+  if (location == null && userLocation != null) {
+    location = GeoPointMessage(latitude: userLocation.latitude, longitude: userLocation.longitude);
   }
 
   if (location == null) {

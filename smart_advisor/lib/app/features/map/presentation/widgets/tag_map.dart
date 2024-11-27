@@ -18,9 +18,11 @@ class TagMap extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   height: 12,
@@ -29,18 +31,20 @@ class TagMap extends StatelessWidget {
                       color: AppColor.statusPositiveColor,
                       borderRadius: BorderRadius.circular(2)),
                 ),
+                const SizedBox(
+                  width: 5,
+                ),
                 Text(
-                  "منطقه امتثال",
+                  "مسموح",
                   style: AppStyle.textMediumStyle
                       .copyWith(color: AppColor.textPrimaryColor),
                 )
               ],
             ),
             const SizedBox(
-              height: 12,
+              height: 8,
             ),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   height: 12,
@@ -48,6 +52,9 @@ class TagMap extends StatelessWidget {
                   decoration: BoxDecoration(
                       color: AppColor.statusNegativeColor,
                       borderRadius: BorderRadius.circular(2)),
+                ),
+                const SizedBox(
+                  width: 5,
                 ),
                 Text(
                   "غير مسموح",

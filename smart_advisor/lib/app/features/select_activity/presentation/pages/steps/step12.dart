@@ -70,7 +70,7 @@ class _Step12pageState extends State<Step12page> {
                             .read<MainFlowBloc>()
                             .add(ChangeValuesEvent(contractOption: type));
                       }),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: 16),
                   ContractType(
                       isSelected: state.contractType == "DEED",
                       title: "صك ملكية",
@@ -84,7 +84,24 @@ class _Step12pageState extends State<Step12page> {
                         context
                             .read<MainFlowBloc>()
                             .add(ChangeValuesEvent(contractOption: type));
-                      })
+                      }),
+                  const SizedBox(height: 16),
+                  ContractType(
+                      isSelected: state.contractType == "Undefined",
+                      title: "غير محدد",
+                      onSelect: () {
+                        context.read<MainFlowBloc>().add(
+                            const ChangeValuesEvent(
+                                contractType: "Undefined",
+                                contractOption: "Undefined"));
+                      },
+                      contractOption: state.contractOption,
+                      onContractOptionSelect: (String type) {
+                        context
+                            .read<MainFlowBloc>()
+                            .add(ChangeValuesEvent(contractOption: type));
+                      }),
+                  const SizedBox(height: 16),
                 ]),
           ),
         );
@@ -122,9 +139,9 @@ class _ContractTypeState extends State<ContractType> {
           onTap: () => widget.onSelect(),
         ),
         SizedBox(
-          height: 16,
+          height: 8,
         ),
-        if (widget.isSelected == true)
+        if (widget.isSelected == true && widget.contractOption != "Undefined")
           ContractOption(
             onSelect: widget.onContractOptionSelect,
             contractOption: widget.contractOption,

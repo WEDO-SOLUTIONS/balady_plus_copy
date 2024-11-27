@@ -27,6 +27,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -696,6 +697,7 @@ class LayersControls extends _$LayersControls {
     await computeCameraPosition(
       markers,
       ref.read(cameraPositionProvider),
+      ref.read(locationProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
   }

@@ -306,9 +306,17 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         },
         (success) async {
           print(success);
+
+          List<AddetionalActivityItem> res = success ?? [];
+
+          res = success;
+          try {
+            res = await sortOriginalByCount(res);
+          } catch (ex) {}
+
           emit(state.copyWith(
             addetionalActivitesStatus: BlocStatus.success,
-            addetionalActivitesResponse: success,
+            addetionalActivitesResponse: res,
           ));
 
           int currentPage = state.currentPage + 1;
@@ -777,5 +785,28 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
       default:
         return "فتح محل/منشأة تجارية";
     }
+  }
+
+  Future<List<AddetionalActivityItem>> sortOriginalByCount(
+      List<AddetionalActivityItem> originalList) async {
+    final String isicsDetails = await rootBundle.loadString(
+        'packages/smart_advisor/smart_advisor_assets/files/Detailed_Count_Sorted.json');
+    var data1 = await json.decode(isicsDetails);
+
+    List<ActivityCount> detailsList = [];
+    for (var item in data1) {
+      detailsList.add(ActivityCount.fromJson(item));
+    }
+
+    final countMap = {for (var item in detailsList) item.id: item.count};
+
+    // Sort the original list based on the count in countMap
+    return originalList.toList()
+      ..sort((a, b) {
+        final countA =
+            countMap[a.activityId] ?? 0; // Default to 0 if id is not found
+        final countB = countMap[b.activityId] ?? 0;
+        return countB.compareTo(countA); // Sort in descending order by count
+      });
   }
 }
