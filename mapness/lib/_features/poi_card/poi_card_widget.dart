@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
@@ -50,8 +49,6 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 
-GlobalKey key = GlobalKey<_ContentState>();
-
 class PoiCardWidget extends StatelessWidget {
   final DgisObjectIdMessage objectId;
   final LatLng? closestPoint;
@@ -72,7 +69,6 @@ class PoiCardWidget extends StatelessWidget {
           biggestHeight: constraints.biggest.height,
           biggestWidth: constraints.biggest.width,
           closestPoint: closestPoint,
-          key: key,
         ),
       );
 }
@@ -84,7 +80,6 @@ class _Content extends ConsumerStatefulWidget {
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
-    super.key,
   });
 
   final DgisObjectIdMessage objectId;
@@ -423,7 +418,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
     final hasRoutingRoutes = matches.any((element) => element.matchedLocation == RoutingRoutesRoute.path);
 
     if (hasRoutingRoutes) {
-      context.popRouteUntilFirst();
       final dgisObjectId = objectMessage.id?.objectId;
       if (dgisObjectId != null) {
         PoiMapRoute.open(goRouter, dgisObjectId);

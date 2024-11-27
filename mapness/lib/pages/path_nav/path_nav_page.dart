@@ -41,10 +41,12 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
   final PathNavPageInitAction? initAction;
+  final bool isHomeOrWork;
 
   const PathNavPage({
     required this.navType,
     required this.initAction,
+    this.isHomeOrWork = false,
     super.key,
   });
 
@@ -218,7 +220,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               },
               child: Column(
                 children: [
-                  ParkingBanner(navigationState: _navigationState),
+                  ParkingBanner(
+                    navigationState: _navigationState,
+                    isHomeOrWork: widget.isHomeOrWork,
+                  ),
                   Directionality(
                     textDirection: Directionality.of(context),
                     child: ValueListenableBuilder(

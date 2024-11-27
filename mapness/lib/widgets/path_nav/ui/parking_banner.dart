@@ -18,9 +18,11 @@ import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart'
 
 class ParkingBanner extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
+  final bool isHomeOrWork;
 
   const ParkingBanner({
     required this.navigationState,
+    this.isHomeOrWork = false,
     super.key,
   });
 
@@ -57,7 +59,6 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
     final distance = double.tryParse(eta?.distanceEta ?? '--');
     final navigatorType = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
     final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
-
     final layers = ref.watch(layersControlsProvider);
 
     const boxShadow = [
@@ -75,7 +76,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
       return const SizedBox.shrink();
     }
 
-    if (autoEnableParking != null) {
+    if (autoEnableParking != null || widget.isHomeOrWork) {
       return const SizedBox.shrink();
     }
 

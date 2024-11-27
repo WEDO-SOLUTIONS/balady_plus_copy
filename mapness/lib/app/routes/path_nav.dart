@@ -14,6 +14,7 @@ class PathNavRoute extends GoRouteData {
   static const path = '/pathNav';
   static const _extraRouteSearchOptions = 'routeSearchOptions';
   static const _extraInitAction = 'initAction';
+  static const _isHomeOrWork = 'isHomeOrWork';
 
   const PathNavRoute();
 
@@ -24,21 +25,29 @@ class PathNavRoute extends GoRouteData {
     final extra = state.extra as Map<String, dynamic>?;
     final navType = extra?[_extraRouteSearchOptions] as RouteSearchOptionsMessage;
     final initAction = extra?[_extraInitAction] as PathNavPageInitAction?;
+    final isHomeOrWork = extra?[_isHomeOrWork] as bool;
     return _pathNavTransition(
       context: context,
       child: PathNavPage(
         navType: navType,
         initAction: initAction,
+        isHomeOrWork: isHomeOrWork,
       ),
     );
   }
 
-  static void open(GoRouter router, RouteSearchOptionsMessage navType, {PathNavPageInitAction? initAction}) {
+  static void open(
+    GoRouter router,
+    RouteSearchOptionsMessage navType, {
+    PathNavPageInitAction? initAction,
+    bool isHomeOrWork = false,
+  }) {
     const route = PathNavRoute();
     final location = route.location;
     final extra = {
       _extraRouteSearchOptions: navType,
       _extraInitAction: initAction,
+      _isHomeOrWork: isHomeOrWork,
     };
     router.push(location, extra: extra);
   }

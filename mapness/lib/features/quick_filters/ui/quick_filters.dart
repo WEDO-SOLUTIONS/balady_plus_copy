@@ -120,6 +120,7 @@ class QuickFilters extends ConsumerWidget {
   ) {
     if (naviFeature.naviEnabled) {
       RoutingRoutesRoute(
+        isHomeOrWork: true,
         finishLabel: point.title,
         finishLatitude: point.coordinates.latitude,
         finishLongitude: point.coordinates.longitude,

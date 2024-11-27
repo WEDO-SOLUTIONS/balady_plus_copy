@@ -76,6 +76,7 @@ class RoutingRoutesRoute extends GoRouteData {
   final int? startEntranceId;
   final int? startLevelId;
   final String startLabel;
+  final bool isHomeOrWork;
 
   final double? finishLatitude;
   final double? finishLongitude;
@@ -97,6 +98,7 @@ class RoutingRoutesRoute extends GoRouteData {
     required this.finishEntranceId,
     required this.finishLevelId,
     required this.finishLabel,
+    this.isHomeOrWork = false,
   });
 
   RouteParamsPoint? get startPoint {
@@ -132,6 +134,7 @@ class RoutingRoutesRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) => TransculentPage(
         child: RoutingRoutesPage(
+          isHomeOrWork: isHomeOrWork,
           points: [
             RouteParamsPointWithLabel(
               value: startPoint,
