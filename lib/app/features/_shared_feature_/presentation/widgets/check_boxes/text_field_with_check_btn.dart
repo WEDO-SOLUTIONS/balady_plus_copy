@@ -86,10 +86,10 @@ class _TextWithCheckBtnState extends State<TextWithCheckBtn> {
                 top: widget.maxLength == null
                     ? widget.topPadding != null
                         ? widget.topPadding!
-                        : 20
+                        : 40
                     : 0),
             child: SizedBox(
-              width: 70,
+              width: 100,
               child: ElevatedButtonWidget.verify(
                 text: widget.isValidate ? ("done_check").tr() : ("check").tr(),
                 onPressed: () {
