@@ -238,6 +238,7 @@ class ElevatedButtonWidget extends _ElevatedButton {
             fontSize: 16,
           ),
           btnHeight: 48,
+          btnWidth: 100,
           text: text ?? "verify".tr(),
           onPressed: onPressed,
         ));
