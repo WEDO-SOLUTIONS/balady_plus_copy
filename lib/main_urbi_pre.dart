@@ -1,5 +1,4 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:flutter/material.dart' show WidgetsFlutterBinding, runApp;
+import 'package:flutter/material.dart' show runApp;
 import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -11,9 +10,6 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-      final status = await AppTrackingTransparency.requestTrackingAuthorization();
-
   AdvancedMetrics.instance.startMeasureStartup();
   await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.urbiPre);
@@ -33,7 +29,7 @@ void main() async {
         options.captureFailedRequests = true;
         options.environment = sl<EnvType>().name;
       },
-      appRunner: () => runApp( MapnessProviderScope(child: LocalizedApp(child: App(status: status,)))),
+      appRunner: () => runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
     );
   });
 }

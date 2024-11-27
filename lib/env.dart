@@ -1,7 +1,5 @@
 import 'dart:io';
 
-import 'package:adjust_sdk/adjust.dart';
-import 'package:adjust_sdk/adjust_config.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/dependency_injection_exports.dart'
@@ -32,9 +30,6 @@ abstract class AppEnv {
     // await _deleteCacheDir();
 
     WidgetsFlutterBinding.ensureInitialized();
-    AdjustConfig config =
-        AdjustConfig('tung4x27vt34', AdjustEnvironment.sandbox);
-    Adjust.initSdk(config);
 
     /// force app to be only portrait
     SystemChrome.setPreferredOrientations([
