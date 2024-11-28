@@ -27,13 +27,18 @@ class FavouritesSearchPage extends StatelessWidget {
         named: SearchScopeEnum.map,
         child: Material(
           child: FavouritesSearch(
-            markerType: FavouriteItemMarkerType.values.firstWhere(
-              (element) => element.name == markerType.name,
-              orElse: () => FavouriteItemMarkerType.place,
-            ),
+            markerType: _getMarkerType(),
           ),
         ),
       );
+
+  FavouriteItemMarkerType _getMarkerType() {
+    try {
+      return FavouriteItemMarkerType.values.byName(markerType.name);
+    } catch (_) {
+      return FavouriteItemMarkerType.place;
+    }
+  }
 }
 
 class FavouritesSearch extends ConsumerWidget {
