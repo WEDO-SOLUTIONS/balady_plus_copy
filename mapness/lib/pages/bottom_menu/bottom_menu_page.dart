@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
@@ -11,24 +10,17 @@ import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 @RoutePage()
-class BottomMenuPage extends ConsumerStatefulWidget {
+class BottomMenuPage extends StatelessWidget {
   const BottomMenuPage({super.key});
 
   @override
-  ConsumerState<BottomMenuPage> createState() => _BottomMenuScreenState();
-}
-
-class _BottomMenuScreenState extends ConsumerState<BottomMenuPage> {
-  final List<PageRouteInfo<dynamic>> _buildRoutes = [
-    const LandingRoute(),
-    const RoutingPointsRoute(),
-    const MapnessServicesRoute(),
-    const ProfileRoute(),
-  ];
-
-  @override
   Widget build(BuildContext context) => AutoTabsRouter.builder(
-        routes: _buildRoutes,
+        routes: const [
+          LandingRoute(),
+          RoutingPointsRoute(),
+          MapnessServicesRoute(),
+          ProfileRoute(),
+        ],
         builder: (_, tabsRouter, route) => Column(
           children: [
             Expanded(
