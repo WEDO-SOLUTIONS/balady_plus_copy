@@ -213,7 +213,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
       await mapObjectManager.removeAllMarkers();
       await mapObjectManager.addMarkers(markers);
-
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await mapObjectManager.removeAllMarkers();
     }
@@ -242,7 +241,15 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {
-      _unfocusSearchField();
+      // BSA-1103
+      // We need to check if the user is dragging the sheet
+      // If not we don't need to unfocus the search field
+      //
+      // This check is necessary because the [ScrollStartNotification] is called even on the scroll of the TextField
+      // when the user is typing a long text and the TextField is scrolling to show it
+      if (notification.dragDetails != null) {
+        _unfocusSearchField();
+      }
     }
     return true;
   }
