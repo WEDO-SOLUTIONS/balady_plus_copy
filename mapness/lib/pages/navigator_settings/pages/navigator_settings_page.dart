@@ -17,7 +17,7 @@ import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
-class NavigatorSettingsPage extends HookConsumerWidget {
+class NavigatorSettingsPage extends ConsumerWidget {
   const NavigatorSettingsPage({super.key});
 
   @override
