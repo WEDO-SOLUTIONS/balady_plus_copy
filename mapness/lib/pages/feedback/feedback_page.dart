@@ -22,7 +22,7 @@ final _formKey = GlobalKey<FormBuilderState>();
 @RoutePage()
 class FeedbackPage extends ConsumerStatefulWidget {
   final String categoryId;
-  final String poiId;
+  final int? poiId;
 
   const FeedbackPage({
     required this.poiId,
@@ -39,7 +39,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
-    final objectId = int.tryParse(widget.poiId);
+    final objectId = widget.poiId;
     if (objectId == null) {
       return const FeedbackFailureWidget();
     }

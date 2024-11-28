@@ -39,6 +39,10 @@ class MapSearchHistory extends ConsumerWidget {
                 action: MetricAction.tap.toString(),
                 props: {'objectId': item.objectId});
 
+            if (item.objectId == null) {
+              return;
+            }
+
             await context.router.push(
               PoiCardWidgetRoute(
                 objectId: DgisObjectIdMessage(

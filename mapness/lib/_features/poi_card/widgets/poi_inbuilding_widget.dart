@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -82,8 +83,7 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
                         if (id == null) {
                           return;
                         }
-                        context.router.popForced();
-                        context.router.push(
+                        context.router.replace(
                           PoiCardWidgetRoute(
                             objectId: DgisObjectIdMessage(
                               objectId: int.parse(id),
@@ -110,7 +110,7 @@ class _PoiInBuildingWidgetState extends ConsumerState<PoiInBuildingWidget> {
               separatorBuilder: (context, index) => Spacing.$4x.heightBox,
             ),
             SliverToBoxAdapter(
-              child: ((widget.bottomTabsHeight ?? 56.0) + MediaQuery.of(context).padding.bottom).heightBox,
+              child: ((widget.bottomTabsHeight ?? 56.0) + context.bottomPadding).heightBox,
             ),
           ],
         ),

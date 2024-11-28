@@ -346,7 +346,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
                   _openRoutingRoutes(
                     context,
-                    ref,
                     data,
                     RouteSearchPoint(
                       coordinates: data.markerPosition!.toGeoPointMessage(),
@@ -406,7 +405,6 @@ class _ContentState extends ConsumerState<_Content> with SingleTickerProviderSta
 
   void _openRoutingRoutes(
     BuildContext context,
-    WidgetRef ref,
     DirectoryObjectMessage objectMessage,
     RouteSearchPoint finishPoint,
   ) {

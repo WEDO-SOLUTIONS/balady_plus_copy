@@ -306,24 +306,3 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     _dgisSheetController.animateTo(Expansion.collapsed);
   }
 }
-
-@RoutePage()
-class SearchPage extends StatelessWidget {
-  final bool withClustering;
-  final bool requestFocus;
-
-  const SearchPage({
-    this.withClustering = false,
-    this.requestFocus = true,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constrains) => MapSearchSheet(
-          withClustering: withClustering,
-          biggestHeight: constrains.biggest.height,
-          requestFocus: requestFocus,
-        ),
-      );
-}

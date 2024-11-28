@@ -73,12 +73,12 @@ class EtaTimerControl extends ConsumerWidget {
             : context.l10n.minLeft(leftMinutes.toString());
         return EtaInprogressSheet(
           onShareMorePressed: () async {
-            Navigator.pop(context);
             await _showEtaTimeSheet(context);
+            Navigator.pop(context);
           },
           onStopSharePressed: () async {
-            Navigator.pop(context);
             await _stopShare(ref);
+            Navigator.pop(context);
           },
           timeLeft: left,
         );

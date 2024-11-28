@@ -72,10 +72,9 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
     FeedbackCategoryEntity category,
     int? objectId,
   ) {
-    final objectId_ = objectId.toString();
     context.router.push(
       FeedbackRoute(
-        poiId: objectId_,
+        poiId: objectId,
         categoryId: category.id,
       ),
     );

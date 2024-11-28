@@ -15,7 +15,6 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
-import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -46,7 +45,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
-  Completer<void>? _checkPermissionCompleter;
 
   @override
   void initState() {
@@ -101,24 +99,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      /// TODO('Ayat') This logic is necessary so that there is no cyclic call that occurs due to the
-      /// operation of the android life cycle with permissions https://github.com/Baseflow/flutter-permission-handler/issues/1301
-      /// I will ask you to make an implementation like in 2GIS
-      if (_checkPermissionCompleter == null) {
-        final completer = Completer<void>();
-        _checkPermissionCompleter = completer;
-        ref.read(locationProvider.notifier).checkLocationPermission().then((_) {
-          completer.complete();
-        }).catchError((Object e, StackTrace s) {
-          completer.completeError(e, s);
-        }).whenComplete(() async {
-          await Future.delayed(const Duration(milliseconds: 100));
-          _checkPermissionCompleter = null;
-        });
-      }
-
-      ref.read(freeRoamStarterProvider.notifier).reset();
-      AdvancedMetrics.instance.resumeMeasureBattery();
+      ref.read(locationProvider.notifier).checkLocationPermission();
     } else if (state == AppLifecycleState.paused) {
       AdvancedMetrics.instance.pauseMeasureBattery();
     }
@@ -181,21 +162,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   }
 
                   return GestureDetector(
-                    onTapDown: (_) {
-                      if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTapUp: (_) {
-                      if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTap: () {
-                      if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
+                    onTapDown: (_) => _hideBottomSheet(),
+                    onTapUp: (_) => _hideBottomSheet(),
+                    onTap: _hideBottomSheet,
                   );
                 },
               ),
@@ -208,16 +177,19 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     );
   }
 
+  void _hideBottomSheet() {
+    if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+      _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    }
+  }
+
   void _objectTapListener(TapEvent event) {
     const routingRoutePath = RoutingRoutesRoute.name;
 
-    if (context.router.isRouteActive(RoutingMapSelectRoute.name)) {
-      return;
-    } else if (context.router.isRouteActive(SearchRoute.name)) {
-      return;
-    } else if (context.router.isRouteActive(PathNavRoute.name)) {
-      return;
-    } else if (context.router.isRouteActive(RoutingRoutesRoute.name)) {
+    if (context.router.isRouteActive(RoutingMapSelectRoute.name) ||
+        context.router.isRouteActive(SearchRoute.name) ||
+        context.router.isRouteActive(PathNavRoute.name) || context.router.isRouteActive(PathNavRoute.name) ||
+        context.router.isRouteActive(RoutingRoutesRoute.name)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
       context.router.popForced();

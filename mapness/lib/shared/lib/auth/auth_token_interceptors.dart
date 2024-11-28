@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 
@@ -52,7 +53,7 @@ class AuthTokenInterceptor {
               if (!e.requestOptions.uri.origin
                   .contains('momrah-balady.public-poc.urbi.ae')) {
                 await ref.read(authProvider.notifier).tokenExpireLogout();
-                await ref.read(appRouterProvider).pushNamed('/signin');
+                await ref.read(appRouterProvider).push(const SigninRoute());
               }
             } else if (e is DioException) {
               handler.reject(e);

@@ -42,7 +42,6 @@ class DeeplinkPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('appLanguageProvider');
     final language = ref.watch(appLanguageProvider);
     _cameraAnimation(ref);
 
