@@ -6,11 +6,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/_features/poi_card/my_location_poi/my_location_image.dart';
-import 'package:mapness/_features/poi_card/provider/poi_card_actions_provider.dart';
-import 'package:mapness/_features/poi_card/provider/poi_my_location_provider.dart';
-import 'package:mapness/_features/poi_card/ui_kit_tmp/poi_header.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/poi_card/my_location_poi/my_location_image.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/features/poi_card/provider/poi_my_location_provider.dart';
 import 'package:mapness/features/share_eta/entities/share_eta_time_type.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
@@ -25,6 +24,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
+import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class ShareMyLocationContent extends HookConsumerWidget {
@@ -58,7 +58,7 @@ class ShareMyLocationContent extends HookConsumerWidget {
     final subTitle = isAuthorized ? context.l10n.myLocationSubtitle : null;
     final text = value?.address ?? '${closestPoint?.latitude}, ${closestPoint?.longitude}';
 
-    final sheetPadding = isAuthorized ? 0.27 : 0.25;
+    const sheetPadding = 0.27;
 
     ref.listen(etaServiceProvider, (_, next) {
       if (context.mounted == false) {
@@ -130,16 +130,17 @@ class ShareMyLocationContent extends HookConsumerWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: PoiHeader(
-                      onTapClose: () => onClose(context, ref),
-                      text: title,
-                      subTitle: subTitle,
-                      profileImage: isAuthorized
-                          ? const Padding(
-                              padding: EdgeInsets.only(top: Spacing.$1x),
-                              child: MyLocationImageWidget(),
-                            )
-                          : null),
+                  child: CardHeader(
+                    onTapClose: () => onClose(context, ref),
+                    title: CardHeaderText.title(text: title, context: context),
+                    subTitle: subTitle != null ? CardHeaderText.subTitle(text: subTitle, context: context) : null,
+                    profileImage: isAuthorized
+                        ? const Padding(
+                            padding: EdgeInsets.only(top: Spacing.$1x),
+                            child: MyLocationImageWidget(),
+                          )
+                        : null,
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
