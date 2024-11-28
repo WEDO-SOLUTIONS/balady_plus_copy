@@ -77,49 +77,49 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
   Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
-        context: ctx,
-        builder: (context) => CupertinoActionSheet(
-          message: Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: Text(
-              context.l10n.deleteAlertFavourites,
-              style: context.textStyle.footNote.copyWith(
-                color: context.color.textAndIconsBaseSecondary,
-                letterSpacing: 0,
-              ),
-            ),
+    context: ctx,
+    builder: (context) => CupertinoActionSheet(
+      message: Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 8),
+        child: Text(
+          ctx.l10n.deleteAlertFavourites,
+          style: ctx.textStyle.footNote.copyWith(
+            color: ctx.color.textAndIconsBaseSecondary,
+            letterSpacing: 0,
           ),
-          actions: <CupertinoActionSheetAction>[
-            CupertinoActionSheetAction(
-              isDefaultAction: true,
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              child: Text(
-                context.l10n.delete,
-                style: context.textStyle.callout.copyWith(
-                  color: context.color.textAndIconsStatusNegative,
-                ),
-              ),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-            child: Text(
-              context.l10n.cancel,
-              style: context.textStyle.callout.copyWith(
-                color: context.color.textAndIconsBasePrimary,
-              ),
+        ),
+      ),
+      actions: <CupertinoActionSheetAction>[
+        CupertinoActionSheetAction(
+          isDefaultAction: true,
+          isDestructiveAction: true,
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+          child: Text(
+            ctx.l10n.delete,
+            style: ctx.textStyle.callout.copyWith(
+              color: ctx.color.textAndIconsStatusNegative,
             ),
           ),
         ),
-      );
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () {
+          Navigator.pop(context, false);
+        },
+        child: Text(
+          ctx.l10n.cancel,
+          style: ctx.textStyle.callout.copyWith(
+            color: ctx.color.textAndIconsBasePrimary,
+          ),
+        ),
+      ),
+    ),
+  );
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext ctx) {
     final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
       error: (error) => ErrorSheet(
@@ -129,10 +129,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
         },
       ),
       loading: (_) => Material(
-        color: context.color.surfaceBasePrimary,
+        color: ctx.color.surfaceBasePrimary,
         child: Center(
           child: CircularProgressIndicator(
-            color: context.color.textAndIconsStatusAccent,
+            color: ctx.color.textAndIconsStatusAccent,
           ),
         ),
       ),
@@ -154,21 +154,21 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                   Spacing.$4x.widthBox,
                   if (isEditing)
                     Text(
-                      context.l10n.cancel,
-                      style: context.textStyle.footNote.copyWith(
-                        color: context.color.textAndIconsStatusAccent,
+                      ctx.l10n.cancel,
+                      style: ctx.textStyle.footNote.copyWith(
+                        color: ctx.color.textAndIconsStatusAccent,
                       ),
                     ),
                   if (!isEditing)
                     Icon(
                       SystemIcons.arrowCornerLeftLarge,
-                      color: context.color.textAndIconsStatusAccent,
+                      color: ctx.color.textAndIconsStatusAccent,
                     ),
                   if (!isEditing)
                     Text(
-                      context.l10n.back,
-                      style: context.textStyle.footNote.copyWith(
-                        color: context.color.textAndIconsStatusAccent,
+                      ctx.l10n.back,
+                      style: ctx.textStyle.footNote.copyWith(
+                        color: ctx.color.textAndIconsStatusAccent,
                       ),
                     ),
                 ],
@@ -181,35 +181,35 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     onTap: selectedItems.isEmpty
                         ? null
                         : () async {
-                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
-                            setState(() {
-                              selectedItems.clear();
-                            });
-                          },
+                      await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
+                      setState(() {
+                        selectedItems.clear();
+                      });
+                    },
                     child: Icon(
                       GeneralIcons.trash,
                       color: selectedItems.isEmpty
-                          ? context.color.textAndIconsBaseTertiary
-                          : context.color.textAndIconsStatusNegative,
+                          ? ctx.color.textAndIconsBaseTertiary
+                          : ctx.color.textAndIconsStatusNegative,
                     ),
                   )
                 else
                   InkWell(
                     onTap: toggleEditing,
                     child: Text(
-                      context.l10n.select,
-                      style: context.textStyle.footNoteBold.copyWith(
-                        color: context.color.textAndIconsStatusAccent,
+                      ctx.l10n.select,
+                      style: ctx.textStyle.footNoteBold.copyWith(
+                        color: ctx.color.textAndIconsStatusAccent,
                       ),
                     ),
                   ),
                 Spacing.$4x.widthBox,
               ],
             ),
-            textStyle: context.textStyle.footNoteBold.copyWith(
-              color: context.color.textAndIconsBasePrimary,
+            textStyle: ctx.textStyle.footNoteBold.copyWith(
+              color: ctx.color.textAndIconsBasePrimary,
             ),
-            title: context.l10n.favourites,
+            title: ctx.l10n.favourites,
           ),
           backgroundColor: Colors.white,
           body: Padding(
@@ -224,25 +224,24 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                 SliverToBoxAdapter(
                   child: Row(
                     children: [
-                      Builder(
-                        builder: (_) {
-                          final home = state.home;
+                      Builder(builder: (context) {
+                        final home = state.home;
                         final entity = home?.entity;
-                          final homeTitle = context.l10n.home;
-                          final coordinates = home?.coordinates;
+                        final homeTitle = ctx.l10n.home;
+                        final coordinates = home?.coordinates;
                         final id = entity?.id ?? '';
                         return Expanded(
                           child: PinnedPlaceCard(
                             key: Key('home${home?.id}'),
                             title: homeTitle,
-                              address: home?.subtitle ?? context.l10n.addAddress,
-                              iconData: GeneralIcons.home,
+                            address: home?.subtitle ?? ctx.l10n.addAddress,
+                            iconData: GeneralIcons.home,
                             isEditing: isEditing && home != null,
                             isAdded: home != null,
-                              onDelete: () => _deleteItem(home, context),
-                              onTapRoute: () {
-                                context.router.push(
-                                  RoutingRoutesRoute(
+                            onDelete: () => _deleteItem(home, ctx),
+                            onTapRoute: () {
+                              ctx.router.push(
+                                RoutingRoutesRoute(
                                   points: [
                                     RouteParamsPointWithLabel(
                                       value: null,
@@ -251,10 +250,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                     RouteParamsPointWithLabel(
                                       value: coordinates?.latitude != null && coordinates?.longitude != null
                                           ? RouteParamsPoint(
-                                              latitude: coordinates!.latitude,
+                                        latitude: coordinates!.latitude,
                                         longitude: coordinates.longitude,
                                         objectId: int.tryParse(id),
-                                            )
+                                      )
                                           : null,
                                       label: homeTitle,
                                     ),
@@ -272,27 +271,26 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             },
                             onTap: home == null
                                 ? () => context.router.push(
-                                      FavouritesSearchRoute(
-                                        markerType: FavouriteItemMarkerType.home,
-                                      ),
-                                    )
-                                  : () => context.router.push(
-                                        PoiCardWidgetRoute(
-                                        objectId: DgisObjectIdMessage(
-                                          objectId: int.parse(id),
-                                          entranceId: 0,
-                                        ),
-                                      ),
-                                    ),
+                              FavouritesSearchRoute(
+                                markerType: FavouriteItemMarkerType.home,
+                              ),
+                            )
+                                : () => ctx.router.push(
+                              PoiCardWidgetRoute(
+                                objectId: DgisObjectIdMessage(
+                                  objectId: int.parse(id),
+                                  entranceId: 0,
+                                ),
+                              ),
+                            ),
                           ),
                         );
-                        },
-                      ),
+                      }),
                       Spacing.$4x.widthBox,
                       Builder(
-                        builder: (_) {
+                        builder: (context) {
                           final work = state.work;
-                          final workTitle = context.l10n.work;
+                          final workTitle = ctx.l10n.work;
                           final entity = work?.entity;
                           final coordinates = work?.coordinates;
                           final id = entity?.id ?? '';
@@ -300,11 +298,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             child: PinnedPlaceCard(
                               key: Key('work${work?.id}'),
                               title: workTitle,
-                              address: work?.subtitle ?? context.l10n.addAddress,
+                              address: work?.subtitle ?? ctx.l10n.addAddress,
                               iconData: GeneralIcons.briefcase,
                               isEditing: isEditing && work != null,
                               isAdded: work != null,
-                              onDelete: () => _deleteItem(work, context),
+                              onDelete: () => _deleteItem(work, ctx),
                               onTapRoute: () {
                                 context.router.push(
                                   RoutingRoutesRoute(
@@ -335,18 +333,18 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               },
                               onTap: work == null
                                   ? () => context.router.push(
-                                        FavouritesSearchRoute(
-                                          markerType: FavouriteItemMarkerType.work,
-                                        ),
-                                      )
-                                  : () => context.router.push(
-                                        PoiCardWidgetRoute(
-                                          objectId: DgisObjectIdMessage(
-                                            objectId: int.parse(id),
-                                            entranceId: 0,
-                                          ),
-                                        ),
-                                      ),
+                                FavouritesSearchRoute(
+                                  markerType: FavouriteItemMarkerType.work,
+                                ),
+                              )
+                                  : () => ctx.router.push(
+                                PoiCardWidgetRoute(
+                                  objectId: DgisObjectIdMessage(
+                                    objectId: int.parse(id),
+                                    entranceId: 0,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -427,7 +425,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                           });
                         },
                         onShareTap: () => ShareUtil.share(item.entity?.id),
-                        onDelete: () => _deleteItem(item, context),
+                        onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
                           context.router.push(
                             RoutingRoutesRoute(
@@ -448,7 +446,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             ),
                           );
                         },
-                        onTap: () => context.router.push(
+                        onTap: () => ctx.router.push(
                           PoiCardWidgetRoute(
                             objectId: DgisObjectIdMessage(
                               objectId: int.parse(item.entity!.id),
