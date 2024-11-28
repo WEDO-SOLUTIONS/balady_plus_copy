@@ -112,9 +112,9 @@ class _MSRBody extends State<MSRBody> {
                             );
                             if (file != null) {
                               if ("jpg,jpeg,pdf,png".contains(file.fileName.split(".").last)) {
-                                var i = (log(file.bytes!.length) / log(1000)).floor();
-                                 int sizeInMB =  (file.bytes!.length / pow(1000, i)).toInt();
-                                if (sizeInMB <= 5) {
+                                // var i = (log(file.bytes!.length) / log(1000)).floor();
+                                 double sizeInMB = file.bytes!.length / pow(1000, 1);
+                                if (sizeInMB <= 5000) {
                                   model.setFile(file);
                                 } else {
                                   CommonFunctions.showError('${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png ${'attachment_message_size'.tr()} 5MB');
