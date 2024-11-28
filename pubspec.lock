@@ -146,26 +146,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "4b33f2c41a98c49cceed72a604a45f69feb22b6449b754fdbd4c36303835f764"
+      sha256: "048eb185307069735bbfd53476f1eee27e7277a9e0e2cccbe0383b994b18e42a"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.0.7"
-  battery_plus:
-    dependency: "direct main"
-    description:
-      name: battery_plus
-      sha256: "220c8f1961efb01d6870493b5ac5a80afaeaffc8757f7a11ed3025a8570d29e7"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.2.0"
-  battery_plus_platform_interface:
-    dependency: transitive
-    description:
-      name: battery_plus_platform_interface
-      sha256: e8342c0f32de4b1dfd0223114b6785e48e579bfc398da9471c9179b907fa4910
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
+    version: "3.0.8"
   bloc:
     dependency: "direct main"
     description:
