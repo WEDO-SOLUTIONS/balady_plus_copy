@@ -457,9 +457,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Set padding to the camera to avoid the sheet overlaying the map
   // Pass this method to the onSizeChanged callback of the sheet to calculate the padding
   void _onSizeChanged(Size size) {
-    setState(() {
-      heightOfEta = size.height;
-    });
+    heightOfEta = size.height;
 
     _setPaddingToCamera(heightOfEta);
   }
