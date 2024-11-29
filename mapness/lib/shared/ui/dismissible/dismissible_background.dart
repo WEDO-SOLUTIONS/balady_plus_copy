@@ -7,17 +7,17 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 /// Custom background for Dismissible widget
 class AppDismissibleBackground extends StatelessWidget {
   /// For border radius and right drawing
-  final bool isFirst;
+  final bool addTopBorderRadius;
 
   /// For border radius and right drawing
-  final bool isLast;
+  final bool addBottomBorderRadius;
 
   /// The radius of the background if it is the first or last item
   static const radius = Radius.circular(RadiusBorder.xl);
 
   const AppDismissibleBackground({
-    required this.isFirst,
-    required this.isLast,
+    required this.addTopBorderRadius,
+    required this.addBottomBorderRadius,
     super.key,
   });
 
@@ -27,10 +27,10 @@ class AppDismissibleBackground extends StatelessWidget {
         decoration: BoxDecoration(
           color: context.staticColor.surfaceStatusNegative,
           borderRadius: BorderRadius.only(
-            topRight: isFirst && context.isLTR ? radius : Radius.zero,
-            topLeft: isFirst && !context.isLTR ? radius : Radius.zero,
-            bottomRight: isLast && context.isLTR ? radius : Radius.zero,
-            bottomLeft: isLast && !context.isLTR ? radius : Radius.zero,
+            topRight: addTopBorderRadius && context.isLTR ? radius : Radius.zero,
+            topLeft: addTopBorderRadius && !context.isLTR ? radius : Radius.zero,
+            bottomRight: addBottomBorderRadius && context.isLTR ? radius : Radius.zero,
+            bottomLeft: addBottomBorderRadius && !context.isLTR ? radius : Radius.zero,
           ),
         ),
         child: Row(
