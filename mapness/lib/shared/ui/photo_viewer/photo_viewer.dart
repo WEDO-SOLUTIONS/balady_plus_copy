@@ -149,6 +149,7 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
             onLeadingPressed: () => context.router.popForced(),
+            ),
           ),
         ],
       );
