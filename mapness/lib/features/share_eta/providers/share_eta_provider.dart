@@ -4,11 +4,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/_features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/app/routes/routes.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
+import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
@@ -218,7 +218,7 @@ class ShareEta extends _$ShareEta {
         ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
       })
       ..onDispose(() {
-        _stopSharingCurrent();
+        stopSharingCurrent();
 
         _websocketStatusSubscription?.close();
         _locationSubscription?.cancel();
@@ -315,7 +315,7 @@ class ShareEta extends _$ShareEta {
     }
   }
 
-  Future<void> _stopSharingCurrent() async {
+  Future<void> stopSharingCurrent() async {
     final tokenId = EtaStreamStorage().state.streamToken;
     final xStreamData = EtaStreamStorage().state.xStreamData;
 

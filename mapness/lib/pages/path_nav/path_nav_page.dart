@@ -15,13 +15,13 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/pages/path_nav/ui/eta_continue.dart';
@@ -47,11 +47,11 @@ import 'package:wakelock_plus/wakelock_plus.dart';
 /// You don't need to add black background to make the app similar to the other app
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
-  final bool restoreFromState;
+  final PathNavPageInitAction? initAction;
 
   const PathNavPage({
     required this.navType,
-    required this.restoreFromState,
+    required this.initAction,
     super.key,
   });
 
@@ -70,8 +70,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final isBackgroundNavigationOn = ref.watch(soundSettingsProvider).backgroundNavigation;
-    final soundSettingsNotifier = ref.watch(soundSettingsProvider.notifier);
+    final isBackgroundNavigationOn = ref.read(soundSettingsProvider).backgroundNavigation;
+    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
 
     if (state == AppLifecycleState.paused) {
       saveNavigationState();
@@ -150,9 +150,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
     await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    if (widget.restoreFromState) {
+    if (widget.initAction == PathNavPageInitAction.restoreFromState) {
       await restoreNavigationState();
-    } else {
+    } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
       await dgisController.startNavigation(
         SpeedRangeZoom(
           maxSpeedRange: 5,
@@ -183,7 +183,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           _endTripAndShowHome();
         }
       });
-    final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
@@ -290,18 +289,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ],
             ),
           ),
-          if (isEtaExpanded)
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-              },
-              child: SizedBox.expand(
-                child: ColoredBox(
-                  color: AppColor.black.withOpacity(0.4),
-                ),
-              ),
-            ),
+          Consumer(builder: (context, ref, _) {
+            final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
+            return isEtaExpanded
+                ? GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                    },
+                    child: SizedBox.expand(
+                      child: ColoredBox(
+                        color: AppColor.black.withOpacity(0.4),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          }),
           Positioned(
             bottom: 0,
             right: 0,
@@ -422,17 +425,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Notify the listeners about the end of the trip
   void _naviEvent(NavigationEvent event) {
-    switch (event) {
-      case NavigationEvent.finished:
-        ref.read(urbiAnalyticsProvider).track('tripCompleted');
-        _navigationState.value = PathNavState.finished;
-        unawaited(
-          clearNavigationState(),
-        );
-      case NavigationEvent.disabled:
-        if (_navigationState.value != PathNavState.finished) {
-          _endTripAndShowHome();
-        }
+    if (event == NavigationEvent.finished) {
+      ref.read(urbiAnalyticsProvider).track('tripCompleted');
+      _navigationState.value = PathNavState.finished;
+      unawaited(
+        clearNavigationState(),
+      );
+    } else if (event == NavigationEvent.disabled) {
+      if (_navigationState.value != PathNavState.finished) {
+        _endTripAndShowHome();
+      }
     }
   }
 
@@ -455,9 +457,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Set padding to the camera to avoid the sheet overlaying the map
   // Pass this method to the onSizeChanged callback of the sheet to calculate the padding
   void _onSizeChanged(Size size) {
-    setState(() {
-      heightOfEta = size.height;
-    });
+    heightOfEta = size.height;
 
     _setPaddingToCamera(heightOfEta);
   }
@@ -488,10 +488,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _stopActiveSharing() async {
-    final tokenId = EtaStreamStorage().state.streamToken;
-    final xStreamData = EtaStreamStorage().state.xStreamData;
-    if (tokenId != null && xStreamData != null) {
-      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, xStreamData);
-    }
+    await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
   }
 }

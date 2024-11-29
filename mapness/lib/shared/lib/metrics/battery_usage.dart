@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:battery_plus/battery_plus.dart';
+import 'package:collection/collection.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 
 /// Battery usage metrics
@@ -53,16 +54,36 @@ class BatteryUsage {
   String toJsonString() => jsonEncode(toJson());
 
   /// Create a BatteryUsage object from a JSON object
-  factory BatteryUsage.fromJson(String jsonString) {
-    final json = jsonDecode(jsonString) as Map<String, dynamic>;
-    return BatteryUsage(
-      batteryUsage: json[AdvancedMetricsConstants.keys.batteryUsage],
-      sessionDuration: json[AdvancedMetricsConstants.keys.sessionDuration],
-      location: json[AdvancedMetricsConstants.keys.location],
-      activeProcesses: json[AdvancedMetricsConstants.keys.activeProcesses],
-      deviceState: json[AdvancedMetricsConstants.keys.deviceState],
-      isInBatterySaveMode: json[AdvancedMetricsConstants.keys.isInBatterySaveMode],
-    );
+  static BatteryUsage? fromJson(String jsonString) {
+    try {
+      final json = jsonDecode(jsonString) as Map<String, dynamic>;
+
+      final batteryUsage = json[AdvancedMetricsConstants.keys.batteryUsage] as double;
+      final deviceState =
+          BatteryState.values.firstWhereOrNull((e) => json[AdvancedMetricsConstants.keys.deviceState] == e.name) ??
+              BatteryState.unknown;
+      final isInBatterySaveMode = json[AdvancedMetricsConstants.keys.isInBatterySaveMode] as bool;
+      final sessionDuration = json[AdvancedMetricsConstants.keys.sessionDuration] as double;
+
+      final location = json.containsKey(AdvancedMetricsConstants.keys.location)
+          ? (json[AdvancedMetricsConstants.keys.location] as List<dynamic>).map((e) => e as double).toList()
+          : null;
+      final activeProcesses = json.containsKey(AdvancedMetricsConstants.keys.activeProcesses)
+          ? (json[AdvancedMetricsConstants.keys.activeProcesses] as List<dynamic>).map((e) => e as String).toList()
+          : <String>[];
+
+      return BatteryUsage(
+        batteryUsage: batteryUsage,
+        sessionDuration: sessionDuration,
+        location: location,
+        activeProcesses: activeProcesses,
+        deviceState: deviceState,
+        isInBatterySaveMode: isInBatterySaveMode,
+      );
+    } catch (e) {
+      print('BatteryUsage fromJson ${e.toString()}');
+      return null;
+    }
   }
 
   @override

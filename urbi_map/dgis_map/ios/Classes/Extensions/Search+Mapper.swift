@@ -46,7 +46,10 @@ extension Array where Element==ItemMarkerInfo {
                 withObjectId: $0.objectId?.toMessage(),
                 geoPoint: $0.geoPoint.toMessage(),
                 floorInfo: $0.floorInfo?.toMessage(),
-                title: $0.title
+                title: $0.title,
+                rubricIds: $0.rubricIds.map({
+                    NSNumber(value: $0.value)
+                })
             )
         }
     }

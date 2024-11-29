@@ -28,6 +28,8 @@ extension FormattedDuration on int {
       }
 
       return time;
+    } else if (minutes <= 1) {
+      return '1 ${l10n.min}';
     } else {
       return '$remainingMinutes ${l10n.min}';
     }
