@@ -89,7 +89,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                               left: uikit.Spacing.$3x,
                               top: uikit.Spacing.$3x,
                               right: uikit.Spacing.$3x,
-                              bottom: bottomPadding,
+                              bottom: bottomPadding == 0 ? widget.scrollController.sheetHeight : bottomPadding,
                             ),
                             child: Row(
                               children: [
