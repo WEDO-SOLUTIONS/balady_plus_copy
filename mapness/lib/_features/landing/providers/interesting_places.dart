@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:geobase/geobase.dart' as gb;
-import 'package:mapness/_features/poi_card/constants/info_mock.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart';
-import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/constants/info_mock.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_network.dart';
@@ -23,10 +22,7 @@ class InterestingPlaces extends _$InterestingPlaces {
 
     final dio = await ref.watch(dGisNetworkProvider.future);
 
-    final subscription = ref
-        .read(dgisControllerProvider.notifier)
-        .visibleRectSubject
-        .listen((event) async {
+    final subscription = ref.read(dgisControllerProvider.notifier).visibleRectSubject.listen((event) async {
       await _update(dio, event?.visibleRect);
     });
 
@@ -37,8 +33,7 @@ class InterestingPlaces extends _$InterestingPlaces {
   }
 
   Future<void> _update(Dio dio, [VisibleRect? rect]) async {
-    final polygon =
-        rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
+    final polygon = rect != null ? CommonFunctions.getPolygonFromRect(rect) : null;
     final data = await _fetch(dio, polygon);
     state = AsyncValue.data(data);
   }
@@ -48,14 +43,10 @@ class InterestingPlaces extends _$InterestingPlaces {
 
     try {
       final response = await dio.get(
-        wkt.isNotEmpty
-            ? '/interesting-places?bound=$wkt'
-            : '/interesting-places',
+        wkt.isNotEmpty ? '/interesting-places?bound=$wkt' : '/interesting-places',
         options: defaultCacheOptions,
       );
-      final places =
-          proto.InterestingPlacesResponse.fromBuffer(response.data as List<int>)
-              .interestingPlaces;
+      final places = InterestingPlacesResponse.fromBuffer(response.data as List<int>).interestingPlaces;
       return places;
       // ignore: avoid_catches_without_on_clauses
     } catch (error) {

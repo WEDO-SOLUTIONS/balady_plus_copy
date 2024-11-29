@@ -22,12 +22,12 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
@@ -328,8 +328,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
-      final matches = context.router.matcher.collection;
-      final isNavPage = matches.routes.last.name == PathNavRoute.name;
+      final matches = context.router.matcher.collection.routes;
+      final isNavPage = matches.last.name == PathNavRoute.name || matches.last.name == FreeRoamRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       if (navigation && !isNavPage) {
         final navStateMessage = await dgisController.getCurrentNavigationState();
@@ -407,7 +407,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         objectId: dgisObjectId,
         entranceId: 0,
       ),
-      cameraConfig: PoiCameraConfig(zoom: 17),
+      cameraConfig: const PoiCameraConfig(zoom: 17),
     ));
   }
 
@@ -473,7 +473,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         objectId: dgisId,
         entranceId: 0,
       ),
-      cameraConfig: PoiCameraConfig(zoom: 17),
+      cameraConfig: const PoiCameraConfig(zoom: 17),
     ));
   }
 

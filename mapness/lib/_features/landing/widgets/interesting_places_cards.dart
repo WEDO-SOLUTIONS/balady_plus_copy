@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_features/landing/widgets/places_horizontal_list.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -54,7 +54,7 @@ class InterestingPlacesCardsList extends ConsumerWidget {
                     objectId: objectId,
                     entranceId: 0,
                   ),
-                  cameraConfig: PoiCameraConfig(zoom: 17),
+                  cameraConfig: const PoiCameraConfig(zoom: 17),
                 ),
               );
             },

@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/features/home_page/presentation/widgets/home_bottom_sheet/prayer_next_home.dart';
 import 'package:balady_plus/app/features/public_services_features/prayer_times/prayer_times_exports.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mapness/_features/poi_card/widgets/shimmer.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:provider/provider.dart';
 
@@ -38,8 +38,8 @@ class PrayerHomeCard extends StatelessWidget {
               child: Text(
                 "prayerTimes".tr(),
                 style: Theme.of(context).extension<ThemeTextStyles>()?.heading2.copyWith(
-                  color: const Color(0xFF1E2A36),
-                ),
+                      color: const Color(0xFF1E2A36),
+                    ),
               ),
             ),
             state.nextPrayer != null && state.status != BlocRequestStatus.submissionGetLoading

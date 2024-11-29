@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -62,7 +62,7 @@ class MapSearchResults extends ConsumerWidget {
                   objectId: item.id!.objectId,
                   entranceId: 0,
                 ),
-                cameraConfig: PoiCameraConfig(zoom: 18),
+                cameraConfig: const PoiCameraConfig(zoom: 18),
               ),
             );
           });

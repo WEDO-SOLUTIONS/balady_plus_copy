@@ -2,10 +2,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'stories_open_state.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class StoriesOpenState extends _$StoriesOpenState {
   @override
-  bool build() => false;
+  bool build() => stateOrNull ?? false;
 
   void open() {
     state = true;

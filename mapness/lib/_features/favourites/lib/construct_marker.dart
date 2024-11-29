@@ -21,7 +21,7 @@ Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter rou
         objectId: DgisObjectIdMessage(
           objectId: id,
           entranceId: 0,
-        ),
+        ), closestPoint: null,
       ),
     );
   };

@@ -235,81 +235,82 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
     final isLTR = context.isLTR;
     final gradientPosition = Curves.decelerate.transform(animationProgress);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(borderRadius),
-      child: ColoredBox(
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(borderRadius),
+        boxShadow: Shadows.s,
         color: Color.lerp(colorsV2.backgroundSurface1, colorsV2.accentDefault, delta) ?? colorsV2.backgroundSurface1,
-        child: InkWell(
-          borderRadius: BorderRadius.circular(borderRadius),
-          onTap: () {
-            context.router.push(FreeRoamRoute());
-            ref.read(freeRoamStarterProvider.notifier).setShown();
-          },
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              minWidth: minWidth,
-              maxHeight: lerpDouble(minHeight, maxHeight, delta) ?? maxHeight,
-            ),
-            child: Center(
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                  gradient: LinearGradient(
-                    colors: [
-                      if (isLTR) Colors.black.withOpacity(progressOpacity),
-                      Colors.transparent,
-                      if (!isLTR) Colors.black.withOpacity(progressOpacity),
-                    ],
-                    stops: [
-                      if (isLTR) gradientPosition else 1 - gradientPosition,
-                      if (isLTR) gradientPosition else 1 - gradientPosition
-                    ],
-                  ),
+      ),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(borderRadius),
+        onTap: () {
+          context.router.push(FreeRoamRoute());
+          ref.read(freeRoamStarterProvider.notifier).setShown();
+        },
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            minWidth: minWidth,
+            maxHeight: lerpDouble(minHeight, maxHeight, delta) ?? maxHeight,
+          ),
+          child: Center(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(borderRadius),
+                gradient: LinearGradient(
+                  colors: [
+                    if (isLTR) Colors.black.withOpacity(progressOpacity),
+                    Colors.transparent,
+                    if (!isLTR) Colors.black.withOpacity(progressOpacity),
+                  ],
+                  stops: [
+                    if (isLTR) gradientPosition else 1 - gradientPosition,
+                    if (isLTR) gradientPosition else 1 - gradientPosition
+                  ],
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(Spacing.$1x * delta),
-                      child: SizedBox(
-                        width: minHeight,
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(RadiusBorder.m),
-                            color: Colors.white.withOpacity(progressOpacity * delta),
-                          ),
-                          child: Center(
-                            child: SvgPicture.asset(
-                              'assets/icons/svg/quick_filters/free_roam.svg',
-                              height: iconSize,
-                              width: iconSize,
-                              package: PackageConfig.packageName,
-                              colorFilter: ColorFilter.mode(
-                                iconAndTextColor,
-                                BlendMode.srcIn,
-                              ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.all(Spacing.$1x * delta),
+                    child: SizedBox(
+                      width: minHeight,
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(RadiusBorder.m),
+                          color: Colors.white.withOpacity(progressOpacity * delta),
+                        ),
+                        child: Center(
+                          child: SvgPicture.asset(
+                            'assets/icons/svg/quick_filters/free_roam.svg',
+                            height: iconSize,
+                            width: iconSize,
+                            package: PackageConfig.packageName,
+                            colorFilter: ColorFilter.mode(
+                              iconAndTextColor,
+                              BlendMode.srcIn,
                             ),
                           ),
                         ),
                       ),
                     ),
-                    if (delta > startingPoint)
-                      ClipRect(
-                        child: Align(
-                          alignment: AlignmentDirectional.centerStart,
-                          widthFactor: delta,
-                          child: Padding(
-                            padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$3x),
-                            child: Text(
-                              context.l10n.launchingNavigator,
-                              style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
-                            ),
+                  ),
+                  if (delta > startingPoint)
+                    ClipRect(
+                      child: Align(
+                        alignment: AlignmentDirectional.centerStart,
+                        widthFactor: delta,
+                        child: Padding(
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$3x),
+                          child: Text(
+                            context.l10n.launchingNavigator,
+                            style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
                           ),
                         ),
                       ),
-                  ],
-                ),
+                    ),
+                ],
               ),
             ),
           ),
