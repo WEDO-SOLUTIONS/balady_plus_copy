@@ -238,6 +238,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     PathNavRoute.open(
       ref.watch(goRouterProvider),
       navigatingType,
+      initAction: PathNavPageInitAction.startNavigation,
     );
   }
 

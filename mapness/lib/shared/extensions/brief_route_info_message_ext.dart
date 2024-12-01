@@ -7,6 +7,10 @@ extension BriefRouteInfoMessageExt on BriefRouteInfoMessage {
   ) {
     final duration = Duration(seconds: this.duration.toInt());
     final inMinutes = duration.inMinutes;
+    // if less than 1 min return 1 min
+    if (inMinutes <= 1) {
+      return '1 ${l10n.min}';
+    }
     if (inMinutes < 60) {
       return '$inMinutes ${l10n.min}';
     } else {

@@ -38,7 +38,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         queryParameters: map,
         cancelToken: cancelToken,
       );
-      await mixpanel?.track('WebServiceWeather: getCurrentWeatherData');
+      unawaited(mixpanel?.track('WebServiceWeather: getCurrentWeatherData'));
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       log('WEATHER API DioException $e');
@@ -68,7 +68,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
         ),
         cancelToken: cancelToken,
       );
-      await mixpanel?.track('WebServiceWeather: getForecastData');
+      unawaited(mixpanel?.track('WebServiceWeather: getForecastData'));
       return response.data as Map<String, dynamic>;
     } on DioException catch (e) {
       log('WEATHER API DioException $e');

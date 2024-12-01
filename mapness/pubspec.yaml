@@ -41,7 +41,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.0.0
+    version: 3.0.8
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -97,11 +97,11 @@ dependencies:
   dio_http_cache: ^0.3.0
   sliver_tools: ^0.2.12
   json_annotation: ^4.9.0
-  photo_view: ^0.14.0
+  easy_image_viewer: ^1.5.1
   flutter_staggered_grid_view: ^0.7.0
   app_links: ^3.5.0
   flutter_keyboard_visibility: ^6.0.0
-  infinite_scroll_pagination: ^4.0.0
+  infinite_scroll_pagination: ^4.1.0
   another_transformer_page_view:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: ^2.2.0
