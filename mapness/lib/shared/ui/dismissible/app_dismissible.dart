@@ -7,10 +7,10 @@ class AppDismissible extends StatelessWidget {
   final ValueKey elementKey;
 
   /// For border radius and right drawing
-  final bool isFirst;
+  final bool addTopBorderRadius;
 
   /// For border radius and right drawing
-  final bool isLast;
+  final bool addBottomBorderRadius;
 
   /// The child widget that will be wrapped with Dismissible
   final Widget child;
@@ -24,8 +24,8 @@ class AppDismissible extends StatelessWidget {
 
   const AppDismissible({
     required this.elementKey,
-    required this.isFirst,
-    required this.isLast,
+    required this.addTopBorderRadius,
+    required this.addBottomBorderRadius,
     required this.child,
     required this.onDismiss,
     this.isDismissibleEnabled = true,
@@ -48,8 +48,8 @@ class AppDismissible extends StatelessWidget {
           movementDuration: const Duration(milliseconds: 300),
           key: elementKey,
           background: AppDismissibleBackground(
-            isFirst: isFirst,
-            isLast: isLast,
+            addTopBorderRadius: addTopBorderRadius,
+            addBottomBorderRadius: addBottomBorderRadius,
           ),
           child: child,
         )

@@ -65,8 +65,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final isBackgroundNavigationOn = ref.watch(soundSettingsProvider).backgroundNavigation;
-    final soundSettingsNotifier = ref.watch(soundSettingsProvider.notifier);
+    final isBackgroundNavigationOn = ref.read(soundSettingsProvider).backgroundNavigation;
+    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
 
     if (state == AppLifecycleState.paused) {
       saveNavigationState();
@@ -182,7 +182,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           _endTripAndShowHome();
         }
       });
-    final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
@@ -196,18 +195,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             expansionNotifier: _expansionNotifier,
             navType: widget.navType,
           ),
-          if (isEtaExpanded)
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-              },
-              child: SizedBox.expand(
-                child: ColoredBox(
-                  color: AppColor.black.withOpacity(0.4),
-                ),
-              ),
-            ),
+          Consumer(builder: (context, ref, _) {
+            final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
+            return isEtaExpanded
+                ? GestureDetector(
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                    },
+                    child: SizedBox.expand(
+                      child: ColoredBox(
+                        color: AppColor.black.withOpacity(0.4),
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink();
+          }),
           Positioned(
             bottom: 0,
             right: 0,
@@ -375,9 +378,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Set padding to the camera to avoid the sheet overlaying the map
   // Pass this method to the onSizeChanged callback of the sheet to calculate the padding
   void _onSizeChanged(Size size) {
-    setState(() {
-      heightOfEta = size.height;
-    });
+    heightOfEta = size.height;
 
     _setPaddingToCamera(heightOfEta);
   }

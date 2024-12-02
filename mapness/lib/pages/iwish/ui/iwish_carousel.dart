@@ -1,8 +1,9 @@
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mapness/_features/poi_card/widgets/shimmer.dart';
+
 import 'package:mapness/app/routes/iwish.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';

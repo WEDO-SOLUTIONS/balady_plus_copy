@@ -25,6 +25,7 @@ import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
 import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/free_roam.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
@@ -342,7 +343,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
       final router = ref.read(goRouterProvider);
       final matches = router.routerDelegate.currentConfiguration.matches;
-      final isNavPage = matches.last.matchedLocation == PathNavRoute.path;
+      final isNavPage =
+          matches.last.matchedLocation == PathNavRoute.path || matches.last.matchedLocation == FreeRoamRoute.path;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       if (navigation && !isNavPage) {
         final navStateMessage = await dgisController.getCurrentNavigationState();
