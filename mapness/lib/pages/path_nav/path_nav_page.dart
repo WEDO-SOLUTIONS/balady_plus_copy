@@ -383,7 +383,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await _endTrip(() {
       if (context.mounted) {
-        context.router.popUntilRouteWithName(BottomMenuRoute.name);
+        context.router.navigate(const RoutingPointsRoute());
       }
     });
   }
