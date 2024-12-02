@@ -1,6 +1,6 @@
-part of 'commercial_license_bloc.dart';
+part of 'commercial_license_initial_export_bloc.dart';
 
-class CommercialLicenseState extends Equatable {
+class CommercialLicenseInitialExportState extends Equatable {
   final BlocStatus status;
   final BlocStatus detailsStatus;
   final int currentPageValue;
@@ -15,7 +15,7 @@ class CommercialLicenseState extends Equatable {
   final CommercialRequestDetailsResponseEntity? requestData;
   final RecordInfo? recordInfo;
 
-  const CommercialLicenseState({
+  const CommercialLicenseInitialExportState({
     this.status = BlocStatus.initial,
     this.detailsStatus = BlocStatus.initial,
     this.currentPageValue = 0,
@@ -61,7 +61,7 @@ class CommercialLicenseState extends Equatable {
         recordInfo
       ];
 
-  CommercialLicenseState copyWith(
+  CommercialLicenseInitialExportState copyWith(
       {BlocStatus? status,
       BlocStatus? detailsStatus,
       int? currentPageValue,
@@ -75,7 +75,7 @@ class CommercialLicenseState extends Equatable {
       bool? isDraft,
       Nullable<CommercialRequestDetailsResponseEntity?>? requestData,
       RecordInfo? recordInfo}) {
-    return CommercialLicenseState(
+    return CommercialLicenseInitialExportState(
         status: status ?? this.status,
         detailsStatus: detailsStatus ?? this.detailsStatus,
         currentPageValue: currentPageValue ?? this.currentPageValue,

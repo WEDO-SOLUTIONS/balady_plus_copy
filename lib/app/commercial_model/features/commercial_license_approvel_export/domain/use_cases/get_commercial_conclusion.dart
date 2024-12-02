@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/conclusion_response_entity.dart';
 
 class GetCommercialConclusion extends UseCase<IssueCommercialConculsionEntity, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetCommercialConclusion({required this.repository});
   @override

@@ -6,7 +6,7 @@ import '../../data/models/additional_activity_response.dart';
 
 class GetAddetionalActivites
     extends UseCase<AdditionalActivityResponseModel, String> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetAddetionalActivites({required this.repository});
   @override

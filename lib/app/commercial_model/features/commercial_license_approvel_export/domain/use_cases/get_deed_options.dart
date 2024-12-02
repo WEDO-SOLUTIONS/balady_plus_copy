@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
 class GetDeedOptions extends UseCase<List<String>, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetDeedOptions({required this.repository});
   @override

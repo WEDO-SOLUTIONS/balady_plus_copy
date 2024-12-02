@@ -1,6 +1,6 @@
-part of 'cr_step1_applicant_data_cubit.dart';
+part of 'step1_applicant_data_export_cubit.dart';
 
-class CrStep1ApplicantDataState extends Equatable {
+class Step1ApplicantDataExportState extends Equatable {
   final RecordInfo? recordInfo;
   final BlocStatus recordStatus;
   final BlocStatus addIsicActivitiesStatus;
@@ -8,7 +8,7 @@ class CrStep1ApplicantDataState extends Equatable {
 
   final String errorMessage;
 
-  const CrStep1ApplicantDataState({
+  const Step1ApplicantDataExportState({
     this.recordInfo,
     this.recordStatus = BlocStatus.initial,
     this.addIsicActivitiesStatus = BlocStatus.initial,
@@ -43,14 +43,14 @@ class CrStep1ApplicantDataState extends Equatable {
   List<Object?> get props =>
       [recordInfo, recordStatus, addIsicActivitiesStatus, errorMessage, status];
 
-  CrStep1ApplicantDataState copyWith({
+  Step1ApplicantDataExportState copyWith({
     RecordInfo? recordInfo,
     BlocStatus? recordStatus,
     BlocStatus? status,
     BlocStatus? addIsicActivitiesStatus,
     String? errorMessage,
   }) {
-    return CrStep1ApplicantDataState(
+    return Step1ApplicantDataExportState(
         recordInfo: recordInfo ?? this.recordInfo,
         recordStatus: recordStatus ?? this.recordStatus,
         addIsicActivitiesStatus:

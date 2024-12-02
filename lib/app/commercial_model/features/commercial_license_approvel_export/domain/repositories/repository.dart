@@ -22,7 +22,7 @@ import '../entities/cr_submit_request.dart';
 import '../entities/save_shop_details_request.dart';
 import '../entities/verifiy_salama_requst.dart';
 
-abstract class CrRepository {
+abstract class Repository {
   Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
       {required String crNumber, required String role});
 

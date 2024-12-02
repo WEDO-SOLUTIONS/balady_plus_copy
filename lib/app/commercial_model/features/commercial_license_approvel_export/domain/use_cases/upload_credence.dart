@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
 class UploadCredence extends UseCase<bool, CrAttachmentRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   UploadCredence({required this.repository});
   @override

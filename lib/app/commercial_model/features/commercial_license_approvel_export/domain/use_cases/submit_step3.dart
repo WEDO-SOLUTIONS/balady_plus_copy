@@ -7,7 +7,7 @@ import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 
 class SaveLocationDetails
     extends UseCase<SaveLocationResponseModel, SaveLocationDataRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   SaveLocationDetails({required this.repository});
   @override

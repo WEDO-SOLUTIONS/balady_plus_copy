@@ -11,13 +11,13 @@ import '../../../commercial_license_exports.dart'
     show
         AddBeneficiaryNotes,
         AdditionalQrDataRequestModel,
-        CommercialLicenseBloc,
+        CommercialLicenseInitialExportBloc,
         CrAddNotesRequest,
         CrAttachmentRequest,
         CredenceItem,
         GetRequestCredence,
-        GoToNextPageEvent,
-        UpdateQrDataEvent,
+        NextPageEvent,
+        UpdateQrCodeDataEvent,
         UploadCredence,
         ValidateAprovals,
         ValidateSalamaAttachmentsRequest;
@@ -77,7 +77,7 @@ class CRStep10AddetionalDataCubit extends Cubit<CRStep10AddetionalState> {
 
   void save() async {
     int? requestId =
-        sl<CommercialLicenseBloc>().state.applyCommercialResponse?.requestId;
+        sl<CommercialLicenseInitialExportBloc>().state.applyCommercialResponse?.requestId;
 
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -107,7 +107,7 @@ class CRStep10AddetionalDataCubit extends Cubit<CRStep10AddetionalState> {
       emit(
         state.copyWith(errorMessage: "", status: BlocStatus.success),
       );
-      sl<CommercialLicenseBloc>().add(const GoToNextPageEvent());
+      sl<CommercialLicenseInitialExportBloc>().add(const NextPageEvent());
     });
   }
 }

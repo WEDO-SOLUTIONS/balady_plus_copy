@@ -11,7 +11,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../bloc/map_bloc.dart';
+import '../../bloc/map_export_bloc.dart';
 
 class CRHeaderDescSearch extends StatelessWidget {
   final String header;
@@ -28,7 +28,7 @@ class CRHeaderDescSearch extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MapBloc, MapState>(
+    return BlocBuilder<MapExportBloc, MapExportState>(
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,

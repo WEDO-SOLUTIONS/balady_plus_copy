@@ -10,20 +10,20 @@ import '../../step10/bloc/cr_step10_addetional_data_cubit.dart';
 import '../../step11/bloc/cr_step11_attachment_data_cubit.dart';
 import '../../step12/bloc/cr_step12_sadad_cubit.dart';
 import '../../step13/bloc/cr_step13_review_cubit.dart';
-import '../../step3/bloc/map_bloc.dart';
+import '../../step3/bloc/map_export_bloc.dart';
 import '../../step4/bloc/cr_step4_shop_data_cubit.dart';
 import '../../step5/bloc/cr_step5_attachment_data_cubit.dart';
 import '../../step6/bloc/cr_step6_establishment_data_cubit.dart';
 
-class CommercialLicenseScreen extends StatefulWidget {
-  const CommercialLicenseScreen({Key? key}) : super(key: key);
+class CommercialLicenseInitialApprovelScreen extends StatefulWidget {
+  const CommercialLicenseInitialApprovelScreen({Key? key}) : super(key: key);
 
   @override
-  State<CommercialLicenseScreen> createState() =>
-      _CommercialLicenseScreenState();
+  State<CommercialLicenseInitialApprovelScreen> createState() =>
+      _CommercialLicenseInitialApprovelScreenState();
 }
 
-class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
+class _CommercialLicenseInitialApprovelScreenState extends State<CommercialLicenseInitialApprovelScreen> {
   @override
   void initState() {
     // TODO: implement initState
@@ -42,41 +42,45 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (context) => WorkTimesCubit(),
-        ),
+
         BlocProvider(
           lazy: false,
-          create: (context) => CrStep1ApplicantDataCubit()..getRecordInfo(),
+          create: (context) => Step1ApplicantDataExportCubit()..getRecordInfo(),
         ),
         BlocProvider(
-          create: (context) => CrStep2ActivityDataCubit(),
+          create: (context) => Step2ActivityDataExportCubit(),
         ),
         BlocProvider(
-          create: (context) => MapBloc(),
+          create: (context) => MapExportBloc(),
         ),
+
         BlocProvider.value(
-          value: sl<CommercialLicenseBloc>(),
+          value: sl<CommercialLicenseInitialExportBloc>(),
         ),
-        BlocProvider(
-          create: (context) => CrStep4ShopDataCubit(),
-        ),
-        BlocProvider(
-          create: (context) => CRStep5AttachmentCubit(),
-        ),
-        BlocProvider(
-          create: (context) => CRStep6EstablishmentCubit(),
-        ),
-        BlocProvider(
-          create: (context) => CRStep11AttachmentCubit(),
-        ),
-        BlocProvider(create: (context) => CRStep10AddetionalDataCubit()),
-        BlocProvider(
-          create: (context) => CrStep12SadadCubit(),
-        ),
-        BlocProvider(
-          create: (context) => CrStep13ReviewDataCubit(),
-        ),
+
+        // BlocProvider(
+        //   create: (context) => WorkTimesCubit(),
+        // ),
+
+        // BlocProvider(
+        //   create: (context) => CrStep4ShopDataCubit(),
+        // ),
+        // BlocProvider(
+        //   create: (context) => CRStep5AttachmentCubit(),
+        // ),
+        // BlocProvider(
+        //   create: (context) => CRStep6EstablishmentCubit(),
+        // ),
+        // BlocProvider(
+        //   create: (context) => CRStep11AttachmentCubit(),
+        // ),
+        // BlocProvider(create: (context) => CRStep10AddetionalDataCubit()),
+        // BlocProvider(
+        //   create: (context) => CrStep12SadadCubit(),
+        // ),
+        // BlocProvider(
+        //   create: (context) => CrStep13ReviewDataCubit(),
+        // ),
       ],
       child: CommercialLicenseBody(
         requestId: requestId,

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../blocs/commercial_license_initial_export_bloc.dart';
 
 class CRPreviousNextButtons extends StatelessWidget {
   const CRPreviousNextButtons({
@@ -17,9 +18,9 @@ class CRPreviousNextButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CommercialLicenseBloc, CommercialLicenseState>(
+    return BlocBuilder<CommercialLicenseInitialExportBloc, CommercialLicenseInitialExportState>(
       builder: (context, state) {
-        bool isLastPage = context.read<CommercialLicenseBloc>().isLastPage();
+        bool isLastPage = context.read<CommercialLicenseInitialExportBloc>().isLastPage();
         return Container(
           color: Colors.transparent,
           padding:
@@ -34,9 +35,10 @@ class CRPreviousNextButtons extends StatelessWidget {
                     () {
                       if (!isLastPage) {
                         context
-                            .read<CommercialLicenseBloc>()
-                            .add(const GoToNextPageEvent());
+                            .read<CommercialLicenseInitialExportBloc>()
+                            .add(const NextPageEvent());
                       } else {
+
                         // context.read<CommercialLicenseBloc>().add(SubmitIncidentEvent());
                       }
                     },

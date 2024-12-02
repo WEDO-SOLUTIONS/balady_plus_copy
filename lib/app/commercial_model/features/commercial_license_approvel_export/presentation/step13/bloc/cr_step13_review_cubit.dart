@@ -28,7 +28,7 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
   void onSelectSaddadYear(IsicActivity isicActivity) async {}
 
   void getConclusion() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _getCommercialConclusion(requestId);
@@ -45,8 +45,8 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.CommercialLicense_Send_Request_Event);
     try {
-      int requestId = sl<CommercialLicenseBloc>().state.requestId!;
-      String saddadPeriod = sl<CommercialLicenseBloc>().state.selectedPeriod!;
+      int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
+      String saddadPeriod = sl<CommercialLicenseInitialExportBloc>().state.selectedPeriod!;
 
       emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
       final response = await _submitCR(CrSubmitRequest(
@@ -74,7 +74,7 @@ class CrStep13ReviewDataCubit extends Cubit<CrStep13ReviewState> {
           arguments: (
             "",
             success.data?.result,
-            sl<CommercialLicenseBloc>().state.crCalculateFeesResponse?.totalCost
+            sl<CommercialLicenseInitialExportBloc>().state.crCalculateFeesResponse?.totalCost
           ),
         );
       });

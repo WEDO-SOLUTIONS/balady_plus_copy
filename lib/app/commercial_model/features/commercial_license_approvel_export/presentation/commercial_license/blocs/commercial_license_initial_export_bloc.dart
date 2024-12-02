@@ -17,22 +17,22 @@ import '../../step11/page/cr_step11_attachment_data.dart';
 import '../../step12/page/cr_step12_calculator.dart';
 import '../../step13/page/cr_step13_review.dart';
 
-part 'commercial_license_event.dart';
+part 'commercial_license_initial_export_event.dart';
 
-part 'commercial_license_state.dart';
+part 'commercial_license_initial_export_state.dart';
 
-class CommercialLicenseBloc
-    extends Bloc<CommercialLicenseEvent, CommercialLicenseState> {
+class CommercialLicenseInitialExportBloc
+    extends Bloc<CommercialLicenseInitialExportEvent, CommercialLicenseInitialExportState> {
   PageController controller = PageController();
   GetCommercialRequestData _getCommercialRequestData;
 
-  CommercialLicenseBloc()
+  CommercialLicenseInitialExportBloc()
       : _getCommercialRequestData = GetCommercialRequestData(repository: sl()),
-        super(const CommercialLicenseState()) {
-    on<GoToNextPageEvent>(_goToNextPageHandler);
-    on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
+        super(const CommercialLicenseInitialExportState()) {
+    on<NextPageEvent>(_goToNextPageHandler);
+    on<PreviousPageEvent>(_goToPreviousPageHandler);
 
-    on<UpdateRequestFieldEvent>(_updateRequestIdHandler);
+    on<UpdateFieldEvent>(_updateRequestIdHandler);
   }
 
   Future<void> goToCalucaltePage() async {
@@ -56,7 +56,7 @@ class CommercialLicenseBloc
   }
 
   Future<void> _goToNextPageHandler(
-      GoToNextPageEvent e, Emitter emitter) async {
+      NextPageEvent e, Emitter emitter) async {
     int nextPage = state.currentPageValue + 1;
 
     print("DataLog ${state}");
@@ -83,7 +83,7 @@ class CommercialLicenseBloc
   }
 
   Future<void> _goToPreviousPageHandler(
-      GoToPreviousPageEvent e, Emitter emitter) async {
+      PreviousPageEvent e, Emitter emitter) async {
     int prvoiusPage = state.currentPageValue - 1;
 
     if (state.currentPageValue == 0.0) {
@@ -148,7 +148,7 @@ class CommercialLicenseBloc
 
 
   Future<void> _updateRequestIdHandler(
-      UpdateRequestFieldEvent e, Emitter emitter) async {
+      UpdateFieldEvent e, Emitter emitter) async {
     emitter(state.copyWith(
         requestId: e.requestId != null ? Nullable(e.requestId) : null,
         locationResponse: e.saveLocationResponse));

@@ -136,10 +136,10 @@ abstract class RemoteDataSource {
       {required int params});
 }
 
-class CrRemoteDataSourceImpl extends RemoteDataSource {
+class RemoteDataSourceImpl extends RemoteDataSource {
   final WebService webService;
 
-  CrRemoteDataSourceImpl({required this.webService});
+  RemoteDataSourceImpl({required this.webService});
 
   @override
   Future<List<LookupsModel>> getAccommodationTypes() async {

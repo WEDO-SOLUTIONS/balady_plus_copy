@@ -6,7 +6,7 @@ import '../../data/models/commercial_request_details_response_entity.dart';
 
 class GetCommercialRequestData
     extends UseCase<CommercialRequestDetailsResponseEntity, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetCommercialRequestData({required this.repository});
   @override

@@ -11,7 +11,7 @@ class CRStep1ApplicantData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+    return BlocConsumer<Step1ApplicantDataExportCubit, Step1ApplicantDataExportState>(
       listener: (context, state) {
         if (state.recordStatus == BlocStatus.failure ||
             state.status == BlocStatus.failure ||
@@ -89,12 +89,12 @@ class CRStep1ApplicantData extends StatelessWidget {
                               BottomSheetDialog.showDraggableSheet(context,
                                   child: BlocProvider.value(
                                       value: BlocProvider.of<
-                                          CrStep1ApplicantDataCubit>(context),
+                                          Step1ApplicantDataExportCubit>(context),
                                       child:
                                           const IsicActivitiesDialogNotExistInBalady()));
                             } else {
                               context
-                                  .read<CrStep1ApplicantDataCubit>()
+                                  .read<Step1ApplicantDataExportCubit>()
                                   .saveComSubmitterAndOwner();
                             }
                           }),
@@ -104,7 +104,7 @@ class CRStep1ApplicantData extends StatelessWidget {
               ErrorLoadingComponent(
                 message: state.errorMessage,
                 onTryAgain: () =>
-                    context.read<CrStep1ApplicantDataCubit>().getRecordInfo(),
+                    context.read<Step1ApplicantDataExportCubit>().getRecordInfo(),
               ),
             if (state.recordStatus.isSubmissionLoading ||
                 state.status.isSubmissionLoading)

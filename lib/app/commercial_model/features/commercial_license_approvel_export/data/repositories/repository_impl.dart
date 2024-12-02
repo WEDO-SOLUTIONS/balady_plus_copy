@@ -23,10 +23,10 @@ import '../../commercial_license_exports.dart';
 import '../models/attachment_response_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-class CrRepositoryImpl implements CrRepository {
+class RepositoryImpl implements Repository {
   final RemoteDataSource remoteDataSource;
 
-  CrRepositoryImpl({required this.remoteDataSource});
+  RepositoryImpl({required this.remoteDataSource});
 
   @override
   Future<Either<Failure, ResponseBodyModel<SubActivityDetails>>>

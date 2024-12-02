@@ -816,7 +816,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
                     Row(
                       children: [
                         CustomTextWidget(
-                          sl<CommercialLicenseBloc>()
+                          sl<CommercialLicenseInitialExportBloc>()
                                   .state
                                   .crCalculateFeesResponse
                                   ?.totalCost
@@ -836,7 +836,7 @@ class _CalcualtorWidgetState extends State<CalcualtorWidget> {
 
                     showCostsInfo
                         ? Column(
-                            children: (sl<CommercialLicenseBloc>()
+                            children: (sl<CommercialLicenseInitialExportBloc>()
                                         .state
                                         .crCalculateFeesResponse
                                         ?.costsInfo ??

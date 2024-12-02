@@ -8,7 +8,7 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/attachment_model.dart';
 import '../../../commercial_license_exports.dart'
-    show CommercialLicenseBloc, CrAttachmentRequest, GoToNextPageEvent;
+    show CommercialLicenseInitialExportBloc, CrAttachmentRequest, NextPageEvent;
 import '../../../domain/use_cases/get_qr_attachments.dart';
 import '../../../domain/use_cases/submit_qr.dart';
 import '../../../domain/use_cases/upload_qr_attachments.dart';
@@ -28,7 +28,7 @@ class CRStep11AttachmentCubit extends Cubit<CRStep11AttachmentState> {
 
   void getAttachments() async {
     int requestId =
-        sl<CommercialLicenseBloc>().state.applyCommercialResponse!.requestId!;
+        sl<CommercialLicenseInitialExportBloc>().state.applyCommercialResponse!.requestId!;
 
     emit(state.copyWith(attachmentStatus: BlocStatus.loading));
     final response = await _getCrAttachments(requestId);
@@ -74,7 +74,7 @@ class CRStep11AttachmentCubit extends Cubit<CRStep11AttachmentState> {
       required String fileName,
       required String fileBase64}) async {
     int? requestId =
-        sl<CommercialLicenseBloc>().state.applyCommercialResponse?.requestId!;
+        sl<CommercialLicenseInitialExportBloc>().state.applyCommercialResponse?.requestId!;
 
     emit(state.copyWith(
       status: BlocStatus.loading,
@@ -105,7 +105,7 @@ class CRStep11AttachmentCubit extends Cubit<CRStep11AttachmentState> {
   void save() async {
     emit(state.copyWith(status: BlocStatus.loading));
     int? requestId =
-        sl<CommercialLicenseBloc>().state.applyCommercialResponse?.requestId;
+        sl<CommercialLicenseInitialExportBloc>().state.applyCommercialResponse?.requestId;
 
     final failureOrSuccess = await _submitQR(requestId!);
 
@@ -119,7 +119,7 @@ class CRStep11AttachmentCubit extends Cubit<CRStep11AttachmentState> {
       emit(
         state.copyWith(errorMessage: "", status: BlocStatus.success),
       );
-      sl<CommercialLicenseBloc>().add(const GoToNextPageEvent());
+      sl<CommercialLicenseInitialExportBloc>().add(const NextPageEvent());
     });
   }
 }

@@ -8,15 +8,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../bloc/map_bloc.dart';
+import '../bloc/map_export_bloc.dart';
 import '../widgets/map_widgets/cr_map_view.dart';
 
-class CRMapScreen extends StatefulWidget {
+class ExportMapScreen extends StatefulWidget {
   final bool showSearchPaddingScreen;
   final bool showSearch;
   final bool closeIcon;
 
-  CRMapScreen({
+  ExportMapScreen({
     this.showSearch = false,
     this.closeIcon = false,
     this.showSearchPaddingScreen = false,
@@ -26,7 +26,7 @@ class CRMapScreen extends StatefulWidget {
   _CRMapScreen createState() => _CRMapScreen();
 }
 
-class _CRMapScreen extends State<CRMapScreen> {
+class _CRMapScreen extends State<ExportMapScreen> {
   @override
   void initState() {
     super.initState();
@@ -38,13 +38,13 @@ class _CRMapScreen extends State<CRMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MapBloc bloc = ModalRoute.of(context)?.settings.arguments as MapBloc;
+    MapExportBloc bloc = ModalRoute.of(context)?.settings.arguments as MapExportBloc;
     return BlocProvider.value(
       value: bloc,
       child: Scaffold(
           backgroundColor: AppColor.white4,
           appBar: null,
-          body: BlocConsumer<MapBloc, MapState>(
+          body: BlocConsumer<MapExportBloc, MapExportState>(
             listener: (context, state) {
               // TODO: implement listener
               if (state.status == BlocStatus.failure)

@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/board_contract_responseModel.dart';
 
 class GetBoardContracts extends UseCase<BoardContractResponseModel, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetBoardContracts({required this.repository});
   @override

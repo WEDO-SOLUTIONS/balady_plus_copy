@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 
 class ValidateSalamaAttachments
     extends UseCase<int, ValidateSalamaAttachmentsRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   ValidateSalamaAttachments({required this.repository});
   @override

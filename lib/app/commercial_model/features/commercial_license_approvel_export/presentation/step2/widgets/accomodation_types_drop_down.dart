@@ -7,21 +7,21 @@ import '../../../../../../features/_shared_feature_/presentation/components/bott
 import '../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
 import '../../../data/models/qr/qr_lookup_model.dart';
-import '../bloc/cr_step2_activity_data_cubit.dart';
+import '../bloc/step2_activity_data_export_cubit.dart';
 
 class AccomodationDropDownTypes extends StatelessWidget {
   const AccomodationDropDownTypes({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep2ActivityDataCubit, CrStep2ActivityDataState>(
+    return BlocBuilder<Step2ActivityDataExportCubit, Step2ActivityDataExportState>(
         builder: (context, state) {
       return DropDownWithTitle(
         title: "accomodation".tr(),
         selectedValue: state.selectedAccommodationType?.name,
         blocStatus: state.accommodationTypesStatus,
         onRetry: () {
-          context.read<CrStep2ActivityDataCubit>().getAccommodationTypes();
+          context.read<Step2ActivityDataExportCubit>().getAccommodationTypes();
         },
         onTap: () {
           // if (state.requestDetails?.usageDisable == true) return;
@@ -35,7 +35,7 @@ class AccomodationDropDownTypes extends StatelessWidget {
               selectedValue: state.selectedAccommodationType,
               onTap: (item) {
                 context
-                    .read<CrStep2ActivityDataCubit>()
+                    .read<Step2ActivityDataExportCubit>()
                     .onAccommodationTypes(item);
                 Navigator.pop(context);
               },

@@ -17,8 +17,8 @@ import 'package:balady_plus/app/features/create_compliance/domain/use_cases/send
 import 'package:balady_plus/app/features/create_compliance/domain/use_cases/verify_otp.dart';
 import '../../../commercial_license_exports.dart'
     show
-        CommercialLicenseBloc,
-        GoToNextPageEvent,
+        CommercialLicenseInitialExportBloc,
+        NextPageEvent,
         ValidateAprovals;
 import '../../../data/models/citizen_info.dart';
 import '../../../data/models/qr/submit_commercial_response_model.dart';
@@ -114,7 +114,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
 
   void getApplyCommercialRequest() async {
     //if (state.applyResponse != null) return;
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     emit(state.copyWith(
       applyStatus: BlocStatus.loading,
       errorMessage: "",
@@ -129,7 +129,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
       ));
     }, (r) {
       if (state.applyResponse == null &&
-          sl<CommercialLicenseBloc>().state.isDraft == true) {
+          sl<CommercialLicenseInitialExportBloc>().state.isDraft == true) {
         setQrDraftData();
       }
 
@@ -145,7 +145,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
           managerMobileNumber: managerMobileNumber,
           applyStatus: BlocStatus.success,
           applyResponse: r));
-      sl<CommercialLicenseBloc>().updateQrData(applyCommercialResponse: r);
+      sl<CommercialLicenseInitialExportBloc>().updateQrData(applyCommercialResponse: r);
     });
   }
 
@@ -257,7 +257,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
 
   void save() async {
     int? requestId =
-        sl<CommercialLicenseBloc>().state.applyCommercialResponse?.requestId;
+        sl<CommercialLicenseInitialExportBloc>().state.applyCommercialResponse?.requestId;
 
     emit(state.copyWith(status: BlocStatus.loading));
     NationalAddress nationalAddress = NationalAddress(
@@ -313,7 +313,7 @@ class CRStep6EstablishmentCubit extends Cubit<CRStep6EstablishmentState> {
     }, (r) {
       emit(state.copyWith(status: BlocStatus.success));
 
-      sl<CommercialLicenseBloc>().add(GoToNextPageEvent());
+      sl<CommercialLicenseInitialExportBloc>().add(NextPageEvent());
     });
   }
 

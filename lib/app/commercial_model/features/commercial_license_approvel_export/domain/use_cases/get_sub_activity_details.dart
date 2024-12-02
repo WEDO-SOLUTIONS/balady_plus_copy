@@ -6,7 +6,7 @@ import '../../commercial_license_exports.dart';
 
 class GetSubActivityDetails
     extends UseCase<ResponseBodyModel<SubActivityDetails>, String> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetSubActivityDetails({required this.repository});
   @override

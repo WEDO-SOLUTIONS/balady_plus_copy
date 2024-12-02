@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/qr/qr_lookup_model.dart';
 
 class GetMalls extends UseCase<QrLookUpResponseModel, String> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetMalls({required this.repository});
   @override

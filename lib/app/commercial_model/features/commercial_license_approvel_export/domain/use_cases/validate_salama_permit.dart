@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../entities/verifiy_salama_requst.dart';
 
 class ValidateSalamaPermit extends UseCase<dynamic, VerifySalamaRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   ValidateSalamaPermit({required this.repository});
   @override

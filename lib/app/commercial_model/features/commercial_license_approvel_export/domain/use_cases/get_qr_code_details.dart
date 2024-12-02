@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/qr/qr_details.dart';
 
 class GetQrCodeDetails extends UseCase<QrDetails, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetQrCodeDetails({required this.repository});
   @override

@@ -7,7 +7,7 @@ import '../entities/addetional_activity_details_request.dart';
 
 class GetAddetionalDetailsActivites extends UseCase<
     AddetionalActivityDetailsResponse, AddetionalActivityDetailsRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetAddetionalDetailsActivites({required this.repository});
   @override

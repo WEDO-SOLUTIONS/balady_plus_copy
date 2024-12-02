@@ -6,7 +6,7 @@ import '../../data/models/qr/submit_commercial_response_model.dart';
 import '../../data/models/qr/save_enterprise_data_request_model.dart';
 
 class SaveQrEnterpriseData extends UseCase<int, SaveEnterprisDataRequestModel> {
-  final CrRepository repository;
+  final Repository repository;
 
   SaveQrEnterpriseData({required this.repository});
   @override

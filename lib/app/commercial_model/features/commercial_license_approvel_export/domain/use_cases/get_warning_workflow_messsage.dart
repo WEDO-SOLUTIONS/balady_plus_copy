@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/salama_warning_request.dart';
 
 class GetWarningWorkFlowMessage extends UseCase<String, SalamaWarningRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetWarningWorkFlowMessage({required this.repository});
   @override

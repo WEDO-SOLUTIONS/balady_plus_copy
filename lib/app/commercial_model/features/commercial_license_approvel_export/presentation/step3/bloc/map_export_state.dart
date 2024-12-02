@@ -1,6 +1,6 @@
-part of 'map_bloc.dart';
+part of 'map_export_bloc.dart';
 
-class MapState extends Equatable {
+class MapExportState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
   final GISResponse? gisResponse;
@@ -14,7 +14,7 @@ class MapState extends Equatable {
   final String? mapNo;
   final bool? draftLoaded;
   final BlocStatus draftStatus;
-  MapState(
+  MapExportState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
       this.gisResponse,
@@ -29,7 +29,7 @@ class MapState extends Equatable {
       this.draftLoaded,
       this.draftStatus = BlocStatus.initial});
 
-  MapState copyWith(
+  MapExportState copyWith(
       {final BlocStatus? status,
       final String? errorMessage,
       final GISResponse? gisResponse,
@@ -43,7 +43,7 @@ class MapState extends Equatable {
       final String? mapNo,
       final bool? draftLoaded,
       final BlocStatus? draftStatus}) {
-    return MapState(
+    return MapExportState(
         status: status ?? this.status,
         errorMessage: errorMessage ?? this.errorMessage,
         gisResponse: gisResponse ?? this.gisResponse,

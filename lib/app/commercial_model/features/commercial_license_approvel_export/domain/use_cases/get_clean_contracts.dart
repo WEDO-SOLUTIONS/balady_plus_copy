@@ -2,11 +2,11 @@ import 'package:dartz/dartz.dart' show Either;
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart'
-    show CleanContractsRequest, CleanContractsResponse, CleanContractsResponseEntity, CrRepository;
+    show CleanContractsRequest, CleanContractsResponse, CleanContractsResponseEntity, Repository;
 
 class GetCleanContracts
     extends UseCase<CleanContractsResponseEntity, CleanContractsRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetCleanContracts({required this.repository});
   @override

@@ -1,6 +1,6 @@
-part of 'cr_step2_activity_data_cubit.dart';
+part of 'step2_activity_data_export_cubit.dart';
 
-class CrStep2ActivityDataState extends Equatable {
+class Step2ActivityDataExportState extends Equatable {
   final BlocStatus subActivitiesStatus;
   final BlocStatus accommodationTypesStatus;
   final BlocStatus subActivityDetailsStatus;
@@ -31,7 +31,7 @@ class CrStep2ActivityDataState extends Equatable {
   final bool? atmFeesPaid;
   final bool? draftLoaded;
   final BlocStatus draftStatus;
-  const CrStep2ActivityDataState(
+  const Step2ActivityDataExportState(
       {this.subActivitiesStatus = BlocStatus.initial,
       this.accommodationTypesStatus = BlocStatus.initial,
       this.draftStatus = BlocStatus.initial,
@@ -84,7 +84,7 @@ class CrStep2ActivityDataState extends Equatable {
         draftStatus
       ];
 
-  CrStep2ActivityDataState copyWith(
+  Step2ActivityDataExportState copyWith(
       {BlocStatus? subActivitiesStatus,
       BlocStatus? accommodationTypesStatus,
       BlocStatus? subActivityDetailsStatus,
@@ -110,7 +110,7 @@ class CrStep2ActivityDataState extends Equatable {
       String? unitCount,
       bool? atmFeesPaid,
       bool? draftLoaded}) {
-    return CrStep2ActivityDataState(
+    return Step2ActivityDataExportState(
         status: status ?? this.status,
         subActivitiesStatus: subActivitiesStatus ?? this.subActivitiesStatus,
         accommodationTypesStatus:
@@ -179,7 +179,7 @@ class CrStep2ActivityDataState extends Equatable {
         totalArea != null &&
         totalArea != 0 &&
         selectedIsicActivity != null &&
-        selectedSubActivity != null;
+        selectedSubActivity != null ;
   }
 
   bool showHotel() {

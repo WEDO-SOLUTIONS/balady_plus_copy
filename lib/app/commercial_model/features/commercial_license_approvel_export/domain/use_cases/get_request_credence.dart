@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
 class GetRequestCredence extends UseCase<CredenceResponseModel, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetRequestCredence({required this.repository});
   @override

@@ -6,7 +6,7 @@ import '../../data/models/citizen_info.dart';
 import '../entities/citizen_info_params.dart';
 
 class GetCitizenInfo extends UseCase<CitizenInfo, CitizenInfoParams> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetCitizenInfo({required this.repository});
   @override

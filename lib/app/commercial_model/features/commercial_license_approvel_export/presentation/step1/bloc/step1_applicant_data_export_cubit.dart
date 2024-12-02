@@ -7,19 +7,19 @@ import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/save_com_submitter_and_owner_request_model.dart';
 
-part 'cr_step1_applicant_data_state.dart';
+part 'step1_applicant_data_export_state.dart';
 
-class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
+class Step1ApplicantDataExportCubit extends Cubit<Step1ApplicantDataExportState> {
   final GetRecordInfo _getRecordInfo;
   final AddIsicActivities _addIsicActivities;
   final SaveComSubmitterAndOwner _saveComSubmitterAndOwner;
-  final CommercialLicenseBloc commercialLicenseBloc;
-  CrStep1ApplicantDataCubit()
+  final CommercialLicenseInitialExportBloc commercialLicenseBloc;
+  Step1ApplicantDataExportCubit()
       : _getRecordInfo = GetRecordInfo(repository: sl()),
         _addIsicActivities = AddIsicActivities(repository: sl()),
         _saveComSubmitterAndOwner = SaveComSubmitterAndOwner(repository: sl()),
-        commercialLicenseBloc = sl<CommercialLicenseBloc>(),
-        super(const CrStep1ApplicantDataState());
+        commercialLicenseBloc = sl<CommercialLicenseInitialExportBloc>(),
+        super(const Step1ApplicantDataExportState());
 
   void getRecordInfo() async {
     print(CommonProperties.token);
@@ -34,7 +34,7 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
               recordStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      sl<CommercialLicenseBloc>().updateRecordInfo(info: success.data?.result);
+      sl<CommercialLicenseInitialExportBloc>().updateRecordInfo(info: success.data?.result);
 
       emit(state.copyWith(
           recordStatus: BlocStatus.success, recordInfo: success.data?.result));
@@ -65,17 +65,17 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
             crNumber: state.recordInfo?.crNumber,
             crType: state.recordInfo?.crType,
             entityType: "SHOP",
-            requestId: sl<CommercialLicenseBloc>().state.requestId));
+            requestId: sl<CommercialLicenseInitialExportBloc>().state.requestId));
 
     response.fold(
         (failure) => emit(state.copyWith(
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      sl<CommercialLicenseBloc>()
-          .add((UpdateRequestFieldEvent(requestId: success)));
+      sl<CommercialLicenseInitialExportBloc>()
+          .add((UpdateFieldEvent(requestId: success)));
 
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
   }

@@ -26,9 +26,9 @@ import '../../../domain/use_cases/get_warning_workflow_messsage.dart';
 import '../../step3/widgets/map_widgets/warning_message.dart';
 import '../page/salama_warning_message.dart';
 import 'package:collection/collection.dart';
-part 'cr_step2_activity_data_state.dart';
+part 'step2_activity_data_export_state.dart';
 
-class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
+class Step2ActivityDataExportCubit extends Cubit<Step2ActivityDataExportState> {
   final GetSubActivities _getSubActivities;
   final GetAccommodationTypes _getAccommodationTypes;
   final GetSubActivityDetails _getSubActivityDetails;
@@ -38,7 +38,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   final GetWarningMessage _getWarningMessage;
   final GetWarningWorkFlowMessage _getWarninFlowMessage;
 
-  CrStep2ActivityDataCubit()
+  Step2ActivityDataExportCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
         _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
@@ -48,7 +48,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
             GetAddetionalDetailsActivites(repository: sl()),
         _getWarningMessage = GetWarningMessage(repository: sl()),
         _getWarninFlowMessage = GetWarningWorkFlowMessage(repository: sl()),
-        super(const CrStep2ActivityDataState()) {
+        super(const Step2ActivityDataExportState()) {
     getAccommodationTypes();
   }
 
@@ -142,7 +142,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   }
 
   void save() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _saveActivityDetails(SubmitActivityDetailRequest(
@@ -162,7 +162,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
   }
@@ -392,7 +392,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   }
 
   void initDraft() async {
-    bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
+    bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
     print(isDraft);
     print(draftLoaded);
@@ -402,9 +402,9 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       ));
       // if (true) {
       CommercialRequestDetailsResponseEntity? requestData =
-          sl<CommercialLicenseBloc>().state.requestData;
+          sl<CommercialLicenseInitialExportBloc>().state.requestData;
 
-      RecordInfo? recordInfo = sl<CommercialLicenseBloc>().state.recordInfo;
+      RecordInfo? recordInfo = sl<CommercialLicenseInitialExportBloc>().state.recordInfo;
       print("EEE");
       WorkersTypes? workerType;
       bool? atmFeesPaid;

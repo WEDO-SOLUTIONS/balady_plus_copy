@@ -20,19 +20,19 @@ import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 
 import '../../../commercial_license_exports.dart'
     show
-        CommercialLicenseBloc,
-        GoToNextPageEvent,
+        CommercialLicenseInitialExportBloc,
+        NextPageEvent,
         SaveLocationDataRequest,
         SaveLocationDetails,
-        UpdateRequestFieldEvent;
+        UpdateFieldEvent;
 import '../../../data/models/commercial_request_details_response_entity.dart';
 import '../../../domain/entities/save_location_response.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-part 'map_event.dart';
-part 'map_state.dart';
+part 'map_export_event.dart';
+part 'map_export_state.dart';
 
-class MapBloc extends Bloc<MapEvent, MapState> {
+class MapExportBloc extends Bloc<MapExportEvent, MapExportState> {
   TextEditingController mapNpController = TextEditingController();
   TextEditingController landNpController = TextEditingController();
 
@@ -41,18 +41,18 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   final SaveLocationDetails _saveLocationDetails;
   final GetGISImage _getGISImage;
 
-  MapBloc({MapScreenParams? params})
+  MapExportBloc({MapScreenParams? params})
       : _getGisData = GetGISData(repository: sl()),
         _saveLocationDetails = SaveLocationDetails(repository: sl()),
         _getGISImage = GetGISImage(sl()),
-        super(MapState(
+        super(MapExportState(
           gisResponse: params?.gisResponse,
           location: params?.gisParams,
           readOnly: params?.readOnly,
           requestNo: params?.requestNo,
           userLocation: params?.currentUserLocation,
         )) {
-    on<GetGISDataEvent>(_getGisDataHandler);
+    on<GetGISDataExportEvent>(_getGisDataHandler);
     on<InitMapEvent>(_initMapHandler);
 
     on<GetCurentUserLocationEvent>(_getCurrenttUserLocationHandler);
@@ -61,7 +61,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<UpdateFieldsEvent>(_updateFieldsHandler);
   }
 
-  Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
+  Future<void> _getGisDataHandler(GetGISDataExportEvent e, Emitter emitter) async {
     if ((state.status == BlocStatus.loading)) return;
     emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     GISParams params = e.params;
@@ -168,7 +168,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       }
     }
 
-    add(GetGISDataEvent(
+    add(GetGISDataExportEvent(
         params: state.location!, popPage: false, refreshLocation: true));
 
     animateCamera(state.location!.y, state.location!.x);
@@ -183,14 +183,14 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         status: BlocStatus.success,
         isLocationAllowed: true,
         location: GISParams(x: e.location.longitude, y: e.location.latitude)));
-    add(GetGISDataEvent(
+    add(GetGISDataExportEvent(
         params: GISParams(x: e.location.longitude, y: e.location.latitude),
         popPage: false));
   }
 
   Future<void> _saveLocationHandler(
       SaveLocationDataEvent e, Emitter emitter) async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     final failOrSuccess = await _saveLocationDetails(SaveLocationDataRequest(
@@ -211,10 +211,10 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           status: BlocStatus.failure,
           errorMessage: (l as ServerFailure).errorMessage));
     }, (r) async {
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
-      sl<CommercialLicenseBloc>().updateGISData(gis: state.gisResponse);
+      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
+      sl<CommercialLicenseInitialExportBloc>().updateGISData(gis: state.gisResponse);
       emitter(state.copyWith(status: BlocStatus.success, locationResponse: r));
-      sl<CommercialLicenseBloc>().add((UpdateRequestFieldEvent(
+      sl<CommercialLicenseInitialExportBloc>().add((UpdateFieldEvent(
           saveLocationResponse: r, requestId: requestId)));
     });
   }
@@ -228,7 +228,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     if (state.readOnly == true) {
     } else {
       if (state.location != null && state.gisResponse == null) {
-        add(GetGISDataEvent(params: state.location!, popPage: false));
+        add(GetGISDataExportEvent(params: state.location!, popPage: false));
       } else if (state.location != null && state.gisResponse != null) {
       } else {
         try {
@@ -342,7 +342,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   }
 
   void initDraft() async {
-    bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
+    bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
 
     print(isDraft);
@@ -353,7 +353,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
         draftStatus: BlocStatus.success,
       ));
       CommercialRequestDetailsResponseEntity? requestData =
-          sl<CommercialLicenseBloc>().state.requestData;
+          sl<CommercialLicenseInitialExportBloc>().state.requestData;
 
       double? latitude =
           double.tryParse(requestData?.locationInfo?.latitude ?? "");
@@ -361,7 +361,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           double.tryParse(requestData?.locationInfo?.longitude ?? "");
 
       if (latitude != null && longitude != null) {
-        add(GetGISDataEvent(
+        add(GetGISDataExportEvent(
             params: GISParams(x: longitude, y: latitude),
             popPage: false,
             refreshLocation: true));

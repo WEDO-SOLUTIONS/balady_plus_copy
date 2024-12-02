@@ -24,7 +24,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep2ActivityDataCubit, CrStep2ActivityDataState>(
+    return BlocBuilder<Step2ActivityDataExportCubit, Step2ActivityDataExportState>(
       builder: (ctx, state) {
         return Container(
           margin: const EdgeInsets.only(top: 32, bottom: 24),
@@ -60,7 +60,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                   item: state.selectedAddetionalList![i],
                   onDelete: () {
                     context
-                        .read<CrStep2ActivityDataCubit>()
+                        .read<Step2ActivityDataExportCubit>()
                         .deleteAddetionalActivity(i);
                   },
                 ),
@@ -72,10 +72,10 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                   context,
                   child: Builder(
                     builder: (c) {
-                      return BlocProvider<CrStep2ActivityDataCubit>.value(
-                        value: context.read<CrStep2ActivityDataCubit>(),
-                        child: BlocBuilder<CrStep2ActivityDataCubit,
-                            CrStep2ActivityDataState>(
+                      return BlocProvider<Step2ActivityDataExportCubit>.value(
+                        value: context.read<Step2ActivityDataExportCubit>(),
+                        child: BlocBuilder<Step2ActivityDataExportCubit,
+                            Step2ActivityDataExportState>(
                           builder: (context, state) {
                             return BottomSheetWithActions(
                               title: "activity_add".tr(),
@@ -98,7 +98,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
 
                                   if (area != null) {
                                     ctx
-                                        .read<CrStep2ActivityDataCubit>()
+                                        .read<Step2ActivityDataExportCubit>()
                                         .addAddetionalItemRequest(
                                             double.tryParse(area ?? "")!);
                                     Navigator.pop(context);
@@ -128,7 +128,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                             i != null
                                                 ? context
                                                     .read<
-                                                        CrStep2ActivityDataCubit>()
+                                                        Step2ActivityDataExportCubit>()
                                                     .onSelectAddetionalActivity(
                                                         i)
                                                 : null;
@@ -153,7 +153,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                             i != null
                                                 ? context
                                                     .read<
-                                                        CrStep2ActivityDataCubit>()
+                                                        Step2ActivityDataExportCubit>()
                                                     .onSelectAddetionalDetailsActivity(
                                                         i)
                                                 : null;

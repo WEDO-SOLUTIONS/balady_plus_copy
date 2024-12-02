@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/attachment_response_entity.dart';
 
 class GetQrAttachments extends UseCase<AttachmentResponseEntity, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetQrAttachments({required this.repository});
   @override

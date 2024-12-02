@@ -5,7 +5,7 @@ import '../../commercial_license_exports.dart';
 import '../../data/models/qr/qr_submit_response.dart';
 
 class SubmitQR extends UseCase<QrSubmitResponse, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   SubmitQR({required this.repository});
   @override

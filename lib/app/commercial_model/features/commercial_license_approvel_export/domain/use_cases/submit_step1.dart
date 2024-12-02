@@ -7,7 +7,7 @@ import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 
 class SaveComSubmitterAndOwner
     extends UseCase<int, SaveComSubmitterAndOwnerRequestModel> {
-  final CrRepository repository;
+  final Repository repository;
 
   SaveComSubmitterAndOwner({required this.repository});
   @override

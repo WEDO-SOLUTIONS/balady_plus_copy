@@ -20,32 +20,32 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
   @override
   void initState() {
     super.initState();
-    context.read<CommercialLicenseBloc>().initState(
+    context.read<CommercialLicenseInitialExportBloc>().initState(
           requestId: widget.requestId,
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CommercialLicenseBloc, CommercialLicenseState>(
+    return BlocBuilder<CommercialLicenseInitialExportBloc, CommercialLicenseInitialExportState>(
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () {
             context
-                .read<CommercialLicenseBloc>()
-                .add(const GoToPreviousPageEvent());
+                .read<CommercialLicenseInitialExportBloc>()
+                .add(const PreviousPageEvent());
             return Future<bool>.value(false);
           },
           child: GestureDetector(
-            onTap: () => context.read<CommercialLicenseBloc>().hideKeyboard(),
+            onTap: () => context.read<CommercialLicenseInitialExportBloc>().hideKeyboard(),
             child: Scaffold(
               appBar: DetailsAppBarTwo(
                 pageLength: state.pagesList.length,
                 currentStep: state.currentPageValue + 1,
                 backOnPress: () =>
                     context
-                        .read<CommercialLicenseBloc>()
-                        .add(const GoToPreviousPageEvent()),
+                        .read<CommercialLicenseInitialExportBloc>()
+                        .add(const PreviousPageEvent()),
                 onTapCloseAction: () {
                   FocusManager.instance.primaryFocus?.unfocus();
                   bool Function(Route<dynamic>) predicate =
@@ -59,12 +59,12 @@ class _CommercialLicenseBodyState extends State<CommercialLicenseBody> {
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
                 controller: context
-                    .read<CommercialLicenseBloc>()
+                    .read<CommercialLicenseInitialExportBloc>()
                     .controller,
                 itemBuilder: (context, position) {
                   return CommercialDebtsScreen(
                     transactionType: TransactionType.REQUEST,
-                    transactionId: context.read<CommercialLicenseBloc>().state.requestId,
+                    transactionId: context.read<CommercialLicenseInitialExportBloc>().state.requestId,
                     steps:[listIssueSteps[position]],
                     serviceId: CommercialLicenseServiceId.issueCommercialLicense,
                     child: AnimatedContainer(

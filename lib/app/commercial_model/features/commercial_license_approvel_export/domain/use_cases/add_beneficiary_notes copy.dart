@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
 class AddBeneficiaryNotes extends UseCase<int, CrAddNotesRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   AddBeneficiaryNotes({required this.repository});
   @override

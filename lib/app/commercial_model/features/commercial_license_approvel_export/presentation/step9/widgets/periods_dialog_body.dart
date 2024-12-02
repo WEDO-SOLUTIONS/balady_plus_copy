@@ -22,7 +22,7 @@ class PeriodsDialogBody extends StatelessWidget {
       create: (context) => PeriodsCubit(periods: List.of(periods)),
       child: BlocBuilder<PeriodsCubit, PeriodsState>(
         builder: (context, state) {
-          bool is24HourAllowed = sl<CommercialLicenseBloc>()
+          bool is24HourAllowed = sl<CommercialLicenseInitialExportBloc>()
                   .state
                   .applyCommercialResponse
                   ?.comLicenseInfo

@@ -25,9 +25,9 @@ class CrStep12SadadCubit extends Cubit<CrStep12SadadState> {
     emit(state.copyWith(status: BlocStatus.loading));
 
     int minYears =
-        sl<CommercialLicenseBloc>().state.locationResponse?.minYears ?? 0;
+        sl<CommercialLicenseInitialExportBloc>().state.locationResponse?.minYears ?? 0;
     int maxYears =
-        sl<CommercialLicenseBloc>().state.locationResponse?.maxYears ?? 0;
+        sl<CommercialLicenseInitialExportBloc>().state.locationResponse?.maxYears ?? 0;
 
     List<String> list = [];
 
@@ -43,7 +43,7 @@ class CrStep12SadadCubit extends Cubit<CrStep12SadadState> {
   }
 
   void calculate() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _calculateFees(CrCalculateFeesRequest(
@@ -57,9 +57,9 @@ class CrStep12SadadCubit extends Cubit<CrStep12SadadState> {
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
 
-      sl<CommercialLicenseBloc>().updateCalculatorData(
+      sl<CommercialLicenseInitialExportBloc>().updateCalculatorData(
           crCalculateFeesResponse: success,
           selectedPeriod: state.selectedPeriod);
       emit(state.copyWith(status: BlocStatus.success));

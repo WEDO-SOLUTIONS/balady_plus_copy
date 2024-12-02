@@ -6,7 +6,7 @@ import '../../data/models/qr/submit_commercial_response_model.dart';
 
 class ApplyCommercialRequest
     extends UseCase<SubmitCommercialResponseModel, int> {
-  final CrRepository repository;
+  final Repository repository;
 
   ApplyCommercialRequest({required this.repository});
   @override

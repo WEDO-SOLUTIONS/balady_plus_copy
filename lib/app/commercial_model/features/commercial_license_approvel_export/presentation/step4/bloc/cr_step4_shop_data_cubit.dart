@@ -27,7 +27,7 @@ import '../../../domain/use_cases/get_malls.dart';
 import '../../../domain/use_cases/save_shop_details.dart';
 import '../../../domain/use_cases/validate_salama_bill.dart';
 import '../../../domain/use_cases/validate_salama_report.dart';
-import '../../step3/bloc/map_bloc.dart';
+import '../../step3/bloc/map_export_bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -271,7 +271,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   void getCleanContracts() async {
     if (!state.cleanContractshowService() &&
         state.isCitizenPledgedToClean == true) return;
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
         contractsListStatus: BlocStatus.loading, errorMessage: ""));
@@ -293,7 +293,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
     if (state.crContractType == CRContractType.invest &&
         state.crSubmitterType == CRSubmitterType.rental &&
         state.crContractOption == CRContractOption.service) {
-      int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+      int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
       emit(state.copyWith(
           investmentListStatus: BlocStatus.loading, errorMessage: ""));
@@ -313,7 +313,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
   void getBoardsContracts() async {
     if (state.boardContractSetting == "CONTRACT") return;
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
         boardContractsStatus: BlocStatus.loading, errorMessage: ""));
@@ -331,8 +331,8 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
   void initForm() {
     SaveLocationResponse? res =
-        sl<CommercialLicenseBloc>().state.locationResponse;
-    GISResponse? gisResponse = sl<CommercialLicenseBloc>().state.gisResponse;
+        sl<CommercialLicenseInitialExportBloc>().state.locationResponse;
+    GISResponse? gisResponse = sl<CommercialLicenseInitialExportBloc>().state.gisResponse;
     if (state.locationResponse != res) {
       emit(state.copyWith(locationResponse: res, errorMessage: ""));
 
@@ -359,13 +359,13 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   SaveLocationResponse? get saveLocationResponse =>
-      sl<CommercialLicenseBloc>().state.locationResponse;
+      sl<CommercialLicenseInitialExportBloc>().state.locationResponse;
 
   String get cameraEndorsmentText =>
-      sl<CommercialLicenseBloc>().state.locationResponse?.endorsementText ?? "";
+      sl<CommercialLicenseInitialExportBloc>().state.locationResponse?.endorsementText ?? "";
 
   void save() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
@@ -410,13 +410,13 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
   }
 
   void salamaReportFawery() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
         samalaReportFawryStatus: BlocStatus.loading, errorMessage: ""));
@@ -432,7 +432,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   void salamaBillFawery() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
         samalaBillFawryStatus: BlocStatus.loading, errorMessage: ""));
@@ -448,7 +448,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   void getDeedOwnerShipsTypes() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(deedOptionsStatus: BlocStatus.loading));
     final response = await _getDeedOptions(requestId);
@@ -463,7 +463,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   void getCleanOptions() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
         cleanOptionsStatus: BlocStatus.loading, errorMessage: ""));
@@ -480,7 +480,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   void updateDeedInfo({String? ownershipType, String? deedNumber}) {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     state.copyWith(status: BlocStatus.loading, errorMessage: "");
 
@@ -531,7 +531,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   Future<void> getDeedInfoHandler() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final failOrSuccess = await _getDeedInfo(state.deedInfoRequst ??
         DeedInfoRequest(
@@ -576,7 +576,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
 
   void getMalls() async {
     String districtId =
-        sl<CommercialLicenseBloc>().state.gisResponse?.Balady_DistrictID ?? "";
+        sl<CommercialLicenseInitialExportBloc>().state.gisResponse?.Balady_DistrictID ?? "";
     ;
 
     emit(state.copyWith(
@@ -609,7 +609,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   Future<void> verifySalamaPermit() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final failOrSuccess = await _validateSalamaPermit(VerifySalamaRequest(
         requestId: requestId, number: state.salamaPermitNumber ?? ""));
@@ -627,7 +627,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   Future<void> verifySalamaBill() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final failOrSuccess = await _validateSalamaBill(VerifySalamaRequest(
         requestId: requestId, number: state.slamaBillNumber ?? ""));
@@ -645,7 +645,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   Future<void> verifySalamaReport() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final failOrSuccess = await _validateSalamaReport(VerifySalamaRequest(
         requestId: requestId, number: state.slamaReportNumber ?? ""));
@@ -674,13 +674,13 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   }
 
   void initDraft() async {
-    bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
+    bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
 
     if (draftLoaded == false && isDraft) {
       // if (true) {
       CommercialRequestDetailsResponseEntity? requestData =
-          sl<CommercialLicenseBloc>().state.requestData;
+          sl<CommercialLicenseInitialExportBloc>().state.requestData;
 
       //   String? boardContractNumber = requestData?.boardContractNumber;
       //  String? boardContractSetting = requestData?.boardContractSetting;

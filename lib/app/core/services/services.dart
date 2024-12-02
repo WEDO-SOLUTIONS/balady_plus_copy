@@ -1,4 +1,6 @@
+import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
+import '../../commercial_model/commercial_routes/commercial_route_names.dart';
 import '../utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_route_names.dart';
 
@@ -442,6 +444,32 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {
         "type": "page",
+        "value": CommercialRouteName.CommercialLicenseExportStartService
+      },
+      "ar": {
+        "title": "commerical_license_export",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "commerical_license_export",
+        "description": null,
+        "tag": null
+      }
+    },
+
+
+
+    {
+      "id": 301,
+      "icon": "issue-commercial",
+      "3d_icon": null,
+      "order": 5,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {
+        "type": "page",
         "value": RouteName.commercialLicenseServicePage
       },
       "ar": {
@@ -455,6 +483,7 @@ Map<String, dynamic> servicesConfig = {
         "tag": null
       }
     },
+
     {
       "id": 302,
       "icon": "posters_permits",

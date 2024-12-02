@@ -13,12 +13,12 @@ import '../../../../../../features/_shared_feature_/data/entities/file_data_item
 import '../../../commercial_license_exports.dart'
     show
         AddBeneficiaryNotes,
-        CommercialLicenseBloc,
+        CommercialLicenseInitialExportBloc,
         CrAddNotesRequest,
         CrAttachmentRequest,
         CredenceItem,
         GetRequestCredence,
-        GoToNextPageEvent,
+        NextPageEvent,
         UploadCredence,
         ValidateAprovals,
         ValidateSalamaAttachmentsRequest;
@@ -49,7 +49,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
         super(const CRStep5AttachmentState()) {}
 
   void getAttachments() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
     //4517311700
 
     emit(state.copyWith(attachmentStatus: BlocStatus.loading));
@@ -76,7 +76,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   }
 
   void getCredneces() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
       credenceStatus: BlocStatus.loading,
@@ -112,7 +112,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
       required String filePath,
       required String fileName,
       required String fileBase64}) async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
       status: BlocStatus.loading,
@@ -148,7 +148,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   }
 
   void addBeneficiaryNotes() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
       status: BlocStatus.loading,
@@ -166,7 +166,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   }
 
   void validateSalamaAttachments() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading));
     final response = await _validateSalamaAttachments(
@@ -181,7 +181,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   }
 
   void validateApprovals() async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading));
     final response = await _validateApprovals(requestId);
@@ -196,7 +196,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
       ));
       // Go To QR Flow , if validate Approvals = true;
       if (success == true) {
-        sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
+        sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
       }
 
       /*else if (success == false) {
@@ -208,7 +208,7 @@ class CRStep5AttachmentCubit extends Cubit<CRStep5AttachmentState> {
   }
 
   void uploadCrednece(FileDataItem item, int index) async {
-    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
 
     emit(state.copyWith(
       status: BlocStatus.loading,

@@ -6,7 +6,7 @@ import '../../commercial_license_exports.dart';
 
 class GetRecordInfo
     extends UseCase<ResponseBodyModel<RecordInfo>, (String, String)> {
-  final CrRepository repository;
+  final Repository repository;
 
   GetRecordInfo({required this.repository});
   @override

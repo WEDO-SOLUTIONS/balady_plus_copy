@@ -378,4 +378,16 @@ class CommercialRouteName {
   static const SucessfullScreen = 'Sucessfull_Screen';
 
   static const commercialDebtsListScreen = 'commercialDebtsListScreen';
+
+
+
+
+
+  static const CommercialLicenseExportStartService =
+      'Commercial_License_export_start_service';
+  static const CommercialLicenseInitialApprovelScreen =
+      'Commercial_license_initial_approvel_screen';
+
+  static const ExportMapScreen =
+      'ExportMapScreen';
 }

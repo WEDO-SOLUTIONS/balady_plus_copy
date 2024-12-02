@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
 class SaveQrWorkTimesData extends UseCase<int, SaveWorkTimesRequestModel> {
-  final CrRepository repository;
+  final Repository repository;
 
   SaveQrWorkTimesData({required this.repository});
   @override

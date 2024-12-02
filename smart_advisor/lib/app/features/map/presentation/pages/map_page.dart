@@ -1,7 +1,7 @@
 /*import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/custom_widgets/customTextField.dart';
 
 import '/app/core/utils/utils_exports.dart';
-import '/app/features/map/presentation/bloc/map_bloc.dart';
+import '/app/features/map/presentation/bloc/map_export_bloc.dart';
 import '/app/features/select_activity/domain/entities/activity_details_page_params.dart';
 //import 'package:dgis_map/dgis_map_controller.dart';
 //import 'package:dgis_map/library.dart';
@@ -80,7 +80,7 @@ class _MapPageState extends State<MapPage> {
 
 /*
 import 'package:flutter/material.dart';
-import 'package:smart_advisor/app/features/map/presentation/bloc/map_bloc.dart';
+import 'package:smart_advisor/app/features/map/presentation/bloc/map_export_bloc.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/entities/activity_details_page_params.dart';
 
 class MapPage extends StatefulWidget {

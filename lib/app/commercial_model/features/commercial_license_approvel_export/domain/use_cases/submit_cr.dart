@@ -8,7 +8,7 @@ import '../entities/cr_submit_request.dart';
 
 class SubmitCR
     extends UseCase<ResponseBodyModel<CrSubmitResponseModel>, CrSubmitRequest> {
-  final CrRepository repository;
+  final Repository repository;
 
   SubmitCR({required this.repository});
   @override

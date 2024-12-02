@@ -70,7 +70,7 @@ class WorkTimesCubit extends Cubit<WorkTimesState> {
       emit(state.copyWith(status: BlocStatus.loading));
       emit(state.copyWith(
           status: BlocStatus.success,
-          workTimes: sl<CommercialLicenseBloc>()
+          workTimes: sl<CommercialLicenseInitialExportBloc>()
               .state
               .applyCommercialResponse
               ?.workTimes
@@ -80,7 +80,7 @@ class WorkTimesCubit extends Cubit<WorkTimesState> {
 
   void save() async {
     int? requestId =
-        sl<CommercialLicenseBloc>().state.applyCommercialResponse?.requestId;
+        sl<CommercialLicenseInitialExportBloc>().state.applyCommercialResponse?.requestId;
 
     emit(state.copyWith(status: BlocStatus.loading));
     print("ddd");
@@ -111,7 +111,7 @@ class WorkTimesCubit extends Cubit<WorkTimesState> {
       emit(
         state.copyWith(errorMessage: "", status: BlocStatus.success),
       );
-      sl<CommercialLicenseBloc>().add(const GoToNextPageEvent());
+      sl<CommercialLicenseInitialExportBloc>().add(const NextPageEvent());
     });
   }
 }

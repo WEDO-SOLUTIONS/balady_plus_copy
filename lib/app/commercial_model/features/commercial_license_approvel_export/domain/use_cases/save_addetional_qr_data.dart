@@ -4,7 +4,7 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 
 class SaveAddetionalQrData extends UseCase<int, AdditionalQrDataRequestModel> {
-  final CrRepository repository;
+  final Repository repository;
 
   SaveAddetionalQrData({required this.repository});
   @override
