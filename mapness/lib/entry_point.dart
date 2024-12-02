@@ -35,7 +35,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/constants.dart';
-import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -325,7 +325,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> initDeepLinks() async {
     _appLinks = AppLinks();
 
-    final appLink = await _appLinks.getInitialAppLink();
+    final appLink = await _appLinks.getInitialLink();
     if (appLink != null) {
       await openAppLink(appLink, isFirstRun: true);
     }
