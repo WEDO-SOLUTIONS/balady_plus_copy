@@ -6,7 +6,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
-
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class PathNavFollowControl extends ConsumerWidget {
@@ -21,25 +20,21 @@ class PathNavFollowControl extends ConsumerWidget {
 
     return MapButton(
       onTap: () async {
-        switch (followState.type) {
-          case LocationFollowType.followPosition:
-            return;
-          case LocationFollowType.off || LocationFollowType.followDirection:
-            final cameraPosition = ref.read(cameraPositionProvider);
-            final dgisController = await ref.read(dgisControllerProvider.future);
-            if (cameraPosition != null) {
-              // Animate to the entrance
-              await dgisController.setCameraPosition(
-                CameraPositionMessage(
-                  point: cameraPosition.point,
-                  zoom: 18,
-                  tilt: cameraPosition.tilt,
-                  bearing: cameraPosition.tilt,
-                ),
-              );
-            }
-            await dgisController.followNavigation();
+        //BSA-1375: Fix the issue with the follow button. The button should work as expected in all types.
+        final cameraPosition = ref.read(cameraPositionProvider);
+        final dgisController = await ref.read(dgisControllerProvider.future);
+        if (cameraPosition != null) {
+          // Animate to the entrance
+          await dgisController.setCameraPosition(
+            CameraPositionMessage(
+              point: cameraPosition.point,
+              zoom: 18,
+              tilt: cameraPosition.tilt,
+              bearing: cameraPosition.tilt,
+            ),
+          );
         }
+        await dgisController.followNavigation();
       },
       child: SvgPicture.asset(
         'assets/icons/svg/ic_control_location.svg',
