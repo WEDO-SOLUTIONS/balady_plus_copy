@@ -103,7 +103,7 @@ class PathNavMapControls extends StatelessWidget {
                   ),
                 const Padding(
                   padding: padding,
-                  child: TrafficParkingControl(),
+                  child: TrafficParkingControl(trafficVisible: false),
                 ),
                 const Spacer(),
                 Padding(

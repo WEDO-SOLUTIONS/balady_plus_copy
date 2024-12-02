@@ -15,7 +15,12 @@ import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
-  const TrafficParkingControl({super.key});
+  final bool trafficVisible;
+
+  const TrafficParkingControl({
+    super.key,
+    this.trafficVisible = true,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TrafficParkingState();
@@ -26,7 +31,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
   Widget build(BuildContext context) {
     final trafficState = ref.watch(trafficStateProvider);
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
-    final isTrafficVisable = trafficState.status != TrafficControlStatus.hidden;
+    final isTrafficVisable = widget.trafficVisible && trafficState.status != TrafficControlStatus.hidden;
     final isTrafficEnabled = trafficState.status == TrafficControlStatus.enabled;
     final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
     final parkingState = ref.watch(parkingStateProvider);
