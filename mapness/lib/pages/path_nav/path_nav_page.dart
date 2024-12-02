@@ -195,21 +195,22 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             expansionNotifier: _expansionNotifier,
             navType: widget.navType,
           ),
-          Consumer(builder: (_, ref, __) {
-            final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
-            return isEtaExpanded
-                ? GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () {
-                      ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-                    },
-                    child: SizedBox.expand(
-                      child: ColoredBox(
-                        color: AppColor.black.withOpacity(0.4),
+          Consumer(
+            builder: (_, ref, __) {
+              final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
+              return isEtaExpanded
+                  ? GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                      },
+                      child: SizedBox.expand(
+                        child: ColoredBox(
+                          color: AppColor.black.withOpacity(0.4),
+                        ),
                       ),
-                    ),
-                  )
-                : const SizedBox.shrink();
+                    )
+                  : const SizedBox.shrink();
             },
           ),
           Positioned(
@@ -350,10 +351,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
       _navigationState.value = PathNavState.finished;
       ref.read(layersControlsProvider.notifier).hideParking();
-        unawaited(
-          clearNavigationState(),
-        );
-      } else if (event == NavigationEvent.disabled) {
+      unawaited(
+        clearNavigationState(),
+      );
+    } else if (event == NavigationEvent.disabled) {
       if (_navigationState.value != PathNavState.finished) {
         _endTripAndShowHome();
       }

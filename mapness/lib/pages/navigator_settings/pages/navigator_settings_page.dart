@@ -85,7 +85,8 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     ),
                                   ),
                                 );
-                              }),
+                                },
+                              ),
                               Consumer(builder: (context, ref, _) {
                                 final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
                                 return ContentRow(
@@ -100,7 +101,8 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     ),
                                   ),
                                 );
-                              }),
+                                },
+                              ),
                               Consumer(builder: (context, ref, _) {
                                 final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
                                 return ContentRow(
@@ -115,10 +117,10 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     ),
                                   ),
                                 );
-                              }),
-                              Consumer(builder: (context, ref, _) {
-                                final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
-                                return ContentRow(
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) => ContentRow(
                                   onToggle: (_) {
                                     ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: !(autoEnableParking ?? false));
                                 },
@@ -130,6 +132,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     enabledToggle: true,
                                     toggleInitialValue: autoEnableParking ?? false,
                                   ),
+                                ),
                                 ),
                               ),
                               ContentRow(
@@ -146,8 +149,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     toggleInitialValue: autorun,
                                   ),
                                 ),
-                              );
-                              }),
+                              )
                             ],
                           ),
                         ),
