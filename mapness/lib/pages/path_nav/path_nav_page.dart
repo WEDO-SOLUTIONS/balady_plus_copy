@@ -195,7 +195,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             expansionNotifier: _expansionNotifier,
             navType: widget.navType,
           ),
-          Consumer(builder: (context, ref, _) {
+          Consumer(builder: (_, ref, __) {
             final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
             return isEtaExpanded
                 ? GestureDetector(
@@ -210,14 +210,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     ),
                   )
                 : const SizedBox.shrink();
-          }),
+            },
+          ),
           Positioned(
             bottom: 0,
             right: 0,
             left: 0,
             child: MeasureSize(
               onChange: (size) {
-                if (!isEtaExpanded) {
+                if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
                   _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
                 }
               },
