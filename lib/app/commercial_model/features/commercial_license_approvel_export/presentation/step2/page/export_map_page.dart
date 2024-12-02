@@ -8,8 +8,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../bloc/map_export_bloc.dart';
-import '../widgets/map_widgets/cr_map_view.dart';
+import '../bloc/step2_activity_data_export_cubit.dart';
+import '../widgets/map_widgets/export_map_view.dart';
+
+
 
 class ExportMapScreen extends StatefulWidget {
   final bool showSearchPaddingScreen;
@@ -38,13 +40,13 @@ class _CRMapScreen extends State<ExportMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    MapExportBloc bloc = ModalRoute.of(context)?.settings.arguments as MapExportBloc;
+    Step2ActivityDataExportCubit bloc = ModalRoute.of(context)?.settings.arguments as Step2ActivityDataExportCubit;
     return BlocProvider.value(
       value: bloc,
       child: Scaffold(
           backgroundColor: AppColor.white4,
           appBar: null,
-          body: BlocConsumer<MapExportBloc, MapExportState>(
+          body: BlocConsumer<Step2ActivityDataExportCubit, Step2ActivityDataExportState>(
             listener: (context, state) {
               // TODO: implement listener
               if (state.status == BlocStatus.failure)
@@ -53,7 +55,7 @@ class _CRMapScreen extends State<ExportMapScreen> {
             builder: (context, state) {
               return Stack(
                 children: [
-                  CRMapView(
+                  ExportMapView(
                     showRadius: false,
                     showSearchPaddingScreen: true,
                     readOnly: false,

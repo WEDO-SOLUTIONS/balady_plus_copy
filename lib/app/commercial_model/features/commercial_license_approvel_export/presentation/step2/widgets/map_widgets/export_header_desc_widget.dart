@@ -5,12 +5,12 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class VdHeaderDesc extends StatelessWidget {
+class ExportHeaderDesc extends StatelessWidget {
   final String header;
   final String? desc;
   final double verticalSpace;
 
-  const VdHeaderDesc(
+  const ExportHeaderDesc(
       {Key? key, required this.header, this.desc, this.verticalSpace = 24})
       : super(key: key);
 

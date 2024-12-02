@@ -16,14 +16,11 @@ class Step2ActivityDataExportState extends Equatable {
   final String errorMessage;
   final double? totalArea;
   final String? unitCount;
-
   final WorkersTypes? workerType;
-
   final List<AddetionalActivityItem>? addetionalActivityItems;
   final List<AddetionalActivityItemDetails>? addetionalActivityItemDetails;
   final BlocStatus addetionalActivityListStatus;
   final BlocStatus addetionalActivityDetailsListStatus;
-
   final List<AddetionalActivityRequest>? selectedAddetionalList;
   final AddetionalActivityItem? addetionalItem;
   final AddetionalActivityItemDetails? addetionalDetailsItem;
@@ -31,6 +28,20 @@ class Step2ActivityDataExportState extends Equatable {
   final bool? atmFeesPaid;
   final bool? draftLoaded;
   final BlocStatus draftStatus;
+
+
+  final GISResponse? gisResponse;
+  final GISParams? location;
+  final GISParams? userLocation;
+  final bool? isLocationAllowed;
+  final bool? readOnly;
+  final int? requestNo;
+  final SaveLocationResponse? locationResponse;
+  final String? landNo;
+  final String? mapNo;
+
+
+
   const Step2ActivityDataExportState(
       {this.subActivitiesStatus = BlocStatus.initial,
       this.accommodationTypesStatus = BlocStatus.initial,
@@ -56,7 +67,19 @@ class Step2ActivityDataExportState extends Equatable {
       this.addetionalDetailsItem,
       this.addetionalDetails,
       this.atmFeesPaid,
-      this.draftLoaded});
+      this.draftLoaded,
+
+        this.gisResponse,
+        this.location,
+        this.userLocation,
+        this.isLocationAllowed = true,
+        this.readOnly = false,
+        this.locationResponse,
+        this.requestNo,
+        this.landNo,
+        this.mapNo,
+
+      });
 
   @override
   List<Object?> get props => [
@@ -81,7 +104,16 @@ class Step2ActivityDataExportState extends Equatable {
         addetionalDetails,
         atmFeesPaid,
         draftLoaded,
-        draftStatus
+        draftStatus,
+    gisResponse,
+    location,
+    userLocation,
+    isLocationAllowed,
+    readOnly,
+    locationResponse,
+    requestNo,
+    landNo,
+    mapNo,
       ];
 
   Step2ActivityDataExportState copyWith(
@@ -109,7 +141,18 @@ class Step2ActivityDataExportState extends Equatable {
       Nullable<SubActivityDetails?>? addetionalDetails,
       String? unitCount,
       bool? atmFeesPaid,
-      bool? draftLoaded}) {
+      bool? draftLoaded,
+        final GISResponse? gisResponse,
+        final GISParams? location,
+        final GISParams? userLocation,
+        final bool? isLocationAllowed,
+        final bool? readOnly,
+        final int? requestNo,
+        final SaveLocationResponse? locationResponse,
+        final String? landNo,
+        final String? mapNo,
+
+      }) {
     return Step2ActivityDataExportState(
         status: status ?? this.status,
         subActivitiesStatus: subActivitiesStatus ?? this.subActivitiesStatus,
@@ -154,7 +197,20 @@ class Step2ActivityDataExportState extends Equatable {
         unitCount: unitCount ?? this.unitCount,
         atmFeesPaid: atmFeesPaid ?? this.atmFeesPaid,
         draftLoaded: draftLoaded ?? this.draftLoaded,
-        draftStatus: draftStatus ?? this.draftStatus);
+        draftStatus: draftStatus ?? this.draftStatus,
+
+
+      gisResponse: gisResponse ?? this.gisResponse,
+      location: location ?? this.location,
+      userLocation: userLocation ?? this.userLocation,
+      isLocationAllowed: isLocationAllowed ?? this.isLocationAllowed,
+      readOnly: readOnly ?? this.readOnly,
+      requestNo: requestNo ?? this.requestNo,
+      locationResponse: locationResponse ?? this.locationResponse,
+      landNo: landNo ?? this.landNo,
+      mapNo: mapNo ?? this.mapNo,
+
+    );
   }
 
   List<AddetionalActivityItem> getAddetionalActivityItems() {
@@ -179,7 +235,11 @@ class Step2ActivityDataExportState extends Equatable {
         totalArea != null &&
         totalArea != 0 &&
         selectedIsicActivity != null &&
-        selectedSubActivity != null ;
+        selectedSubActivity != null && gisResponse != null &&
+        landNo != null &&
+        landNo!.trim().isNotEmpty &&
+        mapNo != null &&
+        mapNo!.trim().isNotEmpty; ;
   }
 
   bool showHotel() {

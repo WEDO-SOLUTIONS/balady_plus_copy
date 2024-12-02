@@ -6,14 +6,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import '../../../commercial_license_exports.dart';
-import '../../step10/bloc/cr_step10_addetional_data_cubit.dart';
-import '../../step11/bloc/cr_step11_attachment_data_cubit.dart';
-import '../../step12/bloc/cr_step12_sadad_cubit.dart';
-import '../../step13/bloc/cr_step13_review_cubit.dart';
-import '../../step3/bloc/map_export_bloc.dart';
-import '../../step4/bloc/cr_step4_shop_data_cubit.dart';
-import '../../step5/bloc/cr_step5_attachment_data_cubit.dart';
-import '../../step6/bloc/cr_step6_establishment_data_cubit.dart';
+
 
 class CommercialLicenseInitialApprovelScreen extends StatefulWidget {
   const CommercialLicenseInitialApprovelScreen({Key? key}) : super(key: key);
@@ -50,9 +43,7 @@ class _CommercialLicenseInitialApprovelScreenState extends State<CommercialLicen
         BlocProvider(
           create: (context) => Step2ActivityDataExportCubit(),
         ),
-        BlocProvider(
-          create: (context) => MapExportBloc(),
-        ),
+
 
         BlocProvider.value(
           value: sl<CommercialLicenseInitialExportBloc>(),

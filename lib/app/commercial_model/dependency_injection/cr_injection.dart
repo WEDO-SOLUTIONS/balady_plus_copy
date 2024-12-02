@@ -6,7 +6,6 @@ import '../features/commercial_license_approvel_export/domain/repositories/repos
 import '../features/commercial_license_approvel_export/presentation/commercial_license/blocs/commercial_license_initial_export_bloc.dart';
 import '../features/commercial_license_approvel_export/presentation/step1/bloc/step1_applicant_data_export_cubit.dart';
 import '../features/commercial_license_approvel_export/presentation/step2/bloc/step2_activity_data_export_cubit.dart';
-import '../features/commercial_license_approvel_export/presentation/step3/bloc/map_export_bloc.dart';
 
 class CrInjection {
   static void init() {
@@ -45,7 +44,6 @@ class CrInjection {
     sl.registerLazySingleton(() => CommercialLicenseInitialExportBloc());
     sl.registerLazySingleton(() => Step1ApplicantDataExportCubit());
     sl.registerLazySingleton(() => Step2ActivityDataExportCubit());
-    sl.registerLazySingleton(() =>  MapExportBloc());
 
 
   }

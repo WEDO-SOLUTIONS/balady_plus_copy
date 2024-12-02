@@ -13,7 +13,7 @@ export 'presentation/step1/page/cr_step1_applicant_data.dart';
 export 'presentation/step2/page/cr_step2_activity_data.dart';
 export 'presentation/step2/page/cr_step2_conditions_page.dart';
 
-export 'presentation/step3/page/cr_step3_geolocation_data.dart';
+export 'presentation/step2/page/cr_step3_geolocation_data.dart';
 export 'presentation/step4/page/cr_step4_shop_data.dart';
 export 'presentation/step5/page/cr_step5_attachment_data.dart';
 export 'presentation/step6/page/cr_step6_establishment_data.dart';

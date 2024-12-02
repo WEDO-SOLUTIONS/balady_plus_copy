@@ -2,7 +2,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_debts/prese
 import 'package:flutter/widgets.dart';
 import '../features/commercial_license_approvel_export/presentation/commercial_license/screens/commercial_license__initial_approvel_screen.dart';
 import '../features/commercial_license_approvel_export/presentation/start_service_screen.dart';
-import '../features/commercial_license_approvel_export/presentation/step3/page/export_map_page.dart';
+import '../features/commercial_license_approvel_export/presentation/step2/page/export_map_page.dart';
 import 'commercial_route_names.dart';
 import '../features/comercial_license_renew/presentation/commercial_license/screens/renew_commercial_license_screen.dart';
 import '../features/comercial_license_renew/presentation/commercial_license/screens/renew_start_service_screen.dart';

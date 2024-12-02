@@ -1,4 +1,5 @@
-part of 'map_export_bloc.dart';
+part of '../bloc/step2_activity_data_export_cubit.dart';
+
 
 abstract class MapExportEvent extends Equatable {
   const MapExportEvent();
@@ -21,8 +22,8 @@ class InitMapEvent extends MapExportEvent {
   const InitMapEvent();
 }
 
-class GetCurentUserLocationEvent extends MapExportEvent {
-  const GetCurentUserLocationEvent();
+class GetCurentLocationEvent extends MapExportEvent {
+  const GetCurentLocationEvent();
 }
 
 class SelectLocationEvent extends MapExportEvent {

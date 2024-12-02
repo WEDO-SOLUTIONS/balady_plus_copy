@@ -6,9 +6,9 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-//import 'package:flutter_easyloading/flutter_easyloading.dart';
+
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart' as place;
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -19,26 +19,26 @@ import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/map_utils.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../bloc/map_export_bloc.dart';
+import '../../../step2/bloc/step2_activity_data_export_cubit.dart';
 import 'map_address_card.dart';
 
-class CRMapView extends StatefulWidget {
+class ExportMapView extends StatefulWidget {
   final bool showSearch;
   final bool showSearchPaddingScreen;
   final bool showRadius;
   final bool readOnly;
 
-  CRMapView(
+  ExportMapView(
       {this.showSearch = true,
       this.showSearchPaddingScreen = false,
       this.showRadius = false,
       this.readOnly = false});
 
   @override
-  _CRMapViewState createState() => _CRMapViewState();
+  _ExportMapViewState createState() => _ExportMapViewState();
 }
 
-class _CRMapViewState extends State<CRMapView> {
+class _ExportMapViewState extends State<ExportMapView> {
   bool mapLoading = true;
   bool locationLoading = false;
   LatLng? movedPosition;
@@ -49,7 +49,7 @@ class _CRMapViewState extends State<CRMapView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MapExportBloc, MapExportState>(
+    return BlocBuilder<Step2ActivityDataExportCubit, Step2ActivityDataExportState>(
       builder: (context, state) {
         return Stack(
           children: <Widget>[
@@ -63,7 +63,7 @@ class _CRMapViewState extends State<CRMapView> {
                 if (widget.readOnly != true) {
                   if (movedPosition != null)
                     context
-                        .read<MapExportBloc>()
+                        .read<Step2ActivityDataExportCubit>()
                         .add(SelectLocationEvent(location: movedPosition!));
                 }
               },
@@ -71,8 +71,8 @@ class _CRMapViewState extends State<CRMapView> {
                 movedPosition = p;
               },
               onMapController: (GoogleMapController controller) {
-                context.read<MapExportBloc>().mapController = controller;
-                context.read<MapExportBloc>().add(InitMapEvent());
+                context.read<Step2ActivityDataExportCubit>().mapController = controller;
+                context.read<Step2ActivityDataExportCubit>().add(InitMapEvent());
               },
               showRadius: widget.showRadius,
             ),
@@ -92,9 +92,7 @@ class _CRMapViewState extends State<CRMapView> {
                       bool isSuccess =
                           await CommonFunctions.checkLocationSettings(context);
                       if (isSuccess)
-                        context
-                            .read<MapExportBloc>()
-                            .add(GetCurentUserLocationEvent());
+                        context.read<Step2ActivityDataExportCubit>().add(GetCurentLocationEvent());
                     },
                     child: Container(
                       margin: const EdgeInsetsDirectional.only(end: 12),
@@ -112,7 +110,7 @@ class _CRMapViewState extends State<CRMapView> {
                       address: state.gisResponse?.getFullAddress(),
                       submitLocation: () {
                         context
-                            .read<MapExportBloc>()
+                            .read<Step2ActivityDataExportCubit>()
                             .add(GetGISDataExportEvent(params: state.location!));
                       },
                       isValidLocation: true,
@@ -125,7 +123,7 @@ class _CRMapViewState extends State<CRMapView> {
               MapSearchSection(
                 showBigPaddingScreen: widget.showSearchPaddingScreen,
                 onSearchResult: (LatLng location) {
-                  context.read<MapExportBloc>().mapController.animateCamera(
+                  context.read<Step2ActivityDataExportCubit>().mapController.animateCamera(
                         CameraUpdate.newCameraPosition(
                           CameraPosition(
                               target:

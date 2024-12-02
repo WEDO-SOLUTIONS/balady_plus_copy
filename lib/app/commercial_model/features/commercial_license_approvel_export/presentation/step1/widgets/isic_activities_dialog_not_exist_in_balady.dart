@@ -8,7 +8,8 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
-import '../../step3/widgets/map_widgets/warning_message.dart';
+import '../../step2/widgets/map_widgets/warning_message.dart';
+
 
 class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
   const IsicActivitiesDialogNotExistInBalady({
