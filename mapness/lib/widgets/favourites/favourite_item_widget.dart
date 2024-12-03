@@ -51,8 +51,8 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
     final isDismissibleEnabled = widget.isDeletable && !isDismissed && !widget.isEditing;
     return AppDismissible(
       elementKey: ValueKey(widget.item.id),
-      isFirst: widget.isFirst,
-      isLast: widget.isLast,
+      addTopBorderRadius: widget.isFirst,
+      addBottomBorderRadius: widget.isLast,
       isDismissibleEnabled: isDismissibleEnabled,
       onDismiss: () => widget.onDelete?.call(),
       child: Row(

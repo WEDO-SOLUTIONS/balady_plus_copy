@@ -15,6 +15,11 @@ final locationProvider = _locationProvider;
 
 @Riverpod(keepAlive: true)
 class _Location extends _$Location {
+  final _saRect = GeoRectMessage(
+    northEast: GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
+    southWest: GeoPointMessage(latitude: 15.506104, longitude: 32.61185),
+  );
+
   @override
   Position? build() {
     checkLocationPermission().then((permitted) {
@@ -27,8 +32,8 @@ class _Location extends _$Location {
       final locationSubscription = Geolocator.getPositionStream(
         locationSettings: locationSettings,
       ).listen(
-        (event) {
-          state = event;
+        (event) async {
+          state = await _getLocation(event);
         },
       );
       ref.onDispose(locationSubscription.cancel);
@@ -67,8 +72,8 @@ class _Location extends _$Location {
         return false;
       } else {
         if (state == null) {
-          final position = await Geolocator.getLastKnownPosition();
-          state = position;
+          final userLocation = await Geolocator.getLastKnownPosition();
+          state = await _getLocation(userLocation);
         }
 
         return true;
@@ -114,5 +119,33 @@ class _Location extends _$Location {
     final status = await perm.Permission.location.status;
 
     return status.isGranted;
+  }
+
+  Future<Position?> _getLocation(Position? userLocation) async {
+    // Use mocked location if user location is outside KSA
+    if (userLocation == null) {
+      return null;
+    }
+    final controller = await ref.read(dgisControllerProvider.future);
+    final isLocationInsideKSA = await controller.contains(
+        _saRect,
+        GeoPointMessage(
+          latitude: userLocation.latitude,
+          longitude: userLocation.longitude,
+        ));
+
+    return isLocationInsideKSA
+        ? userLocation
+        : Position(
+            latitude: 24.712899222459676,
+            longitude: 46.631036554650116,
+            timestamp: userLocation.timestamp,
+            accuracy: userLocation.accuracy,
+            altitude: userLocation.altitude,
+            altitudeAccuracy: userLocation.altitudeAccuracy,
+            heading: userLocation.heading,
+            headingAccuracy: userLocation.headingAccuracy,
+            speed: userLocation.speed,
+            speedAccuracy: userLocation.speedAccuracy);
   }
 }

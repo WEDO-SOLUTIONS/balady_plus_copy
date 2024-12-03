@@ -43,23 +43,22 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
             clipBehavior: Clip.antiAlias,
             borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
             color: contentColor,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-              child: Column(
-                children: [
-                  ListView.builder(
-                    primary: false,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    itemBuilder: (context, index) {
-                      final isLastItem = index == widget.history.length - 1;
-                      final isFirst = index == 0;
-                      return AppDismissible(
-                        isFirst: isFirst,
-                        isLast: isLastItem,
-                        onDismiss: () => widget.onDelete(widget.history[index]),
-                        elementKey: ValueKey(widget.history[index].hashKey),
-                        child: ContentRowV2(
+            child: Column(
+              children: [
+                ListView.builder(
+                  primary: false,
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  itemBuilder: (context, index) {
+                    final isLast = index == widget.history.length - 1;
+                    final isLastItemAndNoManyResults = isLast && !hasManyResults;
+                    final isFirst = index == 0;
+                    return AppDismissible(
+                      addTopBorderRadius: isFirst,
+                      addBottomBorderRadius: isLastItemAndNoManyResults,
+                      onDismiss: () => widget.onDelete(widget.history[index]),
+                      elementKey: ValueKey(widget.history[index].hashKey),
+                      child: ContentRowV2(
                           backgroundColor: contentColor,
                           onTap: () async {
                             await Future.delayed(const Duration(milliseconds: 300));
@@ -74,26 +73,24 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                             title: widget.history[index].title,
                             subtitle: widget.history[index].address,
                           ),
-                          isDividerEnabled: !isLastItem || hasManyResults,
-                        ),
-                      );
-                    },
-                    itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
-                  ),
-                  if (hasManyResults)
-                    ContentRowV2(
-                      onTap: () => setState(() => _collapsed = !_collapsed),
-                      leading: AppIcons(
-                        iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
-                        color: context.colorsV2.foregroundDefault,
-                        size: 24,
-                      ),
-                      text: ContentRowTextOptions(
-                        title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
-                      ),
+                          isDividerEnabled: !isLastItemAndNoManyResults),
+                    );
+                  },
+                  itemCount: _collapsed ? min(10, widget.history.length) : widget.history.length,
+                ),
+                if (hasManyResults)
+                  ContentRowV2(
+                    onTap: () => setState(() => _collapsed = !_collapsed),
+                    leading: AppIcons(
+                      iconData: _collapsed ? SystemIcons.arrowCornerDownLarge : SystemIcons.arrowCornerUpLarge,
+                      color: context.colorsV2.foregroundDefault,
+                      size: 24,
                     ),
-                ],
-              ),
+                    text: ContentRowTextOptions(
+                      title: _collapsed ? context.l10n.showMore : context.l10n.showLess,
+                    ),
+                  ),
+              ],
             ),
           ),
           if (_collapsed) const SizedBox(height: 16),

@@ -12,6 +12,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -71,6 +72,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
           await computeCameraPosition(
             value,
             ref.read(cameraPositionProvider),
+            ref.read(locationProvider),
             ref.read(cameraPositionProvider.notifier).animateTo,
           );
         });
