@@ -2,13 +2,12 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license/com
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
-import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../step2/widgets/map_widgets/warning_message.dart';
+import '../bloc/step1_applicant_data_export_cubit.dart';
 
 
 class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
@@ -18,7 +17,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CrStep1ApplicantDataCubit, CrStep1ApplicantDataState>(
+    return BlocConsumer<Step1ApplicantDataExportCubit, Step1ApplicantDataExportState>(
       buildWhen: (previous, current) =>
           previous.isicActivitiesNotExistInBalady !=
           current.isicActivitiesNotExistInBalady,
@@ -48,7 +47,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                     ElevatedButtonWidget.issuing(onPressed: () {
                       context.popDialog();
                       context
-                          .read<CrStep1ApplicantDataCubit>()
+                          .read<Step1ApplicantDataExportCubit>()
                           .saveComSubmitterAndOwner();
                     }),
                   const SizedBox(height: 16),
@@ -189,7 +188,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                     text: "agree".tr(),
                     onPressed: () {
                       context
-                          .read<CrStep1ApplicantDataCubit>()
+                          .read<Step1ApplicantDataExportCubit>()
                           .addIsicActivities();
                     }),
               ),
