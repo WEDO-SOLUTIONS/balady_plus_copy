@@ -964,7 +964,7 @@ class ObjectTapHandler {
                     $0.item.item is DgisMapObject
                 }.map {
                     RenderedObjectMessage(
-                        object: ($0.item.item as! DgisMapObject).id.toMessage(),
+                        objectId: ($0.item.item as! DgisMapObject).id.toMessage(),
                         closestMapPoint: $0.closestMapPoint.toMessage()
                     )
                 }
