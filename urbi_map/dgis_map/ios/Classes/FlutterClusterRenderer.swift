@@ -23,17 +23,10 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         
         api.renderCluster(
             manager: manager,
-            objectCount: Int64(Int(truncating: NSNumber(value: cluster.objectCount))), completion: {result in
-                do{
-                    message = try result.get()
+            objectCount: Int64(cluster.objectCount)) {result in
+                    message = try? result.get()
                     semaphore.signal()
-                }
-                catch{
-                    semaphore.signal()
-                }
             }
-        )
-        
         
         semaphore.wait()
         

@@ -22,20 +22,20 @@ class FlutterClusterRenderer(
 ): SimpleClusterRenderer {
     private val iconCache = mutableMapOf<String, Image>()
 
-    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, objectCount: Int) = suspendCoroutine<SimpleClusterOptionsMessage> { cont ->
-        // TODO: Implement this
-//        Handler(Looper.getMainLooper()).post {
-//            api.renderCluster(
-//                manager,
-//                objectCount.toLong()
-//            ) {
-//                cont.resume(it)
-//            }
-//        }
+    suspend fun apiRenderCluster(manager: MapObjectManagerMessage, objectCount: Int) = suspendCoroutine<SimpleClusterOptionsMessage?> { cont ->
+        Handler(Looper.getMainLooper()).post {
+            api.renderCluster(
+                manager,
+                objectCount.toLong()
+            ) {
+                cont.resume(it.getOrNull())
+            }
+        }
     }
 
     override fun renderCluster(cluster: SimpleClusterObject): SimpleClusterOptions {
-        val options = runBlocking { apiRenderCluster(manager, cluster.objectCount) }
+        // TODO(ilyasov): fix force unwrap
+        val options = runBlocking { apiRenderCluster(manager, cluster.objectCount) }!!
 
         var markerImage: Image? = null
         if (options.icon != null && options.icon!!.svgPath != null) {
