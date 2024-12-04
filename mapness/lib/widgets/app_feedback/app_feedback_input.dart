@@ -30,7 +30,7 @@ class AppFeedbackInput extends HookWidget {
 
       // Calculate the width of the text field with padding
       final double textFieldWidth =
-          MediaQuery.of(context).size.width - (Spacing.$4x * 2);
+          MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
 
       final int charsPerLine = (textFieldWidth / averageCharWidth).floor();
 

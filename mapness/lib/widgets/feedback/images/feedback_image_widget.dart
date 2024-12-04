@@ -10,6 +10,7 @@ import 'package:mapness/features/feedback/feedback_upload_image.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 
 part 'feedback_image_action_button.dart';
+part 'feedback_image_item.dart';
 
 class FeedbackImageWidget extends ConsumerStatefulWidget {
   final String imagePath;
@@ -48,12 +49,6 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    precacheImage(FileImage(File(widget.imagePath)), context);
-  }
-
-  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -74,16 +69,6 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
       orElse: () => false,
     );
 
-    final image = ClipRRect(
-      borderRadius: BorderRadius.circular(RadiusBorder.l),
-      child: Image(
-        image: FileImage(File(widget.imagePath)),
-        fit: BoxFit.cover,
-        width: widget.imageSize,
-        height: widget.imageSize,
-      ),
-    );
-
     return AnimatedBuilder(
         animation: _opacityAnimation,
         builder: (context, child) => Opacity(
@@ -101,13 +86,19 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
             children: [
               Center(
                 child: switch (upload) {
-                  FileUploadSuccess() => image,
+                  FileUploadSuccess() => _FeedbackImageItem(
+                      imagePath: widget.imagePath,
+                      imageSize: widget.imageSize,
+                    ),
                   FileUploadInit() || FileUploadProgress() => Loading.small(),
                   _ => Stack(
                       children: [
                         Opacity(
                           opacity: 0.7,
-                          child: image,
+                          child: _FeedbackImageItem(
+                            imagePath: widget.imagePath,
+                            imageSize: widget.imageSize,
+                          ),
                         ),
                         Center(
                           child: _ImageActionButton(

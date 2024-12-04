@@ -80,7 +80,7 @@ class FeedbackImages extends StatelessWidget {
                 children: [
                   if (value.length < field.maxImages)
                     _AddImageButton(
-                      onTap: () async => _handlePickImage(context, fieldState),
+                      onTap: () => _handlePickImage(context, fieldState),
                     ),
                   ...value.indexed.map(
                     (indexedUpload) => FeedbackImageWidget(
@@ -135,9 +135,7 @@ class FeedbackImages extends StatelessWidget {
       unawaited(_showImageActionErrorSheet(
         context,
         error: pickError,
-        onRetry: () async {
-          await _handlePickImage(context, fieldState);
-        },
+        onRetry: () => _handlePickImage(context, fieldState),
       ));
       return;
     }
