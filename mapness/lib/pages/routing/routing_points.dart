@@ -24,20 +24,14 @@ class RoutingPointsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => RoutingPointsSheet(
-          biggestHeight: constraints.biggest.height,
-        ),
+        builder: (context, constraints) => const RoutingPointsSheet(),
       );
 }
 
 class RoutingPointsSheet extends ConsumerStatefulWidget {
-
   const RoutingPointsSheet({
-    required this.biggestHeight,
     super.key,
   });
-
-  final double biggestHeight;
 
   @override
   ConsumerState<RoutingPointsSheet> createState() => _RoutingPointsSheetState();
