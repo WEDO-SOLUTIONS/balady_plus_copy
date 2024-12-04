@@ -1182,16 +1182,10 @@ class VendorConfigContentMessage {
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
     swiftOut: '../dgis_map/ios/Classes/Messages.swift',
-    // objcHeaderOut: '../dgis_map/ios/Classes/messages.h',
-    // objcSourceOut: '../dgis_map/ios/Classes/messages.m',
     kotlinOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
     kotlinOptions: KotlinOptions(
       package: 'com.dgis.map.map_api',
     ),
-    // javaOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.java',
-    // javaOptions: JavaOptions(
-    //   package: 'com.dgis.map.map_api',
-    // ),
   ),
 )
 @HostApi()
