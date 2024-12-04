@@ -12,6 +12,7 @@ import 'package:dgis_map/library.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -56,6 +57,7 @@ import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
 
 Mixpanel? mixpanel;
+StreamSubscription? _remoteConfigSubscription;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
   static final MapnessRouteObserver _instance =
@@ -562,21 +564,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-  final instance = FirebaseRemoteConfig.instance;
-  await instance.ensureInitialized();
-  await instance.fetchAndActivate();
-  final vendorConfigResponse = instance.getValue(envType.vendorConfigKey());
-  final vendorContentJsonString =
-      jsonEncode(jsonDecode(vendorConfigResponse.asString()));
+
+  await _setupAppConfigs(envType);
+
   final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
-  await box.put(MapnessConstants.vendorConfigKey, vendorContentJsonString);
+
+  final vendorConfigLocal = await box.get(MapnessConstants.vendorConfigKey,);
+
+  final vendorConfigContentMessage =
+  VendorConfigContentMessage(content: vendorConfigLocal);
+
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
       systemLevel: LogLevelMessage.fatal,
       customLevel: LogLevelMessage.fatal,
     ),
-    configContent: VendorConfigContentMessage(content: vendorContentJsonString),
+    configContent: vendorConfigContentMessage,
   );
 
   await Hive.initFlutter();
@@ -589,13 +593,79 @@ Future<void> setupMapness(EnvType envType) async {
     ..registerAdapter(HiveFavouriteItemEntityAdapter())
     ..registerAdapter(FavoriteCacheStateAdapter());
 
+}
+
+///Fetch and save vendor config and environment config from firebase
+///return vendor config for init dgis sdk
+Future<void> _setupAppConfigs(EnvType envType) async {
+  FirebaseRemoteConfig? remoteConfig;
+
+  /// Attempt to initialize Remote Config
+  try {
+    /// Get the instance of FirebaseRemoteConfig
+    remoteConfig = FirebaseRemoteConfig.instance;
+
+    /// Set the config settings where fetchTimeout is the maximum time to wait,
+    /// and minimumFetchInterval is the minimum time between fetch requests
+    await remoteConfig.setConfigSettings(
+      RemoteConfigSettings(
+        fetchTimeout: const Duration(hours: 1),
+        minimumFetchInterval: const Duration(minutes: 2),
+      ),
+    );
+
+    /// Ensure Remote Config is initialized and activate the config values
+    await remoteConfig.ensureInitialized();
+    await remoteConfig.fetchAndActivate();
+    _remoteConfigSubscription = remoteConfig.onConfigUpdated.listen(
+      (event) async {
+        await _saveRemoteConfig(remoteConfig, envType);
+      },
+    );
+  } catch (e) {
+    /// If an error occurs, reset the config and print the error to debug output
+    remoteConfig = null;
+    debugPrint('$e');
+  }
+
+  /// Fetch the vendor configuration for the current environment type
+  await _saveRemoteConfig(remoteConfig, envType);
+}
+
+Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envType) async {
+  /// Fetch the vendor configuration for the current environment type
+  final vendorConfigResponse =
+      remoteconfig?.getValue(envType.vendorConfigKey()).asString();
+
+  /// Open the local Hive storage to save the configuration
+  final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
+
+  /// Check if the remote config is available
+  if (vendorConfigResponse != null && vendorConfigResponse.isNotEmpty) {
+    /// Convert the value to JSON and save it to the local storage
+    await box.put(MapnessConstants.vendorConfigKey, vendorConfigResponse);
+
+  } else {
+    /// If the remote config is not available, load the local configuration from assets
+    final vendorConfigAsset = await rootBundle
+        .loadString('assets/maps/configs/${envType.vendorConfigPath()}');
+    await box.put(MapnessConstants.vendorConfigKey, vendorConfigAsset);
+  }
+
+  /// Save the environment type key to Hive for future reference
   await box.put(MapnessConstants.envTypeKey, envType.appConfigKey());
 
   ///save all env config to hive just for testing scenario
-  final envConfigResponse =
-      instance.getValue(MapnessConstants.firebaseAppEnvConfigKey);
-  final envJsonString = jsonEncode(jsonDecode(envConfigResponse.asString()));
-  await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
+  /// Optionally save all environment config to Hive for testing purposes
+  final envConfigResponse = remoteconfig
+      ?.getValue(MapnessConstants.firebaseAppEnvConfigKey)
+      .asString();
+  if (envConfigResponse != null && envConfigResponse.isNotEmpty) {
+    await box.put(MapnessConstants.firebaseAppEnvConfigKey, envConfigResponse);
+  } else {
+    final envJsonString = jsonEncode(envType.getLocalEnvConfig().toJson());
+    await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
+  }
 }
 
 class MapnessLogger {
