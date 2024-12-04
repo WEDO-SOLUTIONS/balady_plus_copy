@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
@@ -8,18 +9,20 @@ import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/shared/extensions/int_extention.dart';
+import 'package:mapness/entities/feedback/feedback_image_action_error.dart';
+import 'package:mapness/features/feedback/feedback_upload_image.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
-import 'package:mapness/widgets/feedback/feedback_image_widget.dart';
+import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
+import 'package:mapness/widgets/feedback/images/feedback_images_action_error_sheet.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 const _imageSize = 62.0;
 
-class FeedbackImages extends StatelessWidget {
+class FeedbackImages extends ConsumerWidget {
   final FeedbackImageInputEntity field;
 
   const FeedbackImages({
@@ -28,7 +31,7 @@ class FeedbackImages extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
@@ -48,7 +51,9 @@ class FeedbackImages extends StatelessWidget {
             name: field.id,
             valueTransformer: (value) => value
                 ?.map(
-                  (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
+                  (fileUpload) => fileUpload is FileUploadSuccess
+                      ? fileUpload.serverUrl
+                      : null,
                 )
                 .nonNulls
                 .toList(),
@@ -82,13 +87,34 @@ class FeedbackImages extends StatelessWidget {
                     }),
                   ...value.indexed.map(
                     (indexedUpload) => FeedbackImageWidget(
+                      key: ValueKey(indexedUpload),
                       imagePath: indexedUpload.$2.srcPath,
                       onRemove: () => fieldState.didChange(
                         value.removeAt(indexedUpload.$1),
                       ),
-                      onUploadStatusChange: (status) => fieldState.didChange(
-                        value.replace(indexedUpload.$1, status),
-                      ),
+                      onUploadStatusChange: (status) {
+                        final isError = status.maybeWhen(
+                          clientError: (_, __) => true,
+                          networkError: (_, __) => true,
+                          unknownError: (_, __) => true,
+                          orElse: () => false,
+                        );
+                        if (isError) {
+                          _showImageActionErrorSheet(
+                            context,
+                            error: const FeedbackImageUploadFailError(),
+                            onRetry: () async {
+                              ref.invalidate(feedbackUploadImageProvider(
+                                indexedUpload.$2.srcPath,
+                              ));
+                            },
+                          );
+                          return;
+                        }
+                        fieldState.didChange(
+                          value.replace(indexedUpload.$1, status),
+                        );
+                      },
                       imageSize: _imageSize,
                     ),
                   ),
@@ -109,37 +135,69 @@ class FeedbackImages extends StatelessWidget {
     if (image == null) {
       return null;
     }
-    // final isSupported = await isImageSupported(image);
-
-    // if (!isSupported) {
-    showBottomSheet(
-      context: context,
-      builder: (ctx) => _UnsupportedFileSheetContent(
-        supportedFormats: field.acceptedFormats,
-        maxFileSize: 5591238,
-        onRetry: () async {
-          Navigator.of(ctx).pop();
-          await _handlePickeImage(ctx);
-        },
-      ),
+    final isSupported = await isImageSupported(
+      context,
+      image: image,
     );
-    return null;
-    // }
-    // return image.path;
+
+    return isSupported ? image.path : null;
   }
 
-  Future<bool> isImageSupported(XFile image) async {
+  Future<bool> isImageSupported(
+    BuildContext context, {
+    required XFile image,
+  }) async {
     final imageSize = await image.length();
 
+    FeedbackImageActionError? error;
+
+    if (imageSize > field.maxSize) {
+      error = FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
+    }
     final fileType = image.path.split('.').last.toLowerCase();
     final imageFormatAccepted = field.acceptedFormats.contains(fileType);
 
-    return imageSize < field.maxSize && imageFormatAccepted;
+    if (!imageFormatAccepted) {
+      error = FeedbackImageWrongFormatError(
+          supportedFormats: field.acceptedFormats);
+    }
+    if (error != null) {
+      unawaited(_showImageActionErrorSheet(
+        context,
+        error: error,
+        onRetry: () async {
+          await _handlePickeImage(context);
+        },
+      ));
+      return false;
+    }
+
+    return error == null;
   }
 
   Future<XFile?> _pickedImage() async {
     final image = await ImagePicker().pickImage(source: ImageSource.gallery);
     return image;
+  }
+
+  Future<void> _showImageActionErrorSheet(
+    BuildContext context, {
+    required FeedbackImageActionError error,
+    required AsyncCallback onRetry,
+  }) async {
+    final route = ModalRoute.of(context);
+    if (route?.isCurrent == false) {
+      return;
+    }
+    final needToRetry = await showModalBottomSheet<bool>(
+      context: context,
+      builder: (ctx) => FeedbackImagesActionErrorSheet(
+        error: error,
+      ),
+    );
+    if (needToRetry ?? false) {
+      await onRetry();
+    }
   }
 
   Future<bool> _isGalleryPermissionDenied() async {
@@ -188,23 +246,5 @@ class _AddImageButton extends StatelessWidget {
             ),
           ),
         ),
-      );
-}
-
-class _UnsupportedFileSheetContent extends StatelessWidget {
-  final AsyncCallback onRetry;
-  final List<String> supportedFormats;
-  final int maxFileSize;
-
-  const _UnsupportedFileSheetContent({
-    required this.onRetry,
-    required this.supportedFormats,
-    required this.maxFileSize,
-  });
-
-  @override
-  Widget build(BuildContext context) => BaseErrorWidget(
-        errorLabel: 'Image size exceeds the ${maxFileSize.formatAsFileSize()} limit. Please choose a smaller image.',
-        onRetry: onRetry,
       );
 }
