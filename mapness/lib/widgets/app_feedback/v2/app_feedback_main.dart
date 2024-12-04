@@ -7,7 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
-import 'package:mapness/features/app_feedback/app_feedback_source.dart';
+import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -95,6 +95,7 @@ class AppFeedbackMain extends HookConsumerWidget {
           valueListenable: rating,
           builder: (context, ratingValue, _) => ratingValue > 0
               ? Padding(
+                  key: const ValueKey('app-feedback-balady-input'),
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
                   child: GestureDetector(
                     onTap: () async {
@@ -106,10 +107,11 @@ class AppFeedbackMain extends HookConsumerWidget {
                       }
                     },
                     child: BaladyInput(
+                      readOnly: true,
                       controller: feedbackTextController,
                       hintText: context.l10n.appFeedbackHintText,
                       maxLines: 4,
-                      enabled: false,
+                      // enabled: false,
                       isDisposed: false,
                       onChanged: (_) {},
                     ),
