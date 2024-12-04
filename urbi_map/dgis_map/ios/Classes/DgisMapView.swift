@@ -557,7 +557,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         searchHandler.search(
             queryText,
             categories: categories?.categories.flatMap {
-                $0!.category.toRubrics()
+                $0.category.toRubrics()
             },
             spatialRestriction: spatialRestriction,
             searchGeoRect: searchRect?.geoRect,
@@ -1089,7 +1089,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
 
-    func findBriefRouteInfos(routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage?, completion: @escaping (Result<[BriefRouteInfoMessage?], any Error>) -> Void) {
+    func findBriefRouteInfos(routeSearchOptions: RouteSearchOptionsMessage, startPoint: RouteSearchPointMessage?, finishPoint: RouteSearchPointMessage?, completion: @escaping (Result<[BriefRouteInfoMessage], any Error>) -> Void) {
         let routeSearchOptionsConverted = routeSearchOptions.toRouteSearchOptions()
 
         let startSearchPoint = startPoint?.toRouteSearchPoint()
@@ -1103,7 +1103,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
 
-    func listPackages(completion: @escaping (Result<[PackageMessage?], any Error>) -> Void) {
+    func listPackages(completion: @escaping (Result<[PackageMessage], any Error>) -> Void) {
         packagesHandler?.listPackages(completion: completion)
     }
 
@@ -1111,7 +1111,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         packagesHandler?.installPackage(id, completion: completion)
     }
 
-    func listVoices(completion: @escaping (Result<[VoiceMessage?], any Error>) -> Void) {
+    func listVoices(completion: @escaping (Result<[VoiceMessage], any Error>) -> Void) {
         packagesHandler?.listVoices(completion: completion)
     }
 

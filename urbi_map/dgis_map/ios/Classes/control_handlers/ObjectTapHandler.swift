@@ -472,10 +472,10 @@ class ObjectTapHandler {
         let options = PolygonOptions(
             // TODO : fix force unwrap
             contours: polygon.options.contours.map { contour in
-                contour!.compactMap {
+                contour.compactMap {
                     GeoPoint(
-                        latitude: Latitude(value: $0!.latitude),
-                      longitude: Longitude(value: $0!.longitude)
+                        latitude: Latitude(value: $0.latitude),
+                      longitude: Longitude(value: $0.longitude)
                   )
                 }            },
             color: polygon.options.color.map {
@@ -555,8 +555,8 @@ class ObjectTapHandler {
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
-                    latitude: Latitude(value: $0!.latitude),
-                    longitude: Longitude(value: $0!.longitude)
+                    latitude: Latitude(value: $0.latitude),
+                    longitude: Longitude(value: $0.longitude)
                 )
             },
             width: polyline.options.width.map {
@@ -643,7 +643,7 @@ class ObjectTapHandler {
         var markers = [Marker]()
         for marker in message.objects {
             // TODO fix forceunwrap
-            let position = marker!.position.geoPointWithElevation
+            let position = marker.position.geoPointWithElevation
 
             do {
                 let marker = try Marker(options: MarkerOptions(
@@ -651,7 +651,7 @@ class ObjectTapHandler {
                     icon: markerImage,
                     anchor: Anchor(x: 0.5, y: 1),
                     iconWidth: iconWidth,
-                    userData: marker!.attributes
+                    userData: marker.attributes
                 ))
                 markers.append(marker)
             } catch {
@@ -703,10 +703,10 @@ class ObjectTapHandler {
                 message.markers.forEach { it in
                     guard let self = self else { return }
                     
-                    let photoData = PhotoData(photoUrl: it!.photoUrl, isPanoramic: it!.isPanoramic, azimuth: it!.azimuth);
+                    let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic, azimuth: it.azimuth);
                     
                     let opts = MarkerOptions(
-                        position: (it?.position.geoPointWithElevation)!,
+                        position: (it.position.geoPointWithElevation),
                         icon: self.panoramaMarkerImage,
                         userData: photoData)
                     if let marker = try? Marker(options: opts) {

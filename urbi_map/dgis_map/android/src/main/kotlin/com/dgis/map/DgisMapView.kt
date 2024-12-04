@@ -413,8 +413,7 @@ class DgisMapView(
         searchHandler?.search(
             queryText = queryText,
             categories = categories?.categories?.flatMap {
-                // TODO: fix force unwrap
-                it!!.category!!.toRubrics()
+                it.category.toRubrics()
             },
             spatialRestriction = spatialRestriction?.map {
                 it.toGeoPoint()
@@ -1034,7 +1033,7 @@ class DgisMapView(
         routeSearchOptions: RouteSearchOptionsMessage,
         startPoint: RouteSearchPointMessage?,
         finishPoint: RouteSearchPointMessage?,
-        callback: (Result<List<BriefRouteInfoMessage?>>) -> Unit
+        callback: (Result<List<BriefRouteInfoMessage>>) -> Unit
     ){
         val searchOptions = routeSearchOptions.toRouteSearchOptions()
 
@@ -1104,7 +1103,18 @@ class DgisMapView(
         callback(Result.success(Unit))
     }
 
-    override fun listPackages(callback: (Result<List<PackageMessage?>>) -> Unit) {
+    override fun setBetterRouteEnabled(enabled: Boolean,   callback: (Result<Unit>) -> Unit){
+        navigationHandler.setBetterRouteEnabled(enabled)
+        callback(Result.success(Unit))
+    }
+
+
+    override fun getAndroidAutoConnectionState(callback: (Result<Boolean>) -> Unit) {
+        val connected = androidAutoHandler.getConnectionState()
+        callback(Result.success(connected))
+    }
+
+    override fun listPackages(callback: (Result<List<PackageMessage>>) -> Unit) {
         packagesHandler.listPackages(callback)
     }
 
@@ -1112,7 +1122,7 @@ class DgisMapView(
         packagesHandler.installPackage(id, callback)
     }
 
-    override fun listVoices(callback: (Result<List<VoiceMessage?>>) -> Unit) {
+    override fun listVoices(callback: (Result<List<VoiceMessage>>) -> Unit) {
         packagesHandler.listVoices(callback)
     }
 

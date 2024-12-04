@@ -426,8 +426,8 @@ class ObjectTapHandler(
         val options = PolygonOptions(
             contours = polygon.options.contours.map { contour ->
                 // TODO: fix force unwrap
-                contour!!.map {
-                    it!!.toGeoPoint()
+                contour.map {
+                    it.toGeoPoint()
                 }
             },
             color = polygon.options.color?.let {
@@ -487,8 +487,7 @@ class ObjectTapHandler(
     private fun mapPolyline(polyline: PolylineMessage): Polyline {
         val options = PolylineOptions(
             points = polyline.options.points.map {
-                // TODO: fix force unwrap
-                it!!.toGeoPoint()
+                it.toGeoPoint()
             },
             color = polyline.options.color?.let {
                 Color(argb = it.toInt())
@@ -935,8 +934,7 @@ class ObjectTapHandler(
             val newObjects = mutableListOf<Marker>()
             message.markers.forEach {
                 val opts = MarkerOptions(
-                    // TODO: fix force unwrap
-                    it!!.position.toGeoPointWithElevation(),
+                    it.position.toGeoPointWithElevation(),
                     icon = icon
                 )
                 val marker = Marker(opts)

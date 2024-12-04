@@ -121,13 +121,13 @@ class WeekTimeIntervalMessage {
 class WeekTimeIntervalListMessage {
   WeekTimeIntervalListMessage(this.values);
 
-  final List<WeekTimeIntervalMessage?> values;
+  final List<WeekTimeIntervalMessage> values;
 }
 
 class OpeningHoursMessage {
   const OpeningHoursMessage(this.values, this.isOpen24x7);
 
-  final List<WeekTimeIntervalListMessage?> values;
+  final List<WeekTimeIntervalListMessage> values;
   final bool isOpen24x7;
 }
 
@@ -175,8 +175,8 @@ class AddressMessage {
     this.addressComment,
   );
 
-  final List<AddressAdmDivMessage?> drilldown;
-  final List<AddressComponentMessage?> components;
+  final List<AddressAdmDivMessage> drilldown;
+  final List<AddressComponentMessage> components;
   final String? buildingName;
   final String? postCode;
   final String? buildingCode;
@@ -230,11 +230,25 @@ enum ParkingPurposeMessage {
   scooter,
 }
 
-enum ParkingAccessMessage { publicAccess, handicappedOnly, customersOnly, residentsOnly, taxiOnly }
+enum ParkingAccessMessage {
+  publicAccess,
+  handicappedOnly,
+  customersOnly,
+  residentsOnly,
+  taxiOnly
+}
 
 enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
 
-enum SpecialSpaceTypeMessage { bicycle, motorbike, family, handicapped, babyCarriage, truck, scooter }
+enum SpecialSpaceTypeMessage {
+  bicycle,
+  motorbike,
+  family,
+  handicapped,
+  babyCarriage,
+  truck,
+  scooter
+}
 
 class SpecialSpaceMessage {
   SpecialSpaceMessage(this.type, this.name, this.count);
@@ -248,7 +262,7 @@ class ParkingCapacityMessage {
   ParkingCapacityMessage(this.total, this.specialSpaces);
 
   final String? total;
-  final List<SpecialSpaceMessage?> specialSpaces;
+  final List<SpecialSpaceMessage> specialSpaces;
 }
 
 class ParkingInfoMessage {
@@ -286,7 +300,7 @@ class BuildingLevelsMessage {
   BuildingLevelsMessage(this.defaultLevelId, this.levels);
 
   final int defaultLevelId;
-  final List<LevelInfoMessage?> levels;
+  final List<LevelInfoMessage> levels;
 }
 
 class BuildingInfoMessage {
@@ -307,8 +321,8 @@ class ApartmentRangeMessage {
 class EntranceGeometryMessage {
   EntranceGeometryMessage(this.entrancePoints, this.entrancePolylines);
 
-  final List<GeoPointMessage?> entrancePoints;
-  final List<List<GeoPointMessage?>?> entrancePolylines;
+  final List<GeoPointMessage> entrancePoints;
+  final List<List<GeoPointMessage>> entrancePolylines;
 }
 
 class EntranceInfoMessage {
@@ -325,7 +339,7 @@ class EntranceInfoMessage {
   final String? buildingNumber;
   final String? porchName;
   final String? porchNumber;
-  final List<ApartmentRangeMessage?> apartmentRanges;
+  final List<ApartmentRangeMessage> apartmentRanges;
   final EntranceGeometryMessage? geometry;
 }
 
@@ -400,7 +414,7 @@ class DirectoryObjectMessage {
     this.tradeLicense,
   );
 
-  final List<ObjectTypeItemMessage?> types;
+  final List<ObjectTypeItemMessage> types;
   final String title;
   final String titleAddition;
   final String subtitle;
@@ -410,18 +424,18 @@ class DirectoryObjectMessage {
   final AddressMessage? address;
   final FormattedAddressMessage? fullAddressName;
   final FormattedAddressMessage? shortAddressName;
-  final List<AttributeMessage?> attributes;
-  final List<AttributeMessage?> contextAttributes;
+  final List<AttributeMessage> attributes;
+  final List<AttributeMessage> contextAttributes;
   final double? timeZoneOffset;
   final OpeningHoursMessage? openingHours;
-  final List<ContactInfoMessage?> contactInfos;
+  final List<ContactInfoMessage> contactInfos;
   final ReviewsMessage? reviews;
   final ParkingInfoMessage? parkingInfo;
   final WorkStatusMessage? workStatus;
   final int? levelId;
   final BuildingLevelsMessage? buildingLevels;
   final BuildingInfoMessage buildingInfo;
-  final List<EntranceInfoMessage?> entrances;
+  final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
 }
 
@@ -467,7 +481,15 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
-enum RouteSearchOptionsMessage { car, publicTransport, bicycle, pedestrian, scooter, truck, taxi }
+enum RouteSearchOptionsMessage {
+  car,
+  publicTransport,
+  bicycle,
+  pedestrian,
+  scooter,
+  truck,
+  taxi
+}
 
 class RouteEditorRoutePointMessage {
   RouteEditorRoutePointMessage(
@@ -527,20 +549,20 @@ class MarkerWithPhotoMessage {
 class AddMarkersWithPhotoMessage {
   AddMarkersWithPhotoMessage(this.markers);
 
-  final List<MarkerWithPhotoMessage?> markers;
+  final List<MarkerWithPhotoMessage> markers;
 }
 
 class LayerPointObjectMessage {
   LayerPointObjectMessage({required this.position, required this.attributes});
 
   GeoPointWithElevationMessage position;
-  final Map<String?, String?> attributes;
+  final Map<String, String> attributes;
 }
 
 class AddLayerPointObjectsMessage {
   AddLayerPointObjectsMessage(this.objects);
 
-  final List<LayerPointObjectMessage?> objects;
+  final List<LayerPointObjectMessage> objects;
 }
 
 class GeoRectMessage {
@@ -631,7 +653,8 @@ class MarkerTextStyleMessage {
 
 /// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection,
+      this.iconOpacity, this.pngData, this.pngPath);
 
   final String? svgPath;
   final Uint8List? pngData;
@@ -670,13 +693,13 @@ class MarkerMessage {
 
 class PolygonOptionsMessage {
   PolygonOptionsMessage({
-    required List<List<GeoPointMessage>> this.contours,
+    required this.contours,
     this.color,
     this.strokeWidth,
     this.strokeColor,
   });
 
-  final List<List<GeoPointMessage?>?> contours;
+  final List<List<GeoPointMessage>> contours;
   final int? color;
   final double? strokeWidth;
   final int? strokeColor;
@@ -691,12 +714,12 @@ class PolygonMessage {
 
 class PolylineOptionsMessage {
   PolylineOptionsMessage({
-    required List<GeoPointMessage> this.points,
+    required this.points,
     this.color,
     this.width,
   });
 
-  final List<GeoPointMessage?> points;
+  final List<GeoPointMessage> points;
   final int? color;
   final double? width;
 }
@@ -725,7 +748,7 @@ class PageMessage {
   PageMessage._(this.id, this.items);
 
   final PageIdMessage id;
-  final List<DirectoryObjectMessage?> items;
+  final List<DirectoryObjectMessage> items;
 }
 
 enum GeometryKindMessage {
@@ -747,7 +770,7 @@ class GeometryMessage {
 class PolygonGeometryMessage {
   const PolygonGeometryMessage(this.contours);
 
-  final List<Object?> contours;
+  final List<Object> contours;
 }
 
 enum SearchResultTypeMessage { recovery, discovery }
@@ -761,7 +784,8 @@ class FlagFilterMessage {
 }
 
 class RangeFilterMessage {
-  RangeFilterMessage(this.tagName, this.displayName, this.minValue, this.maxValue);
+  RangeFilterMessage(
+      this.tagName, this.displayName, this.minValue, this.maxValue);
 
   final String tagName;
   final String displayName;
@@ -806,9 +830,9 @@ class SearchResultMessage {
   final PageMessage? firstPage;
   final GeometryMessage? representativeArea;
   final CameraPositionMessage? areaOfInterestPosition;
-  final List<ItemMarkerInfoMessage?>? itemMarkerInfos;
+  final List<ItemMarkerInfoMessage>? itemMarkerInfos;
   final SearchResultTypeMessage searchResultType;
-  final List<DynamicFilterMessage?> dynamicFilters;
+  final List<DynamicFilterMessage> dynamicFilters;
   final bool autoUseFirstResult;
 }
 
@@ -902,7 +926,7 @@ class MarkedUpTextMessage {
   MarkedUpTextMessage(this.text, this.matchedParts);
 
   final String text;
-  final List<MarkedUpTextSpanMessage?> matchedParts;
+  final List<MarkedUpTextSpanMessage> matchedParts;
 }
 
 class SuggestedTypeMessage_ {
@@ -923,7 +947,7 @@ class SuggestMessage {
 class SuggestResultMessage {
   SuggestResultMessage(this.suggests);
 
-  final List<SuggestMessage?> suggests;
+  final List<SuggestMessage> suggests;
 }
 
 enum SearchCategoryMessage {
@@ -951,7 +975,7 @@ class SearchCategoryMessage_ {
 class SearchCategoriesMessage {
   SearchCategoriesMessage(this.categories);
 
-  final List<SearchCategoryMessage_?> categories;
+  final List<SearchCategoryMessage_> categories;
 }
 
 class SimpleClusterOptionsMessage {
@@ -999,7 +1023,8 @@ class LogOptionsMessage {
 }
 
 class RouteSearchPointMessage {
-  RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
+  RouteSearchPointMessage(
+      this.coordinates, this.course, this.objectId, this.levelId);
 
   final GeoPointMessage coordinates;
   final BearingMessage? course;
@@ -1041,8 +1066,8 @@ class PackageMessage {
 }
 
 class PackageInfoMessage {
-  PackageInfoMessage(this.name, this.installed, this.incomplete, this.preinstalled, this.compatible, this.hasUpdate,
-      this.updateStatus);
+  PackageInfoMessage(this.name, this.installed, this.incomplete,
+      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
 
   final String name;
   final bool installed;
@@ -1182,7 +1207,8 @@ class VendorConfigContentMessage {
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
     swiftOut: '../dgis_map/ios/Classes/Messages.swift',
-    kotlinOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
+    kotlinOut:
+        '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
     kotlinOptions: KotlinOptions(
       package: 'com.dgis.map.map_api',
     ),
@@ -1266,7 +1292,8 @@ abstract class MapApi {
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
-  List<DistanceResponseMessage> getDistanceTo(List<DistanceRequestMessage> points);
+  List<DistanceResponseMessage> getDistanceTo(
+      List<DistanceRequestMessage> points);
 
   @async
   SearchResultMessage search(
@@ -1534,17 +1561,17 @@ abstract class MapApi {
   void setMapAttributeBool(String name, bool value);
 
   @async
-  List<BriefRouteInfoMessage?> findBriefRouteInfos(
+  List<BriefRouteInfoMessage> findBriefRouteInfos(
     RouteSearchOptionsMessage routeSearchOptions,
     RouteSearchPointMessage? startPoint,
     RouteSearchPointMessage? finishPoint,
   );
 
   @async
-  List<PackageMessage?> listPackages();
+  List<PackageMessage> listPackages();
 
   @async
-  List<VoiceMessage?> listVoices();
+  List<VoiceMessage> listVoices();
 
   @async
   void voicePlayWelcome(String id);
@@ -1589,5 +1616,7 @@ abstract class FlutterMapApi {
 abstract class PluginApi {
   @async
   void initialize(
-      LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
+      LogOptionsMessage? message,
+      VendorConfigMessage? configMessage,
+      VendorConfigContentMessage? contentMessage);
 }

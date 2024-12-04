@@ -325,7 +325,7 @@ class RouteHandler {
         _ routeSearchOptions: RouteSearchOptions,
         startPoint: RouteSearchPoint?,
         finishPoint: RouteSearchPoint?,
-        completion: @escaping (Result<[BriefRouteInfoMessage?], any Error>)->Void)
+        completion: @escaping (Result<[BriefRouteInfoMessage], any Error>)->Void)
     {
         let startSearchPoint: RouteSearchPoint
         let finishSearchPoint: RouteSearchPoint

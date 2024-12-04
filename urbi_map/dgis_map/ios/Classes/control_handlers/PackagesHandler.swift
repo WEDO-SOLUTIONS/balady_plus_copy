@@ -82,7 +82,7 @@ class PackagesHandler {
         cancelable.removeAll()
     }
     
-    func listPackages(completion: @escaping (Result<[PackageMessage?], any Error>) -> Void) {
+    func listPackages(completion: @escaping (Result<[PackageMessage], any Error>) -> Void) {
         completion(Result.success(packageManager.packages.map { $0.toMessage() }))
     }
     
@@ -112,7 +112,7 @@ class PackagesHandler {
     }
     
     func listVoices(completion: @escaping (
-        Result<[VoiceMessage?], any Error>
+        Result<[VoiceMessage], any Error>
         ) -> Void) {
         completion(
             Result.success(
