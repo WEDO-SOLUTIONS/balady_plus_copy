@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -21,10 +20,10 @@ class CollectFeedback extends _$CollectFeedback {
     String deviceIdentifier = 'unknown';
     final deviceInfo = DeviceInfoPlugin();
 
-    if (Platform.isAndroid) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
       final androidInfo = await deviceInfo.androidInfo;
       deviceIdentifier = 'android::${androidInfo.serialNumber}::${androidInfo.id}::${androidInfo.model}';
-    } else if (Platform.isIOS) {
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       final iosInfo = await deviceInfo.iosInfo;
       deviceIdentifier = iosInfo.identifierForVendor ?? 'unknown';
     }
@@ -32,7 +31,7 @@ class CollectFeedback extends _$CollectFeedback {
   }
 
   Future<void> collectFeedback({required int stars, String? text, List<String>? tags, FeedbackSource? source}) async {
-    final isAndroid = Platform.isAndroid;
+    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
     final packageInfo = await PackageInfo.fromPlatform();
 
     final mobileOs = isAndroid ? AppFeedbackMobileOs.android : AppFeedbackMobileOs.ios;
