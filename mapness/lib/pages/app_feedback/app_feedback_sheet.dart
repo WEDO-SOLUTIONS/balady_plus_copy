@@ -25,7 +25,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     void onCloseBottomSheet(StatelessBottomSheetController controller) {
       final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
-      if (feedbackCanpop) {
+      final isInitial = ref.read(sendFeedbackProvider).valueOrNull == AppFeedbackState.initial;
+
+      if (feedbackCanpop || !isInitial) {
         context.router.popForced();
       } else {
         controller.open();

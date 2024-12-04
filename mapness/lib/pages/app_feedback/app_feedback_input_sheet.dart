@@ -16,7 +16,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scrollController = useStatefulBottomsheetController(
-      initialState: ThreeStateBottomSheet.expanded,
+      initialState: ThreeStateBottomSheet.open,
       // Need to expand the bottom sheet to show the content
       behavior: AspectRatioSnappingBehavior(aspectRatios: [.9, .9, .9]),
       mapper: const ThreeStateMapper(),

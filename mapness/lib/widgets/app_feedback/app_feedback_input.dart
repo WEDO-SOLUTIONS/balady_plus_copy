@@ -39,30 +39,27 @@ class AppFeedbackInput extends HookWidget {
       return () => textController.removeListener(calculateMaxLines);
     }, [textController]);
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ValueListenableBuilder<int>(
-              valueListenable: maxLines,
-              builder: (context, maxLinesValue, _) => BaladyInput(
-                controller: textController,
-                focusNode: focusNode,
-                autofocus: true,
-                hintText: context.l10n.appFeedbackTellUsMore,
-                maxLines: maxLinesValue,
-                maxLength: _maxCharsAllowed,
-                isDisposed: false,
-                onValidate: (v) => v != null && v.length != _maxCharsAllowed
-                    ? null
-                    : context
-                        .l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
-              ),
+    return Padding(
+      padding: const EdgeInsets.all(Spacing.$4x),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ValueListenableBuilder<int>(
+            valueListenable: maxLines,
+            builder: (context, maxLinesValue, _) => BaladyInput(
+              controller: textController,
+              focusNode: focusNode,
+              autofocus: true,
+              hintText: context.l10n.appFeedbackTellUsMore,
+              maxLines: maxLinesValue,
+              maxLength: _maxCharsAllowed,
+              isDisposed: false,
+              onValidate: (v) => v != null && v.length != _maxCharsAllowed
+                  ? null
+                  : context.l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

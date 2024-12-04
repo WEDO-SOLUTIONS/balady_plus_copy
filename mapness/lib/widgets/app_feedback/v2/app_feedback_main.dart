@@ -163,7 +163,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                       controller: feedbackTextController,
                       hintText: context.l10n.appFeedbackHintText,
                       maxLines: 4,
-                      // enabled: false,
+                      enabled: false,
                       isDisposed: false,
                       onChanged: (_) {},
                     ),
