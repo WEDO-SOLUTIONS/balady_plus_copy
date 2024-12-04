@@ -68,7 +68,11 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
     ref.listen(
         uploadProvider, (_, newState) => widget.onUploadStatusChange(newState));
 
-    final isLoading = upload is FileUploadInit;
+    final isLoading = upload.maybeWhen<bool>(
+      init: (_) => true,
+      progress: (_, __) => true,
+      orElse: () => false,
+    );
 
     final image = ClipRRect(
       borderRadius: BorderRadius.circular(RadiusBorder.l),
@@ -98,9 +102,7 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
               Center(
                 child: switch (upload) {
                   FileUploadSuccess() => image,
-                  FileUploadInit() || FileUploadProgress() => SizedBox.square(
-                      dimension: widget.imageSize / 3,
-                      child: const CircularProgressIndicator()),
+                  FileUploadInit() || FileUploadProgress() => Loading.small(),
                   _ => Stack(
                       children: [
                         Opacity(

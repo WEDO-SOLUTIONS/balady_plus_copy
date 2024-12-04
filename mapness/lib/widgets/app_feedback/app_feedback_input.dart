@@ -9,8 +9,11 @@ class AppFeedbackInput extends HookWidget {
   final ValueChanged<bool>? isValid;
   final TextEditingController textController;
 
-  const AppFeedbackInput(
-      {required this.textController, this.isValid, super.key});
+  const AppFeedbackInput({
+    required this.textController,
+    this.isValid,
+    super.key,
+  });
 
   static const _initMaxLines = 4;
   static const _maxLinesAllowed = 20;
