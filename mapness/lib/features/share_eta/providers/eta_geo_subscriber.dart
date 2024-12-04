@@ -295,7 +295,9 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
     final _locationCompleter = Completer();
 
     locationProviderSubscription = ref.listen(locationProvider, (_, __) {
-      _locationCompleter.complete();
+      if (!_locationCompleter.isCompleted) {
+        _locationCompleter.complete();
+      }
 
       locationProviderSubscription?.close();
     });
