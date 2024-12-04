@@ -8,8 +8,10 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     final fullAddressNameJson = fullAddressName?.toJson();
     final shortAddressNameJson = shortAddressName?.toJson();
     final attributesList = attributes.map((item) => item?.toJson()).toList();
-    final contextAttributesList = contextAttributes.map((item) => item?.toJson()).toList();
-    final contactInfosList = contactInfos.map((item) => item?.toJson()).toList();
+    final contextAttributesList =
+        contextAttributes.map((item) => item?.toJson()).toList();
+    final contactInfosList =
+        contactInfos.map((item) => item?.toJson()).toList();
     final openingHoursJson = openingHours?.toJson();
     final reviewsJson = reviews?.toJson();
     final parkingInfoJson = parkingInfo?.toJson();
@@ -48,56 +50,79 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     };
   }
 
-  static DirectoryObjectMessage fromJson(Map<String, dynamic> json) => DirectoryObjectMessage(
+  static DirectoryObjectMessage fromJson(Map<String, dynamic> json) =>
+      DirectoryObjectMessage(
         types: (json['types'] as List<dynamic>?)!
-            .map((e) => ObjectTypeItemMessageExt.fromJson(e as Map<String, dynamic>))
+            .map((e) =>
+                ObjectTypeItemMessageExt.fromJson(e as Map<String, dynamic>))
             .toList(),
         title: json['title'] as String,
         titleAddition: json['titleAddition'] as String,
         subtitle: json['subtitle'] as String,
         about: json['about'] as String,
-        id: json['id'] != null ? DgisObjectIdMessageExt.fromJson(json['id'] as Map<String, dynamic>) : null,
-        markerPosition: json['markerPosition'] != null
-            ? GeoPointWithElevationMessageExt.fromJson(json['markerPosition'] as Map<String, dynamic>)
+        id: json['id'] != null
+            ? DgisObjectIdMessageExt.fromJson(
+                json['id'] as Map<String, dynamic>)
             : null,
-        address: json['address'] != null ? AddressMessageExt.fromJson(json['address'] as Map<String, dynamic>) : null,
+        markerPosition: json['markerPosition'] != null
+            ? GeoPointWithElevationMessageExt.fromJson(
+                json['markerPosition'] as Map<String, dynamic>)
+            : null,
+        address: json['address'] != null
+            ? AddressMessageExt.fromJson(
+                json['address'] as Map<String, dynamic>)
+            : null,
         fullAddressName: json['fullAddressName'] != null
-            ? FormattedAddressMessageExtension.fromJson(json['fullAddressName'] as Map<String, dynamic>)
+            ? FormattedAddressMessageExtension.fromJson(
+                json['fullAddressName'] as Map<String, dynamic>)
             : null,
         shortAddressName: json['shortAddressName'] != null
-            ? FormattedAddressMessageExtension.fromJson(json['shortAddressName'] as Map<String, dynamic>)
+            ? FormattedAddressMessageExtension.fromJson(
+                json['shortAddressName'] as Map<String, dynamic>)
             : null,
         attributes: (json['attributes'] as List<dynamic>?)!
-            .map((e) => AttributeMessageExtension.fromJson(e as Map<String, dynamic>?))
+            .map((e) =>
+                AttributeMessageExtension.fromJson(e as Map<String, dynamic>?))
             .toList(),
         contextAttributes: (json['contextAttributes'] as List<dynamic>?)!
-            .map((e) => AttributeMessageExtension.fromJson(e as Map<String, dynamic>?))
+            .map((e) =>
+                AttributeMessageExtension.fromJson(e as Map<String, dynamic>?))
             .toList(),
         timeZoneOffset: (json['timeZoneOffset'] as num?)?.toDouble(),
         openingHours: json['openingHours'] != null
-            ? OpeningHoursMessageExtension.fromJson(json['openingHours'] as Map<String, dynamic>)
+            ? OpeningHoursMessageExtension.fromJson(
+                json['openingHours'] as Map<String, dynamic>)
             : null,
         contactInfos: (json['contactInfos'] as List<dynamic>?)!
-            .map((e) => ContactInfoMessageExtension.fromJson(e as Map<String, dynamic>?))
+            .map((e) => ContactInfoMessageExtension.fromJson(
+                e as Map<String, dynamic>?))
             .toList(),
-        reviews:
-            json['reviews'] != null ? ReviewsMessageExtension.fromJson(json['reviews'] as Map<String, dynamic>) : null,
+        reviews: json['reviews'] != null
+            ? ReviewsMessageExtension.fromJson(
+                json['reviews'] as Map<String, dynamic>)
+            : null,
         parkingInfo: json['parkingInfo'] != null
-            ? ParkingInfoMessageExtension.fromJson(json['parkingInfo'] as Map<String, dynamic>)
+            ? ParkingInfoMessageExtension.fromJson(
+                json['parkingInfo'] as Map<String, dynamic>)
             : null,
         workStatus: json['workStatus'] != null
-            ? WorkStatusMessageExtension.fromJson(json['workStatus'] as Map<String, dynamic>)
+            ? WorkStatusMessageExtension.fromJson(
+                json['workStatus'] as Map<String, dynamic>)
             : null,
         levelId: json['levelId'] as int?,
         buildingLevels: json['buildingLevels'] != null
-            ? BuildingLevelsMessageExtension.fromJson(json['buildingLevels'] as Map<String, dynamic>)
+            ? BuildingLevelsMessageExtension.fromJson(
+                json['buildingLevels'] as Map<String, dynamic>)
             : null,
-        buildingInfo: BuildingInfoMessageExtension.fromJson(json['buildingInfo'] as Map<String, dynamic>),
+        buildingInfo: BuildingInfoMessageExtension.fromJson(
+            json['buildingInfo'] as Map<String, dynamic>),
         entrances: (json['entrances'] as List<dynamic>?)!
-            .map((e) => EntranceInfoMessageExt.fromJson(e as Map<String, dynamic>?))
+            .map((e) =>
+                EntranceInfoMessageExt.fromJson(e as Map<String, dynamic>?))
             .toList(),
         tradeLicense: json['tradeLicense'] != null
-            ? TradeLicenseMessageExt.fromJson(json['tradeLicense'] as Map<String, dynamic>)
+            ? TradeLicenseMessageExt.fromJson(
+                json['tradeLicense'] as Map<String, dynamic>)
             : null,
       );
 }
@@ -109,7 +134,8 @@ extension TradeLicenseMessageExt on TradeLicenseMessage {
         'legalForm': legalForm,
         'endDate': endDate,
       };
-  static TradeLicenseMessage fromJson(Map<String, dynamic> json) => TradeLicenseMessage(
+  static TradeLicenseMessage fromJson(Map<String, dynamic> json) =>
+      TradeLicenseMessage(
         type: json['type'],
         license: json['license'],
         legalForm: json['legalForm'],
@@ -131,15 +157,18 @@ extension EntranceInfoMessageExt on EntranceInfoMessage {
   }
 
   static EntranceInfoMessage fromJson(Map<String, dynamic>? json) => EntranceInfoMessage(
-        id: DgisObjectIdMessageExt.fromJson(json?['id']),
-        buildingNumber: json?['buildingNumber'],
-        porchName: json?['porchName'],
-        porchNumber: json?['porchNumber'],
-        apartmentRanges: (json?['apartmentRanges'] as List)
-            .map((e) => e == null ? null : ApartmentRangeMessageExtension.fromJson(e))
-            .toList(),
-        geometry: json?['geometry'] == null ? null : EntranceGeometryMessageExtension.fromJson(json?['geometry']),
-      );
+      id: DgisObjectIdMessageExt.fromJson(json?['id']),
+      buildingNumber: json?['buildingNumber'],
+      porchName: json?['porchName'],
+      porchNumber: json?['porchNumber'],
+      apartmentRanges: (json?['apartmentRanges'] as List)
+          .map((e) =>
+              e == null ? null : ApartmentRangeMessageExtension.fromJson(e))
+          .toList(),
+      geometry: json?['geometry'] == null
+          ? null
+          : EntranceGeometryMessageExtension.fromJson(json?['geometry']),
+    );
 }
 
 extension DgisObjectIdMessageExt on DgisObjectIdMessage {
@@ -147,14 +176,16 @@ extension DgisObjectIdMessageExt on DgisObjectIdMessage {
         'objectId': objectId,
         'entranceId': entranceId,
       };
-  static DgisObjectIdMessage fromJson(Map<String, dynamic> json) => DgisObjectIdMessage(
+  static DgisObjectIdMessage fromJson(Map<String, dynamic> json) =>
+      DgisObjectIdMessage(
         objectId: json['objectId'],
         entranceId: json['entranceId'],
       );
 }
 
 extension GeoPointWithElevationMessageExt on GeoPointWithElevationMessage {
-  static GeoPointWithElevationMessage fromJson(Map<String, dynamic> json) => GeoPointWithElevationMessage(
+  static GeoPointWithElevationMessage fromJson(Map<String, dynamic> json) =>
+      GeoPointWithElevationMessage(
         latitude: json['latitude'] as double,
         longitude: json['longitude'] as double,
         elevation: json['elevation'] as double,
@@ -172,7 +203,8 @@ extension ObjectTypeItemMessageExt on ObjectTypeItemMessage {
         'type': type.toString().split('.').last,
       };
 
-  static ObjectTypeItemMessage fromJson(Map<String, dynamic> json) => ObjectTypeItemMessage(
+  static ObjectTypeItemMessage fromJson(Map<String, dynamic> json) =>
+      ObjectTypeItemMessage(
         type: _parseObjectType(json['type']),
       );
 
@@ -222,10 +254,12 @@ extension AddressMessageExt on AddressMessage {
 
   static AddressMessage fromJson(Map<String, dynamic> json) => AddressMessage(
         drilldown: (json['drilldown'] as List<dynamic>?)!
-            .map((e) => AddressAdmDivMessageExtension.fromJson(e as Map<String, dynamic>))
+            .map((e) => AddressAdmDivMessageExtension.fromJson(
+                e as Map<String, dynamic>))
             .toList(),
         components: (json['components'] as List<dynamic>?)!
-            .map((e) => AddressComponentMessageExtension.fromJson(e as Map<String, dynamic>))
+            .map((e) => AddressComponentMessageExtension.fromJson(
+                e as Map<String, dynamic>))
             .toList(),
         buildingName: json['buildingName'] as String?,
         postCode: json['postCode'] as String?,
@@ -240,7 +274,8 @@ extension AddressAdmDivMessageExtension on AddressAdmDivMessage {
         'name': name,
       };
 
-  static AddressAdmDivMessage fromJson(Map<String, dynamic> json) => AddressAdmDivMessage(
+  static AddressAdmDivMessage fromJson(Map<String, dynamic> json) =>
+      AddressAdmDivMessage(
         type: json['type'] as String,
         name: json['name'] as String,
       );
@@ -253,15 +288,19 @@ extension AddressComponentMessageExtension on AddressComponentMessage {
         'location': location?.toJson(),
       };
 
-  static AddressComponentMessage fromJson(Map<String, dynamic> json) => AddressComponentMessage(
+  static AddressComponentMessage fromJson(Map<String, dynamic> json) =>
+      AddressComponentMessage(
         streetAddress: json['streetAddress'] != null
-            ? AddressStreetMessageExtension.fromJson(json['streetAddress'] as Map<String, dynamic>)
+            ? AddressStreetMessageExtension.fromJson(
+                json['streetAddress'] as Map<String, dynamic>)
             : null,
         number: json['number'] != null
-            ? AddressNumberMessageExtension.fromJson(json['number'] as Map<String, dynamic>)
+            ? AddressNumberMessageExtension.fromJson(
+                json['number'] as Map<String, dynamic>)
             : null,
         location: json['location'] != null
-            ? AddressLocationMessageExtension.fromJson(json['location'] as Map<String, dynamic>)
+            ? AddressLocationMessageExtension.fromJson(
+                json['location'] as Map<String, dynamic>)
             : null,
       );
 }
@@ -272,7 +311,8 @@ extension AddressStreetMessageExtension on AddressStreetMessage {
         'number': number,
       };
 
-  static AddressStreetMessage fromJson(Map<String, dynamic> json) => AddressStreetMessage(
+  static AddressStreetMessage fromJson(Map<String, dynamic> json) =>
+      AddressStreetMessage(
         street: json['street'] as String,
         number: json['number'] as String,
       );
@@ -283,7 +323,8 @@ extension AddressNumberMessageExtension on AddressNumberMessage {
         'number': number,
       };
 
-  static AddressNumberMessage fromJson(Map<String, dynamic> json) => AddressNumberMessage(
+  static AddressNumberMessage fromJson(Map<String, dynamic> json) =>
+      AddressNumberMessage(
         number: json['number'] as String,
       );
 }
@@ -293,7 +334,8 @@ extension AddressLocationMessageExtension on AddressLocationMessage {
         'comment': comment,
       };
 
-  static AddressLocationMessage fromJson(Map<String, dynamic> json) => AddressLocationMessage(
+  static AddressLocationMessage fromJson(Map<String, dynamic> json) =>
+      AddressLocationMessage(
         comment: json['comment'] as String,
       );
 }
@@ -325,7 +367,8 @@ extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
 
   static EntranceGeometryMessage fromJson(Map<String, dynamic> json) {
     final entrancePoints = (json['entrancePoints'] as List<dynamic>?)!
-        .map((point) => GeoPointMessageExtension.fromJson(point as Map<String, dynamic>))
+        .map((point) =>
+            GeoPointMessageExtension.fromJson(point as Map<String, dynamic>))
         .toList();
 
     final json2 = json['entrancePolylines'] as List<dynamic>?;
@@ -333,7 +376,8 @@ extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
       final result = <GeoPointMessage?>[];
 
       final list = (polyline as List<dynamic>?)
-          ?.map((point) => GeoPointMessageExtension.fromJson(point as Map<String, dynamic>))
+          ?.map((point) =>
+              GeoPointMessageExtension.fromJson(point as Map<String, dynamic>))
           .toList();
 
       list?.forEach((element) {
@@ -358,7 +402,8 @@ extension FormattedAddressMessageExtension on FormattedAddressMessage {
         'postCode': postCode,
       };
 
-  static FormattedAddressMessage fromJson(Map<String, dynamic>? json) => FormattedAddressMessage(
+  static FormattedAddressMessage fromJson(Map<String, dynamic>? json) =>
+      FormattedAddressMessage(
         drilldownAddress: json?['drilldownAddress'] as String?,
         streetAddress: json?['streetAddress'] as String?,
         addressComment: json?['addressComment'] as String?,
@@ -372,7 +417,8 @@ extension AttributeMessageExtension on AttributeMessage {
         'value': value,
       };
 
-  static AttributeMessage fromJson(Map<String, dynamic>? json) => AttributeMessage(
+  static AttributeMessage fromJson(Map<String, dynamic>? json) =>
+      AttributeMessage(
         tag: json?['tag'] as String,
         value: json?['value'] as String,
       );
@@ -384,9 +430,11 @@ extension OpeningHoursMessageExtension on OpeningHoursMessage {
         'isOpen24x7': isOpen24x7,
       };
 
-  static OpeningHoursMessage fromJson(Map<String, dynamic> json) => OpeningHoursMessage(
+  static OpeningHoursMessage fromJson(Map<String, dynamic> json) =>
+      OpeningHoursMessage(
         values: (json['values'] as List<dynamic>?)!
-            .map((item) => WeekTimeIntervalListMessageExtension.fromJson(item as Map<String, dynamic>))
+            .map((item) => WeekTimeIntervalListMessageExtension.fromJson(
+                item as Map<String, dynamic>))
             .toList(),
         isOpen24x7: json['isOpen24x7'] as bool,
       );
@@ -397,9 +445,11 @@ extension WeekTimeIntervalListMessageExtension on WeekTimeIntervalListMessage {
         'values': values.map((item) => item?.toJson()).toList(),
       };
 
-  static WeekTimeIntervalListMessage fromJson(Map<String, dynamic> json) => WeekTimeIntervalListMessage(
+  static WeekTimeIntervalListMessage fromJson(Map<String, dynamic> json) =>
+      WeekTimeIntervalListMessage(
         values: (json['values'] as List<dynamic>?)!
-            .map((item) => WeekTimeIntervalMessageExtension.fromJson(item as Map<String, dynamic>))
+            .map((item) => WeekTimeIntervalMessageExtension.fromJson(
+                item as Map<String, dynamic>))
             .toList(),
       );
 }
@@ -410,9 +460,12 @@ extension WeekTimeIntervalMessageExtension on WeekTimeIntervalMessage {
         'finishTime': finishTime.toJson(),
       };
 
-  static WeekTimeIntervalMessage fromJson(Map<String, dynamic> json) => WeekTimeIntervalMessage(
-        startTime: WeekTimeMessageExtension.fromJson(json['startTime'] as Map<String, dynamic>),
-        finishTime: WeekTimeMessageExtension.fromJson(json['finishTime'] as Map<String, dynamic>),
+  static WeekTimeIntervalMessage fromJson(Map<String, dynamic> json) =>
+      WeekTimeIntervalMessage(
+        startTime: WeekTimeMessageExtension.fromJson(
+            json['startTime'] as Map<String, dynamic>),
+        finishTime: WeekTimeMessageExtension.fromJson(
+            json['finishTime'] as Map<String, dynamic>),
       );
 }
 
@@ -424,7 +477,8 @@ extension WeekTimeMessageExtension on WeekTimeMessage {
 
   static WeekTimeMessage fromJson(Map<String, dynamic> json) => WeekTimeMessage(
         weekDay: WeekDayMessageExtension.fromJson(json['weekDay'] as String),
-        time: DayTimeMessageExtension.fromJson(json['time'] as Map<String, dynamic>),
+        time: DayTimeMessageExtension.fromJson(
+            json['time'] as Map<String, dynamic>),
       );
 }
 
@@ -490,7 +544,8 @@ extension ContactInfoMessageExtension on ContactInfoMessage {
         'comment': comment,
       };
 
-  static ContactInfoMessage fromJson(Map<String, dynamic>? json) => ContactInfoMessage(
+  static ContactInfoMessage fromJson(Map<String, dynamic>? json) =>
+      ContactInfoMessage(
         type: json?['type'] as String,
         displayText: json?['displayText'] as String,
         value: json?['value'] as String,
@@ -523,17 +578,22 @@ extension ParkingInfoMessageExtension on ParkingInfoMessage {
         'capacity': capacity?.toJson(),
       };
 
-  static ParkingInfoMessage fromJson(Map<String, dynamic> json) => ParkingInfoMessage(
+  static ParkingInfoMessage fromJson(Map<String, dynamic> json) =>
+      ParkingInfoMessage(
         type: ParkingTypeMessageExtension.fromJson(json['type'] as String),
-        purpose: ParkingPurposeMessageExtension.fromJson(json['purpose'] as String),
-        access: ParkingAccessMessageExtension.fromJson(json['access'] as String),
-        pavingType: ParkingPavingTypeMessageExtension.fromJson(json['pavingType'] as String),
+        purpose:
+            ParkingPurposeMessageExtension.fromJson(json['purpose'] as String),
+        access:
+            ParkingAccessMessageExtension.fromJson(json['access'] as String),
+        pavingType: ParkingPavingTypeMessageExtension.fromJson(
+            json['pavingType'] as String),
         isPaid: json['isPaid'] as bool,
         isIncentive: json['isIncentive'] as bool,
         forTrucks: json['forTrucks'] as bool,
         levelCount: json['levelCount'] as int?,
         capacity: json['capacity'] != null
-            ? ParkingCapacityMessageExtension.fromJson(json['capacity'] as Map<String, dynamic>)
+            ? ParkingCapacityMessageExtension.fromJson(
+                json['capacity'] as Map<String, dynamic>)
             : null,
       );
 }
@@ -544,7 +604,8 @@ extension WorkStatusMessageExtension on WorkStatusMessage {
         'desc': desc,
       };
 
-  static WorkStatusMessage fromJson(Map<String, dynamic> json) => WorkStatusMessage(
+  static WorkStatusMessage fromJson(Map<String, dynamic> json) =>
+      WorkStatusMessage(
         isOpen: json['isOpen'] as bool,
         desc: json['desc'] as String,
       );
@@ -556,10 +617,12 @@ extension BuildingLevelsMessageExtension on BuildingLevelsMessage {
         'levels': levels.map((level) => level?.toJson()).toList(),
       };
 
-  static BuildingLevelsMessage fromJson(Map<String, dynamic>? json) => BuildingLevelsMessage(
+  static BuildingLevelsMessage fromJson(Map<String, dynamic>? json) =>
+      BuildingLevelsMessage(
         defaultLevelId: json?['defaultLevelId'] as int,
         levels: (json?['levels'] as List<dynamic>?)!
-            .map((level) => LevelInfoMessageExtension.fromJson(level as Map<String, dynamic>))
+            .map((level) => LevelInfoMessageExtension.fromJson(
+                level as Map<String, dynamic>))
             .toList(),
       );
 }
@@ -571,7 +634,8 @@ extension BuildingInfoMessageExtension on BuildingInfoMessage {
         'purposeCode': purposeCode,
       };
 
-  static BuildingInfoMessage fromJson(Map<String, dynamic> json) => BuildingInfoMessage(
+  static BuildingInfoMessage fromJson(Map<String, dynamic> json) =>
+      BuildingInfoMessage(
         buildingName: json['buildingName'] as String?,
         purposeName: json['purposeName'] as String?,
         purposeCode: json['purposeCode'] as int?,
@@ -584,7 +648,8 @@ extension ApartmentRangeMessageExtension on ApartmentRangeMessage {
         'end': end,
       };
 
-  static ApartmentRangeMessage fromJson(Map<String, dynamic> json) => ApartmentRangeMessage(
+  static ApartmentRangeMessage fromJson(Map<String, dynamic> json) =>
+      ApartmentRangeMessage(
         start: json['start'] as String,
         end: json['end'] as String?,
       );
@@ -596,7 +661,8 @@ extension LevelInfoMessageExtension on LevelInfoMessage {
         'name': name,
       };
 
-  static LevelInfoMessage fromJson(Map<String, dynamic> json) => LevelInfoMessage(
+  static LevelInfoMessage fromJson(Map<String, dynamic> json) =>
+      LevelInfoMessage(
         id: json['id'] as int,
         name: json['name'] as String,
       );
@@ -608,10 +674,12 @@ extension ParkingCapacityMessageExtension on ParkingCapacityMessage {
         'specialSpaces': specialSpaces.map((space) => space?.toJson()).toList(),
       };
 
-  static ParkingCapacityMessage fromJson(Map<String, dynamic> json) => ParkingCapacityMessage(
+  static ParkingCapacityMessage fromJson(Map<String, dynamic> json) =>
+      ParkingCapacityMessage(
         total: json['total'] as String?,
         specialSpaces: (json['specialSpaces'] as List<dynamic>?)!
-            .map((space) => SpecialSpaceMessageExtension.fromJson(space as Map<String, dynamic>))
+            .map((space) => SpecialSpaceMessageExtension.fromJson(
+                space as Map<String, dynamic>))
             .toList(),
       );
 }
@@ -623,7 +691,8 @@ extension SpecialSpaceMessageExtension on SpecialSpaceMessage {
         'count': count,
       };
 
-  static SpecialSpaceMessage fromJson(Map<String, dynamic> json) => SpecialSpaceMessage(
+  static SpecialSpaceMessage fromJson(Map<String, dynamic> json) =>
+      SpecialSpaceMessage(
         type: SpecialSpaceTypeMessageExtension.fromJson(json['type'] as String),
         name: json['name'] as String,
         count: json['count'] as String?,
@@ -777,7 +846,8 @@ extension ParkingPavingTypeMessageExtension on ParkingPavingTypeMessage {
 extension ParkingTypeMessageExtension on ParkingTypeMessage {
   String toJson() => toString().split('.').last;
 
-  static ParkingTypeMessage fromJson(String json) => ParkingTypeMessage.values.firstWhere(
+  static ParkingTypeMessage fromJson(String json) =>
+      ParkingTypeMessage.values.firstWhere(
         (e) => e.toString().split('.').last == json,
         orElse: () => ParkingTypeMessage.none,
       );

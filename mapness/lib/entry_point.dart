@@ -177,11 +177,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
             if (next != null) {
               _locationListener?.close();
               ref.read(appRouterProvider).push(
-                    PathNavRoute(
-                      navType: RouteSearchOptionsMessageExt.fromString(type),
-                      restoreFromState: true,
-                    ),
-                  );
+                PathNavRoute(
+                  navType: RouteSearchOptionsMessageExt.fromString(type),
+                  restoreFromState: true,
+                ),
+              );
             }
           });
         }
@@ -395,9 +395,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (objectId != null) {
       final id = int.tryParse(objectId);
       if (id != null) {
-        final location = (latitude == null || longitude == null)
-            ? null
-            : LatLng(latitude: latitude, longitude: longitude);
+        final location =
+        (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
         if (isFirstRun) {
           // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
           await Future.delayed(const Duration(milliseconds: 300));
@@ -415,7 +414,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
-    } else if (url.toString().isNotEmpty) {
+    } else if (url.toString().isNotEmpty)  {
+
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }
