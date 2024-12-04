@@ -7,7 +7,11 @@ class AppFeedbackInput extends HookWidget {
   final ValueChanged<bool>? isValid;
   final TextEditingController textController;
 
-  const AppFeedbackInput({required this.textController, this.isValid, super.key});
+  const AppFeedbackInput({
+    required this.textController,
+    this.isValid,
+    super.key,
+  });
 
   static const _initMaxLines = 4;
   static const _maxLinesAllowed = 20;
@@ -23,7 +27,8 @@ class AppFeedbackInput extends HookWidget {
       const double averageCharWidth = 10.0;
 
       // Calculate the width of the text field with padding
-      final double textFieldWidth = MediaQuery.of(context).size.width - (Spacing.$4x * 2);
+      final double textFieldWidth =
+          MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
 
       final int charsPerLine = (textFieldWidth / averageCharWidth).floor();
 
@@ -31,7 +36,8 @@ class AppFeedbackInput extends HookWidget {
 
       maxLines.value = lines.clamp(_initMaxLines, _maxLinesAllowed);
 
-      isValid?.call(textController.text.isNotEmpty && textController.text.length <= _maxCharsAllowed);
+      isValid?.call(textController.text.isNotEmpty &&
+          textController.text.length <= _maxCharsAllowed);
     }
 
     useEffect(() {
