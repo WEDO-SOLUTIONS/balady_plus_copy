@@ -24,7 +24,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
-import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
