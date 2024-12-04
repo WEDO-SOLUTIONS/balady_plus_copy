@@ -184,11 +184,12 @@ class AppFeedbackMain extends HookConsumerWidget {
                   child: AppButton(
                     buttonColorScheme: buttonState,
                     onTap: () async {
+                      final text = feedbackTextController.text;
                       await collectFeedback.collectFeedback(
                         stars: ratingValue,
                         // Convert tag labels to source tags
                         tags: selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
-                        text: feedbackTextController.text,
+                        text: text.isEmpty ? null : feedbackTextController.text,
                         source: source,
                       );
                     },
