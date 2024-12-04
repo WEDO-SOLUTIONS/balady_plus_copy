@@ -78,11 +78,6 @@ class Routes {
           transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
-          path: '/feedback',
-          page: AppFeedbackRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
-        ),
-        CustomRoute(
           path: '/photo_viewer',
           page: PhotoViewerRoute.page,
           transitionsBuilder: TransitionsBuilders.fadeIn,

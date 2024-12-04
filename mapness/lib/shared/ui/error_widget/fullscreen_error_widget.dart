@@ -11,6 +11,7 @@ class FullscreenErrorWidget extends StatelessWidget {
     this.errorLabel,
     this.errorTitle,
     this.onClose,
+    this.buttonColorScheme,
     super.key,
   });
 
@@ -32,6 +33,9 @@ class FullscreenErrorWidget extends StatelessWidget {
   /// error label (localized default: somethingWentWrong)
   final bool withRetryButton;
 
+  /// error button scheme (default: primary)
+  final ButtonColorScheme? buttonColorScheme;
+
   @override
   Widget build(BuildContext context) => Material(
         color: Colors.white,
@@ -42,7 +46,7 @@ class FullscreenErrorWidget extends StatelessWidget {
             buttonLabel: buttonLabel,
             errorLabel: errorLabel ?? context.l10n.pleaseTryAgainLater,
             errorTitle: errorTitle ?? context.l10n.somethingWentWrong,
-            buttonColorScheme: ButtonColorScheme.primary,
+            buttonColorScheme: buttonColorScheme ?? ButtonColorScheme.primary,
             withRetryButton: withRetryButton,
           ),
         ),

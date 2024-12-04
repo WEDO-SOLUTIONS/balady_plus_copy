@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
@@ -17,13 +18,13 @@ class AppFeedbackCard extends ConsumerWidget {
 
     return env?.appFeedbackEnable == true
         ? GestureDetector(
-            onTap: () => context.router.push(const AppFeedbackRoute()),
+            onTap: () => context.router.push(AppFeedbackSheet()),
             child: Padding(
               padding: const EdgeInsets.all(Spacing.$3x),
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.l),
-                  color: context.colorsV3.lightAccent,
+                  color: context.colorsV2.accentDefault,
                 ),
                 child: ContentRow(
                   options: ContentRowOptions(
