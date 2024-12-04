@@ -12,6 +12,7 @@ import 'package:dgis_map/library.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -56,6 +57,7 @@ import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
 
 Mixpanel? mixpanel;
+StreamSubscription? _remoteConfigSubscription;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
   static final MapnessRouteObserver _instance =
@@ -562,21 +564,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-  final instance = FirebaseRemoteConfig.instance;
-  await instance.ensureInitialized();
-  await instance.fetchAndActivate();
-  final vendorConfigResponse = instance.getValue(envType.vendorConfigKey());
-  final vendorContentJsonString =
-      jsonEncode(jsonDecode(vendorConfigResponse.asString()));
+
+  await _setupAppConfigs(envType);
+
   final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
-  await box.put(MapnessConstants.vendorConfigKey, vendorContentJsonString);
+
+  final vendorConfigLocal = await box.get(MapnessConstants.vendorConfigKey,);
+
+  final vendorConfigContentMessage =
+  VendorConfigContentMessage(content: vendorConfigLocal);
+
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
       systemLevel: LogLevelMessage.fatal,
       customLevel: LogLevelMessage.fatal,
     ),
-    configContent: VendorConfigContentMessage(content: vendorContentJsonString),
+    configContent: vendorConfigContentMessage,
   );
 
   await Hive.initFlutter();
@@ -590,8 +594,6 @@ Future<void> setupMapness(EnvType envType) async {
     ..registerAdapter(FavoriteCacheStateAdapter());
 
 }
-
-StreamSubscription? _remoteConfigSubscription;
 
 ///Fetch and save vendor config and environment config from firebase
 ///return vendor config for init dgis sdk
@@ -654,10 +656,6 @@ Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envTy
   await box.put(MapnessConstants.envTypeKey, envType.appConfigKey());
 
   ///save all env config to hive just for testing scenario
-  final envConfigResponse =
-      instance.getValue(MapnessConstants.firebaseAppEnvConfigKey);
-  final envJsonString = jsonEncode(jsonDecode(envConfigResponse.asString()));
-  await box.put(MapnessConstants.firebaseAppEnvConfigKey, envJsonString);
   /// Optionally save all environment config to Hive for testing purposes
   final envConfigResponse = remoteconfig
       ?.getValue(MapnessConstants.firebaseAppEnvConfigKey)
