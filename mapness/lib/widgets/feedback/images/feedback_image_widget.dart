@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
@@ -45,6 +46,12 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    precacheImage(FileImage(File(widget.imagePath)), context);
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -60,6 +67,16 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
         uploadProvider, (_, newState) => widget.onUploadStatusChange(newState));
 
     final isLoading = upload is FileUploadInit;
+
+    final image = ClipRRect(
+      borderRadius: BorderRadius.circular(RadiusBorder.l),
+      child: Image(
+        image: FileImage(File(widget.imagePath)),
+        fit: BoxFit.cover,
+        width: widget.imageSize,
+        height: widget.imageSize,
+      ),
+    );
 
     return AnimatedBuilder(
         animation: _opacityAnimation,
@@ -78,21 +95,26 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
             children: [
               Center(
                 child: switch (upload) {
-                  FileUploadSuccess() => ClipRRect(
-                      borderRadius: BorderRadius.circular(RadiusBorder.l),
-                      child: Image.file(
-                        File(upload.srcPath),
-                        fit: BoxFit.cover,
-                        width: widget.imageSize,
-                        height: widget.imageSize,
-                      ),
-                    ),
-                  FileUploadInit() => const CircularProgressIndicator(),
-                  FileUploadProgress(progress: final progress) =>
-                    CircularProgressIndicator(value: progress),
-                  _ => Icon(
-                      GeneralIcons.infoCircle,
-                      color: context.colorsV2.errorDefault,
+                  FileUploadSuccess() => image,
+                  FileUploadInit() || FileUploadProgress() => SizedBox.square(
+                      dimension: widget.imageSize / 3,
+                      child: const CircularProgressIndicator()),
+                  _ => Stack(
+                      children: [
+                        Opacity(
+                          opacity: 0.7,
+                          child: image,
+                        ),
+                        Center(
+                          child: _ImageButton(
+                              icon: GeneralIcons.reload,
+                              size: 24,
+                              iconSize: 12,
+                              onTap: () {
+                                ref.invalidate(uploadProvider);
+                              }),
+                        ),
+                      ],
                     ),
                 },
               ),
@@ -102,11 +124,14 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
                 Positioned(
                   right: 3,
                   top: 3,
-                  child: _ImageRemoveButton(onRemove: () async {
-                    await ref.read(uploadProvider.notifier).cancelUpload();
-                    await _controller.forward();
-                    widget.onRemove();
-                  }),
+                  child: _ImageButton(
+                      icon: SystemIcons.closeSmall,
+                      onTap: () async {
+                        unawaited(
+                            ref.read(uploadProvider.notifier).cancelUpload());
+                        await _controller.forward();
+                        widget.onRemove();
+                      }),
                 ),
             ],
           ),
@@ -114,29 +139,35 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
   }
 }
 
-class _ImageRemoveButton extends StatelessWidget {
-  final VoidCallback onRemove;
+class _ImageButton extends StatelessWidget {
+  final VoidCallback onTap;
+  final IconData icon;
+  final double size;
+  final double iconSize;
 
-  const _ImageRemoveButton({
-    required this.onRemove,
-    Key? key,
-  }) : super(key: key);
+  const _ImageButton({
+    required this.onTap,
+    required this.icon,
+    this.size = 16,
+    this.iconSize = 14,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        onTap: onRemove,
+        onTap: onTap,
         child: Container(
-          height: 18,
-          width: 18,
+          height: size,
+          width: size,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: AppColor.black.withOpacity(0.6),
           ),
           child: Center(
             child: Icon(
-              SystemIcons.closeSmall,
+              icon,
               color: context.colorsV2.backgroundSurface1,
-              size: 16,
+              size: iconSize,
             ),
           ),
         ),

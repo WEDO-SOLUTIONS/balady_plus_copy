@@ -6,12 +6,13 @@ class FeedbackImageInputEntity extends FeedbackBaseEntity {
   final List<String> acceptedFormats;
   final int maxImages;
 
-  const FeedbackImageInputEntity(
-      {required super.id,
-      required super.isRequired,
-      required this.label,
-      required this.maxSize,
-      required this.acceptedFormats,
-      required super.isHidden,
-      this.maxImages = 10});
+  const FeedbackImageInputEntity({
+    required super.id,
+    required super.isRequired,
+    required this.label,
+    required this.maxSize,
+    required this.acceptedFormats,
+    required super.isHidden,
+    this.maxImages = 10,
+  });
 }
