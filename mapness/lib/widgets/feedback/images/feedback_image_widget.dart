@@ -9,6 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/feedback/feedback_upload_image.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 
+part 'feedback_image_action_button.dart';
+
 class FeedbackImageWidget extends ConsumerStatefulWidget {
   final String imagePath;
   final double imageSize;
@@ -106,7 +108,7 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
                           child: image,
                         ),
                         Center(
-                          child: _ImageButton(
+                          child: _ImageActionButton(
                               icon: GeneralIcons.reload,
                               size: 24,
                               iconSize: 12,
@@ -124,7 +126,7 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
                 Positioned(
                   right: 3,
                   top: 3,
-                  child: _ImageButton(
+                  child: _ImageActionButton(
                       icon: SystemIcons.closeSmall,
                       onTap: () async {
                         unawaited(
@@ -137,39 +139,4 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
           ),
         ));
   }
-}
-
-class _ImageButton extends StatelessWidget {
-  final VoidCallback onTap;
-  final IconData icon;
-  final double size;
-  final double iconSize;
-
-  const _ImageButton({
-    required this.onTap,
-    required this.icon,
-    this.size = 16,
-    this.iconSize = 14,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) => GestureDetector(
-        onTap: onTap,
-        child: Container(
-          height: size,
-          width: size,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColor.black.withOpacity(0.6),
-          ),
-          child: Center(
-            child: Icon(
-              icon,
-              color: context.colorsV2.backgroundSurface1,
-              size: iconSize,
-            ),
-          ),
-        ),
-      );
 }
