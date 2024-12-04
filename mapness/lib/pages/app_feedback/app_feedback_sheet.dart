@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
@@ -17,11 +18,16 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useStatelessBottomsheetController(onClose: (controller) {
-      context.router.popForced();
-    });
-
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
+    final feedbackCanpop = ref.watch(appFeedbackCanPopProvider);
+
+    final scrollController = useStatelessBottomsheetController(onClose: (controller) {
+      if (feedbackCanpop) {
+        context.router.popForced();
+      } else {
+        controller.open();
+      }
+    });
 
     return StatelessBottomSheet(
       animateOpening: false,
