@@ -50,7 +50,7 @@ class SendFeedback extends _$SendFeedback {
       await update((_) async => AppFeedbackState.loading);
 
       await _feedbackDio?.post(
-        '/2.0/feedbacks',
+        '/1.0/feedbacks',
         data: payload.toJson(),
       );
 

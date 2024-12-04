@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 /// See also:
 /// - [StatelessBottomSheetController]
 StatelessBottomSheetController useStatelessBottomsheetController(
-        {List<Object?>? keys, double? durationMultiplier, void Function()? onClose}) =>
+        {List<Object?>? keys, double? durationMultiplier, required BottomSheetOnCloseCallback onClose}) =>
     use(
       _StatelessBottomSheetControllerHook(
         keys: keys,
@@ -18,11 +18,11 @@ StatelessBottomSheetController useStatelessBottomsheetController(
 
 class _StatelessBottomSheetControllerHook extends Hook<StatelessBottomSheetController> {
   final double? durationMultiplier;
-  final void Function()? onClose;
+  final BottomSheetOnCloseCallback onClose;
 
   const _StatelessBottomSheetControllerHook({
+    required this.onClose,
     this.durationMultiplier,
-    this.onClose,
     List<Object?>? keys,
   }) : super(keys: keys);
 

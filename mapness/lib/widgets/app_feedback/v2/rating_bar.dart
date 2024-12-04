@@ -24,6 +24,7 @@ class RatingBar extends StatelessWidget {
                 final isActive = index < rating;
                 return Material(
                   borderRadius: BorderRadius.circular(50),
+                  color: Colors.transparent,
                   child: InkWell(
                     borderRadius: BorderRadius.circular(50),
                     splashColor: context.colorsV2.foregroundSoft.withOpacity(0.01),

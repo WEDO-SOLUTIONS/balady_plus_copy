@@ -81,18 +81,15 @@ class AppFeedbackMain extends HookConsumerWidget {
         ),
         ValueListenableBuilder(
           valueListenable: rating,
-          builder: (context, ratingValue, _) => Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 150),
-                child: ratingValue > 0
-                    ? TagCloud(
-                        key: ValueKey(ratingValue),
-                        rating: ratingValue,
-                        onTagsChanged: (tags) => selectedTags.value = tags,
-                      )
-                    : const SizedBox.shrink()),
-          ),
+          builder: (context, ratingValue, _) => AnimatedSwitcher(
+              duration: Durations.short3,
+              child: ratingValue > 0
+                  ? TagCloud(
+                      key: ValueKey(ratingValue),
+                      rating: ratingValue,
+                      onTagsChanged: (tags) => selectedTags.value = tags,
+                    )
+                  : const SizedBox.shrink()),
         ),
         ValueListenableBuilder(
           valueListenable: rating,
@@ -113,6 +110,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                       hintText: context.l10n.appFeedbackHintText,
                       maxLines: 4,
                       enabled: false,
+                      isDisposed: false,
                       onChanged: (_) {},
                     ),
                   ),

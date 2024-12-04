@@ -17,13 +17,14 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useStatelessBottomsheetController(
-      onClose: context.router.popForced,
-    );
+    final scrollController = useStatelessBottomsheetController(onClose: (controller) {
+      context.router.popForced();
+    });
 
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
 
     return StatelessBottomSheet(
+      animateOpening: false,
       scrollController: scrollController,
       onWillPop: Future.value(false),
       content: [

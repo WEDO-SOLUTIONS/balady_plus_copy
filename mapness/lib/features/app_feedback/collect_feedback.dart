@@ -46,9 +46,11 @@ class CollectFeedback extends _$CollectFeedback {
     _storeLink = ref.keepAlive();
 
     state = AppFeedbackPayload(
-      stars: stars,
-      text: text,
-      tags: tags,
+      review: AppFeedbackReview(
+        stars: stars,
+        tags: tags,
+        text: text,
+      ),
       context: AppFeedbackContext(
         locale: language,
         appVersion: version,

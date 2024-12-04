@@ -35,7 +35,6 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
         AppFeedbackInput(
           textController: textEditingController,
         ),
-        const SizedBox(height: 1000),
       ],
       footer: Padding(
         padding:

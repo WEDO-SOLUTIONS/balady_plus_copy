@@ -14,13 +14,24 @@ class AppFeedbackPayload with _$AppFeedbackPayload {
   // ignore: invalid_annotation_target
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackPayload({
-    required final int stars,
-    final String? text,
-    final List<String>? tags,
+    required final AppFeedbackReview review,
     final AppFeedbackContext? context,
   }) = _AppFeedbackPayload;
 
   factory AppFeedbackPayload.fromJson(Map<String, dynamic> json) => _$AppFeedbackPayloadFromJson(json);
+}
+
+@freezed
+class AppFeedbackReview with _$AppFeedbackReview {
+  // ignore: invalid_annotation_target
+  @JsonSerializable(explicitToJson: true)
+  factory AppFeedbackReview({
+    required final int stars,
+    final String? text,
+    final List<String>? tags,
+  }) = _AppFeedbackReview;
+
+  factory AppFeedbackReview.fromJson(Map<String, dynamic> json) => _$AppFeedbackReviewFromJson(json);
 }
 
 @freezed
