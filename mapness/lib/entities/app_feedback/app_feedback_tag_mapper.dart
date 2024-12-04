@@ -1,83 +1,101 @@
 import 'package:flutter/widgets.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
+enum Tag {
+  badDirections,
+  locationProblems,
+  poorTraffic,
+  wrongArrivalTime,
+  traffic,
+  design,
+  wrongDirections,
+  easyToUse,
+  helpfulDirections,
+  niceDesign,
+  arrivalTime,
+  goodNavigation,
+  greatDesign,
+  parkingProblems,
+  poorDesign,
+  location,
+  parking,
+}
+
 class AppFeedbackTagMapper {
-  Set<String> getTags(int rating) => switch (rating) {
+  Set<Tag> getTags(int rating) => switch (rating) {
         1 || 2 => {
-            'Bad Directions',
-            'Location Problems',
-            'Poor Traffic',
-            'Wrong Arrival Time',
-            'Poor Design',
-            'Parking Problems',
+            Tag.badDirections,
+            Tag.locationProblems,
+            Tag.poorTraffic,
+            Tag.wrongArrivalTime,
+            Tag.poorDesign,
+            Tag.parkingProblems,
           },
         3 => {
-            'Poor Traffic',
-            'Wrong Arrival Time',
-            'Poor Design',
-            'Bad Directions',
-            'Location',
+            Tag.poorTraffic,
+            Tag.wrongArrivalTime,
+            Tag.poorDesign,
+            Tag.badDirections,
+            Tag.location,
           },
         4 => {
-            'Easy to Use',
-            'Helpful Directions',
-            'Nice Design',
-            'Good Navigation',
+            Tag.easyToUse,
+            Tag.helpfulDirections,
+            Tag.niceDesign,
+            Tag.goodNavigation,
           },
         5 => {
-            'Arrival Time',
-            'Good Navigation',
-            'Parking',
-            'Easy to Use',
-            'Great Design',
+            Tag.arrivalTime,
+            Tag.goodNavigation,
+            Tag.parking,
+            Tag.easyToUse,
+            Tag.greatDesign,
           },
-        _ => {}
+        _ => {},
       };
 
   /// Because in task requirements, the tags must send to backend localized in English
-  static String getSourceTagText(String tag) {
+  static String getSourceTagText(Tag tag) {
     final l10n = lookupAppLocalizations(const Locale('en'));
     return getLocalizedText(l10n, tag);
   }
 
-  static String getLocalizedText(AppLocalizations l10n, String tag) {
+  static String getLocalizedText(AppLocalizations l10n, Tag tag) {
     switch (tag) {
-      case 'Bad Directions':
+      case Tag.badDirections:
         return l10n.feedbackTagBadDirections;
-      case 'Location Problems':
+      case Tag.locationProblems:
         return l10n.feedbackTagLocationProblems;
-      case 'Poor Traffic':
+      case Tag.poorTraffic:
         return l10n.feedbackTagPoorTraffic;
-      case 'Wrong Arrival Time':
+      case Tag.wrongArrivalTime:
         return l10n.feedbackTagWrongArrivalTime;
-      case 'Traffic':
+      case Tag.traffic:
         return l10n.feedbackTagTraffic;
-      case 'Design':
+      case Tag.design:
         return l10n.feedbackTagDesign;
-      case 'Wrong Directions':
+      case Tag.wrongDirections:
         return l10n.feedbackTagWrongDirections;
-      case 'Easy to Use':
+      case Tag.easyToUse:
         return l10n.feedbackTagEasyToUse;
-      case 'Helpful Directions':
+      case Tag.helpfulDirections:
         return l10n.feedbackTagHelpfulDirections;
-      case 'Nice Design':
+      case Tag.niceDesign:
         return l10n.feedbackTagNiceDesign;
-      case 'Arrival Time':
+      case Tag.arrivalTime:
         return l10n.feedbackTagArrivalTime;
-      case 'Good Navigation':
+      case Tag.goodNavigation:
         return l10n.feedbackTagGoodNavigation;
-      case 'Great Design':
+      case Tag.greatDesign:
         return l10n.feedbackTagGreatDesign;
-      case 'Parking Problems':
+      case Tag.parkingProblems:
         return l10n.feedbackTagParkingProblems;
-      case 'Poor Design':
+      case Tag.poorDesign:
         return l10n.feedbackTagPoorDesign;
-      case 'Location':
+      case Tag.location:
         return l10n.feedbackTagLocation;
-      case 'Parking':
+      case Tag.parking:
         return l10n.feedbackTagParking;
-      default:
-        return tag;
     }
   }
 }

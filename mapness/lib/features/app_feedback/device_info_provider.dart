@@ -30,16 +30,16 @@ class DeviceInfo extends _$DeviceInfo {
     );
   }
 
-  Future<String> _getUniqDeviceString(TargetPlatform platform) async {
+  Future<String?> _getUniqDeviceString(TargetPlatform platform) async {
     final deviceInfo = DeviceInfoPlugin();
     if (platform == TargetPlatform.android) {
       final androidInfo = await deviceInfo.androidInfo;
       return 'android::${androidInfo.serialNumber}::${androidInfo.id}::${androidInfo.model}';
     } else if (platform == TargetPlatform.iOS) {
       final iosInfo = await deviceInfo.iosInfo;
-      return iosInfo.identifierForVendor ?? 'unknown';
+      return iosInfo.identifierForVendor;
     }
-    return 'unknown';
+    return null;
   }
 
   Future<String> _getAppVersion() async {

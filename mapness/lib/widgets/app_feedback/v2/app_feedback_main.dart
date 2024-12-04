@@ -52,7 +52,7 @@ class AppFeedbackMain extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rating = useState(0);
-    final selectedTags = useState<Set<String>>({});
+    final selectedTags = useState<Set<Tag>>({});
     final feedbackTextController = useTextEditingController();
 
     /// Get the feedback source
@@ -97,10 +97,9 @@ class AppFeedbackMain extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Text(
-            switch (source) {
-              FeedbackSource.navi => context.l10n.appFeedbackNavigationExperience,
-              _ => context.l10n.appFeedbackAppExperience,
-            },
+            source == FeedbackSource.navi
+                ? context.l10n.appFeedbackNavigationExperience
+                : context.l10n.appFeedbackAppExperience,
             textAlign: TextAlign.center,
             style: context.textStyleV3.h3SemiBold.copyWith(
               color: context.colorsV2.foregroundDefault,
@@ -117,9 +116,8 @@ class AppFeedbackMain extends HookConsumerWidget {
             },
           ),
         ),
-        const SizedBox(height: Spacing.$4x),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+          padding: const EdgeInsets.all(Spacing.$4x),
           child: ValueListenableBuilder(
             valueListenable: rating,
             builder: (context, ratingValue, _) => Text(
@@ -145,31 +143,34 @@ class AppFeedbackMain extends HookConsumerWidget {
         ),
         ValueListenableBuilder(
           valueListenable: rating,
-          builder: (context, ratingValue, _) => ratingValue > 0
-              ? Padding(
-                  key: const ValueKey('app-feedback-balady-input'),
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
-                  child: GestureDetector(
-                    onTap: () async {
-                      /// change feedback text
-                      final result =
-                          await context.router.push(AppFeedbackInputSheet(initalText: feedbackTextController.text));
-                      if (result != null && result is String) {
-                        feedbackTextController.text = result;
-                      }
-                    },
-                    child: BaladyInput(
-                      readOnly: true,
-                      controller: feedbackTextController,
-                      hintText: context.l10n.appFeedbackHintText,
-                      maxLines: 4,
-                      enabled: false,
-                      isDisposed: false,
-                      onChanged: (_) {},
-                    ),
-                  ),
-                )
-              : const SizedBox.shrink(),
+          builder: (context, ratingValue, _) {
+            if (ratingValue <= 0) {
+              return const SizedBox.shrink();
+            }
+            return Padding(
+              key: const ValueKey('app-feedback-balady-input'),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+              child: GestureDetector(
+                onTap: () async {
+                  /// change feedback text
+                  final result =
+                      await context.router.push(AppFeedbackInputSheet(initalText: feedbackTextController.text));
+                  if (result != null && result is String) {
+                    feedbackTextController.text = result;
+                  }
+                },
+                child: BaladyInput(
+                  readOnly: true,
+                  controller: feedbackTextController,
+                  hintText: context.l10n.appFeedbackHintText,
+                  maxLines: 4,
+                  enabled: false,
+                  isDisposed: false,
+                  onChanged: (_) {},
+                ),
+              ),
+            );
+          },
         ),
         const SizedBox(height: Spacing.$6x),
         Padding(

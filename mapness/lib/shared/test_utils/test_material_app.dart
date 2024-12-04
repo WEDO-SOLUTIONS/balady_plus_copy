@@ -21,7 +21,11 @@ class TestMaterialApp extends ConsumerWidget {
   final Language language;
   final Widget child;
 
-  const TestMaterialApp({super.key, this.language = Language.arabic, required this.child});
+  const TestMaterialApp({
+    required this.child,
+    super.key,
+    this.language = Language.arabic,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -44,7 +48,6 @@ class TestMaterialApp extends ConsumerWidget {
             900: Color(0xFF89cfbe),
           },
         ),
-        // unselectedWidgetColor: context.color.textAndIconsBasePrimary,
         scaffoldBackgroundColor: Colors.transparent,
         dividerColor: Colors.grey[400],
         useMaterial3: false,

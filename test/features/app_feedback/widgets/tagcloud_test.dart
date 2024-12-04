@@ -11,7 +11,7 @@ void main() {
   group("Tag cloud test", () {
     late final ProviderContainer container;
 
-    setUp(() {
+    setUpAll(() {
       container = ProviderContainer(overrides: [
         colorSchemeProvider.overrideWith(
           MockColorSchemeProvider.new,
@@ -19,7 +19,7 @@ void main() {
       ]);
     });
 
-    tearDown(() {
+    tearDownAll(() {
       container.dispose();
     });
 
@@ -43,7 +43,7 @@ void main() {
     testWidgets('TagCloud updates selected tags when a tag is tapped', (WidgetTester tester) async {
       const rating = 4;
       final tags = AppFeedbackTagMapper().getTags(rating);
-      Set<String>? selectedTags;
+      Set<Tag>? selectedTags;
 
       await tester.pumpWidget(ProviderScope(
           child: TestMaterialApp(

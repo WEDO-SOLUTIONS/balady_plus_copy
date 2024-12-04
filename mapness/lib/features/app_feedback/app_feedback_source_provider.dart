@@ -6,9 +6,9 @@ class FeedbackSourceProvider extends InheritedWidget {
 
   const FeedbackSourceProvider({
     required this.source,
-    required Widget child,
-    Key? key,
-  }) : super(key: key, child: child);
+    required super.child,
+    super.key,
+  });
 
   static FeedbackSourceProvider? maybeOf(BuildContext context) =>
       context.dependOnInheritedWidgetOfExactType<FeedbackSourceProvider>();

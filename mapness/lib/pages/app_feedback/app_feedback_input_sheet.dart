@@ -15,7 +15,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scrollController = useStatefulBottomsheetController(
+    final scrollController = useStatefulBottomsheetController<ThreeStateBottomSheet>(
       initialState: ThreeStateBottomSheet.open,
       // Need to expand the bottom sheet to show the content
       behavior: AspectRatioSnappingBehavior(aspectRatios: [.9, .9, .9]),
@@ -37,8 +37,9 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
         ),
       ],
       footer: Padding(
-        padding:
-            const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$8x + MediaQuery.of(context).viewInsets.bottom),
+        padding: const EdgeInsets.all(Spacing.$4x).copyWith(
+          bottom: Spacing.$8x + MediaQuery.viewInsetsOf(context).bottom,
+        ),
         child: SizedBox(
             width: double.infinity,
             child: AppButton(

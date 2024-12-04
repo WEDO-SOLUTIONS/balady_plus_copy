@@ -9,7 +9,7 @@ void main() {
   group('Widget test', () {
     late ProviderContainer container;
 
-    setUp(() {
+    setUpAll(() {
       container = ProviderContainer(overrides: [
         colorSchemeProvider.overrideWith(
           MockColorSchemeProvider.new,
@@ -17,7 +17,7 @@ void main() {
       ]);
     });
 
-    tearDown(() {
+    tearDownAll(() {
       container.dispose();
     });
 

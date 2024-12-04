@@ -10,7 +10,11 @@ class RatingBar extends StatelessWidget {
   static const maxRating = 5;
   static const ratingItemSize = 47.0;
 
-  const RatingBar({this.rating = 0, super.key, this.onRatingChanged});
+  const RatingBar({
+    this.rating = 0,
+    super.key,
+    this.onRatingChanged,
+  });
 
   @override
   Widget build(BuildContext context) => SizedBox(

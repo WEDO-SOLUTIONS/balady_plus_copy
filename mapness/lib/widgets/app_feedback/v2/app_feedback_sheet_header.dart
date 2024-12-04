@@ -6,7 +6,11 @@ class AppFeedbackSheetHeader extends StatelessWidget {
   final VoidCallback? onBackTap;
   final String title;
 
-  const AppFeedbackSheetHeader({required this.title, this.onBackTap, Key? key}) : super(key: key);
+  const AppFeedbackSheetHeader({
+    required this.title,
+    this.onBackTap,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => Stack(

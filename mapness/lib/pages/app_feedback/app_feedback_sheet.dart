@@ -21,7 +21,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
 
-    ref.watch(appFeedbackCanPopProvider);
+    ref.watch(appFeedbackCanPopProvider.select((_) => null));
 
     void onCloseBottomSheet(StatelessBottomSheetController controller) {
       final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
@@ -57,7 +57,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
               ),
           },
           loading: () => const AppFeedbackLoading(),
-          error: (error, _) => Padding(
+          error: (_, __) => Padding(
             padding: _sheetPadding,
             child: AppFeedbackError(
               onRetry: ref.read(sendFeedbackProvider.notifier).retry,

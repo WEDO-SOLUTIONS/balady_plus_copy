@@ -19,7 +19,6 @@ class MockDeviceInfoProvider extends AutoDisposeAsyncNotifier<AppFeedbackContext
       );
 }
 
-// Тесты
 void main() {
   group('CollectFeedback Tests', () {
     late ProviderContainer container;

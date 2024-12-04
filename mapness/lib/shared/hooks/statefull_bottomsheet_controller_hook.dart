@@ -6,28 +6,28 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 ///
 /// See also:
 /// - [StatefulBottomSheetController]
-StatefulBottomSheetController useStatefulBottomsheetController({
+StatefulBottomSheetController<T> useStatefulBottomsheetController<T>({
   required SnappingBehavior behavior,
-  required BottomSheetStateMapper mapper,
-  initialState,
+  required BottomSheetStateMapper<T> mapper,
+  T? initialState,
   List<Object?>? keys,
-  double? durationMulitplier,
+  double? durationMultiplier,
   bool? resetContentScrollOnHiddenState,
 }) =>
     use(
-      _StatefulBottomSheetControllerHook(
+      _StatefulBottomSheetControllerHook<T>(
         keys: keys,
         behavior: behavior,
         mapper: mapper,
-        durationMultiplier: durationMulitplier,
+        durationMultiplier: durationMultiplier,
         resetContentScrollOnHiddenState: resetContentScrollOnHiddenState,
         initialState: initialState,
       ),
     );
 
-class _StatefulBottomSheetControllerHook extends Hook<StatefulBottomSheetController> {
+class _StatefulBottomSheetControllerHook<T> extends Hook<StatefulBottomSheetController<T>> {
   final SnappingBehavior behavior;
-  final BottomSheetStateMapper mapper;
+  final BottomSheetStateMapper<T> mapper;
   final double? durationMultiplier;
   final bool? resetContentScrollOnHiddenState;
   final dynamic initialState;
@@ -42,13 +42,13 @@ class _StatefulBottomSheetControllerHook extends Hook<StatefulBottomSheetControl
   }) : super(keys: keys);
 
   @override
-  HookState<StatefulBottomSheetController, Hook<StatefulBottomSheetController>> createState() =>
-      _StatefulBottomSheetControllerHookState();
+  HookState<StatefulBottomSheetController<T>, Hook<StatefulBottomSheetController<T>>> createState() =>
+      _StatefulBottomSheetControllerHookState<T>();
 }
 
-class _StatefulBottomSheetControllerHookState
-    extends HookState<StatefulBottomSheetController, _StatefulBottomSheetControllerHook> {
-  late final controller = StatefulBottomSheetController(
+class _StatefulBottomSheetControllerHookState<T>
+    extends HookState<StatefulBottomSheetController<T>, _StatefulBottomSheetControllerHook<T>> {
+  late final controller = StatefulBottomSheetController<T>(
     durationMultiplier: hook.durationMultiplier ?? 1.0,
     behavior: hook.behavior,
     stateMapper: hook.mapper,
@@ -57,7 +57,7 @@ class _StatefulBottomSheetControllerHookState
   );
 
   @override
-  StatefulBottomSheetController build(BuildContext context) => controller;
+  StatefulBottomSheetController<T> build(BuildContext context) => controller;
 
   @override
   void dispose() => controller.dispose();
