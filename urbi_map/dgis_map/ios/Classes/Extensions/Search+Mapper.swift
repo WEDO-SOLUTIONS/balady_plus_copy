@@ -11,9 +11,9 @@ extension SearchResult {
                 
                 return CameraPositionMessage.make(
                     withPoint: cameraPosition.point.toMessage(),
-                    zoom: NSNumber(value: cameraPosition.zoom.value),
-                    tilt: NSNumber(value: cameraPosition.tilt.value),
-                    bearing: NSNumber(value: cameraPosition.bearing.value)
+                    zoom:  Double(cameraPosition.zoom.value),
+                    tilt: Double(cameraPosition.tilt.value),
+                    bearing: cameraPosition.bearing.value
                 )
             },
             
@@ -22,7 +22,7 @@ extension SearchResult {
             dynamicFilters: self.dynamicFilters.compactMap {
                 $0.toMessage()
             },
-            autoUseFirstResult: NSNumber(value: self.autoUseFirstResult)
+            autoUseFirstResult:  self.autoUseFirstResult,
         )
     }
 }
@@ -58,8 +58,8 @@ extension Array where Element==ItemMarkerInfo {
 extension FloorInfo {
     fileprivate func toMessage() -> FloorInfoMessage {
         FloorInfoMessage.make(
-            withLevelId: NSNumber(value: self.levelId.value),
-            buildingId: NSNumber(value: self.buildingId.value)
+            withLevelId:  Int(self.levelId.value),
+            buildingId: Int(self.buildingId.value)
         )
     }
 }
@@ -100,8 +100,8 @@ extension RangeFilter {
         RangeFilterMessage.make(
             withTagName: self.tagName,
             displayName: self.displayName,
-            minValue: NSNumber(value: self.minValue),
-            maxValue: NSNumber(value: self.maxValue)
+            minValue: self.minValue,
+            maxValue: self.maxValue
         )
     }
 }

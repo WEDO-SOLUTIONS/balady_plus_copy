@@ -53,9 +53,9 @@ class Auth extends _$Auth {
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
       state = AsyncValue.data(event.userInfo);
-      ref
-        ..invalidate(favouriteCacheProvider)
-        ..invalidate(profileImageProvider);
+      // ref
+      //   ..invalidate(favouriteCacheProvider)
+      //   ..invalidate(profileImageProvider);
     });
     ref.onDispose(authSubscription.cancel);
 

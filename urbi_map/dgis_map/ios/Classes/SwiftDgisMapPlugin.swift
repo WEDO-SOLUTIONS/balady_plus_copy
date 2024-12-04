@@ -3,6 +3,11 @@ import UIKit
 import DGis
 
 class DgisPluginApi: NSObject, PluginApi {
+    func initializeMessage(_ message: LogOptionsMessage?, configMessage configMessageBoxed: VendorConfigMessageBox?) async -> FlutterError? {
+        return nil;
+    }
+    
+    
     var registrar: FlutterPluginRegistrar
     
     init(registrar: FlutterPluginRegistrar) {
@@ -75,7 +80,7 @@ public class SwiftDgisMapPlugin: NSObject, FlutterPlugin {
         let factory = DgisMapViewFactory(registrar: registrar)
 
         registrar.register(factory, withId: self.flutterViewId)
-        PluginApiSetup(registrar.messenger(), DgisPluginApi.init(registrar: registrar))
+        SetUpPluginApi(registrar.messenger(), DgisPluginApi.init(registrar: registrar))
         self.registrar = registrar
     }
 }

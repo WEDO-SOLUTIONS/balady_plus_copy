@@ -98,12 +98,12 @@ class RouteHandler {
             if let pStartPoint = params.startPoint {
                 return RouteSearchPoint(
                     coordinates: GeoPoint(
-                        latitude: pStartPoint.point.latitude.doubleValue,
-                        longitude: pStartPoint.point.longitude.doubleValue
+                        latitude: pStartPoint.point.latitude,
+                        longitude: pStartPoint.point.longitude
                     ),
                     objectId: DgisObjectId(
-                        objectId: pStartPoint.objectId?.objectId.uint64Value ?? 0,
-                        entranceId: pStartPoint.objectId?.entranceId.uint64Value ?? 0
+                        objectId: UInt64(pStartPoint.objectId?.objectId ?? 0),
+                        entranceId: UInt64(pStartPoint.objectId?.entranceId ?? 0)
                     ),
                     levelId: pStartPoint.levelId.map {
                         LevelId(value: $0.uint64Value)
@@ -123,12 +123,12 @@ class RouteHandler {
             if let pFinishPoint = params.finishPoint {
                 return RouteSearchPoint(
                     coordinates: GeoPoint(
-                        latitude: pFinishPoint.point.latitude.doubleValue,
-                        longitude: pFinishPoint.point.longitude.doubleValue
+                        latitude: pFinishPoint.point.latitude,
+                        longitude: pFinishPoint.point.longitude
                     ),
                     objectId: DgisObjectId(
-                        objectId: pFinishPoint.objectId?.objectId.uint64Value ?? 0,
-                        entranceId: pFinishPoint.objectId?.entranceId.uint64Value ?? 0
+                        objectId: UInt64(pFinishPoint.objectId?.objectId ?? 0),
+                        entranceId: UInt64(pFinishPoint.objectId?.entranceId ?? 0)
                     ),
                     levelId: pFinishPoint.levelId.map {
                         LevelId(value: $0.uint64Value)

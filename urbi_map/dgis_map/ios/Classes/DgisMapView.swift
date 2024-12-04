@@ -3,6 +3,11 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
+
+    func selectIndoorLevel(_ index: Int) async -> FlutterError? {
+        return nil;
+    }
+    
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -64,7 +69,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         
         let messenger = ProxyBinaryMessenger(with: registrar.messenger(), channelSuffix: "map_\(viewId)")
 
-        MapApiSetup(messenger, self)
+        SetUpMapApi(messenger, self)
         createMapView(sdk)
     }
     
@@ -159,7 +164,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     func initialize(completion: @escaping (InitializeMessage?, FlutterError?) -> Void) {
         completion(
             InitializeMessage.make(
-                withWasInitialized: NSNumber(value: self.wasInitialized),
+                withWasInitialized: self.wasInitialized,
                 errorDescription: self.errorDescription
             ),
             nil
@@ -192,8 +197,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
-    func moveCamera(toActiveRouteIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.routeHandler?.moveCameraToActiveRouteIndex(toActiveRouteIndex.uint64Value)
+    func moveCamera(toActiveRouteIndex: Int, completion: @escaping (FlutterError?) -> Void) {
+        self.routeHandler?.moveCameraToActiveRouteIndex(UInt64(toActiveRouteIndex))
         completion(nil)
     }
     
@@ -240,10 +245,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             return
         }
         map.camera.padding = Padding(
-            left: cameraPadding.leftPadding.uint32Value,
-            top: cameraPadding.topPadding.uint32Value,
-            right: cameraPadding.rightPadding.uint32Value,
-            bottom: cameraPadding.bottomPadding.uint32Value
+            left:  UInt32(cameraPadding.leftPadding),
+            top: UInt32(cameraPadding.topPadding),
+            right: UInt32(cameraPadding.rightPadding),
+            bottom: UInt32(cameraPadding.bottomPadding)
         )
         completion(nil)
     }
@@ -253,8 +258,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
-    func setMapAttributeBoolName(_ name: String, value: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        map?.attributes.setAttributeValue(name: name, value: .boolean(value.boolValue))
+    func setMapAttributeBoolName(_ name: String, value: Bool, completion: @escaping (FlutterError?) -> Void) {
+        map?.attributes.setAttributeValue(name: name, value: .boolean(value))
         completion(nil)
     }
 
@@ -272,9 +277,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         var desiredPosition = map.camera.position
         desiredPosition.point = cameraPosition.point.geoPoint
-        desiredPosition.zoom = Zoom(value: cameraPosition.zoom.floatValue)
-        desiredPosition.tilt = Tilt(value: cameraPosition.tilt.floatValue)
-        desiredPosition.bearing = Bearing(value: cameraPosition.bearing.doubleValue)
+        desiredPosition.zoom = Zoom(value: Float(cameraPosition.zoom))
+        desiredPosition.tilt = Tilt(value: Float(cameraPosition.tilt))
+        desiredPosition.bearing = Bearing(value: cameraPosition.bearing)
         do {
             try map.camera.setPosition(position: desiredPosition)
         } catch {
@@ -302,7 +307,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         
         do {
-            try map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: cameraPosition.x.floatValue, y: cameraPosition.y.floatValue))
+            try map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: Float(cameraPosition.x), y: Float(cameraPosition.y)))
         } catch {
             completion(FlutterError(
                 code: "IllegalArgumentException",
@@ -315,7 +320,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     }
     
-    func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: NSNumber, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {
+    func moveCameraCameraPosition(_ cameraPosition: CameraPositionMessage, duration: Double, animationType: CameraAnimationTypeMessage, completion: @escaping (FlutterError?) -> Void) {
         guard let map = self.map else {
             completion(FlutterError(
                 code: "IllegalArgumentException",
@@ -326,11 +331,11 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         var desiredPosition = map.camera.position
         desiredPosition.point = cameraPosition.point.geoPoint
-        desiredPosition.zoom = Zoom(value: cameraPosition.zoom.floatValue)
-        desiredPosition.tilt = Tilt(value: cameraPosition.tilt.floatValue)
-        desiredPosition.bearing = Bearing(value: cameraPosition.bearing.doubleValue)
+        desiredPosition.zoom = Zoom(value: Float(cameraPosition.zoom))
+        desiredPosition.tilt = Tilt(value: Float(cameraPosition.tilt))
+        desiredPosition.bearing = Bearing(value: cameraPosition.bearing)
         
-        let duration = TimeInterval(duration.doubleValue)
+        let duration = TimeInterval(duration)
         let animationType = animationType.animationType
         
         let moveCancelable = map.camera.move(position: desiredPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
@@ -389,9 +394,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(
             CameraPositionMessage.make(
                 withPoint: map.camera.position.point.toMessage(),
-                zoom: NSNumber(value: map.camera.position.zoom.value),
-                tilt: NSNumber(value: map.camera.position.tilt.value),
-                bearing: NSNumber(value: map.camera.position.bearing.value)
+                zoom: Double(truncating: NSNumber(value: map.camera.position.zoom.value)),
+                tilt: Double(truncating: NSNumber(value: map.camera.position.tilt.value)),
+                bearing: Double(truncating: NSNumber(value: map.camera.position.bearing.value))
             ),
             nil
         )
@@ -440,8 +445,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         }
         searchHandler.searchByDirectoryObjectId(
             objectId: DgisObjectId(
-                objectId: objectId.objectId.uint64Value,
-                entranceId: objectId.entranceId.uint64Value
+                objectId: UInt64(objectId.objectId),
+                entranceId: UInt64(objectId.entranceId)
             ),
             completion: completion
         )
@@ -453,7 +458,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
-        pageSize: NSNumber,
+        pageSize: Int,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         guard let searchHandler = self.searchHandler else {
@@ -472,7 +477,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 searchGeoRect: searchRect?.geoRect,
                 weekTimeMessage: weekTime,
                 sortingType: sortingType,
-                pageSize: pageSize.int32Value,
+                pageSize: Int32(pageSize),
                 completion: completion
             )
             return
@@ -485,7 +490,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 searchGeoRect: searchRect?.geoRect,
                 weekTimeMessage: weekTime,
                 sortingType: sortingType,
-                pageSize: pageSize.int32Value,
+                pageSize: Int32(pageSize),
                 completion: completion
             )
             return
@@ -497,12 +502,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
-            pageSize: pageSize.int32Value,
+            pageSize: Int32(pageSize),
             completion: completion
         )
     }
 
-    func search(byRubricsRubrics rubrics: [NSNumber], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: NSNumber, completion: @escaping (SearchResultMessage?, FlutterError?) -> Void) {
+    func search(byRubricsRubrics rubrics: [NSNumber], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int, completion: @escaping (SearchResultMessage?, FlutterError?) -> Void) {
         guard let searchHandler = self.searchHandler else {
             completion(nil, FlutterError(
                 code: "IllegalArgumentException",
@@ -518,7 +523,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
-            pageSize: pageSize.int32Value,
+            pageSize: Int32(pageSize),
             completion: completion
         )
     }
@@ -551,7 +556,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
-        pageSize: NSNumber,
+        pageSize: Int,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         guard let searchHandler = self.searchHandler else {
@@ -574,7 +579,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
-            pageSize: pageSize.int32Value,
+            pageSize: Int32(pageSize),
             completion: completion
         )
     }
@@ -585,7 +590,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
-        pageSize: NSNumber,
+        pageSize: Int,
         completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
     ) {
         guard let searchHandler = self.searchHandler else {
@@ -605,7 +610,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             searchGeoRect: searchRect?.geoRect,
             weekTimeMessage: weekTime,
             sortingType: sortingType,
-            pageSize: pageSize.int32Value,
+            pageSize: Int32(pageSize),
             completion: completion
         )
     }
@@ -689,10 +694,10 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.setMarkerOptions(
             assetKey: assetKey,
             svgSize: CGSize(
-                width: markerOptions.width.doubleValue,
-                height: markerOptions.height.doubleValue
+                width: markerOptions.width,
+                height: markerOptions.height
             ),
-            iconWidth: markerOptions.iconWidth.floatValue,
+            iconWidth: Float(markerOptions.iconWidth),
             completion: completion
         )
     }
@@ -727,8 +732,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeMapObjectManager(manager, completion: completion)
     }
     
-    func setMapObjectManagerIsVisibleIsVisible(_ isVisible: NSNumber, manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.setMapObjectManagerIsVisible(isVisible.boolValue, for: manager?.id, completion: completion)
+    func setMapObjectManagerIsVisibleIsVisible(_ isVisible: Bool, manager: MapObjectManagerMessage?, completion: @escaping (FlutterError?) -> Void) {
+        self.objectTapHandler?.setMapObjectManagerIsVisible(isVisible, for: manager?.id, completion: completion)
     }
     
     // MARK: Cluster
@@ -782,8 +787,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.setHighlighted(
             objectIds.map({
                 DgisObjectId(
-                    objectId: $0.objectId.uint64Value,
-                    entranceId: $0.entranceId.uint64Value
+                    objectId: UInt64($0.objectId),
+                    entranceId: UInt64($0.entranceId)
                 )
             }),
             completion
@@ -836,7 +841,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func setPanoramaMarkerAzimuthMessage(_ message: MarkerAzimuthMessage, completion: @escaping (FlutterError?) -> Void) {
-        self.objectTapHandler?.setPanoramasAzimuth(degrees: message.degree.doubleValue)
+        self.objectTapHandler?.setPanoramasAzimuth(degrees: message.degree)
         completion(nil)
     }
     
@@ -979,8 +984,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func simulationSpeedSpeed(_ speed: NSNumber, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
-        self.navigationHandler?.simulationSpeed(speed: speed.doubleValue)
+    func simulationSpeedSpeed(_ speed: Double, error: AutoreleasingUnsafeMutablePointer<FlutterError?>) {
+        self.navigationHandler?.simulationSpeed(speed: speed)
     }
     
     func startNavigationSimulationSpeedRangeZoom(_ speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
@@ -1034,8 +1039,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func setPublicTransportActiveRouteRouteIndex(_ routeIndex: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        routeHandler?.setActiveRouteIndex(routeIndex.uint64Value)
+    func setPublicTransportActiveRouteRouteIndex(_ routeIndex: Int, completion: @escaping (FlutterError?) -> Void) {
+        routeHandler?.setActiveRouteIndex(UInt64(routeIndex))
         completion(nil)
     }
     
@@ -1172,28 +1177,28 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
 
-    func toggleOverSpeedingToggleType(_ overSpeeding: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding.boolValue)
+    func toggleOverSpeedingToggleType(_ overSpeeding: Bool, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleOverSpeeding(overSpeeding: overSpeeding)
         completion(nil)
     }
 
-    func toggleRoadCamerasToggleType(_ roadCameras: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras.boolValue)
+    func toggleRoadCamerasToggleType(_ roadCameras: Bool, completion: @escaping (FlutterError?) -> Void) {
+        self.navigationHandler?.toggleRoadCameras(roadCameras: roadCameras)
         completion(nil)
     }
     
-    func setNavigatorVolumeVolume(_ volume: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func setNavigatorVolumeVolume(_ volume: Int, completion: @escaping (FlutterError?) -> Void) {
         do {
-            try sdk.audioSettings?.volume = UInt32(volume.int32Value)
+            try sdk.audioSettings?.volume = UInt32(volume)
             completion(nil)
         } catch {
             completion(FlutterError(code: "ERROR_SETTING_VOLUME", message: "Failed to set volume", details: error.localizedDescription))
         }
     }
 
-    func muteOtherSoundsMute(_ mute: NSNumber, completion: @escaping (FlutterError?) -> Void) {
+    func muteOtherSoundsMute(_ mute: Bool, completion: @escaping (FlutterError?) -> Void) {
         do {
-            if mute.boolValue {
+            if mute {
                 try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.duck
                } else {
                    try sdk.audioSettings?.audioFocusPolicy = AudioFocusPolicy.ignore

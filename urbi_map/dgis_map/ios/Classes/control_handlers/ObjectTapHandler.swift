@@ -261,16 +261,16 @@ class ObjectTapHandler {
         // Проверка и создание изображения из pngPath
         else if let pngPath = marker.options.icon?.pngPath {
             markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
-                width: marker.options.icon!.width.doubleValue,
-                height: marker.options.icon!.width.doubleValue
+                width: marker.options.icon!.width,
+                height: marker.options.icon!.width
             ), completion: completion)
         }
         // Проверка и создание изображения из pngData
         else if let pngData = marker.options.icon?.pngData {
             let data = pngData.data
             markerImage = imageFactory.make(pngData: data, size: CGSize(
-                width: marker.options.icon!.width.doubleValue,
-                height: marker.options.icon!.width.doubleValue
+                width: marker.options.icon!.width,
+                height: marker.options.icon!.width
             ))
         }
         else {
@@ -287,15 +287,15 @@ class ObjectTapHandler {
             position: marker.options.position.geoPointWithElevation,
             icon: markerImage,
             iconMapDirection: marker.options.icon?.iconMapDirection.map {
-                MapDirection(value: $0.degree.doubleValue)
+                MapDirection(value: $0.degree)
             },
             anchor: marker.options.anchor.map {
-                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
+                Anchor(x: Float($0.x), y: Float($0.y))
             } ?? Anchor(x: 0.5, y: 0.5),
             text: marker.options.text,
             textStyle: marker.options.textStyle?.textStyle,
             iconWidth: (marker.options.icon?.width).map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
             userData: MarkerId(marker.id),
             zIndex: ZIndex(value: marker.options.zIndex?.uint32Value ?? 0),
@@ -468,8 +468,8 @@ class ObjectTapHandler {
             contours: polygon.options.contours.map { contour in
                 contour.map {
                     GeoPoint(
-                        latitude: Latitude(value: $0.latitude.doubleValue),
-                        longitude: Longitude(value: $0.longitude.doubleValue)
+                        latitude: Latitude(value: $0.latitude),
+                        longitude: Longitude(value: $0.longitude)
                     )
                 }
             },
@@ -549,8 +549,8 @@ class ObjectTapHandler {
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
-                    latitude: Latitude(value: $0.latitude.doubleValue),
-                    longitude: Longitude(value: $0.longitude.doubleValue)
+                    latitude: Latitude(value: $0.latitude),
+                    longitude: Longitude(value: $0.longitude)
                 )
             },
             width: polyline.options.width.map {
@@ -693,7 +693,7 @@ class ObjectTapHandler {
             message.markers.forEach { it in
                 guard let self = self else { return }
                 
-                let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic.boolValue, azimuth: it.azimuth.doubleValue);
+                let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic, azimuth: it.azimuth);
                 
                 let opts = MarkerOptions(
                     position: it.position.geoPointWithElevation,
@@ -729,10 +729,10 @@ class ObjectTapHandler {
     
     func setPanoramasPadding(map: Map, message: CameraSetPaddingMessage) {
         map.camera.padding = Padding(
-            left: UInt32(truncating: message.leftPadding),
-            top: UInt32(truncating: message.topPadding),
-            right: UInt32(truncating: message.rightPadding),
-            bottom: UInt32(truncating: message.bottomPadding)
+            left: UInt32(message.leftPadding),
+            top: UInt32( message.topPadding),
+            right: UInt32(message.rightPadding),
+            bottom: UInt32(message.bottomPadding)
         )
     }
     
@@ -805,10 +805,10 @@ class ObjectTapHandler {
             objects: objects,
             screenArea: options.screenArea.map {
                 Padding(
-                    left: $0.leftPadding.uint32Value,
-                    top: $0.topPadding.uint32Value,
-                    right: $0.rightPadding.uint32Value,
-                    bottom: $0.bottomPadding.uint32Value
+                    left: UInt32($0.leftPadding),
+                    top: UInt32($0.topPadding),
+                    right: UInt32($0.rightPadding),
+                    bottom: UInt32($0.bottomPadding)
                 )
             },
             tilt: options.tilt.map {
@@ -819,8 +819,8 @@ class ObjectTapHandler {
             },
             size: options.size.map {
                 ScreenSize(
-                    width: $0.width.uint32Value,
-                    height: $0.height.uint32Value
+                    width: UInt32($0.width),
+                    height: UInt32($0.height)
                 )
             }
         )
@@ -828,9 +828,9 @@ class ObjectTapHandler {
         completion(
             CameraPositionMessage.make(
                 withPoint: cameraPosition.point.toMessage(),
-                zoom: NSNumber(value: cameraPosition.zoom.value),
-                tilt: NSNumber(value: cameraPosition.tilt.value),
-                bearing: NSNumber(value: cameraPosition.bearing.value)
+                zoom:  Double(cameraPosition.zoom.value),
+                tilt:  Double(cameraPosition.tilt.value),
+                bearing:  cameraPosition.bearing.value
             ),
             nil
         )

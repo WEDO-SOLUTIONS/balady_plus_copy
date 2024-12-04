@@ -83,8 +83,8 @@ extension ObjectType {
 extension DgisObjectId {
     func toMessage() -> DgisObjectIdMessage {
         DgisObjectIdMessage.make(
-            withObjectId: NSNumber(value: self.objectId),
-            entranceId: NSNumber(value: self.entranceId)
+            withObjectId:  Int(self.objectId),
+            entranceId:  Int(self.entranceId)
         )
     }
 }
@@ -195,7 +195,7 @@ extension OpeningHours {
     fileprivate func toMessage() -> OpeningHoursMessage {
         OpeningHoursMessage.make(
             withValues: self.weekOpeningHours.toMessage(),
-            isOpen24x7: NSNumber(value: self.isOpen24x7)
+            isOpen24x7:  self.isOpen24x7
         )
     }
 }
@@ -260,8 +260,8 @@ extension WeekDay {
 extension DayTime {
     fileprivate func toMessage() -> DayTimeMessage {
         DayTimeMessage.make(
-            withHours: NSNumber(value: hours),
-            minutes: NSNumber(value: minutes)
+            withHours: Int(hours),
+            minutes: Int(minutes)
         )
     }
 }
@@ -280,8 +280,8 @@ extension ContactInfo {
 extension Reviews {
     fileprivate func toMessage() -> ReviewsMessage {
         ReviewsMessage.make(
-            withRating: NSNumber(value: self.rating),
-            count: NSNumber(value: self.count)
+            withRating: Double(self.rating),
+            count: Int( self.count)
         )
     }
 }
@@ -289,7 +289,7 @@ extension Reviews {
 extension WorkStatus {
     fileprivate func toMessage() -> WorkStatusMessage {
         WorkStatusMessage.make(
-            withIsOpen: NSNumber(value: self.isOpen),
+            withIsOpen:  self.isOpen,
             desc: self.description
         )
     }
@@ -302,9 +302,9 @@ extension ParkingInfo {
             purpose: self.purpose.toMessage(),
             access: self.access.toMessage(),
             pavingType: self.pavingType?.toMessage() ?? .none,
-            isPaid: NSNumber(value: self.isPaid),
-            isIncentive: NSNumber(value: self.isIncentive),
-            forTrucks: NSNumber(value: self.forTrucks),
+            isPaid: self.isPaid,
+            isIncentive: self.isIncentive,
+            forTrucks: self.forTrucks,
             levelCount: self.levelCount.map {
                 NSNumber(value: $0)
             },
@@ -420,7 +420,7 @@ extension SpecialSpaceType {
 extension BuildingLevels {
     fileprivate func toMessage() -> BuildingLevelsMessage {
         BuildingLevelsMessage.make(
-            withDefaultLevelId: NSNumber(value: self.defaultLevelId.value),
+            withDefaultLevelId:  Int(self.defaultLevelId.value),
             levels: self.levels.map {
                 $0.toMessage()
             }
@@ -431,7 +431,7 @@ extension BuildingLevels {
 extension LevelInfo {
     fileprivate func toMessage() -> LevelInfoMessage {
         LevelInfoMessage.make(
-            withId: NSNumber(value: self.id.value),
+            withId: Int(self.id.value),
             name: self.name
         )
     }

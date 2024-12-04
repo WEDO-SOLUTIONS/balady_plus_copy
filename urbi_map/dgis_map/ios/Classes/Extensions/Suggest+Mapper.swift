@@ -210,8 +210,8 @@ extension MarkedUpText {
 extension MarkedUpTextSpan {
     fileprivate func toMessage() -> MarkedUpTextSpanMessage {
         MarkedUpTextSpanMessage.make(
-            withOffset: NSNumber(value: self.offset),
-            length: NSNumber(value: self.length)
+            withOffset:  Int(self.offset),
+            length:  Int(self.length)
         )
     }
 }

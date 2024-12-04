@@ -51,20 +51,20 @@ extension RouteSearchOptions {
 
 extension BearingMessage {
     func toBearing() -> Bearing {
-        return Bearing(value: Double(truncating: self.value))
+        return Bearing(value:  self.value)
     }
 }
 
 extension DgisObjectIdMessage {
     func toDgisObjectId() -> DgisObjectId {
-        return DgisObjectId(objectId: UInt64(truncating: self.objectId),
-                            entranceId: UInt64(truncating: self.entranceId))
+        return DgisObjectId(objectId: UInt64( self.objectId),
+                            entranceId: UInt64( self.entranceId))
     }
 }
 
 extension LevelIdMessage {
     func toLevelId() -> LevelId {
-        return LevelId(value: UInt64(self.value.doubleValue))
+        return LevelId(value: UInt64(self.value))
     }
 }
 
@@ -84,22 +84,22 @@ extension BriefExtraRouteInfo {
         switch self {
         case let .car(carBriefRouteInfo):
             let distance = NSNumber(value: carBriefRouteInfo.length.millimeters)
-            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.car, distance: distance)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.car, distance: Int(truncating: distance))
         case let .bicycle(bicycleBriefRouteInfo):
             let distance = NSNumber(value: bicycleBriefRouteInfo.length.millimeters)
-            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.bicycle, distance: distance)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.bicycle, distance: Int(truncating: distance))
         case let .pedestrian(pedestrianBriefRouteInfo):
             let distance = NSNumber(value: pedestrianBriefRouteInfo.length.millimeters)
-            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.pedestrian, distance: distance)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.pedestrian, distance: Int(truncating:distance))
         case .publicTransport:
-            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.publicTransport, distance: NSNumber(value: 0.0))
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.publicTransport, distance: Int(0.0))
         case let .scooter(scooterBriefRouteInfo):
             let distance = NSNumber(value: scooterBriefRouteInfo.length.millimeters)
-            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.scooter, distance: distance)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.scooter, distance: Int(truncating:distance))
         @unknown default:
             let carBriefRouteInfo = self as? CarBriefRouteInfo
             let distance = NSNumber(value: carBriefRouteInfo?.length.millimeters ?? 0)
-            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.car, distance: distance)
+            return BriefExtraRouteInfoMessage.make(withType: BriefExtraRouteInfoTypeMessage.car, distance: Int(truncating:distance))
         }
     }
 }
@@ -108,7 +108,7 @@ extension BriefExtraRouteInfo {
 extension BriefRouteInfo {
     func toBriefRouteInfoMessage() -> BriefRouteInfoMessage {
         return BriefRouteInfoMessage.make(
-            withDuration: self.duration.toDuration(),
+            withDuration: self.duration,
             extraInfo: extraInfo.toBriefExtraRouteInfoMessage())
     }
 }

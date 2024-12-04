@@ -4,8 +4,8 @@ import DGis
 extension GeoPoint {
     func toMessage() -> GeoPointMessage {
         GeoPointMessage.make(
-            withLatitude: NSNumber(value: self.latitude.value),
-            longitude: NSNumber(value: self.longitude.value)
+            withLatitude: self.latitude.value,
+            longitude: self.longitude.value
         )
     }
 }
@@ -13,9 +13,9 @@ extension GeoPoint {
 extension GeoPointWithElevation {
     func toMessage() -> GeoPointWithElevationMessage {
         GeoPointWithElevationMessage.make(
-            withLatitude: NSNumber(value: self.latitude.value),
-            longitude: NSNumber(value: self.longitude.value),
-            elevation: NSNumber(value: self.elevation.value)
+            withLatitude:  self.latitude.value,
+            longitude:  self.longitude.value,
+            elevation:  Double(self.elevation.value)
         )
     }
 }
@@ -23,8 +23,8 @@ extension GeoPointWithElevation {
 extension GeoPointMessage {
     var geoPoint: GeoPoint {
         return GeoPoint(
-            latitude: Latitude(value: self.latitude.doubleValue),
-            longitude: Longitude(value: self.longitude.doubleValue)
+            latitude: Latitude(value: self.latitude),
+            longitude: Longitude(value: self.longitude)
         )
     }
 }
@@ -33,10 +33,10 @@ extension GeoPointWithElevationMessage {
     var geoPointWithElevation: GeoPointWithElevation {
         return GeoPointWithElevation(
             point: GeoPoint(
-                latitude: Latitude(value: self.latitude.doubleValue),
-                longitude: Longitude(value: self.longitude.doubleValue)
+                latitude: Latitude(value: self.latitude),
+                longitude: Longitude(value: self.longitude)
             ),
-            elevation: Elevation(value: self.elevation.floatValue)
+            elevation: Elevation(value: Float(self.elevation))
         )
     }
 }

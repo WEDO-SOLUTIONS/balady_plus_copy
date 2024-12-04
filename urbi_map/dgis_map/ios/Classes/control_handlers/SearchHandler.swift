@@ -457,11 +457,11 @@ class SearchHandler: NSObject {
         let response: [DistanceResponseMessage] = points.map {
             let distance =  current.distance(
                 point: GeoPoint(
-                    latitude: $0.geoPoint.latitude.doubleValue,
-                    longitude: $0.geoPoint.longitude.doubleValue
+                    latitude: $0.geoPoint.latitude,
+                    longitude: $0.geoPoint.longitude
                 ))
             return DistanceResponseMessage.make(
-                withDistance: NSNumber(value: distance.value),
+                withDistance: Double(distance.value),
                 dgisObjectId: $0.dgisObjectId
             )
         }
@@ -471,11 +471,11 @@ class SearchHandler: NSObject {
     private func buildWeekTimeFilter(_ weekTimeMessage: WeekTimeSearchMessage?) -> WorkTimeFilter? {
         guard let weekTimeMessage = weekTimeMessage else { return nil }
 
-        if weekTimeMessage.isOpenNow.boolValue {
+        if weekTimeMessage.isOpenNow {
             return WorkTimeFilter.isOpenNow(IsOpenNow())
         }
 
-        if let weekDay = weekTimeMessage.weekDay.toWeekDay(), let time = weekTimeMessage.time {
+        if let weekDay = weekTimeMessage.weekDay?.value.toWeekDay(), let time = weekTimeMessage.time {
             return WorkTimeFilter.workTime(
                 WeekTime(
                     weekDay: weekDay,

@@ -155,18 +155,18 @@ class NavigationHandler {
         let settings = NavigationHandler.navigationManager!.alternativeRoutesProviderSettings
         completion(
             BetterRouteSettingsMessage.make(
-                withBetterRouteTimeCostThreshold: NSNumber(value: Int(settings.betterRouteTimeCostThreshold)),
-                betterRouteLengthThreshold: NSNumber(value: settings.betterRouteLengthThreshold.millimeters),
-                routeSearchDelay: NSNumber(value: Int(settings.routeSearchDelay))
+                withBetterRouteTimeCostThreshold: Int(settings.betterRouteTimeCostThreshold),
+                betterRouteLengthThreshold: Int(settings.betterRouteLengthThreshold.millimeters),
+                routeSearchDelay: Int(settings.routeSearchDelay)
             ),
             nil
         )
     }
     
     func setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.routeSearchDelay = settings.routeSearchDelay.doubleValue
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = settings.betterRouteTimeCostThreshold.doubleValue
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: settings.betterRouteLengthThreshold.int64Value)
+        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.routeSearchDelay = TimeInterval(settings.routeSearchDelay)
+        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = TimeInterval(settings.betterRouteTimeCostThreshold)
+        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: Int64(settings.betterRouteLengthThreshold))
     }
     
     func setBetterRouteEnabled(enabled: Bool) {
@@ -205,10 +205,10 @@ class NavigationHandler {
         NavigationHandler.navigationManager!.mapFollowController.setFollow(follow: true)
         NavigationHandler.navigationManager!.zoomFollowSettings.speedRangeToStyleZoomSequence = [
             SpeedRangeToStyleZoom(
-                range: SpeedRange(minSpeed: Double(truncating: speedRangeZoom.minSpeedRange), maxSpeed: Double(truncating: speedRangeZoom.maxSpeedRange)),
-                minDistanceToManeuver: RouteDistance(millimeters: Int64(truncating: speedRangeZoom.routeDistanceMillimeters)),
-                maxDistanceToManeuver: RouteDistance(millimeters: Int64(truncating: speedRangeZoom.routeDistanceMillimeters)),
-                styleZoom: StyleZoom(value: Float(truncating: speedRangeZoom.styleZoomValue))
+                range: SpeedRange(minSpeed: Double(truncating: speedRangeZoom.minSpeedRange as NSNumber), maxSpeed: speedRangeZoom.maxSpeedRange),
+                minDistanceToManeuver: RouteDistance(millimeters: Int64(speedRangeZoom.routeDistanceMillimeters)),
+                maxDistanceToManeuver: RouteDistance(millimeters: Int64(speedRangeZoom.routeDistanceMillimeters)),
+                styleZoom: StyleZoom(value: Float(speedRangeZoom.styleZoomValue))
             ),
         ]
     }
@@ -440,10 +440,10 @@ class NavigationHandler {
             geometry: geometry,
             screenArea: options.screenArea.map {
                 Padding(
-                    left: $0.leftPadding.uint32Value,
-                    top: $0.topPadding.uint32Value,
-                    right: $0.rightPadding.uint32Value,
-                    bottom: $0.bottomPadding.uint32Value
+                    left: UInt32($0.leftPadding),
+                    top: UInt32($0.topPadding),
+                    right: UInt32($0.rightPadding),
+                    bottom: UInt32($0.bottomPadding)
                 )
             },
             tilt: options.tilt.map {
@@ -454,8 +454,8 @@ class NavigationHandler {
             },
             size: options.size.map {
                 ScreenSize(
-                    width: $0.width.uint32Value,
-                    height: $0.height.uint32Value
+                    width: UInt32($0.width),
+                    height: UInt32($0.height)
                 )
             }
         )
@@ -463,9 +463,9 @@ class NavigationHandler {
         completion(
             CameraPositionMessage.make(
                 withPoint: cameraPosition.point.toMessage(),
-                zoom: NSNumber(value: cameraPosition.zoom.value),
-                tilt: NSNumber(value: cameraPosition.tilt.value),
-                bearing: NSNumber(value: cameraPosition.bearing.value)
+                zoom:  Double(cameraPosition.zoom.value),
+                tilt:  Double(cameraPosition.tilt.value),
+                bearing:  cameraPosition.bearing.value
             ),
             nil
         )

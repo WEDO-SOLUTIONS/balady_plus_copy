@@ -23,10 +23,15 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         
         api.renderClusterManager(
             manager,
-            objectCount: NSNumber(value: cluster.objectCount)
+            objectCount: Int(truncating: NSNumber(value: cluster.objectCount))
         ) { (response, error) in
+            if (response == nil){
+                semaphore.signal()
+                return;
+            }
             message = response!
             semaphore.signal()
+            return;
         }
         
         semaphore.wait()
@@ -54,15 +59,15 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         options = SimpleClusterOptions(
             icon: markerImage,
             iconMapDirection: message!.icon?.iconMapDirection.map {
-                MapDirection(value: $0.degree.doubleValue)
+                MapDirection(value: $0.degree)
             },
             anchor: message!.anchor.map {
-                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
+                Anchor(x: Float($0.x), y: Float($0.y))
             } ?? Anchor(x: 0.5, y: 0.5),
             text: message!.text,
             textStyle: message!.textStyle?.textStyle,
             iconWidth: (message!.icon?.width).map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
             userData: manager,
             animatedAppearance: false

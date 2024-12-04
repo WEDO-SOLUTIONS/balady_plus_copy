@@ -21,11 +21,11 @@ extension PackageInfo {
     func toMessage() ->  PackageInfoMessage{
         PackageInfoMessage.make(
             withName: self.name,
-            installed: NSNumber(value: self.installed),
-            incomplete: NSNumber(value: self.incomplete),
-            preinstalled: NSNumber(value: self.preinstalled),
-            compatible: NSNumber(value: self.compatible),
-            hasUpdate: NSNumber(value: self.hasUpdate),
+            installed:  self.installed,
+            incomplete:  self.incomplete,
+            preinstalled:  self.preinstalled,
+            compatible:  self.compatible,
+            hasUpdate:  self.hasUpdate,
             updateStatus: self.updateStatus.toMessage()
         )
     }
