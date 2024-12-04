@@ -1,17 +1,19 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/pages/iwish/iwish_feedback.dart';
 
-class IwishFeedbackContainer extends StatefulWidget {
+@RoutePage()
+class IwishFeedbackContainerPage extends StatefulWidget {
   final String iwishId;
 
-  const IwishFeedbackContainer({required this.iwishId, super.key});
+  const IwishFeedbackContainerPage({required this.iwishId, super.key});
 
   @override
-  State<IwishFeedbackContainer> createState() => _IwishFeedbackContainerState();
+  State<IwishFeedbackContainerPage> createState() => _IwishFeedbackContainerPageState();
 }
 
-class _IwishFeedbackContainerState extends State<IwishFeedbackContainer>
+class _IwishFeedbackContainerPageState extends State<IwishFeedbackContainerPage>
     with TickerProviderStateMixin {
   late final AnimationController confettiController;
 

@@ -1,11 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/debouncer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/favourites.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -97,7 +96,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             group: MetricsConstants.exploreTag,
           );
 
-          const FavouritesRoute().push(context);
+          context.router.push(const FavouritesRoute());
         },
       ),
       onQuickFilterTap: (quickFilter) {
@@ -107,7 +106,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             'filter': quickFilter.name,
           },
         );
-        ref.read(goRouterProvider).push(const SearchRoute(requestFocus: false).location);
+        context.router.push(SearchRoute(requestFocus: false));
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
         });

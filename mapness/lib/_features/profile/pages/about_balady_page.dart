@@ -1,13 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
+@RoutePage()
 class AboutBaladyPage extends ConsumerStatefulWidget {
   const AboutBaladyPage({super.key});
 
@@ -63,7 +64,7 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                 title: context.l10n.aboutApp,
                 colorEnabled: context.color.textAndIconsStatusAccent,
                 leading: ActionModel(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.router.popForced(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
@@ -73,10 +74,9 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
                     padding: const EdgeInsets.all(Spacing.$4x),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(RadiusBorder.l),
-                      // ignore: prefer_const_constructors
                       child: YoutubePlayer(
                         controller: _controller,
-                        bottomActions: [
+                        bottomActions: const [
                           CurrentPosition(),
                           ProgressBar(isExpanded: true),
                         ],

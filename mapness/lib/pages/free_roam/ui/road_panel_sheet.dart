@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -5,24 +6,22 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/navigator_settings.dart';
-import 'package:mapness/app/routes/road_panel.dart';
-import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 
-class RoadPanelSheet extends ConsumerStatefulWidget {
-  const RoadPanelSheet({super.key});
+@RoutePage()
+class RoadPanelSheetPage extends ConsumerStatefulWidget {
+  const RoadPanelSheetPage({super.key});
 
   @override
-  ConsumerState<RoadPanelSheet> createState() => RoadPanelSheetState();
+  ConsumerState<RoadPanelSheetPage> createState() => RoadPanelSheetState();
 }
 
-class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTickerProviderStateMixin {
+class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleTickerProviderStateMixin {
   static const sheetPanelMaxHeight = 0.45;
 
   static const duration = Duration(milliseconds: 250);
@@ -116,7 +115,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                               children: [
                                 ContentRow(
                                   onTap: () {
-                                    const SoundSettingsRoute().push(context);
+                                    context.router.push(const SoundSettingsRoute());
                                   },
                                   options: ContentRowOptions(
                                     subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
@@ -164,7 +163,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
                             ContentContainer(
                               child: ContentRow(
                                 onTap: () {
-                                  const NavigatorSettingsRoute().push(context);
+                                  context.router.push(const NavigatorSettingsRoute());
                                 },
                                 options: ContentRowOptions(
                                   leadingIcon: Icon(
@@ -221,12 +220,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheet> with SingleTicke
     )
         .then((_) {
       sheetController.addListener(() {
-        final navigator = ref.read(goRouterProvider);
-        if (sheetController.isAttached &&
-            sheetController.size < .1 &&
-            RoadPanelRoute.isCurrent(context) &&
-            navigator.canPop()) {
-          navigator.pop();
+        if (sheetController.isAttached && sheetController.size < .1) {
+          context.router.popForced();
         }
       });
     });

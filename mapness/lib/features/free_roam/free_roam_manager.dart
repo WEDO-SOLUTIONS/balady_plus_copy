@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -84,7 +85,7 @@ class _FreeRoamManager extends _$FreeRoamManager {
     await dgisController.value?.setMapAttributeBool(_navigatorOn, value: false);
     await _parkingCheck();
     if (context.mounted) {
-      const LandingRoute().go(context);
+      context.router.popUntilRouteWithName(BottomMenuRoute.name);
     }
   }
 

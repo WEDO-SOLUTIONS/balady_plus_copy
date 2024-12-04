@@ -4,7 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';

@@ -6,7 +6,7 @@ part 'permissions.g.dart';
 @Riverpod(keepAlive: true)
 class Permissions extends _$Permissions {
   @override
-  Future<PermissionStatus> build(Permission permission) async => await permission.status;
+  Future<PermissionStatus> build(Permission permission) async => permission.status;
 
   Future<PermissionStatus> request() async {
     var status = await future;

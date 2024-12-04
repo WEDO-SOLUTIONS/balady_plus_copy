@@ -2,11 +2,12 @@
 
 import 'dart:convert';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/routes/feedback.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/feedback/feedback_categories.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
@@ -18,9 +19,10 @@ import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
 final _formKey = GlobalKey<FormBuilderState>();
 
+@RoutePage()
 class FeedbackPage extends ConsumerStatefulWidget {
   final String categoryId;
-  final String poiId;
+  final int? poiId;
 
   const FeedbackPage({
     required this.poiId,
@@ -37,7 +39,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
-    final objectId = int.tryParse(widget.poiId);
+    final objectId = widget.poiId;
     if (objectId == null) {
       return const FeedbackFailureWidget();
     }
@@ -107,10 +109,10 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
 
-    FeedbackSentRoute(
-      payloadId: payloadId,
-      objectId: widget.poiId,
-      categoryId: widget.categoryId,
-    ).replace(context);
+    context.router.replace(
+      FeedbackSentRoute(
+        payloadId: payloadId,
+      ),
+    );
   }
 }

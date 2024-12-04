@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as pb;
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/iwish.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/features/iwish/lib/iwish_marker_mapper.dart';
@@ -66,10 +66,7 @@ class _IwishMarkers extends _$IwishMarkers {
 
   Future<void> _onMarkerTap(IwishMarker stateMarker) async {
     {
-      IwishCardRoute.open(
-        ref.read(goRouterProvider),
-        stateMarker,
-      );
+      await ref.read(appRouterProvider).push(IwishPlaceCardRoute(iwishId: stateMarker.id));
 
       // final mapObjectManager =
       //     ref.read(mapObjectManagerProvider(named: iwishLayerName).notifier);

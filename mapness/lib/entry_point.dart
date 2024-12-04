@@ -1,10 +1,9 @@
-// ignore_for_file: always_put_control_body_on_new_line
-
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -16,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
@@ -24,16 +22,17 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
 import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/free_roam.dart';
-import 'package:mapness/app/routes/path_nav.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -50,7 +49,6 @@ import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/palette/balady_temp_palette.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
-import 'package:mapness/widgets/map/map_page.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
@@ -80,13 +78,11 @@ class MapnessProviderScope extends StatelessWidget {
         child: EagerInitWidget(
           child: Consumer(
             builder: (context, ref, child) {
-              final goRouter = ref.watch(goRouterProvider);
               final language = ref.watch(appLanguageProvider);
               final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
 
               return provider.MultiProvider(
                 providers: [
-                  provider.Provider<GoRouter>.value(value: goRouter),
                   provider.Provider<AppLocalizations>.value(
                     value: localizations,
                   ),
@@ -113,8 +109,7 @@ class MapnessEntryPoint extends ConsumerStatefulWidget {
 }
 
 class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
-  // ignore: use_late_for_private_fields_and_variables
-  OverlayEntry? _debugOverlay;
+  late OverlayEntry? _debugOverlay;
   late AppLinks _appLinks;
   StreamSubscription<Uri>? _linkSubscription;
   ProviderSubscription? _locationListener;
@@ -160,16 +155,24 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     if (state != null) {
       final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
-      final router = ref.read(goRouterProvider);
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
         if (location != null) {
-          PathNavRoute.open(router, routeSearchOptions, initAction: PathNavPageInitAction.restoreFromState);
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: routeSearchOptions,
+                  initAction: PathNavPageInitAction.restoreFromState,
+                ),
+              );
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              PathNavRoute.open(router, routeSearchOptions, initAction: PathNavPageInitAction.restoreFromState);
+              ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: routeSearchOptions, initAction: PathNavPageInitAction.restoreFromState
+                ),
+              );
             }
           });
         }
@@ -184,14 +187,23 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     if (navStateMessage.state == NavigationState.navigation) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         final location = ref.read(locationProvider);
-        final router = ref.read(goRouterProvider);
         if (location != null) {
-          PathNavRoute.open(router, navStateMessage.routeSearchOptions);
+          ref.read(appRouterProvider).push(
+                PathNavRoute(
+                  navType: navStateMessage.routeSearchOptions,
+                  initAction: null,
+                ),
+              );
         } else {
           _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
-              PathNavRoute.open(router, navStateMessage.routeSearchOptions);
+              ref.read(appRouterProvider).push(
+                    PathNavRoute(
+                      navType: navStateMessage.routeSearchOptions,
+                      initAction: null,
+                    ),
+                  );
             }
           });
         }
@@ -201,7 +213,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   @override
   Widget build(BuildContext context) {
-    final goRouter = ref.watch(goRouterProvider);
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
 
@@ -223,67 +234,45 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     return Directionality(
       textDirection: direction,
-      child: Stack(
-        children: [
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: MediaQuery.of(context).size.height,
-            child: const MapPage(),
-          ),
-          Consumer(
-            builder: (context, ref, child) {
-              final colorScheme = ref.watch(colorSchemeProvider);
+      child: Consumer(
+        builder: (context, ref, child) {
+          final colorScheme = ref.watch(colorSchemeProvider);
 
-              return MaterialApp.router(
-                routerConfig: goRouter,
-                theme: ThemeData(
-                  primarySwatch: const MaterialColor(
-                    0xFF4CA5B4,
-                    <int, Color>{
-                      50: Color(0xFF89cfbe),
-                      100: Color(0xFF89cfbe),
-                      200: Color(0xFF89cfbe),
-                      300: Color(0xFF89cfbe),
-                      400: Color(0xFF89cfbe),
-                      500: Color(0xFF89cfbe),
-                      600: Color(0xFF89cfbe),
-                      700: Color(0xFF89cfbe),
-                      800: Color(0xFF89cfbe),
-                      900: Color(0xFF89cfbe),
-                    },
-                  ),
-                  // unselectedWidgetColor: context.color.textAndIconsBasePrimary,
-                  scaffoldBackgroundColor: Colors.transparent,
-                  dividerColor: Colors.grey[400],
-                  useMaterial3: false,
-                  extensions: <ThemeExtension<dynamic>>[
-                    if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
-                    if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                    AppColorsThemeExt.palette(colorScheme, isDark: false),
-                    AppColorsThemeV2.palette(isDark: false),
-                    AppStaticColorsThemeExt.palette(colorScheme),
-
-                    // Temp palette for new colors disign
-                    BaladyTempPalette.palette(),
+          return MaterialApp.router(
+            routerConfig: ref.read(appRouterProvider).config(
+                  navigatorObservers: () => [
+                    RoutesObserver(ref: ref),
                   ],
                 ),
-                builder: (context, child) => child != null
-                    ? LoadingOverlay(
-                        child: ToastOverlay(
-                          child: GlobalScopes(
-                            child: child,
-                          ),
-                        ),
-                      )
-                    : const SizedBox.shrink(),
-                locale: language.locale,
-                localizationsDelegates: AppLocalizations.localizationsDelegates,
-                supportedLocales: AppLocalizations.supportedLocales,
-                debugShowCheckedModeBanner: false,
-              );
-            },
-          ),
-        ],
+            theme: ThemeData(
+              scaffoldBackgroundColor: Colors.transparent,
+              dividerColor: Colors.grey[400],
+              useMaterial3: false,
+              extensions: <ThemeExtension<dynamic>>[
+                if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
+                AppColorsThemeExt.palette(colorScheme, isDark: false),
+                AppColorsThemeV2.palette(isDark: false),
+                AppStaticColorsThemeExt.palette(colorScheme),
+
+            // Temp palette for new colors disign
+                    BaladyTempPalette.palette(),
+                  ],),
+            builder: (context, child) => child != null
+                ? LoadingOverlay(
+                    child: ToastOverlay(
+                      child: GlobalScopes(
+                        child: child,
+                      ),
+                    ),
+                  )
+                : const SizedBox.shrink(),
+            locale: language.locale,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            debugShowCheckedModeBanner: false,
+          );
+        },
       ),
     );
   }
@@ -293,8 +282,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     try {
       await controller.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
-
-      // ignore: avoid_catches_without_on_clauses, avoid_types_as_parameter_names, non_constant_identifier_names
     } catch (ex) {
       debugPrint('Error setting camera position point: $ex');
     }
@@ -341,14 +328,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
-      final router = ref.read(goRouterProvider);
-      final matches = router.routerDelegate.currentConfiguration.matches;
-      final isNavPage =
-          matches.last.matchedLocation == PathNavRoute.path || matches.last.matchedLocation == FreeRoamRoute.path;
+      final matches = context.router.matcher.collection.routes;
+      final isNavPage = matches.last.name == PathNavRoute.name || matches.last.name == FreeRoamRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       if (navigation && !isNavPage) {
         final navStateMessage = await dgisController.getCurrentNavigationState();
-        PathNavRoute.open(ref.read(goRouterProvider), navStateMessage.routeSearchOptions);
+        await context.router.push(
+          PathNavRoute(
+            navType: navStateMessage.routeSearchOptions,
+            initAction: null,
+          ),
+        );
       }
     });
   }
@@ -378,7 +368,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         latitude: latitude,
         longitude: longitude,
       )) {
-        // Stop processing the link if it was a share link
         return;
       }
     }
@@ -387,7 +376,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final id = int.tryParse(objectId);
       if (id != null) {
         final location =
-            (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
+        (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
         if (isFirstRun) {
           // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
           await Future.delayed(const Duration(milliseconds: 300));
@@ -396,7 +385,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } else if (latitude != null && longitude != null) {
       if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
-        await _myLocationDeepLinkHandler(latitude, longitude);
+        _myLocationDeepLinkHandler(latitude, longitude);
       } else {
         if (isFirstRun) {
           await Future.delayed(const Duration(milliseconds: 300));
@@ -405,18 +394,21 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
-    } else {
-      await ref.read(goRouterProvider).push(url.toString());
+    } else if (url.toString().isNotEmpty)  {
+
+      await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
-    PoiMapRoute.open(
-      ref.read(goRouterProvider),
-      dgisObjectId,
-      latLng: location,
-      zoom: 17,
-    );
+    final appRouter = ref.watch(appRouterProvider);
+    await appRouter.push(PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(
+        objectId: dgisObjectId,
+        entranceId: 0,
+      ),
+      cameraConfig: const PoiCameraConfig(zoom: 17),
+    ));
   }
 
   Future<void> _poiDeepLinkByCoords(double latitude, double longitude) async {
@@ -445,42 +437,49 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         (data['meta'] as Map<String, dynamic>).containsKey('code') &&
         (data['meta'] as Map<String, dynamic>)['code'] == 404) {
       // Dgis object id -2 is used to open map with provided coordinates not with poi id
-      PoiMapRoute.open(
-        ref.read(goRouterProvider),
-        -2,
-        latLng: LatLng(latitude: latitude, longitude: longitude),
-        zoom: 17,
-      );
+      final appRouter = ref.watch(appRouterProvider);
+      await appRouter.push(DeeplinkRoute(
+        closestPoint: LatLng(latitude: latitude, longitude: longitude),
+        cameraConfig: PoiCameraConfig(zoom: 17),
+      ));
     }
 
-    if (!data.containsKey('result')) return;
+    if (!data.containsKey('result')) {
+      return;
+    }
 
     final result = data['result'] as Map<String, dynamic>;
-    if (!result.containsKey('items')) return;
+    if (!result.containsKey('items')) {
+      return;
+    }
 
     final items = result['items'] as List<dynamic>;
-    if (items.isEmpty) return;
+    if (items.isEmpty) {
+      return;
+    }
 
     final geocoderBest = items.first as Map<String, dynamic>;
-    if (!geocoderBest.containsKey('id')) return;
+    if (!geocoderBest.containsKey('id')) {
+      return;
+    }
 
     final dgisId = int.tryParse(geocoderBest['id']);
-    if (dgisId == null) return;
+    if (dgisId == null) {
+      return;
+    }
 
-    PoiMapRoute.open(
-      ref.read(goRouterProvider),
-      dgisId,
-      zoom: 17,
-    );
+    await ref.watch(appRouterProvider).push(PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(
+        objectId: dgisId,
+        entranceId: 0,
+      ),
+      cameraConfig: const PoiCameraConfig(zoom: 17),
+    ));
   }
 
-  Future<void> _myLocationDeepLinkHandler(double latitude, double longitude) async {
+  void _myLocationDeepLinkHandler(double latitude, double longitude) {
     final latLng = LatLng(latitude: latitude, longitude: longitude);
-    PoiMapRoute.open(
-      ref.read(goRouterProvider),
-      -2,
-      latLng: latLng,
-    );
+    ref.watch(appRouterProvider).push(DeeplinkRoute(closestPoint: latLng));
   }
 
   Future<void> _momrahDeepLinkHandler(String momrahId) async {
@@ -496,31 +495,48 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
     final data = twinsResponse.data as Map<String, dynamic>;
 
-    if (!data.containsKey('result')) return;
+    if (!data.containsKey('result')) {
+      return;
+    }
 
     final result = data['result'] as Map<String, dynamic>;
-    if (!result.containsKey('items')) return;
+    if (!result.containsKey('items')) {
+      return;
+    }
 
     final items = result['items'] as List<dynamic>;
-    if (items.isEmpty) return;
+    if (items.isEmpty) {
+      return;
+    }
 
     final item = items.first as Map<String, dynamic>;
-    if (!item.containsKey('twins')) return;
+    if (!item.containsKey('twins')) {
+      return;
+    }
 
     final twins = item['twins'] as List<dynamic>;
-    if (twins.isEmpty) return;
+    if (twins.isEmpty) {
+      return;
+    }
 
     final twin = twins.first as Map<String, dynamic>;
-    if (!twin.containsKey('dgis_id')) return;
+    if (!twin.containsKey('dgis_id')) {
+      return;
+    }
 
     final dgisId = int.tryParse(twin['dgis_id']);
-    if (dgisId == null) return;
+    if (dgisId == null) {
+      return;
+    }
 
-    PoiMapRoute.open(
-      ref.read(goRouterProvider),
-      dgisId,
-      zoom: 17,
-    );
+    final appRouter = ref.watch(appRouterProvider);
+    await appRouter.push(PoiCardWidgetRoute(
+      objectId: DgisObjectIdMessage(
+        objectId: dgisId,
+        entranceId: 0,
+      ),
+      cameraConfig: PoiCameraConfig(zoom: 17),
+    ));
   }
 }
 

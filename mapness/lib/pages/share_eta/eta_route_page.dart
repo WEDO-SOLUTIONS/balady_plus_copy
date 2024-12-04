@@ -1,11 +1,12 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' show Spacing;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
@@ -16,13 +17,17 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
+@RoutePage()
 class EtaRoutePage extends ConsumerStatefulWidget {
+  static const latKey = 'lat';
+  static const lonKey = 'lon';
+
   final double? latitude;
   final double? longitude;
   const EtaRoutePage({
     super.key,
-    this.latitude,
-    this.longitude,
+    @PathParam(latKey) this.latitude,
+    @PathParam(lonKey) this.longitude,
   });
 
   @override
@@ -74,7 +79,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
         if (code == EtaErrorStatusCodes.endConnection &&
             [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
-          context.pop();
+          context.router.popForced();
           WidgetsBinding.instance.addPostFrameCallback((_) {
             _showEtaExpired(rootNavigatorKey.currentContext!);
           });
@@ -94,7 +99,7 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
 
             ToastOverlay.of(rootNavigatorKey.currentContext!).hide();
             if (context.mounted) {
-              context.pop();
+              context.router.popForced();
             }
 
             WidgetsBinding.instance.addPostFrameCallback((_) {

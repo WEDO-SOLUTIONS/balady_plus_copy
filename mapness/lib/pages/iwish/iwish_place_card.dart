@@ -1,14 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
-import 'package:mapness/app/routes/iwish.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
@@ -23,8 +23,9 @@ import 'package:mapness/widgets/iwish/ui/iwish_info.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_photos_row.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 
-class IwishPlaceCard extends ConsumerWidget {
-  const IwishPlaceCard({required this.iwishId, super.key});
+@RoutePage()
+class IwishPlaceCardPage extends ConsumerWidget {
+  const IwishPlaceCardPage({required this.iwishId, super.key});
 
   final String iwishId;
   @override
@@ -111,7 +112,7 @@ class IwishPlaceCard extends ConsumerWidget {
                                     IwishInfo(
                                       iwish: entity,
                                       distance: distance,
-                                      onClose: () => context.pop(),
+                                      onClose: () => context.router.popForced(),
                                     ),
                                     const SizedBox(height: 8),
                                     IwishStateLabel(state: entity.state),
@@ -128,9 +129,11 @@ class IwishPlaceCard extends ConsumerWidget {
                                               await CommonFunctions.authOrOpen(
                                                 context,
                                                 callback: () {
-                                                  IwishFeedbackRoute(
-                                                    iwishId: iwishId,
-                                                  ).replace(context);
+                                                  context.router.push(
+                                                    IwishFeedbackContainerRoute(
+                                                      iwishId: iwishId,
+                                                    ),
+                                                  );
                                                 },
                                               );
                                             },
@@ -151,20 +154,23 @@ class IwishPlaceCard extends ConsumerWidget {
                                             dgisObjectId: DgisObjectIdMessage(objectId: 0, entranceId: 0),
                                           ),
                                           onTap: () {
-                                            RoutingRoutesRoute(
-                                              finishLabel: entity.title,
-                                              finishLatitude: entity.location.latitude,
-                                              finishLongitude: entity.location.longitude,
-                                              finishObjectId: 0,
-                                              finishEntranceId: 0,
-                                              finishLevelId: null,
-                                              startLabel: context.l10n.myLocation,
-                                              startLatitude: null,
-                                              startLongitude: null,
-                                              startObjectId: null,
-                                              startEntranceId: null,
-                                              startLevelId: null,
-                                            ).pushReplacement(context);
+                                            context.router.push(
+                                              RoutingRoutesRoute(
+                                                points: [
+                                                  RouteParamsPointWithLabel(
+                                                    value: null,
+                                                    label: context.l10n.myLocation,
+                                                  ),
+                                                  RouteParamsPointWithLabel(
+                                                    value: RouteParamsPoint(
+                                                      latitude: entity.location.latitude,
+                                                      longitude: entity.location.longitude,
+                                                    ),
+                                                    label: entity.title,
+                                                  ),
+                                                ],
+                                              ),
+                                            );
                                           },
                                           routeType: RouteSearchOptionsMessage.car,
                                         ),

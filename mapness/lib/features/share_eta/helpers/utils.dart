@@ -7,11 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/eta.dart';
-import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/path_nav.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
@@ -20,7 +17,6 @@ import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
 import 'package:urbi_analytics/logger.dart';
 
 class EtaUtils {
@@ -105,12 +101,6 @@ class EtaUtils {
 
     if (type == 'eta') {
       try {
-        final uriPath = Uri(path: EtaRoute.path, queryParameters: {
-          EtaRoute.tokenKey: tokenId,
-          EtaRoute.streamKey: streamId,
-          if (latitude != null) EtaRoute.latKey: latitude.toString(),
-          if (longitude != null) EtaRoute.lonKey: longitude.toString(),
-        });
         if (latitude != null && longitude != null) {
           await ref.read(cameraPositionProvider.notifier).animateTo(
                 CameraPositionMessage(
@@ -130,7 +120,7 @@ class EtaUtils {
         }
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
-        unawaited(ref.read(goRouterProvider).push(uriPath.toString()));
+        unawaited(ref.read(appRouterProvider).push(EtaRouteRoute(latitude: latitude, longitude: longitude)));
       } catch (e) {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           showEtaExpired(rootNavigatorKey.currentContext!);
@@ -141,17 +131,18 @@ class EtaUtils {
       try {
         // Move to landing page
         if (rootNavigatorKey.currentContext != null) {
-          final currentRoute = ref.read(currentRouteProvider);
+          final appRouter = ref.read(appRouterProvider);
 
           /// Fix for BSA-1010 - if start route isn't landing, we need to close all pages and go to landing
           /// Because we need to close navigation, we need to stop navigation and hide routes
-          if (currentRoute?.currentPath == PathNavRoute.path) {
+          if (appRouter.isRouteActive(PathNavRoute.name)) {
             ref.read(pathNavMessageProvider.notifier).stopNavigation();
             await ref.read(dgisControllerProvider).value?.setMapAttributeBool('navigatorOn', value: false);
             unawaited(ref.read(dgisControllerProvider).value?.stopNavigation());
             unawaited(ref.read(dgisControllerProvider).valueOrNull?.hideRoutes());
           }
-          const LandingRoute().go(rootNavigatorKey.currentContext!);
+
+          await appRouter.navigate(const LandingRoute());
         }
         // Get old stream token and stream id
         final oldToken = EtaStreamStorage().state.streamToken;

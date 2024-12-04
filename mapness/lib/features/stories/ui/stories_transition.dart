@@ -1,5 +1,5 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 
 class StoriesTransition extends StatefulWidget {
@@ -50,8 +50,8 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
   Future<void> _dismiss({double? from}) async {
     await _controller.reverse(from: from);
     widget.onClose?.call();
-    if (mounted && context.canPop()) {
-      context.pop();
+    if (mounted && context.router.canPop()) {
+      context.router.popForced();
     }
   }
 
@@ -64,7 +64,6 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
             await _dismiss();
           }
         },
-        canPop: false,
         child: GestureDetector(
           onVerticalDragUpdate: (details) {
             /// Disable swipe to dismiss for onboarding stories
@@ -109,7 +108,8 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
                         ),
                       ),
                     ],
-                  )),
+            ),
+          ),
         ),
       );
 }
