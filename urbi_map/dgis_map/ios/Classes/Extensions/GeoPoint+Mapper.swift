@@ -3,8 +3,8 @@ import DGis
 
 extension GeoPoint {
     func toMessage() -> GeoPointMessage {
-        GeoPointMessage.make(
-            withLatitude: self.latitude.value,
+        GeoPointMessage(
+            latitude: self.latitude.value,
             longitude: self.longitude.value
         )
     }
@@ -12,8 +12,8 @@ extension GeoPoint {
 
 extension GeoPointWithElevation {
     func toMessage() -> GeoPointWithElevationMessage {
-        GeoPointWithElevationMessage.make(
-            withLatitude:  self.latitude.value,
+        GeoPointWithElevationMessage(
+            latitude:  self.latitude.value,
             longitude:  self.longitude.value,
             elevation:  Double(self.elevation.value)
         )

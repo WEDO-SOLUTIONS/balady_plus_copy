@@ -151,15 +151,16 @@ class NavigationHandler {
         }
     }
     
-    func getBetterRouteSettings(completion: @escaping (BetterRouteSettingsMessage?, FlutterError?) -> Void) {
+    func getBetterRouteSettings(completion: @escaping (Result<BetterRouteSettingsMessage, any Error>) -> Void) {
         let settings = NavigationHandler.navigationManager!.alternativeRoutesProviderSettings
         completion(
-            BetterRouteSettingsMessage.make(
-                withBetterRouteTimeCostThreshold: Int(settings.betterRouteTimeCostThreshold),
-                betterRouteLengthThreshold: Int(settings.betterRouteLengthThreshold.millimeters),
-                routeSearchDelay: Int(settings.routeSearchDelay)
-            ),
-            nil
+            Result.success(
+            BetterRouteSettingsMessage(
+                betterRouteTimeCostThreshold: Int64(settings.betterRouteTimeCostThreshold),
+                betterRouteLengthThreshold: Int64(settings.betterRouteLengthThreshold.millimeters),
+                routeSearchDelay: Int64(settings.routeSearchDelay)
+            )
+            )
         )
     }
     
@@ -240,14 +241,16 @@ class NavigationHandler {
         options: RouteSearchOptions?,
         route: TrafficRoute?,
         speedRangeZoom: SpeedRangeZoom,
-        completion: @escaping (FlutterError?) -> Void
+        completion: @escaping (Result<Void, any Error>) -> Void
     ) {
         guard let finishPoint = finishPoint, let options = options, let route = route else {
-            completion(FlutterError(
+            completion(
+                Result.failure(
+                FlutterError(
                 code: "NavigationError",
                 message: "Not enough data to start navigation. Check RouteHandler documentation",
                 details: nil
-            ))
+            )))
             return
         }
         
@@ -269,20 +272,22 @@ class NavigationHandler {
                 trafficRoute: route
             )
         } catch {
-            completion(FlutterError(
+            completion(
+                Result.failure(
+                FlutterError(
                 code: "NavigationError",
                 message: error.localizedDescription,
                 details: nil
-            ))
+            )))
             return
         }
         
-        completion(nil)
+        completion(Result.success(()))
     }
     
-    func setNavigatorVoice(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+    func setNavigatorVoice(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         NavigationHandler.navigationManager!.voiceSelector.voice = voiceManager.voices.first { $0.id == id }?.navigationVoice
-        completion(nil)
+        completion(Result.success(()))
     }
     
     func simulationSpeed(speed: Double) {
@@ -294,14 +299,16 @@ class NavigationHandler {
         options: RouteSearchOptions?,
         route: TrafficRoute?,
         speedRangeZoom: SpeedRangeZoom,
-        completion: @escaping (FlutterError?) -> Void
+        completion: @escaping (Result<Void, any Error>) -> Void
     ) {
         guard let finishPoint = finishPoint, let options = options, let route = route else {
-            completion(FlutterError(
+            completion(
+                Result.failure(
+                FlutterError(
                 code: "NavigationError",
                 message: "Not enough data to start navigation. Check RouteHandler documentation",
                 details: nil
-            ))
+            )))
             return
         }
         
@@ -322,15 +329,16 @@ class NavigationHandler {
                 trafficRoute: route
             )
         } catch {
-            completion(FlutterError(
+            completion(
+                Result.failure(FlutterError(
                 code: "NavigationError",
                 message: error.localizedDescription,
                 details: nil
-            ))
+            )))
             return
         }
         
-        completion(nil)
+        completion(Result.success(()))
     }
     
     func stopNavigation() {
@@ -348,18 +356,19 @@ class NavigationHandler {
         resetCamera()
     }
     
-    func saveNavigationState(completion: @escaping (FlutterStandardTypedData?, FlutterError?) -> Void) {
+    func saveNavigationState(completion: @escaping (Result<FlutterStandardTypedData, any Error>) -> Void) {
         let state = PackedNavigationState.fromModel(model: NavigationHandler.navigationManager!.uiModel)
         completion(
-            .init(bytes: state.toBytes()),
-            nil
+            Result.success(
+            .init(bytes: state.toBytes())
+            )
         )
     }
     
     func restoreNavigationState(
         state bytes: FlutterStandardTypedData,
         speedRangeZoom: SpeedRangeZoom,
-        completion: @escaping (FlutterError?) -> Void
+        completion: @escaping (Result<Void, any Error>) -> Void
     ) {
         do {
             let state = try PackedNavigationState.fromBytes(data: bytes.data)
@@ -371,17 +380,19 @@ class NavigationHandler {
                 completion: completion
             )
         } catch {
-            completion(FlutterError(
+            completion(
+                Result.failure(
+                FlutterError(
                 code: "NavigationError",
                 message: error.localizedDescription,
                 details: nil
-            ))
+            )))
             return
         }
     }
     
     func getCurrentNavigationState(
-        completion: @escaping (NavigationStateMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<NavigationStateMessage, any Error>) -> Void
     ) {
         let state = switch NavigationHandler.navigationManager!.uiModel.state {
         case .navigation, .routeSearch:  NavigationState.navigation
@@ -391,25 +402,27 @@ class NavigationHandler {
         }
         let options = NavigationHandler.navigationManager!.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
         completion(
-            NavigationStateMessage.make(with: state, routeSearchOptions: options),
-            nil
+            Result.success(NavigationStateMessage(state: state, routeSearchOptions: options))
+        
         )
     }
 
-    func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: @escaping (FlutterError?) -> Void) {
+    func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: (Result<Void, any Error>) -> Void) {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             try NavigationHandler.navigationManager!.start()
         } catch {
-            completion(FlutterError(
+            completion(
+                Result.failure(
+                FlutterError(
                 code: "NavigationError",
                 message: error.localizedDescription,
                 details: nil
-            ))
+            )))
             return
         }
 
-        completion(nil)
+        completion(Result.success(()))
     }
 
     func stopFreeRoam() {
@@ -429,7 +442,7 @@ class NavigationHandler {
         self.dashboardControlModel.toggleOverSpeeding(overSpeeding: overSpeeding)
     }
     
-    func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+    func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         let geometries = NavigationHandler.navigationManager!.uiModel.route.route.geometry.entries.map { entry in
             PointGeometry(point: entry.value)
         }
@@ -447,10 +460,10 @@ class NavigationHandler {
                 )
             },
             tilt: options.tilt.map {
-                Tilt(value: $0.floatValue)
+                Tilt(value: Float($0))
             },
             bearing: options.bearing.map {
-                Bearing(value: $0.doubleValue)
+                Bearing(value: $0)
             },
             size: options.size.map {
                 ScreenSize(
@@ -461,13 +474,13 @@ class NavigationHandler {
         )
         
         completion(
-            CameraPositionMessage.make(
-                withPoint: cameraPosition.point.toMessage(),
+            Result.success(
+            CameraPositionMessage(
+                point: cameraPosition.point.toMessage(),
                 zoom:  Double(cameraPosition.zoom.value),
                 tilt:  Double(cameraPosition.tilt.value),
                 bearing:  cameraPosition.bearing.value
-            ),
-            nil
+            ))
         )
     }
 }

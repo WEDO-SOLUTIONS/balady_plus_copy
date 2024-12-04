@@ -47,24 +47,26 @@ class SearchHandler: NSObject {
         self.itemMarkerInfosCancellable?.cancel()
     }
 
-    func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (DirectoryObjectMessage?, FlutterError?) -> Void) {
+    func searchByDirectoryObjectId(objectId: DgisObjectId, completion: @escaping (Result<DirectoryObjectMessage, any Error>) -> Void) {
         self.objectSearchCancelable = searchManager.searchByDirectoryObjectId(objectId: objectId).sink {
             directoryObject in
             guard let response = directoryObject else {
-                completion(nil, FlutterError(
+                completion(
+                    Result.failure(
+                FlutterError(
                     code: "NotFoundException",
                     message: "Object with id \(objectId.objectId) not found",
                     details: nil
-                ))
+                )))
                 return
             }
             
             completion(
-                response.toMessage(),
-                nil
+                Result.success(
+                response.toMessage())
             )
         } failure: { error in
-            completion(nil, FlutterError(code: "FutureError", message: error.description, details: nil))
+            completion(Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
         }
     }
     
@@ -76,16 +78,16 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         guard queryText.count > 0 else {
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "InvalidQuery",
                     message: "Query text cannot be empty",
                     details: nil
-                )
+                ))
             )
             return
         }
@@ -119,17 +121,17 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         guard let searchQuery = self.queries[query.id] else {
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "NotFoundException",
                     message: "SearchQuery with given id not exists",
                     details: nil
                 )
-            )
+            ))
             return
         }
         
@@ -158,7 +160,7 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         let query = SearchQueryBuilder.fromRubricIds(rubricIds: categories)
             .setPageSize(pageSize: pageSize)
@@ -184,7 +186,7 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         let query = SearchQueryBuilder.fromQueryText(queryText: "park")
             .setAllowedResultTypes(allowedResultTypes: [.attraction])
@@ -211,7 +213,7 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         let query = SearchQueryBuilder.fromQueryText(queryText: "beach")
             .setAllowedResultTypes(allowedResultTypes: [.attraction])
@@ -235,12 +237,14 @@ class SearchHandler: NSObject {
 
     func performSearch(
         _ query: SearchQuery,
-        completion: @escaping (SearchResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         self.searchCancelable = self.searchManager.search(query: query).sink(receiveValue: {
             [weak self] response in
             guard let self = self else {
-                completion(nil, FlutterError(code: "Self is nil", message: nil, details: nil))
+                completion(
+                    Result.failure(
+                    FlutterError(code: "Self is nil", message: nil, details: nil)))
                 return
             }
             
@@ -252,8 +256,9 @@ class SearchHandler: NSObject {
 
                 guard let markersInfo = itemMarkerInfos else {
                     completion(
-                        response.toMessage(withId: pageId, camera: self.map.camera, items: nil),
-                        nil
+                        Result.success(
+                        response.toMessage(withId: pageId, camera: self.map.camera, items: nil, labels: [])
+                    )
                     )
                     return
                 }
@@ -261,36 +266,36 @@ class SearchHandler: NSObject {
                 completion(response.toMessage(withId: pageId, camera: self.map.camera, items: markersInfo), nil)
             }, failure: { error in
                 completion(
-                    nil,
+                    Result.failure(
                     FlutterError(
                         code: "FutureError",
                         message: error.description,
                         details: nil
-                    )
+                    ))
                 )
             })
         }, failure: {
             error in
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "FutureError",
                     message: error.description,
                     details: nil
-                )
+                ))
             )
         })
     }
     
-    func fetchNextPage(_ pageId: PageIdMessage, completion: @escaping (PageMessage?, FlutterError?) -> Void) {
+    func fetchNextPage(_ pageId: PageIdMessage, completion: @escaping (Result<PageMessage,any Error>) -> Void) {
         guard let page = self.pages[pageId.id] else {
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "NotFoundException",
                     message: "Page with given id not exists",
                     details: nil
-                )
+                ))
             )
             return
         }
@@ -301,42 +306,42 @@ class SearchHandler: NSObject {
             
             if let response = response {
                 completion(
-                    response.toMessage(withId: pageId),
-                    nil
+                    Result.success(
+                    response.toMessage(withId: pageId))
                 )
             } else {
                 completion(
-                    nil,
+                    Result.failure(
                     FlutterError(
                         code: "NotFoundException",
                         message: "Failed to fetch page",
                         details: nil
                     )
-                )
+                ))
             }
         }, failure: {
             error in
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "FutureError",
                     message: error.description,
                     details: nil
                 )
-            )
+            ))
         })
     }
     
-    func fetchPrevPage(_ pageId: PageIdMessage, completion: @escaping (PageMessage?, FlutterError?) -> Void) {
+    func fetchPrevPage(_ pageId: PageIdMessage, completion: @escaping (Result<PageMessage, any Error>) -> Void) {
         guard let page = self.pages[pageId.id] else {
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "NotFoundException",
                     message: "Page with given id not exists",
                     details: nil
                 )
-            )
+            ))
             return
         }
         
@@ -346,52 +351,53 @@ class SearchHandler: NSObject {
             
             if let response = response {
                 completion(
-                    response.toMessage(withId: pageId),
-                    nil
+                    Result.success(
+                    response.toMessage(withId: pageId)
+                    )
                 )
             } else {
                 completion(
-                    nil,
+                    Result.failure(
                     FlutterError(
                         code: "NotFoundException",
                         message: "Failed to fetch page",
                         details: nil
-                    )
+                    ))
                 )
             }
         }, failure: {
             error in
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "FutureError",
                     message: error.description,
                     details: nil
                 )
-            )
+            ))
         })
     }
 
-    func releasePage(_ pageId: PageIdMessage, completion: @escaping (FlutterError?) -> Void) {
+    func releasePage(_ pageId: PageIdMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard self.pages.removeValue(forKey: pageId.id) != nil else {
             completion(
-                FlutterError(
+                Result.failure(FlutterError(
                     code: "NotFoundException",
                     message: "Page with given id not exists",
                     details: nil
-                )
+                ))
             )
             return
         }
 
-        completion(nil)
+        completion(Result.success(()))
     }
     
     func fetchSuggests(
         queryText: String,
         allowedResultTypes: [SuggestedTypeMessage_]?,
         searchGeoRect: DGis.GeoRect?,
-        completion: @escaping (SuggestResultMessage?, FlutterError?) -> Void
+        completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void
     ) {
         var suggestQueryBuilder = SuggestQueryBuilder
             .fromQueryText(queryText: queryText)
@@ -411,7 +417,7 @@ class SearchHandler: NSObject {
             receiveValue: {
                 [weak self] response in
                 guard let self = self else {
-                    completion(nil, FlutterError(code: "Self is nil", message: nil, details: nil))
+                    completion(  Result.failure( FlutterError(code: "Self is nil", message: nil, details: nil)))
                     return
                 }
                 self.queries.removeAll()
@@ -428,14 +434,14 @@ class SearchHandler: NSObject {
                 }
 
                 completion(
-                    SuggestResultMessage.make(
-                        withSuggests: suggests
-                    ),
-                    nil
-                )
+                    Result.success(
+                        SuggestResultMessage(
+                            suggests: suggests
+                        )
+                    )              )
             },
             failure: { error in
-                completion(nil, FlutterError(code: "FutureError", message: error.description, details: nil))
+                completion(  Result.failure(FlutterError(code: "FutureError", message: error.description, details: nil)))
             }
         )
     }
@@ -443,13 +449,13 @@ class SearchHandler: NSObject {
     func getDistanceTo(
         points: [DistanceRequestMessage],
         location: GeoPoint?,
-        completion: @escaping ([DistanceResponseMessage], FlutterError?) -> Void
+        completion: @escaping (Result<[DistanceResponseMessage], any Error>) -> Void
     ) {
         guard let location = location else {
             completion(
-                [],
+                Result.failure(
                 FlutterError(code: "LocationError", message: "Cannot define last location", details: nil)
-            )
+            ))
             return
         }
 
@@ -460,12 +466,12 @@ class SearchHandler: NSObject {
                     latitude: $0.geoPoint.latitude,
                     longitude: $0.geoPoint.longitude
                 ))
-            return DistanceResponseMessage.make(
-                withDistance: Double(distance.value),
+            return DistanceResponseMessage(
+                distance: Double(distance.value),
                 dgisObjectId: $0.dgisObjectId
             )
         }
-        completion(response ,nil)
+        completion(Result.success(response))
     }
 
     private func buildWeekTimeFilter(_ weekTimeMessage: WeekTimeSearchMessage?) -> WorkTimeFilter? {
@@ -475,7 +481,7 @@ class SearchHandler: NSObject {
             return WorkTimeFilter.isOpenNow(IsOpenNow())
         }
 
-        if let weekDay = weekTimeMessage.weekDay?.value.toWeekDay(), let time = weekTimeMessage.time {
+        if let weekDay = weekTimeMessage.weekDay?.toWeekDay(), let time = weekTimeMessage.time {
             return WorkTimeFilter.workTime(
                 WeekTime(
                     weekDay: weekDay,

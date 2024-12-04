@@ -38,7 +38,7 @@ class PackagesHandler {
         self.packageManager.checkForUpdates()
     }
     
-    func noop(_: FlutterError?) -> Void {}
+    func noop(_: Result<Void, any Error>) -> Void {}
     
     func checkInstallTasks(_ packages: [Package]) {
         let tasks = self.installTasks
@@ -82,11 +82,11 @@ class PackagesHandler {
         cancelable.removeAll()
     }
     
-    func listPackages(completion: @escaping ([PackageMessage]?, FlutterError?) -> Void) {
-        completion(packageManager.packages.map { $0.toMessage() }, nil)
+    func listPackages(completion: @escaping (Result<[PackageMessage?], any Error>) -> Void) {
+        completion(Result.success(packageManager.packages.map { $0.toMessage() }))
     }
     
-    func installPackage(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+    func installPackage(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         if let package = packageManager.packages.first(where: { $0.id == id }) {
             cancelable.append(package.progressChannel.sink { [weak self] in
                 self?.eventChannel.success([
@@ -108,18 +108,22 @@ class PackagesHandler {
         } else {
             self.installTasks.append(.package(id))
         }
-        completion(nil)
+        completion(Result.success(()))
     }
     
-    func listVoices(completion: @escaping ([VoiceMessage]?, FlutterError?) -> Void) {
-        completion(voiceManager.voices.map { $0.toVoiceMessage() }, nil)
+    func listVoices(completion: @escaping (
+        Result<[VoiceMessage?], any Error>
+        ) -> Void) {
+        completion(
+            Result.success(
+            voiceManager.voices.map { $0.toVoiceMessage() }))
     }
     
-    func voicePlayWelcome(_ id: String, completion: @escaping (FlutterError?) -> Void) {
-        completion(nil)
+    func voicePlayWelcome(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
+        completion(Result.success(()))
     }
     
-    func installVoice(_ id: String, completion: @escaping (FlutterError?) -> Void) {
+    func installVoice(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         if let package = voiceManager.voices.first(where: { $0.id == id }) {
             cancelable.append(package.progressChannel.sink { [weak self] in
                 self?.eventChannel.success([
@@ -140,6 +144,6 @@ class PackagesHandler {
         } else {
             self.installTasks.append(.voice(id))
         }
-        completion(nil)
+        completion(Result.success(()))
     }
 }

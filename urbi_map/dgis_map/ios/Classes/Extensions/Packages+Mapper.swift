@@ -10,8 +10,8 @@ import DGis
 
 extension Package {
     func toMessage() -> PackageMessage {
-        PackageMessage.make(
-            withId: self.id,
+        PackageMessage(
+            id: self.id,
             info: self.info.toMessage()
         )
     }
@@ -19,8 +19,8 @@ extension Package {
 
 extension PackageInfo {
     func toMessage() ->  PackageInfoMessage{
-        PackageInfoMessage.make(
-            withName: self.name,
+        PackageInfoMessage(
+            name: self.name,
             installed:  self.installed,
             incomplete:  self.incomplete,
             preinstalled:  self.preinstalled,

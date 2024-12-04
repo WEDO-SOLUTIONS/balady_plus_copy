@@ -3,8 +3,8 @@ import DGis
 
 extension Suggest {
     func toMessage(searchQueryId: String?) -> SuggestMessage {
-        SuggestMessage.make(
-            withHandler: self.handler.toMessage(searchQueryId: searchQueryId),
+        SuggestMessage(
+            handler: self.handler.toMessage(searchQueryId: searchQueryId),
             suggestedType: self.suggestedType.toMessage(),
             title: self.title.toMessage(),
             subtitle: self.subtitle.toMessage()
@@ -16,32 +16,32 @@ extension SuggestHandler {
     fileprivate func toMessage(searchQueryId: String?) -> SuggestHandlerMessage {
         switch self {
         case .objectHandler(let objectHandler):
-            return SuggestHandlerMessage.make(
-                withObjectHandler: objectHandler.map {
-                    return SuggestObjectHandlerMessage.make(
-                        withItem: $0.item.toMessage()
+            return SuggestHandlerMessage(
+                objectHandler: objectHandler.map {
+                    return SuggestObjectHandlerMessage(
+                        item: $0.item.toMessage()
                     )
                 },
                 performSearchHandler: nil,
                 incompleteTextHandler: nil
             )
         case .performSearchHandler(_):
-            return SuggestHandlerMessage.make(
-                withObjectHandler: nil,
+            return SuggestHandlerMessage(
+                objectHandler: nil,
                 performSearchHandler: searchQueryId.map {
-                    PerformSearchHandlerMessage.make(
-                        withSearchQuery: SearchQueryMessage.make(withId: $0)
+                    PerformSearchHandlerMessage(
+                        searchQuery: SearchQueryMessage(id: $0)
                     )
                 },
                 incompleteTextHandler: nil
             )
         case .incompleteTextHandler(let incompleteText):
-            return SuggestHandlerMessage.make(
-                withObjectHandler: nil,
+            return SuggestHandlerMessage(
+                objectHandler: nil,
                 performSearchHandler: nil,
                 incompleteTextHandler: incompleteText.map {
-                    IncompleteTextHandlerMessage.make(
-                        withQueryText: $0.queryText
+                    IncompleteTextHandlerMessage(
+                        queryText: $0.queryText
                     )
                 }
             )
@@ -198,8 +198,8 @@ extension SuggestedTypeMessage {
 
 extension MarkedUpText {
     fileprivate func toMessage() -> MarkedUpTextMessage {
-        MarkedUpTextMessage.make(
-            withText: self.text,
+        MarkedUpTextMessage(
+            text: self.text,
             matchedParts: self.matchedParts.map {
                 $0.toMessage()
             }
@@ -209,9 +209,9 @@ extension MarkedUpText {
 
 extension MarkedUpTextSpan {
     fileprivate func toMessage() -> MarkedUpTextSpanMessage {
-        MarkedUpTextSpanMessage.make(
-            withOffset:  Int(self.offset),
-            length:  Int(self.length)
+        MarkedUpTextSpanMessage(
+            offset:  Int64(self.offset),
+            length:  Int64(self.length)
         )
     }
 }

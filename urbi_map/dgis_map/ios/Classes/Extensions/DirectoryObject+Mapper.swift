@@ -3,8 +3,8 @@ import DGis
 
 extension DirectoryObject {
     func toMessage() -> DirectoryObjectMessage {
-        return DirectoryObjectMessage.make(
-            withTypes: self.types.toMessage(),
+        return DirectoryObjectMessage(
+            types: self.types.toMessage(),
             title: self.title,
             titleAddition: self.titleAddition,
             subtitle: self.subtitle, 
@@ -16,9 +16,7 @@ extension DirectoryObject {
             shortAddressName: self.formattedAddress(type: .short)?.toMessage(),
             attributes: self.attributes.map { $0.toMessage() },
             contextAttributes: self.attributes.map { $0.toMessage() },
-            timeZoneOffset: self.timeZoneOffset.map {
-                NSNumber(value: $0)
-            },
+            timeZoneOffset: self.timeZoneOffset,
             openingHours: self.openingHours?.toMessage(),
             contactInfos: self.contactInfos.map {
                 $0.toMessage()
@@ -26,10 +24,8 @@ extension DirectoryObject {
             reviews: self.reviews?.toMessage(),
             parkingInfo: self.parkingInfo?.toMessage(),
             workStatus: self.workStatus?.toMessage(),
-            levelId: self.levelId.map {
-                NSNumber(value: $0.value)
-            },
-            buildingLevels: self.buildingLevels?.toMessage(), 
+            levelId: self.levelId?.value != nil ? Int64(self.levelId!.value): nil,
+            buildingLevels: self.buildingLevels?.toMessage(),
             buildingInfo: self.buildingInfo.toMessage(),
             entrances: self.entrances.map {
                 $0.toMessage()
@@ -42,7 +38,7 @@ extension DirectoryObject {
 extension Array where Element==ObjectType {
     fileprivate func toMessage() -> [ObjectTypeItemMessage] {
         return self.map {
-            ObjectTypeItemMessage.make(withType: $0.toMessage())
+            ObjectTypeItemMessage(type: $0.toMessage())
         }
     }
 }
@@ -82,29 +78,27 @@ extension ObjectType {
 
 extension DgisObjectId {
     func toMessage() -> DgisObjectIdMessage {
-        DgisObjectIdMessage.make(
-            withObjectId:  Int(self.objectId),
-            entranceId:  Int(self.entranceId)
+        DgisObjectIdMessage(
+            objectId:  Int64(self.objectId),
+            entranceId:  Int64(self.entranceId)
         )
     }
 }
 
 extension BuildingInfo {
     func toMessage() -> BuildingInfoMessage {
-        BuildingInfoMessage.make(
-            withBuildingName: self.buildingName,
+        BuildingInfoMessage(
+            buildingName: self.buildingName,
             purposeName: self.purposeName,
-            purposeCode: self.purposeCode.map {
-                NSNumber(value: $0.value)
-            }
+            purposeCode: self.purposeCode?.value != nil ? Int64(self.purposeCode!.value): nil
         )
     }
 }
 
 extension Address {
     fileprivate func toMessage() -> AddressMessage {
-        AddressMessage.make(
-            withDrilldown: self.drillDown.map { $0.toMessage() },
+        AddressMessage(
+            drilldown: self.drillDown.map { $0.toMessage() },
             components: self.components.map { $0.toMessage() },
             buildingName: self.buildingName,
             postCode: self.postCode,
@@ -116,8 +110,8 @@ extension Address {
 
 extension FormattedAddress {
     fileprivate func toMessage() -> FormattedAddressMessage {
-        FormattedAddressMessage.make(
-            withDrilldownAddress: self.drilldownAddress,
+        FormattedAddressMessage(
+            drilldownAddress: self.drilldownAddress,
             streetAddress: self.streetAddress,
             addressComment: self.addressComment,
             postCode: self.postCode
@@ -127,8 +121,8 @@ extension FormattedAddress {
 
 extension AddressAdmDiv {
     fileprivate func toMessage() -> AddressAdmDivMessage {
-        AddressAdmDivMessage.make(
-            withType: self.type,
+        AddressAdmDivMessage(
+            type: self.type,
             name: self.name
         )
     }
@@ -136,14 +130,14 @@ extension AddressAdmDiv {
 
 extension AddressNumber {
     fileprivate func toMessage() -> AddressNumberMessage {
-        AddressNumberMessage.make(withNumber: self.number)
+        AddressNumberMessage(number: self.number)
     }
 }
 
 extension AddressStreet {
     fileprivate func toMessage() -> AddressStreetMessage {
-        AddressStreetMessage.make(
-            withStreet: self.street,
+        AddressStreetMessage(
+            street: self.street,
             number: self.number
         )
     }
@@ -151,8 +145,8 @@ extension AddressStreet {
 
 extension AddressLocation {
     fileprivate func toMessage() -> AddressLocationMessage {
-        AddressLocationMessage.make(
-            withComment: self.comment
+        AddressLocationMessage(
+            comment: self.comment
         )
     }
 }
@@ -161,20 +155,20 @@ extension AddressComponent {
     fileprivate func toMessage() -> AddressComponentMessage {
         switch self {
         case .location(let location):
-            return AddressComponentMessage.make(
-                withStreetAddress: nil,
+            return AddressComponentMessage(
+                streetAddress: nil,
                 number: nil,
                 location: location.toMessage()
             )
         case .number(let number):
-            return AddressComponentMessage.make(
-                withStreetAddress: nil,
+            return AddressComponentMessage(
+                streetAddress: nil,
                 number: number.toMessage(),
                 location: nil
             )
         case .streetAddress(let street):
-            return AddressComponentMessage.make(
-                withStreetAddress: street.toMessage(),
+            return AddressComponentMessage(
+                streetAddress: street.toMessage(),
                 number: nil,
                 location: nil
             )
@@ -184,8 +178,8 @@ extension AddressComponent {
 
 extension Attribute {
     fileprivate func toMessage() -> AttributeMessage {
-        AttributeMessage.make(
-            withTag: self.tag,
+        AttributeMessage(
+            tag: self.tag,
             value: self.value
         )
     }
@@ -193,8 +187,8 @@ extension Attribute {
 
 extension OpeningHours {
     fileprivate func toMessage() -> OpeningHoursMessage {
-        OpeningHoursMessage.make(
-            withValues: self.weekOpeningHours.toMessage(),
+        OpeningHoursMessage(
+            values: self.weekOpeningHours.toMessage(),
             isOpen24x7:  self.isOpen24x7
         )
     }
@@ -203,8 +197,8 @@ extension OpeningHours {
 extension Array where Element==[WeekTimeInterval] {
     fileprivate func toMessage() -> [WeekTimeIntervalListMessage] {
         self.map {
-            WeekTimeIntervalListMessage.make(
-                withValues: $0.toMessage()
+            WeekTimeIntervalListMessage(
+                values: $0.toMessage()
             )
         }
     }
@@ -220,8 +214,8 @@ extension Array where Element==WeekTimeInterval {
 
 extension WeekTimeInterval {
     fileprivate func toMessage() -> WeekTimeIntervalMessage {
-        WeekTimeIntervalMessage.make(
-            withStartTime: startTime.toMessage(),
+        WeekTimeIntervalMessage(
+            startTime: startTime.toMessage(),
             finishTime: finishTime.toMessage()
         )
     }
@@ -229,8 +223,8 @@ extension WeekTimeInterval {
 
 extension WeekTime {
     fileprivate func toMessage() -> WeekTimeMessage {
-        WeekTimeMessage.make(
-            withWeekDay: weekDay.toMessage(),
+        WeekTimeMessage(
+            weekDay: weekDay.toMessage(),
             time: time.toMessage()
         )
     }
@@ -259,17 +253,17 @@ extension WeekDay {
 
 extension DayTime {
     fileprivate func toMessage() -> DayTimeMessage {
-        DayTimeMessage.make(
-            withHours: Int(hours),
-            minutes: Int(minutes)
+        DayTimeMessage(
+            hours: Int64(hours),
+            minutes: Int64(minutes)
         )
     }
 }
 
 extension ContactInfo {
     fileprivate func toMessage() -> ContactInfoMessage {
-        ContactInfoMessage.make(
-            withType: self.type,
+        ContactInfoMessage(
+            type: self.type,
             displayText: self.displayText,
             value: self.value,
             comment: self.comment
@@ -279,17 +273,17 @@ extension ContactInfo {
 
 extension Reviews {
     fileprivate func toMessage() -> ReviewsMessage {
-        ReviewsMessage.make(
-            withRating: Double(self.rating),
-            count: Int( self.count)
+        ReviewsMessage(
+            rating: Double(self.rating),
+            count: Int64( self.count)
         )
     }
 }
 
 extension WorkStatus {
     fileprivate func toMessage() -> WorkStatusMessage {
-        WorkStatusMessage.make(
-            withIsOpen:  self.isOpen,
+        WorkStatusMessage(
+            isOpen:  self.isOpen,
             desc: self.description
         )
     }
@@ -297,17 +291,15 @@ extension WorkStatus {
 
 extension ParkingInfo {
     fileprivate func toMessage() -> ParkingInfoMessage {
-        ParkingInfoMessage.make(
-            withType: self.type?.toMessage() ?? .none,
+        ParkingInfoMessage(
+            type: self.type?.toMessage() ?? .none,
             purpose: self.purpose.toMessage(),
             access: self.access.toMessage(),
             pavingType: self.pavingType?.toMessage() ?? .none,
             isPaid: self.isPaid,
             isIncentive: self.isIncentive,
             forTrucks: self.forTrucks,
-            levelCount: self.levelCount.map {
-                NSNumber(value: $0)
-            },
+            levelCount:self.levelCount != nil ? Int64(self.levelCount!): nil,
             capacity: self.capacity?.toMessage()
         )
     }
@@ -347,7 +339,7 @@ extension ParkingAccess {
     fileprivate func toMessage() -> ParkingAccessMessage {
         switch self {
         case .public:
-            return .public
+            return .publicAccess
         case .handicappedOnly:
             return .handicappedOnly
         case .customersOnly:
@@ -377,8 +369,8 @@ extension ParkingPavingType {
 
 extension ParkingCapacity {
     fileprivate func toMessage() -> ParkingCapacityMessage {
-        ParkingCapacityMessage.make(
-            withTotal: self.total,
+        ParkingCapacityMessage(
+            total: self.total,
             specialSpaces: self.specialSpaces.map {
                 $0.toMessage()
             }
@@ -388,8 +380,8 @@ extension ParkingCapacity {
 
 extension SpecialSpace {
     fileprivate func toMessage() -> SpecialSpaceMessage {
-        SpecialSpaceMessage.make(
-            withType: self.type.toMessage(),
+        SpecialSpaceMessage(
+            type: self.type.toMessage(),
             name: self.name,
             count: self.count
         )
@@ -419,8 +411,8 @@ extension SpecialSpaceType {
 
 extension BuildingLevels {
     fileprivate func toMessage() -> BuildingLevelsMessage {
-        BuildingLevelsMessage.make(
-            withDefaultLevelId:  Int(self.defaultLevelId.value),
+        BuildingLevelsMessage(
+            defaultLevelId:  Int64(self.defaultLevelId.value),
             levels: self.levels.map {
                 $0.toMessage()
             }
@@ -430,8 +422,8 @@ extension BuildingLevels {
 
 extension LevelInfo {
     fileprivate func toMessage() -> LevelInfoMessage {
-        LevelInfoMessage.make(
-            withId: Int(self.id.value),
+        LevelInfoMessage(
+            id: Int64(self.id.value),
             name: self.name
         )
     }
@@ -439,8 +431,8 @@ extension LevelInfo {
 
 extension EntranceInfo {
     fileprivate func toMessage() -> EntranceInfoMessage {
-        EntranceInfoMessage.make(
-            withId: self.id.toMessage(),
+        EntranceInfoMessage(
+            id: self.id.toMessage(),
             buildingNumber: self.buildingNumber,
             porchName: self.porchName,
             porchNumber: self.porchNumber,
@@ -454,8 +446,8 @@ extension EntranceInfo {
 
 extension ApartmentRange {
     fileprivate func toMessage() -> ApartmentRangeMessage {
-        ApartmentRangeMessage.make(
-            withStart: self.start,
+        ApartmentRangeMessage(
+            start: self.start,
             end: self.end
         )
     }
@@ -463,8 +455,8 @@ extension ApartmentRange {
 
 extension EntranceGeometry {
     fileprivate func toMessage() -> EntranceGeometryMessage {
-        EntranceGeometryMessage.make(
-            withEntrancePoints: self.entrancePoints.map {
+        EntranceGeometryMessage(
+            entrancePoints: self.entrancePoints.map {
                 $0.toMessage()
             },
             entrancePolylines: self.entrancePolylines.map { polyline in
@@ -478,8 +470,8 @@ extension EntranceGeometry {
 
 extension TradeLicense {
     fileprivate func toMessage() -> TradeLicenseMessage {
-        TradeLicenseMessage.make(
-            withType: self.type,
+        TradeLicenseMessage(
+            type: self.type,
             license: self.license,
             legalForm: self.legalForm,
             endDate: self.endDate

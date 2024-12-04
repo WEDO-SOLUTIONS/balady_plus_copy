@@ -20,19 +20,12 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         let semaphore = DispatchSemaphore(value: 0)
         var message: SimpleClusterOptionsMessage? = nil
         var options: SimpleClusterOptions? = nil
-        
-        api.renderClusterManager(
-            manager,
-            objectCount: Int(truncating: NSNumber(value: cluster.objectCount))
-        ) { (response, error) in
-            if (response == nil){
-                semaphore.signal()
-                return;
-            }
-            message = response!
-            semaphore.signal()
-            return;
-        }
+//        
+//        api.renderCluster(
+//            manager: manager,
+//            objectCount: Int64(Int(truncating: NSNumber(value: cluster.objectCount))), completion: @escaping Result<SimpleClusterOptionsMessage, PigeonError>
+//        )
+//        
         
         semaphore.wait()
         

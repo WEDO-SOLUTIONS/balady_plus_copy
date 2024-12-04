@@ -3,8 +3,8 @@ import DGis
 
 extension GeoRect {
     func toMessage() -> GeoRectMessage {
-        GeoRectMessage.make(
-            withNorthEast: self.northEastPoint.toMessage(),
+        GeoRectMessage(
+            northEast: self.northEastPoint.toMessage(),
             southWest: self.southWestPoint.toMessage()
         )
     }
