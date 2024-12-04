@@ -24,6 +24,7 @@ dependencies:
   dio: 5.7.0
   pretty_dio_logger: 1.4.0
   dio_smart_retry: 7.0.1
+  easy_image_viewer: ^1.5.1
   flutter_appauth: 7.0.1
 
   ##! Local Storage
