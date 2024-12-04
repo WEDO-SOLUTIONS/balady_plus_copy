@@ -70,7 +70,10 @@ class _HeaderInfoWidget
     return ContentTransition(
       interpolation: scale,
       child: Padding(
-        padding: const EdgeInsets.only(top: Spacing.$3x, bottom: Spacing.$3x),
+        padding: const EdgeInsets.only(
+          top: Spacing.$3x,
+          bottom: Spacing.$3x,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
