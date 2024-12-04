@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -18,36 +17,12 @@ import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:mapness/widgets/app_feedback/v2/tag_cloud.dart';
 
 class AppFeedbackMain extends HookConsumerWidget {
-  const AppFeedbackMain({super.key});
+  final VoidCallback? onNeedPopConfirm;
 
-  void _showConfirmDialog(BuildContext context) {
-    if (!context.mounted) {
-      return;
-    }
-    showCupertinoDialog(
-        context: context,
-        builder: (ctx) => CupertinoAlertDialog(
-              title: Text(context.l10n.appFeedbackUnsavedChanges),
-              content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
-              actions: [
-                CupertinoDialogAction(
-                  isDefaultAction: true,
-                  child: Text(context.l10n.appFeedbackStay),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                  },
-                ),
-                CupertinoDialogAction(
-                  isDestructiveAction: true,
-                  child: Text(context.l10n.appFeedbackLeave),
-                  onPressed: () {
-                    Navigator.of(ctx).pop();
-                    context.pop();
-                  },
-                ),
-              ],
-            ));
-  }
+  const AppFeedbackMain({
+    super.key,
+    this.onNeedPopConfirm,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -88,7 +63,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                 if (rating.value == 0) {
                   context.router.popForced();
                 } else {
-                  _showConfirmDialog(context);
+                  onNeedPopConfirm?.call();
                 }
               },
             ),

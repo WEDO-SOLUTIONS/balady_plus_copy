@@ -5,6 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
@@ -16,6 +17,35 @@ class AppFeedbackSheet extends HookConsumerWidget {
   const AppFeedbackSheet({super.key});
 
   static const _sheetPadding = EdgeInsets.symmetric(vertical: 29);
+
+  void _showConfirmDialog(BuildContext context) {
+    if (!context.mounted) {
+      return;
+    }
+    showCupertinoDialog(
+        context: context,
+        builder: (ctx) => CupertinoAlertDialog(
+              title: Text(context.l10n.appFeedbackUnsavedChanges),
+              content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text(context.l10n.appFeedbackStay),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  child: Text(context.l10n.appFeedbackLeave),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    context.router.popForced();
+                  },
+                ),
+              ],
+            ));
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -31,6 +61,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
         context.router.popForced();
       } else {
         controller.open();
+        _showConfirmDialog(context);
       }
     }
 
@@ -43,7 +74,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
       content: [
         sendFeedbackState.when(
           data: (data) => switch (data) {
-            AppFeedbackState.initial => const AppFeedbackMain(),
+            AppFeedbackState.initial => AppFeedbackMain(
+                onNeedPopConfirm: () => _showConfirmDialog(context),
+              ),
             AppFeedbackState.loading => const AppFeedbackLoading(),
             AppFeedbackState.success => const Padding(
                 padding: _sheetPadding,

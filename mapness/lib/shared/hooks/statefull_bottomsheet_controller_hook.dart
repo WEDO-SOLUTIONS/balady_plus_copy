@@ -30,14 +30,14 @@ class _StatefulBottomSheetControllerHook<T> extends Hook<StatefulBottomSheetCont
   final BottomSheetStateMapper<T> mapper;
   final double? durationMultiplier;
   final bool? resetContentScrollOnHiddenState;
-  final dynamic initialState;
+  final T? initialState;
 
   const _StatefulBottomSheetControllerHook({
     required this.behavior,
     required this.mapper,
+    this.initialState,
     this.durationMultiplier,
     this.resetContentScrollOnHiddenState,
-    this.initialState,
     List<Object?>? keys,
   }) : super(keys: keys);
 
