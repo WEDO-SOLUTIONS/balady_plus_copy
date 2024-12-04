@@ -10,8 +10,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     final attributesList = attributes.map((item) => item.toJson()).toList();
     final contextAttributesList =
         contextAttributes.map((item) => item.toJson()).toList();
-    final contactInfosList =
-        contactInfos.map((item) => item.toJson()).toList();
+    final contactInfosList = contactInfos.map((item) => item.toJson()).toList();
     final openingHoursJson = openingHours?.toJson();
     final reviewsJson = reviews?.toJson();
     final parkingInfoJson = parkingInfo?.toJson();
@@ -151,24 +150,26 @@ extension EntranceInfoMessageExt on EntranceInfoMessage {
       'buildingNumber': buildingNumber,
       'porchName': porchName,
       'porchNumber': porchNumber,
-      'apartmentRanges': apartmentRanges.map((item) => item?.toJson()).nonNulls.toList(),
+      'apartmentRanges':
+          apartmentRanges.map((item) => item?.toJson()).nonNulls.toList(),
       'geometry': geometryJson,
     };
   }
 
-  static EntranceInfoMessage fromJson(Map<String, dynamic>? json) => EntranceInfoMessage(
-      id: DgisObjectIdMessageExt.fromJson(json?['id']),
-      buildingNumber: json?['buildingNumber'],
-      porchName: json?['porchName'],
-      porchNumber: json?['porchNumber'],
-      apartmentRanges: (json?['apartmentRanges'] as List)
-          .map((e) =>
-              e == null ? null : ApartmentRangeMessageExtension.fromJson(e))
-          .toList(),
-      geometry: json?['geometry'] == null
-          ? null
-          : EntranceGeometryMessageExtension.fromJson(json?['geometry']),
-    );
+  static EntranceInfoMessage fromJson(Map<String, dynamic>? json) =>
+      EntranceInfoMessage(
+        id: DgisObjectIdMessageExt.fromJson(json?['id']),
+        buildingNumber: json?['buildingNumber'],
+        porchName: json?['porchName'],
+        porchNumber: json?['porchNumber'],
+        apartmentRanges: (json?['apartmentRanges'] as List)
+            .map((e) =>
+                e == null ? null : ApartmentRangeMessageExtension.fromJson(e))
+            .toList(),
+        geometry: json?['geometry'] == null
+            ? null
+            : EntranceGeometryMessageExtension.fromJson(json?['geometry']),
+      );
 }
 
 extension DgisObjectIdMessageExt on DgisObjectIdMessage {
@@ -372,7 +373,7 @@ extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
         .toList();
 
     final json2 = json['entrancePolylines'] as List<dynamic>?;
-    final entrancePolylines = (json2)!.map<List<GeoPointMessage>>((polyline) {
+    final entrancePolylines = json2?.map<List<GeoPointMessage>>((polyline) {
       final result = <GeoPointMessage>[];
 
       final list = (polyline as List<dynamic>)
@@ -389,7 +390,7 @@ extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
 
     return EntranceGeometryMessage(
       entrancePoints: entrancePoints,
-      entrancePolylines: entrancePolylines,
+      entrancePolylines: entrancePolylines ?? [],
     );
   }
 }
