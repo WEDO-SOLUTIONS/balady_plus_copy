@@ -45,15 +45,16 @@ class RoutingFavourites extends ConsumerWidget {
         await CommonFunctions.authAndOpen(
           context,
           callback: () async {
-            await context.router.push(
-              FavouritesSearchRoute(
-                markerType: FavouriteItemMarkerType.home,
-              ),
-            );
-
             final favouritesState = await ref.read(favouriteCacheProvider.future);
-
-            onFavouriteTap(favouritesState.home!);
+            if (favouritesState.home == null) {
+              await context.router.push(
+                FavouritesSearchRoute(
+                  markerType: FavouriteItemMarkerType.home,
+                ),
+              );
+            } else {
+              onFavouriteTap(favouritesState.home!);
+            }
           },
         );
       } else {
@@ -68,17 +69,18 @@ class RoutingFavourites extends ConsumerWidget {
         await CommonFunctions.authAndOpen(
           context,
           callback: () async {
-            await context.router.push(
-              FavouritesSearchRoute(
-                markerType: FavouriteItemMarkerType.work,
-              ),
-            );
-
             final favouritesState = await ref.read(favouriteCacheProvider.future);
-
-            onFavouriteTap(
-              favouritesState.work!,
-            );
+            if (favouritesState.work == null) {
+              await context.router.push(
+                FavouritesSearchRoute(
+                  markerType: FavouriteItemMarkerType.work,
+                ),
+              );
+            } else {
+              onFavouriteTap(
+                favouritesState.work!,
+              );
+            }
           },
         );
       } else {

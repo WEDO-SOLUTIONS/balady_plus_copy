@@ -61,7 +61,7 @@ class CommonFunctions {
     StreamSubscription? sub;
     if (!isAuth) {
       if (context.mounted) {
-        await const SignInRoute().push(context);
+        await context.router.push(const SigninRoute());
       }
       sub = CommonProperties.userStateStream.listen((event) {
         if (event.userInfo != null) {
