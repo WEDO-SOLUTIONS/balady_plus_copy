@@ -77,20 +77,20 @@ class PackagesHandler(
         closeables.clear()
     }
 
-    fun listPackages(result: Messages.Result<List<Messages.PackageMessage>>?) {
-        result?.success(packageManager.packages.map { it.toMessage() }.toList())
+    fun listPackages(result: Messages.Result<List<Messages.PackageMessage>>) {
+        result.success(packageManager.packages.map { it.toMessage() }.toList())
     }
 
-    fun listVoices(result: Messages.Result<List<Messages.VoiceMessage>>?) {
+    fun listVoices(result: Messages.Result<List<Messages.VoiceMessage>>) {
         result?.success(voiceManager.voices.map { it.toVoiceMessage() }.toList())
     }
 
-    fun voicePlayWelcome(id: String, result: Messages.Result<Void>?) {
+    fun voicePlayWelcome(id: String, result: Messages.VoidResult) {
         voiceManager.voices.find { it.id == id }?.playWelcome()
-        result?.success(null)
+        result.success()
     }
 
-    fun installPackage(id: String, result: Messages.Result<Void>?) {
+    fun installPackage(id: String, result: Messages.VoidResult?) {
         val pakage = packageManager.packages.firstOrNull { it.id == id }
         if (pakage != null) {
             closeables.add(pakage.progressChannel.connect { progress ->
@@ -115,10 +115,10 @@ class PackagesHandler(
         } else {
             installTasks.add(InstallTask.Package(id))
         }
-        result?.success(null)
+        result?.success()
     }
 
-    fun installVoice(id: String, result: Messages.Result<Void>?) {
+    fun installVoice(id: String, result: Messages.VoidResult?) {
         val voice = voiceManager.voices.firstOrNull { it.id == id }
         if (voice != null) {
             closeables.add(voice.progressChannel.connect { progress ->
@@ -143,6 +143,6 @@ class PackagesHandler(
         } else {
             installTasks.add(InstallTask.Voice(id))
         }
-        result?.success(null)
+        result?.success()
     }
 }

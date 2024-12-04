@@ -256,14 +256,14 @@ class SearchHandler(
                 }
     }
 
-    fun releasePage(pageId: PageIdMessage, result: Result<Void>?) {
+    fun releasePage(pageId: PageIdMessage, result: VoidResult) {
         if (this.pages[pageId.id] == null) {
             result?.error(IllegalArgumentException("Page with given id not exists"))
             return
         }
 
         this.pages.remove(pageId.id)
-        result?.success(null)
+        result.success()
     }
 
     fun fetchSuggests(

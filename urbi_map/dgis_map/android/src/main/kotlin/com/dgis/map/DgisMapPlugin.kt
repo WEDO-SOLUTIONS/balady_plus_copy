@@ -17,11 +17,10 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
     override fun initialize(
         message: Messages.LogOptionsMessage?,
         configMessage: Messages.VendorConfigMessage?,
-        configContent: VendorConfigContentMessage?,
-        result: Messages.Result<Void>?
+        result: Messages.VoidResult
     ) {
-        initializeDGis(context, message?.toLogOptions(context), configMessage, configContent)
-        result?.success(null)
+        initializeDGis(context, message?.toLogOptions(context), configMessage)
+        result.success()
     }
 
     private fun initializeDGis(
@@ -38,12 +37,12 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
         binding.platformViewRegistry.registerViewFactory("com.dgis.map_view", viewFactory)
 
         context = binding.applicationContext
-        PluginApi.setup(binding.binaryMessenger, this)
+        PluginApi.setUp(binding.binaryMessenger, this)
     }
 
     override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {
-        MapApi.setup(binding.binaryMessenger, null)
-        PluginApi.setup(binding.binaryMessenger, null)
+        MapApi.setUp(binding.binaryMessenger, null)
+        PluginApi.setUp(binding.binaryMessenger, null)
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {

@@ -154,7 +154,7 @@ class ObjectTapHandler(
         size: Size,
         iconWidth: Double,
         sdkContext: Context,
-        result: Result<Void>?
+        result: VoidResult
     ) {
         try {
             val asset =
@@ -166,9 +166,9 @@ class ObjectTapHandler(
             markerImage = imageFromAsset(sdkContext, asset, size)
             this.iconWidth = LogicalPixel(iconWidth.toFloat())
 
-            result?.success(null)
+            result.success()
         } catch (e: FileNotFoundException) {
-            result?.error(e)
+            result.error(e)
         }
     }
 
@@ -184,7 +184,7 @@ class ObjectTapHandler(
         return objects.values.map { it.first }.toList()
     }
 
-    private fun <T>removeAllObjects(managerId: String?, objects: MutableMap<String, Pair<T, String?>>, result: Result<Void>?) {
+    private fun <T>removeAllObjects(managerId: String?, objects: MutableMap<String, Pair<T, String?>>, result: VoidResult) {
         mapObjectsExecutorService.submit {
             getManager(managerId).removeAll()
             val filtered = objects.filter {
@@ -195,7 +195,7 @@ class ObjectTapHandler(
             }.toMutableMap()
             objects.clear()
             objects.putAll(filtered)
-            result?.success(null)
+            result.success()
         }
     }
 
@@ -219,7 +219,7 @@ class ObjectTapHandler(
         }
     }
 
-    private fun getImageFromAsset(assetPath: String, size: Size, result: Result<Void>?): Image? {
+    private fun getImageFromAsset(assetPath: String, size: Size, result: VoidResult): Image? {
         if (iconCache.containsKey(assetPath)) {
             return iconCache[assetPath]
         }
@@ -236,7 +236,7 @@ class ObjectTapHandler(
         }
     }
 
-    private fun mapMarker(marker: MarkerMessage, result: Result<Void>?): Marker? {
+    private fun mapMarker(marker: MarkerMessage, result: VoidResult): Marker? {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
             
@@ -284,17 +284,17 @@ class ObjectTapHandler(
         return Marker(options)
     }
 
-    fun addMarker(marker: MarkerMessage, managerId: String?, result: Result<Void>?) {
+    fun addMarker(marker: MarkerMessage, managerId: String?, result: VoidResult) {
         val markerObject = mapMarker(marker, result) ?: return
 
         mapObjectsExecutorService.submit {
             markers[marker.id] = Pair(markerObject, managerId)
             getManager(managerId).addObject(markerObject)
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun addMarkers(markers: List<MarkerMessage>, managerId: String?, result: Result<Void>?) {
+    fun addMarkers(markers: List<MarkerMessage>, managerId: String?, result: VoidResult) {
         val markerObjects = mutableMapOf<String, Pair<Marker, String?>>()
         for (marker in markers) {
             val markerObject = mapMarker(marker, result) ?: return
@@ -304,20 +304,20 @@ class ObjectTapHandler(
         mapObjectsExecutorService.submit {
             this.markers.putAll(markerObjects)
             getManager(managerId).addObjects(getObjectsFromPair(markerObjects))
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun removeMarker(id: String, managerId: String?, result: Result<Void>?) {
+    fun removeMarker(id: String, managerId: String?, result: VoidResult) {
         mapObjectsExecutorService.submit {
             markers.remove(id)?.also {
                 getManager(managerId).removeObject(it.first)
             }
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun removeAllMarkers(managerId: String?, result: Result<Void>?) {
+    fun removeAllMarkers(managerId: String?, result: VoidResult) {
         removeAllObjects(managerId, markers, result)
     }
 
@@ -370,10 +370,10 @@ class ObjectTapHandler(
         }
     }
 
-    fun removeMapObjectManager(manager: MapObjectManagerMessage, result: Result<Void>?) {
+    fun removeMapObjectManager(manager: MapObjectManagerMessage, result: VoidResult) {
         mapObjectsExecutorService.submit {
             this.managers.remove(manager.id).also {
-                result?.success(null)
+                result.success()
             }
         }
     }
@@ -387,7 +387,7 @@ class ObjectTapHandler(
 
     /// --- CLUSTER ---
 
-    fun setClusterIcon(icon: String, clusterId: String, result: Result<Void>?) {
+    fun setClusterIcon(icon: String, clusterId: String, result: VoidResult) {
         val cluster = this.clusters[clusterId];
         if (cluster == null) {
             result?.error(IllegalArgumentException("Cluster with given id not found or already released"))
@@ -444,17 +444,17 @@ class ObjectTapHandler(
         return Polygon(options)
     }
 
-    fun addPolygon(polygon: PolygonMessage, manager: String?, result: Result<Void>?) {
+    fun addPolygon(polygon: PolygonMessage, manager: String?, result: VoidResult) {
         val polygonObject = mapPolygon(polygon)
 
         mapObjectsExecutorService.submit {
             polygons[polygon.id] = Pair(polygonObject, manager)
             getManager(manager).addObject(polygonObject)
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun addPolygons(polygons: List<PolygonMessage>, managerId: String?, result: Result<Void>?) {
+    fun addPolygons(polygons: List<PolygonMessage>, managerId: String?, result: VoidResult) {
         val polygonObjects = mutableMapOf<String, Pair<Polygon, String?>>()
         for (polygon in polygons) {
             val polygonObject = mapPolygon(polygon) ?: return
@@ -464,20 +464,20 @@ class ObjectTapHandler(
         mapObjectsExecutorService.submit {
             this.polygons.putAll(polygonObjects)
             getManager(managerId).addObjects(getObjectsFromPair(polygonObjects))
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun removePolygon(id: String, managerId: String?, result: Result<Void>?) {
+    fun removePolygon(id: String, managerId: String?, result: VoidResult) {
         mapObjectsExecutorService.submit {
             polygons.remove(id)?.also {
                 getManager(managerId).removeObject(it.first)
             }
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun removeAllPolygons(managerId: String?, result: Result<Void>?) {
+    fun removeAllPolygons(managerId: String?, result: VoidResult) {
         removeAllObjects(managerId, polygons, result)
     }
 
@@ -500,17 +500,17 @@ class ObjectTapHandler(
         return Polyline(options)
     }
 
-    fun addPolyline(polyline: PolylineMessage, managerId: String?, result: Result<Void>?) {
+    fun addPolyline(polyline: PolylineMessage, managerId: String?, result: VoidResult) {
         val polylineObject = mapPolyline(polyline) ?: return
 
         mapObjectsExecutorService.submit {
             polylines[polyline.id] = Pair(polylineObject, managerId)
             getManager(managerId).addObject(polylineObject)
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun addPolylines(polylines: List<PolylineMessage>, managerId: String?, result: Result<Void>?) {
+    fun addPolylines(polylines: List<PolylineMessage>, managerId: String?, result: VoidResult) {
         val polylineObjects = mutableMapOf<String, Pair<Polyline, String?>>()
         for (polyline in polylines) {
             val polylineObject = mapPolyline(polyline)
@@ -520,26 +520,26 @@ class ObjectTapHandler(
         mapObjectsExecutorService.submit {
             this.polylines.putAll(polylineObjects)
             getManager(managerId).addObjects(getObjectsFromPair(polylineObjects))
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun removePolyline(id: String, managerId: String?, result: Result<Void>?) {
+    fun removePolyline(id: String, managerId: String?, result: VoidResult) {
         mapObjectsExecutorService.submit {
             polylines.remove(id)?.also {
                 getManager(managerId).removeObject(it.first)
             }
-            result?.success(null)
+            result.success()
         }
     }
 
-    fun removeAllPolylines(managerId: String?, result: Result<Void>? ) {
+    fun removeAllPolylines(managerId: String?, result: VoidResult ) {
         removeAllObjects(managerId, polylines, result)
     }
 
     /// --- OTHER ---
 
-    fun addIoMarkers(message: AddLayerPointObjectsMessage, result: Result<Void>?) {
+    fun addIoMarkers(message: AddLayerPointObjectsMessage, result: VoidResult) {
         val markerImage = markerImage
         val iconWidth = iconWidth
 
@@ -566,7 +566,7 @@ class ObjectTapHandler(
             ioObjectManager.removeAndAddObjects(ioLayerMarkers, markers)
             ioLayerMarkers.clear()
             ioLayerMarkers.addAll(markers)
-            result?.success(null)
+            result.success()
         }
     }
 
@@ -581,7 +581,7 @@ class ObjectTapHandler(
 
     fun setHighlighted(
         objectIds: List<DgisObjectId>,
-        result: Result<Void>?
+        result: VoidResult
     ) {
         for (source in map.sources) {
             val mSource = source as? DgisSource
@@ -599,7 +599,7 @@ class ObjectTapHandler(
         source.setHighlighted(source.highlightedObjects, false)
         source.setHighlighted(objectIds, true)
 
-        result?.success(null)
+        result.success()
     }
 
     fun addPanoramasMarkers(
@@ -685,7 +685,7 @@ class ObjectTapHandler(
     fun calcPositionForMarkers(
         markers: List<String>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>?
+        result: Result<CameraPositionMessage>
     ) {
         calcPositionForObjects(
             objects =  markers.mapNotNull { this.markers[it]?.first },
@@ -697,7 +697,7 @@ class ObjectTapHandler(
     fun calcPositionForPolygons(
         polygons: List<String>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>?
+        result: Result<CameraPositionMessage>
     ) {
         calcPositionForObjects(
             objects =  polygons.mapNotNull { this.polygons[it]?.first },
@@ -709,7 +709,7 @@ class ObjectTapHandler(
     fun calcPositionForPolylines(
         polylines: List<String>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>?
+        result: Result<CameraPositionMessage>
     ) {
         calcPositionForObjects(
             objects =  polylines.mapNotNull { this.polylines[it]?.first },
@@ -721,7 +721,7 @@ class ObjectTapHandler(
     private fun calcPositionForObjects(
         objects: List<SimpleMapObject>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>?
+        result: Result<CameraPositionMessage>
     ) {
         val cameraPosition = calcPosition(
             camera = map.camera,

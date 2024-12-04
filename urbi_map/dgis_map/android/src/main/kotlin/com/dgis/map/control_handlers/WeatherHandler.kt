@@ -24,7 +24,7 @@ class WeatherHandler(
     private var precipitationTileSource: Source? = null
     private var isHeatmapVisible = false
 
-    fun toggleHeatmap(message: Messages.WeatherMapMessage, result: Messages.Result<Boolean>?) {
+    fun toggleHeatmap(message: Messages.WeatherMapMessage, result: Messages.Result<Boolean>) {
 
         if (message.enabled) {
 
@@ -92,7 +92,7 @@ class WeatherHandler(
             }
         }
         isHeatmapVisible = message.enabled
-        result?.success(isHeatmapVisible)
+        result.success(isHeatmapVisible)
     }
 
     override fun close() {}

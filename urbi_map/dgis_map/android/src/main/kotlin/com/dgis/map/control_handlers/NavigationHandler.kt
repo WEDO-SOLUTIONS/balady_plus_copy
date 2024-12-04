@@ -10,8 +10,8 @@ import com.dgis.map.map_api.Messages
 import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
 import com.dgis.map.map_api.Messages.BetterRouteSettingsMessage
 import com.dgis.map.map_api.Messages.NavigationStateMessage
-import com.dgis.map.map_api.Messages.Result
 import com.dgis.map.map_api.Messages.SoundToggleType
+import com.dgis.map.map_api.Messages.VoidResult
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.ScreenSize
@@ -137,10 +137,10 @@ class NavigationHandler(
         dashboardControlModel.toggleVoiceInstruction(toggleType)
     }
 
-    fun setNavigatorVoice(id: String, result: Messages.Result<Void>?) {
+    fun setNavigatorVoice(id: String, result: VoidResult) {
         navigationManager.voiceSelector.voice =
             voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
-        result?.success(null)
+        result.success()
     }
 
     fun toggleRoadCameras(roadCameras: Boolean) {
@@ -159,15 +159,15 @@ class NavigationHandler(
         dashboardControlModel.muteOtherSounds(mute)
     }
 
-    fun saveNavigationState(result: Result<ByteArray>?) {
+    fun saveNavigationState(result: Messages.Result<ByteArray>) {
         val state = PackedNavigationState.fromModel(model = this.navigationManager.uiModel)
-        result?.success(state.toBytes())
+        result.success(state.toBytes())
     }
 
     fun restoreNavigationState(
         state: ByteArray,
         speedRangeZoom: Messages.SpeedRangeZoom,
-        result: Messages.Result<Void>?
+        result: Messages.VoidResult
     ) {
         try {
             val state = PackedNavigationState.fromBytes(state)
@@ -184,7 +184,7 @@ class NavigationHandler(
         }
     }
 
-    fun getCurrentNavigationState(result: Result<NavigationStateMessage>) {
+    fun getCurrentNavigationState(result: Messages.Result<NavigationStateMessage>) {
         val state = when (navigationManager.uiModel.state) {
             State.NAVIGATION, State.ROUTE_SEARCH -> Messages.NavigationState.NAVIGATION
             State.FINISHED -> Messages.NavigationState.FINISH
@@ -204,7 +204,7 @@ class NavigationHandler(
         options: RouteSearchOptions?,
         route: TrafficRoute?,
         speedRangeZoom: Messages.SpeedRangeZoom,
-        result: Result<Void>?,
+        result: VoidResult,
     ) {
         if (finishPoint == null || options == null || route == null) {
             result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
@@ -220,7 +220,7 @@ class NavigationHandler(
             trafficRoute = route
         )
 
-        result?.success(null)
+        result.success()
     }
 
     fun simulationSettings(speed: Double) {
@@ -232,7 +232,7 @@ class NavigationHandler(
         options: RouteSearchOptions?,
         route: TrafficRoute?,
         speedRangeZoom: Messages.SpeedRangeZoom,
-        result: Result<Void>?,
+        result: VoidResult,
     ) {
         if (finishPoint == null || options == null || route == null) {
             result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
@@ -248,7 +248,7 @@ class NavigationHandler(
             trafficRoute = route
         )
 
-        result?.success(null)
+        result.success()
     }
 
     fun stopNavigation() {
@@ -362,9 +362,9 @@ class NavigationHandler(
         }
     }
 
-    fun getBetterRouteSettings(result: Result<BetterRouteSettingsMessage>?) {
+    fun getBetterRouteSettings(result: Messages.Result<BetterRouteSettingsMessage>) {
         val settings = navigationManager.alternativeRoutesProviderSettings
-        result?.success(
+        result.success(
             BetterRouteSettingsMessage.Builder()
                 .setRouteSearchDelay(settings.routeSearchDelay.inSeconds)
                 .setBetterRouteTimeCostThreshold(settings.betterRouteTimeCostThreshold.inSeconds)
@@ -389,7 +389,7 @@ class NavigationHandler(
 
     fun calcPositionForRoute(
         options: Messages.CalcPositionOptionsMessage,
-        result: Result<Messages.CameraPositionMessage>?
+        result: Messages.Result<Messages.CameraPositionMessage>
     ) {
         val geometries = navigationManager.uiModel.route.route.geometry.entries
             .map { entry ->
@@ -421,8 +421,7 @@ class NavigationHandler(
                 )
             }
         )
-
-        result?.success(
+        result.success(
             Messages.CameraPositionMessage
                 .Builder()
                 .setPoint(cameraPosition.point.toMessage())

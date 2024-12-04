@@ -23,14 +23,15 @@ class FlutterClusterRenderer(
     private val iconCache = mutableMapOf<String, Image>()
 
     suspend fun apiRenderCluster(manager: MapObjectManagerMessage, objectCount: Int) = suspendCoroutine<SimpleClusterOptionsMessage> { cont ->
-        Handler(Looper.getMainLooper()).post {
-            api.renderCluster(
-                manager,
-                objectCount.toLong()
-            ) {
-                cont.resume(it)
-            }
-        }
+        // TODO: Implement this
+//        Handler(Looper.getMainLooper()).post {
+//            api.renderCluster(
+//                manager,
+//                objectCount.toLong()
+//            ) {
+//                cont.resume(it)
+//            }
+//        }
     }
 
     override fun renderCluster(cluster: SimpleClusterObject): SimpleClusterOptions {

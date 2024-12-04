@@ -368,8 +368,8 @@ class ObjectTapHandler {
         
         let manager = MapObjectManager.withClustering(
             map: self.map,
-            logicalPixel: LogicalPixel(value: options.logicalPixel.floatValue),
-            maxZoom: Zoom(value: options.maxZoom.floatValue),
+            logicalPixel: LogicalPixel(value: Float(options.logicalPixel)),
+            maxZoom: Zoom(value: Float(options.maxZoom)),
             clusterRenderer: FlutterClusterRenderer(
                 api: self.flutterApi,
                 registrar: self.registrar,
