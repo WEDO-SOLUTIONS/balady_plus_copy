@@ -3,11 +3,6 @@ import Flutter
 import DGis
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
-
-    func selectIndoorLevel(_ index: Int) async -> FlutterError? {
-        return nil;
-    }
-    
     private class Events {
         static let zoomOutEvent = "zoomOutState"
         static let zoomInEvent = "zoomInState"
@@ -192,8 +187,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         completion(nil)
     }
     
-    func selectIndoorLevelIndex(_ index: NSNumber, completion: @escaping (FlutterError?) -> Void) {
-        self.indoorControlHandler?.selectIndoorLevel(index: index.uint64Value)
+    func selectIndoorLevel(_ index: Int, completion: @escaping (FlutterError?) -> Void) {
+        self.indoorControlHandler?.selectIndoorLevel(index: UInt64(index))
         completion(nil)
     }
 

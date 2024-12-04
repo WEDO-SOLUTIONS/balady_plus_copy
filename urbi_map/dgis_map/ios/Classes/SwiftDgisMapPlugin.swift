@@ -3,21 +3,15 @@ import UIKit
 import DGis
 
 class DgisPluginApi: NSObject, PluginApi {
-    func initializeMessage(_ message: LogOptionsMessage?, configMessage configMessageBoxed: VendorConfigMessageBox?) async -> FlutterError? {
-        return nil;
-    }
-    
-    
+
     var registrar: FlutterPluginRegistrar
     
     init(registrar: FlutterPluginRegistrar) {
         self.registrar = registrar
     }
 
-    func initializeMessage(_ message: LogOptionsMessage?, configMessage: VendorConfigMessage,
-                           contentMessage: VendorConfigContentMessage?,
-                           completion: @escaping (FlutterError?) -> Void) {
-        initializeDGis(logOptions: message?.logOptions, configMessage: configMessage,contentMessage: contentMessage)
+    func initializeMessage(_ message: LogOptionsMessage?, configMessage configMessageBoxed: VendorConfigMessageBox?, completion: @escaping (FlutterError?) -> Void) {
+        initializeDGis(logOptions: message?.logOptions, configMessage: configMessageBoxed!.value)
         completion(nil)
     }
     
