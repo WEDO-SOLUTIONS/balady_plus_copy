@@ -464,7 +464,7 @@ public class FlutterAppauthPlugin
 
     private void finishWithSuccess(Object data) {
         if (pendingOperation != null) {
-            pendingOperation.callback(Result.success(data));
+            pendingOperation.result.success(data);
             pendingOperation = null;
         }
     }

@@ -1,7 +1,7 @@
 package com.dgis.map.control_handlers
 
 import com.dgis.map.extensions.toMessage
-import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.map.DefaultRasterUrlTemplate
@@ -24,13 +24,13 @@ class WeatherHandler(
     private var precipitationTileSource: Source? = null
     private var isHeatmapVisible = false
 
-    fun toggleHeatmap(message: Messages.WeatherMapMessage, result: Messages.Result<Boolean>) {
+    fun toggleHeatmap(message: WeatherMapMessage, callback: (Result<Boolean>) -> Unit) {
 
         if (message.enabled) {
 
             when (message.type) {
 
-                Messages.WeatherMapType.TEMPERATURE -> {
+                WeatherMapType.TEMPERATURE -> {
                     precipitationTileSource?.let {
                         if (map.sources.contains(it)) {
                             map.removeSource(it)
@@ -53,7 +53,7 @@ class WeatherHandler(
                     }
                 }
 
-                Messages.WeatherMapType.PRECIPITATION -> {
+                WeatherMapType.PRECIPITATION -> {
                     temperatureTileSource?.let {
                         if (map.sources.contains(it) == true) {
                             map.removeSource(it)
@@ -92,7 +92,7 @@ class WeatherHandler(
             }
         }
         isHeatmapVisible = message.enabled
-        callback(Result.success(isHeatmapVisible)
+        callback(Result.success(isHeatmapVisible))
     }
 
     override fun close() {}

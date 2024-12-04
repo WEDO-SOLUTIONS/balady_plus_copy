@@ -459,7 +459,7 @@ public class OpenFilePlusPlugin implements FlutterPlugin, MethodCallHandler, Act
     private void result(int type, String message) {
         if (result != null && !isResultSubmitted) {
             Map<String, Object> map = MapUtil.createMap(type, message);
-            callback(Result.success(JsonUtil.toJson(map)));
+            result.success(JsonUtil.toJson(map));
             isResultSubmitted = true;
         }
     }
