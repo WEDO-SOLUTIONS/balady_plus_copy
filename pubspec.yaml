@@ -81,7 +81,7 @@ dependencies:
   # Automatically resizes text to fit perfectly within its bounds
   auto_size_text: ^3.0.0
   # To deal with svg icons
-  flutter_svg: ^2.0.5
+  flutter_svg: 2.0.16
   # A Flutter widget that can be expanded or collapsed by the user.
   expandable: ^5.0.1
   # Shimmer effect, useful for loading
@@ -106,7 +106,7 @@ dependencies:
   # Permissions
   permission_handler: ^11.0.1
   # Get current device information
-  device_info_plus: 10.1.2
+  device_info_plus: 11.1.1
   # API for querying information about an application package
   package_info_plus: ^8.1.0
   # parses Adobe After Effects animations
@@ -241,7 +241,7 @@ dependency_overrides:
   # for dio_http_cache
   dio: 5.7.0
   json_serializable: 6.8.0
-  device_info_plus: 10.1.2
+  device_info_plus: 11.1.1
   google_api_headers: ^4.2.4
   rxdart: 0.28.0
   collection: 1.19.0
