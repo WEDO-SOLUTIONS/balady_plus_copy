@@ -12,6 +12,7 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
+import java.util.UUID
 import ru.dgis.sdk.map.Map as DgisMap
 
 class SearchHandler(
@@ -204,68 +205,27 @@ class SearchHandler(
         )
     }
 
-    private fun performSearch(query: SearchQuery, result: Result<SearchResultMessage>?) {
+    private fun performSearch(query: SearchQuery, callback: (Result<SearchResultMessage>)->Unit) {
         searchFuture =
-                searchManager.search(query).apply {
-                    onResult { response ->
-                        this@SearchHandler.itemMarkerInfosFuture =
-                                response.itemMarkerInfos.apply {
-                                    onResult { items ->
-                                        val pageId = UUID.randomUUID().toString()
-                                        if (response.firstPage != null) {
-                                            this@SearchHandler.pages[pageId] = response.firstPage!!
-                                        }
-
-    private suspend fun resolveMarkerTitle(response: SearchResult, objectIds:  List<DgisObjectId>): List<UIMarkerInfo> {
-        return response.markerTitles(objectIds).map {
-            it.await()
-        }.flatten()
-    }
-
-    private fun performSearch(
-        query: SearchQuery,
-        callback: (Result<SearchResultMessage>)->Unit
-    ) {
-        searchFuture = searchManager.search(query).apply {
-            onResult { response ->
-                this@SearchHandler.itemMarkerInfosFuture = response.itemMarkerInfos.apply {
-                    onResult { items ->
-                        val pageId = UUID.randomUUID().toString()
-                        if (response.firstPage != null) {
-                            this@SearchHandler.pages[pageId] = response.firstPage!!
-                        }
-
-                        val scope = CoroutineScope(Dispatchers.Default)
-
-                        objectLabelsJob = scope.launch {
-                            try {
-                                val objectIds = items?.mapNotNull { it.objectId } ?: emptyList()
-                                val uiMarkerInfo = resolveMarkerTitle(response, objectIds)
-                                withContext(Dispatchers.Main) {
-                                    callback(Result.success(
-                                        response.toMessage(pageId, map.camera, items, uiMarkerInfo)
-                                    ))
+            searchManager.search(query).apply {
+                onResult { response ->
+                    this@SearchHandler.itemMarkerInfosFuture =
+                        response.itemMarkerInfos.apply {
+                            onResult { items ->
+                                val pageId = UUID.randomUUID().toString()
+                                if (response.firstPage != null) {
+                                    this@SearchHandler.pages[pageId] = response.firstPage!!
                                 }
-                            } catch (e: Exception) {
-                                withContext(Dispatchers.Main) {
-                                    callback(Result.success(
-                                        response.toMessage(pageId, map.camera, items, emptyList())
-                                    ))
-                                }
+
+                                callback(Result.success(
+                                    response.toMessage(pageId, map.camera, items)
+                                ))
                             }
+                            onError { error -> callback(Result.failure(error)) }
                         }
-
-                    }
-                    onError { error ->
-                        callback(Result.failure(error))
-                    }
-                    onError { error -> result?.error(error) }
                 }
+                onError { error -> callback(Result.failure(error)) }
             }
-            onError { error ->
-                callback(Result.failure(error))
-            }
-        }
     }
 
     fun fetchNextPage(pageId: PageIdMessage,callback: (Result<PageMessage>)->Unit) {
@@ -356,33 +316,26 @@ class SearchHandler(
                     onResult { response ->
                         this@SearchHandler.queries.clear()
                         val suggests =
-                                response.suggests.map {
-                                    var queryId: String? = null
-                                    if (it.handler.isPerformSearchHandler) {
-                                        queryId = UUID.randomUUID().toString()
-                                        this@SearchHandler.queries[queryId] =
-                                                it.handler.asPerformSearchHandler!!.searchQuery
-                                    }
-
-                                    it.toMessage(queryId)
+                            response.suggests.map {
+                                var queryId: String? = null
+                                if (it.handler.isPerformSearchHandler) {
+                                    queryId = UUID.randomUUID().toString()
+                                    this@SearchHandler.queries[queryId] =
+                                        it.handler.asPerformSearchHandler!!.searchQuery
                                 }
 
-                        result?.success(
-                                SuggestResultMessage.Builder().setSuggests(suggests).build()
+                                it.toMessage(queryId)
+                            }
+
+                        callback(
+                            Result.success(
+                                SuggestResultMessage(suggests = suggests)
+                            )
                         )
                     }
-                    onError { result?.error(it) }
+                    onError { callback(Result.failure(it)) }
                 }
-
-                callback(Result.success(
-                    SuggestResultMessage(
-                        suggests = suggests
-                    )
-                ))
             }
-            onError { callback(Result.failure(it)) }
-        }
-    }
 
     fun getDistanceTo(
         points: List<DistanceRequestMessage>,

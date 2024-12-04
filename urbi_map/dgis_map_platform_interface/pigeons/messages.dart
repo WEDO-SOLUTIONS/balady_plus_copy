@@ -339,7 +339,7 @@ class EntranceInfoMessage {
   final String? buildingNumber;
   final String? porchName;
   final String? porchNumber;
-  final List<ApartmentRangeMessage> apartmentRanges;
+  final List<ApartmentRangeMessage?> apartmentRanges;
   final EntranceGeometryMessage? geometry;
 }
 

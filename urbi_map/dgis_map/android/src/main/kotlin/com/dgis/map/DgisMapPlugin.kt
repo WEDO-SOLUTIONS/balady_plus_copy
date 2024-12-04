@@ -14,14 +14,15 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
     override fun initialize(
         message: LogOptionsMessage?,
         configMessage: VendorConfigMessage?,
+        vendorConfigContentMessage: VendorConfigContentMessage?,
         callback: (Result<Unit>) -> Unit
     ) {
-        initializeDGis(context, message?.toLogOptions(context), configMessage)
+        initializeDGis(context, message?.toLogOptions(context), configMessage, vendorConfigContentMessage)
         callback(Result.success(Unit))
     }
 
     private fun initializeDGis(
-        appContext: Context, logOptions: LogOptions?, vendorConfig: Messages.VendorConfigMessage?,
+        appContext: Context, logOptions: LogOptions?, vendorConfig: VendorConfigMessage?,
         vendorConfigContentMessage: VendorConfigContentMessage?,
     ) {
 

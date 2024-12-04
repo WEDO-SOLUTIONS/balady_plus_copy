@@ -41,7 +41,8 @@ fun ItemMarkerInfo.toMessage(): ItemMarkerInfoMessage {
     return ItemMarkerInfoMessage(
         objectId = this.objectId?.toMessage(),
         floorInfo = this.floorInfo?.toMessage(),
-        geoPoint = this.geoPoint.toMessage()
+        geoPoint = this.geoPoint.toMessage(),
+        rubricIds = this.rubricIds.map { it.value },
     )
 }
 fun FloorInfo.toMessage(): FloorInfoMessage {

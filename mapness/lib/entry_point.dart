@@ -179,7 +179,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               ref.read(appRouterProvider).push(
                 PathNavRoute(
                   navType: RouteSearchOptionsMessageExt.fromString(type),
-                  restoreFromState: true,
+                  initAction: null,
                 ),
               );
             }

@@ -257,13 +257,13 @@ class SearchHandler: NSObject {
                 guard let markersInfo = itemMarkerInfos else {
                     completion(
                         Result.success(
-                        response.toMessage(withId: pageId, camera: self.map.camera, items: nil, labels: [])
-                    )
+                            response.toMessage(withId: pageId, camera: self.map.camera, items: nil)
+                        )
                     )
                     return
                 }
 
-                completion(response.toMessage(withId: pageId, camera: self.map.camera, items: markersInfo), nil)
+                completion(Result.success( response.toMessage(withId: pageId, camera: self.map.camera, items: markersInfo)))
             }, failure: { error in
                 completion(
                     Result.failure(

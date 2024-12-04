@@ -22,7 +22,7 @@ extension SearchResult {
             dynamicFilters: self.dynamicFilters.compactMap {
                 $0.toMessage()
             },
-            autoUseFirstResult:  self.autoUseFirstResult,
+            autoUseFirstResult:  self.autoUseFirstResult
         )
     }
 }
@@ -56,7 +56,7 @@ extension Array where Element==ItemMarkerInfo {
                 floorInfo: $0.floorInfo?.toMessage(),
                 title: $0.title,
                 rubricIds: $0.rubricIds.map({
-                    NSNumber(value: $0.value)
+                    Int64($0.value)
                 })
             )
         }
