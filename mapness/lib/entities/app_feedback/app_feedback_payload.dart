@@ -7,13 +7,17 @@ enum AppFeedbackLocale { en, ar }
 
 enum AppFeedbackMobileOs { android, ios }
 
+enum FeedbackSource { main, navi }
+
 @freezed
 class AppFeedbackPayload with _$AppFeedbackPayload {
   // ignore: invalid_annotation_target
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackPayload({
-    required final String reviewText,
-    required final AppFeedbackContext context,
+    required final int stars,
+    final String? text,
+    final List<String>? tags,
+    final AppFeedbackContext? context,
   }) = _AppFeedbackPayload;
 
   factory AppFeedbackPayload.fromJson(Map<String, dynamic> json) => _$AppFeedbackPayloadFromJson(json);
@@ -26,6 +30,8 @@ class AppFeedbackContext with _$AppFeedbackContext {
     final AppFeedbackMobileOs? mobileOS,
     final AppFeedbackLocale? locale,
     final String? authId,
+    final FeedbackSource? feedbackSource,
+    final String? deviceId,
   }) = _AppFeedbackContext;
 
   factory AppFeedbackContext.fromJson(Map<String, dynamic> json) => _$AppFeedbackContextFromJson(json);

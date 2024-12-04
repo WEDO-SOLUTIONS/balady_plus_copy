@@ -60,6 +60,8 @@ class PathNavPage extends ConsumerStatefulWidget {
 }
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
+  bool _navigatorAlreadyStopped = false;
+
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
   late StreamSubscription? _naviEventsListener;
@@ -292,20 +294,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ),
             ),
             Consumer(builder: (context, ref, _) {
-            final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
-            return isEtaExpanded
-              ?GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: () {
-                  ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-                },
-                child: SizedBox.expand(
-                  child: ColoredBox(
-                    color: AppColor.black.withOpacity(0.4),
-                  ),
-                ),)
-                : const SizedBox.shrink();
-              }),
+              final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
+              return isEtaExpanded
+                  ? GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                      },
+                      child: SizedBox.expand(
+                        child: ColoredBox(
+                          color: AppColor.black.withOpacity(0.4),
+                        ),
+                      ),
+                    )
+                  : const SizedBox.shrink();
+            }),
             Positioned(
               bottom: 0,
               right: 0,
@@ -321,7 +324,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                         return Align(
                           alignment: Alignment.bottomCenter,
                           child: EtaSheet(
-                            onEndTripPressed: _endTripAndShowHome,
+                            onEndTripPressed: () => _endTripAndShowFeedback(context),
                             onRoutePressed: _onShowRoutePressed,
                             onBetterRouteAccept: () => _acceptBetterRoute(context),
                             onBetterRouteReject: () => _rejectBetterRoute(context),
@@ -354,15 +357,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
-  Future<void> _endTrip(VoidCallback action) async {
+  Future<void> _endTrip({VoidCallback? action}) async {
+    _navigatorAlreadyStopped = true;
     await _stopActiveSharing();
+
     if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
 
     await clearNavigationState();
-    action();
+    action?.call();
 
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -376,7 +381,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       action: MetricAction.tap.toString(),
     );
 
-    await _endTrip(() {
+    await _endTrip(action: () {
       if (context.mounted) {
         context.router.navigate(const RoutingPointsRoute());
       }
@@ -385,6 +390,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
+    if (_navigatorAlreadyStopped) {
+      return;
+    }
     Metrics.logEventAdvanced(
       MetricsConstants.navigationKeys.endTripAndShowHome,
       group: MetricsConstants.navigationTag,
@@ -392,11 +400,40 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
-    await _endTrip(() {
+    await _endTrip(action: () {
       if (context.mounted) {
         context.router.popUntilRouteWithName(BottomMenuRoute.name);
       }
     });
+  }
+
+  // Show the feedback page after the trip is finished manually
+  Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
+    /// Because we call stop navigation in other places and with other events
+    /// we need to check if the navigation is already stopped
+    if (_navigatorAlreadyStopped) {
+      return;
+    }
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
+
+    await _endTrip();
+
+    if (!ctx.mounted) {
+      return;
+    }
+
+    await ctx.router.push(const AppFeedbackSheet(source: FeedbackSource.navi).location);
+
+    if (!ctx.mounted) {
+      return;
+    }
+    context.router.popUntilRouteWithName(BottomMenuRoute.name);
   }
 
   // Show the pause state

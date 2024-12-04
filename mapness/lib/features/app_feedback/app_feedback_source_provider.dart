@@ -1,0 +1,24 @@
+import 'package:flutter/widgets.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+
+class FeedbackSourceProvider extends InheritedWidget {
+  final FeedbackSource source;
+
+  const FeedbackSourceProvider({
+    required this.source,
+    required Widget child,
+    Key? key,
+  }) : super(key: key, child: child);
+
+  static FeedbackSourceProvider? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<FeedbackSourceProvider>();
+
+  static FeedbackSourceProvider of(BuildContext context) {
+    final FeedbackSourceProvider? result = maybeOf(context);
+    assert(result != null, 'No FeedbackSourceProvider found in context');
+    return result!;
+  }
+
+  @override
+  bool updateShouldNotify(covariant FeedbackSourceProvider oldWidget) => source != oldWidget.source;
+}

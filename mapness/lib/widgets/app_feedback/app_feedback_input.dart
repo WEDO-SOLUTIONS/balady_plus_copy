@@ -1,6 +1,4 @@
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -47,32 +45,22 @@ class AppFeedbackInput extends HookWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            WidgetLabel(
-              label: context.l10n.appFeedbackLeaveAMessage,
-              labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
-                color: context.colorsV2.foregroundDefault,
+            ValueListenableBuilder<int>(
+              valueListenable: maxLines,
+              builder: (context, maxLinesValue, _) => BaladyInput(
+                controller: textController,
+                focusNode: focusNode,
+                autofocus: true,
+                hintText: context.l10n.appFeedbackTellUsMore,
+                maxLines: maxLinesValue,
+                maxLength: _maxCharsAllowed,
+                isDisposed: false,
+                onValidate: (v) => v != null && v.length != _maxCharsAllowed
+                    ? null
+                    : context
+                        .l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
               ),
             ),
-            Column(
-              children: [
-                ValueListenableBuilder<int>(
-                  valueListenable: maxLines,
-                  builder: (context, maxLinesValue, _) => BaladyInput(
-                    controller: textController,
-                    focusNode: focusNode,
-                    autofocus: true,
-                    hintText: context.l10n.appFeedbackTellUsMore,
-                    maxLines: maxLinesValue,
-                    maxLength: _maxCharsAllowed,
-                    isDisposed: false,
-                    onValidate: (v) => v != null && v.length != _maxCharsAllowed
-                        ? null
-                        : context.l10n
-                            .appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
-                  ),
-                ),
-              ],
-            )
           ],
         ),
       ),

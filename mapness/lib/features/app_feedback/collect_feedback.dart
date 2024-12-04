@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -16,7 +17,21 @@ class CollectFeedback extends _$CollectFeedback {
   @override
   AppFeedbackPayload? build() => null;
 
-  Future<void> collectFeedback(String reviewText) async {
+  Future<String> getDeviceIdentifier() async {
+    String deviceIdentifier = 'unknown';
+    final deviceInfo = DeviceInfoPlugin();
+
+    if (Platform.isAndroid) {
+      final androidInfo = await deviceInfo.androidInfo;
+      deviceIdentifier = 'android::${androidInfo.serialNumber}::${androidInfo.id}::${androidInfo.model}';
+    } else if (Platform.isIOS) {
+      final iosInfo = await deviceInfo.iosInfo;
+      deviceIdentifier = iosInfo.identifierForVendor ?? 'unknown';
+    }
+    return deviceIdentifier;
+  }
+
+  Future<void> collectFeedback({required int stars, String? text, List<String>? tags}) async {
     final isAndroid = Platform.isAndroid;
     final packageInfo = await PackageInfo.fromPlatform();
 
@@ -25,17 +40,21 @@ class CollectFeedback extends _$CollectFeedback {
     final language = ref.read(appLanguageProvider) == Language.arabic ? AppFeedbackLocale.ar : AppFeedbackLocale.en;
 
     final auth = await ref.read(authProvider.future);
+    final deviceId = await getDeviceIdentifier();
 
     _storeLink?.close();
     _storeLink = ref.keepAlive();
 
     state = AppFeedbackPayload(
-      reviewText: reviewText,
+      stars: stars,
+      text: text,
+      tags: tags,
       context: AppFeedbackContext(
         locale: language,
         appVersion: version,
         mobileOS: mobileOs,
         authId: auth?.idNo,
+        deviceId: deviceId,
       ),
     );
   }

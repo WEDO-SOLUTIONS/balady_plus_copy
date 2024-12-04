@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 
 class BaladyTempPalette extends ThemeExtension<BaladyTempPalette> {
-  final Color lightAccent;
+  final Color onAccent;
+  final Color accentDefault;
 
   const BaladyTempPalette({
-    required this.lightAccent,
+    required this.onAccent,
+    required this.accentDefault,
   });
 
   @override
   ThemeExtension<BaladyTempPalette> copyWith() => BaladyTempPalette(
-        lightAccent: lightAccent,
+        accentDefault: accentDefault,
+        onAccent: onAccent,
       );
 
   @override
@@ -18,11 +21,13 @@ class BaladyTempPalette extends ThemeExtension<BaladyTempPalette> {
       return this;
     }
     return BaladyTempPalette(
-      lightAccent: Color.lerp(lightAccent, other.lightAccent, t)!,
+      accentDefault: Color.lerp(accentDefault, other.accentDefault, t)!,
+      onAccent: Color.lerp(onAccent, other.onAccent, t)!,
     );
   }
 
   factory BaladyTempPalette.palette() => const BaladyTempPalette(
-        lightAccent: Color(0xff1FA9A7),
+        onAccent: Colors.white,
+        accentDefault: Color(0xff1FA9A7),
       );
 }

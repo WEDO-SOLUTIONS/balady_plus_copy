@@ -14,9 +14,9 @@ class AppFeedbackSuccess extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Image.asset(
-              'assets/images/app_feedback_success.png',
+              'assets/images/success_app_feedback.png',
               matchTextDirection: true,
-              width: 185,
+              width: 132,
               package: PackageConfig.packageName,
             ),
             const SizedBox(height: AppSizes.xxs),
@@ -32,7 +32,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: Spacing.$3x),
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: AppSizes.xxs,
@@ -45,9 +45,9 @@ class AppFeedbackSuccess extends StatelessWidget {
                 textAlign: TextAlign.center,
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: Spacing.$6x),
             ConstrainedBox(
-              constraints: const BoxConstraints(minWidth: 120),
+              constraints: const BoxConstraints(minWidth: double.infinity),
               child: AppButton(
                 padding: const EdgeInsets.symmetric(
                   horizontal: Spacing.$4x,
@@ -55,9 +55,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 ),
                 buttonColorScheme: ButtonColorScheme.primary,
                 primaryLabel: context.l10n.done,
-                onTap: () {
-                  context.router.popForced();
-                },
+                onTap: context.router.popForced,
               ),
             ),
           ],
