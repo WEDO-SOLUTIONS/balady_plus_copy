@@ -144,7 +144,7 @@ dependency_overrides:
   dio: 5.7.0
   google_api_headers: 4.2.4
   rxdart: 0.28.0
-
+  device_info_plus: 10.1.2
   collection: 1.19.0
 
 dev_dependencies:

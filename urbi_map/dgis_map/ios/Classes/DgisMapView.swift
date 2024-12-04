@@ -1140,7 +1140,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         navigationHandler?.setBetterRouteSettings(settings: message)
          completion(Result.success(()))
     }
-
+    
+    func setBetterRouteEnabled(enabled: Bool, completion: @escaping (Result<Void, any Error>) -> Void) {
+        navigationHandler?.setBetterRouteEnabled(enabled: enabled)
+        completion(Result.success(()))
+    }
+    
+    
     func toggleVoiceInstruction( toggleType: SoundToggleType, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
          completion(Result.success(()))
@@ -1184,7 +1190,9 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
 
-    func getAndroidAutoConnectionState(completion: @escaping (NSNumber?, FlutterError?) -> Void) {
-        completion(NSNumber(value: false), nil)
+    func getAndroidAutoConnectionState(completion: @escaping (Result<Bool, any Error>) -> Void) {
+        completion(Result.success(false))
     }
+    
+
 }

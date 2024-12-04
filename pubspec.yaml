@@ -241,8 +241,8 @@ dependency_overrides:
   # for dio_http_cache
   dio: 5.7.0
   json_serializable: 6.8.0
-
-  google_api_headers: 4.2.4
+  device_info_plus: 10.1.2
+  google_api_headers: ^4.2.4
   rxdart: 0.28.0
   collection: 1.19.0
 
