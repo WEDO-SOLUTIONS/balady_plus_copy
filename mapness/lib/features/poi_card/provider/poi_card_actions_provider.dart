@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';

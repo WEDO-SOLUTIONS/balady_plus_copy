@@ -355,12 +355,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip(VoidCallback action) async {
-    try {
-      await _stopActiveSharing();
-    } catch (e) {
-      log(e.toString());
-    }
-
+    await _stopActiveSharing();
     if (_navigationState.value != PathNavState.finished) {
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
@@ -430,9 +425,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
       _navigationState.value = PathNavState.finished;
-      unawaited(
-        clearNavigationState(),
-      );
+      unawaited(clearNavigationState());
+      unawaited(_stopActiveSharing());
     } else if (event == NavigationEvent.disabled) {
       if (_navigationState.value != PathNavState.finished) {
         _endTripAndShowHome();
@@ -490,6 +484,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _stopActiveSharing() async {
-    await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
+    try {
+      await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }
