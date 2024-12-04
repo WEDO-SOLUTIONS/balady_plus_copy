@@ -38,6 +38,8 @@ class SendFeedback extends _$SendFeedback {
 
     if (payload != null) {
       await sendFeedback(payload);
+    } else {
+      await update((_) async => AppFeedbackState.error);
     }
   }
 
