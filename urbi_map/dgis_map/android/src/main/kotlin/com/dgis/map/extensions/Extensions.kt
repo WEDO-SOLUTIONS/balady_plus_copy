@@ -1,6 +1,6 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.*
 import ru.dgis.sdk.DayTime
 import ru.dgis.sdk.WeekDay
 import ru.dgis.sdk.WeekTime
@@ -9,13 +9,13 @@ import ru.dgis.sdk.directory.IsOpenNow
 import ru.dgis.sdk.directory.SortingType
 import ru.dgis.sdk.directory.WorkTimeFilter
 
-fun Messages.SortingTypeMessage.toSortingType() = when (this) {
-    Messages.SortingTypeMessage.BY_RELEVANCE -> SortingType.BY_RELEVANCE
-    Messages.SortingTypeMessage.BY_DISTANCE -> SortingType.BY_DISTANCE
-    Messages.SortingTypeMessage.BY_RATING -> SortingType.BY_RATING
+fun SortingTypeMessage.toSortingType() = when (this) {
+    SortingTypeMessage.BY_RELEVANCE -> SortingType.BY_RELEVANCE
+    SortingTypeMessage.BY_DISTANCE -> SortingType.BY_DISTANCE
+    SortingTypeMessage.BY_RATING -> SortingType.BY_RATING
 }
 
-fun Messages.WeekTimeSearchMessage?.toFilter(): WorkTimeFilter? {
+fun WeekTimeSearchMessage?.toFilter(): WorkTimeFilter? {
     if (this?.isOpenNow == true) return WorkTimeFilter(IsOpenNow())
 
     val weekDay = this?.weekDay
@@ -35,12 +35,12 @@ fun Messages.WeekTimeSearchMessage?.toFilter(): WorkTimeFilter? {
     return null
 }
 
-private fun Messages.WeekDayMessage.toWeekDay() = when (this) {
-    Messages.WeekDayMessage.MONDAY -> WeekDay.MONDAY
-    Messages.WeekDayMessage.TUESDAY -> WeekDay.TUESDAY
-    Messages.WeekDayMessage.WEDNESDAY -> WeekDay.WEDNESDAY
-    Messages.WeekDayMessage.THURSDAY -> WeekDay.THURSDAY
-    Messages.WeekDayMessage.FRIDAY -> WeekDay.FRIDAY
-    Messages.WeekDayMessage.SATURDAY -> WeekDay.SATURDAY
-    Messages.WeekDayMessage.SUNDAY -> WeekDay.SUNDAY
+private fun WeekDayMessage.toWeekDay() = when (this) {
+    WeekDayMessage.MONDAY -> WeekDay.MONDAY
+    WeekDayMessage.TUESDAY -> WeekDay.TUESDAY
+    WeekDayMessage.WEDNESDAY -> WeekDay.WEDNESDAY
+    WeekDayMessage.THURSDAY -> WeekDay.THURSDAY
+    WeekDayMessage.FRIDAY -> WeekDay.FRIDAY
+    WeekDayMessage.SATURDAY -> WeekDay.SATURDAY
+    WeekDayMessage.SUNDAY -> WeekDay.SUNDAY
 }

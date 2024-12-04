@@ -2,9 +2,7 @@ package com.dgis.map.control_handlers
 
 import com.dgis.map.FusedLocationSource
 import com.dgis.map.control_handlers.public_transport.PublicTransportHandler
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.GeoPointMessage
-import com.dgis.map.map_api.Messages.RouteEditorRouteParamsMessage
+import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
@@ -165,11 +163,11 @@ class RouteHandler(
     }
 
     private fun getRouteSearchOptions(
-            opts: Messages.RouteSearchOptionsMessage,
-            searchParams: Messages.CarRouteSearchOptionParamsMessage?,
+        opts: RouteSearchOptionsMessage,
+        searchParams: CarRouteSearchOptionParamsMessage?,
     ): RouteSearchOptions {
         return when (opts) {
-            Messages.RouteSearchOptionsMessage.CAR -> {
+            RouteSearchOptionsMessage.CAR -> {
                 if (searchParams != null) {
                     RouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads))
                 } else {
@@ -177,13 +175,13 @@ class RouteHandler(
                 }
             }
 
-            Messages.RouteSearchOptionsMessage.BICYCLE ->
+            RouteSearchOptionsMessage.BICYCLE ->
                 RouteSearchOptions(BicycleRouteSearchOptions())
 
-            Messages.RouteSearchOptionsMessage.PEDESTRIAN ->
+            RouteSearchOptionsMessage.PEDESTRIAN ->
                 RouteSearchOptions(PedestrianRouteSearchOptions())
 
-            Messages.RouteSearchOptionsMessage.TRUCK -> {
+            RouteSearchOptionsMessage.TRUCK -> {
                 if (searchParams != null) {
                     RouteSearchOptions(TruckRouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads)))
                 } else {
@@ -191,13 +189,13 @@ class RouteHandler(
                 }
             }
 
-            Messages.RouteSearchOptionsMessage.SCOOTER ->
+            RouteSearchOptionsMessage.SCOOTER ->
                 RouteSearchOptions(ScooterRouteSearchOptions())
 
-            Messages.RouteSearchOptionsMessage.PUBLIC_TRANSPORT ->
+            RouteSearchOptionsMessage.PUBLIC_TRANSPORT ->
                 RouteSearchOptions(PublicTransportRouteSearchOptions())
 
-            Messages.RouteSearchOptionsMessage.TAXI -> {
+            RouteSearchOptionsMessage.TAXI -> {
                 if (searchParams != null) {
                     RouteSearchOptions(TaxiRouteSearchOptions(CarRouteSearchOptions(avoidTollRoads = searchParams.avoidTollRoads, avoidUnpavedRoads = searchParams.avoidUnpavedRoads)))
                 } else {
@@ -321,7 +319,10 @@ class RouteHandler(
 
     fun getLastLocation(): GeoPointMessage? {
         return locationSource.lastLocation?.let {
-            GeoPointMessage.Builder().setLatitude(it.latitude).setLongitude(it.longitude).build()
+            GeoPointMessage(
+                latitude  = it.latitude,
+                        longitude = it.longitude,
+            )
         }
     }
 

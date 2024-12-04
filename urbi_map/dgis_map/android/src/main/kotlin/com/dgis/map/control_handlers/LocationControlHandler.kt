@@ -1,6 +1,6 @@
 package com.dgis.map.control_handlers
 
-import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.map.CameraBehaviour
 import ru.dgis.sdk.map.FollowBearing

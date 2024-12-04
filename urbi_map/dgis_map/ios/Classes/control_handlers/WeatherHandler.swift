@@ -24,8 +24,8 @@ class WeatherHandler {
 
     
        func toggleHeatmap(_ message: WeatherMapMessage,
-                          completion: @escaping (NSNumber?, FlutterError?) -> Void) {
-           if message.enabled.boolValue == true {
+                          completion: @escaping (Result<Bool, any Error>) -> Void) {
+           if message.enabled == true {
                switch message.type {
                case .temperature:
                    if let precipitationTileSource = precipitationTileSource,
@@ -83,7 +83,7 @@ class WeatherHandler {
                }
            }
 
-           isHeatmapVisible = message.enabled.boolValue
-           completion(NSNumber(value: self.isHeatmapVisible), nil)
+           isHeatmapVisible = message.enabled
+           completion(Result.success( self.isHeatmapVisible))
        }
 }

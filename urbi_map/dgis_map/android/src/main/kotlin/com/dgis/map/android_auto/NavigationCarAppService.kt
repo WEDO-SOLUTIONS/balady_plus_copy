@@ -16,13 +16,13 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.R
-import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.*
 
 
 /** Entry point for the car app */
 class NavigationCarAppService : CarAppService() {
     override fun onCreateSession(sessionInfo: SessionInfo): Session {
-        DgisMapInitializer.init(applicationContext, Messages.VendorConfigMessage.MOMRAH_PROD)
+        DgisMapInitializer.init(applicationContext, VendorConfigMessage.MOMRAH_PROD)
         startForegroundNotification()
         val session = NavigationCarAppSession(sessionInfo, applicationContext)
         session.lifecycle.addObserver(object : DefaultLifecycleObserver {
