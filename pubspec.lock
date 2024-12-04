@@ -34,10 +34,10 @@ packages:
     dependency: "direct main"
     description:
       name: add_2_calendar
-      sha256: dbcd0bf296fbbe00861a6f101af8cdb3c163a8c3ff5d3c99a4b081c2f37c724f
+      sha256: "8d7a82aba607d35f2a5bc913419e12f865a96a350a8ad2509a59322bc161f200"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.5"
+    version: "3.0.1"
   adjust_sdk:
     dependency: "direct main"
     description:
@@ -407,13 +407,13 @@ packages:
     source: hosted
     version: "4.10.0"
   collection:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: collection
-      sha256: ee67cb0715911d28db6bf4af1026078bd6f0128b07a5f66fb2ed94ec6783c09a
+      sha256: a1ace0a119f20aabc852d165077c036cd864315bd99b7eaa10a60100341941bf
       url: "https://pub.dev"
     source: hosted
-    version: "1.18.0"
+    version: "1.19.0"
   color:
     dependency: transitive
     description:
@@ -571,10 +571,10 @@ packages:
     dependency: "direct main"
     description:
       name: device_info_plus
-      sha256: "77f757b789ff68e4eaf9c56d1752309bd9f7ad557cb105b938a7f8eb89e59110"
+      sha256: a7fd703482b391a87d60b6061d04dfdeab07826b96f9abd8f5ed98068acc0074
       url: "https://pub.dev"
     source: hosted
-    version: "9.1.2"
+    version: "10.1.2"
   device_info_plus_platform_interface:
     dependency: transitive
     description:
@@ -617,10 +617,10 @@ packages:
     dependency: "direct main"
     description:
       name: dio_smart_retry
-      sha256: "3d71450c19b4d91ef4c7d726a55a284bfc11eb3634f1f25006cdfab3f8595653"
+      sha256: c8e20da5f49289fa7dce5c9c6b5b120928e3661aefa0fa2d206ea6d93f580928
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.0"
+    version: "7.0.1"
   dio_web_adapter:
     dependency: transitive
     description:
@@ -1253,10 +1253,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_riverpod
-      sha256: "711d916456563f715bde1e139d7cfdca009f8264befab3ac9f8ded8b6ec26405"
+      sha256: "9532ee6db4a943a1ed8383072a2e3eeda041db5657cdf6d2acecf3c21ecbe7e1"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.3"
+    version: "2.6.1"
   flutter_secure_storage:
     dependency: "direct main"
     description:
@@ -1423,12 +1423,12 @@ packages:
     dependency: "direct main"
     description:
       name: geolocator
-      sha256: f4efb8d3c4cdcad2e226af9661eb1a0dd38c71a9494b22526f9da80ab79520e5
+      sha256: "0ec58b731776bc43097fcf751f79681b6a8f6d3bc737c94779fe9f1ad73c1a81"
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.1"
+    version: "13.0.1"
   geolocator_android:
-    dependency: "direct overridden"
+    dependency: transitive
     description:
       name: geolocator_android
       sha256: "7aefc530db47d90d0580b552df3242440a10fe60814496a979aa67aa98b1fd47"
@@ -1455,10 +1455,10 @@ packages:
     dependency: transitive
     description:
       name: geolocator_web
-      sha256: "102e7da05b48ca6bf0a5bda0010f886b171d1a08059f01bfe02addd0175ebece"
+      sha256: "2ed69328e05cd94e7eb48bb0535f5fc0c0c44d1c4fa1e9737267484d05c29b5e"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "4.1.1"
   geolocator_windows:
     dependency: transitive
     description:
@@ -1632,10 +1632,10 @@ packages:
     dependency: transitive
     description:
       name: hooks_riverpod
-      sha256: "534ca8af331235f700f3916a74e4579cdfdd708e2fbed342fc8aa969d41a7af0"
+      sha256: "70bba33cfc5670c84b796e6929c54b8bc5be7d0fe15bb28c2560500b9ad06966"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.4"
+    version: "2.6.1"
   html:
     dependency: transitive
     description:
@@ -1672,10 +1672,10 @@ packages:
     dependency: transitive
     description:
       name: http_parser
-      sha256: "2aa08ce0341cc9b354a498388e30986515406668dbcc4f7c950c3e715496693b"
+      sha256: "76d306a1c3afb33fe82e2bbacad62a61f409b5634c915fceb0d799de1a913360"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.2"
+    version: "4.1.1"
   image:
     dependency: transitive
     description:
@@ -1688,10 +1688,10 @@ packages:
     dependency: "direct main"
     description:
       name: image_picker
-      sha256: b6951e25b795d053a6ba03af5f710069c99349de9341af95155d52665cb4607c
+      sha256: "021834d9c0c3de46bf0fe40341fa07168407f694d9b2bb18d532dc1261867f7a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.8.9"
+    version: "1.1.2"
   image_picker_android:
     dependency: transitive
     description:
@@ -2289,10 +2289,10 @@ packages:
     dependency: "direct main"
     description:
       name: pdfx
-      sha256: c0f70ab6691b7cde02c0c204763a1edb2689ce245ac34eb629c66273a6aa1caf
+      sha256: cbbd7bf54d6f37524df85d06a816fa095d124cd32d42909effddc0027f9db10b
       url: "https://pub.dev"
     source: hosted
-    version: "2.6.0"
+    version: "2.8.0"
   percent_indicator:
     dependency: "direct main"
     description:
@@ -2361,10 +2361,10 @@ packages:
     dependency: "direct main"
     description:
       name: photo_view
-      sha256: "8036802a00bae2a78fc197af8a158e3e2f7b500561ed23b4c458107685e645bb"
+      sha256: "1fc3d970a91295fbd1364296575f854c9863f225505c28c46e0a03e48960c75e"
       url: "https://pub.dev"
     source: hosted
-    version: "0.14.0"
+    version: "0.15.0"
   pin_code_fields:
     dependency: "direct main"
     description:
@@ -2513,26 +2513,26 @@ packages:
     dependency: transitive
     description:
       name: riverpod
-      sha256: c86fedfb45dd1da98ee6493dd9374325cdf494e7d523ebfb0c387eecc5f7b5c9
+      sha256: "59062512288d3056b2321804332a13ffdd1bf16df70dcc8e506e411280a72959"
       url: "https://pub.dev"
     source: hosted
-    version: "2.5.3"
+    version: "2.6.1"
   riverpod_annotation:
     dependency: transitive
     description:
       name: riverpod_annotation
-      sha256: aeeb1eb6ccf2d779f2ef730e6d96d560316b677662222316779a8cf0a94ee317
+      sha256: e14b0bf45b71326654e2705d462f21b958f987087be850afd60578fcd502d1b8
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.6"
+    version: "2.6.1"
   rxdart:
-    dependency: transitive
+    dependency: "direct overridden"
     description:
       name: rxdart
-      sha256: "0c7c0cedd93788d996e33041ffecda924cc54389199cde4e6a34b440f50044cb"
+      sha256: "5c3004a4a8dbb94bd4bf5412a4def4acdaa12e12f269737a5751369e12d1a962"
       url: "https://pub.dev"
     source: hosted
-    version: "0.27.7"
+    version: "0.28.0"
   sanitize_html:
     dependency: transitive
     description:
@@ -2601,10 +2601,10 @@ packages:
     dependency: "direct main"
     description:
       name: share_plus
-      sha256: "334fcdf0ef9c0df0e3b428faebcac9568f35c747d59831474b2fc56e156d244e"
+      sha256: "3af2cda1752e5c24f2fc04b6083b40f013ffe84fb90472f30c6499a9213d5442"
       url: "https://pub.dev"
     source: hosted
-    version: "10.1.0"
+    version: "10.1.1"
   share_plus_platform_interface:
     dependency: transitive
     description:
@@ -3182,10 +3182,10 @@ packages:
     dependency: transitive
     description:
       name: vibration
-      sha256: "06588a845a4ebc73ab7ff7da555c2b3dbcd9676164b5856a38bf0b2287f1045d"
+      sha256: f0af02af2d63132135ae0332a3e54d5de718e214ee94c4f082176ef6ce624a4b
       url: "https://pub.dev"
     source: hosted
-    version: "1.9.0"
+    version: "2.0.1"
   vibration_platform_interface:
     dependency: transitive
     description:
