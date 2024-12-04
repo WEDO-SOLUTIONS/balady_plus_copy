@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_expression_function_bodies
-
 import 'dart:io';
 
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
@@ -7,12 +5,15 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
+import 'package:mapness/shared/ui/error_widget/error_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_image_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -71,31 +72,25 @@ class FeedbackImages extends StatelessWidget {
                 children: [
                   if (value.length < field.maxImages)
                     _AddImageButton(onTap: () async {
-                      if (await _isGalleryPermissionDenied()) {
-                        await showPermissionDeniedDialog(context);
+                      final path = await _handlePickeImage(context);
+                      if (path == null) {
                         return;
                       }
-
-                      final image = await _pickedImage();
-                      if (image != null) {
-                        fieldState.didChange(
-                          value.add(FileUpload.init(srcPath: image.path)),
-                        );
-                      }
+                      fieldState.didChange(
+                        value.add(FileUpload.init(srcPath: path)),
+                      );
                     }),
                   ...value.indexed.map(
-                    (indexedUpload) {
-                      return FeedbackImageWidget(
-                        imagePath: indexedUpload.$2.srcPath,
-                        onRemove: () => fieldState.didChange(
-                          value.removeAt(indexedUpload.$1),
-                        ),
-                        onUploadStatusChange: (status) => fieldState.didChange(
-                          value.replace(indexedUpload.$1, status),
-                        ),
-                        imageSize: _imageSize,
-                      );
-                    },
+                    (indexedUpload) => FeedbackImageWidget(
+                      imagePath: indexedUpload.$2.srcPath,
+                      onRemove: () => fieldState.didChange(
+                        value.removeAt(indexedUpload.$1),
+                      ),
+                      onUploadStatusChange: (status) => fieldState.didChange(
+                        value.replace(indexedUpload.$1, status),
+                      ),
+                      imageSize: _imageSize,
+                    ),
                   ),
                 ],
               );
@@ -103,6 +98,35 @@ class FeedbackImages extends StatelessWidget {
           ),
         ],
       );
+
+  Future<String?> _handlePickeImage(BuildContext context) async {
+    if (await _isGalleryPermissionDenied()) {
+      await showPermissionDeniedDialog(context);
+      return null;
+    }
+
+    final image = await _pickedImage();
+    if (image == null) {
+      return null;
+    }
+    // final isSupported = await isImageSupported(image);
+
+    // if (!isSupported) {
+    showBottomSheet(
+      context: context,
+      builder: (ctx) => _UnsupportedFileSheetContent(
+        supportedFormats: field.acceptedFormats,
+        maxFileSize: 5591238,
+        onRetry: () async {
+          Navigator.of(ctx).pop();
+          await _handlePickeImage(ctx);
+        },
+      ),
+    );
+    return null;
+    // }
+    // return image.path;
+  }
 
   Future<bool> isImageSupported(XFile image) async {
     final imageSize = await image.length();
@@ -164,5 +188,23 @@ class _AddImageButton extends StatelessWidget {
             ),
           ),
         ),
+      );
+}
+
+class _UnsupportedFileSheetContent extends StatelessWidget {
+  final AsyncCallback onRetry;
+  final List<String> supportedFormats;
+  final int maxFileSize;
+
+  const _UnsupportedFileSheetContent({
+    required this.onRetry,
+    required this.supportedFormats,
+    required this.maxFileSize,
+  });
+
+  @override
+  Widget build(BuildContext context) => BaseErrorWidget(
+        errorLabel: 'Image size exceeds the ${maxFileSize.formatAsFileSize()} limit. Please choose a smaller image.',
+        onRetry: onRetry,
       );
 }
