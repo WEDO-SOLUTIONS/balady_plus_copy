@@ -2,8 +2,8 @@ package com.dgis.map.extensions
 
 import android.content.Context
 import com.dgis.map.Logger
-import com.dgis.map.map_api.Messages.LogLevelMessage
-import com.dgis.map.map_api.Messages.LogOptionsMessage
+import com.dgis.map.map_api.LogLevelMessage
+import com.dgis.map.map_api.LogOptionsMessage
 import ru.dgis.sdk.platform.LogLevel
 import ru.dgis.sdk.platform.LogOptions
 

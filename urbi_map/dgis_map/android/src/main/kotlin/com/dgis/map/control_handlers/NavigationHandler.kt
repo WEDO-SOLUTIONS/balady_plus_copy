@@ -6,12 +6,11 @@ import com.dgis.map.control_handlers.navigation_controls.ManeuverControlModel
 import com.dgis.map.control_handlers.navigation_controls.SpeedControlModel
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toRouteSearchOptionsMessage
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.BetterRouteResponseMessage
-import com.dgis.map.map_api.Messages.BetterRouteSettingsMessage
-import com.dgis.map.map_api.Messages.NavigationStateMessage
-import com.dgis.map.map_api.Messages.SoundToggleType
-import com.dgis.map.map_api.Messages.VoidResult
+import com.dgis.map.map_api.*
+import com.dgis.map.map_api.BetterRouteResponseMessage
+import com.dgis.map.map_api.BetterRouteSettingsMessage
+import com.dgis.map.map_api.NavigationStateMessage
+import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.ScreenSize
@@ -89,7 +88,7 @@ class NavigationHandler(
 
     }
 
-    fun setupCamera(speedRangeZoom: Messages.SpeedRangeZoom) {
+    fun setupCamera(speedRangeZoom: SpeedRangeZoom) {
         prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
             behaviour = navigationManager.mapFollowController.cameraBehaviour
@@ -137,10 +136,10 @@ class NavigationHandler(
         dashboardControlModel.toggleVoiceInstruction(toggleType)
     }
 
-    fun setNavigatorVoice(id: String, result: VoidResult) {
+    fun setNavigatorVoice(id: String, callback: (Result<Unit>) -> Unit) {
         navigationManager.voiceSelector.voice =
             voicesManager.voices.firstOrNull { it.id == id }?.navigationVoice
-        result.success()
+        callback(Result.success(Unit))
     }
 
     fun toggleRoadCameras(roadCameras: Boolean) {
@@ -159,15 +158,15 @@ class NavigationHandler(
         dashboardControlModel.muteOtherSounds(mute)
     }
 
-    fun saveNavigationState(result: Messages.Result<ByteArray>) {
+    fun saveNavigationState(callback: (Result<ByteArray>) -> Unit) {
         val state = PackedNavigationState.fromModel(model = this.navigationManager.uiModel)
-        result.success(state.toBytes())
+        callback(Result.success(state.toBytes()))
     }
 
     fun restoreNavigationState(
         state: ByteArray,
-        speedRangeZoom: Messages.SpeedRangeZoom,
-        result: Messages.VoidResult
+        speedRangeZoom: SpeedRangeZoom,
+        callback: (Result<Unit>) -> Unit
     ) {
         try {
             val state = PackedNavigationState.fromBytes(state)
@@ -176,38 +175,40 @@ class NavigationHandler(
                 options = state.routeSearchOptions,
                 route = state.trafficRoute,
                 speedRangeZoom = speedRangeZoom,
-                result = result
+                callback = callback
             )
         } catch (e: Exception) {
-            result?.error(e)
+            callback(Result.failure(e))
             return
         }
     }
 
-    fun getCurrentNavigationState(result: Messages.Result<NavigationStateMessage>) {
+    fun getCurrentNavigationState(callback: (Result<NavigationStateMessage>) -> Unit) {
         val state = when (navigationManager.uiModel.state) {
-            State.NAVIGATION, State.ROUTE_SEARCH -> Messages.NavigationState.NAVIGATION
-            State.FINISHED -> Messages.NavigationState.FINISH
-            State.DISABLED -> Messages.NavigationState.DISABLED
+            State.NAVIGATION, State.ROUTE_SEARCH -> NavigationState.NAVIGATION
+            State.FINISHED -> NavigationState.FINISH
+            State.DISABLED -> NavigationState.DISABLED
         }
         val options =
             navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions?.toRouteSearchOptionsMessage()
-                ?: Messages.RouteSearchOptionsMessage.CAR
-        result.success(
-            NavigationStateMessage.Builder().setState(state)
-                .setRouteSearchOptions(options).build()
-        )
+                ?: RouteSearchOptionsMessage.CAR
+        callback(Result.success(
+            NavigationStateMessage(
+                state = state,
+                routeSearchOptions = options
+            )
+        ))
     }
 
     fun startNavigation(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
-        speedRangeZoom: Messages.SpeedRangeZoom,
-        result: VoidResult,
+        speedRangeZoom: SpeedRangeZoom,
+        callback: (Result<Unit>) -> Unit,
     ) {
         if (finishPoint == null || options == null || route == null) {
-            result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
+            callback(Result.failure(Exception("Not enough data to start navigation. Check RouteHandler documentation")))
             return
         }
 
@@ -220,7 +221,7 @@ class NavigationHandler(
             trafficRoute = route
         )
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
     fun simulationSettings(speed: Double) {
@@ -231,11 +232,11 @@ class NavigationHandler(
         finishPoint: RouteSearchPoint?,
         options: RouteSearchOptions?,
         route: TrafficRoute?,
-        speedRangeZoom: Messages.SpeedRangeZoom,
-        result: VoidResult,
+        speedRangeZoom: SpeedRangeZoom,
+        callback: (Result<Unit>) -> Unit,
     ) {
         if (finishPoint == null || options == null || route == null) {
-            result?.error(Exception("Not enough data to start navigation. Check RouteHandler documentation"))
+            callback(Result.failure(Exception("Not enough data to start navigation. Check RouteHandler documentation")))
             return
         }
 
@@ -248,7 +249,7 @@ class NavigationHandler(
             trafficRoute = route
         )
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
     fun stopNavigation() {
@@ -256,7 +257,7 @@ class NavigationHandler(
         resetCamera()
     }
 
-    fun startFreeRoam(speedRangeZoom: Messages.SpeedRangeZoom) {
+    fun startFreeRoam(speedRangeZoom: SpeedRangeZoom) {
         setupCamera(speedRangeZoom = speedRangeZoom)
         navigationManager.start()
     }
@@ -362,15 +363,17 @@ class NavigationHandler(
         }
     }
 
-    fun getBetterRouteSettings(result: Messages.Result<BetterRouteSettingsMessage>) {
+    fun getBetterRouteSettings(callback: (Result<BetterRouteSettingsMessage>) -> Unit) {
         val settings = navigationManager.alternativeRoutesProviderSettings
-        result.success(
-            BetterRouteSettingsMessage.Builder()
-                .setRouteSearchDelay(settings.routeSearchDelay.inSeconds)
-                .setBetterRouteTimeCostThreshold(settings.betterRouteTimeCostThreshold.inSeconds)
-                .setBetterRouteLengthThreshold(settings.betterRouteLengthThreshold.millimeters)
-                .build()
-        )
+        callback(Result.success(
+            BetterRouteSettingsMessage(
+                betterRouteTimeCostThreshold = settings.routeSearchDelay.inSeconds,
+
+betterRouteLengthThreshold = settings.betterRouteTimeCostThreshold.inSeconds,
+routeSearchDelay = settings.betterRouteLengthThreshold.millimeters,
+            )
+
+        ))
     }
 
     fun setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
@@ -388,8 +391,8 @@ class NavigationHandler(
     }
 
     fun calcPositionForRoute(
-        options: Messages.CalcPositionOptionsMessage,
-        result: Messages.Result<Messages.CameraPositionMessage>
+        options: CalcPositionOptionsMessage,
+       callback: (Result<CameraPositionMessage>) -> Unit
     ) {
         val geometries = navigationManager.uiModel.route.route.geometry.entries
             .map { entry ->
@@ -421,15 +424,15 @@ class NavigationHandler(
                 )
             }
         )
-        result.success(
-            Messages.CameraPositionMessage
-                .Builder()
-                .setPoint(cameraPosition.point.toMessage())
-                .setZoom(cameraPosition.zoom.value.toDouble())
-                .setTilt(cameraPosition.tilt.value.toDouble())
-                .setBearing(cameraPosition.bearing.value)
-                .build()
-        )
+        callback(Result.success(
+            CameraPositionMessage(
+                point = cameraPosition.point.toMessage(),
+                    zoom = cameraPosition.zoom.value.toDouble(),
+                    tilt = cameraPosition.tilt.value.toDouble(),
+                    bearing = cameraPosition.bearing.value,
+            )
+
+        ))
     }
 }
 

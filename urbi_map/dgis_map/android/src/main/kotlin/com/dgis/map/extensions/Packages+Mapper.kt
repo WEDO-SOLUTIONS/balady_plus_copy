@@ -1,29 +1,28 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages.PackageInfoMessage
-import com.dgis.map.map_api.Messages.PackageMessage
-import com.dgis.map.map_api.Messages.PackageUpdateStatusMessage
+import com.dgis.map.map_api.PackageInfoMessage
+import com.dgis.map.map_api.PackageMessage
+import com.dgis.map.map_api.PackageUpdateStatusMessage
 import ru.dgis.sdk.update.Package
 import ru.dgis.sdk.update.PackageInfo
 import ru.dgis.sdk.update.PackageUpdateStatus
-
 fun Package.toMessage(): PackageMessage {
-    return PackageMessage.Builder()
-            .setId(id)
-            .setInfo(info.toMessage())
-            .build()
+    return PackageMessage(
+        id = id,
+        info = info.toMessage()
+    )
 }
 
 fun PackageInfo.toMessage(): PackageInfoMessage {
-    return PackageInfoMessage.Builder()
-            .setName(name)
-            .setInstalled(installed)
-            .setIncomplete(incomplete)
-            .setPreinstalled(preinstalled)
-            .setCompatible(compatible)
-            .setHasUpdate(hasUpdate)
-            .setUpdateStatus(updateStatus.toMessage())
-            .build()
+    return PackageInfoMessage(
+        name = name,
+        installed = installed,
+        incomplete = incomplete,
+        preinstalled = preinstalled,
+        compatible = compatible,
+        hasUpdate = hasUpdate,
+        updateStatus = updateStatus.toMessage()
+    )
 }
 
 fun PackageUpdateStatus.toMessage(): PackageUpdateStatusMessage = when (this) {

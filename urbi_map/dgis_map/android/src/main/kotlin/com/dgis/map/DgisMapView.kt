@@ -5,8 +5,7 @@ import android.util.Size
 import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.*
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.*
+import com.dgis.map.map_api.*
 import io.flutter.FlutterInjector
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -101,54 +100,54 @@ class DgisMapView(
         androidAutoHandler.close()
     }
 
-    override fun initialize(result: Result<InitializeMessage>) {
+    override fun initialize(callback: (Result<InitializeMessage>) -> Unit) {
         try {
             // Setup channel to handle call from Flutter
             eventChannel = EventChannel(binaryMessenger, "com.dgis.map_view_events_$id")
             eventChannel.setStreamHandler(eventStreamHandler)
             mapView.getMapAsync { map ->
-                onMapReady(map, result)
+                onMapReady(map, callback)
             }
         } catch (e: Exception) {
-            result.error(e)
+            callback(Result.failure(e))
         }
     }
-    override fun zoomDown(type: ZoomControlMessage, result: VoidResult) {
+    override fun zoomDown(type: ZoomControlMessage, callback: (Result<Unit>) -> Unit) {
         zoomControlHandler?.onZoomDown(type)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun zoomUp(type: ZoomControlMessage, result: VoidResult) {
+    override fun zoomUp(type: ZoomControlMessage, callback: (Result<Unit>) -> Unit) {
         zoomControlHandler?.onZoomUp(type)
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun toggleFollowState(result: VoidResult) {
+    override fun toggleFollowState(callback: (Result<Unit>) -> Unit) {
         locationControlHandler?.toggleFollowState()
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun followNavigation(result: VoidResult) {
+    override fun followNavigation(callback: (Result<Unit>) -> Unit) {
         navigationHandler.followNavigation()
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun selectIndoorLevel(index: Long, result: VoidResult) {
+    override fun selectIndoorLevel(index: Long, callback: (Result<Unit>) -> Unit) {
         indoorControlHandler?.selectIndoorLevel(index)
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun moveCameraToActiveRoute(index: Long, result: VoidResult) {
+    override fun moveCameraToActiveRoute(index: Long, callback: (Result<Unit>) -> Unit) {
         routeHandler?.moveCameraToActiveRoute(index)
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun loadStyles(asset: String, result: VoidResult) {
+    override fun loadStyles(asset: String, callback: (Result<Unit>) -> Unit) {
         val styleAsset =
             FlutterInjector
                 .instance()
@@ -159,15 +158,15 @@ class DgisMapView(
         closables.add(builder.loadStyle(File.fromAsset(sdkContext, styleAsset)).apply {
             onResult {
                 map?.style = it
-                result.success()
+                callback(Result.success(Unit))
             }
             onError {
-                result.error(FileNotFoundException("Failed to load style Error: ${it.message}"))
+                callback(Result.failure(FileNotFoundException("Failed to load style Error: ${it.message}")))
             }
         })
     }
 
-    override fun overrideLocales(locales: List<String>, result: VoidResult) {
+    override fun overrideLocales(locales: List<String>, callback: (Result<Unit>) -> Unit) {
         getLocaleManager(sdkContext).overrideLocales(
             locales.map {
                 val parts = it.split("-")
@@ -175,15 +174,15 @@ class DgisMapView(
             }
         )
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun setCameraPosition(
         cameraPosition: CameraPositionMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         val map = map ?: kotlin.run {
-            result.error(IllegalArgumentException("Map has not been initialized"))
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
             return
         }
 
@@ -193,29 +192,29 @@ class DgisMapView(
             tilt = Tilt(cameraPosition.tilt.toFloat()),
             bearing = Bearing(cameraPosition.bearing)
         )
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun setCameraPositionPoint(
         cameraPosition: CameraPositionPointMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         val map = map ?: kotlin.run {
-            result.error(IllegalArgumentException("Map has not been initialized"))
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
             return
         }
 
         map.camera.positionPoint =
             CameraPositionPoint(x = cameraPosition.x.toFloat(), y = cameraPosition.y.toFloat())
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun setCameraPadding(
         cameraPadding: CameraSetPaddingMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         val map = map ?: kotlin.run {
-            result.error(IllegalArgumentException("Map has not been initialized"))
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
             return
         }
 
@@ -225,31 +224,31 @@ class DgisMapView(
             bottom = cameraPadding.bottomPadding.toInt(),
             top = cameraPadding.topPadding.toInt(),
         )
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun setMapAttributeBool(name: String, value: Boolean, result: VoidResult) {
+    override fun setMapAttributeBool(name: String, value: Boolean, callback: (Result<Unit>) -> Unit) {
         map?.setAttribute(name, AttributeValue(value))
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun setMapAttributeString(
         name: String,
         value: String,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         map?.setAttribute(name, AttributeValue(value))
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun moveCamera(
         cameraPosition: CameraPositionMessage,
         duration: Double,
         animationType: CameraAnimationTypeMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         val map = map ?: kotlin.run {
-            result.error(IllegalArgumentException("Map has not been initialized"))
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
             return
         }
 
@@ -261,42 +260,42 @@ class DgisMapView(
         )
         val duration = Duration.ofMilliseconds(round(duration * 1000).toLong())
         val animationType = when (animationType) {
-            CameraAnimationTypeMessage.DEFAULT_ -> CameraAnimationType.DEFAULT
+            CameraAnimationTypeMessage.DEFAULT_TYPE -> CameraAnimationType.DEFAULT
             CameraAnimationTypeMessage.LINEAR -> CameraAnimationType.LINEAR
             CameraAnimationTypeMessage.SHOW_BOTH_POSITIONS -> CameraAnimationType.SHOW_BOTH_POSITIONS
         }
 
         val moveFuture = map.camera.move(cameraPosition, duration, animationType).apply {
             onResult {
-                result.success()
+                callback(Result.success(Unit))
             }
             onError { error ->
-                result.error(error)
+                callback(Result.failure(error))
             }
         }
         this.closables.add(moveFuture)
     }
 
-    override fun getCameraPosition(result: Result<CameraPositionMessage>) {
+    override fun getCameraPosition(callback: (Result<CameraPositionMessage>)->Unit) {
         val map = map ?: kotlin.run {
-            result?.error(IllegalArgumentException("Map has not been initialized"))
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
             return
         }
 
-        result.success(
-            CameraPositionMessage
-                .Builder()
-                .setPoint(map.camera.position.point.toMessage())
-                .setZoom(map.camera.position.zoom.value.toDouble())
-                .setTilt(map.camera.position.tilt.value.toDouble())
-                .setBearing(map.camera.position.bearing.value)
-                .build()
-        )
+
+        callback(Result.success(
+            CameraPositionMessage(
+                point = map.camera.position.point.toMessage(),
+                zoom = map.camera.position.zoom.value.toDouble(),
+                tilt = map.camera.position.tilt.value.toDouble(),
+                bearing = map.camera.position.bearing.value
+            )
+        ))
     }
 
-    override fun getCameraVisibleArea(result: Result<PolygonGeometryMessage>) {
+    override fun getCameraVisibleArea(callback: (Result<PolygonGeometryMessage>) -> Unit) {
         val map = map ?: kotlin.run {
-            result.error(IllegalArgumentException("Map has not been initialized"))
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
             return
         }
 
@@ -304,62 +303,61 @@ class DgisMapView(
         if (area is PolygonGeometry) {
             val polygonArea = area as PolygonGeometry
             val contours = polygonArea.contours.map { element -> element.map { e -> e.toMessage() } }
-            result.success(
-                PolygonGeometryMessage
-                    .Builder()
-                    .setContours(contours)
-                    .build()
-            )
+            callback(Result.success(
+                PolygonGeometryMessage(
+                    contours = contours
+                )
+            ))
         } else {
-            result.error(IllegalArgumentException("Area is not PolygonGeometry"))
+            callback(Result.failure(IllegalArgumentException("Area is not PolygonGeometry")))
         }
 
     }
 
-    override fun getNearestObjects(result: Result<List<RenderedObjectMessage>>) {
-        objectTapHandler?.getNearestObjects(result)
+    override fun getNearestObjects(callback: (Result<List<RenderedObjectMessage>>)->Unit) {
+        objectTapHandler?.getNearestObjects(callback)
     }
     override fun calcPositionForRoute(
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>
+        callback: (Result<CameraPositionMessage>) -> Unit
     ) {
-        navigationHandler.calcPositionForRoute(options, result)
+        navigationHandler.calcPositionForRoute(options, callback)
     }
 
     override fun calcPositionForMarkers(
         markers: List<String>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>
+        callback: (Result<CameraPositionMessage>)->Unit
     ) {
-        objectTapHandler?.calcPositionForMarkers(markers, options, result)
+        objectTapHandler?.calcPositionForMarkers(markers, options, callback)
     }
 
     override fun calcPositionForPolygons(
         polygons: List<String>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>
+        callback: (Result<CameraPositionMessage>) -> Unit
     ) {
-        objectTapHandler?.calcPositionForPolygons(polygons, options, result)
+        objectTapHandler?.calcPositionForPolygons(polygons, options, callback)
     }
 
     override fun calcPositionForPolylines(
         polylines: List<String>,
         options: CalcPositionOptionsMessage,
-        result: Result<CameraPositionMessage>
+        callback: (Result<CameraPositionMessage>) -> Unit
     ) {
-        objectTapHandler?.calcPositionForPolylines(polylines, options, result)
+        objectTapHandler?.calcPositionForPolylines(polylines, options, callback)
     }
 
     override fun searchByObjectId(
         objectId: DgisObjectIdMessage,
-        result: Result<DirectoryObjectMessage>
+        callback: (Result<DirectoryObjectMessage>) -> Unit
     ) {
         searchHandler?.searchByDirectoryObjectId(
             DgisObjectId(
                 objectId = objectId.objectId,
                 entranceId = objectId.entranceId
             ),
-            result,
+            callback,
         )
     }
 
@@ -397,9 +395,9 @@ class DgisMapView(
 
     override fun getDistanceTo(
         points: List<DistanceRequestMessage>,
-        result: Result<List<DistanceResponseMessage>>
+        callback: (Result<List<DistanceResponseMessage>>)->Unit
     ) {
-        searchHandler?.getDistanceTo(points, result)
+        searchHandler?.getDistanceTo(points, callback)
     }
 
     override fun search(
@@ -410,12 +408,13 @@ class DgisMapView(
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
-        result: Result<SearchResultMessage>
+        callback: (Result<SearchResultMessage>) -> Unit
     ) {
         searchHandler?.search(
             queryText = queryText,
             categories = categories?.categories?.flatMap {
-                it.category.toRubrics()
+                // TODO: fix force unwrap
+                it!!.category!!.toRubrics()
             },
             spatialRestriction = spatialRestriction?.map {
                 it.toGeoPoint()
@@ -424,7 +423,7 @@ class DgisMapView(
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
-            result = result
+            callback = callback
         )
     }
 
@@ -435,7 +434,7 @@ class DgisMapView(
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
-        result: Result<SearchResultMessage>
+        callback: (Result<SearchResultMessage>) -> Unit
     ) {
         searchHandler?.searchByQuery(
             queryId = query,
@@ -446,7 +445,7 @@ class DgisMapView(
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
-            result = result
+            callback = callback
         )
     }
 
@@ -457,7 +456,7 @@ class DgisMapView(
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
-        result: Result<SearchResultMessage>
+        callback: (Result<SearchResultMessage>) -> Unit
     ) {
         if (category == SearchCategoryMessage.PARKS) {
             searchHandler?.searchByParkCategory(
@@ -468,7 +467,7 @@ class DgisMapView(
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
-                result = result
+                callback = callback
             )
             return
         }
@@ -482,7 +481,7 @@ class DgisMapView(
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
-                result = result
+                callback = callback
             )
             return
         }
@@ -496,19 +495,18 @@ class DgisMapView(
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
-            result = result
+            callback = callback
         )
     }
 
     override fun searchByRubrics(
-        rubrics: MutableList<Long>,
-        spatialRestriction: MutableList<GeoPointMessage>?,
+        rubrics: List<Long>,
+        spatialRestriction: List<GeoPointMessage>?,
         weekTime: WeekTimeSearchMessage?,
         searchRect: GeoRectMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Long,
-        result: Result<SearchResultMessage>
-    ) {
+        callback: (Result<SearchResultMessage>) -> Unit){
         searchHandler?.searchByCategories(
             categories = rubrics.map { RubricId(it) },
             spatialRestriction = spatialRestriction?.map {
@@ -518,207 +516,207 @@ class DgisMapView(
             weekTimeMessage = weekTime,
             sortingType = sortingType,
             pageSize = pageSize.toInt(),
-            result = result
+            callback = callback
         )
     }
 
-    override fun fetchNextPage(pageId: PageIdMessage, result: Result<PageMessage>) {
-        searchHandler?.fetchNextPage(pageId, result)
+    override fun fetchNextPage(pageId: PageIdMessage, callback: (Result<PageMessage>) -> Unit) {
+        searchHandler?.fetchNextPage(pageId, callback)
     }
 
-    override fun fetchPrevPage(pageId: PageIdMessage, result: Result<PageMessage>) {
-        searchHandler?.fetchPrevPage(pageId, result)
+    override fun fetchPrevPage(pageId: PageIdMessage, callback: (Result<PageMessage>) -> Unit) {
+        searchHandler?.fetchPrevPage(pageId, callback)
     }
 
-    override fun releasePage(pageId: PageIdMessage, result: VoidResult) {
-        searchHandler?.releasePage(pageId, result)
+    override fun releasePage(pageId: PageIdMessage, callback: (Result<Unit>) -> Unit) {
+        searchHandler?.releasePage(pageId, callback)
     }
 
     override fun fetchSuggests(
         queryText: String,
         allowedResultTypes: List<SuggestedTypeMessage_>?,
         searchRect: GeoRectMessage?,
-        result: Result<SuggestResultMessage>
-    ) {
+        callback: (Result<SuggestResultMessage>) -> Unit
+    ){
         searchHandler?.fetchSuggests(
             queryText = queryText,
             allowedResultTypes = allowedResultTypes,
             searchGeoRect = searchRect?.toGeoRect(),
-            result = result
+            callback = callback
         )
     }
 
     // --- MARKER ---
     override fun setMarkerOptions(
         options: MarkerOptionsMessageOld,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.setMarkerOptions(
             svgAsset = options.svgAsset,
             size = Size(options.width.roundToInt(), options.height.roundToInt()),
             iconWidth = options.iconWidth,
             sdkContext = sdkContext,
-            result = result
+            callback = callback
         )
     }
 
     override fun addMarker(
         marker: MarkerMessage,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addMarker(marker, manager?.id, result)
+        objectTapHandler?.addMarker(marker, manager?.id, callback)
     }
 
     override fun addMarkers(
         markers: List<MarkerMessage>,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addMarkers(markers, manager?.id, result)
+        objectTapHandler?.addMarkers(markers, manager?.id, callback)
     }
 
     override fun removeMarker(
         id: String,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removeMarker(id, manager?.id, result)
+        objectTapHandler?.removeMarker(id, manager?.id, callback)
     }
 
     override fun removeAllMarkers(
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removeAllMarkers(manager?.id, result)
+        objectTapHandler?.removeAllMarkers(manager?.id, callback)
     }
 
     // --- MAP OBJECT ---
     override fun createMapObjectManagerWithClustering(
         message: ClusteringMapObjectManagerOptionsMessage,
         layerId: String?,
-        result: Result<MapObjectManagerMessage>
+        callback: (Result<MapObjectManagerMessage>)->Unit
     ) {
-        objectTapHandler?.createClusteringMapObjectManager(message, layerId, result)
+        objectTapHandler?.createClusteringMapObjectManager(message, layerId, callback)
     }
 
     override fun createMapObjectManager(
         layerId: String?,
-        result: Result<MapObjectManagerMessage>
+        callback: (Result<MapObjectManagerMessage>)-> Unit
     ) {
-        objectTapHandler?.createMapObjectManager(layerId, result)
+        objectTapHandler?.createMapObjectManager(layerId, callback)
     }
 
     override fun removeMapObjectManager(
         manager: MapObjectManagerMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removeMapObjectManager(manager, result)
+        objectTapHandler?.removeMapObjectManager(manager, callback)
     }
 
     override fun setMapObjectManagerIsVisible(
         isVisible: Boolean,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.setMapObjectManagerIsVisible(isVisible, manager)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun setClusterIcon(id: String, icon: String, result: VoidResult) {
-        objectTapHandler?.setClusterIcon(icon, id, result)
+    override fun setClusterIcon(id: String, icon: String, callback: (Result<Unit>) -> Unit) {
+        objectTapHandler?.setClusterIcon(icon, id, callback)
     }
 
-    override fun releaseCluster(id: String, result: VoidResult) {
+    override fun releaseCluster(id: String, callback: (Result<Unit>) -> Unit) {
         objectTapHandler?.releaseCluster(id)
-        result.success()
+        callback(Result.success(Unit))
     }
 
     // --- POLYGON ---
     override fun addPolygon(
         polygon: PolygonMessage,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addPolygon(polygon, manager?.id, result)
+        objectTapHandler?.addPolygon(polygon, manager?.id, callback)
     }
 
     override fun addPolygons(
         polygons: List<PolygonMessage>,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addPolygons(polygons, manager?.id, result)
+        objectTapHandler?.addPolygons(polygons, manager?.id, callback)
     }
 
     override fun removePolygon(
         id: String,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removePolygon(id, manager?.id, result)
+        objectTapHandler?.removePolygon(id, manager?.id, callback)
     }
 
     override fun removeAllPolygons(
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removeAllPolygons(manager?.id, result)
+        objectTapHandler?.removeAllPolygons(manager?.id, callback)
     }
 
     // --- POLYLINE ---
     override fun addPolyline(
         polyline: PolylineMessage,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addPolyline(polyline, manager?.id, result)
+        objectTapHandler?.addPolyline(polyline, manager?.id, callback)
     }
 
     override fun addPolylines(
         polylines: List<PolylineMessage>,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addPolylines(polylines, manager?.id, result)
+        objectTapHandler?.addPolylines(polylines, manager?.id, callback)
     }
 
     override fun removePolyline(
         id: String,
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removePolyline(id, manager?.id, result)
+        objectTapHandler?.removePolyline(id, manager?.id, callback)
     }
 
     override fun removeAllPolylines(
         manager: MapObjectManagerMessage?,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.removeAllPolylines(manager?.id, result)
+        objectTapHandler?.removeAllPolylines(manager?.id, callback)
     }
 
     override fun setRouteParams(
         params: RouteEditorRouteParamsMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         routeHandler?.setRouteParams(params);
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun hideRoutes(result: VoidResult) {
+    override fun hideRoutes(callback: (Result<Unit>) -> Unit) {
         routeHandler?.setRoutesVisible(false)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun showRoutes(result: VoidResult) {
+    override fun showRoutes(callback: (Result<Unit>) -> Unit) {
         routeHandler?.setRoutesVisible(true)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun startNavigation(speedRangeZoom: SpeedRangeZoom, result: VoidResult) {
+    override fun startNavigation(speedRangeZoom: SpeedRangeZoom, callback: (Result<Unit>) -> Unit) {
         val routeHandler = routeHandler ?: kotlin.run {
-            result?.error(Exception("RouteHandler not initialized"))
+            callback(Result.failure(Exception("RouteHandler not initialized")))
             return
         }
         routeHandler.setRoutesVisible(false)
@@ -727,16 +725,16 @@ class DgisMapView(
             options = routeHandler.options,
             route = routeHandler.selectedRoute,
             speedRangeZoom = speedRangeZoom,
-            result = result
+            callback = callback
         )
     }
 
     override fun startNavigationSimulation(
         speedRangeZoom: SpeedRangeZoom,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         val routeHandler = routeHandler ?: kotlin.run {
-            result?.error(Exception("RouteHandler not initialized"))
+            callback(Result.failure(Exception("RouteHandler not initialized")))
             return
         }
         routeHandler.setRoutesVisible(false)
@@ -745,7 +743,7 @@ class DgisMapView(
             options = routeHandler.options,
             route = routeHandler.selectedRoute,
             speedRangeZoom = speedRangeZoom,
-            result = result
+            callback = callback
         )
     }
 
@@ -753,57 +751,57 @@ class DgisMapView(
         navigationHandler.simulationSettings(speed)
     }
 
-    override fun saveNavigationState(result: Result<ByteArray>) {
-        navigationHandler.saveNavigationState(result = result)
+    override fun saveNavigationState(callback: (Result<ByteArray>) -> Unit) {
+        navigationHandler.saveNavigationState(callback = callback)
     }
 
-    override fun getCurrentNavigationState(result: Result<NavigationStateMessage>) {
-        navigationHandler.getCurrentNavigationState(result)
+    override fun getCurrentNavigationState(callback: (Result<NavigationStateMessage>) -> Unit) {
+        navigationHandler.getCurrentNavigationState(callback)
     }
 
     override fun restoreNavigationState(
         state: ByteArray,
         speedRangeZoom: SpeedRangeZoom,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         navigationHandler.restoreNavigationState(
             state = state,
             speedRangeZoom = speedRangeZoom,
-            result = result
+            callback = callback
         )
     }
 
-    override fun stopNavigation(result: VoidResult) {
+    override fun stopNavigation(callback: (Result<Unit>) -> Unit) {
         navigationHandler.stopNavigation()
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun addPanoramasMarkers(
         message: AddMarkersWithPhotoMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.addPanoramasMarkers(message)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun showPanoramasMarkers(result: VoidResult) {
+    override fun showPanoramasMarkers(callback: (Result<Unit>) -> Unit) {
         objectTapHandler?.showPanoramasMarkers()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun hidePanoramasMarkers(result: VoidResult) {
+    override fun hidePanoramasMarkers(callback: (Result<Unit>) -> Unit) {
         objectTapHandler?.hidePanoramasMarkers()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun removePanoramasMarkers(result: VoidResult) {
+    override fun removePanoramasMarkers(callback: (Result<Unit>) -> Unit) {
         objectTapHandler?.removePanoramasMarkers()
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun setHighlighted(
         objectIds: List<DgisObjectIdMessage>,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.setHighlighted(
             objectIds = objectIds.map {
@@ -812,133 +810,133 @@ class DgisMapView(
                     entranceId = it.entranceId,
                 )
             },
-            result = result,
+            callback = callback,
         )
     }
 
     override fun onLocationPermissionGranted(
         desiredAccuracy: DesiredAccuracyMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         locationSource.onPermissionGranted()
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun overlappedBy(
         outerRect: GeoRectMessage,
         innerRect: GeoRectMessage,
-        result: Result<Long>
+        callback: (Result<Long>)-> Unit
     ) {
         val outer = outerRect.toGeoRect()
 
         val inner = innerRect.toGeoRect()
 
         val isOverlapped = if (outer.contains(inner)) 1L else 0
-        result?.success(isOverlapped)
+        callback(Result.success(isOverlapped))
     }
 
     override fun contains(
         rect: GeoRectMessage,
         point: GeoPointMessage,
-        result: Result<Boolean>
+        callback: (Result<Boolean>) -> Unit
     ) {
-        result?.success(rect.toGeoRect().contains(point.toGeoPoint()))
+        callback(Result.success(rect.toGeoRect().contains(point.toGeoPoint())))
     }
 
     override fun containsRect(
         outer: GeoRectMessage,
         inner: GeoRectMessage,
-        result: Result<Boolean>
+        callback: (Result<Boolean>) -> Unit,
     ) {
-        result?.success(outer.toGeoRect().contains(inner.toGeoRect()))
+        callback(Result.success(outer.toGeoRect().contains(inner.toGeoRect())))
     }
 
     override fun pointBearing(
         from: GeoPointMessage,
         to: GeoPointMessage,
-        result: Result<Double>
+        callback: (Result<Double>) -> Unit,
     ) {
-        result?.success(from.toGeoPoint().bearing(to.toGeoPoint()).value)
+        callback(Result.success(from.toGeoPoint().bearing(to.toGeoPoint()).value))
     }
 
     override fun setPanoramaMarkerAzimuth(
         message: MarkerAzimuthMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.setPanoramasAzimuth(message.degree)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun onCompassClicked(result: VoidResult) {
+    override fun onCompassClicked(callback: (Result<Unit>) -> Unit) {
         compassControlHandler?.onClicked()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun onTrafficAndParkingAttached(result: VoidResult) {
+    override fun onTrafficAndParkingAttached(callback: (Result<Unit>) -> Unit) {
         trafficAndParkingControlHandler?.onAttachToMap()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun onTrafficAndParkingDetached(result: VoidResult) {
+    override fun onTrafficAndParkingDetached(callback: (Result<Unit>) -> Unit) {
         trafficAndParkingControlHandler?.onDetachFromMap()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun onParkingClicked(result: VoidResult) {
+    override fun onParkingClicked(callback: (Result<Unit>) -> Unit) {
         trafficAndParkingControlHandler?.onParkingClicked()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun onTrafficClicked(result: VoidResult) {
+    override fun onTrafficClicked(callback: (Result<Unit>) -> Unit) {
         trafficAndParkingControlHandler?.onTrafficClicked()
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun setPanoramasPaddings(
         message: CameraSetPaddingMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         map?.let {
             objectTapHandler?.setPanoramasPadding(it, message)
         }
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun unselectPanorama(result: VoidResult) {
+    override fun unselectPanorama(callback: (Result<Unit>) -> Unit) {
         objectTapHandler?.unselectPanorama()
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun showEsriIOLayer(
-        message: Messages.AddLayerPointObjectsMessage,
-        result: VoidResult
+        message: AddLayerPointObjectsMessage,
+        callback: (Result<Unit>) -> Unit
     ) {
-        objectTapHandler?.addIoMarkers(message, result)
+        objectTapHandler?.addIoMarkers(message, callback)
     }
 
-    override fun removeEsriIOLayer(result: VoidResult) {
-        objectTapHandler?.removeAllMarkers(null, result)
+    override fun removeEsriIOLayer(callback: (Result<Unit>) -> Unit) {
+        objectTapHandler?.removeAllMarkers(null, callback)
     }
 
-    override fun moveCameraToSelectedPanorama(result: VoidResult) {
+    override fun moveCameraToSelectedPanorama(callback: (Result<Unit>) -> Unit) {
         map?.let {
             objectTapHandler?.moveCameraToSelectedPanorama(it)
         }
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun setAppearance(appearance: MapAppearanceMessage, result: VoidResult) {
+    override fun setAppearance(appearance: MapAppearanceMessage, callback: (Result<Unit>) -> Unit) {
         when (appearance) {
             MapAppearanceMessage.DAY -> mapView.setTheme(MapTheme.defaultTheme)
             MapAppearanceMessage.NIGHT -> mapView.setTheme(MapTheme.defaultDarkTheme)
             MapAppearanceMessage.SYSTEM -> print("todo") // mapView.setTheme("day", "night")
         }
 
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun setZoomRestrictions(min: Double?, max: Double?, result: VoidResult) {
+    override fun setZoomRestrictions(min: Double?, max: Double?, callback: (Result<Unit>) -> Unit) {
         map?.let { map ->
             map.camera.zoomRestrictions = CameraZoomRestrictions(
                 minZoom = min?.let {
@@ -949,53 +947,53 @@ class DgisMapView(
                 } ?: Zoom(20f)
             )
         }
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun setPublicTransportActiveRoute(routeIndex: Long, result: VoidResult) {
+    override fun setPublicTransportActiveRoute(routeIndex: Long, callback: (Result<Unit>) -> Unit) {
         routeHandler?.setActiveRouteIndex(routeIndex)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun startFreeRoam(speedRangeZoom: SpeedRangeZoom, result: VoidResult) {
+    override fun startFreeRoam(speedRangeZoom: SpeedRangeZoom, callback: (Result<Unit>) -> Unit) {
         navigationHandler.startFreeRoam(speedRangeZoom = speedRangeZoom)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun stopFreeRoam(result: VoidResult) {
+    override fun stopFreeRoam(callback: (Result<Unit>) -> Unit) {
         navigationHandler.stopFreeRoam()
-        result.success()
+        callback(Result.success(Unit))
     }
 
     override fun toggleVoiceInstruction(
         toggleType: SoundToggleType,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         navigationHandler.toggleVoiceInstruction(toggleType)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun setNavigatorVolume(volume: Long, result: VoidResult) {
+    override fun setNavigatorVolume(volume: Long, callback: (Result<Unit>) -> Unit) {
         navigationHandler.setNavigatorVolume(volume.toInt())
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun toggleRoadCameras(roadCameras: Boolean, result: VoidResult) {
+    override fun toggleRoadCameras(roadCameras: Boolean, callback: (Result<Unit>) -> Unit) {
         navigationHandler.toggleRoadCameras(roadCameras)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun toggleOverSpeeding(overSpeeding: Boolean, result: VoidResult) {
+    override fun toggleOverSpeeding(overSpeeding: Boolean, callback: (Result<Unit>) -> Unit) {
         navigationHandler.toggleOverSpeeding(overSpeeding)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun muteOtherSounds(mute: Boolean, result: VoidResult) {
+    override fun muteOtherSounds(mute: Boolean, callback: (Result<Unit>) -> Unit) {
         navigationHandler.muteOtherSounds(mute)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    private fun onMapReady(map: DgisMap, result: Result<InitializeMessage>) {
+    private fun onMapReady(map: DgisMap, callback: (Result<InitializeMessage>)-> Unit) {
         map.graphicsPreset = GraphicsPreset.IMMERSIVE
         this.map = map
 
@@ -1022,20 +1020,22 @@ class DgisMapView(
             TrafficAndParkingControlHandler(sdkContext, map, eventSink)
         setupTapHandler()
         weatherHandler = WeatherHandler(sdkContext, map)
-        result.success(
-            InitializeMessage.Builder()
-                .setWasInitialized(true)
-                .setErrorDescription("")
-                .build()
-        )
+
+        callback(Result.success(
+            InitializeMessage(
+                wasInitialized = true,
+                errorDescription = ""
+            )
+        ))
+
     }
 
     override fun findBriefRouteInfos(
         routeSearchOptions: RouteSearchOptionsMessage,
         startPoint: RouteSearchPointMessage?,
         finishPoint: RouteSearchPointMessage?,
-        result: Result<MutableList<BriefRouteInfoMessage>>
-    ) {
+        callback: (Result<List<BriefRouteInfoMessage?>>) -> Unit
+    ){
         val searchOptions = routeSearchOptions.toRouteSearchOptions()
 
         val startSearchPoint = startPoint?.toRouteSearchPoint() ?: locationSource.lastLocation.let {
@@ -1072,59 +1072,59 @@ class DgisMapView(
                     it?.toBriefRouteInfoMessage()
                 }.toMutableList()
 
-                result?.success(map)
+                callback(Result.success(map))
             }
             onError { error ->
-                result?.error(error)
+                callback(Result.failure(error))
             }
         }
     }
 
-    override fun toggleHeatmap(message: WeatherMapMessage, result: Result<Boolean>) {
-        weatherHandler?.toggleHeatmap(message, result)
+    override fun toggleHeatmap(message: WeatherMapMessage, callback: (Result<Boolean>)-> Unit) {
+        weatherHandler?.toggleHeatmap(message, callback)
     }
 
     override fun betterRouteResponse(
         response: BetterRouteResponseMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         navigationHandler.betterRouteResponse(response)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun getBetterRouteSettings(result: Result<BetterRouteSettingsMessage>) {
-        navigationHandler.getBetterRouteSettings(result)
+    override fun getBetterRouteSettings(callback: (Result<BetterRouteSettingsMessage>)-> Unit) {
+        navigationHandler.getBetterRouteSettings(callback)
     }
 
     override fun setBetterRouteSettings(
         message: BetterRouteSettingsMessage,
-        result: VoidResult
+        callback: (Result<Unit>) -> Unit
     ) {
         navigationHandler.setBetterRouteSettings(message)
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    override fun listPackages(result: Result<List<PackageMessage>>) {
-        packagesHandler.listPackages(result)
+    override fun listPackages(callback: (Result<List<PackageMessage?>>) -> Unit) {
+        packagesHandler.listPackages(callback)
     }
 
-    override fun installPackage(id: String, result: VoidResult) {
-        packagesHandler.installPackage(id, result)
+    override fun installPackage(id: String, callback: (Result<Unit>) -> Unit) {
+        packagesHandler.installPackage(id, callback)
     }
 
-    override fun listVoices(result: Result<List<VoiceMessage>>) {
-        packagesHandler.listVoices(result)
+    override fun listVoices(callback: (Result<List<VoiceMessage?>>) -> Unit) {
+        packagesHandler.listVoices(callback)
     }
 
-    override fun voicePlayWelcome(id: String, result: VoidResult) {
-        packagesHandler.voicePlayWelcome(id, result)
+    override fun voicePlayWelcome(id: String, callback: (Result<Unit>) -> Unit) {
+        packagesHandler.voicePlayWelcome(id, callback)
     }
 
-    override fun installVoice(id: String, result: VoidResult) {
-        packagesHandler.installVoice(id, result)
+    override fun installVoice(id: String, callback: (Result<Unit>) -> Unit) {
+        packagesHandler.installVoice(id, callback)
     }
 
-    override fun setNavigatorVoice(id: String, result: VoidResult) {
-        navigationHandler.setNavigatorVoice(id, result)
+    override fun setNavigatorVoice(id: String, callback: (Result<Unit>) -> Unit) {
+        navigationHandler.setNavigatorVoice(id, callback)
     }
 }

@@ -4,9 +4,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Size
 import com.dgis.map.extensions.toTextStyle
-import com.dgis.map.map_api.Messages.FlutterMapApi
-import com.dgis.map.map_api.Messages.MapObjectManagerMessage
-import com.dgis.map.map_api.Messages.SimpleClusterOptionsMessage
+import com.dgis.map.map_api.FlutterMapApi
+import com.dgis.map.map_api.MapObjectManagerMessage
+import com.dgis.map.map_api.SimpleClusterOptionsMessage
 import io.flutter.FlutterInjector
 import kotlinx.coroutines.runBlocking
 import ru.dgis.sdk.Context

@@ -1,58 +1,54 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages.*
+import com.dgis.map.map_api.*
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.Camera
 import ru.dgis.sdk.map.calcPosition
 
-fun SearchResult.toMessage(
-        pageId: String,
-        camera: Camera,
-        items: List<ItemMarkerInfo>?
-): SearchResultMessage {
-    return SearchResultMessage.Builder()
-            .setFirstPage(this.firstPage?.toMessage(pageId))
-            .setRepresentativeArea(this.representativeArea?.toMessage())
-            .setAreaOfInterestPosition(
-                    this.representativeArea?.let {
-                        val cameraPosition = calcPosition(camera, it)
-                        CameraPositionMessage.Builder()
-                                .setPoint(cameraPosition.point.toMessage())
-                                .setZoom(cameraPosition.zoom.value.toDouble())
-                                .setTilt(cameraPosition.tilt.value.toDouble())
-                                .setBearing(cameraPosition.bearing.value)
-                                .build()
-                    }
+fun SearchResult.toMessage(pageId: String, camera: Camera, items: List<ItemMarkerInfo>?): SearchResultMessage {
+    return SearchResultMessage(
+        firstPage = this.firstPage?.toMessage(pageId),
+        representativeArea = this.representativeArea?.toMessage(),
+        areaOfInterestPosition = this.representativeArea?.let {
+            val cameraPosition = calcPosition(camera, it)
+            CameraPositionMessage(
+                point = cameraPosition.point.toMessage(),
+                zoom = cameraPosition.zoom.value.toDouble(),
+                tilt = cameraPosition.tilt.value.toDouble(),
+                bearing = cameraPosition.bearing.value
             )
-            .setItemMarkerInfos(items?.map { it.toMessage() })
-            .setSearchResultType(this.searchResultType.toMessage())
-            .setDynamicFilters(this.dynamicFilters.map { it.toMessage() })
-            .setAutoUseFirstResult(this.autoUseFirstResult)
-            .build()
+        },
+        itemMarkerInfos = items?.map { it.toMessage() },
+        searchResultType = this.searchResultType.toMessage(),
+        dynamicFilters = this.dynamicFilters.map { it.toMessage() },
+        autoUseFirstResult = this.autoUseFirstResult
+    )
 }
-
+fun UIMarkerInfo.toMessage(): UiMarkerInfoMessage {
+    return UiMarkerInfoMessage(
+        objectId = objectId?.toMessage(),
+        label = label
+    )
+}
 fun Page.toMessage(id: String): PageMessage {
-    return PageMessage.Builder()
-            .setId(PageIdMessage.Builder().setId(id).build())
-            .setItems(this.items.map { it.toMessage() })
-            .build()
+    return PageMessage(
+        id = PageIdMessage(id = id),
+        items = this.items.map { it.toMessage() }
+    )
 }
 
 fun ItemMarkerInfo.toMessage(): ItemMarkerInfoMessage {
-    return ItemMarkerInfoMessage.Builder()
-            .setObjectId(this.objectId?.toMessage())
-            .setFloorInfo(this.floorInfo?.toMessage())
-            .setGeoPoint(this.geoPoint.toMessage())
-            .setTitle(this.title)
-            .setRubricIds(this.rubricIds.map { it.value })
-            .build()
+    return ItemMarkerInfoMessage(
+        objectId = this.objectId?.toMessage(),
+        floorInfo = this.floorInfo?.toMessage(),
+        geoPoint = this.geoPoint.toMessage()
+    )
 }
-
 fun FloorInfo.toMessage(): FloorInfoMessage {
-    return FloorInfoMessage.Builder()
-            .setLevelId(this.levelId.value)
-            .setBuildingId(this.buildingId.value)
-            .build()
+    return FloorInfoMessage(
+        levelId = this.levelId.value,
+        buildingId = this.buildingId.value
+    )
 }
 
 fun SearchResultType.toMessage(): SearchResultTypeMessage =
@@ -61,30 +57,31 @@ fun SearchResultType.toMessage(): SearchResultTypeMessage =
             SearchResultType.DISCOVERY -> SearchResultTypeMessage.DISCOVERY
         }
 
+
+
 fun RangeFilter.toMessage(): RangeFilterMessage {
-    return RangeFilterMessage.Builder()
-            .setTagName(this.tagName)
-            .setDisplayName(this.displayName)
-            .setMinValue(this.minValue)
-            .setMaxValue(this.maxValue)
-            .build()
+    return RangeFilterMessage(
+        tagName = this.tagName,
+        displayName = this.displayName,
+        minValue = this.minValue,
+        maxValue = this.maxValue
+    )
 }
 
 fun FlagFilter.toMessage(): FlagFilterMessage {
-    return FlagFilterMessage.Builder()
-            .setTagName(this.tagName)
-            .setDisplayName(this.displayName)
-            .setFlagValue(this.flagValue)
-            .build()
+    return FlagFilterMessage(
+        tagName = this.tagName,
+        displayName = this.displayName,
+        flagValue = this.flagValue
+    )
 }
 
 fun DynamicFilter.toMessage(): DynamicFilterMessage {
-    return DynamicFilterMessage.Builder()
-            .setFlagFilter(this.asFlagFilter?.toMessage())
-            .setRangeFilter(this.asRangeFilter?.toMessage())
-            .build()
+    return DynamicFilterMessage(
+        flagFilter = this.asFlagFilter?.toMessage(),
+        rangeFilter = this.asRangeFilter?.toMessage()
+    )
 }
-
 fun SearchCategoryMessage.toRubrics(): List<RubricId> {
     val ids: List<Long> =
             when (this) {

@@ -2,10 +2,7 @@ package com.dgis.map
 
 import android.content.Context
 import com.dgis.map.extensions.toLogOptions
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.MapApi
-import com.dgis.map.map_api.Messages.PluginApi
-import com.dgis.map.map_api.Messages.VendorConfigContentMessage
+import com.dgis.map.map_api.*
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
@@ -15,12 +12,12 @@ class DgisMapPlugin : FlutterPlugin, PluginApi, ActivityAware {
     private lateinit var context: Context
 
     override fun initialize(
-        message: Messages.LogOptionsMessage?,
-        configMessage: Messages.VendorConfigMessage?,
-        result: Messages.VoidResult
+        message: LogOptionsMessage?,
+        configMessage: VendorConfigMessage?,
+        callback: (Result<Unit>) -> Unit
     ) {
         initializeDGis(context, message?.toLogOptions(context), configMessage)
-        result.success()
+        callback(Result.success(Unit))
     }
 
     private fun initializeDGis(

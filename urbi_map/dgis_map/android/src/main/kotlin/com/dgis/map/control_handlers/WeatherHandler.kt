@@ -92,7 +92,7 @@ class WeatherHandler(
             }
         }
         isHeatmapVisible = message.enabled
-        result.success(isHeatmapVisible)
+        callback(Result.success(isHeatmapVisible)
     }
 
     override fun close() {}

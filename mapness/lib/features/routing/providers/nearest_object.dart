@@ -55,17 +55,20 @@ class _NearestObject extends _$NearestObject {
     final objects = await dgisController.getNearestObjects();
     final dgisObjects = await Stream.fromIterable(objects)
         .asyncMap(
-          (e) async => (e, await dgisController.searchByObjectId(e.object)),
+          (e) async => (e, await dgisController.searchByObjectId(e.objectId)),
         )
         .toList();
     final filteredObjects = dgisObjects
-        .where((element) =>
-            element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv,)
+        .where(
+          (element) => element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv,
+        )
         .toList();
     if (filteredObjects.isEmpty) {
       if (ref.read(cameraPositionProvider) == null) {
         return AsyncValue.error(
-            'No suitable objects found', StackTrace.current,);
+          'No suitable objects found',
+          StackTrace.current,
+        );
       }
 
       return AsyncValue.data(

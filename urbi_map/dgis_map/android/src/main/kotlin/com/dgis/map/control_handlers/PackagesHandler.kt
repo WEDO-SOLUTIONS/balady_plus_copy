@@ -2,7 +2,7 @@ package com.dgis.map.control_handlers
 
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toVoiceMessage
-import com.dgis.map.map_api.Messages
+import com.dgis.map.map_api.*
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.navigation.VoiceManager
@@ -77,20 +77,20 @@ class PackagesHandler(
         closeables.clear()
     }
 
-    fun listPackages(result: Messages.Result<List<Messages.PackageMessage>>) {
-        result.success(packageManager.packages.map { it.toMessage() }.toList())
+    fun listPackages(callback: (Result<List<PackageMessage>>) -> Unit) {
+        callback(Result.success(packageManager.packages.map { it.toMessage() }.toList()))
     }
 
-    fun listVoices(result: Messages.Result<List<Messages.VoiceMessage>>) {
-        result?.success(voiceManager.voices.map { it.toVoiceMessage() }.toList())
+    fun listVoices(callback: (Result<List<VoiceMessage>>) -> Unit) {
+        callback(Result.success(voiceManager.voices.map { it.toVoiceMessage() }.toList()))
     }
 
-    fun voicePlayWelcome(id: String, result: Messages.VoidResult) {
+    fun voicePlayWelcome(id: String, callback: (Result<Unit>) -> Unit) {
         voiceManager.voices.find { it.id == id }?.playWelcome()
-        result.success()
+        callback(Result.success(Unit))
     }
 
-    fun installPackage(id: String, result: Messages.VoidResult?) {
+    fun installPackage(id: String, callback: ((Result<Unit>) -> Unit)?) {
         val pakage = packageManager.packages.firstOrNull { it.id == id }
         if (pakage != null) {
             closeables.add(pakage.progressChannel.connect { progress ->
@@ -115,10 +115,10 @@ class PackagesHandler(
         } else {
             installTasks.add(InstallTask.Package(id))
         }
-        result?.success()
+        callback?.invoke(Result.success(Unit))
     }
 
-    fun installVoice(id: String, result: Messages.VoidResult?) {
+    fun installVoice(id: String, callback: ((Result<Unit>) -> Unit)?) {
         val voice = voiceManager.voices.firstOrNull { it.id == id }
         if (voice != null) {
             closeables.add(voice.progressChannel.connect { progress ->
@@ -143,6 +143,6 @@ class PackagesHandler(
         } else {
             installTasks.add(InstallTask.Voice(id))
         }
-        result?.success()
+        callback?.invoke(Result.success(Unit))
     }
 }
