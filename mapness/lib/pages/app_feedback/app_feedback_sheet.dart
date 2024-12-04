@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
@@ -19,15 +20,19 @@ class AppFeedbackSheet extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final sendFeedbackState = ref.watch(sendFeedbackProvider);
-    final feedbackCanpop = ref.watch(appFeedbackCanPopProvider);
 
-    final scrollController = useStatelessBottomsheetController(onClose: (controller) {
+    ref.watch(appFeedbackCanPopProvider);
+
+    void onCloseBottomSheet(StatelessBottomSheetController controller) {
+      final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
       if (feedbackCanpop) {
         context.router.popForced();
       } else {
         controller.open();
       }
-    });
+    }
+
+    final scrollController = useStatelessBottomsheetController(onClose: onCloseBottomSheet);
 
     return StatelessBottomSheet(
       animateOpening: false,

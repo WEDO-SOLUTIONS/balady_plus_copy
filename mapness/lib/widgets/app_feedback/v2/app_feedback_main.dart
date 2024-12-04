@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -19,6 +20,35 @@ import 'package:mapness/widgets/app_feedback/v2/tag_cloud.dart';
 class AppFeedbackMain extends HookConsumerWidget {
   const AppFeedbackMain({super.key});
 
+  void _showConfirmDialog(BuildContext context) {
+    if (!context.mounted) {
+      return;
+    }
+    showCupertinoDialog(
+        context: context,
+        builder: (ctx) => CupertinoAlertDialog(
+              title: Text(context.l10n.appFeedbackUnsavedChanges),
+              content: Text(context.l10n.appFeedbackIfYouGoBackNowYourTextWillBeLostAreYouSureYouWantToLeave),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  child: Text(context.l10n.appFeedbackStay),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                  },
+                ),
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  child: Text(context.l10n.appFeedbackLeave),
+                  onPressed: () {
+                    Navigator.of(ctx).pop();
+                    context.pop();
+                  },
+                ),
+              ],
+            ));
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final rating = useState(0);
@@ -34,9 +64,9 @@ class AppFeedbackMain extends HookConsumerWidget {
 
     void onRatingChanged() {
       if (rating.value != 0) {
-        canPop.enable();
-      } else {
         canPop.disable();
+      } else {
+        canPop.enable();
       }
     }
 
@@ -54,7 +84,13 @@ class AppFeedbackMain extends HookConsumerWidget {
           child: Align(
             alignment: AlignmentDirectional.centerEnd,
             child: CustomCloseButton(
-              onClose: context.router.popForced,
+              onClose: () {
+                if (rating.value == 0) {
+                  context.router.popForced();
+                } else {
+                  _showConfirmDialog(context);
+                }
+              },
             ),
           ),
         ),
