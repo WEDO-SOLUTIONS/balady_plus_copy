@@ -178,21 +178,25 @@ class AppFeedbackMain extends HookConsumerWidget {
           child: ValueListenableBuilder(
               valueListenable: rating,
               builder: (context, ratingValue, _) {
-                final buttonState = ratingValue == 0 ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
+                final canSend = ratingValue > 0;
+                final buttonState = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
                     buttonColorScheme: buttonState,
-                    onTap: () async {
-                      final text = feedbackTextController.text;
-                      await collectFeedback.collectFeedback(
-                        stars: ratingValue,
-                        // Convert tag labels to source tags
-                        tags: selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
-                        text: text.isEmpty ? null : feedbackTextController.text,
-                        source: source,
-                      );
-                    },
+                    onTap: !canSend
+                        ? null
+                        : () async {
+                            final text = feedbackTextController.text;
+                            await collectFeedback.collectFeedback(
+                              stars: ratingValue,
+                              // Convert tag labels to source tags
+                              tags:
+                                  selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
+                              text: text.isEmpty ? null : feedbackTextController.text,
+                              source: source,
+                            );
+                          },
                     primaryLabel: context.l10n.appFeedbackSubmitButton,
                   ),
                 );
