@@ -63,9 +63,6 @@ class _HeaderInfoWidget
 
     var scale = interpolation;
 
-    if (state == PoiCardBottomSheetState.hidden) {
-      scale = interpolation;
-    }
     if (state == PoiCardBottomSheetState.halfOpen) {
       scale = 1 - interpolation;
     }
