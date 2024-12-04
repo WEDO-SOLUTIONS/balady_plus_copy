@@ -37,7 +37,10 @@ class PlaceListScreen(
     carContext: CarContext, private val mapController: CarMapController, private val query: String
 ) : CarMapScreen(carContext, mapController) {
 
-    var state: PlaceListScreenState = PlaceListScreenState.Loading
+    private var state: PlaceListScreenState = PlaceListScreenState.Loading
+    private val markerImage = imageFromResource(
+        DgisMapInitializer.getSdkContext(), R.drawable.ic_marker_m, Size(16, 16)
+    )
 
     init {
         val carLimit = carContext.getCarService(ConstraintManager::class.java)
@@ -132,14 +135,10 @@ class PlaceListScreen(
         state = PlaceListScreenState.Result(directoryObjectsWithMarker)
 
         if (directoryObjectsWithMarker.isEmpty()) return
-
-        val image = imageFromResource(
-            DgisMapInitializer.getSdkContext(), R.drawable.ic_marker_m, Size(16, 16)
-        )
         val markers = directoryObjectsWithMarker.map {
             val options = MarkerOptions(
                 position = it.markerPosition!!,
-                icon = image,
+                icon = markerImage,
                 iconWidth = LogicalPixel(16f),
             )
             Marker(options)
