@@ -1,3 +1,4 @@
+import 'package:flutter/widgets.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 class AppFeedbackTagMapper {
@@ -7,28 +8,39 @@ class AppFeedbackTagMapper {
             'Location Problems',
             'Poor Traffic',
             'Wrong Arrival Time',
+            'Poor Design',
+            'Parking Problems',
           },
         3 => {
-            'Traffic',
+            'Poor Traffic',
             'Wrong Arrival Time',
-            'Design',
-            'Wrong Directions',
+            'Poor Design',
+            'Bad Directions',
+            'Location',
           },
         4 => {
             'Easy to Use',
             'Helpful Directions',
             'Nice Design',
+            'Good Navigation',
           },
         5 => {
             'Arrival Time',
             'Good Navigation',
+            'Parking',
             'Easy to Use',
             'Great Design',
           },
         _ => {}
       };
 
-  String getLocalizedText(AppLocalizations l10n, String tag) {
+  /// Because in task requirements, the tags must send to backend localized in English
+  static String getSourceTagText(String tag) {
+    final l10n = lookupAppLocalizations(const Locale('en'));
+    return getLocalizedText(l10n, tag);
+  }
+
+  static String getLocalizedText(AppLocalizations l10n, String tag) {
     switch (tag) {
       case 'Bad Directions':
         return l10n.feedbackTagBadDirections;
@@ -56,6 +68,14 @@ class AppFeedbackTagMapper {
         return l10n.feedbackTagGoodNavigation;
       case 'Great Design':
         return l10n.feedbackTagGreatDesign;
+      case 'Parking Problems':
+        return l10n.feedbackTagParkingProblems;
+      case 'Poor Design':
+        return l10n.feedbackTagPoorDesign;
+      case 'Location':
+        return l10n.feedbackTagLocation;
+      case 'Parking':
+        return l10n.feedbackTagParking;
       default:
         return tag;
     }

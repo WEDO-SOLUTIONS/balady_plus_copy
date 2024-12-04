@@ -15,8 +15,8 @@ class AppFeedbackSheetHeader extends StatelessWidget {
             height: 46,
             width: double.infinity,
           ),
-          Positioned(
-            left: 0,
+          PositionedDirectional(
+            start: 0,
             top: 0,
             bottom: 0,
             child: AppButton(

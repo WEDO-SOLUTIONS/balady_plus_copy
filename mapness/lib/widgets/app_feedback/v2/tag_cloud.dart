@@ -41,7 +41,7 @@ class TagCloud extends HookWidget {
               },
               child: Chip(
                 backgroundColor: isSelected ? context.colorsV2.accentDefault : context.colorsV2.backgroundSurface4,
-                label: Text(tag,
+                label: Text(AppFeedbackTagMapper.getLocalizedText(context.l10n, tag),
                     style: context.textStyleV3.bodySmallRegular.copyWith(
                       color: isSelected ? context.colorsV3.onAccent : context.colorsV2.foregroundDefault,
                     )),

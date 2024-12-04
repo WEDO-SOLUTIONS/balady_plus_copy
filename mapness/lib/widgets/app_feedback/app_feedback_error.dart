@@ -12,8 +12,7 @@ class AppFeedbackError extends StatelessWidget {
         onRetry: () {
           onRetry?.call();
         },
-        errorLabel: context.l10n.appFeedbackConnectionIssue,
-        errorTitle: context.l10n.appFeedbackSomethingWentWrong,
+        errorLabel: context.l10n.appFeedbackConnectionIssueV2,
         withRetryButton: onRetry != null,
         buttonColorScheme: ButtonColorScheme.secondary,
       );

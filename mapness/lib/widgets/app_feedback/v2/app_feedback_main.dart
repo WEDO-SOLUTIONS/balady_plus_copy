@@ -3,20 +3,23 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/routes/app_feedback.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source.dart';
+import 'package:mapness/features/app_feedback/collect_feedback.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:mapness/widgets/app_feedback/v2/tag_cloud.dart';
 
-class AppFeedbackMain extends HookWidget {
+class AppFeedbackMain extends HookConsumerWidget {
   const AppFeedbackMain({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final rating = useState(0);
     final selectedTags = useState<Set<String>>({});
     final feedbackTextController = useTextEditingController();
@@ -24,6 +27,8 @@ class AppFeedbackMain extends HookWidget {
     /// Get the feedback source
     /// Must putting in the [AppFeedbackRoute]
     final source = FeedbackSourceProvider.of(context).source;
+
+    final collectFeedback = ref.read(collectFeedbackProvider.notifier);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -41,8 +46,8 @@ class AppFeedbackMain extends HookWidget {
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Text(
             switch (source) {
-              FeedbackSource.navi => 'How was your experience using\nBalady Navigation?',
-              _ => 'How was your experience using\nBalady App?',
+              FeedbackSource.navi => context.l10n.appFeedbackNavigationExperience,
+              _ => context.l10n.appFeedbackAppExperience,
             },
             textAlign: TextAlign.center,
             style: context.textStyleV3.h3SemiBold.copyWith(
@@ -66,7 +71,7 @@ class AppFeedbackMain extends HookWidget {
           child: ValueListenableBuilder(
             valueListenable: rating,
             builder: (context, ratingValue, _) => Text(
-              ratingText(rating.value),
+              _ratingText(context.l10n, rating.value),
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundSoft,
@@ -105,7 +110,7 @@ class AppFeedbackMain extends HookWidget {
                     },
                     child: BaladyInput(
                       controller: feedbackTextController,
-                      hintText: 'Please tell us in a few words',
+                      hintText: context.l10n.appFeedbackHintText,
                       maxLines: 4,
                       enabled: false,
                       onChanged: (_) {},
@@ -125,13 +130,16 @@ class AppFeedbackMain extends HookWidget {
                   width: double.infinity,
                   child: AppButton(
                     buttonColorScheme: buttonState,
-                    onTap: () {
-                      print(source);
-                      print(selectedTags.value);
-                      print(feedbackTextController.text);
-                      print(ratingValue);
+                    onTap: () async {
+                      await collectFeedback.collectFeedback(
+                        stars: ratingValue,
+                        // Convert tag labels to source tags
+                        tags: selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
+                        text: feedbackTextController.text,
+                        source: source,
+                      );
                     },
-                    primaryLabel: 'Submit Feedback',
+                    primaryLabel: context.l10n.appFeedbackSubmitButton,
                   ),
                 );
               }),
@@ -141,12 +149,12 @@ class AppFeedbackMain extends HookWidget {
     );
   }
 
-  String ratingText(int rating) => switch (rating) {
-        1 => 'We’re very sorry to hear that. What\nproblems did you face?',
-        2 => 'What disappointed you?',
-        3 => 'What should we improve?',
-        4 => 'Tell us what did you like?',
-        5 => 'That’s great! Tell us what did you like?',
-        _ => 'This will help us improve your user\nexperience'
+  String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {
+        1 => l10n.appFeedbackRating1,
+        2 => l10n.appFeedbackRating2,
+        3 => l10n.appFeedbackRating3,
+        4 => l10n.appFeedbackRating4,
+        5 => l10n.appFeedbackRating5,
+        _ => l10n.appFeedbackRatingDefault,
       };
 }

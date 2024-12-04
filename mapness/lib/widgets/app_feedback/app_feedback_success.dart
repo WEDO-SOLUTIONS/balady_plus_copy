@@ -25,7 +25,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 horizontal: AppSizes.xxs,
               ),
               child: Text(
-                context.l10n.appFeedbackThankYou,
+                context.l10n.appFeedbackThankYouV2,
                 style: context.textStyleV3.h3SemiBold.copyWith(
                   color: context.colorsV2.foregroundDefault,
                 ),
@@ -38,7 +38,7 @@ class AppFeedbackSuccess extends StatelessWidget {
                 horizontal: AppSizes.xxs,
               ),
               child: Text(
-                context.l10n.appFeedbackYourFeedbackWillHelpUsCreateABetterExperienceForYou,
+                context.l10n.appFeedbackHappy,
                 style: context.textStyleV3.bodySmallRegular.copyWith(
                   color: context.colorsV2.foregroundSoft,
                 ),

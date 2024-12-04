@@ -1,46 +1,63 @@
 import 'dart:async';
 
+import 'package:dio/dio.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/features/app_feedback/app_feedback_dio.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:urbi_analytics/logger.dart';
 
 part 'send_feedback.g.dart';
 
-enum AppFeedbackState { initial, loading, success }
+enum AppFeedbackState { initial, loading, success, error }
 
 @riverpod
 class SendFeedback extends _$SendFeedback {
-  AppFeedbackPayload? _feedbackPayload;
+  Dio? _feedbackDio;
+
   @override
   Future<AppFeedbackState> build() async {
-    _feedbackPayload = ref.watch(collectFeedbackProvider);
+    _feedbackDio = ref.watch(appFeedbackDioProvider).valueOrNull;
+    final collectFeedbackRef = ref.read(collectFeedbackProvider.notifier);
 
-    ref.onDispose(() {
-      ref.read(collectFeedbackProvider.notifier).dispose();
-    });
+    ref
+      ..listen(collectFeedbackProvider, (_, payload) {
+        if (payload != null) {
+          sendFeedback(payload);
+        }
+      })
+      ..onDispose(() {
+        collectFeedbackRef.dispose();
+      });
 
     return AppFeedbackState.initial;
   }
 
-  Future<void> sendFeedback() async {
-    final feedbackDio = await ref.read(appFeedbackDioProvider.future);
+  Future<void> retry() async {
+    final payload = ref.read(collectFeedbackProvider);
 
+    if (payload != null) {
+      await sendFeedback(payload);
+    }
+  }
+
+  Future<void> sendFeedback(AppFeedbackPayload payload) async {
     try {
-      if (_feedbackPayload == null) {
-        throw Exception('Feedback payload is null');
+      if (_feedbackDio == null) {
+        throw Exception('Feedback payload is null or Dio not initialized');
       }
 
       await update((_) async => AppFeedbackState.loading);
 
-      await feedbackDio.post(
-        '/1.0/feedbacks',
-        data: _feedbackPayload!.toJson(),
+      await _feedbackDio?.post(
+        '/2.0/feedbacks',
+        data: payload.toJson(),
       );
 
       await update((_) async => AppFeedbackState.success);
-    } catch (e, st) {
-      state = AsyncError(e, st);
+    } catch (e, _) {
+      log('Failed to send feedback ${e.toString()}');
+      await update((_) async => AppFeedbackState.error);
     }
   }
 }

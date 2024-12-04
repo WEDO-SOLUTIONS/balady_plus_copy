@@ -31,7 +31,7 @@ class CollectFeedback extends _$CollectFeedback {
     return deviceIdentifier;
   }
 
-  Future<void> collectFeedback({required int stars, String? text, List<String>? tags}) async {
+  Future<void> collectFeedback({required int stars, String? text, List<String>? tags, FeedbackSource? source}) async {
     final isAndroid = Platform.isAndroid;
     final packageInfo = await PackageInfo.fromPlatform();
 
@@ -55,6 +55,7 @@ class CollectFeedback extends _$CollectFeedback {
         mobileOS: mobileOs,
         authId: auth?.idNo,
         deviceId: deviceId,
+        feedbackSource: source,
       ),
     );
   }

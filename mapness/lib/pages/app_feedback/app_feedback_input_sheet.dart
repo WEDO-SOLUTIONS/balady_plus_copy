@@ -2,8 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/statefull_bottomsheet_controller_hook.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_input.dart';
 import 'package:mapness/widgets/app_feedback/v2/app_feedback_sheet_header.dart';
@@ -29,7 +29,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
       scrollController: scrollController,
       header: AppFeedbackSheetHeader(
         onBackTap: context.router.popForced,
-        title: 'App feedback',
+        title: context.l10n.appFeedbackInputTitle,
       ),
       content: [
         AppFeedbackInput(
@@ -43,7 +43,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
         child: SizedBox(
             width: double.infinity,
             child: AppButton(
-                primaryLabel: 'Add note',
+                primaryLabel: context.l10n.appFeedbackAddNote,
                 buttonColorScheme: ButtonColorScheme.primary,
                 onTap: () {
                   context.router.popForced(textEditingController.text);
