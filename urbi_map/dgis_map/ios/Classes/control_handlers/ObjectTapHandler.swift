@@ -377,7 +377,8 @@ class ObjectTapHandler {
                 api: self.flutterApi,
                 registrar: self.registrar,
                 imageFactory: self.imageFactory,
-                manager: managerMessage
+                manager: managerMessage,
+                objectsQueue: objectsQueue
             ),
             minZoom: options.minZoom.map {
                 Zoom(value: Float($0))

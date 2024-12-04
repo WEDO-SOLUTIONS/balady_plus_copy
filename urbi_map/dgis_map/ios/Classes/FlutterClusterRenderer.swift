@@ -6,12 +6,14 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
     let registrar: FlutterPluginRegistrar
     let imageFactory: IImageFactory
     let manager: MapObjectManagerMessage
+    let objectsQueue: DispatchQueue
     
-    init(api: FlutterMapApi, registrar: FlutterPluginRegistrar, imageFactory: IImageFactory, manager: MapObjectManagerMessage) {
+    init(api: FlutterMapApi, registrar: FlutterPluginRegistrar, imageFactory: IImageFactory, manager: MapObjectManagerMessage, objectsQueue: DispatchQueue) {
         self.api = api
         self.registrar = registrar
         self.imageFactory = imageFactory
         self.manager = manager
+        self.objectsQueue = objectsQueue
     }
     
     private var iconCache: Dictionary<String, Image> = [:]
@@ -21,12 +23,15 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         var message: SimpleClusterOptionsMessage? = nil
         var options: SimpleClusterOptions? = nil
         
-        api.renderCluster(
-            manager: manager,
-            objectCount: Int64(cluster.objectCount)) {result in
-                    message = try? result.get()
-                    semaphore.signal()
-            }
+        objectsQueue.async(execute: {
+                self.api.renderCluster(
+                    manager: self.manager,
+                    objectCount: Int64(cluster.objectCount)) {result in
+                        message = try? result.get()
+                        semaphore.signal()
+                    }
+        })
+      
         
         semaphore.wait()
         
