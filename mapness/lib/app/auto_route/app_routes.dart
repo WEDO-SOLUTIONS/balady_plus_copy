@@ -192,7 +192,17 @@ class AppRouter extends RootStackRouter {
               page: FavouritesPickerRoute.page,
               path: 'picker',
               transitionsBuilder: TransitionsBuilders.fadeIn,
-            )
+            ),
+            CustomRoute(
+              path: 'feedback',
+              page: AppFeedbackSheet.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'feedback/edit',
+              page: AppFeedbackInputSheet.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
           ],
         ),
         ...Routes.upperRoutesMap,

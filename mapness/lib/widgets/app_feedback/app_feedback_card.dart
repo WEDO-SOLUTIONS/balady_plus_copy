@@ -18,7 +18,7 @@ class AppFeedbackCard extends ConsumerWidget {
 
     return env?.appFeedbackEnable == true
         ? GestureDetector(
-            onTap: () => context.router.push(const AppFeedbackSheet()),
+            onTap: () => context.router.push(AppFeedbackSheet()),
             child: Padding(
               padding: const EdgeInsets.all(Spacing.$3x),
               child: DecoratedBox(

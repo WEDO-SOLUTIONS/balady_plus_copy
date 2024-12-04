@@ -13,6 +13,7 @@ import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -428,7 +429,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    await ctx.router.push(const AppFeedbackSheet(source: FeedbackSource.navi).location);
+    await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
 
     if (!ctx.mounted) {
       return;
