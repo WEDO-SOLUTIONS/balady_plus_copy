@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/feedback/feedback_upload_image.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 
+part 'feedback_error_image_item.dart';
 part 'feedback_image_action_button.dart';
 part 'feedback_image_item.dart';
 
@@ -91,26 +92,11 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
                       imageSize: widget.imageSize,
                     ),
                   FileUploadInit() || FileUploadProgress() => Loading.small(),
-                  _ => Stack(
-                      children: [
-                        Opacity(
-                          opacity: 0.7,
-                          child: _FeedbackImageItem(
-                            imagePath: widget.imagePath,
-                            imageSize: widget.imageSize,
-                          ),
-                        ),
-                        Center(
-                          child: _ImageActionButton(
-                              icon: GeneralIcons.reload,
-                              size: 24,
-                              iconSize: 12,
-                              onTap: () {
-                                ref.invalidate(uploadProvider);
-                              }),
-                        ),
-                      ],
-                    ),
+                  _ => _FeedbackErrorImageItem(
+                      imagePath: widget.imagePath,
+                      imageSize: widget.imageSize,
+                      onRefresh: () => ref.invalidate(uploadProvider),
+                    )
                 },
               ),
               if (!isLoading)

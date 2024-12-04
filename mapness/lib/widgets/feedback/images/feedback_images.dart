@@ -187,7 +187,7 @@ class FeedbackImages extends StatelessWidget {
           top: Radius.circular(RadiusBorder.l),
         ),
       ),
-      builder: (ctx) => FeedbackImagesActionErrorSheet(
+      builder: (_) => FeedbackImagesActionErrorSheet(
         error: error,
       ),
     );
