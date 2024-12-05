@@ -60,8 +60,7 @@ Mixpanel? mixpanel;
 StreamSubscription? _remoteConfigSubscription;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
-  static final MapnessRouteObserver _instance =
-      MapnessRouteObserver._internal();
+  static final MapnessRouteObserver _instance = MapnessRouteObserver._internal();
 
   factory MapnessRouteObserver() => _instance;
 
@@ -82,9 +81,7 @@ class MapnessProviderScope extends StatelessWidget {
           child: Consumer(
             builder: (context, ref, child) {
               final language = ref.watch(appLanguageProvider);
-              final localizations = language == Language.arabic
-                  ? AppLocalizationsAr()
-                  : AppLocalizationsEn();
+              final localizations = language == Language.arabic ? AppLocalizationsAr() : AppLocalizationsEn();
 
               return provider.MultiProvider(
                 providers: [
@@ -155,12 +152,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> restoreState() async {
-    final state = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateKey);
-    final type = ref
-        .read(sharedPrefsProvider)
-        .getString(MapnessConstants.navigatorStateTypeKey);
+    final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
+    final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
 
     if (state != null) {
       final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
@@ -174,16 +167,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ),
               );
         } else {
-          _locationListener =
-              ref.listenManual<Position?>(locationProvider, (_, next) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
               ref.read(appRouterProvider).push(
-                PathNavRoute(
-                  navType: RouteSearchOptionsMessageExt.fromString(type),
-                  initAction: null,
-                ),
-              );
+                    PathNavRoute(
+                      navType: RouteSearchOptionsMessageExt.fromString(type),
+                      initAction: null,
+                    ),
+                  );
             }
           });
         }
@@ -206,8 +198,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 ),
               );
         } else {
-          _locationListener =
-              ref.listenManual<Position?>(locationProvider, (_, next) {
+          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
             if (next != null) {
               _locationListener?.close();
               ref.read(appRouterProvider).push(
@@ -261,14 +252,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               dividerColor: Colors.grey[400],
               useMaterial3: false,
               extensions: <ThemeExtension<dynamic>>[
-                if (language == Language.arabic)
-                  ThemeTextStyles.arabic()
-                else
-                  ThemeTextStyles.english(),
-                if (language == Language.arabic)
-                  ThemeTextStylesV3.frutiger()
-                else
-                  ThemeTextStylesV3.golos(),
+                if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                 AppColorsThemeExt.palette(colorScheme, isDark: false),
                 AppColorsThemeV2.palette(isDark: false),
                 AppStaticColorsThemeExt.palette(colorScheme),
@@ -300,16 +285,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final controller = await ref.read(dgisControllerProvider.future);
 
     try {
-      await controller
-          .setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+      await controller.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
     } catch (ex) {
       debugPrint('Error setting camera position point: $ex');
     }
   }
 
   Future<void> clearCache() async {
-    final poiBox =
-        await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
+    final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     await poiBox.clear();
   }
 
@@ -353,8 +336,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final isNavPage = matches.last.name == PathNavRoute.name || matches.last.name == FreeRoamRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       if (navigation && !isNavPage) {
-        final navStateMessage =
-            await dgisController.getCurrentNavigationState();
+        final navStateMessage = await dgisController.getCurrentNavigationState();
         await context.router.push(
           PathNavRoute(
             navType: navStateMessage.routeSearchOptions,
@@ -398,7 +380,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final id = int.tryParse(objectId);
       if (id != null) {
         final location =
-        (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
+            (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
         if (isFirstRun) {
           // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
           await Future.delayed(const Duration(milliseconds: 300));
@@ -416,8 +398,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
-    } else if (url.toString().isNotEmpty)  {
-
+    } else if (url.toString().isNotEmpty) {
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }
@@ -491,12 +472,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
 
     await ref.watch(appRouterProvider).push(PoiCardWidgetRoute(
-      objectId: DgisObjectIdMessage(
-        objectId: dgisId,
-        entranceId: 0,
-      ),
-      cameraConfig: const PoiCameraConfig(zoom: 17),
-    ));
+          objectId: DgisObjectIdMessage(
+            objectId: dgisId,
+            entranceId: 0,
+          ),
+          cameraConfig: const PoiCameraConfig(zoom: 17),
+        ));
   }
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {
@@ -512,8 +493,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
     final twinsResponse = await dio.get(twinsUrl, queryParameters: {
       BaldayDeeplink.keyKey: BaldayDeeplink.momrahTwinsKey,
-      BaldayDeeplink.momrahPartnerCodeKey:
-          BaldayDeeplink.momrahPartnerCodeValue,
+      BaldayDeeplink.momrahPartnerCodeKey: BaldayDeeplink.momrahPartnerCodeValue,
       BaldayDeeplink.momrahPartnerCodeId: momrahId,
     });
     final data = twinsResponse.data as Map<String, dynamic>;
@@ -564,16 +544,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 }
 
 Future<void> setupMapness(EnvType envType) async {
-
   await _setupAppConfigs(envType);
 
   final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
 
-  final vendorConfigLocal = await box.get(MapnessConstants.vendorConfigKey,);
+  final vendorConfigLocal = await box.get(
+    MapnessConstants.vendorConfigKey,
+  );
 
-  final vendorConfigContentMessage =
-  VendorConfigContentMessage(content: vendorConfigLocal);
-
+  final vendorConfigContentMessage = VendorConfigContentMessage(content: vendorConfigLocal);
 
   await initialiseDGis(
     logOptions: LogOptionsMessage(
@@ -592,7 +571,6 @@ Future<void> setupMapness(EnvType envType) async {
     ..registerAdapter(HiveCoordinatesAdapter())
     ..registerAdapter(HiveFavouriteItemEntityAdapter())
     ..registerAdapter(FavoriteCacheStateAdapter());
-
 }
 
 ///Fetch and save vendor config and environment config from firebase
@@ -634,8 +612,7 @@ Future<void> _setupAppConfigs(EnvType envType) async {
 
 Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envType) async {
   /// Fetch the vendor configuration for the current environment type
-  final vendorConfigResponse =
-      remoteconfig?.getValue(envType.vendorConfigKey()).asString();
+  final vendorConfigResponse = remoteconfig?.getValue(envType.vendorConfigKey()).asString();
 
   /// Open the local Hive storage to save the configuration
   final box = await Hive.openBox(MapnessConstants.envConfigBoxKey);
@@ -644,11 +621,9 @@ Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envTy
   if (vendorConfigResponse != null && vendorConfigResponse.isNotEmpty) {
     /// Convert the value to JSON and save it to the local storage
     await box.put(MapnessConstants.vendorConfigKey, vendorConfigResponse);
-
   } else {
     /// If the remote config is not available, load the local configuration from assets
-    final vendorConfigAsset = await rootBundle
-        .loadString('assets/maps/configs/${envType.vendorConfigPath()}');
+    final vendorConfigAsset = await rootBundle.loadString('assets/maps/configs/${envType.vendorConfigPath()}');
     await box.put(MapnessConstants.vendorConfigKey, vendorConfigAsset);
   }
 
@@ -657,9 +632,7 @@ Future<void> _saveRemoteConfig(FirebaseRemoteConfig? remoteconfig, EnvType envTy
 
   ///save all env config to hive just for testing scenario
   /// Optionally save all environment config to Hive for testing purposes
-  final envConfigResponse = remoteconfig
-      ?.getValue(MapnessConstants.firebaseAppEnvConfigKey)
-      .asString();
+  final envConfigResponse = remoteconfig?.getValue(MapnessConstants.firebaseAppEnvConfigKey).asString();
   if (envConfigResponse != null && envConfigResponse.isNotEmpty) {
     await box.put(MapnessConstants.firebaseAppEnvConfigKey, envConfigResponse);
   } else {

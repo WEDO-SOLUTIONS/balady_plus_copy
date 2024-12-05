@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
@@ -223,6 +224,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
     );
+
+    // log advert analytics event
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
 
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',

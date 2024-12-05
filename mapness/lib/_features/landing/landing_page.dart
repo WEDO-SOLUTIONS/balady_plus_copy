@@ -13,6 +13,7 @@ import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -188,7 +189,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
     if (context.router.isRouteActive(RoutingMapSelectRoute.name) ||
         context.router.isRouteActive(SearchRoute.name) ||
-        context.router.isRouteActive(PathNavRoute.name) || context.router.isRouteActive(PathNavRoute.name) ||
+        context.router.isRouteActive(PathNavRoute.name) ||
+        context.router.isRouteActive(PathNavRoute.name) ||
         context.router.isRouteActive(RoutingRoutesRoute.name)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
@@ -242,6 +244,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           group: MetricsConstants.poiTag,
           action: MetricAction.tap.toString(),
         );
+
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
 
         final userLocation = ref.read(locationProvider);
         context.router.push(
