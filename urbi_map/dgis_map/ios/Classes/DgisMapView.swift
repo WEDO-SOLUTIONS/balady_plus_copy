@@ -2,7 +2,7 @@ import Foundation
 import Flutter
 import DGis
 
-extension FlutterError: @retroactive Error {}
+extension FlutterError: Error {}
 
 class DgisMapView: NSObject, FlutterPlatformView, MapApi {
 
