@@ -99,7 +99,6 @@ dependencies:
   json_annotation: 4.9.0
   photo_view: 0.15.0
   flutter_staggered_grid_view: 0.7.0
-  easy_image_viewer: ^1.5.1
   app_links: 6.3.2
   flutter_keyboard_visibility: 6.0.0
   infinite_scroll_pagination: 4.1.0
@@ -131,8 +130,6 @@ dependencies:
   # for text inputs
   mask_text_input_formatter: 2.9.0
 
-  easy_image_viewer: 1.5.1
-
   firebase_core: 3.8.0
   # eliminate this after lazy-ass author update the package
   firebase_messaging:
@@ -142,6 +139,10 @@ dependencies:
       path: packages/firebase_messaging/firebase_messaging
   firebase_analytics: 11.3.5
   firebase_remote_config: 5.1.5
+
+  easy_image_viewer: 1.5.1
+  talker_dio_logger: 4.5.2
+
 
 dependency_overrides:
   # for dio_http_cache
