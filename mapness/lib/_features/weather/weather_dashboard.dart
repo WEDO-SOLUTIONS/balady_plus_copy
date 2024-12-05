@@ -37,28 +37,22 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
         pinned: true,
       ),
       content: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ListView.separated(
-              padding: EdgeInsets.zero,
-              primary: false,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
-              itemBuilder: (context, index) =>
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    child: WeatherDayCard(
-                      forecastDay: weatherData?.forecast?.forecastday?[index],
-                      isExpanded: false,
-                      onExpansionChanged: (b) {},
-                    ),
-                  ),
-              separatorBuilder: (context, index) => Spacing.$3x.heightBox,
-            ),
-            Spacing.$4x.heightBox,
-          ],
+        ListView.separated(
+          padding: const EdgeInsets.only(bottom: Spacing.$4x),
+          primary: false,
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
+          itemBuilder: (context, index) =>
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                child: WeatherDayCard(
+                  forecastDay: weatherData?.forecast?.forecastday?[index],
+                  isExpanded: false,
+                  onExpansionChanged: (b) {},
+                ),
+              ),
+          separatorBuilder: (context, index) => Spacing.$3x.heightBox,
         ),
       ],
 
