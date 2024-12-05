@@ -85,7 +85,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       height: widget.height,
       isDashboard: widget.isDashboard,
       itemScrollController: widget.itemScrollController,
-      onFavouritesBookmarkTap: () => CommonFunctions.authOrOpen(
+      onFavouritesBookmarkTap: () => CommonFunctions.authAndOpen(
         context,
         callback: () {
           if (!mounted) {
