@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
@@ -284,6 +285,7 @@ class Search extends _$Search {
   }
 
   void searchInThisArea() {
+    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
     switch (_previousType) {
       case null:
         break;
