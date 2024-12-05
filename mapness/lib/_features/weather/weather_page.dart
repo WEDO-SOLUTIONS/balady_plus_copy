@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,6 +20,12 @@ class WeatherPage extends ConsumerStatefulWidget {
 
 class _WeatherPageState extends ConsumerState<WeatherPage> {
   StreamSubscription<TapEvent>? _streamSubscription;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
+      StatefulBottomSheetController(
+    initialState: ThreeStateBottomSheet.open,
+    behavior: AspectRatioSnappingBehavior(aspectRatios: [.1, .38, .931]),
+    stateMapper: const ThreeStateMapper(),
+  );
 
   @override
   void initState() {
@@ -38,22 +45,21 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: SafeArea(
-        bottom: false,
-        child: Directionality(
-          textDirection: TextDirection.ltr,
-          child: Material(
-            type: MaterialType.transparency,
-            child: Stack(
-              children: [
-                const WeatherControls(),
-                LayoutBuilder(builder: (context, constraints) => WeatherDashboard(
-                    biggestHeight: constraints.biggest.height,
-                    biggestWidth: constraints.biggest.width,
-                  ),),
-              ],
+      child: Material(
+        type: MaterialType.transparency,
+        child: Stack(
+          children: [
+            WeatherControls(
+              bottomSheetController: _bottomSheetController,
             ),
-          ),
+            LayoutBuilder(
+              builder: (context, constraints) => WeatherDashboard(
+                biggestHeight: constraints.biggest.height,
+                biggestWidth: constraints.biggest.width,
+                bottomSheetController: _bottomSheetController,
+              ),
+            ),
+          ],
         ),
       ),
     );

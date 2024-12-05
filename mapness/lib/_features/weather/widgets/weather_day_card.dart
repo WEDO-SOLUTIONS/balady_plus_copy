@@ -1,6 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -13,17 +14,17 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 class WeatherDayCard extends ConsumerWidget {
+  final ForecastDay? forecastDay;
+  final bool isExpanded;
+  // ignore: avoid_positional_boolean_parameters
+  final Function(bool expanded) onExpansionChanged;
+
   const WeatherDayCard({
     required this.forecastDay,
     required this.isExpanded,
     required this.onExpansionChanged,
     super.key,
   });
-
-  final ForecastDay? forecastDay;
-  final bool isExpanded;
-  // ignore: avoid_positional_boolean_parameters
-  final Function(bool expanded) onExpansionChanged;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,12 +50,12 @@ class WeatherDayCard extends ConsumerWidget {
       backgroundColor: NonThemeColor.color9,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
-          12,
+          RadiusBorder.l,
         ),
       ),
       collapsedShape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(
-          12,
+          RadiusBorder.l,
         ),
       ),
       key: UniqueKey(),
@@ -62,7 +63,7 @@ class WeatherDayCard extends ConsumerWidget {
       onExpansionChanged: onExpansionChanged,
       initiallyExpanded: isExpanded,
       title: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16),
+        padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -129,7 +130,7 @@ class WeatherDayCard extends ConsumerWidget {
         SizedBox(
           height: 100,
           child: Padding(
-            padding: const EdgeInsets.only(right: 16),
+            padding: const EdgeInsets.only(right: Spacing.$4x),
             child: ListView(
               scrollDirection: Axis.horizontal,
               shrinkWrap: true,
@@ -149,7 +150,7 @@ class WeatherDayCard extends ConsumerWidget {
                   final temperature = '${formatter.format(hour.tempC)}º';
 
                   return Padding(
-                    padding: const EdgeInsets.only(left: 12),
+                    padding: const EdgeInsets.only(left: Spacing.$3x),
                     child: Column(
                       children: [
                         Container(
@@ -172,7 +173,7 @@ class WeatherDayCard extends ConsumerWidget {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        Spacing.$1x.heightBox,
                         Center(
                           child: Text(
                             time,
