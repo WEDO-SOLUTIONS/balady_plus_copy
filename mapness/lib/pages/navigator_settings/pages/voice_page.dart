@@ -11,6 +11,7 @@ import 'package:mapness/pages/navigator_settings/components/voice_row_widget.dar
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
@@ -24,6 +25,17 @@ class VoiceSettingsPage extends ConsumerStatefulWidget {
 class _VoiceSettingsPageState extends ConsumerState<VoiceSettingsPage> {
   @override
   Widget build(BuildContext context) {
+    ref.listen(soundSettingsProvider, (prev, next) {
+      final prevVoices = prev?.installedVoices;
+      final nextVoices = next.installedVoices;
+
+      if (prevVoices != null && prevVoices.isNotEmpty && nextVoices.isNotEmpty) {
+        if (prevVoices.first.id != nextVoices.first.id) {
+          ref.read(navigatorVoiceProvider.notifier).update(nextVoices.first.id);
+        }
+      }
+    });
+
     final soundSettingsModel = ref.watch(soundSettingsProvider);
 
     final voiceLanguage = soundSettingsModel.voicesLanguage;
