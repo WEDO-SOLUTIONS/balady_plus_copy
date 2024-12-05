@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart' hide MapButton;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/shared/providers/map/zoom_state.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
@@ -22,11 +23,13 @@ class ZoomControl extends ConsumerWidget {
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
             if (zoomState.zoomInEnabled) {
               zoomNotifier.onTapUp(ZoomControlType.zoomIn);
             }
           },
           onTapDown: (_) {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
@@ -42,6 +45,7 @@ class ZoomControl extends ConsumerWidget {
         ),
         MapButton(
           onTapUp: (_) {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
@@ -50,6 +54,7 @@ class ZoomControl extends ConsumerWidget {
             }
           },
           onTapDown: (_) {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );

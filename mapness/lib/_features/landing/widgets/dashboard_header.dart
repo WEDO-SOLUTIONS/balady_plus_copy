@@ -10,8 +10,9 @@ import 'package:mapness/_features/landing/providers/quick_filter_request_source_
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+
 import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -91,7 +92,10 @@ class _DashboardMenu extends ConsumerWidget {
                     filterType: FilterType.custom,
                     title: context.l10n.go,
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                    onTap: () => context.router.push(const FreeRoamRoute()),
+                    onTap: () {
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+                      context.router.push(const FreeRoamRoute()),
+                    },
                   ),
                 ],
               ),
@@ -126,6 +130,9 @@ class DashboardHeader extends ConsumerWidget {
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
+
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
