@@ -15,11 +15,12 @@ class MapnessConstants {
   static const voicesLanguagePrefsKey = 'voices_language';
   static const camerasOn = 'camerasOn';
   static const analyticsTripStopped = 'tripStopped';
+  static const analyticsSearchInThisAreaPressed = 'analyticsSearchInThisAreaPressed';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+
   ///config region
   static const envConfigBoxKey = 'envConfigKey';
   static const envTypeKey = 'envTypeKey';
   static const vendorConfigKey = 'vendorConfigKey';
   static const firebaseAppEnvConfigKey = 'app_env_config';
-
 }
