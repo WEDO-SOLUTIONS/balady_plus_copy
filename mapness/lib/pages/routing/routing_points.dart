@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,7 +17,6 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
@@ -26,19 +24,14 @@ class RoutingPointsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => RoutingPointsSheet(
-          biggestHeight: constraints.biggest.height,
-        ),
+        builder: (context, constraints) => const RoutingPointsSheet(),
       );
 }
 
 class RoutingPointsSheet extends ConsumerStatefulWidget {
   const RoutingPointsSheet({
-    required this.biggestHeight,
     super.key,
   });
-
-  final double biggestHeight;
 
   @override
   ConsumerState<RoutingPointsSheet> createState() => _RoutingPointsSheetState();
@@ -46,7 +39,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   static const controlsBottomExtent = 136.0;
-  static const middleHeightFraction = 0.7;
+  static const _bottomSheetAspectRatios = [.15, .7, .931];
 
   List<RoutePoint> points = [
     RoutePointMyLocation(),
@@ -57,11 +50,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
 
   /// Bottom sheet controller
-  late final DgisBottomSheetController dgisBottomSheetController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
 
   @override
   void initState() {
-    dgisBottomSheetController = DgisBottomSheetController();
+    bottomSheetController = StatefulBottomSheetController(
+      behavior: AspectRatioSnappingBehavior(aspectRatios: _bottomSheetAspectRatios),
+      stateMapper: const ThreeStateMapper(),
+      initialState: ThreeStateBottomSheet.open,
+    );
     _setupTapListener();
     super.initState();
   }
@@ -93,44 +90,27 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           const RoutingMapControls(
             bottomExtent: controlsBottomExtent,
           ),
-          DgisBottomSheet(
-            controller: dgisBottomSheetController,
-            showBarrier: false,
-            availableExpansions: const {
-              Expansion.collapsed,
-              Expansion.expanded,
-              Expansion.middle,
-            },
-            initialExpansion: Expansion.middle,
-            middleHeight: middleHeightFraction * widget.biggestHeight,
-            collapsedHeight: controlsBottomExtent,
-            scrollableBody: (context, scrollController) => Material(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(RadiusBorder.xl),
-                topLeft: Radius.circular(RadiusBorder.xl),
+          StatefulBottomSheet<ThreeStateBottomSheet>(
+            animateOpening: false,
+            sliverBeforeContent: SliverPersistentHeader(
+              delegate: RoutingHeaderDelegate(
+                points: points,
+                updatePoints: _updatePoints,
               ),
-              color: context.color.surfaceBasePrimary,
-              child: CustomScrollView(
-                controller: scrollController,
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: RoutingHeaderDelegate(
-                      points: points,
-                      updatePoints: _updatePoints,
-                    ),
-                    pinned: true,
-                  ),
-                  SliverToBoxAdapter(
-                    child: RoutingHistory(
-                      updatePoint: _updatePoint,
-                      searchByQuery: _searchQuery,
-                    ),
+              pinned: true,
+              floating: true,
+            ),
+            content: [
+              Column(
+                children: [
+                  RoutingHistory(
+                    updatePoint: _updatePoint,
+                    searchByQuery: _searchQuery,
                   ),
                 ],
               ),
-            ),
+            ],
+            scrollController: bottomSheetController,
           ),
         ],
       ),
@@ -217,15 +197,13 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   void _tapListener(event) {
     if (event is ObjectTapEvent) {
-      final expansion = dgisBottomSheetController.currentExpansion!;
-      switch (expansion) {
-        case Expansion.expanded:
-        case Expansion.middle:
-          dgisBottomSheetController.animateTo(Expansion.collapsed);
+      final state = bottomSheetController.state;
+      switch (state) {
+        case ThreeStateBottomSheet.open:
           break;
-        case Expansion.hidden:
-        case Expansion.collapsed:
-        case Expansion.fullHidePhoto:
+        case ThreeStateBottomSheet.hidden:
+        case ThreeStateBottomSheet.expanded:
+          bottomSheetController.setState(ThreeStateBottomSheet.open);
           break;
       }
     }

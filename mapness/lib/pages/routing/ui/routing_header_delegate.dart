@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -27,9 +26,14 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
     double shrinkOffset,
     bool overlapsContent,
   ) =>
-      RoutingHeader(
-        points: points,
-        updatePoints: updatePoints,
+      FlexibleSpaceBar.createSettings(
+        maxExtent: maxExtent,
+        minExtent: minExtent,
+        currentExtent: maxExtent,
+        child: RoutingHeader(
+          points: points,
+          updatePoints: updatePoints,
+        ),
       );
 
   final List<RoutePoint> points;
@@ -84,9 +88,6 @@ class RoutingHeader extends ConsumerWidget {
       ),
       child: Column(
         children: [
-          const SizedBox(height: Spacing.$2x),
-          const Center(child: SheetDragger()),
-          const SizedBox(height: Spacing.$3x),
           ABRoute(
             items: items,
             onTap: (i) => _onTap(i, context, ref),
