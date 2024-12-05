@@ -73,21 +73,27 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final isBackgroundNavigationOn = ref.read(soundSettingsProvider).backgroundNavigation;
-    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
-
+    _checkBackgroundNavigationSound(state);
     if (state == AppLifecycleState.paused) {
       saveNavigationState();
-
-      if (!isBackgroundNavigationOn) {
-        soundSettingsNotifier.muteNavigationSound();
-      }
     } else if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
+    }
+  }
 
-      if (!isBackgroundNavigationOn) {
-        soundSettingsNotifier.restoreNavigationSound();
-      }
+  Future<void> _checkBackgroundNavigationSound(AppLifecycleState state) async {
+    final isBackgroundNavigationOn = ref.read(soundSettingsProvider).backgroundNavigation;
+    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
+    final carConnected = await ref.read(carConnectionProvider.future);
+    final muteBackgroundNavigationSound = !carConnected && !isBackgroundNavigationOn;
+    if (!muteBackgroundNavigationSound) {
+      return;
+    }
+
+    if (state == AppLifecycleState.paused) {
+      unawaited(soundSettingsNotifier.muteNavigationSound());
+    } else if (state == AppLifecycleState.resumed) {
+      unawaited(soundSettingsNotifier.restoreNavigationSound());
     }
   }
 
