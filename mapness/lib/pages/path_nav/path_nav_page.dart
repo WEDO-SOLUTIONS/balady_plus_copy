@@ -15,6 +15,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -363,6 +364,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await _stopActiveSharing();
 
     if (_navigationState.value != PathNavState.finished) {
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingHalfway);
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
@@ -459,9 +461,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   // Notify the listeners about the end of the trip
-  void _naviEvent(NavigationEvent event) {
+  void _naviEvent(NavigationEvent event, advertMetricsProvider) {
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingCompleted);
       _navigationState.value = PathNavState.finished;
       unawaited(clearNavigationState());
       unawaited(_stopActiveSharing());
