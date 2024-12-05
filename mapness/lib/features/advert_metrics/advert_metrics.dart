@@ -21,7 +21,9 @@ enum AdvertMetircsKeys {
   navigationRoutingCompleted,
 
   /// event: navigation_routing_halfway-journey
-  navigationRoutingHalfway
+  navigationRoutingHalfway,
+
+  onboardingStoriesCompleted,
 }
 
 extension AdvertMetircsKeysEx on AdvertMetircsKeys {
@@ -32,6 +34,7 @@ extension AdvertMetircsKeysEx on AdvertMetircsKeys {
         AdvertMetircsKeys.navigationRoutingStartedJorney => '5yfcni',
         AdvertMetircsKeys.navigationRoutingCompleted => '9fxp9f',
         AdvertMetircsKeys.navigationRoutingHalfway => 'dgxg78',
+        AdvertMetircsKeys.onboardingStoriesCompleted => 'f54acw',
       };
 }
 
