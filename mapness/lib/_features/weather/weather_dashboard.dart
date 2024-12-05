@@ -23,7 +23,6 @@ class WeatherDashboard extends ConsumerStatefulWidget {
 }
 
 class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
-
   @override
   Widget build(BuildContext context) {
     final weatherData = ref.watch(forecastWeatherProvider);
@@ -43,19 +42,17 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: weatherData?.forecast?.forecastday?.length ?? 0,
-          itemBuilder: (context, index) =>
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                child: WeatherDayCard(
-                  forecastDay: weatherData?.forecast?.forecastday?[index],
-                  isExpanded: false,
-                  onExpansionChanged: (b) {},
-                ),
-              ),
+          itemBuilder: (context, index) => Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: WeatherDayCard(
+              forecastDay: weatherData?.forecast?.forecastday?[index],
+              isExpanded: false,
+              onExpansionChanged: (b) {},
+            ),
+          ),
           separatorBuilder: (context, index) => Spacing.$3x.heightBox,
         ),
       ],
-
     );
   }
 }
