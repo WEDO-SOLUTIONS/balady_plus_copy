@@ -1,14 +1,15 @@
 import 'package:dgis_map/library.dart';
 
 class Markers {
-  static const double defaultWidth = 24;
-  static const double defaultHeight = 48;
+  static const double defaultWidth = 58;
+  static const double defaultHeight = 58;
 
   static Marker pinMarker(
     GeoPointWithElevationMessage position, {
     String? id,
     String? icon,
     double? width,
+    double? height,
   }) =>
       Marker(
         id: id ?? 'PIN-MARKER',
