@@ -2,7 +2,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
@@ -10,17 +12,23 @@ import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
 
 @RoutePage()
-class BottomMenuPage extends StatelessWidget {
+class BottomMenuPage extends ConsumerWidget {
   const BottomMenuPage({super.key});
 
   @override
-  Widget build(BuildContext context) => AutoTabsRouter.builder(
+  Widget build(BuildContext context, WidgetRef ref) => AutoTabsRouter.builder(
         routes: const [
           LandingRoute(),
           RoutingPointsRoute(),
           MapnessServicesRoute(),
           ProfileRoute(),
         ],
+        onNavigate: (tab) {
+          // Send event to analytics when route is Selected
+          if (tab.activeIndex == 1) {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingRoute);
+          }
+        },
         builder: (_, tabsRouter, route) => Column(
           children: [
             Expanded(

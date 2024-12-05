@@ -11,8 +11,8 @@ import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -94,7 +94,7 @@ class _DashboardMenu extends ConsumerWidget {
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
                     onTap: () {
                       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
-                      context.router.push(const FreeRoamRoute()),
+                      context.router.push(const FreeRoamRoute());
                     },
                   ),
                 ],
