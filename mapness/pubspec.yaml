@@ -25,7 +25,6 @@ dependencies:
   pretty_dio_logger: 1.4.0
   dio_smart_retry: 7.0.1
   flutter_appauth: 7.0.1
-  easy_image_viewer: ^1.5.1
 
   ##! Local Storage
   # Lightweight fast key-value database
@@ -130,8 +129,6 @@ dependencies:
 
   # for text inputs
   mask_text_input_formatter: 2.9.0
-
-  easy_image_viewer: 1.5.1
 
   firebase_core: 3.8.0
   # eliminate this after lazy-ass author update the package
