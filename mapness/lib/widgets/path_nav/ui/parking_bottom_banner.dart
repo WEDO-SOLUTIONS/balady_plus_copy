@@ -97,8 +97,11 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
       return const SizedBox.shrink();
     }
 
+    if (!_animationController.isAnimating && !_animationController.isCompleted) {
+      _animationController.forward();
+    }
+
     final isRtl = ref.watch(uiDirectionProvider) == TextDirection.rtl;
-    _animationController.forward();
 
     return GestureDetector(
       onTap: () => ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true),
