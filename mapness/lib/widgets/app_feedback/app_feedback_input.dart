@@ -14,7 +14,7 @@ class AppFeedbackInput extends HookWidget {
   });
 
   static const _initMaxLines = 4;
-  static const _maxLinesAllowed = 20;
+  static const _maxLinesAllowed = 7;
   static const _maxCharsAllowed = 1000;
 
   @override
@@ -27,8 +27,7 @@ class AppFeedbackInput extends HookWidget {
       const double averageCharWidth = 10.0;
 
       // Calculate the width of the text field with padding
-      final double textFieldWidth =
-          MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
+      final double textFieldWidth = MediaQuery.sizeOf(context).width - (Spacing.$4x * 2);
 
       final int charsPerLine = (textFieldWidth / averageCharWidth).floor();
 
@@ -36,8 +35,7 @@ class AppFeedbackInput extends HookWidget {
 
       maxLines.value = lines.clamp(_initMaxLines, _maxLinesAllowed);
 
-      isValid?.call(textController.text.isNotEmpty &&
-          textController.text.length <= _maxCharsAllowed);
+      isValid?.call(textController.text.isNotEmpty && textController.text.length <= _maxCharsAllowed);
     }
 
     useEffect(() {
@@ -47,25 +45,20 @@ class AppFeedbackInput extends HookWidget {
 
     return Padding(
       padding: const EdgeInsets.all(Spacing.$4x),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ValueListenableBuilder<int>(
-            valueListenable: maxLines,
-            builder: (context, maxLinesValue, _) => BaladyInput(
-              controller: textController,
-              focusNode: focusNode,
-              autofocus: true,
-              hintText: context.l10n.appFeedbackTellUsMore,
-              maxLines: maxLinesValue,
-              maxLength: _maxCharsAllowed,
-              isDisposed: false,
-              onValidate: (v) => v != null && v.length != _maxCharsAllowed
-                  ? null
-                  : context.l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
-            ),
-          ),
-        ],
+      child: ValueListenableBuilder<int>(
+        valueListenable: maxLines,
+        builder: (context, maxLinesValue, _) => BaladyInput(
+          controller: textController,
+          focusNode: focusNode,
+          autofocus: true,
+          hintText: context.l10n.appFeedbackTellUsMore,
+          maxLines: maxLinesValue,
+          maxLength: _maxCharsAllowed,
+          isDisposed: false,
+          onValidate: (v) => v != null && v.length != _maxCharsAllowed
+              ? null
+              : context.l10n.appFeedbackCharacterLimitReached, // Show error message if the text length is 1000 only
+        ),
       ),
     );
   }

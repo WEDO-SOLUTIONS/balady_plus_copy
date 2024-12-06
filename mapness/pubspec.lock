@@ -208,11 +208,12 @@ packages:
   balady_uikit:
     dependency: "direct main"
     description:
-      name: balady_uikit
-      sha256: "048eb185307069735bbfd53476f1eee27e7277a9e0e2cccbe0383b994b18e42a"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
-    version: "3.0.8"
+      path: "."
+      ref: b01497f30487fdee6ad0f99296bbed03629536cc
+      resolved-ref: b01497f30487fdee6ad0f99296bbed03629536cc
+      url: "git@github.com:urbi-ae/balady_uikit.git"
+    source: git
+    version: "3.1.1"
   battery_plus:
     dependency: transitive
     description:
