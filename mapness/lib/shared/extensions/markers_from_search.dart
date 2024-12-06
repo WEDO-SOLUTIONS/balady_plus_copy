@@ -66,52 +66,50 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     final markers = <Marker>[];
     for (final markerInfo
         in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
-      if (markerInfo != null) {
-        final objectId = markerInfo.objectId?.objectId;
-        final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
-        final rubrics = Set<int>.from(cleanupRubrics);
-        final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
-        markers.add(
-          Marker(
-            id: objectId?.toString() ?? _invalidMarkerId,
-            onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
-                  group: MetricsConstants.poiTag,
-                  action: MetricAction.tap.toString(),
-                  props: {_propertyKey: objectId});
+      final objectId = markerInfo.objectId?.objectId;
+      final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
+      final rubrics = Set<int>.from(cleanupRubrics);
+      final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
+      markers.add(
+        Marker(
+          id: objectId?.toString() ?? _invalidMarkerId,
+          onTap: () {
+            Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+                props: {_propertyKey: objectId});
 
-              router.push(
-                PoiCardWidgetRoute(
-                  objectId: DgisObjectIdMessage(
-                    objectId: objectId!,
-                    entranceId: 0,
-                  ),
-                ),
-              );
-            },
-            options: MarkerOptionsMessage(
-              text: withLabel && markerInfo.title != null
-                  ? _breakLineInTwo(_removeComma(markerInfo.title!))
-                  : null,
-              textStyle: MarkerTextStyleMessage(
-                color: 0xff1E2A36,
-                fontSize: 13,
-                fontName: _poiMapFont,
-                textOffset: 4,
-                strokeColor: 0xD3FFFFFF,
-                strokeWidth: 1.25,
-                textPlacement: MarkerTextPlacementMessage(
-                  placement: isRtl
-                      ? TextPlacementMessage.leftCenter
-                      : TextPlacementMessage.rightCenter,
+            router.push(
+              PoiCardWidgetRoute(
+                objectId: DgisObjectIdMessage(
+                  objectId: objectId!,
+                  entranceId: 0,
                 ),
               ),
-              position: markerInfo.geoPoint,
-              icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(size: 16),
+            );
+          },
+          options: MarkerOptionsMessage(
+            text: withLabel && markerInfo.title != null
+                ? _breakLineInTwo(_removeComma(markerInfo.title!))
+                : null,
+            textStyle: MarkerTextStyleMessage(
+              color: 0xff1E2A36,
+              fontSize: 13,
+              fontName: _poiMapFont,
+              textOffset: 4,
+              strokeColor: 0xD3FFFFFF,
+              strokeWidth: 1.25,
+              textPlacement: MarkerTextPlacementMessage(
+                placement: isRtl
+                    ? TextPlacementMessage.leftCenter
+                    : TextPlacementMessage.rightCenter,
+              ),
             ),
+            position: markerInfo.geoPoint,
+            icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(size: 16),
           ),
-        );
-      }
+        ),
+      );
     }
 
     return markers;
