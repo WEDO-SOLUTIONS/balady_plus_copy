@@ -65,6 +65,7 @@ jobs:
       - name: Send notification to PR author
         if: steps.get_mm_username.outputs.mm_user != ''
         env:
+          MM_CHANNEL_ID: ${{ secrets.MM_REVIEWERS_CHANNEL_ID }}
           MM_BOT_TOKEN: ${{ secrets.MM_BOT_TOKEN }}
           MM_DOMAIN: ${{ secrets.MM_DOMAIN }}
         run: |
@@ -74,7 +75,7 @@ jobs:
 
           MESSAGE="@${MM_USER} Your PR **[${PR_TITLE}](${PR_URL})** got new review."
           curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
-            \"channel_id\": \"${MM_USER}\", \
+            \"channel_id\": \"${MM_CHANNEL_ID}\", \
             \"message\": \"${MESSAGE}\"\
           }"
       - name: Cant got PR author MM username
