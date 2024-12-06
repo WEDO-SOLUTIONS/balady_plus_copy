@@ -24,7 +24,7 @@ jobs:
         run: |
           JSON_RESPONSE='${{ steps.check_approvals.outputs.data }}'
           CURRENT_APPROVALS_COUNT=$(echo $JSON_RESPONSE | jq -c '[.[] | select(.state | contains("APPROVED")) ] | length')
-          echo "aproval=${CURRENT_APPROVALS_COUNT} >> $GITHUB_OUTPUT"
+          echo "aproval=${CURRENT_APPROVALS_COUNT}" >> $GITHUB_OUTPUT
           echo "Current approvals = ${CURRENT_APPROVALS_COUNT}"
       - name: Send notification if PR has 2 approvals
         if: steps.test_variables.outputs.aproval == 2
