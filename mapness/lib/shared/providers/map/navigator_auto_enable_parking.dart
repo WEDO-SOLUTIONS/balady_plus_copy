@@ -1,6 +1,8 @@
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/entities/path_nav/models/navigator_parking_state.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigator_auto_enable_parking.g.dart';
@@ -10,7 +12,7 @@ const String _autoEnableParkingKey = 'navigator_settings.auto_enable_parking';
 @riverpod
 class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
   @override
-  bool? build() {
+  NavigatorParkingState build() {
     ref.onDispose(() {
       final layers = ref.read(layersControlsProvider);
 
@@ -26,13 +28,20 @@ class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
       ref.read(layersControlsProvider.notifier).enableParking();
     }
 
-    return autoEnableParking;
+    return NavigatorParkingState(
+      autoEnableParking: autoEnableParking,
+      navigatorType: ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey),
+    );
+  }
+
+  void refresh() {
+    ref.invalidateSelf();
   }
 
   void toggleAutoEnableParking({required bool value}) {
-    state = value;
+    state = state.copyWith(autoEnableParking: value);
 
-    ref.read(sharedPrefsProvider).setBool(_autoEnableParkingKey, state ?? false);
+    ref.read(sharedPrefsProvider).setBool(_autoEnableParkingKey, value);
 
     if (value) {
       ref.read(layersControlsProvider.notifier).enableParking();

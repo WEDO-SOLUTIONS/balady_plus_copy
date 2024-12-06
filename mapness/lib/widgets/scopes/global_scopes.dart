@@ -29,7 +29,7 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(navigatorSpeedCamerasSettingsProvider.select((_) => null))
       ..watch(locationProvider.select((_) => null))
       ..watch(bearingStateProvider.select((_) => null))
-      ..watch(layersControlsProvider)
+      ..watch(layersControlsProvider.select((_) => null))
       ..watch(storiesOpenStateProvider.select((_) => null))
       ..watch(serviceNotAvailableProvider.select((_) => null));
 

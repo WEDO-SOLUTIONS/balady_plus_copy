@@ -26,8 +26,6 @@ class NavigatorSettingsPage extends ConsumerWidget {
     final navigatorCamerasSettingsNotifier = ref.read(navigatorSpeedCamerasSettingsProvider.notifier);
     final navigatorRouteSettingsNotifier = ref.read(navigatorRouteSettingsProvider.notifier);
     final betterRouteSettingsNotifier = ref.read(betterRouteSuggestionsProvider.notifier);
-    final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
-    final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
 
     final colorsV2 = context.colorsV2;
     final l10n = context.l10n;
@@ -120,35 +118,43 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                 },
                               ),
                               Consumer(
-                                builder: (context, ref, _) => ContentRow(
-                                  onToggle: (_) {
-                                    ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: !(autoEnableParking ?? false));
+                                builder: (context, ref, _) {
+                                  final autoParkingState = ref.watch(navigatorAutoEnableParkingProvider);
+                                  return ContentRow(
+                                    onToggle: (_) => ref
+                                        .read(navigatorAutoEnableParkingProvider.notifier)
+                                        .toggleAutoEnableParking(value: !(autoParkingState.autoEnableParking ?? false)),
+                                    options: ContentRowOptions(
+                                      title: l10n.automaticParkingLayer,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: autoParkingState.autoEnableParking ?? false,
+                                      ),
+                                    ),
+                                  );
                                 },
-                                options: ContentRowOptions(
-                                  title: l10n.automaticParkingLayer,
-                                  dividerEnabled: true,
-                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                  actionWidget: ContentRowActionOptions(
-                                    enabledToggle: true,
-                                    toggleInitialValue: autoEnableParking ?? false,
-                                  ),
-                                ),
-                                ),
                               ),
-                              ContentRow(
-                                onToggle: (_) {
-                                  ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart();
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+
+                                  return ContentRow(
+                                    onToggle: (_) =>
+                                        ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
+                                    options: ContentRowOptions(
+                                      title: l10n.autorunNavigator,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      subtitle: l10n.automaticallyLaunchNavigator,
+                                      subtitleMaxlines: 2,
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: autorun,
+                                      ),
+                                    ),
+                                  );
                                 },
-                                options: ContentRowOptions(
-                                  title: l10n.autorunNavigator,
-                                  titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                  subtitle: l10n.automaticallyLaunchNavigator,
-                                  subtitleMaxlines: 2,
-                                  actionWidget: ContentRowActionOptions(
-                                    enabledToggle: true,
-                                    toggleInitialValue: autorun,
-                                  ),
-                                ),
                               )
                             ],
                           ),

@@ -4,14 +4,12 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 
@@ -58,8 +56,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
     final distance = double.tryParse(eta?.distanceEta ?? '--');
-    final navigatorType = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
-    final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
+    final autoParkingState = ref.watch(navigatorAutoEnableParkingProvider);
     final layers = ref.watch(layersControlsProvider);
 
     const boxShadow = [
@@ -77,13 +74,16 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
       return const SizedBox.shrink();
     }
 
-    if (autoEnableParking != null || widget.isHomeOrWork) {
+    if (autoParkingState.autoEnableParking != null || widget.isHomeOrWork) {
       return const SizedBox.shrink();
+    }
+
+    if (autoParkingState.navigatorType == null) {
+      ref.read(navigatorAutoEnableParkingProvider.notifier).refresh();
     }
 
     if (_animationController.isCompleted ||
         eta == null ||
-        navigatorType == null ||
         eta.isExpanded == true ||
         eta.distanceEtaUnits == DistanceUnits.km) {
       return const SizedBox.shrink();
@@ -91,7 +91,9 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
 
     // We check that our banner is not displayed for pedestrians and should be shown after 15 seconds,
     // when there are 500 m left to the point.
-    if (distance != null && distance <= 500 && RouteSearchOptionsMessage.pedestrian.name == navigatorType) {
+    if (distance != null &&
+        distance <= 500 &&
+        RouteSearchOptionsMessage.pedestrian.name == autoParkingState.navigatorType) {
       return const SizedBox.shrink();
     }
 
@@ -99,9 +101,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
     _animationController.forward();
 
     return GestureDetector(
-      onTap: () {
-        ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
-      },
+      onTap: () => ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true),
       child: Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: Material(
@@ -191,9 +191,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                         size: ButtonSize.small,
                         buttonColorScheme: ButtonColorScheme.primary,
                         primaryIcon: SystemIcons.close,
-                        onTap: () {
-                          widget.bottomSheetController.open();
-                        },
+                        onTap: () => widget.bottomSheetController.open(),
                       ),
                     ],
                   ),

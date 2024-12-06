@@ -1,5 +1,4 @@
 import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
-import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -35,15 +34,8 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
     final isTrafficVisable = widget.trafficVisible && trafficState.status != TrafficControlStatus.hidden;
     final isTrafficEnabled = trafficState.status == TrafficControlStatus.enabled;
-    final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
-    final parkingState = ref.watch(parkingStateProvider);
-
-    final layersNotifier = ref.watch(layersControlsProvider.notifier);
-    final layers = ref.watch(layersControlsProvider);
 
     final sharedPrefs = ref.read(sharedPrefsProvider);
-
-    final isParkingEnabled = parkingState.visible;
 
     return SizedBox(
       width: 50,
@@ -51,27 +43,39 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-         if (isTrafficVisable) _TrafficControl(
-            isEnabled: isTrafficEnabled,
-            trafficState: trafficNotifier,
-            isVisable: isTrafficVisable,
-          ),
-          _ParkingWidget(
-            isEnabled: isParkingEnabled,
-            isNoTopBorderRadius: isTrafficVisable,
-            onParkingTap: () {
-              if (autoEnableParking == null) {
-                widget.bottomSheetController.open();
-                return;
-              }
+          if (isTrafficVisable)
+            _TrafficControl(
+              isEnabled: isTrafficEnabled,
+              trafficState: trafficNotifier,
+              isVisable: isTrafficVisable,
+            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
+              final parkingState = ref.watch(parkingStateProvider);
 
-              final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+              final layersNotifier = ref.watch(layersControlsProvider.notifier);
+              final layers = ref.watch(layersControlsProvider);
+              final isParkingEnabled = parkingState.visible;
 
-              if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
-                sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-              }
+              return _ParkingWidget(
+                isEnabled: isParkingEnabled,
+                isNoTopBorderRadius: isTrafficVisable,
+                onParkingTap: () {
+                  if (autoEnableParking.autoEnableParking == null) {
+                    widget.bottomSheetController.open();
+                    return;
+                  }
 
-              layersNotifier.toggleParking();
+                  final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+
+                  if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
+                    sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
+                  }
+
+                  layersNotifier.toggleParking();
+                },
+              );
             },
           )
         ],
