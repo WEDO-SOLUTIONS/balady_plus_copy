@@ -73,7 +73,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
     return FeedbackSourceProvider(
       source: source,
       child: StatelessBottomSheet(
-        animateOpening: false,
+        startConfig: BottomSheetStart.instant,
         scrollController: scrollController,
         onWillPop: Future.value(false),
         content: [
