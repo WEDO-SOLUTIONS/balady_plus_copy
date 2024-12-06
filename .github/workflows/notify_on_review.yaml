@@ -36,8 +36,11 @@ jobs:
           PR_TITLE="${{ github.event.pull_request.title }}"
           PR_URL="${{ github.event.pull_request.html_url }}"
           PR_AUTHOR="${{ github.event.pull_request.user.login }}"
+          MM_MERGERS_FILE="${{ github.workspace }}/.github/mergers.yml"
 
-          MESSAGE="PR **[${PR_TITLE}](${PR_URL})** by **${PR_AUTHOR}** has received 2 approvals. @a.haylov, @d.proshutinskiy, @a.aliev please review it and merge."
+          mergers=$(yq e '.mergers | join(", ")' "${MM_MERGERS_FILE}")
+
+          MESSAGE="PR **[${PR_TITLE}](${PR_URL})** by **${PR_AUTHOR}** has received 2 approvals. ${mergers} please review it and merge."
 
           curl -X POST -H 'Content-type: application/json' -H "Authorization: Bearer ${MM_BOT_TOKEN}" https://${MM_DOMAIN}/api/v4/posts -d "{\
             \"channel_id\": \"${MM_CHANNEL_ID}\", \
