@@ -1,17 +1,17 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages.GeoPointMessage
-import com.dgis.map.map_api.Messages.GeoPointWithElevationMessage
+import com.dgis.map.map_api.GeoPointMessage
+import com.dgis.map.map_api.GeoPointWithElevationMessage
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.Elevation
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 
 fun GeoPointWithElevation.toMessage(): GeoPointWithElevationMessage {
-    return GeoPointWithElevationMessage.Builder()
-        .setLatitude(this.latitude.value)
-        .setLongitude(this.longitude.value)
-        .setElevation(this.elevation.value.toDouble())
-        .build()
+    return GeoPointWithElevationMessage(
+        latitude = this.latitude.value,
+        longitude = this.longitude.value,
+        elevation = this.elevation.value.toDouble()
+    )
 }
 
 fun GeoPointWithElevationMessage.toGeoPointWithElevation() = GeoPointWithElevation(
@@ -25,9 +25,10 @@ fun GeoPointMessage.toGeoPoint(): GeoPoint = GeoPoint(
     longitude = this.longitude,
 )
 
+
 fun GeoPoint.toMessage(): GeoPointMessage {
-    return GeoPointMessage.Builder()
-        .setLatitude(this.latitude.value)
-        .setLongitude(this.longitude.value)
-        .build()
+    return GeoPointMessage(
+        latitude = this.latitude.value,
+        longitude = this.longitude.value
+    )
 }

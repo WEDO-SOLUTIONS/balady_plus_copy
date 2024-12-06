@@ -1,8 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
@@ -62,7 +63,7 @@ class ErrorSheetV2 extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.centerEnd,
               child: CustomCloseButton(
-                onClose: onClose ?? () => context.pop(),
+                onClose: onClose ?? () => context.router.popForced(),
               ),
             ),
             const SizedBox(height: 16),

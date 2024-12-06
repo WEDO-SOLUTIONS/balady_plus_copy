@@ -1,52 +1,37 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
+@RoutePage()
 class RoutingPointsPage extends StatelessWidget {
-  const RoutingPointsPage({
-    required this.collapseInitially,
-    super.key,
-  });
-
-  /// open page with collapsed bottom sheet
-  final bool collapseInitially;
+  const RoutingPointsPage({super.key});
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => RoutingPointsSheet(
-          biggestHeight: constraints.biggest.height,
-          collapseInitially: collapseInitially,
-        ),
+        builder: (context, constraints) => const RoutingPointsSheet(),
       );
 }
 
 class RoutingPointsSheet extends ConsumerStatefulWidget {
   const RoutingPointsSheet({
-    required this.biggestHeight,
-    required this.collapseInitially,
     super.key,
   });
-
-  final double biggestHeight;
-  final bool collapseInitially;
 
   @override
   ConsumerState<RoutingPointsSheet> createState() => _RoutingPointsSheetState();
@@ -54,7 +39,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   static const controlsBottomExtent = 136.0;
-  static const middleHeightFraction = 0.7;
+  static const _bottomSheetAspectRatios = [.15, .7, .931];
 
   List<RoutePoint> points = [
     RoutePointMyLocation(),
@@ -65,11 +50,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   StreamSubscription<TapEvent>? _objectTapStreamSubscription;
 
   /// Bottom sheet controller
-  late final DgisBottomSheetController dgisBottomSheetController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
 
   @override
   void initState() {
-    dgisBottomSheetController = DgisBottomSheetController();
+    bottomSheetController = StatefulBottomSheetController(
+      behavior: AspectRatioSnappingBehavior(aspectRatios: _bottomSheetAspectRatios),
+      stateMapper: const ThreeStateMapper(),
+      initialState: ThreeStateBottomSheet.open,
+    );
     _setupTapListener();
     super.initState();
   }
@@ -81,7 +70,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
     //TODO(Someone): Fix layers lifecicle
     final esri = MapObjectManagerSettings.esri();
@@ -95,7 +83,6 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
 
-    final initialExpansion = widget.collapseInitially ? Expansion.collapsed : Expansion.middle;
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Stack(
@@ -103,44 +90,27 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
           const RoutingMapControls(
             bottomExtent: controlsBottomExtent,
           ),
-          DgisBottomSheet(
-            controller: dgisBottomSheetController,
-            showBarrier: false,
-            availableExpansions: const {
-              Expansion.collapsed,
-              Expansion.expanded,
-              Expansion.middle,
-            },
-            initialExpansion: initialExpansion,
-            middleHeight: middleHeightFraction * widget.biggestHeight,
-            collapsedHeight: controlsBottomExtent,
-            scrollableBody: (context, scrollController) => Material(
-              borderRadius: const BorderRadius.only(
-                topRight: Radius.circular(RadiusBorder.xl),
-                topLeft: Radius.circular(RadiusBorder.xl),
+          StatefulBottomSheet<ThreeStateBottomSheet>(
+            animateOpening: false,
+            sliverBeforeContent: SliverPersistentHeader(
+              delegate: RoutingHeaderDelegate(
+                points: points,
+                updatePoints: _updatePoints,
               ),
-              color: context.color.surfaceBasePrimary,
-              child: CustomScrollView(
-                controller: scrollController,
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                physics: const ClampingScrollPhysics(),
-                slivers: [
-                  SliverPersistentHeader(
-                    delegate: RoutingHeaderDelegate(
-                      points: points,
-                      updatePoints: _updatePoints,
-                    ),
-                    pinned: true,
-                  ),
-                  SliverToBoxAdapter(
-                    child: RoutingHistory(
-                      updatePoint: _updatePoint,
-                      searchByQuery: _searchQuery,
-                    ),
+              pinned: true,
+              floating: true,
+            ),
+            content: [
+              Column(
+                children: [
+                  RoutingHistory(
+                    updatePoint: _updatePoint,
+                    searchByQuery: _searchQuery,
                   ),
                 ],
               ),
-            ),
+            ],
+            scrollController: bottomSheetController,
           ),
         ],
       ),
@@ -167,31 +137,50 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     if (points.every((element) => element.isNotEmpty)) {
       final start = points[0];
       final finish = points[1];
-      RoutingRoutesRoute(
-        startLatitude: start.latitude,
-        startLongitude: start.longitude,
-        startObjectId: start.objectId,
-        startEntranceId: start.entranceId,
-        startLevelId: start.levelId,
-        startLabel: start.title(context.l10n) ?? '',
-        finishLatitude: finish.latitude,
-        finishLongitude: finish.longitude,
-        finishObjectId: finish.objectId,
-        finishEntranceId: finish.entranceId,
-        finishLevelId: finish.levelId,
-        finishLabel: finish.title(context.l10n) ?? '',
-      ).push(context);
+
+      context.router.push(
+        RoutingRoutesRoute(points: [
+          RouteParamsPointWithLabel(
+            value: start.latitude != null && start.longitude != null
+                ? RouteParamsPoint(
+                    latitude: start.latitude!,
+                    longitude: start.longitude!,
+                    objectId: start.objectId,
+                    entranceId: start.entranceId,
+                    levelId: start.levelId,
+                  )
+                : null,
+            label: start.title(context.l10n) ?? '',
+          ),
+          RouteParamsPointWithLabel(
+            value: finish.latitude != null && finish.longitude != null
+                ? RouteParamsPoint(
+                    latitude: finish.latitude!,
+                    longitude: finish.longitude!,
+                    objectId: finish.objectId,
+                    entranceId: finish.entranceId,
+                    levelId: finish.levelId,
+                  )
+                : null,
+            label: finish.title(context.l10n) ?? '',
+          ),
+        ]),
+      );
+
+      points = [
+        RoutePointMyLocation(),
+        RoutePointDirectoryObject(null),
+      ];
     }
   }
 
   Future<void> _searchQuery(String query) async {
     final index = points[0].isNotEmpty ? 1 : 0;
-    final route = RoutingSearchRoute(
+    final value = await context.router.push(RoutingSearchSheetRoute(
       placeholder: index == 0 ? context.l10n.from : context.l10n.to,
       showMyLocation: index == 0 && points[index] is! RoutePointMyLocation,
       initialQuery: query,
-    );
-    final value = await route.push(context);
+    ));
 
     if (value != null && value is RoutePoint) {
       points[index] = value;
@@ -207,22 +196,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   }
 
   void _tapListener(event) {
-    final goRouter = ref.read(goRouterProvider);
-
     if (event is ObjectTapEvent) {
-      final expansion = dgisBottomSheetController.currentExpansion!;
-      switch (expansion) {
-        case Expansion.expanded:
-        case Expansion.middle:
-          dgisBottomSheetController.animateTo(Expansion.collapsed);
+      final state = bottomSheetController.state;
+      switch (state) {
+        case ThreeStateBottomSheet.open:
           break;
-        case Expansion.hidden:
-        case Expansion.collapsed:
-        case Expansion.fullHidePhoto:
+        case ThreeStateBottomSheet.hidden:
+        case ThreeStateBottomSheet.expanded:
+          bottomSheetController.setState(ThreeStateBottomSheet.open);
           break;
-      }
-      if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-        return;
       }
     }
   }

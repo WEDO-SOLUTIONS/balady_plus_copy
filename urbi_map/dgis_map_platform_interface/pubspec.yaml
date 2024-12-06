@@ -9,14 +9,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  intl: ^0.19.0
+  intl: 0.19.0
+  analyzer:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
-  flutter_lints: ^2.0.1
+  flutter_lints: 5.0.0
 
   # TODO: update pigeon
-  pigeon: 7.2.1
-  _fe_analyzer_shared: 50.0.0
+  pigeon: 22.6.2

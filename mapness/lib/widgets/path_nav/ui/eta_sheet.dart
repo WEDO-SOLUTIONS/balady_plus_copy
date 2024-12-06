@@ -1,15 +1,12 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/navigator_settings.dart';
-import 'package:mapness/app/routes/path_nav.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
@@ -17,14 +14,13 @@ import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
+import 'package:mapness/pages/path_nav/lib/utils.dart';
+import 'package:mapness/pages/path_nav/ui/eta_sheet_wrapper.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
-import 'package:mapness/widgets/path_nav/lib/utils.dart';
-import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 
 import 'layout_size_wrapper.dart';
 
@@ -156,7 +152,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
               ),
             ),
             ContentRow(
-              onTap: () => const NavigatorSettingsRoute().push(context),
+              onTap: () => context.router.push(const NavigatorSettingsRoute()),
               options: ContentRowOptions(
                 titleStyle: textStyleV3.bodyLargeRegular.copyWith(
                   color: colorsV2.foregroundDefault,
@@ -212,20 +208,11 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription = dgisController.objectTapEvents.listen((event) {
-      final goRouter = ref.read(goRouterProvider);
+    _streamSubscription = dgisController.objectTapEvents.listen((_) {
 
-      if (goRouter.isCurrentRoute(PathNavRoute.path)) {
+      if (context.router.isRouteActive(PathNavRoute.name)) {
         if (_isExpanded) {
           ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-        } else {
-          if (event is ObjectTapEvent) {
-            PoiMapRoute.open(
-              ref.read(goRouterProvider),
-              event.dgisObjectId.objectId,
-              latLng: event.latLng,
-            );
-          }
         }
       }
     });

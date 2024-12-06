@@ -1,16 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/app/routes/favourites.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
@@ -20,6 +20,7 @@ import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 import 'package:mapness/widgets/favourites/favourites_toggle.dart';
 import 'package:mapness/widgets/favourites/pinned_place_card.dart';
 
+@RoutePage()
 class FavouritesPage extends ConsumerStatefulWidget {
   const FavouritesPage({super.key});
 
@@ -76,46 +77,46 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
   Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
-        context: ctx,
-        builder: (context) => CupertinoActionSheet(
-          message: Padding(
-            padding: const EdgeInsets.only(top: 8, bottom: 8),
-            child: Text(
-              ctx.l10n.deleteAlertFavourites,
-              style: ctx.textStyle.footNote.copyWith(
-                color: ctx.color.textAndIconsBaseSecondary,
-                letterSpacing: 0,
-              ),
-            ),
+    context: ctx,
+    builder: (context) => CupertinoActionSheet(
+      message: Padding(
+        padding: const EdgeInsets.only(top: 8, bottom: 8),
+        child: Text(
+          ctx.l10n.deleteAlertFavourites,
+          style: ctx.textStyle.footNote.copyWith(
+            color: ctx.color.textAndIconsBaseSecondary,
+            letterSpacing: 0,
           ),
-          actions: <CupertinoActionSheetAction>[
-            CupertinoActionSheetAction(
-              isDefaultAction: true,
-              isDestructiveAction: true,
-              onPressed: () {
-                Navigator.pop(context, true);
-              },
-              child: Text(
-                ctx.l10n.delete,
-                style: ctx.textStyle.callout.copyWith(
-                  color: ctx.color.textAndIconsStatusNegative,
-                ),
-              ),
-            ),
-          ],
-          cancelButton: CupertinoActionSheetAction(
-            onPressed: () {
-              Navigator.pop(context, false);
-            },
-            child: Text(
-              ctx.l10n.cancel,
-              style: ctx.textStyle.callout.copyWith(
-                color: ctx.color.textAndIconsBasePrimary,
-              ),
+        ),
+      ),
+      actions: <CupertinoActionSheetAction>[
+        CupertinoActionSheetAction(
+          isDefaultAction: true,
+          isDestructiveAction: true,
+          onPressed: () {
+            Navigator.pop(context, true);
+          },
+          child: Text(
+            ctx.l10n.delete,
+            style: ctx.textStyle.callout.copyWith(
+              color: ctx.color.textAndIconsStatusNegative,
             ),
           ),
         ),
-      );
+      ],
+      cancelButton: CupertinoActionSheetAction(
+        onPressed: () {
+          Navigator.pop(context, false);
+        },
+        child: Text(
+          ctx.l10n.cancel,
+          style: ctx.textStyle.callout.copyWith(
+            color: ctx.color.textAndIconsBasePrimary,
+          ),
+        ),
+      ),
+    ),
+  );
 
   @override
   Widget build(BuildContext ctx) {
@@ -143,7 +144,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
             leading: InkWell(
               onTap: () {
                 if (!isEditing) {
-                  ctx.pop();
+                  context.router.popForced();
                 } else {
                   toggleEditing();
                 }
@@ -180,11 +181,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     onTap: selectedItems.isEmpty
                         ? null
                         : () async {
-                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
-                            setState(() {
-                              selectedItems.clear();
-                            });
-                          },
+                      await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
+                      setState(() {
+                        selectedItems.clear();
+                      });
+                    },
                     child: Icon(
                       GeneralIcons.trash,
                       color: selectedItems.isEmpty
@@ -239,34 +240,49 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             isAdded: home != null,
                             onDelete: () => _deleteItem(home, ctx),
                             onTapRoute: () {
-                              RoutingRoutesRoute(
-                                finishLabel: homeTitle,
-                                finishLatitude: coordinates?.latitude,
-                                finishLongitude: coordinates?.longitude,
-                                finishObjectId: int.tryParse(id),
-                                finishEntranceId: null,
-                                startLabel: context.l10n.myLocation,
-                                startLatitude: null,
-                                startLongitude: null,
-                                startObjectId: null,
-                                startEntranceId: null,
-                                startLevelId: null,
-                                finishLevelId: null,
-                              ).push(ctx);
+                              ctx.router.push(
+                                RoutingRoutesRoute(
+                                  points: [
+                                    RouteParamsPointWithLabel(
+                                      value: null,
+                                      label: context.l10n.myLocation,
+                                    ),
+                                    RouteParamsPointWithLabel(
+                                      value: coordinates?.latitude != null && coordinates?.longitude != null
+                                          ? RouteParamsPoint(
+                                        latitude: coordinates!.latitude,
+                                        longitude: coordinates.longitude,
+                                        objectId: int.tryParse(id),
+                                      )
+                                          : null,
+                                      label: homeTitle,
+                                    ),
+                                  ],
+                                ),
+                              );
                             },
                             onTapShare: () => ShareUtil.share(entity?.id),
                             onTapChange: () {
-                              const FavouritesSearchRoute(
-                                markerType: FavouriteItemMarkerType.home,
-                              ).push(ctx);
+                              context.router.push(
+                                FavouritesSearchRoute(
+                                  markerType: FavouriteItemMarkerType.home,
+                                ),
+                              );
                             },
                             onTap: home == null
-                                ? () => const FavouritesSearchRoute(
-                                      markerType: FavouriteItemMarkerType.home,
-                                    ).push(ctx)
-                                : () => PoiMapRoute(
-                                      dgisObjectId: int.parse(id),
-                                    ).push(ctx),
+                                ? () => context.router.push(
+                              FavouritesSearchRoute(
+                                markerType: FavouriteItemMarkerType.home,
+                              ),
+                            )
+                                : () => ctx.router.push(
+                              PoiCardWidgetRoute(
+                                objectId: DgisObjectIdMessage(
+                                  objectId: int.parse(id),
+                                  entranceId: 0,
+                                ),
+                              ),
+                            ),
                           ),
                         );
                       }),
@@ -288,34 +304,47 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               isAdded: work != null,
                               onDelete: () => _deleteItem(work, ctx),
                               onTapRoute: () {
-                                RoutingRoutesRoute(
-                                  finishLabel: workTitle,
-                                  finishLatitude: coordinates?.latitude,
-                                  finishLongitude: coordinates?.longitude,
-                                  finishObjectId: int.parse(entity!.id),
-                                  finishEntranceId: null,
-                                  startLabel: context.l10n.myLocation,
-                                  startLatitude: null,
-                                  startLongitude: null,
-                                  startObjectId: null,
-                                  startEntranceId: null,
-                                  startLevelId: null,
-                                  finishLevelId: null,
-                                ).push(context);
+                                context.router.push(
+                                  RoutingRoutesRoute(
+                                    points: [
+                                      RouteParamsPointWithLabel(
+                                        value: null,
+                                        label: context.l10n.myLocation,
+                                      ),
+                                      RouteParamsPointWithLabel(
+                                        value: coordinates?.latitude != null && coordinates?.longitude != null ? RouteParamsPoint(
+                                          latitude: coordinates!.latitude,
+                                          longitude: coordinates.longitude,
+                                          objectId: int.tryParse(entity!.id),
+                                        ) : null,
+                                        label: workTitle,
+                                      ),
+                                    ],
+                                  ),
+                                );
                               },
                               onTapShare: () => ShareUtil.share(entity?.id),
                               onTapChange: () {
-                                const FavouritesSearchRoute(
-                                  markerType: FavouriteItemMarkerType.work,
-                                ).push(ctx);
+                                context.router.push(
+                                  FavouritesSearchRoute(
+                                    markerType: FavouriteItemMarkerType.work,
+                                  ),
+                                );
                               },
                               onTap: work == null
-                                  ? () => const FavouritesSearchRoute(
-                                        markerType: FavouriteItemMarkerType.work,
-                                      ).push(ctx)
-                                  : () => PoiMapRoute(
-                                        dgisObjectId: int.parse(id),
-                                      ).push(ctx),
+                                  ? () => context.router.push(
+                                FavouritesSearchRoute(
+                                  markerType: FavouriteItemMarkerType.work,
+                                ),
+                              )
+                                  : () => ctx.router.push(
+                                PoiCardWidgetRoute(
+                                  objectId: DgisObjectIdMessage(
+                                    objectId: int.parse(id),
+                                    entranceId: 0,
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -398,24 +427,33 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                         onShareTap: () => ShareUtil.share(item.entity?.id),
                         onDelete: () => _deleteItem(item, ctx),
                         onRouteTap: () {
-                          RoutingRoutesRoute(
-                            finishLabel: item.title,
-                            finishLatitude: item.coordinates.latitude,
-                            finishLongitude: item.coordinates.longitude,
-                            finishObjectId: int.parse(item.entity!.id),
-                            finishEntranceId: null,
-                            startLabel: context.l10n.myLocation,
-                            startLatitude: null,
-                            startLongitude: null,
-                            startObjectId: null,
-                            startEntranceId: null,
-                            startLevelId: null,
-                            finishLevelId: null,
-                          ).push(context);
+                          context.router.push(
+                            RoutingRoutesRoute(
+                              points: [
+                                RouteParamsPointWithLabel(
+                                  value: null,
+                                  label: context.l10n.myLocation,
+                                ),
+                                RouteParamsPointWithLabel(
+                                  value: RouteParamsPoint(
+                                    latitude: item.coordinates.latitude,
+                                    longitude: item.coordinates.longitude,
+                                    objectId: int.tryParse(item.entity!.id),
+                                  ),
+                                  label: item.title,
+                                ),
+                              ],
+                            ),
+                          );
                         },
-                        onTap: () => PoiMapRoute(
-                          dgisObjectId: int.parse(item.entity!.id),
-                        ).push(ctx),
+                        onTap: () => ctx.router.push(
+                          PoiCardWidgetRoute(
+                            objectId: DgisObjectIdMessage(
+                              objectId: int.parse(item.entity!.id),
+                              entranceId: 0,
+                            ),
+                          ),
+                        ),
                         isEditing: isEditing,
                         item: item,
                       ),

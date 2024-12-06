@@ -2,14 +2,17 @@ package com.dgis.map
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.location.Location
 import android.os.HandlerThread
 import android.util.Log
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
-import com.google.android.gms.location.LocationResult
+import ru.dgis.sdk.coordinates.GeoPoint
+import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.positioning.DesiredAccuracy
 import ru.dgis.sdk.positioning.LocationChangeListener
 import ru.dgis.sdk.positioning.LocationSource
@@ -21,6 +24,7 @@ class FusedLocationSource(private val context: Context) : LocationSource {
     private var callback: LocationCallback? = null
     private var thread: HandlerThread? = null
     private var isAvailable: Boolean = false
+    private var mockLocation: Boolean? = null
 
     @Suppress("Unused")
     var lastLocation: android.location.Location? = null
@@ -78,8 +82,30 @@ class FusedLocationSource(private val context: Context) : LocationSource {
                 val request = LocationRequest.Builder(newPriority, interval).build()
                 val callback = (object : LocationCallback() {
                     override fun onLocationResult(result: LocationResult) {
-                        listener.onLocationChanged(result.locations.toTypedArray())
-                        lastLocation = result.lastLocation
+                        val userLocation = result.lastLocation
+                        if (userLocation == null) {
+                            listener.onLocationChanged(emptyArray())
+                            lastLocation = null
+                        } else {
+                            // Use mocked location if user location is outside KSA,
+                            // we have to set mockLocation value only once
+                            if (mockLocation == null) {
+                                mockLocation = !saRect.contains(
+                                    GeoPoint(userLocation.latitude, userLocation.longitude)
+                                )
+                            }
+                            if (mockLocation!!) {
+                                userLocation.apply {
+                                    latitude = 24.712899222459676
+                                    longitude = 46.631036554650116
+                                }
+                                listener.onLocationChanged(arrayOf(userLocation))
+                                lastLocation = userLocation
+                            } else {
+                                listener.onLocationChanged(result.locations.toTypedArray())
+                                lastLocation = result.lastLocation
+                            }
+                        }
                     }
                 }).also {
                     this.callback = it
@@ -94,5 +120,11 @@ class FusedLocationSource(private val context: Context) : LocationSource {
             this.callback?.let(client::removeLocationUpdates)
             listener.onAvailabilityChanged(false)
         }
+    }
+
+    private companion object {
+        val saRect = GeoRect(
+            GeoPoint(15.506104, 32.61185), GeoPoint(32.568765, 56.694472)
+        )
     }
 }

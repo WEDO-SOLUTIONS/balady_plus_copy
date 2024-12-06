@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,7 @@ import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/app/routes/road_panel.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -20,6 +21,7 @@ import 'package:mapness/shared/extensions/path_nav_ext.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+@RoutePage()
 class FreeRoamPage extends ConsumerStatefulWidget {
   const FreeRoamPage({
     super.key,
@@ -211,7 +213,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                   child: RoadPanel(
                     isLoading: isLoading,
                     onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
-                    onOpenSheet: () => RoadPanelRoute.open(context),
+                    onOpenSheet: () => context.router.push(RoadPanelSheetRoute()),
                   ),
                 ),
                 const SizedBox(height: 21),

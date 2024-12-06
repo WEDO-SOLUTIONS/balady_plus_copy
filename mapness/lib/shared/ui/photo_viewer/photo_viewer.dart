@@ -1,26 +1,27 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class PhotoViewerWidget extends StatefulWidget {
+@RoutePage()
+class PhotoViewerPage extends StatefulWidget {
   final List<String>? photoPaths;
   final int currentPhotoIndex;
 
-  const PhotoViewerWidget({
+  const PhotoViewerPage({
     required this.photoPaths,
     required this.currentPhotoIndex,
     super.key,
   });
 
   @override
-  State<PhotoViewerWidget> createState() => _PhotoViewerWidgetState();
+  State<PhotoViewerPage> createState() => _PhotoViewerPageState();
 }
 
-class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
+class _PhotoViewerPageState extends State<PhotoViewerPage> {
   static const backgroundColor = Color(0xff0B1218);
   final ValueNotifier<String> title = ValueNotifier('');
   late PageController pageController;
@@ -40,7 +41,7 @@ class _PhotoViewerWidgetState extends State<PhotoViewerWidget> {
   }
 
   @override
-  void didUpdateWidget(covariant PhotoViewerWidget oldWidget) {
+  void didUpdateWidget(covariant PhotoViewerPage oldWidget) {
     super.didUpdateWidget(oldWidget);
     title.value = getTitle(widget.currentPhotoIndex);
   }
@@ -132,23 +133,24 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
           ),
           ValueListenableBuilder(
-              valueListenable: title,
-              builder: (context, value, _) => BaladyTopBar(
-                    textStyle: context.textStyle.callout.copyWith(color: Colors.white),
-                    title: value,
+            valueListenable: title,
+            builder: (context, value, _) => BaladyTopBar(
+              textStyle: context.textStyle.callout.copyWith(color: Colors.white),
+              title: value,
 
-                    /// TODO(ui_kit): Fix leading in UIKIT
-                    leading: Container(
-                      padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-                      alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-                      child: const Icon(
-                        SystemIcons.arrowCornerLeftSmall,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                    onLeadingPressed: () => context.pop(),
-                  )),
+            /// TODO(ui_kit): Fix leading in UIKIT
+            leading: Container(
+              padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+              alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+              child: const Icon(
+                SystemIcons.arrowCornerLeftSmall,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+            onLeadingPressed: () => context.router.popForced(),
+            ),
+          ),
         ],
       );
 

@@ -17,9 +17,7 @@ class Auth extends _$Auth {
     Metrics.logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
-    ref
-      ..invalidateSelf()
-      ..invalidate(favouriteCacheProvider);
+    ref.invalidateSelf();
     await mixpanel?.track('Auth: doAuth');
   }
 

@@ -1,10 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -13,6 +12,7 @@ import 'package:mapness/pages/kiblah/ui/kiblah_compass.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/compass.dart';
 
+@RoutePage()
 class KiblahPage extends ConsumerWidget {
   const KiblahPage({super.key});
 
@@ -26,7 +26,7 @@ class KiblahPage extends ConsumerWidget {
       backgroundColor: context.staticColor.surfaceOverlayModal.withOpacity(0.7),
       appBar: BaladyTopBar(
         onLeadingPressed: () {
-          context.pop();
+          context.router.popForced();
         },
         leading: Padding(
           padding: const EdgeInsets.only(
@@ -69,7 +69,7 @@ class KiblahPage extends ConsumerWidget {
                   primaryIcon: GeneralIcons.mosq,
                   primaryLabel: context.l10n.mosquesNearYou,
                   buttonColorScheme: ButtonColorScheme.primary,
-                  onTap: () => _onMosquesNearTap(ref),
+                  onTap: () => _onMosquesNearTap(context, ref),
                 ),
               ),
             ),
@@ -79,8 +79,8 @@ class KiblahPage extends ConsumerWidget {
     );
   }
 
-  void _onMosquesNearTap(WidgetRef ref) {
-    ref.read(goRouterProvider).replace(const SearchRoute(requestFocus: false).location);
+  void _onMosquesNearTap(BuildContext context, WidgetRef ref) {
+    context.router.replace(SearchRoute(requestFocus: false));
     // TODO(Sergei): research and understand why searchProvider keep alive only after first search is performed, then refactor this
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(QuickFilter.mosques);

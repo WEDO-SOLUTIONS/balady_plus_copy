@@ -3,8 +3,8 @@ import DGis
 
 extension Geometry {
     func toMessage() -> GeometryMessage {
-        GeometryMessage.make(
-            withKind: self.kind.toMessage(),
+        GeometryMessage(
+            kind: self.kind.toMessage(),
             bounds: self.bounds.toMessage(),
             minPoint: self.minPoint.toMessage(),
             maxPoint: self.maxPoint.toMessage()

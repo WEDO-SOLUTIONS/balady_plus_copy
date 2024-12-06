@@ -11,7 +11,9 @@ class ParkingLotRow extends ConsumerWidget {
   final ParkingFilter type;
 
   const ParkingLotRow({
-    required this.type, super.key});
+    required this.type,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

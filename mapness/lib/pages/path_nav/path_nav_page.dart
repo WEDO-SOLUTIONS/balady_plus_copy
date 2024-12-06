@@ -2,17 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/path_nav.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -38,8 +39,11 @@ import 'package:mapness/widgets/path_nav/ui/path_nav_map_controls.dart';
 import 'package:urbi_analytics/logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+enum PathNavPageInitAction { startNavigation, restoreFromState }
+
 /// We don't show black background under the opened sheet. The meaning of this is that the user have to control the map even if he opened the sheet.
 /// You don't need to add black background to make the app similar to the other app
+@RoutePage()
 class PathNavPage extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
   final PathNavPageInitAction? initAction;
@@ -57,6 +61,10 @@ class PathNavPage extends ConsumerStatefulWidget {
 }
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
+  bool _navigatorAlreadyStopped = false;
+
+  static const padding = EdgeInsets.symmetric(horizontal: 12);
+
   late StreamSubscription? _naviEventsListener;
   final _navigationState = ValueNotifier(PathNavState.running);
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
@@ -71,21 +79,27 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final isBackgroundNavigationOn = ref.read(soundSettingsProvider).backgroundNavigation;
-    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
-
+    _checkBackgroundNavigationSound(state);
     if (state == AppLifecycleState.paused) {
       saveNavigationState();
-
-      if (!isBackgroundNavigationOn) {
-        soundSettingsNotifier.muteNavigationSound();
-      }
     } else if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
+    }
+  }
 
-      if (!isBackgroundNavigationOn) {
-        soundSettingsNotifier.restoreNavigationSound();
-      }
+  Future<void> _checkBackgroundNavigationSound(AppLifecycleState state) async {
+    final isBackgroundNavigationOn = ref.read(soundSettingsProvider).backgroundNavigation;
+    final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
+    final carConnected = await ref.read(carConnectionProvider.future);
+    final muteBackgroundNavigationSound = !carConnected && !isBackgroundNavigationOn;
+    if (!muteBackgroundNavigationSound) {
+      return;
+    }
+
+    if (state == AppLifecycleState.paused) {
+      unawaited(soundSettingsNotifier.muteNavigationSound());
+    } else if (state == AppLifecycleState.resumed) {
+      unawaited(soundSettingsNotifier.restoreNavigationSound());
     }
   }
 
@@ -148,7 +162,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       );
     } catch (e) {
       await clearNavigationState();
-      context.pop();
+      context.router.popForced();
     }
   }
 
@@ -198,11 +212,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
-    return Directionality(
-      textDirection: TextDirection.ltr,
-      child: Stack(
-        children: [
-          PathNavMapControls(
+    return PopScope(
+      canPop: false,
+      child: Directionality(
+        textDirection: TextDirection.ltr,
+        child: Stack(
+          children: [
+            PathNavMapControls(
             bottomHeightNotifier: _bottomHeightNotifier,
             bottomSheetController: _bottomSheetController,
             navigationState: _navigationState,
@@ -226,12 +242,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     )
                   : const SizedBox.shrink();
             },
-          ),
-          Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: MeasureSize(
+            ),
+            Positioned(
+              bottom: 0,
+              right: 0,
+              left: 0,
+              child: MeasureSize(
               onChange: (size) {
                 if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
                   _size = size;
@@ -255,7 +271,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                             return Align(
                               alignment: Alignment.bottomCenter,
                               child: EtaSheet(
-                                onEndTripPressed: _endTripAndShowHome,
+                                onEndTripPressed: () => _endTripAndShowFeedback(context),
                                 onRoutePressed: _onShowRoutePressed,
                                 onBetterRouteAccept: () => _acceptBetterRoute(context),
                                 onBetterRouteReject: () => _rejectBetterRoute(context),
@@ -284,27 +300,25 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             ),
           ),
           ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
-        ],
+        ],),
       ),
     );
   }
 
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
-  Future<void> _endTrip(VoidCallback action) async {
-    try {
-      await _stopActiveSharing();
-    } catch (e) {
-      log(e.toString());
-    }
+  Future<void> _endTrip({VoidCallback? action}) async {
+    _navigatorAlreadyStopped = true;
+    await _stopActiveSharing();
 
     if (_navigationState.value != PathNavState.finished) {
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingHalfway);
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
 
     await clearNavigationState();
-    action();
+    action?.call();
 
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
@@ -318,15 +332,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       action: MetricAction.tap.toString(),
     );
 
-    await _endTrip(() {
+    await _endTrip(action: () {
       if (context.mounted) {
-        const RoutingRoute(collapseInitially: true).go(context);
+        context.router.navigate(const RoutingPointsRoute());
       }
     });
   }
 
   // Show the home page after the trip is finished
   Future<void> _endTripAndShowHome() async {
+    if (_navigatorAlreadyStopped) {
+      return;
+    }
     Metrics.logEventAdvanced(
       MetricsConstants.navigationKeys.endTripAndShowHome,
       group: MetricsConstants.navigationTag,
@@ -334,11 +351,40 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     );
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
-    await _endTrip(() {
+    await _endTrip(action: () {
       if (context.mounted) {
-        const LandingRoute().go(context);
+        context.router.popUntilRouteWithName(BottomMenuRoute.name);
       }
     });
+  }
+
+  // Show the feedback page after the trip is finished manually
+  Future<void> _endTripAndShowFeedback(BuildContext ctx) async {
+    /// Because we call stop navigation in other places and with other events
+    /// we need to check if the navigation is already stopped
+    if (_navigatorAlreadyStopped) {
+      return;
+    }
+    Metrics.logEventAdvanced(
+      MetricsConstants.navigationKeys.endTripAndShowHome,
+      group: MetricsConstants.navigationTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
+
+    await _endTrip();
+
+    if (!ctx.mounted) {
+      return;
+    }
+
+    await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
+
+    if (!ctx.mounted) {
+      return;
+    }
+    context.router.popUntilRouteWithName(BottomMenuRoute.name);
   }
 
   // Show the pause state
@@ -366,11 +412,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   void _naviEvent(NavigationEvent event) {
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingCompleted);
       _navigationState.value = PathNavState.finished;
       ref.read(layersControlsProvider.notifier).hideParking();
-      unawaited(
-        clearNavigationState(),
-      );
+      unawaited(clearNavigationState());
+      unawaited(_stopActiveSharing());
     } else if (event == NavigationEvent.disabled) {
       if (_navigationState.value != PathNavState.finished) {
         _endTripAndShowHome();
@@ -428,6 +474,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _stopActiveSharing() async {
-    await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
+    try {
+      await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

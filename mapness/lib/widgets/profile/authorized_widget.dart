@@ -1,7 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
-
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -9,12 +9,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/profile.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/profile_image_widget.dart';
@@ -105,10 +104,7 @@ class AuthorizedWidget extends ConsumerWidget {
       return;
     }
     final bytes = await image.readAsBytes();
-    final Uint8List? croppedBytes = await ref.read(goRouterProvider).push(
-          const ImageEditorRoute().location,
-          extra: bytes,
-        );
+    final Uint8List? croppedBytes = await ref.read(appRouterProvider).push(ImageEditorRoute(image: bytes));
     if (croppedBytes != null) {
       await ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes);
     }
@@ -136,7 +132,7 @@ class AuthorizedWidget extends ConsumerWidget {
               titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
               customActionWidget: AppButton.close(
                 color: context.color.surfaceContrastLow,
-                onTap: context.pop,
+                onTap: context.router.popForced,
                 innerPadding: const EdgeInsets.all(Spacing.$2x),
                 padding: EdgeInsets.zero,
               ),
@@ -150,9 +146,9 @@ class AuthorizedWidget extends ConsumerWidget {
                   if (isPermanentlyDenied) {
                     // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
                     // permissions"
-                    context.pop(true);
+                    context.router.popForced(true);
                   } else {
-                    context.pop();
+                    context.router.popForced();
                     _updateAvatar(ref);
                   }
                 },

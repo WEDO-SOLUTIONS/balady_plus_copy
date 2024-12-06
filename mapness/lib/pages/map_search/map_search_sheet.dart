@@ -1,16 +1,16 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -19,13 +19,14 @@ import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
-import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 /// Search sheet that is shown on the explore screen.
@@ -191,15 +192,12 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   ) async {
     if (searchState is SearchStateResults &&
         (prevState is! SearchStateResults || prevState.results != searchState.results)) {
-      final markerIconPath = searchState.markerType?.iconPath;
-      final icon = markerIconPath != null
-          ? markerIconPath.markerIcon(size: 32)
-          : LayersSvgPaths.basicMarker.markerIcon(size: 16);
+      final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final markers = await searchState.results.getMarkers(
-        router: ref.read(goRouterProvider),
-        icon: icon,
+        router: ref.read(appRouterProvider),
+        iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
       );
 
@@ -207,11 +205,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         await computeCameraPosition(
           markers,
           ref.read(cameraPositionProvider),
+          ref.read(locationProvider),
           ref.read(cameraPositionProvider.notifier).animateTo,
         );
       }
-
-      await mapObjectManager.removeAllMarkers();
+      if (!ref.read(searchInRectProvider).isSearchInThisAreaRequest) {
+        ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(false);
+        await mapObjectManager.removeAllMarkers();
+      }
       await mapObjectManager.addMarkers(markers);
     } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
       await mapObjectManager.removeAllMarkers();
@@ -297,15 +298,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         )
         .removeAllMarkers();
     ref.read(searchInRectProvider.notifier).update();
-    context.pop();
+    context.router.popForced();
   }
 
   Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen((_) {
-      final goRouter = ref.read(goRouterProvider);
-
-      if (goRouter.isCurrentRoute(SearchRoute.path)) {
+      if (context.router.isRouteActive(SearchRoute.name)) {
         _unfocusSearchField();
         _collapseBottomSheet();
       }

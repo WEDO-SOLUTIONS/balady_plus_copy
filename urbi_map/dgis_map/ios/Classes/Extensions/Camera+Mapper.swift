@@ -4,7 +4,7 @@ import DGis
 extension CameraAnimationTypeMessage {
     var animationType: CameraAnimationType {
         switch self {
-        case .default_:
+        case .defaultType:
             return .default
         case .linear:
             return .linear

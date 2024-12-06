@@ -9,14 +9,12 @@ class DgisPluginApi: NSObject, PluginApi {
         self.registrar = registrar
     }
 
-    func initializeMessage(_ message: LogOptionsMessage?, configMessage: VendorConfigMessage,
-                           contentMessage: VendorConfigContentMessage?,
-                           completion: @escaping (FlutterError?) -> Void) {
-        initializeDGis(logOptions: message?.logOptions, configMessage: configMessage,contentMessage: contentMessage)
-        completion(nil)
+    func initialize(message: LogOptionsMessage?, configMessage: VendorConfigMessage?, contentMessage: VendorConfigContentMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        initializeDGis(logOptions: message?.logOptions, configMessage: configMessage, contentMessage: contentMessage)
+        completion(Result.success(()))
     }
     
-    private func initializeDGis(logOptions: LogOptions?, configMessage: VendorConfigMessage,contentMessage: VendorConfigContentMessage?) {
+    private func initializeDGis(logOptions: LogOptions?, configMessage: VendorConfigMessage? ,contentMessage: VendorConfigContentMessage?) {
         
         let sdkVendorConfig: DGis.VendorConfig
         let vendorConfig: VendorConfig?
@@ -75,7 +73,7 @@ public class SwiftDgisMapPlugin: NSObject, FlutterPlugin {
         let factory = DgisMapViewFactory(registrar: registrar)
 
         registrar.register(factory, withId: self.flutterViewId)
-        PluginApiSetup(registrar.messenger(), DgisPluginApi.init(registrar: registrar))
+        PluginApiSetup.setUp(binaryMessenger: registrar.messenger(), api: DgisPluginApi.init(registrar: registrar))
         self.registrar = registrar
     }
 }

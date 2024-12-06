@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -5,11 +6,9 @@ import 'package:balady_uikit/core/utils/constants.dart';
 import 'package:balady_uikit/gen/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/dark_map.dart';
-import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -18,6 +17,7 @@ import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+@RoutePage()
 class NavigatorSettingsPage extends ConsumerWidget {
   const NavigatorSettingsPage({super.key});
 
@@ -51,7 +51,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                   color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.router.popForced(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
@@ -159,7 +159,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                       headerTitle: l10n.mapStyle,
                       content: [
                         ContentRow(
-                          onTap: () => const DarkMapRoute().push(context),
+                          onTap: () => context.router.push(const DarkMapRoute()),
                           options: ContentRowOptions(
                             wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
@@ -179,7 +179,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                       headerTitle: l10n.soundAndAlerts,
                       content: [
                         ContentRow(
-                          onTap: () => const SoundSettingsRoute().push(context),
+                          onTap: () => context.router.push(const SoundSettingsRoute()),
                           options: ContentRowOptions(
                             titleStyle: textStyleV3.bodyLargeRegular.copyWith(
                               color: colorsV2.foregroundDefault,

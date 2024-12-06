@@ -1,9 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -27,11 +27,12 @@ import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
-class ShareMyLocationContent extends HookConsumerWidget {
+@RoutePage()
+class ShareMyLocationPage extends HookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const ShareMyLocationContent({
+  const ShareMyLocationPage({
     super.key,
     this.closestPoint,
     this.cameraConfig,
@@ -69,7 +70,7 @@ class ShareMyLocationContent extends HookConsumerWidget {
       }
       if (next.hasError) {
         LoadingOverlay.of(context).endLoading();
-        context.pop();
+        context.router.popForced();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
           actionText: context.l10n.tryAgain,
@@ -164,7 +165,7 @@ class ShareMyLocationContent extends HookConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.pop();
+    context.router.popForced();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }
@@ -204,17 +205,18 @@ class ShareMyLocationContent extends HookConsumerWidget {
   }
 
   void _showEtaControlSheet(BuildContext context, WidgetRef ref) {
+    // TODO(Ayat) Change showModalBottomSheet to screen AutoRoute
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (context) => EtaSharingSheet(
         onCurrentLocationPressed: () {
-          context.pop();
+          Navigator.pop(context);
           ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint);
         },
         onLiveLocationPressed: () {
-          context.pop();
+          Navigator.pop(context);
           _showEtaTimeSheet(context, ref);
         },
       ),
@@ -222,13 +224,14 @@ class ShareMyLocationContent extends HookConsumerWidget {
   }
 
   void _showEtaTimeSheet(BuildContext context, WidgetRef ref) {
+    // TODO(Ayat) Change showModalBottomSheet to screen AutoRoute
     showModalBottomSheet(
       backgroundColor: Colors.transparent,
       context: context,
       isScrollControlled: true,
       builder: (context) => EtaSharingTimeSheet(
         onConfirmTap: (v) {
-          context.pop();
+          Navigator.pop(context);
           LoadingOverlay.of(context).startLoading();
 
           ref.read(shareEtaProvider.notifier).startSharingLiveLocation(v.durationInMinutes);

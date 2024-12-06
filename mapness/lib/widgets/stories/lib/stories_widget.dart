@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/app/routes/stories.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -43,14 +45,18 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
   void _openStory(BuildContext context, String id) {
     Metrics.logEventAdvanced(MetricsConstants.exploreKeys.storyBanner,
-        group: MetricsConstants.exploreTag, action: MetricAction.tap.name, props: {'id': id});
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+      props: {'id': id},
+    );
 
     ref.read(storiesOpenStateProvider.notifier).open();
-
-    StoriesRoute.openById(
-      context,
-      storyId: id,
-      onClose: ref.read(storiesOpenStateProvider.notifier).close,
+    context.pushRoute(
+      StoriesRoute(
+        type: StoryTypes.network,
+        initialStoryId: id,
+        onClose: ref.read(storiesOpenStateProvider.notifier).close,
+      ),
     );
   }
 

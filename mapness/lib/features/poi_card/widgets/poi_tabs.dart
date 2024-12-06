@@ -1,7 +1,6 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -44,7 +43,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
 
     final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
-    final inBuildingCount = widget.poiCardState?.organizations?.count ?? 0;
+    final inBuildingCount = widget.poiCardState?.organizations?.total ?? 0;
 
     return TabBar(
       padding: EdgeInsets.zero,

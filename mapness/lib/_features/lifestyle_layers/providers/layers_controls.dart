@@ -17,8 +17,8 @@ import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/layer_details.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
@@ -27,6 +27,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -705,6 +706,7 @@ class LayersControls extends _$LayersControls {
     await computeCameraPosition(
       markers,
       ref.read(cameraPositionProvider),
+      ref.read(locationProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
   }
@@ -715,8 +717,7 @@ class LayersControls extends _$LayersControls {
   }
 
   void _showEsriCard(PointLayersData e) {
-    final goRouter = ref.read(goRouterProvider);
-    LayerDetailsRoute.open(goRouter, e);
+    ref.read(appRouterProvider).push(LayersDetailsWidgetRoute(data: e));
   }
 
   Future<void> _removeAll() async {
