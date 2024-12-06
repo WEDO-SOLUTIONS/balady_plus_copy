@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
@@ -28,6 +29,7 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(navigatorSpeedCamerasSettingsProvider.select((_) => null))
       ..watch(locationProvider.select((_) => null))
       ..watch(bearingStateProvider.select((_) => null))
+      ..watch(layersControlsProvider.select((_) => null))
       ..watch(storiesOpenStateProvider.select((_) => null))
       ..watch(serviceNotAvailableProvider.select((_) => null));
 

@@ -28,8 +28,13 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
+  final bool isHomeOrWork;
 
-  const RoutingInfo({required this.points, super.key});
+  const RoutingInfo({
+    required this.points,
+    this.isHomeOrWork = false,
+    super.key,
+  });
 
   @override
   ConsumerState<RoutingInfo> createState() => _RoutingInfoState();
@@ -239,8 +244,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     context.router.push(
       PathNavRoute(
         navType: navigatingType,
-        initAction: PathNavPageInitAction.startNavigation,
-      ),
+        isHomeOrWork: widget.isHomeOrWork,
+      initAction: PathNavPageInitAction.startNavigation,),
     );
   }
 

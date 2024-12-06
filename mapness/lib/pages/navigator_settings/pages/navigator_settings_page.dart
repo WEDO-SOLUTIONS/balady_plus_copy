@@ -12,6 +12,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -82,7 +83,8 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     ),
                                   ),
                                 );
-                              }),
+                                },
+                              ),
                               Consumer(builder: (context, ref, _) {
                                 final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
                                 return ContentRow(
@@ -97,7 +99,8 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     ),
                                   ),
                                 );
-                              }),
+                                },
+                              ),
                               Consumer(builder: (context, ref, _) {
                                 final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
                                 return ContentRow(
@@ -112,25 +115,47 @@ class NavigatorSettingsPage extends ConsumerWidget {
                                     ),
                                   ),
                                 );
-                              }),
-                              Consumer(builder: (context, ref, _) {
-                                final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
-                                return ContentRow(
-                                  onToggle: (_) {
-                                    ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart();
-                                  },
-                                  options: ContentRowOptions(
-                                    title: l10n.autorunNavigator,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    subtitle: l10n.automaticallyLaunchNavigator,
-                                    subtitleMaxlines: 2,
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: autorun,
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final autoParkingState = ref.watch(navigatorAutoEnableParkingProvider);
+                                  return ContentRow(
+                                    onToggle: (_) => ref
+                                        .read(navigatorAutoEnableParkingProvider.notifier)
+                                        .toggleAutoEnableParking(value: !(autoParkingState.autoEnableParking ?? false)),
+                                    options: ContentRowOptions(
+                                      title: l10n.automaticParkingLayer,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: autoParkingState.autoEnableParking ?? false,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+
+                                  return ContentRow(
+                                    onToggle: (_) =>
+                                        ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
+                                    options: ContentRowOptions(
+                                      title: l10n.autorunNavigator,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      subtitle: l10n.automaticallyLaunchNavigator,
+                                      subtitleMaxlines: 2,
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: autorun,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
                             ],
                           ),
                         ),

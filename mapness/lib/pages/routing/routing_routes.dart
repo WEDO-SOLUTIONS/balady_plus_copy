@@ -26,9 +26,11 @@ import 'package:urbi_utils/urbi_utils.dart';
 @RoutePage()
 class RoutingRoutesPage extends ConsumerStatefulWidget {
   final List<RouteParamsPointWithLabel> points;
+  final bool isHomeOrWork;
 
   const RoutingRoutesPage({
     required this.points,
+    this.isHomeOrWork = false,
     super.key,
   });
 
@@ -128,7 +130,10 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                     ].insertBetween(Spacing.$3x.widthBox).toList(),
                   ),
                 ),
-                RoutingInfo(points: points.map((e) => e.value).toList()),
+                RoutingInfo(
+                  points: points.map((e) => e.value).toList(),
+                  isHomeOrWork: widget.isHomeOrWork,
+                ),
               ],
             ),
           ),

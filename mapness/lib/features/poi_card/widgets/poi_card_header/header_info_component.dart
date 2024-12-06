@@ -93,7 +93,7 @@ class _HeaderInfoWidget
               Text(
                 worktime!,
                 style: context.textStyle.footNoteBold.copyWith(
-                  color: context.colorsV3.lightAccent,
+                  color: context.colorsV3.accentDefault,
                 ),
               )
             else
