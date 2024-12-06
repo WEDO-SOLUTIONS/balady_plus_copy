@@ -142,7 +142,6 @@ dependencies:
   easy_image_viewer: 1.5.1
   talker_dio_logger: 4.5.2
 
-
 dependency_overrides:
   # for dio_http_cache
   json_serializable: 6.9.0
