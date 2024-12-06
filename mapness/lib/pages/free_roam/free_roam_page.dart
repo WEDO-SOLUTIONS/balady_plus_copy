@@ -17,6 +17,7 @@ import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
 class FreeRoamPage extends ConsumerStatefulWidget {
@@ -37,6 +38,10 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   bool wasSetActive = true;
 
   Timer? timer;
+
+  late final uikit.StatelessBottomSheetController _bottomSheetController = uikit.StatelessBottomSheetController(
+    onClose: (_) => _bottomSheetController.close,
+  );
 
   @override
   void initState() {
@@ -165,15 +170,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                           isControlsActive = true;
                           startControlsDisapearTimer();
                         },
-                        child: const Column(
+                        child: Column(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             Padding(
                               padding: padding,
-                              child: TrafficParkingControl(),
+                              child: TrafficParkingControl(
+                                bottomSheetController: _bottomSheetController,
+                              ),
                             ),
-                            Spacer(),
-                            Padding(
+                            const Spacer(),
+                            const Padding(
                               padding: padding,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -183,17 +190,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                                 ],
                               ),
                             ),
-                            Spacer(),
-                            Padding(
+                            const Spacer(),
+                            const Padding(
                               padding: padding,
                               child: CompassControl(),
                             ),
-                            SizedBox(height: 8),
-                            Padding(
+                            const SizedBox(height: 8),
+                            const Padding(
                               padding: padding,
                               child: FollowControl(),
                             ),
-                            SizedBox(height: 12),
+                            const SizedBox(height: 12),
                           ],
                         ),
                       ),
@@ -210,6 +217,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                 const SizedBox(height: 21),
               ],
             ),
+            ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
           ],
         ),
       );

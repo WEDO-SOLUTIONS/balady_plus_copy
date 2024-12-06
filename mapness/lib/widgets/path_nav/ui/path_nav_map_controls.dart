@@ -20,6 +20,7 @@ class PathNavMapControls extends StatelessWidget {
   final ValueNotifier<PathNavState> navigationState;
   final ValueNotifier<bool> expansionNotifier;
   final RouteSearchOptionsMessage navType;
+  final uikit.StatelessBottomSheetController bottomSheetController;
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -28,6 +29,7 @@ class PathNavMapControls extends StatelessWidget {
     required this.navigationState,
     required this.expansionNotifier,
     required this.navType,
+    required this.bottomSheetController,
     super.key,
   });
 
@@ -101,9 +103,12 @@ class PathNavMapControls extends StatelessWidget {
                       ),
                     ),
                   ),
-                const Padding(
+                Padding(
                   padding: padding,
-                  child: TrafficParkingControl(trafficVisible: false),
+                  child: TrafficParkingControl(
+                    trafficVisible: false,
+                    bottomSheetController: bottomSheetController,
+                  ),
                 ),
                 const Spacer(),
                 Padding(

@@ -16,7 +16,6 @@ import 'package:mapness/app/routes/language_picker.dart';
 import 'package:mapness/app/routes/layer_details.dart';
 import 'package:mapness/app/routes/mini_apps.dart';
 import 'package:mapness/app/routes/navigator_settings.dart';
-import 'package:mapness/app/routes/parking_bottom_sheet.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/app/routes/photo_viewer.dart';
 import 'package:mapness/app/routes/poi_map.dart';
@@ -63,6 +62,5 @@ final $appRoutes = [
   ...$darkMapRoutes,
   ...$languagePickerRoutes,
   ...$voiceSettingsRoutes,
-  ...$parkingBottomSheet,
   ...$appFeedbackRoutes
 ];

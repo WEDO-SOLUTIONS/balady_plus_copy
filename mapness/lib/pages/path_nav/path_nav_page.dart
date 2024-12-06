@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
@@ -31,7 +32,8 @@ import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
-import 'package:mapness/widgets/path_nav/ui/parking_banner.dart';
+import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
+import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_map_controls.dart';
 import 'package:urbi_analytics/logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
@@ -60,8 +62,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   final _betterRouteDurationProfit = ValueNotifier<int?>(null);
   double heightOfEta = 90.0;
   final _expansionNotifier = ValueNotifier<bool>(false);
+  Size _size = const Size(0, 0);
 
   late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(uikit.Spacing.$3x);
+  late final uikit.StatelessBottomSheetController _bottomSheetController = uikit.StatelessBottomSheetController(
+    onClose: (_) => _bottomSheetController.close,
+  );
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -89,6 +95,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     WidgetsBinding.instance.addObserver(this);
     _initNavigation();
     WakelockPlus.enable();
+
+    _bottomSheetController.addListener(() {
+      // TODO(Ayat) fix sheetHeight in BottomSheet, is not correct calculate
+      final height = _bottomSheetController.sheetHeight + uikit.Spacing.$10x;
+      _bottomHeightNotifier.value = max(height, uikit.Spacing.$3x + _size.height);
+    });
   }
 
   @override
@@ -105,6 +117,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.dispose();
     _navigationState.dispose();
     _expansionNotifier.dispose();
+    _bottomSheetController.dispose();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -191,6 +204,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         children: [
           PathNavMapControls(
             bottomHeightNotifier: _bottomHeightNotifier,
+            bottomSheetController: _bottomSheetController,
             navigationState: _navigationState,
             expansionNotifier: _expansionNotifier,
             navType: widget.navType,
@@ -220,6 +234,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
             child: MeasureSize(
               onChange: (size) {
                 if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
+                  _size = size;
                   _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
                 }
               },
@@ -228,6 +243,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   ParkingBanner(
                     navigationState: _navigationState,
                     isHomeOrWork: widget.isHomeOrWork,
+                    bottomSheetController: _bottomSheetController,
                   ),
                   Directionality(
                     textDirection: Directionality.of(context),
@@ -267,6 +283,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               ),
             ),
           ),
+          ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
         ],
       ),
     );

@@ -1,4 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
+import 'package:balady_uikit/balady_uikit.dart' hide TrafficControlStatus;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/app/routes/parking_bottom_sheet.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -16,8 +16,10 @@ import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
   final bool trafficVisible;
+  final StatelessBottomSheetController bottomSheetController;
 
   const TrafficParkingControl({
+    required this.bottomSheetController,
     super.key,
     this.trafficVisible = true,
   });
@@ -59,7 +61,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
             isNoTopBorderRadius: isTrafficVisable,
             onParkingTap: () {
               if (autoEnableParking == null) {
-                ParkingBottomSheetRoute.open(context);
+                widget.bottomSheetController.open();
                 return;
               }
 

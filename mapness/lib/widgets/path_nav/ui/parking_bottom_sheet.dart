@@ -3,27 +3,23 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
-class ParkingBottomSheetPage extends ConsumerStatefulWidget {
-  const ParkingBottomSheetPage({super.key});
+class ParkingBottomSheetPage extends ConsumerWidget {
+  final StatelessBottomSheetController bottomSheetController;
+
+  const ParkingBottomSheetPage({
+    required this.bottomSheetController,
+    super.key,
+  });
 
   @override
-  ConsumerState<ParkingBottomSheetPage> createState() => _ParkingBottomSheetPageState();
-}
-
-class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage> {
-  late final StatelessBottomSheetController _controller = StatelessBottomSheetController(
-    onClose: context.pop,
-  );
-
-  @override
-  Widget build(BuildContext context) => SafeArea(
+  Widget build(BuildContext context, WidgetRef ref) => SafeArea(
         child: StatelessBottomSheet(
-          scrollController: _controller,
+          startConfig: BottomSheetStart.closed,
+          scrollController: bottomSheetController,
           header: Padding(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: Row(
@@ -40,7 +36,7 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
                   size: ButtonSize.small,
                   buttonColorScheme: ButtonColorScheme.tertiary,
                   primaryIcon: SystemIcons.close,
-                  onTap: context.pop,
+                  onTap: bottomSheetController.close,
                 ),
               ],
             ),
@@ -63,7 +59,7 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
                       buttonColorScheme: ButtonColorScheme.primary,
                       onTap: () {
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
-                        context.pop();
+                        bottomSheetController.close();
                       },
                     ),
                   ),
@@ -78,7 +74,7 @@ class _ParkingBottomSheetPageState extends ConsumerState<ParkingBottomSheetPage>
                             title: context.l10n.youCanChangeAutomaticParking,
                             actionText: context.l10n.feedbackBreaksSheetClose);
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: false);
-                        context.pop();
+                        bottomSheetController.close();
                       },
                     ),
                   ),
