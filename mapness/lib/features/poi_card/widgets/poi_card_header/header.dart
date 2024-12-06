@@ -4,12 +4,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_card_header/header_info_component.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/tab.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/title.dart';
-import 'package:mapness/features/poi_card/widgets/poi_card_header/worktime.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
@@ -36,8 +35,6 @@ class PoiHeader extends ConsumerWidget {
     final direction = ref.watch(uiDirectionProvider);
 
     final address = data.address;
-
-    final workingHours = data.getOpeningHours(context.l10n);
 
     String subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
 
@@ -78,10 +75,9 @@ class PoiHeader extends ConsumerWidget {
                 ),
               ),
             ),
-            if (workingHours?.title != null)
-              WorktimeComponent(
-                worktime: workingHours!.title,
-              ),
+            HeaderInfoComponent(
+              data: data,
+            ),
             TabComponent(
               tabController: tabController,
               objectId: data.id?.objectId ?? 0,
@@ -96,7 +92,8 @@ class PoiHeader extends ConsumerWidget {
   /// This is temporary solution. We need to show text for parking info
   /// If parking is not presented for this POI we return null
   /// Should work for all poi because only parking lots have parking info
-  String? _getParkingSubtitle(DirectoryObjectMessage data, AppLocalizations l10n) {
+  String? _getParkingSubtitle(
+      DirectoryObjectMessage data, AppLocalizations l10n) {
     final parkingInfo = data.parkingInfo;
     if (parkingInfo == null) {
       return null;
@@ -114,6 +111,8 @@ class PoiHeader extends ConsumerWidget {
     if (parkingInfo == null) {
       return null;
     }
-    return parkingInfo.isPaid ? GeneralIcons.money : GeneralIcons.checkmarkCircle;
+    return parkingInfo.isPaid
+        ? GeneralIcons.money
+        : GeneralIcons.checkmarkCircle;
   }
 }

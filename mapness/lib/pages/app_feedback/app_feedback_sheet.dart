@@ -68,12 +68,13 @@ class AppFeedbackSheet extends HookConsumerWidget {
       }
     }
 
-    final scrollController = useStatelessBottomsheetController(onClose: onCloseBottomSheet);
+    final scrollController = useStatelessBottomsheetController(
+      onClose: onCloseBottomSheet,
+    );
 
     return FeedbackSourceProvider(
       source: source,
       child: StatelessBottomSheet(
-        startConfig: BottomSheetStart.instant,
         scrollController: scrollController,
         onWillPop: Future.value(false),
         content: [
