@@ -189,8 +189,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
     if (context.router.isRouteActive(RoutingMapSelectRoute.name) ||
         context.router.isRouteActive(SearchRoute.name) ||
-        context.router.isRouteActive(PathNavRoute.name) ||
-        context.router.isRouteActive(PathNavRoute.name) ||
         context.router.isRouteActive(RoutingRoutesRoute.name)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
