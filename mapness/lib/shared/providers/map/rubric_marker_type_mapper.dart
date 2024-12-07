@@ -47,8 +47,14 @@ class RubricMarkerMapper extends _$RubricMarkerMapper {
     final relevantMap = <MapMarkersType, Set<int>>{};
 
     for (final markerInfo in state) {
-      relevantMap[markerInfo.type] =
-          markerInfo.rubricIds.intersection(rubricIds);
+      final intersection = markerInfo.rubricIds.intersection(rubricIds);
+
+      if (intersection.isNotEmpty) {
+        relevantMap[markerInfo.type] = intersection;
+      }
+    }
+    if (relevantMap.isEmpty) {
+      return null;
     }
 
     final mostRelevantType = relevantMap.entries
