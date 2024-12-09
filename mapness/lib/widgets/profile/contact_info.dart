@@ -126,24 +126,26 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
     Clipboard.setData(
       const ClipboardData(text: momrahEmail),
     );
-    final context = rootNavigatorKey.currentContext;
-    if (context != null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        ToastMessageFactory.toastWithIconAction(
-          onPressed: () {
-            ScaffoldMessenger.of(context).hideCurrentSnackBar();
-          },
-          icon: SystemIcons.close,
-          text: context.l10n.emailHasBeenCopied,
-          context: context,
-        ),
-      );
-    }
 
     if (_animationController.status == AnimationStatus.completed) {
       _animationController.reverse();
     } else {
       _animationController.forward();
     }
+
+    final context = rootNavigatorKey.currentContext;
+    if (context == null) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      ToastMessageFactory.toastWithIconAction(
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+        icon: SystemIcons.close,
+        text: context.l10n.emailHasBeenCopied,
+        context: context,
+      ),
+    );
   }
 }
