@@ -16,20 +16,19 @@ reviewers:
     support-team:
       - Demezy
       - AyatAliev
-      - ekinsdrow
       - RomanSurjan
 files:
   ".github/**":
     - doldrums
-    - JIexa24
+    - r9odt
     - alexstrnik
   ".lefthook/**":
     - doldrums
-    - JIexa24
+    - r9odt
     - demezy
   "justscripts/**":
     - doldrums
-    - JIexa24
+    - r9odt
     - platform-team
   "urbi_map/**":
     - platform-team
@@ -37,7 +36,7 @@ files:
   "mapness/scripts/**":
     - platform-team
     - doldrums
-    - JIexa24
+    - r9odt
   "tests/**":
     - doldrums
     - support-team
