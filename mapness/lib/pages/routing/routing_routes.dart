@@ -20,6 +20,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
 import 'package:mapness/widgets/routing/ui_kit/ab_point/ab_points.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -40,11 +41,18 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
+  }
+
+  @override
+  void dispose() {
+    _bottomHeightNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,54 +95,59 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       alignment: Alignment.bottomCenter,
       children: [
         RoutingMapControls(
-          bottomExtent: MediaQuery.of(context).size.height * 0.3,
+          bottomHeightNotifier: _bottomHeightNotifier,
         ),
-        BottomSheet(
-          backgroundColor: context.color.surfaceBasePrimary,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
+        MeasureSize(
+          onChange: (size) {
+            _bottomHeightNotifier.value = size.height + Spacing.$3x;
+          },
+          child: BottomSheet(
+            backgroundColor: context.color.surfaceBasePrimary,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
             ),
-          ),
-          onClosing: () => {},
-          builder: (context) => SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: Spacing.$4x,
-                    right: Spacing.$4x,
-                    top: Spacing.$4x,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      AppButton(
-                        primaryIcon: SystemIcons.arrowLeft,
-                        buttonColorScheme: ButtonColorScheme.tertiary,
-                        onTap: _onClose,
-                      ),
-                      AppButton(
-                        primaryIcon: TransportIcons.verticalChange,
-                        buttonColorScheme: ButtonColorScheme.tertiary,
-                        onTap: _onSwipeRoutes,
-                      ),
-                      Expanded(
-                        child: ABPoints(
-                          locations: points.map((e) => e.label).toList(),
-                          onTap: _changeRoute,
+            onClosing: () => {},
+            builder: (context) => SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: Spacing.$4x,
+                      right: Spacing.$4x,
+                      top: Spacing.$4x,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        AppButton(
+                          primaryIcon: SystemIcons.arrowLeft,
+                          buttonColorScheme: ButtonColorScheme.tertiary,
+                          onTap: _onClose,
                         ),
-                      ),
-                    ].insertBetween(Spacing.$3x.widthBox).toList(),
+                        AppButton(
+                          primaryIcon: TransportIcons.verticalChange,
+                          buttonColorScheme: ButtonColorScheme.tertiary,
+                          onTap: _onSwipeRoutes,
+                        ),
+                        Expanded(
+                          child: ABPoints(
+                            locations: points.map((e) => e.label).toList(),
+                            onTap: _changeRoute,
+                          ),
+                        ),
+                      ].insertBetween(Spacing.$3x.widthBox).toList(),
+                    ),
                   ),
-                ),
-                RoutingInfo(
-                  points: points.map((e) => e.value).toList(),
-                  isHomeOrWork: widget.isHomeOrWork,
-                ),
-              ],
+                  RoutingInfo(
+                    points: points.map((e) => e.value).toList(),
+                    isHomeOrWork: widget.isHomeOrWork,
+                  ),
+                ],
+              ),
             ),
           ),
         ),

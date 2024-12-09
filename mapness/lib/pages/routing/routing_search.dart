@@ -12,6 +12,7 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
 import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 
 @RoutePage()
 class RoutingSearchSheetPage extends ConsumerStatefulWidget {
@@ -34,6 +35,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   late final DgisBottomSheetController _dgisSheetController;
   final kbVisibilityController = KeyboardVisibilityController();
   late final StreamSubscription<bool> _keyboardVisible;
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
 
   bool visible = true;
 
@@ -55,62 +57,68 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   @override
   void dispose() {
     _keyboardVisible.cancel();
+    _bottomHeightNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => Stack(
         children: [
-          const RoutingMapControls(bottomExtent: 136),
-          LayoutBuilder(
-            builder: (context, constraints) => NotificationListener<ScrollNotification>(
-              onNotification: _onNotification,
-              child: DgisBottomSheet(
-                key: const ValueKey('ROUTING SEARCH SHEET'),
-                controller: _dgisSheetController,
-                initialExpansion: Expansion.expanded,
-                availableExpansions: const {
-                  Expansion.hidden,
-                  Expansion.middle,
-                  Expansion.expanded,
-                },
-                onExpansionChanged: (expansion, {byUser = false}) {
-                  if (expansion == Expansion.hidden && context.mounted) {
-                    context.router.popForced();
-                  }
-                },
-                middleHeight: constraints.maxHeight * 0.7,
-                scrollableBody: (context, scrollController) {
-                  scrollController.addListener(_unFocusOnScroll);
-                  final bgColor = context.colorsV2.backgroundSurface1;
+          RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
+          MeasureSize(
+            onChange: (size) {
+              _bottomHeightNotifier.value = size.height + Spacing.$3x;
+            },
+            child: LayoutBuilder(
+              builder: (context, constraints) => NotificationListener<ScrollNotification>(
+                onNotification: _onNotification,
+                child: DgisBottomSheet(
+                  key: const ValueKey('ROUTING SEARCH SHEET'),
+                  controller: _dgisSheetController,
+                  initialExpansion: Expansion.expanded,
+                  availableExpansions: const {
+                    Expansion.hidden,
+                    Expansion.middle,
+                    Expansion.expanded,
+                  },
+                  onExpansionChanged: (expansion, {byUser = false}) {
+                    if (expansion == Expansion.hidden && context.mounted) {
+                      context.router.popForced();
+                    }
+                  },
+                  middleHeight: constraints.maxHeight * 0.7,
+                  scrollableBody: (context, scrollController) {
+                    scrollController.addListener(_unFocusOnScroll);
+                    final bgColor = context.colorsV2.backgroundSurface1;
 
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                    child: Material(
-                      color: bgColor,
-                      child: SearchScope(
-                        named: SearchScopeEnum.routes,
-                        child: CustomScrollView(
-                          controller: scrollController,
-                          physics: const ClampingScrollPhysics(),
-                          slivers: [
-                            SliverPersistentHeader(
-                              delegate: RoutingSearchHeaderDelegate(
-                                placeholder: widget.placeholder,
-                                backgroundColor: bgColor,
+                    return ClipRRect(
+                      borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                      child: Material(
+                        color: bgColor,
+                        child: SearchScope(
+                          named: SearchScopeEnum.routes,
+                          child: CustomScrollView(
+                            controller: scrollController,
+                            physics: const ClampingScrollPhysics(),
+                            slivers: [
+                              SliverPersistentHeader(
+                                delegate: RoutingSearchHeaderDelegate(
+                                  placeholder: widget.placeholder,
+                                  backgroundColor: bgColor,
+                                ),
+                                pinned: true,
                               ),
-                              pinned: true,
-                            ),
-                            RoutingSearchContent(
-                              showMyLocation: widget.showMyLocation,
-                              scrollController: scrollController,
-                            ),
-                          ],
+                              RoutingSearchContent(
+                                showMyLocation: widget.showMyLocation,
+                                scrollController: scrollController,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
+                    );
+                  },
+                ),
               ),
             ),
           ),

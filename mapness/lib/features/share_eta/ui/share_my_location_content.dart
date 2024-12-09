@@ -23,12 +23,13 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
-class ShareMyLocationPage extends HookConsumerWidget {
+class ShareMyLocationPage extends StatefulHookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
@@ -39,15 +40,28 @@ class ShareMyLocationPage extends HookConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ShareMyLocationPageState createState() => ShareMyLocationPageState();
+}
+
+class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
+
+  @override
+  void dispose() {
+    _bottomHeightNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final _animationController = useAnimationController(
       duration: const Duration(milliseconds: 300),
     );
 
     final data = ref.watch(
       poiMyLocationProvider(
-        latitude: closestPoint!.latitude,
-        longitude: closestPoint!.longitude,
+        latitude: widget.closestPoint!.latitude,
+        longitude: widget.closestPoint!.longitude,
       ),
     );
 
@@ -57,9 +71,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
 
     final title = value?.title ?? context.l10n.myLocation;
     final subTitle = isAuthorized ? context.l10n.myLocationSubtitle : null;
-    final text = value?.address ?? '${closestPoint?.latitude}, ${closestPoint?.longitude}';
-
-    const sheetPadding = 0.27;
+    final text = value?.address ?? '${widget.closestPoint?.latitude}, ${widget.closestPoint?.longitude}';
 
     ref.listen(etaServiceProvider, (_, next) {
       if (context.mounted == false) {
@@ -81,13 +93,13 @@ class ShareMyLocationPage extends HookConsumerWidget {
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
 
-        if (closestPoint == null) {
+        if (widget.closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setLatitude(closestPoint!.latitude)
-          ..setLongitude(closestPoint!.longitude);
+          ..setLatitude(widget.closestPoint!.latitude)
+          ..setLongitude(widget.closestPoint!.longitude);
       }
     });
 
@@ -96,67 +108,70 @@ class ShareMyLocationPage extends HookConsumerWidget {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        RoutingMapControls(
-          bottomExtent: MediaQuery.of(context).size.height * sheetPadding,
-        ),
-        BottomSheet(
-          shape: ShapeBorder.lerp(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            const RoundedRectangleBorder(),
-            0,
-          ),
-          animationController: _animationController,
-          onClosing: () => onClose(context, ref),
-          showDragHandle: false,
-          builder: (context) => Container(
-            decoration: const BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(16),
-                topRight: Radius.circular(16),
+        RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
+        MeasureSize(
+          onChange: (size) {
+            _bottomHeightNotifier.value = size.height + Spacing.$3x;
+          },
+          child: BottomSheet(
+            shape: ShapeBorder.lerp(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
+              const RoundedRectangleBorder(),
+              0,
             ),
-            width: double.infinity,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Center(
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
-                    child: SheetDragger(),
+            animationController: _animationController,
+            onClosing: () => onClose(context, ref),
+            showDragHandle: false,
+            builder: (context) => Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+              ),
+              width: double.infinity,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Center(
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                      child: SheetDragger(),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: CardHeader(
-                    onTapClose: () => onClose(context, ref),
-                    title: CardHeaderText.title(text: title, context: context),
-                    subTitle: subTitle != null ? CardHeaderText.subTitle(text: subTitle, context: context) : null,
-                    profileImage: isAuthorized
-                        ? const Padding(
-                            padding: EdgeInsets.only(top: Spacing.$1x),
-                            child: MyLocationImageWidget(),
-                          )
-                        : null,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    child: CardHeader(
+                      onTapClose: () => onClose(context, ref),
+                      title: CardHeaderText.title(text: title, context: context),
+                      subTitle: subTitle != null ? CardHeaderText.subTitle(text: subTitle, context: context) : null,
+                      profileImage: isAuthorized
+                          ? const Padding(
+                              padding: EdgeInsets.only(top: Spacing.$1x),
+                              child: MyLocationImageWidget(),
+                            )
+                          : null,
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
-                  child: Text(
-                    text,
-                    style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  Padding(
+                    padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: isAuthorized ? Spacing.$4x : Spacing.$2x),
+                    child: Text(
+                      text,
+                      style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV2.foregroundSoft),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                MyLocationPoiActions(
-                  onShare: () => _showEtaControlSheet(context, ref),
-                  onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
-                ),
-              ],
+                  MyLocationPoiActions(
+                    onShare: () => _showEtaControlSheet(context, ref),
+                    onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(widget.closestPoint),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -171,7 +186,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
   }
 
   Future<void> _cameraAnimation(WidgetRef ref) async {
-    if (closestPoint != null) {
+    if (widget.closestPoint != null) {
       final settings = MapObjectManagerSettings.myLocation();
       final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
@@ -182,8 +197,8 @@ class ShareMyLocationPage extends HookConsumerWidget {
       await mapObjectManager.removeAllMarkers();
       final marker = Markers.pinMarker(
         GeoPointWithElevationMessage(
-          latitude: closestPoint!.latitude,
-          longitude: closestPoint!.longitude,
+          latitude: widget.closestPoint!.latitude,
+          longitude: widget.closestPoint!.longitude,
           elevation: 1,
         ),
       );
@@ -195,10 +210,11 @@ class ShareMyLocationPage extends HookConsumerWidget {
 
       await ref.read(cameraPositionProvider.notifier).animateTo(
             CameraPositionMessage(
-              point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
-              zoom: cameraConfig?.zoom ?? 16,
-              tilt: cameraConfig?.tilt ?? 0,
-              bearing: cameraConfig?.bearing ?? 0,
+              point:
+                  GeoPointMessage(latitude: widget.closestPoint!.latitude, longitude: widget.closestPoint!.longitude),
+              zoom: widget.cameraConfig?.zoom ?? 16,
+              tilt: widget.cameraConfig?.tilt ?? 0,
+              bearing: widget.cameraConfig?.bearing ?? 0,
             ),
           );
     }
@@ -213,7 +229,7 @@ class ShareMyLocationPage extends HookConsumerWidget {
       builder: (context) => EtaSharingSheet(
         onCurrentLocationPressed: () {
           Navigator.pop(context);
-          ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint);
+          ref.read(poiCardActionsProvider.notifier).shareMyLocation(widget.closestPoint);
         },
         onLiveLocationPressed: () {
           Navigator.pop(context);
