@@ -31,19 +31,17 @@ class TabComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
       scale = 1;
     }
 
-    return SafeArea(
-      child: ContentTransition(
-        interpolation: scale,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: Spacing.$2x,
-            bottom: Spacing.$3x,
-          ),
-          child: PoiTabs(
-            tabController: tabController,
-            objectId: objectId,
-            poiCardState: poiCardState,
-          ),
+    return ContentTransition(
+      interpolation: scale,
+      child: Padding(
+        padding: const EdgeInsets.only(
+          top: Spacing.$2x,
+          bottom: Spacing.$3x,
+        ),
+        child: PoiTabs(
+          tabController: tabController,
+          objectId: objectId,
+          poiCardState: poiCardState,
         ),
       ),
     );
