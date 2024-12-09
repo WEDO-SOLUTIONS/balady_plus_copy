@@ -220,7 +220,8 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
     )
         .then((_) {
       sheetController.addListener(() {
-        if (sheetController.isAttached && sheetController.size < .1) {
+        final isPopingSheet = context.router.current is RoadPanelSheetRoute;
+        if (isPopingSheet && sheetController.isAttached && sheetController.size < .1) {
           context.router.popForced();
         }
       });
@@ -241,7 +242,7 @@ class ContentContainer extends StatelessWidget {
         decoration: BoxDecoration(
             color: context.colorsV2.backgroundSurface1, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
           child: child,
         ),
       );
