@@ -47,7 +47,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   double _calculateInitialHeight() {
     final span = TextSpan(
       text: data.title,
-      style: context.textStyleV3.h2Medium,
+      style: context.textStyleV3.h2SemiBold,
     );
     final width = MediaQuery.sizeOf(context).width - _titleHorizontalPadding;
     final textDirection = Directionality.of(context);
@@ -55,7 +55,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final painter = TextPainter(
       text: span,
       maxLines: 2,
-      textAlign: TextAlign.left,
       textDirection: textDirection,
     )..layout(
         maxWidth: width,
