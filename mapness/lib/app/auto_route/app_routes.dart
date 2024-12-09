@@ -37,12 +37,10 @@ class AppRouter extends RootStackRouter {
               path: 'kiblah',
               page: KiblahRoute.page,
               fullscreenDialog: true,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'service_available',
               page: ServiceNotAvailableSheetRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
               opaque: false,
               customRouteBuilder: <T>(context, child, page) => RouteBuilders.modalSheetBuilder(
                 context,
@@ -59,7 +57,6 @@ class AppRouter extends RootStackRouter {
               path: 'path_nav',
               page: PathNavRoute.page,
               fullscreenDialog: true,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'search',
@@ -72,62 +69,51 @@ class AppRouter extends RootStackRouter {
             AppRoute(
               path: 'poi-map',
               page: PoiCardWidgetRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'deeplink',
               page: DeeplinkRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'routing_routes',
               page: RoutingRoutesRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'eta_route/:lat/:lon',
               page: EtaRouteRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'weather_router',
               page: WeatherRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               page: RoutingSearchSheetRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'road_panel_sheet',
               page: RoadPanelSheetRoute.page,
               fullscreenDialog: true,
               opaque: false,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             AppRoute(
               path: 'freeRoam',
               page: FreeRoamRoute.page,
               fullscreenDialog: true,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'road_closure',
               page: RoadClosureRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'auto_start_settings',
               page: AutostartSettingsSheetRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'layers_details',
               page: LayersDetailsWidgetRoute.page,
               fullscreenDialog: true,
               opaque: false,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             AppRoute(
               path: 'shared_my_location',
@@ -155,43 +141,35 @@ class AppRouter extends RootStackRouter {
             ),
             CustomRoute(
               path: 'layers_sheet',
-              transitionsBuilder: TransitionsBuilders.fadeIn,
               page: LayersSheetRoute.page,
             ),
             CustomRoute(
               path: 'feedback/:objectId',
-              transitionsBuilder: TransitionsBuilders.fadeIn,
               page: FeedbackSelectTypeRoute.page,
             ),
             CustomRoute(
               path: ':categoryId',
               page: FeedbackRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'success',
               page: FeedbackSentRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'favourites',
               page: FavouritesRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'search',
               page: FavouritesSearchRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               page: DeleteAllContentRoute.page,
               path: 'delete_all',
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               page: FavouritesPickerRoute.page,
               path: 'picker',
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'feedback',
