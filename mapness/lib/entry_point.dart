@@ -25,6 +25,7 @@ import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.d
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -403,14 +404,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
     final appRouter = ref.watch(appRouterProvider);
-    await appRouter.push(PoiCardWidgetRoute(
-      objectId: DgisObjectIdMessage(
-        objectId: dgisObjectId,
-        entranceId: 0,
+    await appRouter.replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: DgisObjectIdMessage(
+          objectId: dgisObjectId,
+          entranceId: 0,
+        ),
+        closestPoint: location,
+        cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      closestPoint: location,
-      cameraConfig: const PoiCameraConfig(zoom: 17),
-    ));
+      toCompareRoutes: [PoiCardWidgetRoute.name],
+    );
   }
 
   Future<void> _poiDeepLinkByCoords(double latitude, double longitude) async {
@@ -470,13 +474,16 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       return;
     }
 
-    await ref.watch(appRouterProvider).push(PoiCardWidgetRoute(
-          objectId: DgisObjectIdMessage(
-            objectId: dgisId,
-            entranceId: 0,
-          ),
-          cameraConfig: const PoiCameraConfig(zoom: 17),
-        ));
+    await ref.watch(appRouterProvider).replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: DgisObjectIdMessage(
+          objectId: dgisId,
+          entranceId: 0,
+        ),
+        cameraConfig: const PoiCameraConfig(zoom: 17),
+      ),
+      toCompareRoutes: [PoiCardWidgetRoute.name],
+    );
   }
 
   void _myLocationDeepLinkHandler(double latitude, double longitude) {

@@ -9,6 +9,7 @@ import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_features/landing/widgets/slider_list_view.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -50,14 +51,15 @@ class PlacePreview extends ConsumerWidget {
                 },
               );
 
-              context.router.push(
-                PoiCardWidgetRoute(
+              context.router.replaceOrPush(
+                route: PoiCardWidgetRoute(
                   objectId: DgisObjectIdMessage(
                     objectId: objectId,
                     entranceId: 0,
                   ),
                   cameraConfig: PoiCameraConfig(zoom: 17),
                 ),
+                toCompareRoutes: [PoiCardWidgetRoute.name],
               );
             },
             itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),

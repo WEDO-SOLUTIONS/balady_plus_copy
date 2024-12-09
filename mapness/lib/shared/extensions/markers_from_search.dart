@@ -81,13 +81,14 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               props: {_propertyKey: objectId},
             );
 
-            final route = PoiCardWidgetRoute(
-              objectId: DgisObjectIdMessage(
-                objectId: objectId!,
-                entranceId: 0,
-              ),
-            );
-            router.replaceOrPush<PoiCardWidgetRoute>(route);
+            router.replaceOrPush(
+                route: PoiCardWidgetRoute(
+                  objectId: DgisObjectIdMessage(
+                    objectId: objectId!,
+                    entranceId: 0,
+                  ),
+                ),
+                toCompareRoutes: [PoiCardWidgetRoute.name]);
           },
           options: MarkerOptionsMessage(
             text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
