@@ -79,14 +79,18 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 action: MetricAction.tap.toString(),
                 props: {_propertyKey: objectId});
 
-            router.push(
-              PoiCardWidgetRoute(
-                objectId: DgisObjectIdMessage(
-                  objectId: objectId!,
-                  entranceId: 0,
-                ),
+            final route = PoiCardWidgetRoute(
+              objectId: DgisObjectIdMessage(
+                objectId: objectId!,
+                entranceId: 0,
               ),
             );
+            
+            if (router.current is PoiCardWidgetRoute) {
+              router.replace(route);
+            } else {
+              router.push(route);
+            }
           },
           options: MarkerOptionsMessage(
             text: withLabel && markerInfo.title != null
