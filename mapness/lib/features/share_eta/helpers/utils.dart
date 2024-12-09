@@ -11,7 +11,6 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
-import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_expired.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -111,13 +110,7 @@ class EtaUtils {
                 ),
               );
         }
-        // Get old stream token and stream id
-        final oldToken = EtaStreamStorage().state.streamToken;
-        final oldXStreamData = EtaStreamStorage().state.xStreamData;
-
-        if (oldToken != null && oldXStreamData != null) {
-          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
-        }
+        await ref.read(shareEtaProvider.notifier).stopSharing();
 
         await ref.read(etaGeoSubscriberProvider.notifier).startStreaming(streamId, tokenId);
         unawaited(ref.read(appRouterProvider).push(EtaRouteRoute(latitude: latitude, longitude: longitude)));
@@ -144,13 +137,8 @@ class EtaUtils {
 
           await appRouter.navigate(const LandingRoute());
         }
-        // Get old stream token and stream id
-        final oldToken = EtaStreamStorage().state.streamToken;
-        final oldXStreamData = EtaStreamStorage().state.xStreamData;
 
-        if (oldToken != null && oldXStreamData != null) {
-          await ref.read(shareEtaProvider.notifier).stopSharing(oldToken, oldXStreamData);
-        }
+        await ref.read(shareEtaProvider.notifier).stopSharing();
 
         if (latitude != null && longitude != null) {
           await ref.read(cameraPositionProvider.notifier).animateTo(

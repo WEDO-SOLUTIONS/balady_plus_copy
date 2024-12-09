@@ -103,14 +103,9 @@ class EtaTimerControl extends ConsumerWidget {
 
   Future<void> _stopShare(WidgetRef ref) async {
     final etaStore = EtaStreamStorage();
-    if (etaStore.state.streamToken == null || etaStore.state.xStreamData == null) {
-      return;
-    }
-    final tokenId = etaStore.state.streamToken!;
-    final streamData = etaStore.state.xStreamData!;
 
     try {
-      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, streamData);
+      await ref.read(shareEtaProvider.notifier).stopSharing();
     } catch (e) {
       log(e.toString());
     } finally {

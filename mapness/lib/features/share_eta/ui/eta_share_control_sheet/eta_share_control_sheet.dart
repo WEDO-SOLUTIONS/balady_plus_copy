@@ -14,7 +14,8 @@ class EtaShareControlSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> _closeStream() async {
-      await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
+      // Close stream without clear storage
+      await ref.read(shareEtaProvider.notifier).stopSharing();
     }
 
     Future<void> _stopShare() async {

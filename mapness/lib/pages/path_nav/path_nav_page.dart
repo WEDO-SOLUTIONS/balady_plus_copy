@@ -219,88 +219,89 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         child: Stack(
           children: [
             PathNavMapControls(
-            bottomHeightNotifier: _bottomHeightNotifier,
-            bottomSheetController: _bottomSheetController,
-            navigationState: _navigationState,
-            expansionNotifier: _expansionNotifier,
-            navType: widget.navType,
-          ),
-          Consumer(
-            builder: (_, ref, __) {
-              final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
-              return isEtaExpanded
-                  ? GestureDetector(
-                      behavior: HitTestBehavior.translucent,
-                      onTap: () {
-                        ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-                      },
-                      child: SizedBox.expand(
-                        child: ColoredBox(
-                          color: AppColor.black.withOpacity(0.4),
+              bottomHeightNotifier: _bottomHeightNotifier,
+              bottomSheetController: _bottomSheetController,
+              navigationState: _navigationState,
+              expansionNotifier: _expansionNotifier,
+              navType: widget.navType,
+            ),
+            Consumer(
+              builder: (_, ref, __) {
+                final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
+                return isEtaExpanded
+                    ? GestureDetector(
+                        behavior: HitTestBehavior.translucent,
+                        onTap: () {
+                          ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                        },
+                        child: SizedBox.expand(
+                          child: ColoredBox(
+                            color: AppColor.black.withOpacity(0.4),
+                          ),
                         ),
-                      ),
-                    )
-                  : const SizedBox.shrink();
-            },
+                      )
+                    : const SizedBox.shrink();
+              },
             ),
             Positioned(
               bottom: 0,
               right: 0,
               left: 0,
               child: MeasureSize(
-              onChange: (size) {
-                if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
-                  _size = size;
-                  _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
-                }
-              },
-              child: Column(
-                children: [
-                  ParkingBanner(
-                    navigationState: _navigationState,
-                    isHomeOrWork: widget.isHomeOrWork,
-                    bottomSheetController: _bottomSheetController,
-                  ),
-                  Directionality(
-                    textDirection: Directionality.of(context),
-                    child: ValueListenableBuilder(
-                      valueListenable: _navigationState,
-                      builder: (context, state, child) {
-                        switch (state) {
-                          case PathNavState.running:
-                            return Align(
-                              alignment: Alignment.bottomCenter,
-                              child: EtaSheet(
-                                onEndTripPressed: () => _endTripAndShowFeedback(context),
-                                onRoutePressed: _onShowRoutePressed,
-                                onBetterRouteAccept: () => _acceptBetterRoute(context),
-                                onBetterRouteReject: () => _rejectBetterRoute(context),
-                                betterRouteDurationProfit: _betterRouteDurationProfit,
-                                onSizeChanged: _onSizeChanged,
-                              ),
-                            );
-                          case PathNavState.paused:
-                            return EtaContinue(
-                              onTap: _onContinuePressed,
-                              onSizeChanged: _onSizeChanged,
-                            );
-                          case PathNavState.finished:
-                            return EtaFinished(
-                              expansionNotifier: _expansionNotifier,
-                              onEndTripPressed: _endTripAndShowHome,
-                              onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
-                              onSizeChanged: _onSizeChanged,
-                            );
-                        }
-                      },
+                onChange: (size) {
+                  if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
+                    _size = size;
+                    _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
+                  }
+                },
+                child: Column(
+                  children: [
+                    ParkingBanner(
+                      navigationState: _navigationState,
+                      isHomeOrWork: widget.isHomeOrWork,
+                      bottomSheetController: _bottomSheetController,
                     ),
-                  ),
-                ],
+                    Directionality(
+                      textDirection: Directionality.of(context),
+                      child: ValueListenableBuilder(
+                        valueListenable: _navigationState,
+                        builder: (context, state, child) {
+                          switch (state) {
+                            case PathNavState.running:
+                              return Align(
+                                alignment: Alignment.bottomCenter,
+                                child: EtaSheet(
+                                  onEndTripPressed: () => _endTripAndShowFeedback(context),
+                                  onRoutePressed: _onShowRoutePressed,
+                                  onBetterRouteAccept: () => _acceptBetterRoute(context),
+                                  onBetterRouteReject: () => _rejectBetterRoute(context),
+                                  betterRouteDurationProfit: _betterRouteDurationProfit,
+                                  onSizeChanged: _onSizeChanged,
+                                ),
+                              );
+                            case PathNavState.paused:
+                              return EtaContinue(
+                                onTap: _onContinuePressed,
+                                onSizeChanged: _onSizeChanged,
+                              );
+                            case PathNavState.finished:
+                              return EtaFinished(
+                                expansionNotifier: _expansionNotifier,
+                                onEndTripPressed: _endTripAndShowHome,
+                                onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                                onSizeChanged: _onSizeChanged,
+                              );
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-          ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
-        ],),
+            ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
+          ],
+        ),
       ),
     );
   }
@@ -475,7 +476,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   Future<void> _stopActiveSharing() async {
     try {
-      await ref.read(shareEtaProvider.notifier).stopSharingCurrent();
+      await ref.read(shareEtaProvider.notifier).stopSharingAndClearCurrent();
     } catch (e) {
       log(e.toString());
     }
