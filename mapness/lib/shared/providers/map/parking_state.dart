@@ -2,7 +2,9 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -46,6 +48,11 @@ class ParkingState extends _$ParkingState {
     final attribute = read.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
 
+    await read.setString(
+      MapnessConstants.activeLayerKey,
+      LayerType.parkingLots.name,
+    );
+
     state = ParkingStateEvent(
       filter: parkingFilter,
       visible: true,
@@ -61,6 +68,7 @@ class ParkingState extends _$ParkingState {
     final attribute = read.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
 
+    await read.remove(MapnessConstants.activeLayerKey);
     state = ParkingStateEvent(
       filter: parkingFilter,
       visible: false,
