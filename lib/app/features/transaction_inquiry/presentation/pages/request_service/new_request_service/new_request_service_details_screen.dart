@@ -1,5 +1,9 @@
+import 'dart:math';
+
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../core/base/base_view.dart';
@@ -28,6 +32,7 @@ class _NewRequestDetailsScreen extends State<NewRequestDetailsScreen> {
   void initState() {
     super.initState();
     model.validateForm();
+    model.file = null;
   }
 
   @override
@@ -83,7 +88,106 @@ class _MSRBody extends State<MSRBody> {
               ),
               // Request Info Section
               RequestInfoSection(),
-              // attachment section
+
+              // add Action to upload attachment hear
+
+              Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 16),
+                  Text(
+                    "${'attachment'.tr()} ( ${'Optional'.tr()} )",
+                    style: const TextStyle(
+                      color: AppColor.blackModern700Light,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  model.file == null
+                      ? InkWell(
+                          onTap: () async {
+                            FileDataItem? file = await CommonFunctions.pickFile(
+                              context,
+                            );
+                            if (file != null) {
+                              if ("jpg,jpeg,pdf,png".contains(file.fileName.split(".").last)) {
+                                // var i = (log(file.bytes!.length) / log(1000)).floor();
+                                 double sizeInMB = file.bytes!.length / pow(1000, 1);
+                                if (sizeInMB <= 5000) {
+                                  model.setFile(file);
+                                } else {
+                                  CommonFunctions.showError('${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png ${'attachment_message_size'.tr()} 5MB');
+                                }
+                              } else {
+                                CommonFunctions.showError("${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png");
+                              }
+                            }
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 6),
+                            padding: const EdgeInsets.all(16),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(16)),
+                              border: Border.all(
+                                color: AppColor.primary800Light,
+                              ),
+                              color: Colors.transparent,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  'attachFileButton'.tr(),
+                                  style: const TextStyle(
+                                    color: AppColor.primary800Light,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Row(
+                          children: [
+                            Flexible(
+                              fit: FlexFit.tight,
+                              child: Text(
+                                model.file!.fileName,
+                                style: const TextStyle(
+                                  color: AppColor.primary900Light,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                maxLines: 3,
+                              ),
+                            ),
+                            const SizedBox(width: 6),
+                            IconButton(
+                              onPressed: () {
+                                model.setFile(null);
+                              },
+                              color: AppColor.error,
+                              icon: const Icon(Icons.close),
+                            ),
+                          ],
+                        ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${'attachment_message_typ'.tr()} jpg,jpeg,pdf,png ${'attachment_message_size'.tr()} 5MB',
+                    style: const TextStyle(
+                      color: AppColor.blackModern700Light,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+
+              // displae attachment section from API
               if (model.attachments.isNotEmpty)
                 AttachmentList(
                   attachments: model.attachments,

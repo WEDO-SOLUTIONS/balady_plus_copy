@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/routes/stories.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -91,6 +92,10 @@ class _ScaffoldWithNestedNavigationState extends ConsumerState<ScaffoldWithNeste
             group: _tag,
             action: MetricAction.tap.name,
           );
+
+          if (selected == 2) {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingRoute);
+          }
 
           ///We commented this route onboarding because is not needed, we maybe return it in the future
 

@@ -1,8 +1,8 @@
 import 'dart:io';
 
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/feedback/feedback_upload_image.dart';
@@ -29,6 +29,8 @@ class FeedbackImageWidget extends ConsumerWidget {
 
     /// notify form about uploading (lock submit until finish)
     ref.listen(uploadProvider, (_, newState) => onUploadStatusChange(newState));
+
+    final isLoading = upload is FileUploadInit;
 
     return Container(
       width: imageSize,
@@ -58,12 +60,17 @@ class FeedbackImageWidget extends ConsumerWidget {
                 ),
             },
           ),
+          if (!isLoading)
 
-          /// cancel upload and remove image
-          _ImageRemoveButton(onRemove: () {
-            ref.read(uploadProvider.notifier).cancelUpload();
-            onRemove();
-          }),
+            /// cancel upload and remove image
+            Positioned(
+              right: 3,
+              top: 3,
+              child: _ImageRemoveButton(onRemove: () {
+                ref.read(uploadProvider.notifier).cancelUpload();
+                onRemove();
+              }),
+            ),
         ],
       ),
     );
@@ -79,24 +86,20 @@ class _ImageRemoveButton extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => CupertinoButton(
-        padding: const EdgeInsetsDirectional.fromSTEB(3, 3, 3, 8),
-        onPressed: onRemove,
-        child: Align(
-          alignment: Alignment.topRight,
-          child: Container(
-            height: 18,
-            width: 18,
-            decoration: const BoxDecoration(
-              shape: BoxShape.circle,
-              color: Color.fromRGBO(0, 0, 0, 0.6),
-            ),
-            child: Center(
-              child: Icon(
-                Icons.close_rounded,
-                color: context.colorsV2.backgroundSurface1,
-                size: 16,
-              ),
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onRemove,
+        child: Container(
+          height: 18,
+          width: 18,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColor.black.withOpacity(0.6),
+          ),
+          child: Center(
+            child: Icon(
+              SystemIcons.closeSmall,
+              color: context.colorsV2.backgroundSurface1,
+              size: 16,
             ),
           ),
         ),

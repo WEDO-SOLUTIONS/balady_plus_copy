@@ -19,6 +19,7 @@ class FeedbackTextInput extends StatefulWidget {
     required this.maxLength,
     required this.type,
     this.maxLines = 1,
+    this.controller,
     this.allowedInputPattern,
     this.keyboardType,
     this.onChanged,
@@ -33,6 +34,7 @@ class FeedbackTextInput extends StatefulWidget {
   final int maxLength;
   final int maxLines;
   final FeedbackTextType type;
+  final TextEditingController? controller;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? onValidate;
@@ -48,7 +50,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _controller = widget.controller ?? TextEditingController();
 
     _controller.addListener(() {
       // This is a hack, because the phone number formatter doesn't work well with the text direction
@@ -62,6 +64,12 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         }
       }
     });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override

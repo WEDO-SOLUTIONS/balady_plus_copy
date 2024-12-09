@@ -14,17 +14,18 @@ class UploadFileV2 extends UseCase<UploadFileResponse, AttachmentItem> {
     UploadFileParams params = UploadFileParams(
         attachStream: item.base64, filePath: item.filePath, index: item.index);
     String fileName = params.filePath?.split('/').last ?? "";
-    String memo = fileName;
-    // fileName = fileName.replaceAll("أ", "ا");
-    ;
-    int extensionIndex = fileName.lastIndexOf(".");
+
+    int timeStamp = DateTime.now().millisecondsSinceEpoch;
+    String newFileName = fileName.replaceRange(0, fileName.lastIndexOf("."), "$timeStamp");
+    String memo = newFileName;
+    int extensionIndex = newFileName.lastIndexOf(".");
     if (extensionIndex != -1 && extensionIndex != 0) {
-      memo = fileName.substring(0, extensionIndex);
+      memo = newFileName.substring(0, extensionIndex);
     }
     params = params.copyWith(
         category: item.categoryId,
         caseId: item.caseId,
-        pxAttachName: fileName,
+        pxAttachName: newFileName,
         pyMemo: memo);
     return await repository.uploadFileV2(params: params);
   }

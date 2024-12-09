@@ -1,4 +1,6 @@
 enum NavigationEvent {
+  navigation,
+  routeSearch,
   finished,
   disabled;
 

@@ -12,6 +12,9 @@ part 'path_nav.g.dart';
 )
 class PathNavRoute extends GoRouteData {
   static const path = '/pathNav';
+  static const _extraRouteSearchOptions = 'routeSearchOptions';
+  static const _extraInitAction = 'initAction';
+
   const PathNavRoute();
 
   static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
@@ -19,23 +22,23 @@ class PathNavRoute extends GoRouteData {
   @override
   Page<void> buildPage(BuildContext context, GoRouterState state) {
     final extra = state.extra as Map<String, dynamic>?;
-    final navType = extra?['data'] as RouteSearchOptionsMessage;
-    final restoreFromState = extra?['restoreFromState'] as bool;
+    final navType = extra?[_extraRouteSearchOptions] as RouteSearchOptionsMessage;
+    final initAction = extra?[_extraInitAction] as PathNavPageInitAction?;
     return _pathNavTransition(
       context: context,
       child: PathNavPage(
         navType: navType,
-        restoreFromState: restoreFromState,
+        initAction: initAction,
       ),
     );
   }
 
-  static void open(GoRouter router, RouteSearchOptionsMessage navType) {
+  static void open(GoRouter router, RouteSearchOptionsMessage navType, {PathNavPageInitAction? initAction}) {
     const route = PathNavRoute();
     final location = route.location;
     final extra = {
-      'data': navType,
-      'restoreFromState': false,
+      _extraRouteSearchOptions: navType,
+      _extraInitAction: initAction,
     };
     router.go(location, extra: extra);
   }
@@ -56,3 +59,5 @@ TransculentPage<void> _pathNavTransition({
     );
 
 final $pathNavRoutes = $appRoutes;
+
+enum PathNavPageInitAction { startNavigation, restoreFromState }

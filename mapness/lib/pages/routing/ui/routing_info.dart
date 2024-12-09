@@ -9,6 +9,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/router.dart';
 import 'package:mapness/app/routes/path_nav.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_tab_bar.dart';
@@ -223,6 +224,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       action: MetricAction.tap.toString(),
     );
 
+    // log advert analytics event
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
+
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
       properties: {
@@ -234,6 +238,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     PathNavRoute.open(
       ref.watch(goRouterProvider),
       navigatingType,
+      initAction: PathNavPageInitAction.startNavigation,
     );
   }
 

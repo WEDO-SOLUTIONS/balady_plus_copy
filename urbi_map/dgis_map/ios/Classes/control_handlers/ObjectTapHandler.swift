@@ -436,7 +436,7 @@ class ObjectTapHandler {
         
         let manager = MapObjectManager.withGeneralization(
             map: self.map,
-            logicalPixel: LogicalPixel(value: 120),
+            logicalPixel: LogicalPixel(value: 70),
             maxZoom: Zoom(value: 18),
             layerId: layerId
         )
