@@ -10,9 +10,10 @@ extension PoiCardHandler on AppRouter {
     required List<String> toCompareRoutes,
   }) async {
     if (toCompareRoutes.where((e) => isRouteActive(e)).isNotEmpty) {
-      popForced();
+      await replace(route);
+    } else {
+      await push(route);
     }
-    await push(route);
   }
 }
 
@@ -25,8 +26,9 @@ extension PoiCardHandlerStack on StackRouter {
     required List<String> toCompareRoutes,
   }) async {
     if (toCompareRoutes.where((e) => isRouteActive(e)).isNotEmpty) {
-      popForced();
+      await replace(route);
+    } else {
+      await push(route);
     }
-    await push(route);
   }
 }
