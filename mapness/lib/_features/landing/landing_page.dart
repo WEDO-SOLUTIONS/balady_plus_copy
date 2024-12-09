@@ -13,6 +13,7 @@ import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -208,14 +209,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           context.router.popForced();
         }
 
-        context.router.push(
-          PoiCardWidgetRoute(
+        context.router.replaceOrPush(
+          route: PoiCardWidgetRoute(
             objectId: DgisObjectIdMessage(
               objectId: event.dgisObjectId.objectId,
               entranceId: 0,
             ),
             closestPoint: event.latLng,
           ),
+          toCompareRoutes: [PoiCardWidgetRoute.name],
         );
       }
     } else if (event is RoadEventTapEvent) {

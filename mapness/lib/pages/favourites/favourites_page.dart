@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -275,13 +276,14 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 markerType: FavouriteItemMarkerType.home,
                               ),
                             )
-                                : () => ctx.router.push(
-                              PoiCardWidgetRoute(
+                                : () => ctx.router.replaceOrPush(
+                              route: PoiCardWidgetRoute(
                                 objectId: DgisObjectIdMessage(
                                   objectId: int.parse(id),
                                   entranceId: 0,
                                 ),
                               ),
+                              toCompareRoutes: [PoiCardWidgetRoute.name],
                             ),
                           ),
                         );
@@ -337,13 +339,14 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   markerType: FavouriteItemMarkerType.work,
                                 ),
                               )
-                                  : () => ctx.router.push(
-                                PoiCardWidgetRoute(
+                                  : () => ctx.router.replaceOrPush(
+                                route: PoiCardWidgetRoute(
                                   objectId: DgisObjectIdMessage(
                                     objectId: int.parse(id),
                                     entranceId: 0,
                                   ),
                                 ),
+                                toCompareRoutes: [PoiCardWidgetRoute.name],
                               ),
                             ),
                           );
@@ -446,13 +449,14 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             ),
                           );
                         },
-                        onTap: () => ctx.router.push(
-                          PoiCardWidgetRoute(
+                        onTap: () => ctx.router.replaceOrPush(
+                          route: PoiCardWidgetRoute(
                             objectId: DgisObjectIdMessage(
                               objectId: int.parse(item.entity!.id),
                               entranceId: 0,
                             ),
                           ),
+                          toCompareRoutes: [PoiCardWidgetRoute.name],
                         ),
                         isEditing: isEditing,
                         item: item,
