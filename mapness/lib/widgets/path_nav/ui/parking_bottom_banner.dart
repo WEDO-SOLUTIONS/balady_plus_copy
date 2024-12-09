@@ -194,7 +194,10 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                         size: ButtonSize.small,
                         buttonColorScheme: ButtonColorScheme.primary,
                         primaryIcon: SystemIcons.close,
-                        onTap: () => widget.bottomSheetController.open(),
+                        onTap: () {
+                          _animationController.value = 1.0;
+                          widget.bottomSheetController.open();
+                        },
                       ),
                     ],
                   ),

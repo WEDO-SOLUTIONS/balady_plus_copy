@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -57,7 +56,6 @@ import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
 
 Mixpanel? mixpanel;
-StreamSubscription? _remoteConfigSubscription;
 
 class MapnessRouteObserver extends RouteObserver<ModalRoute<void>> {
   static final MapnessRouteObserver _instance = MapnessRouteObserver._internal();
@@ -332,13 +330,13 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> listenNavigationEvents() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
-      final matches = context.router.matcher.collection.routes;
+      final matches = ref.read(appRouterProvider).matcher.collection.routes;
       final isNavPage = matches.last.name == PathNavRoute.name || matches.last.name == FreeRoamRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
       if (navigation && !isNavPage) {
         final navStateMessage = await dgisController.getCurrentNavigationState();
-        await context.router.push(
-          PathNavRoute(
+        await ref.read(appRouterProvider).push(
+              PathNavRoute(
             navType: navStateMessage.routeSearchOptions,
             initAction: null,
           ),
@@ -595,7 +593,7 @@ Future<void> _setupAppConfigs(EnvType envType) async {
     /// Ensure Remote Config is initialized and activate the config values
     await remoteConfig.ensureInitialized();
     await remoteConfig.fetchAndActivate();
-    _remoteConfigSubscription = remoteConfig.onConfigUpdated.listen(
+    remoteConfig.onConfigUpdated.listen(
       (event) async {
         await _saveRemoteConfig(remoteConfig, envType);
       },

@@ -71,8 +71,10 @@ class ParkingBottomSheetPage extends ConsumerWidget {
                       buttonColorScheme: ButtonColorScheme.secondary,
                       onTap: () {
                         ToastOverlay.of(context).show(
-                            title: context.l10n.youCanChangeAutomaticParking,
-                            actionText: context.l10n.feedbackBreaksSheetClose);
+                          title: context.l10n.youCanChangeAutomaticParking,
+                          actionText: context.l10n.feedbackBreaksSheetClose,
+                        );
+
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: false);
                         bottomSheetController.close();
                       },
