@@ -4,10 +4,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:image/image.dart' as img;
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
@@ -470,13 +470,14 @@ class EtaGeoSubscriber extends _$EtaGeoSubscriber {
       context: context,
       isScrollControlled: true,
       builder: (context) => Consumer(
-        builder: (context, ref, _) => EtaWatchingSheet(
-          onStopWatchingPressed: () {
-            stopStreaming();
-            context.router.popForced();
+        builder: (_, ref, __) => EtaWatchingSheet(
+          onStopWatchingPressed: () async {
             // Extra close call for close the bottom sheet
+            Navigator.pop(context);
+            await stopStreaming();
+
             if (_metaInfo?.payload?.type == StreamType.eta) {
-              context.router.popForced();
+              await context.router.navigate(const LandingRoute());
             }
           },
         ),
