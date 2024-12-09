@@ -19,10 +19,6 @@ reviewers:
       - ekinsdrow
       - RomanSurjan
 files:
-  "**":
-    - doldrums
-    - alexstrnik
-    - demezy
   ".github/**":
     - doldrums
     - JIexa24
@@ -31,23 +27,27 @@ files:
     - doldrums
     - JIexa24
     - demezy
-  "./justscripts/**":
+  "justscripts/**":
     - doldrums
     - JIexa24
     - platform-team
-  "./urbi_map":
+  "urbi_map/**":
     - platform-team
     - doldrums
-  "./mapness/scripts/**":
+  "mapness/scripts/**":
     - platform-team
     - doldrums
     - JIexa24
-  "./tests/**":
+  "tests/**":
     - doldrums
     - support-team
-  "./mapness/features/**":
+  "mapness/features/**":
     - feature-team
     - doldrums
-  "./mapness/**":
+  "mapness/**":
     - support-team
     - doldrums
+  "**":
+    - doldrums
+    - alexstrnik
+    - demezy
