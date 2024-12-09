@@ -242,7 +242,7 @@ class ContentContainer extends StatelessWidget {
         decoration: BoxDecoration(
             color: context.colorsV2.backgroundSurface1, borderRadius: BorderRadius.circular(RadiusBorder.xl)),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4.0),
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
           child: child,
         ),
       );

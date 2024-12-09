@@ -120,7 +120,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  const SizedBox(height: 6, width: double.maxFinite),
+                  const SizedBox(height: uikit.Spacing.$1_5x, width: double.maxFinite),
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
                     child: Consumer(
@@ -159,7 +159,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                       },
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: uikit.Spacing.$3x),
                   Expanded(
                     child: AnimatedOpacity(
                       opacity: isControlsActive ? 1 : 0,
@@ -199,12 +199,12 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                                 padding: padding,
                                 child: CompassControl(),
                               ),
-                              const SizedBox(height: 8),
+                              const SizedBox(height: uikit.Spacing.$2x),
                               const Padding(
                                 padding: padding,
                                 child: FollowControl(),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: uikit.Spacing.$3x),
                             ],
                           ),
                         ),
@@ -218,7 +218,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                       onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
                     ),
                   ),
-                  const SizedBox(height: 21),
+                  const SizedBox(height: uikit.Spacing.$5x + uikit.Spacing.px),
                 ],
               ),
               ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
