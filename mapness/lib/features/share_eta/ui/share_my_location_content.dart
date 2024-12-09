@@ -29,7 +29,7 @@ import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
-class ShareMyLocationPage extends StatefulHookConsumerWidget {
+class ShareMyLocationPage extends HookConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
@@ -40,28 +40,16 @@ class ShareMyLocationPage extends StatefulHookConsumerWidget {
   });
 
   @override
-  ShareMyLocationPageState createState() => ShareMyLocationPageState();
-}
-
-class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
-  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
-
-  @override
-  void dispose() {
-    _bottomHeightNotifier.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final _bottomHeightNotifier = useState(0.0);
     final _animationController = useAnimationController(
       duration: const Duration(milliseconds: 300),
     );
 
     final data = ref.watch(
       poiMyLocationProvider(
-        latitude: widget.closestPoint!.latitude,
-        longitude: widget.closestPoint!.longitude,
+        latitude: closestPoint!.latitude,
+        longitude: closestPoint!.longitude,
       ),
     );
 
@@ -71,7 +59,7 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
 
     final title = value?.title ?? context.l10n.myLocation;
     final subTitle = isAuthorized ? context.l10n.myLocationSubtitle : null;
-    final text = value?.address ?? '${widget.closestPoint?.latitude}, ${widget.closestPoint?.longitude}';
+    final text = value?.address ?? '${closestPoint?.latitude}, ${closestPoint?.longitude}';
 
     ref.listen(etaServiceProvider, (_, next) {
       if (context.mounted == false) {
@@ -93,13 +81,13 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
       } else if (next.hasValue && next.value != null) {
         LoadingOverlay.of(context).endLoading();
 
-        if (widget.closestPoint == null) {
+        if (closestPoint == null) {
           return;
         }
 
         EtaStreamStorage()
-          ..setLatitude(widget.closestPoint!.latitude)
-          ..setLongitude(widget.closestPoint!.longitude);
+          ..setLatitude(closestPoint!.latitude)
+          ..setLongitude(closestPoint!.longitude);
       }
     });
 
@@ -168,7 +156,7 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
                   ),
                   MyLocationPoiActions(
                     onShare: () => _showEtaControlSheet(context, ref),
-                    onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(widget.closestPoint),
+                    onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
                   ),
                 ],
               ),
@@ -186,7 +174,7 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
   }
 
   Future<void> _cameraAnimation(WidgetRef ref) async {
-    if (widget.closestPoint != null) {
+    if (closestPoint != null) {
       final settings = MapObjectManagerSettings.myLocation();
       final mapObjectManager = ref.watch(
         mapObjectManagerProvider(
@@ -197,8 +185,8 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
       await mapObjectManager.removeAllMarkers();
       final marker = Markers.pinMarker(
         GeoPointWithElevationMessage(
-          latitude: widget.closestPoint!.latitude,
-          longitude: widget.closestPoint!.longitude,
+          latitude: closestPoint!.latitude,
+          longitude: closestPoint!.longitude,
           elevation: 1,
         ),
       );
@@ -210,11 +198,10 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
 
       await ref.read(cameraPositionProvider.notifier).animateTo(
             CameraPositionMessage(
-              point:
-                  GeoPointMessage(latitude: widget.closestPoint!.latitude, longitude: widget.closestPoint!.longitude),
-              zoom: widget.cameraConfig?.zoom ?? 16,
-              tilt: widget.cameraConfig?.tilt ?? 0,
-              bearing: widget.cameraConfig?.bearing ?? 0,
+              point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
+              zoom: cameraConfig?.zoom ?? 16,
+              tilt: cameraConfig?.tilt ?? 0,
+              bearing: cameraConfig?.bearing ?? 0,
             ),
           );
     }
@@ -229,7 +216,7 @@ class ShareMyLocationPageState extends ConsumerState<ShareMyLocationPage> {
       builder: (context) => EtaSharingSheet(
         onCurrentLocationPressed: () {
           Navigator.pop(context);
-          ref.read(poiCardActionsProvider.notifier).shareMyLocation(widget.closestPoint);
+          ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint);
         },
         onLiveLocationPressed: () {
           Navigator.pop(context);
