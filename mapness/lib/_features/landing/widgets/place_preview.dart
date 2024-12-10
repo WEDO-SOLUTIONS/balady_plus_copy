@@ -57,7 +57,7 @@ class PlacePreview extends ConsumerWidget {
                     objectId: objectId,
                     entranceId: 0,
                   ),
-                  cameraConfig: PoiCameraConfig(zoom: 17),
+                  cameraConfig: const PoiCameraConfig(zoom: 17),
                 ),
                 toCompareRoutes: [PoiCardWidgetRoute.page],
               );
