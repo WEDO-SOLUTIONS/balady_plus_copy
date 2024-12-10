@@ -321,6 +321,15 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func moveCamera(cameraPosition: CameraPositionMessage, duration: Double, animationType: CameraAnimationTypeMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let map = self.map else {
+                    completion(
+                        Result.failure(FlutterError(
+                        code: "IllegalArgumentException",
+                        message: "Map was not initialized properly",
+                        details: nil
+                    )))
+                    return
+                }
         var desiredPosition = map.camera.position
         desiredPosition.point = cameraPosition.point.geoPoint
         desiredPosition.zoom = Zoom(value: Float(cameraPosition.zoom))
