@@ -152,7 +152,6 @@ class Search extends _$Search {
       final searchOperation = CancelableOperation.fromFuture(
         dgisController.search(
           searchQuery,
-          sortingType: SortingTypeMessage.byDistance,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
@@ -206,7 +205,6 @@ class Search extends _$Search {
       final searchOperation = CancelableOperation.fromFuture(
         dgisController.search(
           query,
-          sortingType: SortingTypeMessage.byDistance,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           // TODO(Dmitrii): Search improved but we have to test it more so we could return `_getRestrictionFromRect()` here
           spatialRestriction: _saRestrictions,
@@ -260,7 +258,6 @@ class Search extends _$Search {
       final searchOperation = CancelableOperation.fromFuture(
         dgisController.searchByQuery(
           query,
-          sortingType: SortingTypeMessage.byDistance,
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
