@@ -119,18 +119,18 @@ class NavigatorSettingsPage extends ConsumerWidget {
                               ),
                               Consumer(
                                 builder: (context, ref, _) {
-                                  final autoParkingState = ref.watch(navigatorAutoEnableParkingProvider);
+                                  final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
                                   return ContentRow(
                                     onToggle: (_) => ref
                                         .read(navigatorAutoEnableParkingProvider.notifier)
-                                        .toggleAutoEnableParking(value: !(autoParkingState.autoEnableParking ?? false)),
+                                        .toggleAutoEnableParking(value: !(autoEnableParking ?? false)),
                                     options: ContentRowOptions(
                                       title: l10n.automaticParkingLayer,
                                       dividerEnabled: true,
                                       titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
                                       actionWidget: ContentRowActionOptions(
                                         enabledToggle: true,
-                                        toggleInitialValue: autoParkingState.autoEnableParking ?? false,
+                                        toggleInitialValue: autoEnableParking ?? false,
                                       ),
                                     ),
                                   );
