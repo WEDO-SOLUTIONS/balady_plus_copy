@@ -2,6 +2,9 @@ import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/shared/lib/geo/geo_utils.dart';
 
+@Deprecated(
+  'Search automatically zoom by markers nearby. Look at [Search] provider method [_animateToRepresentativeArea]',
+)
 Future<void> computeCameraPosition(
   List<Marker> markers,
   CameraPositionMessage? cameraPosition,

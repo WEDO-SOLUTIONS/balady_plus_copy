@@ -370,6 +370,12 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.calcPositionForPolylines(polylines, options);
   }
 
+  /// Animation to the representative area.
+  Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
+      CameraAnimationTypeMessage animationType) {
+    return _api.animateToRepresentativeArea(area, options, duration, animationType);
+  }
+
   /// Get current camera position.
   Future<CameraPositionMessage> getCameraPosition() {
     return _api.getCameraPosition();

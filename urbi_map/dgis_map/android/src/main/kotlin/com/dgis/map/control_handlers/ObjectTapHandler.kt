@@ -852,6 +852,22 @@ class ObjectTapHandler(
         )
     }
 
+    fun calcPositionForPoints(
+        area: GeometryMessage,
+        options: CalcPositionOptionsMessage,
+        callback: (Result<CameraPosition>) -> Unit
+    ) {
+        val geometry = ComplexGeometry(
+            geometries = listOf(
+                PointGeometry(point = area.bounds.northEast.toGeoPoint()),
+                PointGeometry(point = area.bounds.southWest.toGeoPoint()),
+            )
+        )
+
+        val position = calcPosition(camera = map.camera, geometry = geometry)
+        callback(Result.success(position))
+    }
+
     private fun calcPositionForObjects(
             objects: List<SimpleMapObject>,
             options: CalcPositionOptionsMessage,

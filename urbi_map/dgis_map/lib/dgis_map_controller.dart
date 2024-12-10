@@ -201,6 +201,10 @@ class DgisMapController {
   Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForPolylines(polylines, options);
 
+  Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
+          CameraAnimationTypeMessage animationType) =>
+      _instance.animateToRepresentativeArea(area, options, duration, animationType);
+
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
 

@@ -321,15 +321,6 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     }
     
     func moveCamera(cameraPosition: CameraPositionMessage, duration: Double, animationType: CameraAnimationTypeMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
-        guard let map = self.map else {
-            completion(
-                Result.failure(FlutterError(
-                code: "IllegalArgumentException",
-                message: "Map was not initialized properly",
-                details: nil
-            )))
-            return
-        }
         var desiredPosition = map.camera.position
         desiredPosition.point = cameraPosition.point.geoPoint
         desiredPosition.zoom = Zoom(value: Float(cameraPosition.zoom))
@@ -339,7 +330,21 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         let duration = TimeInterval(duration)
         let animationType = animationType.animationType
         
-        let moveCancelable = map.camera.move(position: desiredPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
+        moveCamera(cameraPosition: desiredPosition, duration: duration, animationType: animationType, completion: completion)
+    }
+    
+    private func moveCamera(cameraPosition: CameraPosition, duration: TimeInterval, animationType: CameraAnimationType, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let map = self.map else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        let moveCancelable = map.camera.move(position: cameraPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
              completion(Result.success(()))
             return
         }, failure: { error in
@@ -367,6 +372,28 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func calcPositionForPolylines(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
+    }
+
+    func animateToRepresentativeArea(area: GeometryMessage, options: CalcPositionOptionsMessage, duration: Double, animationType: CameraAnimationTypeMessage,  completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.calcPosition(area: area, options: options) { positionResult in
+               switch positionResult {
+                case .success(let cameraPosition):
+                   // Once we have the camera position, we can move the camera.
+                   let duration = TimeInterval(duration)
+                   let animationType = animationType.animationType
+                   
+                   self.moveCamera(
+                       cameraPosition: cameraPosition,
+                       duration: duration,
+                       animationType: animationType,
+                       completion: completion
+                   )
+                   
+                case .failure(let error):
+                   // If calcPosition failed, we immediately fail with the same error.
+                   completion(.failure(error))
+               }
+           }
     }
     
     func getNearestObjects(completion: @escaping (Result<[RenderedObjectMessage], any Error>) -> Void) {

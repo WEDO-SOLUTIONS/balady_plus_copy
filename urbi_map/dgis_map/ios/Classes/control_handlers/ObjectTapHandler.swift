@@ -948,6 +948,17 @@ class ObjectTapHandler {
         )
     }
     
+    func calcPosition(area: GeometryMessage, options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPosition, any Error>) -> Void) {
+            let geometry = ComplexGeometry(
+                geometries: [
+                    PointGeometry(point: area.bounds.northEast.geoPoint),
+                    PointGeometry(point:  area.bounds.southWest.geoPoint)
+                ]
+            )
+            let position = DGis.calcPosition(camera: map.camera, geometry: geometry)
+            completion(Result.success(position))
+    }
+    
     private func calcPosition(objects: [SimpleMapObject], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         let cameraPosition = DGis.calcPosition(
             camera: map.camera,
