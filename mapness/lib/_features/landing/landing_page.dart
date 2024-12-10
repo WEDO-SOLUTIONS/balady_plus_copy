@@ -209,7 +209,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             ),
             closestPoint: event.latLng,
           ),
-          toCompareRoutes: [PoiCardWidgetRoute.name, RoutingRoutesRoute.name],
+          toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
         );
       }
     } else if (event is RoadEventTapEvent) {

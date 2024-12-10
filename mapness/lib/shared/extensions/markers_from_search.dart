@@ -88,7 +88,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                     entranceId: 0,
                   ),
                 ),
-                toCompareRoutes: [PoiCardWidgetRoute.name]);
+                toCompareRoutes: [PoiCardWidgetRoute.page]);
           },
           options: MarkerOptionsMessage(
             text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,

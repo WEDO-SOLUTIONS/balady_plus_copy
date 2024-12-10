@@ -283,7 +283,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                   entranceId: 0,
                                 ),
                               ),
-                              toCompareRoutes: [PoiCardWidgetRoute.name],
+                              toCompareRoutes: [PoiCardWidgetRoute.page],
                             ),
                           ),
                         );
@@ -346,7 +346,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                     entranceId: 0,
                                   ),
                                 ),
-                                toCompareRoutes: [PoiCardWidgetRoute.name],
+                                toCompareRoutes: [PoiCardWidgetRoute.page],
                               ),
                             ),
                           );
@@ -456,7 +456,7 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               entranceId: 0,
                             ),
                           ),
-                          toCompareRoutes: [PoiCardWidgetRoute.name],
+                          toCompareRoutes: [PoiCardWidgetRoute.page],
                         ),
                         isEditing: isEditing,
                         item: item,

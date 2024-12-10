@@ -413,7 +413,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         closestPoint: location,
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.name],
+      toCompareRoutes: [PoiCardWidgetRoute.page],
     );
   }
 
@@ -482,7 +482,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         ),
         cameraConfig: const PoiCameraConfig(zoom: 17),
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.name],
+      toCompareRoutes: [PoiCardWidgetRoute.page],
     );
   }
 

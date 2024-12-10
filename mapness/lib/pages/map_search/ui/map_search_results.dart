@@ -65,7 +65,7 @@ class MapSearchResults extends ConsumerWidget {
                 ),
                 cameraConfig: const PoiCameraConfig(zoom: 18),
               ),
-              toCompareRoutes: [PoiCardWidgetRoute.name],
+              toCompareRoutes: [PoiCardWidgetRoute.page],
             );
           });
         },

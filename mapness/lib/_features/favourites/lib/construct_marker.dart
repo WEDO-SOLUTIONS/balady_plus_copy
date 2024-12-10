@@ -15,16 +15,16 @@ Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter rou
     final id = int.tryParse(item.entity?.id ?? '');
     if (id == null) {
       return;
-
     }
     router.replaceOrPush(
       route: PoiCardWidgetRoute(
         objectId: DgisObjectIdMessage(
           objectId: id,
           entranceId: 0,
-        ), closestPoint: null,
+        ),
+        closestPoint: null,
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.name],
+      toCompareRoutes: [PoiCardWidgetRoute.page],
     );
   };
 

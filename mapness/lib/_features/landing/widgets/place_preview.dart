@@ -59,7 +59,7 @@ class PlacePreview extends ConsumerWidget {
                   ),
                   cameraConfig: PoiCameraConfig(zoom: 17),
                 ),
-                toCompareRoutes: [PoiCardWidgetRoute.name],
+                toCompareRoutes: [PoiCardWidgetRoute.page],
               );
             },
             itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),

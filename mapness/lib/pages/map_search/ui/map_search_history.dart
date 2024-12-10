@@ -52,7 +52,7 @@ class MapSearchHistory extends ConsumerWidget {
                 ),
                 cameraConfig: const PoiCameraConfig(zoom: 18),
               ),
-              toCompareRoutes: [PoiCardWidgetRoute.name],
+              toCompareRoutes: [PoiCardWidgetRoute.page],
             );
           } catch (e) {
             final result = await showDialog(
