@@ -7,11 +7,6 @@ extension PoiCardHandlerStack on StackRouter {
   Future<void> replaceOrPush({
     required PageRouteInfo route,
     required List<String> toCompareRoutes,
-  }) async {
-    if (toCompareRoutes.where((e) => isRouteActive(e)).isNotEmpty) {
-      await replace(route);
-    } else {
-      await push(route);
-    }
-  }
+  }) async =>
+      toCompareRoutes.any((e) => isRouteActive(e)) ? await replace(route) : await push(route);
 }
