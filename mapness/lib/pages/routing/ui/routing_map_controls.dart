@@ -1,3 +1,4 @@
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -10,10 +11,10 @@ import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
-    this.bottomExtent,
+    required this.bottomHeightNotifier,
     super.key,
   });
-  final double? bottomExtent;
+  final ValueNotifier<double> bottomHeightNotifier;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SafeArea(
@@ -62,9 +63,10 @@ class RoutingMapControls extends ConsumerWidget {
                 ),
               ),
             ),
-            SizedBox(
-              height: bottomExtent ?? 74,
-            ),
+            ValueListenableBuilder(
+              valueListenable: bottomHeightNotifier,
+              builder: (context, value, _) => value.heightBox,
+            )
           ],
         ),
       );

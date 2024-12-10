@@ -17,6 +17,7 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
@@ -38,7 +39,6 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
-  static const controlsBottomExtent = 136.0;
   static const _bottomSheetAspectRatios = [.15, .7, .931];
 
   List<RoutePoint> points = [
@@ -51,6 +51,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   /// Bottom sheet controller
   late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
 
   @override
   void initState() {
@@ -61,6 +62,12 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     );
     _setupTapListener();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _bottomHeightNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -87,30 +94,33 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       value: SystemUiOverlayStyle.dark,
       child: Stack(
         children: [
-          const RoutingMapControls(
-            bottomExtent: controlsBottomExtent,
-          ),
-          StatefulBottomSheet<ThreeStateBottomSheet>(
-            animateOpening: false,
-            sliverBeforeContent: SliverPersistentHeader(
-              delegate: RoutingHeaderDelegate(
-                points: points,
-                updatePoints: _updatePoints,
+          RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
+          MeasureSize(
+            onChange: (size) {
+              _bottomHeightNotifier.value = size.height + Spacing.$3x;
+            },
+            child: StatefulBottomSheet<ThreeStateBottomSheet>(
+              animateOpening: false,
+              sliverBeforeContent: SliverPersistentHeader(
+                delegate: RoutingHeaderDelegate(
+                  points: points,
+                  updatePoints: _updatePoints,
+                ),
+                pinned: true,
+                floating: true,
               ),
-              pinned: true,
-              floating: true,
+              content: [
+                Column(
+                  children: [
+                    RoutingHistory(
+                      updatePoint: _updatePoint,
+                      searchByQuery: _searchQuery,
+                    ),
+                  ],
+                ),
+              ],
+              scrollController: bottomSheetController,
             ),
-            content: [
-              Column(
-                children: [
-                  RoutingHistory(
-                    updatePoint: _updatePoint,
-                    searchByQuery: _searchQuery,
-                  ),
-                ],
-              ),
-            ],
-            scrollController: bottomSheetController,
           ),
         ],
       ),

@@ -187,11 +187,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void _objectTapListener(TapEvent event) {
     const routingRoutePath = RoutingRoutesRoute.name;
 
-    if (context.router.isRouteActive(RoutingMapSelectRoute.name) ||
-        context.router.isRouteActive(SearchRoute.name) ||
-        context.router.isRouteActive(PathNavRoute.name) ||
-        context.router.isRouteActive(PathNavRoute.name) ||
-        context.router.isRouteActive(RoutingRoutesRoute.name)) {
+    final objectIgnoreRoute = [RoutingMapSelectRoute.name, SearchRoute.name, RoutingRoutesRoute.name];
+
+    if (objectIgnoreRoute.any(context.router.isRouteActive)) {
       return;
     } else if (context.router.isRouteActive(PoiCardWidgetRoute.name)) {
       context.router.popForced();
