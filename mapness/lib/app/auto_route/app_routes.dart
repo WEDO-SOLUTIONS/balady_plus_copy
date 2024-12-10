@@ -70,7 +70,7 @@ class AppRouter extends RootStackRouter {
               page: RoutingMapSelectRoute.page,
             ),
             AppRoute(
-              path: 'poi_card',
+              path: 'poi-map',
               page: PoiCardWidgetRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
@@ -107,7 +107,7 @@ class AppRouter extends RootStackRouter {
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             AppRoute(
-              path: 'free_roam',
+              path: 'freeRoam',
               page: FreeRoamRoute.page,
               fullscreenDialog: true,
               transitionsBuilder: TransitionsBuilders.fadeIn,

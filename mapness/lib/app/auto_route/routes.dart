@@ -90,14 +90,14 @@ class Routes {
       ];
 
   static AutoRoute get bottomMenuRoute => CustomRoute(
-        path: 'bottom_menu',
+        path: '',
         page: BottomMenuRoute.page,
         initial: true,
         barrierDismissible: false,
         customRouteBuilder: RouteBuilders.customModalSheetBuilder,
         children: [
           CustomRoute(
-            path: 'explore',
+            path: 'landing',
             initial: true,
             page: LandingRoute.page,
             transitionsBuilder: TransitionsBuilders.noTransition,
