@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -64,8 +65,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
-    for (final markerInfo
-        in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+    for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       final objectId = markerInfo.objectId?.objectId;
       final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
       final rubrics = Set<int>.from(cleanupRubrics);
@@ -74,24 +74,24 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
         Marker(
           id: objectId?.toString() ?? _invalidMarkerId,
           onTap: () {
-            Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
-                group: MetricsConstants.poiTag,
-                action: MetricAction.tap.toString(),
-                props: {_propertyKey: objectId});
-
-            router.push(
-              PoiCardWidgetRoute(
-                objectId: DgisObjectIdMessage(
-                  objectId: objectId!,
-                  entranceId: 0,
-                ),
-              ),
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.marker,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {_propertyKey: objectId},
             );
+
+            router.replaceOrPush(
+                route: PoiCardWidgetRoute(
+                  objectId: DgisObjectIdMessage(
+                    objectId: objectId!,
+                    entranceId: 0,
+                  ),
+                ),
+                toCompareRoutes: [PoiCardWidgetRoute.page]);
           },
           options: MarkerOptionsMessage(
-            text: withLabel && markerInfo.title != null
-                ? _breakLineInTwo(_removeComma(markerInfo.title!))
-                : null,
+            text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
             textStyle: MarkerTextStyleMessage(
               color: 0xff1E2A36,
               fontSize: 13,
@@ -100,9 +100,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               strokeColor: 0xD3FFFFFF,
               strokeWidth: 1.25,
               textPlacement: MarkerTextPlacementMessage(
-                placement: isRtl
-                    ? TextPlacementMessage.leftCenter
-                    : TextPlacementMessage.rightCenter,
+                placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
             ),
             position: markerInfo.geoPoint,
