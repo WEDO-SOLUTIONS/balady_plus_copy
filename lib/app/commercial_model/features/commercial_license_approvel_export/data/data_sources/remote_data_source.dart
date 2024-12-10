@@ -25,6 +25,7 @@ import '../models/commercial_request_details_response_entity.dart';
 import '../models/conclusion_response_entity.dart';
 import '../models/attachment_response_entity.dart';
 import '../models/cr_submit_response_model.dart';
+import '../models/isics_main_activity.dart';
 import '../models/qr/qr_lookup_model.dart';
 import '../models/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
@@ -36,17 +37,20 @@ import '../models/qr/save_worktimes_request_model.dart';
 import '../models/qr/qr_submit_response.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../models/sub_activity_details_data.dart';
+
 abstract class RemoteDataSource {
   Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
       {required String crNumber, required String role});
-  Future<List<SubActivityModel>> getSubActivities({required String isicCode});
-  Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
+  Future<List<SubActivityModel>> getSubActivities(int requestID, int isicCode) ;
+  Future<List<IsicsMainActivity>> getMainActivities(int requestID);
+  Future<ResponseBodyModel<SubActivityDetailsData>> getSubActivityDetails(
       {required String subActivityId});
   Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
   Future<List<LookupsModel>> getAccommodationTypes();
 
   Future<int> saveComSubmitterAndOwner(
-      {SaveComSubmitterAndOwnerRequestModel? params});
+      {SubmitterAndOwnerRequestModel? params});
 
   Future<int> saveActivityDetails({SubmitActivityDetailRequest? params});
 
@@ -145,8 +149,9 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   Future<List<LookupsModel>> getAccommodationTypes() async {
     var response;
 
+
     try {
-      response = await webService.dio.get(CommercialModelEndPoints.accommodationTypesCL);
+      response = await webService.dio.get(CommercialModelEndPoints.InitialApprovalAccommodationTypes);
 
       var data = response.data;
 
@@ -326,13 +331,12 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   }
 
   @override
-  Future<List<SubActivityModel>> getSubActivities(
-      {required String isicCode}) async {
+  Future<List<SubActivityModel>> getSubActivities(int requestID, int isicCode) async {
     var response;
 
     try {
       response = await webService.dio.get(
-        CommercialModelEndPoints.subActivities.replaceAll("isicCode", isicCode),
+        CommercialModelEndPoints.InitialApprovalSubActivities(requestID, isicCode),
       );
 
       var data = response.data;
@@ -381,21 +385,80 @@ class RemoteDataSourceImpl extends RemoteDataSource {
     }
   }
 
+
   @override
-  Future<ResponseBodyModel<SubActivityModelDetailsModel>> getSubActivityDetails(
+  Future<List<IsicsMainActivity>> getMainActivities(int requestID) async {
+    var response;
+
+    try {
+      response = await webService.dio.get(
+        CommercialModelEndPoints.InitialApprovalMainActivities(requestID),
+      );
+
+      var data = response.data;
+
+      final result = ResponseBodyModel.fromMap(data).data?.result;
+
+      return result
+          .map<IsicsMainActivity>(
+              (e) => IsicsMainActivity.fromJson(e as Map<String, dynamic>))
+          .toList();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "DioError $error".errorLog();
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      "Catched $error".errorLog();
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: error.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+
+
+
+  @override
+  Future<ResponseBodyModel<SubActivityDetailsData>> getSubActivityDetails(
       {required String subActivityId}) async {
     var response;
 
     try {
       response =
-          await webService.dio.get(CommercialModelEndPoints.subActivityDetails + subActivityId);
+          await webService.dio.get(CommercialModelEndPoints.InitialApprovalsubActivityDetails(subActivityId));
 
       var data = response.data["data"]["result"];
 
       var parsedResult =
-          data != null ? SubActivityModelDetailsModel.fromJson(data) : null;
+          data != null ? SubActivityDetailsData.fromJson(data) : null;
       final decodedResponse =
-          ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(response.data,
+          ResponseBodyModel<SubActivityDetailsData>.fromMap(response.data,
               parsedResult: parsedResult);
 
       print(decodedResponse);
@@ -466,19 +529,17 @@ class RemoteDataSourceImpl extends RemoteDataSource {
 
   @override
   Future<int> saveComSubmitterAndOwner(
-      {SaveComSubmitterAndOwnerRequestModel? params}) async {
+      {SubmitterAndOwnerRequestModel? params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(CommercialModelEndPoints.saveComSubmitterAndOwner,
-          data: params?.toMap(),
-          queryParameters: params?.requestId != null
-              ? {"requestId": params!.requestId!}
-              : null);
+
+      response = await webService.dio.post(CommercialModelEndPoints.commercialInitialApprovalApply,
+          data: params?.toMap());
 
       var data = response.data["data"]?["result"];
 
-      return data["requestNumber"];
+      return data;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -542,6 +603,9 @@ class RemoteDataSourceImpl extends RemoteDataSource {
       }
     }
   }
+
+
+
 
   @override
   Future<int> saveActivityDetails({SubmitActivityDetailRequest? params}) async {
@@ -2887,7 +2951,7 @@ class RemoteDataSourceImpl extends RemoteDataSource {
     var response;
 
     try {
-      response = await webService.dio.get(CommercialModelEndPoints.addetionalDetailsActivity(
+      response = await webService.dio.get(CommercialModelEndPoints.InitialApprovalAddetionalDetailsActivity(
         params!.subActivityId,
         params.addetionalActivityId,
       ));

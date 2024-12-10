@@ -5,14 +5,14 @@ import '../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
 import '../../data/models/save_com_submitter_and_owner_request_model.dart';
 
-class SaveComSubmitterAndOwner
-    extends UseCase<int, SaveComSubmitterAndOwnerRequestModel> {
+class InitialApprovalApply
+    extends UseCase<int, SubmitterAndOwnerRequestModel> {
   final Repository repository;
 
-  SaveComSubmitterAndOwner({required this.repository});
+  InitialApprovalApply({required this.repository});
   @override
   Future<Either<Failure, int>> call(
-      SaveComSubmitterAndOwnerRequestModel params) async {
+      SubmitterAndOwnerRequestModel params) async {
     return await repository.saveComSubmitterAndOwner(params);
   }
 }

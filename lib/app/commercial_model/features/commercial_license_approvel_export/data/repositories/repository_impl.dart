@@ -23,13 +23,16 @@ import '../../commercial_license_exports.dart';
 import '../models/attachment_response_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import '../models/isics_main_activity.dart';
+import '../models/sub_activity_details_data.dart';
+
 class RepositoryImpl implements Repository {
   final RemoteDataSource remoteDataSource;
 
   RepositoryImpl({required this.remoteDataSource});
 
   @override
-  Future<Either<Failure, ResponseBodyModel<SubActivityDetails>>>
+  Future<Either<Failure, ResponseBodyModel<SubActivityDetailsData>>>
       getSubActivityDetails({required String id}) async {
     try {
       final data =
@@ -70,10 +73,28 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, List<SubActivityEntity>>> getSubActivities(
-      {required String isicCode}) async {
+  Future<Either<Failure, List<IsicsMainActivity>>> getMainActivities( int requestID) async {
     try {
-      final data = await remoteDataSource.getSubActivities(isicCode: isicCode);
+      final data = await remoteDataSource.getMainActivities(requestID,);
+
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<SubActivityEntity>>> getSubActivities( int requestID,int isicCode) async {
+    try {
+      final data = await remoteDataSource.getSubActivities(requestID, isicCode);
 
       return Right(data);
     } on ServerException catch (error, stackTrace) {
@@ -130,7 +151,7 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<Either<Failure, int>> saveComSubmitterAndOwner(
-      SaveComSubmitterAndOwnerRequestModel? params) async {
+      SubmitterAndOwnerRequestModel? params) async {
     try {
       final data =
           await remoteDataSource.saveComSubmitterAndOwner(params: params);

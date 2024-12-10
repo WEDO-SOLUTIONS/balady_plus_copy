@@ -8,23 +8,25 @@ class Step2ActivityDataExportState extends Equatable {
 
   final List<SubActivityEntity> subActivities;
   final List<LookupsModel> accommodationTypes;
-  final SubActivityDetails? subActivityDetails;
-
-  final IsicActivity? selectedIsicActivity;
+  final SubActivityDetailsData? subActivityDetails;
+  final IsicsMainActivity? selectedIsicActivity;
   final SubActivityEntity? selectedSubActivity;
   final LookupsModel? selectedAccommodationType;
   final String errorMessage;
   final double? totalArea;
   final String? unitCount;
-  final WorkersTypes? workerType;
-  final List<AddetionalActivityItem>? addetionalActivityItems;
-  final List<AddetionalActivityItemDetails>? addetionalActivityItemDetails;
+  final WorkerTypes? selectedWorkerType;
+  final List<AllowedActivities>? lstAddetionalActivityItems;
+
+ // final List<AddetionalActivityItemDetails>? addetionalActivityItemDetails;
+
   final BlocStatus addetionalActivityListStatus;
   final BlocStatus addetionalActivityDetailsListStatus;
-  final List<AddetionalActivityRequest>? selectedAddetionalList;
-  final AddetionalActivityItem? addetionalItem;
-  final AddetionalActivityItemDetails? addetionalDetailsItem;
-  final SubActivityDetails? addetionalDetails;
+  final List<AddetionalActivityRequest>? lstSelectedAddetionalActivity;
+  final AllowedActivities? userSelectedAddetionalItem;
+ // final AddetionalActivityItemDetails? addetionalDetailsItem;
+
+  //final SubActivityDetailsData? addetionalDetails;
   final bool? atmFeesPaid;
   final bool? draftLoaded;
   final BlocStatus draftStatus;
@@ -42,15 +44,15 @@ class Step2ActivityDataExportState extends Equatable {
 
 
 
-  const Step2ActivityDataExportState(
+   Step2ActivityDataExportState(
       {this.subActivitiesStatus = BlocStatus.initial,
       this.accommodationTypesStatus = BlocStatus.initial,
       this.draftStatus = BlocStatus.initial,
       this.subActivityDetailsStatus = BlocStatus.initial,
       this.addetionalActivityListStatus = BlocStatus.initial,
       this.addetionalActivityDetailsListStatus = BlocStatus.initial,
-      this.addetionalActivityItems,
-      this.addetionalActivityItemDetails,
+      this.lstAddetionalActivityItems,
+      //this.addetionalActivityItemDetails,
       this.unitCount,
       this.status = BlocStatus.initial,
       this.selectedIsicActivity,
@@ -61,11 +63,11 @@ class Step2ActivityDataExportState extends Equatable {
       this.accommodationTypes = const [],
       this.errorMessage = '',
       this.totalArea,
-      this.workerType,
-      this.selectedAddetionalList,
-      this.addetionalItem,
-      this.addetionalDetailsItem,
-      this.addetionalDetails,
+      this.selectedWorkerType,
+      this.lstSelectedAddetionalActivity,
+      this.userSelectedAddetionalItem,
+      // this.addetionalDetailsItem,
+      // this.addetionalDetails,
       this.atmFeesPaid,
       this.draftLoaded,
 
@@ -94,14 +96,14 @@ class Step2ActivityDataExportState extends Equatable {
         subActivityDetails,
         errorMessage,
         totalArea,
-        workerType,
+        selectedWorkerType,
         status,
         unitCount,
         addetionalActivityListStatus,
         addetionalActivityDetailsListStatus,
-        addetionalItem,
-        addetionalDetailsItem,
-        addetionalDetails,
+        userSelectedAddetionalItem,
+        // addetionalDetailsItem,
+        // addetionalDetails,
         atmFeesPaid,
         draftLoaded,
         draftStatus,
@@ -124,21 +126,21 @@ class Step2ActivityDataExportState extends Equatable {
       BlocStatus? draftStatus,
       List<SubActivityEntity>? subActivities,
       List<LookupsModel>? accommodationTypes,
-      Nullable<SubActivityDetails?>? subActivityDetails,
-      IsicActivity? selectedIsicActivity,
+      Nullable<SubActivityDetailsData?>? subActivityDetails,
+        IsicsMainActivity? selectedIsicActivity,
       Nullable<SubActivityEntity?>? selectedSubActivity,
         LookupsModel? selectedAccommodationType,
       String? errorMessage,
       double? totalArea,
-      WorkersTypes? workerType,
-      List<AddetionalActivityItem>? addetionalActivityItems,
-      List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
+        WorkerTypes? selectedWorkerType,
+      List<AllowedActivities>? lstAddetionalActivities,
+     // List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
       BlocStatus? additionalActivityListStatus,
       BlocStatus? addetionalActivityDetailsListStatus,
-      Nullable<List<AddetionalActivityRequest>?>? selectedAddetionalList,
-      Nullable<AddetionalActivityItem?>? addetionalItem,
-      Nullable<AddetionalActivityItemDetails?>? addetionalDetailsItem,
-      Nullable<SubActivityDetails?>? addetionalDetails,
+      Nullable<List<AddetionalActivityRequest>?>? lstSelectedAddetionalActivities,
+      Nullable<AllowedActivities?>? selectedAddetionalItem,
+     // Nullable<AddetionalActivityItemDetails?>? addetionalDetailsItem,
+      Nullable<SubActivityDetailsData?>? addetionalDetails,
       String? unitCount,
       bool? atmFeesPaid,
       bool? draftLoaded,
@@ -173,27 +175,27 @@ class Step2ActivityDataExportState extends Equatable {
             selectedAccommodationType ?? this.selectedAccommodationType,
         errorMessage: errorMessage ?? this.errorMessage,
         totalArea: totalArea ?? this.totalArea,
-        workerType: workerType ?? this.workerType,
-        addetionalActivityItems:
-            addetionalActivityItems ?? this.addetionalActivityItems,
-        addetionalActivityItemDetails:
-            addetionalActivityItemDetails ?? this.addetionalActivityItemDetails,
+        selectedWorkerType: selectedWorkerType ?? this.selectedWorkerType,
+        lstAddetionalActivityItems:
+            lstAddetionalActivities ?? this.lstAddetionalActivityItems,
+        // addetionalActivityItemDetails:
+        //     addetionalActivityItemDetails ?? this.addetionalActivityItemDetails,
         addetionalActivityListStatus:
             additionalActivityListStatus ?? this.addetionalActivityListStatus,
         addetionalActivityDetailsListStatus:
             addetionalActivityDetailsListStatus ??
                 this.addetionalActivityDetailsListStatus,
-        selectedAddetionalList: selectedAddetionalList == null
-            ? this.selectedAddetionalList
-            : selectedAddetionalList.value,
-        addetionalItem:
-            addetionalItem == null ? this.addetionalItem : addetionalItem.value,
-        addetionalDetailsItem: addetionalDetailsItem == null
-            ? this.addetionalDetailsItem
-            : addetionalDetailsItem.value,
-        addetionalDetails: addetionalDetails == null
-            ? this.addetionalDetails
-            : addetionalDetails.value,
+        lstSelectedAddetionalActivity: lstSelectedAddetionalActivities == null
+            ? this.lstSelectedAddetionalActivity
+            : lstSelectedAddetionalActivities.value,
+        userSelectedAddetionalItem:
+            selectedAddetionalItem == null ? this.userSelectedAddetionalItem : selectedAddetionalItem.value,
+        // addetionalDetailsItem: addetionalDetailsItem == null
+        //     ? this.addetionalDetailsItem
+        //     : addetionalDetailsItem.value,
+        // addetionalDetails: addetionalDetails == null
+        //     ? this.addetionalDetails
+        //     : addetionalDetails.value,
         unitCount: unitCount ?? this.unitCount,
         atmFeesPaid: atmFeesPaid ?? this.atmFeesPaid,
         draftLoaded: draftLoaded ?? this.draftLoaded,
@@ -213,13 +215,13 @@ class Step2ActivityDataExportState extends Equatable {
     );
   }
 
-  List<AddetionalActivityItem> getAddetionalActivityItems() {
-    List<AddetionalActivityItem> items = [];
+  List<AllowedActivities> getAddetionalActivityItems() {
+    List<AllowedActivities> items = [];
 
-    addetionalActivityItems?.forEach((element) {
+    lstAddetionalActivityItems?.forEach((element) {
       var isAdded = false;
-      selectedAddetionalList?.forEach((e) {
-        if (element.isicCode == e.item?.isicCode) {
+      lstSelectedAddetionalActivity?.forEach((e) {
+        if (element.id ==  e.item!.isicCode!) {
           isAdded = true;
         }
       });
@@ -231,7 +233,7 @@ class Step2ActivityDataExportState extends Equatable {
   }
 
   bool isFormValid() {
-    return workerType != null &&
+    return selectedWorkerType != null &&
         totalArea != null &&
         totalArea != 0 &&
         selectedIsicActivity != null &&
@@ -243,7 +245,11 @@ class Step2ActivityDataExportState extends Equatable {
   }
 
   bool showHotel() {
-    return subActivityDetails?.mainActivity?.id == 24;
+    return subActivityDetails?.showHotelSection==true;
+  }
+
+  bool showArea() {
+    return subActivityDetails?.showAreaSection==true;
   }
 
   bool showAtm() {
@@ -253,7 +259,7 @@ class Step2ActivityDataExportState extends Equatable {
   double getTotalArea() {
     double total = totalArea ?? 0;
 
-    selectedAddetionalList?.forEach((element) {
+    lstSelectedAddetionalActivity?.forEach((element) {
       total -= (element.area ?? 0);
     });
 

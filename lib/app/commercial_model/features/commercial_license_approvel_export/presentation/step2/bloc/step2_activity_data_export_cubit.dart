@@ -27,7 +27,9 @@ import '../../../data/models/commercial_request_details_response_entity.dart'
     hide Activity;
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../data/models/isics_main_activity.dart';
 import '../../../data/models/salama_warning_request.dart';
+import '../../../data/models/sub_activity_details_data.dart';
 import '../../../domain/entities/addetional_activity_details_request.dart';
 import '../../../domain/entities/addetional_activity_request.dart';
 import '../../../domain/use_cases/get_additional_activites.dart';
@@ -74,7 +76,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         _getGISImage = GetGISImage(sl()),
 
 
-        super(const Step2ActivityDataExportState()) {
+        super( Step2ActivityDataExportState()) {
         getAccommodationTypes();
 
 
@@ -94,7 +96,15 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   /////////Activity Actions*************************************************
   void getSubActivityDetails(SubActivityEntity subActivity) async {
     emit(state.copyWith(
-        subActivityDetailsStatus: BlocStatus.loading, errorMessage: ""));
+        subActivityDetailsStatus: BlocStatus.loading, errorMessage: "",
+        selectedAddetionalItem: Nullable(null),
+        addetionalDetails: Nullable(null),
+     //   addetionalDetailsItem: Nullable(null),
+        lstSelectedAddetionalActivities: Nullable(null)
+    ));
+
+
+
     final response =
         await _getSubActivityDetails(subActivity.id.toString() ?? '');
     response.fold(
@@ -105,37 +115,30 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       emit(state.copyWith(
           selectedSubActivity: Nullable(subActivity),
           subActivityDetailsStatus: BlocStatus.success,
-          subActivityDetails: Nullable(success.data?.result)));
+          subActivityDetails: Nullable(success.data?.result),
+         lstAddetionalActivities:  success.data?.result?.allowedActivities
+      ));
 
-      if (state.selectedIsicActivity?.craft == false) {
-        BottomSheetDialog.showDraggableSheet(
-            NavigationService.navigatorKey.currentContext!,
-            child: CrStep2ConditionsPage(
-              activityTerms: success.data?.result?.activityTerms,
-            ));
-      }
-
-      if (state.selectedIsicActivity?.craft == true) {
-        showCraftMessage();
-      }
     });
-    getAddetionalActivites();
   }
-  void onSelectIsicActivity(IsicActivity isicActivity) async {
+  void onSelectIsicActivity(IsicsMainActivity isicActivity) async {
     emit(state.copyWith(
         selectedSubActivity: Nullable(null),
-        selectedAddetionalList: Nullable([]),
         subActivityDetails: Nullable(null),
-        addetionalActivityItems: [],
-        addetionalActivityItemDetails: [],
+        lstAddetionalActivities: [],
+        lstSelectedAddetionalActivities: Nullable([]),
+       // addetionalActivityItemDetails: [],
         subActivitiesStatus: BlocStatus.loading,
         errorMessage: ""));
-    final response = await _getSubActivities(isicActivity.id ?? '');
+//4617349072
+    int? requestId= sl<CommercialLicenseInitialExportBloc>().state.requestId;
+    final response = await _getSubActivities([requestId!,int.parse(isicActivity.id)]);
     response.fold(
         (failure) => emit(state.copyWith(
               subActivitiesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
+
       emit(state.copyWith(
           selectedIsicActivity: isicActivity,
           subActivitiesStatus: BlocStatus.success,
@@ -163,8 +166,8 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   void updateArea(double? area) {
     emit(state.copyWith(totalArea: area, errorMessage: ""));
   }
-  void updateWorkerType(WorkersTypes type) {
-    emit(state.copyWith(workerType: type, errorMessage: ""));
+  void updateWorkerType(WorkerTypes type) {
+    emit(state.copyWith(selectedWorkerType: type, errorMessage: ""));
   }
   void updateUnitCount(String? value) {
     emit(state.copyWith(unitCount: value, errorMessage: ""));
@@ -178,9 +181,9 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response = await _saveActivityDetails(SubmitActivityDetailRequest(
         requestId: requestId,
-        workerTypeId: state.workerType!.type,
+        workerTypeId: state.selectedWorkerType!.id!,
         area: state.totalArea ?? 0,
-        additionalActivities: state.selectedAddetionalList,
+        additionalActivities: state.lstSelectedAddetionalActivity,
         detailedActivityId: state.selectedSubActivity!.id!,
         atmFeesPaid: state.showAtm() ? state.atmFeesPaid : null,
         unitCount:
@@ -197,100 +200,115 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       emit(state.copyWith(status: BlocStatus.success));
     });
   }
-  void onSelectAddetionalDetailsActivity(
-      AddetionalActivityItemDetails subActivity) async {
-    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-    final response =
-        await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
-    response.fold(
-        (failure) => emit(state.copyWith(
-              status: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
-      emit(state.copyWith(
-          status: BlocStatus.success,
-          addetionalDetailsItem: Nullable(subActivity),
-          addetionalDetails: Nullable(success.data?.result)));
+  // void onSelectAddetionalDetailsActivity(
+  //     AddetionalActivityItemDetails subActivity) async {
+  //   emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+  //   final response =
+  //       await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
+  //   response.fold(
+  //       (failure) => emit(state.copyWith(
+  //             status: BlocStatus.failure,
+  //             errorMessage: (failure as ServerFailure).errorMessage,
+  //           )), (success) {
+  //
+  //     emit(state.copyWith(
+  //         status: BlocStatus.success,
+  //         addetionalDetailsItem: Nullable(subActivity),
+  //         addetionalDetails: Nullable(success.data?.result)));
+  //
+  //     // if (state.selectedIsicActivity?.craft == false) {
+  //     //   BottomSheetDialog.showDraggableSheet(
+  //     //       NavigationService.navigatorKey.currentContext!,
+  //     //       child: CrStep2ConditionsPage(
+  //     //         activityTerms: success.data?.result?.activityTerms,
+  //     //       ));
+  //     // }
+  //     //
+  //     // if (state.selectedIsicActivity?.craft == true) {
+  //     //   showCraftMessage();
+  //     // }
+  //   });
+  // }
 
-      if (state.selectedIsicActivity?.craft == false) {
-        BottomSheetDialog.showDraggableSheet(
-            NavigationService.navigatorKey.currentContext!,
-            child: CrStep2ConditionsPage(
-              activityTerms: success.data?.result?.activityTerms,
-            ));
-      }
-
-      if (state.selectedIsicActivity?.craft == true) {
-        showCraftMessage();
-      }
-    });
-  }
   void addAddetionalItemRequest(double area) async {
     List<AddetionalActivityRequest> selectedAddetionalList =
-        state.selectedAddetionalList ?? [];
+        state.lstSelectedAddetionalActivity ?? [];
 
-    String message = await getActivitesSalamaWarningMessage(area);
+    //String message = await getActivitesSalamaWarningMessage(area);
 
     emit(state.copyWith(status: BlocStatus.loading));
 
     selectedAddetionalList.add(AddetionalActivityRequest(
         area: area,
-        item: state.addetionalItem,
-        details: state.addetionalDetails,
-        detailsItem: state.addetionalDetailsItem,
-        faweryMessage: message));
+        item: state.userSelectedAddetionalItem,
+        // details: state.addetionalDetails,
+        // detailsItem: state.addetionalDetailsItem,
+       // faweryMessage: message
+
+    ));
 
     emit(state.copyWith(
         status: BlocStatus.success,
-        addetionalItem: Nullable(null),
-        addetionalDetails: Nullable(null),
-        addetionalDetailsItem: Nullable(null),
-        selectedAddetionalList: Nullable(selectedAddetionalList)));
+        selectedAddetionalItem: Nullable(null),
+        // addetionalDetails: Nullable(null),
+        // addetionalDetailsItem: Nullable(null),
+        lstSelectedAddetionalActivities: Nullable(selectedAddetionalList)));
   }
-  void onSelectAddetionalActivity(AddetionalActivityItem item) async {
+  void onSelectAddetionalActivity(AllowedActivities item) async {
+
+
     emit(state.copyWith(
-        addetionalActivityDetailsListStatus: BlocStatus.loading,
-        errorMessage: ""));
-    final response = await _getAddetionalDetailsActivites(
-        AddetionalActivityDetailsRequest(
-            subActivityId: state.selectedSubActivity!.id.toString(),
-            addetionalActivityId: item.isicCode!));
-    response.fold(
-        (failure) => emit(state.copyWith(
-              addetionalActivityDetailsListStatus: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
-      emit(state.copyWith(
-          addetionalActivityDetailsListStatus: BlocStatus.success,
-          addetionalItem: Nullable(item),
-          addetionalDetails: Nullable(null),
-          addetionalDetailsItem: Nullable(null),
-          addetionalActivityItemDetails: success.result));
-    });
+        addetionalActivityDetailsListStatus: BlocStatus.success,
+        selectedAddetionalItem: Nullable(item),
+        // addetionalDetails: Nullable(null),
+        // addetionalDetailsItem: Nullable(null),
+    ));
+
+
+
+    // emit(state.copyWith(
+    //     addetionalActivityDetailsListStatus: BlocStatus.loading,
+    //     errorMessage: ""));
+    // final response = await _getAddetionalDetailsActivites(
+    //     AddetionalActivityDetailsRequest(
+    //         subActivityId: state.selectedSubActivity!.id.toString(),
+    //         addetionalActivityId: item.isicCode!));
+    // response.fold(
+    //     (failure) => emit(state.copyWith(
+    //           addetionalActivityDetailsListStatus: BlocStatus.failure,
+    //           errorMessage: (failure as ServerFailure).errorMessage,
+    //         )), (success) {
+    //   emit(state.copyWith(
+    //       addetionalActivityDetailsListStatus: BlocStatus.success,
+    //       addetionalItem: Nullable(item),
+    //       addetionalDetails: Nullable(null),
+    //       addetionalDetailsItem: Nullable(null),
+    //       addetionalActivityItemDetails: success.result));
+   // });
   }
-  void getAddetionalActivites() async {
-    emit(state.copyWith(
-        additionalActivityListStatus: BlocStatus.loading,
-        errorMessage: "",
-        addetionalItem: Nullable(null),
-        addetionalDetails: Nullable(null),
-        addetionalDetailsItem: Nullable(null),
-        selectedAddetionalList: Nullable(null)));
-    final response = await _getAddetionalActivites(
-        state.selectedSubActivity?.id.toString() ?? "");
-    response.fold(
-        (failure) => emit(state.copyWith(
-              additionalActivityListStatus: BlocStatus.failure,
-              errorMessage: (failure as ServerFailure).errorMessage,
-            )), (success) {
-      emit(state.copyWith(
-          additionalActivityListStatus: BlocStatus.success,
-          addetionalActivityItems: success.result));
-    });
-  }
+  // void getAddetionalActivites() async {
+  //   emit(state.copyWith(
+  //       additionalActivityListStatus: BlocStatus.loading,
+  //       errorMessage: "",
+  //       addetionalItem: Nullable(null),
+  //       addetionalDetails: Nullable(null),
+  //       addetionalDetailsItem: Nullable(null),
+  //       selectedAddetionalList: Nullable(null)));
+  //   final response = await _getAddetionalActivites(
+  //       state.selectedSubActivity?.id.toString() ?? "");
+  //   response.fold(
+  //       (failure) => emit(state.copyWith(
+  //             additionalActivityListStatus: BlocStatus.failure,
+  //             errorMessage: (failure as ServerFailure).errorMessage,
+  //           )), (success) {
+  //     emit(state.copyWith(
+  //         additionalActivityListStatus: BlocStatus.success,
+  //         addetionalActivityItems: success.result));
+  //   });
+  // }
   void deleteAddetionalActivity(int index) {
     List<AddetionalActivityRequest> selectedAddetionalList =
-        state.selectedAddetionalList ?? [];
+        state.lstSelectedAddetionalActivity ?? [];
 
     emit(state.copyWith(status: BlocStatus.loading));
 
@@ -298,14 +316,14 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
     emit(state.copyWith(
         status: BlocStatus.success,
-        selectedAddetionalList: Nullable(selectedAddetionalList)));
+        lstSelectedAddetionalActivities: Nullable(selectedAddetionalList)));
   }
   void getSalamaWarningMessage() async {
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     try {
       final response = await _getWarningMessage(SalamaWarningRequest(
-          activities: state.selectedAddetionalList != null
-              ? state.selectedAddetionalList!.map((e) {
+          activities: state.lstSelectedAddetionalActivity != null
+              ? state.lstSelectedAddetionalActivity!.map((e) {
                   return Activity(
                       activityId: e.detailsItem?.activityId, area: e.area);
                 }).toList()
@@ -368,51 +386,51 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       print(error);
     }
   }
-  Future<String> getActivitesSalamaWarningMessage(double area) async {
-    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-
-    final response = await _getWarninFlowMessage(SalamaWarningRequest(
-        activities: [
-          Activity(
-              activityId: state.addetionalDetailsItem?.activityId, area: area)
-        ],
-        shopArea: state.totalArea,
-        mainActivityId: state.selectedSubActivity?.id ?? 0));
-    return await response.fold((failure) async {
-      emit(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-      return "";
-    }, (success) {
-      emit(state.copyWith(
-        status: BlocStatus.success,
-      ));
-
-      return success;
-    });
-  }
-  void showCraftMessage() {
-    BottomSheetDialog.showDraggableSheet(
-        NavigationService.navigatorKey.currentContext!,
-        child: BottomSheetWithActions(
-          title: "warning_2".tr(),
-          action: Row(
-            children: [
-              Expanded(
-                child: ElevatedButtonWidget.primaryCustom(
-                    text: "agree".tr(),
-                    onPressed: () {
-                      NavigationService.goBack();
-                    }),
-              ),
-            ],
-          ),
-          body: WarningMessage(
-              message:
-                  "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
-        ));
-  }
+  // Future<String> getActivitesSalamaWarningMessage(double area) async {
+  //   emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+  //
+  //   final response = await _getWarninFlowMessage(SalamaWarningRequest(
+  //       activities: [
+  //         Activity(
+  //             activityId: state.addetionalDetailsItem?.activityId, area: area)
+  //       ],
+  //       shopArea: state.totalArea,
+  //       mainActivityId: state.selectedSubActivity?.id ?? 0));
+  //   return await response.fold((failure) async {
+  //     emit(state.copyWith(
+  //       status: BlocStatus.failure,
+  //       errorMessage: (failure as ServerFailure).errorMessage,
+  //     ));
+  //     return "";
+  //   }, (success) {
+  //     emit(state.copyWith(
+  //       status: BlocStatus.success,
+  //     ));
+  //
+  //     return success;
+  //   });
+  // }
+  // void showCraftMessage() {
+  //   BottomSheetDialog.showDraggableSheet(
+  //       NavigationService.navigatorKey.currentContext!,
+  //       child: BottomSheetWithActions(
+  //         title: "warning_2".tr(),
+  //         action: Row(
+  //           children: [
+  //             Expanded(
+  //               child: ElevatedButtonWidget.primaryCustom(
+  //                   text: "agree".tr(),
+  //                   onPressed: () {
+  //                     NavigationService.goBack();
+  //                   }),
+  //             ),
+  //           ],
+  //         ),
+  //         body: WarningMessage(
+  //             message:
+  //                 "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
+  //       ));
+  // }
   void initDraft() async {
     bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
@@ -423,72 +441,62 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         draftStatus: BlocStatus.success,
       ));
 
-
-
-
-
-
-
-
-
-
       CommercialRequestDetailsResponseEntity? requestData =
           sl<CommercialLicenseInitialExportBloc>().state.requestData;
 
-      RecordInfo? recordInfo = sl<CommercialLicenseInitialExportBloc>().state.recordInfo;
-      print("EEE");
-      WorkersTypes? workerType;
+     // RecordInfo? recordInfo = sl<CommercialLicenseInitialExportBloc>().state.recordInfo;
+
+      WorkerTypes? workerType;
       bool? atmFeesPaid;
-      IsicActivity? selectedIsicActivity = state.selectedIsicActivity;
+      IsicsMainActivity? selectedIsicActivity = state.selectedIsicActivity;
       SubActivityEntity? selectedSubActivity = state.selectedSubActivity;
-      print("HHHH");
       if (requestData?.activityInfo?.workerTypeId == 1) {
-        workerType = WorkersTypes.men;
+        workerType = WorkerTypes(id: requestData?.activityInfo?.workerTypeId,name: "men".tr());
       }
       if (requestData?.activityInfo?.workerTypeId == 2) {
-        workerType = WorkersTypes.women;
+        workerType = WorkerTypes(id: requestData?.activityInfo?.workerTypeId,name: "women".tr());
       }
       if (requestData?.activityInfo?.workerTypeId == 3) {
-        workerType = WorkersTypes.menWomen;
+        workerType = WorkerTypes(id: requestData?.activityInfo?.workerTypeId,name: "menWomen".tr());
       }
 
       if (requestData?.activityInfo?.atmActivity == true) {
         atmFeesPaid = requestData?.activityInfo?.atmFeesPaid;
       }
 
-      if (requestData?.activityInfo?.mainActivity?.isicActivityId != null) {
-        selectedIsicActivity = recordInfo?.crInfo?.activities?.isicActivities
-            ?.firstWhereOrNull((element) =>
-                element.isicCode ==
-                requestData?.activityInfo?.mainActivity?.isicActivityId
-                    .toString());
-
-        final response =
-            await _getSubActivities(selectedIsicActivity?.id ?? '');
-        response.fold(
-            (failure) => emit(state.copyWith(
-                  subActivitiesStatus: BlocStatus.failure,
-                  errorMessage: (failure as ServerFailure).errorMessage,
-                )), (success) {
-          emit(state.copyWith(
-              selectedIsicActivity: selectedIsicActivity,
-              subActivitiesStatus: BlocStatus.success,
-              subActivities: List.from(success)));
-        });
-
-        if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
-            null) {
-          selectedSubActivity = state.subActivities?.firstWhereOrNull(
-              (element) =>
-                  element.id ==
-                  requestData?.activityInfo?.mainActivity?.detailedActivityId);
-
-          if (selectedSubActivity != null) {
-            getSubActivityDetails(selectedSubActivity);
-          }
-        }
-      }
-
+      // if (requestData?.activityInfo?.mainActivity?.isicActivityId != null) {
+      //   selectedIsicActivity = recordInfo?.crInfo?.activities?.isicActivities
+      //       ?.firstWhereOrNull((element) =>
+      //           element.isicCode ==
+      //           requestData?.activityInfo?.mainActivity?.isicActivityId
+      //               .toString());
+      //
+      //   final response =
+      //       await _getSubActivities(selectedIsicActivity?.id ?? '');
+      //   response.fold(
+      //       (failure) => emit(state.copyWith(
+      //             subActivitiesStatus: BlocStatus.failure,
+      //             errorMessage: (failure as ServerFailure).errorMessage,
+      //           )), (success) {
+      //     emit(state.copyWith(
+      //         selectedIsicActivity: selectedIsicActivity,
+      //         subActivitiesStatus: BlocStatus.success,
+      //         subActivities: List.from(success)));
+      //   });
+      //
+      //   if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
+      //       null) {
+      //     selectedSubActivity = state.subActivities.firstWhereOrNull(
+      //         (element) =>
+      //             element.id ==
+      //             requestData?.activityInfo?.mainActivity?.detailedActivityId);
+      //
+      //     if (selectedSubActivity != null) {
+      //       getSubActivityDetails(selectedSubActivity);
+      //     }
+      //   }
+      // }
+      //
 
 
       double? latitude =
@@ -518,7 +526,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
       emit(state.copyWith(
           totalArea: requestData?.mainActivityArea?.toDouble(),
-          workerType: workerType,
+          selectedWorkerType: workerType,
           selectedIsicActivity: selectedIsicActivity,
           atmFeesPaid: atmFeesPaid,
           draftLoaded: true,

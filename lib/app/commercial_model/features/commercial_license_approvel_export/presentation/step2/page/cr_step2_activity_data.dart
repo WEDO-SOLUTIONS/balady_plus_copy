@@ -8,6 +8,7 @@ import '../../../../../../features/_shared_feature_/shared_feature_exports.dart'
 import '../../../commercial_license_exports.dart';
 import 'package:collection/collection.dart';
 
+import '../../../data/models/isics_main_activity.dart';
 import '../widgets/accomodation_types_drop_down.dart';
 
 class CRStep2ActivityData extends StatefulWidget {
@@ -70,7 +71,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                         label: "step2_label1".tr(),
                                         marginBottom: 8,
                                         onChangeType: (item) {
-                                          IsicActivity? i = state
+                                          IsicsMainActivity? i = state
                                               .getIsicActivities()
                                               .firstWhereOrNull((element) =>
                                           element.isicCode == item?.id);
@@ -113,6 +114,9 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                               subTitle: state.selectedSubActivity?.facilityName,
                               showSpace: false,
                             ),
+
+
+                           if (state.showArea()) ...[
                             const CustomVerticalSpace(height: 16),
                             CustomTextFieldWidget(
                               label: 'step2_label4'.tr(),
@@ -135,6 +139,10 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                     .updateArea(double.tryParse(value ?? ""));
                               },
                             ),
+                            ],
+
+
+
                             const CustomVerticalSpace(height: 12),
                             if (state.showHotel()) ...[
                               AccomodationDropDownTypes(),
@@ -162,11 +170,11 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                               ),
                               const CustomVerticalSpace(height: 16),
                             ],
-                            ReadOnlyField(
-                              title: "cr_main_activity_area".tr(),
-                              subTitle: state.getTotalArea().toString(),
-                              showSpace: false,
-                            ),
+                            // ReadOnlyField(
+                            //   title: "cr_main_activity_area".tr(),
+                            //   subTitle: state.getTotalArea().toString(),
+                            //   showSpace: false,
+                            // ),
                             const CustomVerticalSpace(height: 16),
                             NotesWidget(
                               notes: [CommonFunctions.getIssueCrWarning1()],
@@ -212,16 +220,20 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                               ),
                               const CustomVerticalSpace(height: 16),
                             ],
-                            WorkerTypeComponent(
-                              selectedWorkerType: state.workerType,
-                              onSelectedType: (type) {
-                                context
-                                    .read<Step2ActivityDataExportCubit>()
-                                    .updateWorkerType(type);
-                              },
-                            ),
-                            const CustomVerticalSpace(height: 16),
-                            if (state.addetionalActivityItems?.isNotEmpty ?? false)
+                           if( state.subActivityDetails?.workerTypes != null)...[WorkerTypeComponent(
+                             lstWorkerTypes: state.subActivityDetails?.workerTypes,
+                             selectedWorkerType: state.selectedWorkerType,
+                             onSelectedType: (type) {
+                               context
+                                   .read<Step2ActivityDataExportCubit>()
+                                   .updateWorkerType(type);
+                             },
+                           ),
+                             const CustomVerticalSpace(height: 16),
+                           ],
+
+
+                            if (state.lstAddetionalActivityItems?.isNotEmpty ?? false)
                               const ExtraActivityComponent(),
 
 

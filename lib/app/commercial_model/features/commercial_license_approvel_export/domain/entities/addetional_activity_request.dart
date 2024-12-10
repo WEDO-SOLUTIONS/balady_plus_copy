@@ -6,10 +6,12 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_app
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/sub_activity_details_entity.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../data/models/sub_activity_details_data.dart';
+
 class AddetionalActivityRequest extends Equatable {
-  AddetionalActivityItem? item;
+  AllowedActivities? item;
   AddetionalActivityItemDetails? detailsItem;
-  SubActivityDetails? details;
+  SubActivityDetailsData? details;
   String? faweryMessage;
 
   double? area;
@@ -21,9 +23,9 @@ class AddetionalActivityRequest extends Equatable {
       this.faweryMessage});
 
   AddetionalActivityRequest copyWith(
-      {AddetionalActivityItem? item,
+      {AllowedActivities? item,
       AddetionalActivityItemDetails? detailsItem,
-      SubActivityDetails? details,
+        SubActivityDetailsData? details,
       double? area,
       String? faweryMessage}) {
     return AddetionalActivityRequest(

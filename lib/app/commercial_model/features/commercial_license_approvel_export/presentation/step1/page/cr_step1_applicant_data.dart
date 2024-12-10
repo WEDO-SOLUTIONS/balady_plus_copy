@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
@@ -93,9 +94,10 @@ class CRStep1ApplicantData extends StatelessWidget {
                                       child:
                                           const IsicActivitiesDialogNotExistInBalady()));
                             } else {
-                              context
-                                  .read<Step1ApplicantDataExportCubit>()
-                                  .saveComSubmitterAndOwner();
+
+                              sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
+
+
                             }
                           }),
                 ],

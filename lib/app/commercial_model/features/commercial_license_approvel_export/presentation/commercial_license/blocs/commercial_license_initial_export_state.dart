@@ -14,7 +14,6 @@ class CommercialLicenseInitialExportState extends Equatable {
   final bool? isDraft;
   final CommercialRequestDetailsResponseEntity? requestData;
   final RecordInfo? recordInfo;
-
   const CommercialLicenseInitialExportState({
     this.status = BlocStatus.initial,
     this.detailsStatus = BlocStatus.initial,
@@ -28,6 +27,7 @@ class CommercialLicenseInitialExportState extends Equatable {
     this.isDraft,
     this.requestData,
     this.recordInfo,
+
     this.pagesList = const [
       CRStep1ApplicantData(),
       CRStep2ActivityData(),
@@ -90,7 +90,8 @@ class CommercialLicenseInitialExportState extends Equatable {
         gisResponse: gisResponse ?? this.gisResponse,
         isDraft: isDraft ?? this.isDraft,
         requestData: requestData == null ? this.requestData : requestData.value,
-        recordInfo: recordInfo ?? this.recordInfo);
+        recordInfo: recordInfo ?? this.recordInfo,
+    );
   }
 
   int? currentRequestIdText() {

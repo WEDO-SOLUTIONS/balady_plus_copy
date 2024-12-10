@@ -28,6 +28,7 @@ class SubActivityModelDetailsModel extends SubActivityDetails {
     super.foodActivity,
     super.ownershipType,
     super.requestFlow,
+
   });
 
   factory SubActivityModelDetailsModel.fromJson(Map<String, dynamic> json) =>

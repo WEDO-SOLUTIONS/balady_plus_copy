@@ -10,6 +10,8 @@ import '../../../data/models/additional_activity_details_response.dart';
 import '../../../data/models/additional_activity_response.dart';
 import 'package:collection/collection.dart';
 
+import '../../../data/models/sub_activity_details_data.dart';
+
 class ExtraActivityComponent extends StatefulWidget {
   const ExtraActivityComponent({
     super.key,
@@ -52,12 +54,12 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
               ),
               const SizedBox(height: 14),
               ListView.separated(
-                itemCount: state.selectedAddetionalList?.length ?? 0,
+                itemCount: state.lstSelectedAddetionalActivity?.length ?? 0,
                 separatorBuilder: (_, __) => const SizedBox(height: 16),
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemBuilder: (_, i) => ExtraActivityCard(
-                  item: state.selectedAddetionalList![i],
+                  item: state.lstSelectedAddetionalActivity![i],
                   onDelete: () {
                     context
                         .read<Step2ActivityDataExportCubit>()
@@ -66,18 +68,21 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                 ),
               ),
               const SizedBox(height: 12),
+
               PlusAddButton(
                 text: "attach_activity".tr(),
                 onPressed: () => BottomSheetDialog.showDraggableSheet(
                   context,
                   child: Builder(
                     builder: (c) {
+                      area = "";
                       return BlocProvider<Step2ActivityDataExportCubit>.value(
                         value: context.read<Step2ActivityDataExportCubit>(),
                         child: BlocBuilder<Step2ActivityDataExportCubit,
                             Step2ActivityDataExportState>(
                           builder: (context, state) {
-                            return BottomSheetWithActions(
+                            return
+                              BottomSheetWithActions(
                               title: "activity_add".tr(),
                               action: Padding(
                                 padding:
@@ -96,7 +101,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                     return;
                                   }
 
-                                  if (area != null) {
+                                  if (area != null && state.userSelectedAddetionalItem != null) {
                                     ctx
                                         .read<Step2ActivityDataExportCubit>()
                                         .addAddetionalItemRequest(
@@ -114,14 +119,14 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                           items: state
                                                   .getAddetionalActivityItems() ??
                                               [],
-                                          value: state.addetionalItem,
+                                          value: state.userSelectedAddetionalItem,
                                           label:
                                               "userLicensesLicenseDetailsAIESECActivityWord"
                                                   .tr(),
                                           marginBottom: 8,
                                           onChangeType: (item) {
-                                            AddetionalActivityItem? i = state
-                                                .addetionalActivityItems
+                                            AllowedActivities? i = state
+                                                .lstAddetionalActivityItems
                                                 ?.firstWhereOrNull((element) =>
                                                     element.isicCode ==
                                                     item?.id);
@@ -133,33 +138,35 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                                         i)
                                                 : null;
                                           }),
-                                      const CustomVerticalSpace(height: 12),
-                                      CustomTapWidgetForLongDialog(
-                                          items: state
-                                                  .addetionalActivityItemDetails ??
-                                              [],
-                                          value: state.addetionalDetailsItem,
-                                          label: "detailedActivityName".tr(),
-                                          marginBottom: 8,
-                                          onChangeType: (item) {
-                                            AddetionalActivityItemDetails? i =
-                                                state
-                                                    .addetionalActivityItemDetails
-                                                    ?.firstWhereOrNull(
-                                                        (element) =>
-                                                            element
-                                                                .activityId ==
-                                                            item?.id);
-                                            i != null
-                                                ? context
-                                                    .read<
-                                                        Step2ActivityDataExportCubit>()
-                                                    .onSelectAddetionalDetailsActivity(
-                                                        i)
-                                                : null;
-                                          }),
+                                      
+                                      // const CustomVerticalSpace(height: 12),
+                                      // CustomTapWidgetForLongDialog(
+                                      //     items: state
+                                      //             .addetionalActivityItemDetails ??
+                                      //         [],
+                                      //     value: state.addetionalDetailsItem,
+                                      //     label: "detailedActivityName".tr(),
+                                      //     marginBottom: 8,
+                                      //     onChangeType: (item) {
+                                      //       AddetionalActivityItemDetails? i =
+                                      //           state
+                                      //               .addetionalActivityItemDetails
+                                      //               ?.firstWhereOrNull(
+                                      //                   (element) =>
+                                      //                       element
+                                      //                           .activityId ==
+                                      //                       item?.id);
+                                      //       i != null
+                                      //           ? context
+                                      //               .read<
+                                      //                   Step2ActivityDataExportCubit>()
+                                      //               .onSelectAddetionalDetailsActivity(
+                                      //                   i)
+                                      //           : null;
+                                      //     }),
                                       const CustomVerticalSpace(height: 12),
                                       CustomTextFieldWidget(
+
                                         label: "addetional_total_area".tr(),
                                         hintText: "addetional_total_area".tr(),
                                         isDigitsOnly: true,

@@ -5,14 +5,17 @@ class Step1ApplicantDataExportState extends Equatable {
   final BlocStatus recordStatus;
   final BlocStatus addIsicActivitiesStatus;
   final BlocStatus status;
-
+  final int? requestId;
   final String errorMessage;
+  final List<IsicsMainActivity>? lstMainActivity;
 
   const Step1ApplicantDataExportState({
     this.recordInfo,
     this.recordStatus = BlocStatus.initial,
     this.addIsicActivitiesStatus = BlocStatus.initial,
     this.status = BlocStatus.initial,
+    this.requestId,
+    this.lstMainActivity,
     this.errorMessage = '',
   });
 
@@ -41,13 +44,15 @@ class Step1ApplicantDataExportState extends Equatable {
 
   @override
   List<Object?> get props =>
-      [recordInfo, recordStatus, addIsicActivitiesStatus, errorMessage, status];
+      [recordInfo, recordStatus, addIsicActivitiesStatus, errorMessage, status,lstMainActivity];
 
   Step1ApplicantDataExportState copyWith({
     RecordInfo? recordInfo,
     BlocStatus? recordStatus,
     BlocStatus? status,
     BlocStatus? addIsicActivitiesStatus,
+    List<IsicsMainActivity>? lstMainActivity,
+    int? requestId,
     String? errorMessage,
   }) {
     return Step1ApplicantDataExportState(
@@ -56,11 +61,15 @@ class Step1ApplicantDataExportState extends Equatable {
         addIsicActivitiesStatus:
             addIsicActivitiesStatus ?? this.addIsicActivitiesStatus,
         errorMessage: errorMessage ?? this.errorMessage,
+        requestId: requestId ?? this.requestId,
+        lstMainActivity: lstMainActivity ?? this.lstMainActivity,
+
         status: status ?? this.status);
   }
 
-  List<IsicActivity> getIsicActivities() {
-    return recordInfo?.crInfo?.activities?.isicActivities
+  List<IsicsMainActivity> getIsicActivities() {
+
+    return lstMainActivity
             ?.where((element) => element.existInBalady == true)
             .toList() ??
         [];

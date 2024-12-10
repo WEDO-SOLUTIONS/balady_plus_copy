@@ -1,35 +1,33 @@
 import 'dart:convert';
 
-class SaveComSubmitterAndOwnerRequestModel {
+class SubmitterAndOwnerRequestModel {
   String? crNumber;
-  String? entityType;
-  int? crType;
-  int? requestId;
 
-  SaveComSubmitterAndOwnerRequestModel(
-      {this.crNumber, this.crType, this.entityType, this.requestId});
+  int? crType;
+
+
+  SubmitterAndOwnerRequestModel(
+      {this.crNumber, this.crType});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'crNumber': crNumber,
-      'entityType': entityType,
+
       'crType': crType,
     };
   }
 
-  factory SaveComSubmitterAndOwnerRequestModel.fromMap(
+  factory SubmitterAndOwnerRequestModel.fromMap(
       Map<String, dynamic> map) {
-    return SaveComSubmitterAndOwnerRequestModel(
+    return SubmitterAndOwnerRequestModel(
       crNumber: map['crNumber'] != null ? map['crNumber'] as String : null,
-      entityType:
-          map['entityType'] != null ? map['entityType'] as String : null,
       crType: map['crType'] != null ? map['crType'] as int : null,
     );
   }
 
   String toJson() => json.encode(toMap());
 
-  factory SaveComSubmitterAndOwnerRequestModel.fromJson(String source) =>
-      SaveComSubmitterAndOwnerRequestModel.fromMap(
+  factory SubmitterAndOwnerRequestModel.fromJson(String source) =>
+      SubmitterAndOwnerRequestModel.fromMap(
           json.decode(source) as Map<String, dynamic>);
 }

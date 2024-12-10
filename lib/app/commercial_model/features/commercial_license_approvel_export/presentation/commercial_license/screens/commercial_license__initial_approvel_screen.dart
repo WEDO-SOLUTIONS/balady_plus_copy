@@ -38,7 +38,7 @@ class _CommercialLicenseInitialApprovelScreenState extends State<CommercialLicen
 
         BlocProvider(
           lazy: false,
-          create: (context) => Step1ApplicantDataExportCubit()..getRecordInfo(),
+          create: (context) => Step1ApplicantDataExportCubit()..saveComSubmitterAndOwner(),
         ),
         BlocProvider(
           create: (context) => Step2ActivityDataExportCubit(),

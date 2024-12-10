@@ -11,6 +11,7 @@ import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/commercial_request_details_response_entity.dart';
+import '../../../data/models/isics_main_activity.dart';
 import '../../../data/models/qr/submit_commercial_response_model.dart';
 import '../../../domain/use_cases/get_commercial_request_response.dart';
 import '../../step11/page/cr_step11_attachment_data.dart';
@@ -186,6 +187,8 @@ class CommercialLicenseInitialExportBloc
 
     emit(state.copyWith(recordInfo: info, status: BlocStatus.success));
   }
+
+
 
   Future<void> getCommercialRequestData() async {
     emit(state.copyWith(
