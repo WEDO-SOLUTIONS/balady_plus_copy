@@ -44,11 +44,11 @@ class ParkingState extends _$ParkingState {
   }
 
   Future<void> showParking() async {
-    final read = ref.read(sharedPrefsProvider);
-    final attribute = read.getString(parkingTypeKey);
+    final prefs = ref.read(sharedPrefsProvider);
+    final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
 
-    await read.setString(
+    await prefs.setString(
       MapnessConstants.activeLayerKey,
       LayerType.parkingLots.name,
     );
@@ -64,11 +64,11 @@ class ParkingState extends _$ParkingState {
   }
 
   Future<void> hideParking() async {
-    final read = ref.read(sharedPrefsProvider);
-    final attribute = read.getString(parkingTypeKey);
+    final prefs = ref.read(sharedPrefsProvider);
+    final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
 
-    await read.remove(MapnessConstants.activeLayerKey);
+    await prefs.remove(MapnessConstants.activeLayerKey);
     state = ParkingStateEvent(
       filter: parkingFilter,
       visible: false,
