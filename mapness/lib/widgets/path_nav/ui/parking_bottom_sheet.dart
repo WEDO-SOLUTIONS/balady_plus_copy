@@ -17,8 +17,7 @@ class ParkingBottomSheetPage extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      Directionality(
+  Widget build(BuildContext context, WidgetRef ref) => Directionality(
         textDirection: ref.watch(uiDirectionProvider),
         child: SafeArea(
           child: StatelessBottomSheet(

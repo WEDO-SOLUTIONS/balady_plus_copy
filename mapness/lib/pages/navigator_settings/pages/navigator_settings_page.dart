@@ -68,53 +68,56 @@ class NavigatorSettingsPage extends ConsumerWidget {
                           ),
                           child: Column(
                             children: [
-                              Consumer(builder: (context, ref, _) {
-                                final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
 
-                                return ContentRow(
-                                  onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
-                                  options: ContentRowOptions(
-                                    title: l10n.avoidTollRoads,
-                                    dividerEnabled: true,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
+                                  return ContentRow(
+                                    onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
+                                    options: ContentRowOptions(
+                                      title: l10n.avoidTollRoads,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
                                 },
                               ),
-                              Consumer(builder: (context, ref, _) {
-                                final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
-                                return ContentRow(
-                                  onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
-                                  options: ContentRowOptions(
-                                    title: l10n.avoidUnpavedRoads,
-                                    dividerEnabled: true,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                                  return ContentRow(
+                                    onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
+                                    options: ContentRowOptions(
+                                      title: l10n.avoidUnpavedRoads,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
                                 },
                               ),
-                              Consumer(builder: (context, ref, _) {
-                                final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
-                                return ContentRow(
-                                  onToggle: (_) => betterRouteSettingsNotifier.toggle(),
-                                  options: ContentRowOptions(
-                                    title: l10n.suggestRouteBetter,
-                                    dividerEnabled: true,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: betterRouteSettings,
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
+                                  return ContentRow(
+                                    onToggle: (_) => betterRouteSettingsNotifier.toggle(),
+                                    options: ContentRowOptions(
+                                      title: l10n.suggestRouteBetter,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: betterRouteSettings,
+                                      ),
                                     ),
-                                  ),
-                                );
+                                  );
                                 },
                               ),
                               Consumer(
