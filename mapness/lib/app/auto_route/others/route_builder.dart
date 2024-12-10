@@ -16,6 +16,7 @@ class AppRoute<T> extends CustomRoute<T> {
     super.usesPathAsKey,
     super.fullMatch,
     super.children,
+    super.initial,
     RouteTransitionsBuilder? transitionsBuilder,
   }) : super(
           page: page,

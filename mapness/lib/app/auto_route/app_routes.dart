@@ -24,10 +24,11 @@ class AppRouter extends RootStackRouter {
 
   @override
   List<AutoRoute> get routes => [
-        AutoRoute(
+        CustomRoute(
           page: MapRoute.page,
           path: '/',
           initial: true,
+          transitionsBuilder: TransitionsBuilders.noTransition,
           guards: [
             OnboardRouteGuard(ref),
           ],
