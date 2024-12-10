@@ -55,9 +55,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   if (directoryObject != null) {
     for (final entrance in directoryObject.entrances) {
-      if (entrance != null) {
-        await highlightController.addHighlight(entrance.id);
-      }
+      await highlightController.addHighlight(entrance.id);
     }
   }
 
