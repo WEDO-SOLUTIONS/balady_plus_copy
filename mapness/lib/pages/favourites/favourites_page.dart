@@ -78,46 +78,46 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   ///
   /// This method should return [bool] value to show if the item should be deleted or not
   Future<bool?> _onDeleteConfirmation(FavouriteItem item, BuildContext ctx) async => showCupertinoModalPopup<bool>(
-    context: ctx,
-    builder: (context) => CupertinoActionSheet(
-      message: Padding(
-        padding: const EdgeInsets.only(top: 8, bottom: 8),
-        child: Text(
-          ctx.l10n.deleteAlertFavourites,
-          style: ctx.textStyle.footNote.copyWith(
-            color: ctx.color.textAndIconsBaseSecondary,
-            letterSpacing: 0,
+        context: ctx,
+        builder: (context) => CupertinoActionSheet(
+          message: Padding(
+            padding: const EdgeInsets.only(top: 8, bottom: 8),
+            child: Text(
+              ctx.l10n.deleteAlertFavourites,
+              style: ctx.textStyle.footNote.copyWith(
+                color: ctx.color.textAndIconsBaseSecondary,
+                letterSpacing: 0,
+              ),
+            ),
           ),
-        ),
-      ),
-      actions: <CupertinoActionSheetAction>[
-        CupertinoActionSheetAction(
-          isDefaultAction: true,
-          isDestructiveAction: true,
-          onPressed: () {
-            Navigator.pop(context, true);
-          },
-          child: Text(
-            ctx.l10n.delete,
-            style: ctx.textStyle.callout.copyWith(
-              color: ctx.color.textAndIconsStatusNegative,
+          actions: <CupertinoActionSheetAction>[
+            CupertinoActionSheetAction(
+              isDefaultAction: true,
+              isDestructiveAction: true,
+              onPressed: () {
+                Navigator.pop(context, true);
+              },
+              child: Text(
+                ctx.l10n.delete,
+                style: ctx.textStyle.callout.copyWith(
+                  color: ctx.color.textAndIconsStatusNegative,
+                ),
+              ),
+            ),
+          ],
+          cancelButton: CupertinoActionSheetAction(
+            onPressed: () {
+              Navigator.pop(context, false);
+            },
+            child: Text(
+              ctx.l10n.cancel,
+              style: ctx.textStyle.callout.copyWith(
+                color: ctx.color.textAndIconsBasePrimary,
+              ),
             ),
           ),
         ),
-      ],
-      cancelButton: CupertinoActionSheetAction(
-        onPressed: () {
-          Navigator.pop(context, false);
-        },
-        child: Text(
-          ctx.l10n.cancel,
-          style: ctx.textStyle.callout.copyWith(
-            color: ctx.color.textAndIconsBasePrimary,
-          ),
-        ),
-      ),
-    ),
-  );
+      );
 
   @override
   Widget build(BuildContext ctx) {
@@ -182,11 +182,11 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                     onTap: selectedItems.isEmpty
                         ? null
                         : () async {
-                      await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
-                      setState(() {
-                        selectedItems.clear();
-                      });
-                    },
+                            await ref.read(favouriteCacheProvider.notifier).deleteItems(selectedItems.values.toList());
+                            setState(() {
+                              selectedItems.clear();
+                            });
+                          },
                     child: Icon(
                       GeneralIcons.trash,
                       color: selectedItems.isEmpty
@@ -251,10 +251,10 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                     RouteParamsPointWithLabel(
                                       value: coordinates?.latitude != null && coordinates?.longitude != null
                                           ? RouteParamsPoint(
-                                        latitude: coordinates!.latitude,
-                                        longitude: coordinates.longitude,
-                                        objectId: int.tryParse(id),
-                                      )
+                                              latitude: coordinates!.latitude,
+                                              longitude: coordinates.longitude,
+                                              objectId: int.tryParse(id),
+                                            )
                                           : null,
                                       label: homeTitle,
                                     ),
@@ -272,19 +272,19 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                             },
                             onTap: home == null
                                 ? () => context.router.push(
-                              FavouritesSearchRoute(
-                                markerType: FavouriteItemMarkerType.home,
-                              ),
-                            )
+                                      FavouritesSearchRoute(
+                                        markerType: FavouriteItemMarkerType.home,
+                                      ),
+                                    )
                                 : () => ctx.router.replaceOrPush(
-                              route: PoiCardWidgetRoute(
-                                objectId: DgisObjectIdMessage(
-                                  objectId: int.parse(id),
-                                  entranceId: 0,
-                                ),
-                              ),
-                              toCompareRoutes: [PoiCardWidgetRoute.page],
-                            ),
+                                      route: PoiCardWidgetRoute(
+                                        objectId: DgisObjectIdMessage(
+                                          objectId: int.parse(id),
+                                          entranceId: 0,
+                                        ),
+                                      ),
+                                      toCompareRoutes: [PoiCardWidgetRoute.page],
+                                    ),
                           ),
                         );
                       }),
@@ -314,11 +314,13 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                         label: context.l10n.myLocation,
                                       ),
                                       RouteParamsPointWithLabel(
-                                        value: coordinates?.latitude != null && coordinates?.longitude != null ? RouteParamsPoint(
-                                          latitude: coordinates!.latitude,
-                                          longitude: coordinates.longitude,
-                                          objectId: int.tryParse(entity!.id),
-                                        ) : null,
+                                        value: coordinates?.latitude != null && coordinates?.longitude != null
+                                            ? RouteParamsPoint(
+                                                latitude: coordinates!.latitude,
+                                                longitude: coordinates.longitude,
+                                                objectId: int.tryParse(entity!.id),
+                                              )
+                                            : null,
                                         label: workTitle,
                                       ),
                                     ],
@@ -335,19 +337,19 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                               },
                               onTap: work == null
                                   ? () => context.router.push(
-                                FavouritesSearchRoute(
-                                  markerType: FavouriteItemMarkerType.work,
-                                ),
-                              )
+                                        FavouritesSearchRoute(
+                                          markerType: FavouriteItemMarkerType.work,
+                                        ),
+                                      )
                                   : () => ctx.router.replaceOrPush(
-                                route: PoiCardWidgetRoute(
-                                  objectId: DgisObjectIdMessage(
-                                    objectId: int.parse(id),
-                                    entranceId: 0,
-                                  ),
-                                ),
-                                toCompareRoutes: [PoiCardWidgetRoute.page],
-                              ),
+                                        route: PoiCardWidgetRoute(
+                                          objectId: DgisObjectIdMessage(
+                                            objectId: int.parse(id),
+                                            entranceId: 0,
+                                          ),
+                                        ),
+                                        toCompareRoutes: [PoiCardWidgetRoute.page],
+                                      ),
                             ),
                           );
                         },
