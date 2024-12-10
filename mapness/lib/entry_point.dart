@@ -410,6 +410,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         objectId: dgisObjectId,
         entranceId: 0,
       ),
+      closestPoint: location,
       cameraConfig: const PoiCameraConfig(zoom: 17),
     ));
   }
