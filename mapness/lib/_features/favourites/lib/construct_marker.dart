@@ -22,7 +22,6 @@ Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter rou
           objectId: id,
           entranceId: 0,
         ),
-        closestPoint: null,
       ),
       toCompareRoutes: [PoiCardWidgetRoute.page],
     );
