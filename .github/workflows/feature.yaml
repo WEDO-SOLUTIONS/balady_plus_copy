@@ -41,6 +41,8 @@ jobs:
     name: Auto Request Review CODEOWNERS
     runs-on: [self-hosted, Linux]
     steps:
+      - name: Check out code
+        uses: actions/checkout@v4
       - name: Request review based on files changes and/or groups the author belongs to. CODEOWNERS
         uses: urbi-ae/auto-request-review@v0.17.0
         with:
@@ -132,7 +134,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.22.2"
+          flutter-version: "3.24.3"
           channel: "stable"
           cache: true
       - name: Download Localazy
