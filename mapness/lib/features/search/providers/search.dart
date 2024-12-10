@@ -1,9 +1,11 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -284,6 +286,9 @@ class Search extends _$Search {
   }
 
   void searchInThisArea() {
+    ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsSearchInThisAreaPressed);
+
+    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
     switch (_previousType) {
       case null:
         break;

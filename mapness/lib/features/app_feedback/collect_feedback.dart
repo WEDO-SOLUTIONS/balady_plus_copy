@@ -1,10 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
-import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:package_info_plus/package_info_plus.dart';
+import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'collect_feedback.g.dart';
@@ -16,26 +12,20 @@ class CollectFeedback extends _$CollectFeedback {
   @override
   AppFeedbackPayload? build() => null;
 
-  Future<void> collectFeedback(String reviewText) async {
-    final isAndroid = Platform.isAndroid;
-    final packageInfo = await PackageInfo.fromPlatform();
-
-    final mobileOs = isAndroid ? AppFeedbackMobileOs.android : AppFeedbackMobileOs.ios;
-    final version = packageInfo.version;
-    final language = ref.read(appLanguageProvider) == Language.arabic ? AppFeedbackLocale.ar : AppFeedbackLocale.en;
-
-    final auth = await ref.read(authProvider.future);
+  Future<void> collectFeedback({required int stars, String? text, List<String>? tags, FeedbackSource? source}) async {
+    final deviceContext = await ref.read(deviceInfoProvider.future);
 
     _storeLink?.close();
     _storeLink = ref.keepAlive();
 
     state = AppFeedbackPayload(
-      reviewText: reviewText,
-      context: AppFeedbackContext(
-        locale: language,
-        appVersion: version,
-        mobileOS: mobileOs,
-        authId: auth?.idNo,
+      review: AppFeedbackReview(
+        stars: stars,
+        tags: tags,
+        text: text,
+      ),
+      context: deviceContext.copyWith(
+        feedbackSource: source,
       ),
     );
   }

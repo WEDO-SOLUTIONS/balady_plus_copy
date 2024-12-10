@@ -3,7 +3,6 @@ package com.dgis.map.android_auto
 import androidx.car.app.model.DateTimeWithZone
 import com.dgis.map.DgisMapInitializer
 import com.dgis.map.extensions.toRouteSearchOptionsMessage
-import com.dgis.map.map_api.Messages
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.CameraAnimationType

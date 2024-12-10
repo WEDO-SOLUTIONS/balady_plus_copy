@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
@@ -8,9 +9,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
 import 'package:mapness/_features/landing/widgets/map_quick_filters.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/free_roam.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -92,7 +92,10 @@ class _DashboardMenu extends ConsumerWidget {
                     filterType: FilterType.custom,
                     title: context.l10n.go,
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
-                    onTap: () => FreeRoamRoute.open(ref.watch(goRouterProvider)),
+                    onTap: () {
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+                      context.router.push(const FreeRoamRoute());
+                    },
                   ),
                 ],
               ),
@@ -127,11 +130,14 @@ class DashboardHeader extends ConsumerWidget {
                 action: MetricAction.tap.name,
                 group: MetricsConstants.exploreTag,
               );
+
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
-              const SearchRoute().push(context);
+              context.router.push(SearchRoute());
             },
             child: AbsorbPointer(
               child: BaladyInput.searchV2(

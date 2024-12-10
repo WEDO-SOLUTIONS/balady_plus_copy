@@ -50,20 +50,20 @@ extension MarkerTextStyleMessage {
     var textStyle: TextStyle {
         return TextStyle(
             fontSize: self.fontSize.map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 8),
             color: self.color.map {
-                return Color(argb: UInt32($0.intValue))
+                return Color(argb: UInt32($0))
             } ?? Color(),
             strokeWidth: self.strokeWidth.map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0.3499999940395355),
             strokeColor: self.strokeColor.map {
-                Color(argb: UInt32($0.intValue))
+                Color(argb: UInt32($0))
             } ?? Color(argb: 4294967295),
             textPlacement: self.textPlacement?.placement.textPlacement ?? .bottomCenter,
             textOffset: self.textOffset.map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
             fontName: self.fontName
         )

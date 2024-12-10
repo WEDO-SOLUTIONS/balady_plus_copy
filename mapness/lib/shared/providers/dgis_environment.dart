@@ -23,6 +23,7 @@ class DgisEnvironment extends _$DgisEnvironment {
     final envConfig = box.get(MapnessConstants.firebaseAppEnvConfigKey);
     final envType = box.get(MapnessConstants.envTypeKey);
     final envTypeJsonKey = _env?.name ?? envType;
-    return EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
+    final environmentConfig = EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
+    return environmentConfig;
   }
 }

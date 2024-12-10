@@ -1,4 +1,3 @@
-export 'app_router.dart';
 export 'common_functions.dart';
 export 'size_config.dart';
 export 'debouncer.dart';

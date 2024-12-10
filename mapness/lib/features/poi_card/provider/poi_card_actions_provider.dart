@@ -2,10 +2,9 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
-import 'package:mapness/app/routes/routing.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
-import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -72,27 +71,6 @@ class PoiCardActions extends _$PoiCardActions {
       );
     }
   }
-
-  RoutingRoutesRoute goRoute({
-    required String finishLabel,
-    required String startLabel,
-    required LatLng finishLocation,
-    LatLng? startLocation,
-  }) =>
-      RoutingRoutesRoute(
-        finishLabel: finishLabel,
-        finishLatitude: finishLocation.latitude,
-        finishLongitude: finishLocation.longitude,
-        startLabel: startLabel,
-        startLatitude: startLocation?.latitude,
-        startLongitude: startLocation?.longitude,
-        startObjectId: null,
-        startEntranceId: null,
-        startLevelId: null,
-        finishEntranceId: null,
-        finishLevelId: null,
-        finishObjectId: null,
-      );
 
   Future<void> sendEmail(String value) async {
     await launchUrl(

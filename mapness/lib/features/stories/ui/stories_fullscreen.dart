@@ -5,6 +5,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
@@ -76,6 +77,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       return;
     }
     if (page <= -1 || page >= _maxPages) {
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
       _onClose();
     }
 
@@ -108,6 +110,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   void _nextStory() {
     if (_currentPage + 1 >= _maxPages) {
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
       _onClose();
       return;
     }

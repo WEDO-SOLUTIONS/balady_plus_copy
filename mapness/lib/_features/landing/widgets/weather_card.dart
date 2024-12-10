@@ -1,12 +1,13 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
-import 'package:mapness/app/routes/weather.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -60,7 +61,7 @@ class _WeatherCardState extends ConsumerState<WeatherCard> {
             action: MetricAction.tap.name,
             group: MetricsConstants.layersTag,
           );
-          const WeatherRoute().push(context);
+          context.router.push(const WeatherRoute());
         },
         child: SizedBox(
           height: 118,

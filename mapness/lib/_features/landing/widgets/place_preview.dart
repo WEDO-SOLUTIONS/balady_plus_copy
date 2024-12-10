@@ -1,13 +1,16 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
 import 'package:mapness/_features/landing/widgets/slider_list_view.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -48,7 +51,16 @@ class PlacePreview extends ConsumerWidget {
                 },
               );
 
-              PoiMapRoute.open(ref.read(goRouterProvider), objectId, zoom: 17);
+              context.router.replaceOrPush(
+                route: PoiCardWidgetRoute(
+                  objectId: DgisObjectIdMessage(
+                    objectId: objectId,
+                    entranceId: 0,
+                  ),
+                  cameraConfig: const PoiCameraConfig(zoom: 17),
+                ),
+                toCompareRoutes: [PoiCardWidgetRoute.page],
+              );
             },
             itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
           );

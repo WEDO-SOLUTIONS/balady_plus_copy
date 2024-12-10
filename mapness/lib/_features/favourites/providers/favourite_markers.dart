@@ -4,7 +4,7 @@ import 'package:mapness/_features/favourites/lib/construct_marker.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/app/router.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -68,7 +68,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
         layerId: settings.layerId,
       ).notifier,
     );
-    final router = ref.watch(goRouterProvider);
+    final router = ref.watch(appRouterProvider);
     final favItemsAsync = ref.watch(favouriteCacheProvider);
     final showMarkers = ref.watch(favouriteToggleProvider);
 

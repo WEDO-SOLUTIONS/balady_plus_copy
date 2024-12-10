@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/debug_overlay/widgets/bug_button.dart';
 import 'package:mapness/_features/debug_overlay/widgets/debug_sheet.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 
 class DebugOverlay extends StatefulWidget {
   const DebugOverlay({super.key});

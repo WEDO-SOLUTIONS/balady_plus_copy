@@ -2,16 +2,15 @@ import 'package:dgis_map/library.dart';
 
 extension DirectoryObjectMessageExt on DirectoryObjectMessage {
   Map<String, dynamic> toJson() {
-    final typesList = types.map((item) => item?.toJson()).toList();
+    final typesList = types.map((item) => item.toJson()).toList();
     final markerPositionJson = markerPosition?.toJson();
     final addressJson = address?.toJson();
     final fullAddressNameJson = fullAddressName?.toJson();
     final shortAddressNameJson = shortAddressName?.toJson();
-    final attributesList = attributes.map((item) => item?.toJson()).toList();
+    final attributesList = attributes.map((item) => item.toJson()).toList();
     final contextAttributesList =
-        contextAttributes.map((item) => item?.toJson()).toList();
-    final contactInfosList =
-        contactInfos.map((item) => item?.toJson()).toList();
+        contextAttributes.map((item) => item.toJson()).toList();
+    final contactInfosList = contactInfos.map((item) => item.toJson()).toList();
     final openingHoursJson = openingHours?.toJson();
     final reviewsJson = reviews?.toJson();
     final parkingInfoJson = parkingInfo?.toJson();
@@ -19,7 +18,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     final buildingLevelsJson = buildingLevels?.toJson();
     final buildingInfoJson = buildingInfo.toJson();
     final entrancesList = entrances.map((item) {
-      final json = item?.toJson();
+      final json = item.toJson();
       return json;
     }).toList();
     final tradeLicenseJson = tradeLicense?.toJson();
@@ -151,26 +150,26 @@ extension EntranceInfoMessageExt on EntranceInfoMessage {
       'buildingNumber': buildingNumber,
       'porchName': porchName,
       'porchNumber': porchNumber,
-      'apartmentRanges': apartmentRanges.map((item) => item?.toJson()).toList(),
+      'apartmentRanges':
+          apartmentRanges.map((item) => item?.toJson()).nonNulls.toList(),
       'geometry': geometryJson,
     };
   }
 
-  static EntranceInfoMessage fromJson(Map<String, dynamic>? json) {
-    return EntranceInfoMessage(
-      id: DgisObjectIdMessageExt.fromJson(json?['id']),
-      buildingNumber: json?['buildingNumber'],
-      porchName: json?['porchName'],
-      porchNumber: json?['porchNumber'],
-      apartmentRanges: (json?['apartmentRanges'] as List)
-          .map((e) =>
-              e == null ? null : ApartmentRangeMessageExtension.fromJson(e))
-          .toList(),
-      geometry: json?['geometry'] == null
-          ? null
-          : EntranceGeometryMessageExtension.fromJson(json?['geometry']),
-    );
-  }
+  static EntranceInfoMessage fromJson(Map<String, dynamic>? json) =>
+      EntranceInfoMessage(
+        id: DgisObjectIdMessageExt.fromJson(json?['id']),
+        buildingNumber: json?['buildingNumber'],
+        porchName: json?['porchName'],
+        porchNumber: json?['porchNumber'],
+        apartmentRanges: (json?['apartmentRanges'] as List)
+            .map((e) =>
+                e == null ? null : ApartmentRangeMessageExtension.fromJson(e))
+            .toList(),
+        geometry: json?['geometry'] == null
+            ? null
+            : EntranceGeometryMessageExtension.fromJson(json?['geometry']),
+      );
 }
 
 extension DgisObjectIdMessageExt on DgisObjectIdMessage {
@@ -246,8 +245,8 @@ extension ObjectTypeItemMessageExt on ObjectTypeItemMessage {
 
 extension AddressMessageExt on AddressMessage {
   Map<String, dynamic> toJson() => {
-        'drilldown': drilldown.map((item) => item?.toJson()).toList(),
-        'components': components.map((item) => item?.toJson()).toList(),
+        'drilldown': drilldown.map((item) => item.toJson()).toList(),
+        'components': components.map((item) => item.toJson()).toList(),
         'buildingName': buildingName,
         'postCode': postCode,
         'buildingCode': buildingCode,
@@ -357,7 +356,7 @@ extension GeoPointMessageExtension on GeoPointMessage {
 extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
   Map<String, dynamic> toJson() {
     final entrancePointsList = entrancePoints.map((point) {
-      final json = point?.toJson();
+      final json = point.toJson();
       return json;
     }).toList();
 
@@ -374,24 +373,24 @@ extension EntranceGeometryMessageExtension on EntranceGeometryMessage {
         .toList();
 
     final json2 = json['entrancePolylines'] as List<dynamic>?;
-    final entrancePolylines = (json2)!.map<List<GeoPointMessage?>>((polyline) {
-      final result = <GeoPointMessage?>[];
+    final entrancePolylines = json2?.map<List<GeoPointMessage>>((polyline) {
+      final result = <GeoPointMessage>[];
 
-      final list = (polyline as List<dynamic>?)
-          ?.map((point) =>
+      final list = (polyline as List<dynamic>)
+          .map((point) =>
               GeoPointMessageExtension.fromJson(point as Map<String, dynamic>))
           .toList();
 
-      list?.forEach((element) {
+      for (final element in list) {
         result.add(element);
-      });
+      }
 
       return result;
     }).toList();
 
     return EntranceGeometryMessage(
       entrancePoints: entrancePoints,
-      entrancePolylines: entrancePolylines,
+      entrancePolylines: entrancePolylines ?? [],
     );
   }
 }
@@ -428,7 +427,7 @@ extension AttributeMessageExtension on AttributeMessage {
 
 extension OpeningHoursMessageExtension on OpeningHoursMessage {
   Map<String, dynamic> toJson() => {
-        'values': values.map((item) => item?.toJson()).toList(),
+        'values': values.map((item) => item.toJson()).toList(),
         'isOpen24x7': isOpen24x7,
       };
 
@@ -444,7 +443,7 @@ extension OpeningHoursMessageExtension on OpeningHoursMessage {
 
 extension WeekTimeIntervalListMessageExtension on WeekTimeIntervalListMessage {
   Map<String, dynamic> toJson() => {
-        'values': values.map((item) => item?.toJson()).toList(),
+        'values': values.map((item) => item.toJson()).toList(),
       };
 
   static WeekTimeIntervalListMessage fromJson(Map<String, dynamic> json) =>
@@ -616,7 +615,7 @@ extension WorkStatusMessageExtension on WorkStatusMessage {
 extension BuildingLevelsMessageExtension on BuildingLevelsMessage {
   Map<String, dynamic> toJson() => {
         'defaultLevelId': defaultLevelId,
-        'levels': levels.map((level) => level?.toJson()).toList(),
+        'levels': levels.map((level) => level.toJson()).toList(),
       };
 
   static BuildingLevelsMessage fromJson(Map<String, dynamic>? json) =>
@@ -673,7 +672,7 @@ extension LevelInfoMessageExtension on LevelInfoMessage {
 extension ParkingCapacityMessageExtension on ParkingCapacityMessage {
   Map<String, dynamic> toJson() => {
         'total': total,
-        'specialSpaces': specialSpaces.map((space) => space?.toJson()).toList(),
+        'specialSpaces': specialSpaces.map((space) => space.toJson()).toList(),
       };
 
   static ParkingCapacityMessage fromJson(Map<String, dynamic> json) =>
@@ -780,7 +779,7 @@ extension ParkingPurposeMessageExtension on ParkingPurposeMessage {
 extension ParkingAccessMessageExtension on ParkingAccessMessage {
   String toJson() {
     switch (this) {
-      case ParkingAccessMessage.public:
+      case ParkingAccessMessage.publicAccess:
         return 'public';
       case ParkingAccessMessage.handicappedOnly:
         return 'handicappedOnly';
@@ -796,7 +795,7 @@ extension ParkingAccessMessageExtension on ParkingAccessMessage {
   static ParkingAccessMessage fromJson(String value) {
     switch (value) {
       case 'public':
-        return ParkingAccessMessage.public;
+        return ParkingAccessMessage.publicAccess;
       case 'handicappedOnly':
         return ParkingAccessMessage.handicappedOnly;
       case 'customersOnly':

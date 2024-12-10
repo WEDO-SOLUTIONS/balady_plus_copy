@@ -1,9 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/photo_viewer.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
@@ -145,7 +145,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
             child: LoadingShimmerImage(
               imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
               fit: BoxFit.cover,
-              onImageTap: (name, {isAsset}) => PhotoViewerRoute.open(ref.read(goRouterProvider), index, photosUrls),
+              onImageTap: (name, {isAsset}) => context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
             ),
           ),
         ),

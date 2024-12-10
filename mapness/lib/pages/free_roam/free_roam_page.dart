@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -7,7 +8,7 @@ import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/app/routes/road_panel.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/free_roam/free_roam_manager.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_maneuver.dart';
@@ -15,10 +16,12 @@ import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_speed_info.dart';
 import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
-import 'package:mapness/pages/path_nav/lib/utils.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+@RoutePage()
 class FreeRoamPage extends ConsumerStatefulWidget {
   const FreeRoamPage({
     super.key,
@@ -37,6 +40,10 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   bool wasSetActive = true;
 
   Timer? timer;
+
+  late final uikit.StatelessBottomSheetController _bottomSheetController = uikit.StatelessBottomSheetController(
+    onClose: (_) => _bottomSheetController.close,
+  );
 
   @override
   void initState() {
@@ -77,140 +84,146 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   Widget build(BuildContext context) => SafeArea(
         bottom: false,
-        child: Stack(
-          children: [
-            Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerDown: (event) {
-                timer?.cancel();
-                timer = null;
-                setState(() {
-                  if (!isControlsActive) {
-                    wasSetActive = true;
-                    isControlsActive = true;
-                  }
-                });
-              },
-              onPointerUp: (event) {
-                startControlsDisapearTimer();
-              },
-            ),
-            GestureDetector(
-              behavior: HitTestBehavior.translucent,
-              onTap: () {
-                setState(() {
-                  if (wasSetActive) {
-                    wasSetActive = false;
-                    return;
-                  }
+        child: Directionality(
+          textDirection: TextDirection.ltr,
+          child: Stack(
+            children: [
+              Listener(
+                behavior: HitTestBehavior.translucent,
+                onPointerDown: (event) {
+                  timer?.cancel();
+                  timer = null;
+                  setState(() {
+                    if (!isControlsActive) {
+                      wasSetActive = true;
+                      isControlsActive = true;
+                    }
+                  });
+                },
+                onPointerUp: (event) {
+                  startControlsDisapearTimer();
+                },
+              ),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: () {
+                  setState(() {
+                    if (wasSetActive) {
+                      wasSetActive = false;
+                      return;
+                    }
 
-                  isControlsActive = !isControlsActive;
-                });
-              },
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const SizedBox(height: 6, width: double.maxFinite),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
-                  child: Consumer(
-                    builder: (context, ref, child) {
-                      final message = ref.watch(pathNavMessageProvider);
-                      final maneuver = ref.watch(pathNavManeuverProvider);
-                      final info = ref.watch(pathNavSpeedInfoProvider);
+                    isControlsActive = !isControlsActive;
+                  });
+                },
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  const SizedBox(height: uikit.Spacing.$1_5x, width: double.maxFinite),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+                    child: Consumer(
+                      builder: (context, ref, child) {
+                        final message = ref.watch(pathNavMessageProvider);
+                        final maneuver = ref.watch(pathNavManeuverProvider);
+                        final info = ref.watch(pathNavSpeedInfoProvider);
 
-                      return Material(
-                        type: MaterialType.transparency,
-                        color: Colors.transparent,
-                        child: uikit.BaladyManeuverAndLimit(
-                          isPedestrian: false,
-                          hideSpeedLimit: info.speedLimit == null,
-                          speedInfo: uikit.LimitsModel(
-                            speed: info.speed,
-                            speedExceed: info.speedExceed,
-                            speedLimit: info.speedLimit,
+                        return Material(
+                          type: MaterialType.transparency,
+                          color: Colors.transparent,
+                          child: uikit.BaladyManeuverAndLimit(
+                            isPedestrian: false,
+                            hideSpeedLimit: info.speedLimit == null,
+                            speedInfo: uikit.LimitsModel(
+                              speed: info.speed,
+                              speedExceed: info.speedExceed,
+                              speedLimit: info.speedLimit,
+                            ),
+                            maneuver: maneuver != null
+                                ? uikit.BaladyManeuverModel(
+                                    distance: maneuver.distance,
+                                    instruction: maneuver.instruction?.toUIKit(),
+                                    roadName: maneuver.roadName,
+                                    unit: maneuver.unit,
+                                  )
+                                : null,
+                            message: message != null && message.state != PathNavMessageState.reroute
+                                ? uikit.ManeuverMessageModel(
+                                    comment: message.state.toMessage(context.l10n),
+                                    state: message.state.toUIKit(),
+                                  )
+                                : null,
                           ),
-                          maneuver: maneuver != null
-                              ? uikit.BaladyManeuverModel(
-                                  distance: maneuver.distance,
-                                  instruction: maneuver.instruction?.toUIKit(),
-                                  roadName: maneuver.roadName,
-                                  unit: maneuver.unit,
-                                )
-                              : null,
-                          message: message != null && message.state != PathNavMessageState.reroute
-                              ? uikit.ManeuverMessageModel(
-                                  comment: message.state.toMessage(context.l10n),
-                                  state: message.state.toUIKit(),
-                                )
-                              : null,
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   ),
-                ),
-                const SizedBox(height: 12),
-                Expanded(
-                  child: AnimatedOpacity(
-                    opacity: isControlsActive ? 1 : 0,
-                    duration: const Duration(milliseconds: 250),
-                    child: IgnorePointer(
-                      ignoring: !isControlsActive,
-                      child: GestureDetector(
-                        onTap: () {
-                          timer?.cancel();
-                          timer = null;
-                          wasSetActive = true;
-                          isControlsActive = true;
-                          startControlsDisapearTimer();
-                        },
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: padding,
-                              child: TrafficParkingControl(),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: padding,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  IndoorControl(),
-                                  ZoomControl(),
-                                ],
+                  const SizedBox(height: uikit.Spacing.$3x),
+                  Expanded(
+                    child: AnimatedOpacity(
+                      opacity: isControlsActive ? 1 : 0,
+                      duration: const Duration(milliseconds: 250),
+                      child: IgnorePointer(
+                        ignoring: !isControlsActive,
+                        child: GestureDetector(
+                          onTap: () {
+                            timer?.cancel();
+                            timer = null;
+                            wasSetActive = true;
+                            isControlsActive = true;
+                            startControlsDisapearTimer();
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Padding(
+                                padding: padding,
+                                child: TrafficParkingControl(
+                                  bottomSheetController: _bottomSheetController,
+                                ),
                               ),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: padding,
-                              child: CompassControl(),
-                            ),
-                            SizedBox(height: 8),
-                            Padding(
-                              padding: padding,
-                              child: FollowControl(),
-                            ),
-                            SizedBox(height: 12),
-                          ],
+                              const Spacer(),
+                              const Padding(
+                                padding: padding,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    IndoorControl(),
+                                    ZoomControl(),
+                                  ],
+                                ),
+                              ),
+                              const Spacer(),
+                              const Padding(
+                                padding: padding,
+                                child: CompassControl(),
+                              ),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              const Padding(
+                                padding: padding,
+                                child: FollowControl(),
+                              ),
+                              const SizedBox(height: uikit.Spacing.$3x),
+                            ],
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                Center(
-                  child: RoadPanel(
-                    isLoading: isLoading,
-                    onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
-                    onOpenSheet: () => RoadPanelRoute.open(context),
+                  Center(
+                    child: RoadPanel(
+                      isLoading: isLoading,
+                      onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
+                      onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 21),
-              ],
-            ),
-          ],
+                  const SizedBox(height: uikit.Spacing.$5x + uikit.Spacing.px),
+                ],
+              ),
+              ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
+            ],
+          ),
         ),
       );
 }

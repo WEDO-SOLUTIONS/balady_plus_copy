@@ -49,4 +49,8 @@ class Metrics {
 
     FlutterUxcam.logEventWithProperties(str.toString(), props);
   }
+
+  static void logException([dynamic ex, StackTrace? stack]) {
+    FlutterUxcam.reportExceptionEvent(ex, stack);
+  }
 }

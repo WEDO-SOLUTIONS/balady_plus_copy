@@ -1,7 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
@@ -9,16 +10,17 @@ import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_details.dart';
 import 'package:shimmer/shimmer.dart';
 
-class LayersDetailsWidget extends ConsumerStatefulWidget {
-  const LayersDetailsWidget({super.key, this.data});
+@RoutePage()
+class LayersDetailsWidgetPage extends ConsumerStatefulWidget {
+  const LayersDetailsWidgetPage({super.key, this.data});
 
   final PointLayersData? data;
 
   @override
-  ConsumerState<LayersDetailsWidget> createState() => LayersDetailsState();
+  ConsumerState<LayersDetailsWidgetPage> createState() => LayersDetailsState();
 }
 
-class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
+class LayersDetailsState extends ConsumerState<LayersDetailsWidgetPage> {
   @override
   Widget build(BuildContext context) => SafeArea(
         child: Padding(
@@ -38,7 +40,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                               streetName: selectedPoint?.streetName,
                               parcelNo: selectedPoint?.parcelCode,
                               stageNo: selectedPoint?.phase,
-                              onClose: () => context.pop(),
+                              onClose: () => context.router.popForced(),
                             ),
                           );
                         case final InvestmentSites? selectedPoint:
@@ -56,7 +58,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                               opportunityNumber: selectedPoint?.opportunityNumber,
                               subMunicipality: selectedPoint?.subMunicipalityId,
                               mainActivity: selectedPoint?.mainActivityName,
-                              onClose: () => context.pop(),
+                              onClose: () => context.router.popForced(),
                             ),
                           );
                         case final BuildingComplianceCertificate? selectedPoint:
@@ -68,7 +70,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                               targetBuildingType: selectedPoint?.targetBuildingType,
                               streetName: selectedPoint?.streetName,
                               stageNo: selectedPoint?.stageno,
-                              onClose: () => context.pop(),
+                              onClose: () => context.router.popForced(),
                             ),
                           );
                         default:
@@ -76,7 +78,7 @@ class LayersDetailsState extends ConsumerState<LayersDetailsWidget> {
                       }
                     },
                     error: (error) {
-                      context.pop();
+                      context.router.popForced();
                       return buildShimmer();
                     },
                     loading: (_) => buildShimmer(),

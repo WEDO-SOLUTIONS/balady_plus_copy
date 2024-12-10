@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -100,7 +100,7 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
             action: MetricAction.tap.toString(),
           );
           FocusScope.of(context).unfocus();
-          context.pop();
+          context.router.popForced();
         },
       ),
     );

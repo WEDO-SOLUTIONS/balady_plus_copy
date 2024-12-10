@@ -3,7 +3,9 @@ package com.dgis.map.android_auto
 import android.location.Location
 import com.dgis.map.DgisMapInitializer
 import ru.dgis.sdk.DgisObjectId
+import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
+import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.directory.SearchManager
@@ -11,12 +13,18 @@ import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.BearingSource
 import ru.dgis.sdk.map.CameraAnimationType
+import ru.dgis.sdk.map.CameraPosition
 import ru.dgis.sdk.map.CameraZoomRestrictions
+import ru.dgis.sdk.map.LogicalPixel
+import ru.dgis.sdk.map.MapObjectManager
+import ru.dgis.sdk.map.Marker
 import ru.dgis.sdk.map.MyLocationControlModel
 import ru.dgis.sdk.map.MyLocationControllerSettings
 import ru.dgis.sdk.map.MyLocationMapObjectSource
+import ru.dgis.sdk.map.Padding
 import ru.dgis.sdk.map.RouteEditorSource
 import ru.dgis.sdk.map.StyleBuilder
+import ru.dgis.sdk.map.Tilt
 import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.ZoomControlButton
 import ru.dgis.sdk.map.ZoomControlModel
@@ -53,6 +61,7 @@ class CarMapController(
 
     private var map: DgisMap? = null
 
+    private var mapObjectManager: MapObjectManager? = null
     private var myLocationControlModel: MyLocationControlModel? = null
     private var zoomControlModel: ZoomControlModel? = null
     private var trafficControlModel: TrafficControlModel? = null
@@ -83,15 +92,21 @@ class CarMapController(
         navigationHandler.addMap(map)
         map.addSource(routeEditorSource)
 
-        // TODO(Sergei): style is unstable in android auto
-//        setStyle()
+        mapObjectManager = MapObjectManager.withGeneralization(
+            map = map,
+            logicalPixel = LogicalPixel(value = 8f),
+            maxZoom = Zoom(value = 18f),
+            layerId = "920277"
+        )
+
+        setStyle()
     }
 
     private fun setStyle() {
         val builder = StyleBuilder(sdkContext)
         closeables.add(builder.loadStyle(
             File.fromAsset(
-                sdkContext, "flutter_assets/assets/maps/styles/_common-styles.2gis"
+                sdkContext, "flutter_assets/assets/maps/styles/styles.2gis"
             )
         ).apply {
             onResult { map?.style = it }
@@ -264,6 +279,43 @@ class CarMapController(
 
     fun getCurrentNavigationState(): NavigationState {
         return navigationHandler.getCurrentNavigationState()
+    }
+
+    fun addMarkers(markers: List<Marker>) {
+        val objectManager = this.mapObjectManager ?: return
+        objectManager.addObjects(markers)
+    }
+
+    fun removeAllMarkers() {
+        val objectManager = this.mapObjectManager ?: return
+        objectManager.removeAll()
+    }
+
+    fun moveCamera(
+        point: GeoPoint,
+        zoom: Double = 17.0,
+        tilt: Double = 0.0,
+        bearing: Double = 0.0,
+        duration: Long = 300,
+        animationType: CameraAnimationType = CameraAnimationType.LINEAR,
+    ) {
+        val map = map ?: return
+        closeables.add(
+            map.camera.move(
+                CameraPosition(
+                    point = point,
+                    zoom = Zoom(zoom.toFloat()),
+                    tilt = Tilt(tilt.toFloat()),
+                    bearing = Bearing(bearing),
+                ),
+                Duration.ofMilliseconds(duration), animationType,
+            )
+        )
+    }
+
+    fun setCameraPadding(padding: Padding){
+        val map = this.map ?: return
+        map.camera.padding = padding
     }
 
     override fun close() {

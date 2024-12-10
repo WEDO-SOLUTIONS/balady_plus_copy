@@ -4,7 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
-import 'package:mapness/app/routes/routes.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -24,7 +24,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
-import 'package:mapness/shared/lib/deeplink_functionds.dart';
+import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -218,7 +218,7 @@ class ShareEta extends _$ShareEta {
         ref.read(shareEtaProvider.notifier).startWebsocketStream(streamId, streamToken, xStreamData);
       })
       ..onDispose(() {
-        stopSharingCurrent();
+        stopSharingAndClearCurrent();
 
         _websocketStatusSubscription?.close();
         _locationSubscription?.cancel();
@@ -242,21 +242,15 @@ class ShareEta extends _$ShareEta {
         _lastConnectionStatus = true;
         ref.read(websocketErrorHandlerProvider.notifier).setStatus(null, null);
       } catch (e) {
-        final tokenId = EtaStreamStorage().state.streamToken;
-        final xStreamData = EtaStreamStorage().state.xStreamData;
-        if (tokenId != null && xStreamData != null) {
-          await stopSharing(tokenId, xStreamData);
-        }
+        await stopSharing();
       } finally {
         _reconnectingInProgress = false;
       }
     } else if (statusCode == EtaErrorStatusCodes.endConnection &&
         [WebsocketReason.expired, WebsocketReason.manual].contains(reasonData)) {
-      final tokenId = EtaStreamStorage().state.streamToken;
-      final xStreamData = EtaStreamStorage().state.xStreamData;
       final isSharing = ref.read(websocketTypeProvider) == SubscriptionType.share;
-      if (tokenId != null && xStreamData != null && isSharing) {
-        await stopSharing(tokenId, xStreamData);
+      if (isSharing) {
+        await stopSharing();
       }
     }
   }
@@ -315,17 +309,16 @@ class ShareEta extends _$ShareEta {
     }
   }
 
-  Future<void> stopSharingCurrent() async {
+  Future<void> stopSharingAndClearCurrent() => stopSharing(clearStateStorage: true);
+
+  Future<void> stopSharing({bool clearStateStorage = false}) async {
     final tokenId = EtaStreamStorage().state.streamToken;
     final xStreamData = EtaStreamStorage().state.xStreamData;
 
-    if (tokenId != null && xStreamData != null) {
-      await stopSharing(tokenId, xStreamData);
-      EtaStreamStorage().clear();
+    if (tokenId == null || xStreamData == null) {
+      return;
     }
-  }
 
-  Future<void> stopSharing(String tokenId, String xStreamData) async {
     final etaService = ref.read(etaServiceProvider.notifier);
 
     try {
@@ -335,6 +328,9 @@ class ShareEta extends _$ShareEta {
       log(e.toString());
     } finally {
       EtaWebsocket().removeConnectionLostListener(_onErrorStatus);
+      if (clearStateStorage) {
+        EtaStreamStorage().clear();
+      }
     }
   }
 

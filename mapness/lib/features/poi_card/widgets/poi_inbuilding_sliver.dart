@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -5,10 +6,8 @@ import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
@@ -75,14 +74,24 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
             itemBuilder: (context, item, index) => OrganizationWidget(
               item: item,
               onTap: (id) {
-                context.pop();
-                PoiMapRoute.open(
-                  ref.read(goRouterProvider),
-                  id,
-                  zoom: widget.cameraConfig?.zoom,
-                  bearing: widget.cameraConfig?.bearing,
-                  tilt: widget.cameraConfig?.tilt,
-                  latLng: widget.closestPoint,
+                final id = item.id;
+                if (id == null) {
+                  return;
+                }
+
+                context.router.replace(
+                  PoiCardWidgetRoute(
+                    objectId: DgisObjectIdMessage(
+                      objectId: int.parse(id),
+                      entranceId: 0,
+                    ),
+                    closestPoint: widget.closestPoint,
+                    cameraConfig: PoiCameraConfig(
+                      zoom: widget.cameraConfig?.zoom,
+                      bearing: widget.cameraConfig?.bearing,
+                      tilt: widget.cameraConfig?.tilt,
+                    ),
+                  ),
                 );
               },
             ),

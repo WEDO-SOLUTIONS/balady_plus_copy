@@ -55,7 +55,7 @@ class _NearestObject extends _$NearestObject {
     final objects = await dgisController.getNearestObjects();
     final dgisObjects = await Stream.fromIterable(objects)
         .asyncMap(
-          (e) async => (e, await dgisController.searchByObjectId(e.object)),
+          (e) async => (e, await dgisController.searchByObjectId(e.objectId)),
         )
         .toList();
     final filteredObjects = dgisObjects

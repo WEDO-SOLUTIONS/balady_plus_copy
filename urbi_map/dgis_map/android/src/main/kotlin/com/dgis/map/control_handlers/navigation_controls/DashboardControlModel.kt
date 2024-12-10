@@ -1,8 +1,7 @@
 package com.dgis.map.control_handlers.navigation_controls;
 
 import android.util.Log
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.SoundToggleType
+import com.dgis.map.map_api.SoundToggleType
 import io.flutter.plugin.common.EventChannel
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.navigation.Model

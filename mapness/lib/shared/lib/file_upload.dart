@@ -3,7 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'file_upload.freezed.dart';
 
 @freezed
-class FileUpload with _$FileUpload {
+sealed class FileUpload with _$FileUpload {
   const factory FileUpload.init({
     required String srcPath,
   }) = FileUploadInit;

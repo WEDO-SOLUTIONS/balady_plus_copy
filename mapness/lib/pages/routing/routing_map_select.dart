@@ -1,11 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart' as uikitExt;
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
@@ -19,14 +19,15 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
-class RoutingMapSelect extends ConsumerStatefulWidget {
-  const RoutingMapSelect({super.key});
+@RoutePage()
+class RoutingMapSelectPage extends ConsumerStatefulWidget {
+  const RoutingMapSelectPage({super.key});
 
   @override
-  ConsumerState<RoutingMapSelect> createState() => _RoutingMapSelectState();
+  ConsumerState<RoutingMapSelectPage> createState() => _RoutingMapSelectState();
 }
 
-class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
+class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
@@ -119,6 +120,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
                       child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                             child: Column(
@@ -140,11 +142,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
                               ],
                             ),
                           ),
-                          uikit.AppButton.close(onTap: _onClose),
+                          uikit.AppButton.close(
+                            onTap: _onClose,
+                          ),
                         ],
                       ),
                     ),
-                    uikit.Spacing.$2x.heightBox,
+                    uikit.Spacing.$3x.heightBox,
                     _NearestObject(
                       nearestObject: nearestObject,
                     ),
@@ -195,13 +199,13 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
 
     switch (nearestObject) {
       case DGisNearestObject(nearestPoint: final nearestPoint):
-        context.pop(
+        context.router.popForced(
           // We need to pass the coordinates of the nearest point
           // because coordinates of object like street or districts are so far from the selected point
           RoutePointCoordinates(nearestPoint.geoPoint),
         );
       case CooridnatesNearestObject(geoPoint: final geoPoint):
-        context.pop(
+        context.router.popForced(
           RoutePointCoordinates(geoPoint),
         );
     }
@@ -214,7 +218,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelect> {
       action: MetricAction.tap.toString(),
     );
 
-    context.pop();
+    context.router.popForced();
   }
 }
 
