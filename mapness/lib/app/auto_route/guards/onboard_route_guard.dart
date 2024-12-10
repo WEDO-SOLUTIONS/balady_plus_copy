@@ -18,7 +18,7 @@ final class OnboardRouteGuard extends AutoRouteGuard {
         OnboardRoute(
           type: StoryTypes.onboarding,
           onClose: () {
-            ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
+            // ref.read(onboardingProvider.notifier).setIsOnboardingShown(isOnboardingShown: true);
             resolver.resolveNext(true, reevaluateNext: false);
           },
         ),
