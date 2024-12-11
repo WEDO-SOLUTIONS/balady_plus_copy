@@ -114,8 +114,7 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
               : Stack(
             fit: StackFit.expand,
             children: [
-                    ColoredBox(
-                        color: Colors.black),
+                    const ColoredBox(color: Colors.black),
                     Padding(
                       padding: EdgeInsets.only(
                         top: MediaQuery.paddingOf(context).top,
