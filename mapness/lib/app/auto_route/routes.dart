@@ -116,6 +116,13 @@ class Routes {
             path: 'profile',
             page: ProfileRoute.page,
             transitionsBuilder: TransitionsBuilders.noTransition,
+            children: [
+              CustomRoute(
+                path: 'change_profile_photo_sheet',
+                page: ChangeProfilePhotoRoute.page,
+                customRouteBuilder: RouteBuilders.modalSheetBuilder,
+              ),
+            ],
           ),
         ],
       );

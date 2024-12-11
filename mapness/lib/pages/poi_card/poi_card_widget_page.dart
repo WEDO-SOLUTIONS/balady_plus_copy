@@ -65,14 +65,10 @@ class PoiCardWidgetPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) => _PoiCardWrapper(
-          objectId: objectId,
-          cameraConfig: cameraConfig,
-          biggestHeight: constraints.biggest.height,
-          biggestWidth: constraints.biggest.width,
-          closestPoint: closestPoint,
-          key: key,
-        ),
+  Widget build(BuildContext context) => _PoiCardWrapper(
+        objectId: objectId,
+        cameraConfig: cameraConfig,
+        closestPoint: closestPoint,
+        key: key,
       );
 }
