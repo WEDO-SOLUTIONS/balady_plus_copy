@@ -25,12 +25,16 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     final isPermanentlyDenied = ref.read(profileImageProvider.notifier).status == PermissionStatus.permanentlyDenied;
 
     return Material(
+      borderRadius: const BorderRadius.only(
+        topLeft: Radius.circular(RadiusBorder.xl),
+        topRight: Radius.circular(RadiusBorder.xl),
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: 6),
+          const SizedBox(height: Spacing.$1_5x),
           const SheetDragger(),
-          const SizedBox(height: 6),
+          const SizedBox(height: Spacing.$1_5x),
           ContentRow(
             options: ContentRowOptions(
               title: context.l10n.profilePhoto,
@@ -44,7 +48,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
               ContentRow(
                 onTap: () {
@@ -69,7 +73,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
               ),
             ]),
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: Spacing.$8x),
         ],
       ),
     );
