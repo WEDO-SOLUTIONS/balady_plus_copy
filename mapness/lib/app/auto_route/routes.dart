@@ -112,11 +112,15 @@ class Routes {
             page: MapnessServicesRoute.page,
             transitionsBuilder: TransitionsBuilders.noTransition,
           ),
-          CustomRoute(
+          AutoRoute(
             path: 'profile',
-            page: ProfileRoute.page,
-            transitionsBuilder: TransitionsBuilders.noTransition,
+            page: const EmptyShellRoute('').page,
             children: [
+              CustomRoute(
+                path: '',
+                page: ProfileRoute.page,
+                transitionsBuilder: TransitionsBuilders.noTransition,
+              ),
               CustomRoute(
                 path: 'change_profile_photo_sheet',
                 page: ChangeProfilePhotoRoute.page,
