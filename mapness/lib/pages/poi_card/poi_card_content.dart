@@ -1,7 +1,7 @@
 part of 'poi_card_widget_page.dart';
 
 const _titleHorizontalPadding = 84.0;
-const _headerHegihtWithoutTitle = 182.0;
+const _headerHegihtWithoutTitle = 205;
 
 class _PoiCardContent extends ConsumerStatefulWidget {
   final DirectoryObjectMessage data;

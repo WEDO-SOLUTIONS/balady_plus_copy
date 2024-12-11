@@ -21,7 +21,7 @@ class BottomMenuPage extends ConsumerWidget {
           LandingRoute(),
           RoutingPointsRoute(),
           MapnessServicesRoute(),
-          ProfileRoute(),
+          ProfileRoute(children: [ChangeProfilePhotoRoute()]),
         ],
         onNavigate: (tab) {
           // Send event to analytics when route is Selected
