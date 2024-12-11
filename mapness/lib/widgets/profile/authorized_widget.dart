@@ -111,63 +111,65 @@ class AuthorizedWidget extends ConsumerWidget {
   }
 
   Future<void> _showBottomSheet(BuildContext context, WidgetRef ref) async {
-    final isPermanentlyDenied = ref.read(profileImageProvider.notifier).status == PermissionStatus.permanentlyDenied;
+    // final isPermanentlyDenied = ref.read(profileImageProvider.notifier).status == PermissionStatus.permanentlyDenied;
 
     // Result of the bottom sheet is "Should we open sheet with text 'Open settings to give permission'?"
-    final res = await showModalBottomSheet<bool>(
-      backgroundColor: context.color.surfaceBaseSecondary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      context: context,
-      builder: (context) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(height: 6),
-          const SheetDragger(),
-          const SizedBox(height: 6),
-          ContentRow(
-            options: ContentRowOptions(
-              title: context.l10n.profilePhoto,
-              titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
-              customActionWidget: AppButton.close(
-                color: context.color.surfaceContrastLow,
-                onTap: context.router.popForced,
-                innerPadding: const EdgeInsets.all(Spacing.$2x),
-                padding: EdgeInsets.zero,
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
-              ContentRow(
-                onTap: () {
-                  if (isPermanentlyDenied) {
-                    // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
-                    // permissions"
-                    context.router.popForced(true);
-                  } else {
-                    context.router.popForced();
-                    _updateAvatar(ref);
-                  }
-                },
-                options: ContentRowOptions(
-                  leadingIcon: SvgPicture.asset(
-                    'assets/icons/svg/photo_gallery.svg',
-                    colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
-                    package: PackageConfig.packageName,
-                  ),
-                  title: context.l10n.change_avatar,
-                  titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
-                ),
-              ),
-            ]),
-          ),
-          const SizedBox(height: 32),
-        ],
-      ),
-    );
+    final res = context.router.push(const ChangeProfilePhotoRoute());
+    // await showModalBottomSheet<bool>(
+    //   routeSettings: const RouteSettings(name: 'change_avatar'),
+    //   backgroundColor: context.color.surfaceBaseSecondary,
+    //   shape: const RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    //   ),
+    //   context: context,
+    //   builder: (context) => Column(
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: [
+    //       const SizedBox(height: 6),
+    //       const SheetDragger(),
+    //       const SizedBox(height: 6),
+    //       ContentRow(
+    //         options: ContentRowOptions(
+    //           title: context.l10n.profilePhoto,
+    //           titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+    //           customActionWidget: AppButton.close(
+    //             color: context.color.surfaceContrastLow,
+    //             onTap: context.router.popForced,
+    //             innerPadding: const EdgeInsets.all(Spacing.$2x),
+    //             padding: EdgeInsets.zero,
+    //           ),
+    //         ),
+    //       ),
+    //       Padding(
+    //         padding: const EdgeInsets.symmetric(horizontal: 16),
+    //         child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
+    //           ContentRow(
+    //             onTap: () {
+    //               if (isPermanentlyDenied) {
+    //                 // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
+    //                 // permissions"
+    //                 context.router.popForced(true);
+    //               } else {
+    //                 context.router.popForced();
+    //                 _updateAvatar(ref);
+    //               }
+    //             },
+    //             options: ContentRowOptions(
+    //               leadingIcon: SvgPicture.asset(
+    //                 'assets/icons/svg/photo_gallery.svg',
+    //                 colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
+    //                 package: PackageConfig.packageName,
+    //               ),
+    //               title: context.l10n.change_avatar,
+    //               titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+    //             ),
+    //           ),
+    //         ]),
+    //       ),
+    //       const SizedBox(height: 32),
+    //     ],
+    //   ),
+    // );
     if (res == true) {
       await Future.delayed(Durations.medium2);
       await _showDialog(context);
@@ -247,4 +249,63 @@ Future<void> _showDialog(BuildContext context) async {
   } else {
     await _showAndroidDialog(context, title, cancel, settings);
   }
+}
+
+Route<T> modalSheetBuilder<T>(BuildContext context) {
+  final NavigatorState navigator = Navigator.of(context);
+  final MaterialLocalizations localizations = MaterialLocalizations.of(context);
+
+  return ModalBottomSheetRoute<T>(
+    isScrollControlled: false,
+    builder: (context) => Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 6),
+        const SheetDragger(),
+        const SizedBox(height: 6),
+        ContentRow(
+          options: ContentRowOptions(
+            title: context.l10n.profilePhoto,
+            titleStyle: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
+            customActionWidget: AppButton.close(
+              color: context.color.surfaceContrastLow,
+              onTap: context.router.popForced,
+              innerPadding: const EdgeInsets.all(Spacing.$2x),
+              padding: EdgeInsets.zero,
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
+            ContentRow(
+              onTap: () {
+                // if (isPermanentlyDenied) {
+                // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
+                // permissions"
+                context.router.popForced(true);
+                // }
+              },
+              options: ContentRowOptions(
+                leadingIcon: SvgPicture.asset(
+                  'assets/icons/svg/photo_gallery.svg',
+                  colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
+                  package: PackageConfig.packageName,
+                ),
+                title: context.l10n.change_avatar,
+                titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),
+              ),
+            ),
+          ]),
+        ),
+        const SizedBox(height: 32),
+      ],
+    ),
+    capturedThemes: InheritedTheme.capture(from: context, to: navigator.context),
+    backgroundColor: context.color.surfaceBaseSecondary,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    barrierOnTapHint: localizations.scrimOnTapHint(localizations.bottomSheetLabel),
+  );
 }
