@@ -13,7 +13,6 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchHistory extends ConsumerWidget {
@@ -55,37 +54,12 @@ class MapSearchHistory extends ConsumerWidget {
               toCompareRoutes: [PoiCardWidgetRoute.page],
             );
           } catch (e) {
-            final result = await showDialog(
-              barrierColor: Colors.transparent,
-              useSafeArea: false,
-              context: context,
-              builder: (contextDialog) => ProviderScope(
-                parent: ProviderScope.containerOf(context),
-                child: Theme(
-                  data: Theme.of(context),
-                  child: MediaQuery(
-                    data: MediaQuery.of(context),
-                    child: Directionality(
-                      textDirection: Directionality.of(context),
-                      child: Localizations.override(
-                        context: context,
-                        child: ColoredBox(
-                          color: Colors.black45,
-                          child: Column(
-                            children: [
-                              const Spacer(),
-                              ErrorSheet(
-                                buttonLabel: context.l10n.tryAgain,
-                                errorLabel: context.l10n.placeWasNotFound,
-                                onRetry: () => Navigator.of(contextDialog).pop(true),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
+            final result = context.router.push(
+              ErrorSheetDialogRoute(
+                buttonLabel: context.l10n.tryAgain,
+                onRetry: () => context.router.popForced(true),
+                onClose: (_) => context.router.popForced(true),
+                onBarrierTap: () => context.router.popForced(true),
               ),
             );
             await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);

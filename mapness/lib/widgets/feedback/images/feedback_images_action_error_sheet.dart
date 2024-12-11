@@ -3,7 +3,7 @@ import 'package:mapness/entities/feedback/feedback_image_action_error.dart';
 import 'package:mapness/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 
 class FeedbackImagesActionErrorSheet extends StatelessWidget {
   final FeedbackImagePickError error;

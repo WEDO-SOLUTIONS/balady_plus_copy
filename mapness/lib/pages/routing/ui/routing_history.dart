@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide ErrorWidget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -9,7 +11,6 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/search/ui/search_history_collapsible.dart';
 
 class RoutingHistory extends ConsumerWidget {
@@ -72,37 +73,12 @@ class RoutingHistory extends ConsumerWidget {
                 final point = RoutePointDirectoryObject(object);
                 updatePoint(point);
               } catch (e) {
-                final result = await showDialog(
-                  barrierColor: Colors.transparent,
-                  useSafeArea: false,
-                  context: context,
-                  builder: (contextDialog) => ProviderScope(
-                    parent: ProviderScope.containerOf(context),
-                    child: Theme(
-                      data: Theme.of(context),
-                      child: MediaQuery(
-                        data: MediaQuery.of(context),
-                        child: Directionality(
-                          textDirection: Directionality.of(context),
-                          child: Localizations.override(
-                            context: context,
-                            child: ColoredBox(
-                              color: Colors.black45,
-                              child: Column(
-                                children: [
-                                  const Spacer(),
-                                  ErrorSheet(
-                                    buttonLabel: context.l10n.tryAgain,
-                                    errorLabel: context.l10n.placeWasNotFound,
-                                    onRetry: () => Navigator.of(contextDialog).pop(true),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
+                final result = context.router.push(
+                  ErrorSheetDialogRoute(
+                    buttonLabel: context.l10n.tryAgain,
+                    onRetry: () => context.router.popForced(true),
+                    onClose: (_) => context.router.popForced(true),
+                    onBarrierTap: () => context.router.popForced(true),
                   ),
                 );
                 await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
