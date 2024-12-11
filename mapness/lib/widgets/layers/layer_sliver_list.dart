@@ -67,10 +67,7 @@ class LayerSliverList extends ConsumerWidget {
             title: value.titleLocale(context.l10n),
             customActionWidget: value == layers_state.LayerType.parkingLots
                 ? GestureDetector(
-                    onTap: () {
-                      tapOnParkingLotsMenu();
-                      watch.showParking();
-                    },
+                    onTap: tapOnParkingLotsMenu,
                     child: Container(
                       height: _iconDefaultSize + Spacing.$3x * 2,
                       width: _iconDefaultSize + Spacing.$4x * 2,
