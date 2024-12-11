@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
@@ -58,42 +59,55 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _poiMapFont = 'Noto Sans Arabic Regular';
 
   Future<List<Marker>> getMarkers({
-    required GoRouter router,
-    MarkerIconMessage? icon,
+    required AppRouter router,
+    required MapMarkersType? Function(Set<int>) iconResolver,
     bool withLabel = true,
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
-      if (markerInfo != null) {
-        final objectId = markerInfo.objectId?.objectId;
-        markers.add(
-          Marker(
-            id: objectId?.toString() ?? _invalidMarkerId,
-            onTap: () {
-              Metrics.logEventAdvanced(MetricsConstants.poiKeys.marker,
-                  group: MetricsConstants.poiTag, action: MetricAction.tap.toString(), props: {_propertyKey: objectId});
-              PoiMapRoute.open(router, objectId!);
-            },
-            options: MarkerOptionsMessage(
-              text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
-              textStyle: MarkerTextStyleMessage(
-                color: 0xff1E2A36,
-                fontSize: 13,
-                fontName: _poiMapFont,
-                textOffset: 4,
-                strokeColor: 0xD3FFFFFF,
-                strokeWidth: 1.25,
-                textPlacement: MarkerTextPlacementMessage(
-                  placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
+      final objectId = markerInfo.objectId?.objectId;
+      final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
+      final rubrics = Set<int>.from(cleanupRubrics);
+      final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
+      markers.add(
+        Marker(
+          id: objectId?.toString() ?? _invalidMarkerId,
+          onTap: () {
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.marker,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+              props: {_propertyKey: objectId},
+            );
+
+            router.replaceOrPush(
+                route: PoiCardWidgetRoute(
+                  objectId: DgisObjectIdMessage(
+                    objectId: objectId!,
+                    entranceId: 0,
+                  ),
                 ),
+                toCompareRoutes: [PoiCardWidgetRoute.page]);
+          },
+          options: MarkerOptionsMessage(
+            text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
+            textStyle: MarkerTextStyleMessage(
+              color: 0xff1E2A36,
+              fontSize: 13,
+              fontName: _poiMapFont,
+              textOffset: 4,
+              strokeColor: 0xD3FFFFFF,
+              strokeWidth: 1.25,
+              textPlacement: MarkerTextPlacementMessage(
+                placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
-              position: markerInfo.geoPoint,
-              icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(),
             ),
+            position: markerInfo.geoPoint,
+            icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(size: 16),
           ),
-        );
-      }
+        ),
+      );
     }
 
     return markers;

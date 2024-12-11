@@ -21,6 +21,7 @@ import '../../../../../new_appointment/presentation/core/services/repository/app
 import 'my_appointments_view_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+
 class AppointmentDetailsViewModel extends BaseViewModel {
   final _repository = locator<AppointmentRepository>();
 

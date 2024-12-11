@@ -57,28 +57,16 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
 
   /// Handles the navigation action by pushing the specified location to the router.
   void handleNavigationAction(BuildContext context, String location) {
-    final router = GoRouter.of(context);
-    final onClose = StoryArgsProvider.of(context).onClose;
-    const bottomBarLocations = <int, String>{
-      0: '/explore',
-      1: '/routing',
-      2: '/services',
-      3: '/profile',
-    };
-
-    final entry = bottomBarLocations.entries.firstWhereOrNull((entry) => location.contains(entry.value));
-
-    if (entry != null) {
-      onClose(entry.key);
-      return;
-    }
-
     if (location.contains('/snap_and_send')) {
       CommonFunctions.openSnapAndSend();
       return;
     }
 
-    router.pushReplacement(location);
+    if (context.router.canPop()) {
+      context.router.popForced();
+    }
+
+    context.router.navigateNamed(location);
   }
 
   /// Handles the network link action by opening the specified URL.

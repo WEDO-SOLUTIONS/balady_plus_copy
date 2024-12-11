@@ -18,10 +18,12 @@ class EnvironmentConfig {
   final String? proxy;
   final String baseApiDomain;
   final String shareEtaApi;
+
   // TODO(Demezy): very probably will be changed in the future
   final String feedbackApi;
   final bool appFeedbackEnable;
   final String appFeedbackApi;
+  final String bssApi;
 
   EnvironmentConfig({
     required this.url,
@@ -35,6 +37,7 @@ class EnvironmentConfig {
     required this.proxy,
     required this.appFeedbackEnable,
     required this.appFeedbackApi,
+    required this.bssApi,
   });
 
   factory EnvironmentConfig.fromJson(Map<String, dynamic> json) => EnvironmentConfig(
@@ -49,7 +52,22 @@ class EnvironmentConfig {
         feedbackApi: json['feedbackApi'] as String,
         appFeedbackEnable: json['appFeedbackEnable'] as bool,
         appFeedbackApi: json['appFeedbackApi'] as String,
+        bssApi: json['bssApi'] as String,
       );
+
+  Map<String, dynamic> toJson() => {
+        'proxy': proxy,
+        'url': url,
+        'meteoblue': meteoblue,
+        'weatherApi': weatherApi,
+        'jobsApi': jobsApi,
+        'twinsApi': twinsApi,
+        'baseApiDomain': baseApiDomain,
+        'shareEtaApi': shareEtaApi,
+        'feedbackApi': feedbackApi,
+        'appFeedbackEnable': appFeedbackEnable,
+        'appFeedbackApi': appFeedbackApi,
+      };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
         proxy: 'https://sa1.ops.2gis.dev',
@@ -65,6 +83,7 @@ class EnvironmentConfig {
         feedbackApi: 'https://momrah-balady-dev-discrepancy.public-poc.urbi.ae/api/2.0/',
         appFeedbackApi: '',
         appFeedbackEnable: true,
+        bssApi: 'https://s1.bss.2gis.com',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
@@ -79,6 +98,7 @@ class EnvironmentConfig {
         appFeedbackApi: '',
         appFeedbackEnable: true,
         proxy: null,
+        bssApi: 'https://s1.bss.2gis.com',
       );
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
@@ -93,6 +113,7 @@ class EnvironmentConfig {
         appFeedbackApi: '',
         appFeedbackEnable: true,
         proxy: null,
+        bssApi: 'https://s1.bss.2gis.com',
       );
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
@@ -109,5 +130,6 @@ class EnvironmentConfig {
         feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae/api/2.0/',
         appFeedbackApi: '',
         appFeedbackEnable: true,
+        bssApi: 'https://s1.bss.2gis.com',
       );
 }

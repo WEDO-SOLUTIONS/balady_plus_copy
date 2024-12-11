@@ -24,6 +24,7 @@ class FusedLocationSource(private val context: Context) : LocationSource {
     private var callback: LocationCallback? = null
     private var thread: HandlerThread? = null
     private var isAvailable: Boolean = false
+    private var mockLocation: Boolean? = null
 
     @Suppress("Unused")
     var lastLocation: android.location.Location? = null
@@ -82,20 +83,28 @@ class FusedLocationSource(private val context: Context) : LocationSource {
                 val callback = (object : LocationCallback() {
                     override fun onLocationResult(result: LocationResult) {
                         val userLocation = result.lastLocation
-                        fun isLocationInsideKSA(location: Location): Boolean = saRect.contains(
-                            GeoPoint(location.latitude, location.longitude)
-                        )
-                        // Use mocked location if user location is outside KSA
-                        if (userLocation == null || isLocationInsideKSA(userLocation)) {
-                            listener.onLocationChanged(result.locations.toTypedArray())
-                            lastLocation = result.lastLocation
+                        if (userLocation == null) {
+                            listener.onLocationChanged(emptyArray())
+                            lastLocation = null
                         } else {
-                            userLocation.apply {
-                                latitude = 24.712899222459676
-                                longitude = 46.631036554650116
+                            // Use mocked location if user location is outside KSA,
+                            // we have to set mockLocation value only once
+                            if (mockLocation == null) {
+                                mockLocation = !saRect.contains(
+                                    GeoPoint(userLocation.latitude, userLocation.longitude)
+                                )
                             }
-                            listener.onLocationChanged(arrayOf(userLocation))
-                            lastLocation = userLocation
+                            if (mockLocation!!) {
+                                userLocation.apply {
+                                    latitude = 24.712899222459676
+                                    longitude = 46.631036554650116
+                                }
+                                listener.onLocationChanged(arrayOf(userLocation))
+                                lastLocation = userLocation
+                            } else {
+                                listener.onLocationChanged(result.locations.toTypedArray())
+                                lastLocation = result.lastLocation
+                            }
                         }
                     }
                 }).also {

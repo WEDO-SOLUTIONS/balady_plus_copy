@@ -1,11 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
@@ -314,13 +315,20 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 ),
               ),
             ),
-            AppButton.close(
-              onTap: StoryArgsProvider.of(context).onClose,
-              innerPadding: const EdgeInsets.all(Spacing.$2x),
-              padding: EdgeInsets.zero,
-              buttonColorScheme: ButtonColorScheme.onColor,
-              color: storyTheme.closeButtonTheme.backgroundColor,
-              iconColor: storyTheme.closeButtonTheme.iconColor,
+            Consumer(
+              builder: (context, ref, _) => AppButton.close(
+                onTap: () {
+                  if (widget.frameIndex == widget.frameLength - 1) {
+                    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
+                  }
+                  StoryArgsProvider.of(context).onClose();
+                },
+                innerPadding: const EdgeInsets.all(Spacing.$2x),
+                padding: EdgeInsets.zero,
+                buttonColorScheme: ButtonColorScheme.onColor,
+                color: storyTheme.closeButtonTheme.backgroundColor,
+                iconColor: storyTheme.closeButtonTheme.iconColor,
+              ),
             ),
           ],
         ),

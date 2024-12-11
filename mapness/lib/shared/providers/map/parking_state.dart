@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'parking_state.g.dart';
@@ -19,11 +20,12 @@ class ParkingState extends _$ParkingState {
 
   @override
   ParkingStateEvent build() {
+    final autoParkingState = ref.read(navigatorAutoEnableParkingProvider);
     _initListeners();
 
-    return const ParkingStateEvent(
+    return ParkingStateEvent(
       filter: ParkingFilter.all,
-      visible: false,
+      visible: autoParkingState.autoEnableParking ?? false,
     );
   }
 

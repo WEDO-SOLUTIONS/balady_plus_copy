@@ -63,7 +63,8 @@ class ComplianceCard extends ConsumerWidget {
                     icon: context.isLTR ? GeneralIcons.questionSupportLTR : GeneralIcons.questionSupportRTL,
                     onTap: () => {
                       CommonFunctions.openComplianceFaq(
-                          RemoteConfig.MunicipalServicesIDs['create_complianceLocation']['id'])
+                        RemoteConfig.MunicipalServicesIDs['create_complianceLocation']['id'],
+                      ),
                     },
                     label: context.l10n.complianceFAQ,
                   ),

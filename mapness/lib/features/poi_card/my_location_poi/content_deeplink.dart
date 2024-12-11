@@ -1,10 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/app/routes/routing.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_sheet_sizes.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
@@ -24,11 +25,12 @@ import 'package:mapness/shared/ui/sheets/card_header.dart';
 part 'poi_deeplink_location_action.dart';
 part 'poi_deeplink_location_content.dart';
 
-class ContentDeeplink extends ConsumerWidget {
+@RoutePage()
+class DeeplinkPage extends ConsumerWidget {
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
-  const ContentDeeplink({
+  const DeeplinkPage({
     required this.closestPoint,
     this.cameraConfig,
     super.key,
@@ -79,14 +81,23 @@ class ContentDeeplink extends ConsumerWidget {
                 PoiDeeplinkPersonActions(
                   onShare: () => ref.read(poiCardActionsProvider.notifier).shareMyLocation(closestPoint),
                   onGo: () {
-                    ref
-                        .read(poiCardActionsProvider.notifier)
-                        .goRoute(
-                          startLabel: context.l10n.myLocation,
-                          finishLabel: context.l10n.pointToMap,
-                          finishLocation: closestPoint!,
-                        )
-                        .pushReplacement(context);
+                    context.router.popAndPush(
+                      RoutingRoutesRoute(
+                        points: [
+                          RouteParamsPointWithLabel(
+                            value: null,
+                            label: context.l10n.myLocation,
+                          ),
+                          RouteParamsPointWithLabel(
+                            value: RouteParamsPoint(
+                              latitude: closestPoint!.latitude,
+                              longitude: closestPoint!.longitude,
+                            ),
+                            label: context.l10n.pointToMap,
+                          ),
+                        ],
+                      ),
+                    );
                   },
                 )
               ],
@@ -98,7 +109,7 @@ class ContentDeeplink extends ConsumerWidget {
   }
 
   Future<void> onClose(BuildContext context, WidgetRef ref) async {
-    context.pop();
+    context.router.popForced();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
   }
@@ -127,13 +138,13 @@ class ContentDeeplink extends ConsumerWidget {
       await mapObjectManager.addMarker(marker);
 
       await ref.read(cameraPositionProvider.notifier).animateTo(
-            CameraPositionMessage(
-              point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
-              zoom: cameraConfig?.zoom ?? 16,
-              tilt: cameraConfig?.tilt ?? 0,
-              bearing: cameraConfig?.bearing ?? 0,
-            ),
-          );
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
+          zoom: cameraConfig?.zoom ?? 16,
+          tilt: cameraConfig?.tilt ?? 0,
+          bearing: cameraConfig?.bearing ?? 0,
+        ),
+      );
     }
   }
 
@@ -177,7 +188,7 @@ class ContentDeeplink extends ConsumerWidget {
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter =
-        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
+    TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
     return textPainter.size;
   }
 }

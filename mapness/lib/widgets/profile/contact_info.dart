@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 
@@ -55,8 +56,11 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
 
   @override
   void dispose() {
-    super.dispose();
     _animationController.dispose();
+    if (rootNavigatorKey.currentContext != null) {
+      ScaffoldMessenger.of(rootNavigatorKey.currentContext!).hideCurrentSnackBar();
+    }
+    super.dispose();
   }
 
   @override
@@ -99,28 +103,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
               builder: (_, __) => ContentRow(
                 options: ContentRowOptions(
                   actionWidget: ContentRowActionOptions(
-                      actionPressed: () async {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          ToastMessageFactory.toastWithIconAction(
-                            onPressed: () {
-                              ScaffoldMessenger.of(context).hideCurrentSnackBar();
-                            },
-                            icon: SystemIcons.close,
-                            text: context.l10n.emailHasBeenCopied,
-                            context: context,
-                          ),
-                        );
-
-                        if (_animationController.status == AnimationStatus.completed) {
-                          await _animationController.reverse();
-                        } else {
-                          await _animationController.forward();
-                        }
-                        await Clipboard.setData(
-                          const ClipboardData(text: momrahEmail),
-                        );
-                        // copied successfully
-                      },
+                      actionPressed: _onCopyEmailTap,
                       actionIcon: AppIcons(
                         iconData: SystemIcons.copy,
                         color: _animation.value,
@@ -138,4 +121,31 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
           ]),
         ],
       );
+
+  void _onCopyEmailTap() {
+    Clipboard.setData(
+      const ClipboardData(text: momrahEmail),
+    );
+
+    if (_animationController.status == AnimationStatus.completed) {
+      _animationController.reverse();
+    } else {
+      _animationController.forward();
+    }
+
+    final context = rootNavigatorKey.currentContext;
+    if (context == null) {
+      return;
+    }
+    ScaffoldMessenger.of(context).showSnackBar(
+      ToastMessageFactory.toastWithIconAction(
+        onPressed: () {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        },
+        icon: SystemIcons.close,
+        text: context.l10n.emailHasBeenCopied,
+        context: context,
+      ),
+    );
+  }
 }

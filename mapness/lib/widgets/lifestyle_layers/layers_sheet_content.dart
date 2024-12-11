@@ -31,7 +31,6 @@ class LayersSheetContent extends ConsumerWidget {
       controller: scrollController,
       primary: false,
       shrinkWrap: true,
-      physics: const ClampingScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
           child: Column(

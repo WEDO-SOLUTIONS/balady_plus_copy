@@ -9,11 +9,19 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
-  const TrafficParkingControl({super.key});
+  final bool trafficVisible;
+  final StatelessBottomSheetController bottomSheetController;
+
+  const TrafficParkingControl({
+    required this.bottomSheetController,
+    super.key,
+    this.trafficVisible = true,
+  });
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _TrafficParkingState();
@@ -21,20 +29,13 @@ class TrafficParkingControl extends ConsumerStatefulWidget {
 
 class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
   @override
-  Widget build(Object context) {
+  Widget build(BuildContext context) {
     final trafficState = ref.watch(trafficStateProvider);
     final trafficNotifier = ref.read(trafficStateProvider.notifier);
-    final isTrafficVisable = trafficState.status != TrafficControlStatus.hidden;
+    final isTrafficVisable = widget.trafficVisible && trafficState.status != TrafficControlStatus.hidden;
     final isTrafficEnabled = trafficState.status == TrafficControlStatus.enabled;
 
-    final parkingState = ref.watch(parkingStateProvider);
-
-    final layersNotifier = ref.watch(layersControlsProvider.notifier);
-    final layers = ref.watch(layersControlsProvider);
-
     final sharedPrefs = ref.read(sharedPrefsProvider);
-
-    final isParkingEnabled = parkingState.visible;
 
     return SizedBox(
       width: 50,
@@ -42,22 +43,39 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          _TrafficControl(
-            isEnabled: isTrafficEnabled,
-            trafficState: trafficNotifier,
-            isVisable: isTrafficVisable,
-          ),
-          _ParkingWidget(
-            isEnabled: isParkingEnabled,
-            isNoTopBorderRadius: isTrafficVisable,
-            onParkingTap: () {
-              final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+          if (isTrafficVisable)
+            _TrafficControl(
+              isEnabled: isTrafficEnabled,
+              trafficState: trafficNotifier,
+              isVisable: isTrafficVisable,
+            ),
+          Consumer(
+            builder: (context, ref, child) {
+              final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
+              final parkingState = ref.watch(parkingStateProvider);
 
-              if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
-                sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-              }
+              final layersNotifier = ref.watch(layersControlsProvider.notifier);
+              final layers = ref.watch(layersControlsProvider);
+              final isParkingEnabled = parkingState.visible;
 
-              layersNotifier.toggleParking();
+              return _ParkingWidget(
+                isEnabled: isParkingEnabled,
+                isNoTopBorderRadius: isTrafficVisable,
+                onParkingTap: () {
+                  if (autoEnableParking.autoEnableParking == null) {
+                    widget.bottomSheetController.open();
+                    return;
+                  }
+
+                  final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+
+                  if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
+                    sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
+                  }
+
+                  layersNotifier.toggleParking();
+                },
+              );
             },
           )
         ],

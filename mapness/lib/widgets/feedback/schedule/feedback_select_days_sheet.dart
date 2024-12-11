@@ -1,11 +1,11 @@
 // ignore_for_file: cascade_invocations
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/iset_weekday_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -76,7 +76,7 @@ class _FeedbackSelectDaysSheetState extends State<FeedbackSelectDaysSheet> {
                   ),
                 ],
               ),
-              uikit.AppButton.close(onTap: () => context.pop()),
+              uikit.AppButton.close(onTap: () => context.router.popForced()),
             ],
           ),
           const SizedBox(height: Spacing.$3x),
