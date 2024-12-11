@@ -17,12 +17,18 @@ class AppRoute<T> extends CustomRoute<T> {
     super.fullMatch,
     super.children,
     super.initial,
+    int? durationInMilliseconds,
+    int? reverseDurationInMilliseconds,
     RouteTransitionsBuilder? transitionsBuilder,
   }) : super(
           page: page,
           customRouteBuilder: <T>(context, child, page) => CustomModalRoute<T>(
             page: page,
-            routeType: CustomRouteType(transitionsBuilder: transitionsBuilder),
+            routeType: CustomRouteType(
+              transitionsBuilder: transitionsBuilder,
+              durationInMilliseconds: durationInMilliseconds,
+              reverseDurationInMilliseconds: reverseDurationInMilliseconds,
+            ),
           ),
         );
 }
