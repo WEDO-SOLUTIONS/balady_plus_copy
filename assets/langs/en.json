@@ -4465,5 +4465,10 @@
   "complianceFAQ": "Frequently asked questions",
   "complaince_save_clause":"Save Clause",
   "complinace_clause": "Clause",
-  "complaince_edit_clause":"Edit Clause"
+  "complaince_edit_clause":"Edit Clause",
+  "ekram_death_date_validation":"Please enter death date",
+  "ekram_death_country_validation":"Please choose death country",
+  "ekram_death_city_validation":"Please choose death city",
+  "ekram_death_hospital_validation":"Please choose hospital",
+  "ekram_transportation_validation":"Please choose transportation"
 }

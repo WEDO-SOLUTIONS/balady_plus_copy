@@ -64,8 +64,7 @@ class _EkramTransportationListPageState
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TransportRequestsBloc(
-          getDeceasedTransportRequests: sl(),
-          isDriver: false)
+          getDeceasedTransportRequests: sl(), isDriver: false)
         ..add(GetDeceasedTransportRequestsEvent(isDriver: false)),
       child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
@@ -87,7 +86,11 @@ class _EkramTransportationListPageState
         builder: (context, state) {
           return Scaffold(
             appBar: DefaultAppBarWidget(
-              title: 'ekram_benf_transport'.tr(),
+              titleWidget: Text(
+                "ekram_benf_transport".tr(),
+                overflow: TextOverflow.fade,
+                style: const TextStyle(color: AppColor.black),
+              ),
               bottom: AppBarSeachBar(
                 onChanged: (value) {
                   _debouncer.run(() {
@@ -102,12 +105,11 @@ class _EkramTransportationListPageState
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   margin: const EdgeInsets.symmetric(vertical: 8),
                   child: InkWell(
-                    onTap: () =>
-                        NavigationService.navigatorKey.currentState!
+                    onTap: () => NavigationService.navigatorKey.currentState!
                         .pushNamed(
                             RouteName.EkramRequestTransportationStartService,
                             arguments: context.read<TransportRequestsBloc>()),
-                    child: CircleIcon(
+                    child: const CircleIcon(
                       backgroundColor: AppColor.primary50Light,
                       icon: IconPath.add,
                       circleSize: 48.0,
@@ -155,17 +157,12 @@ class _EkramTransportationListPageState
                                   ekramTransportationItem:
                                       state.deceasedRequestItems![index],
                                   OnDetailsPress: () {
-
-
                                     NavigationService.navigatorKey.currentState!
-                                        .pushNamed(RouteName.driverEkramTransportationDetailsScreen,arguments:state
-                                        .deceasedRequestItems![index] );
-
-
-
-
-
-
+                                        .pushNamed(
+                                            RouteName
+                                                .driverEkramTransportationDetailsScreen,
+                                            arguments: state
+                                                .deceasedRequestItems![index]);
                                   },
                                 ),
                                 CustomVerticalSpace(
@@ -183,7 +180,7 @@ class _EkramTransportationListPageState
                   ],
                 ),
                 if (state.status == BlocStatus.loadingShimmer)
-                  CustomShimmerListWidget(
+                  const CustomShimmerListWidget(
                     height: 274,
                     itemCount: 3,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),

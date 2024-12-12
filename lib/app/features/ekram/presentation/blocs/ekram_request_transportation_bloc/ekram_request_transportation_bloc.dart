@@ -132,6 +132,7 @@ class EkramRequestTransportationBloc extends Bloc<
             agreementChecked: false,
             isSpecialTransferNeeded: false,
             isBurialInsideDeathCity: true,
+            isDeceasedBtnEnabled: false,
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"),
@@ -335,8 +336,10 @@ class EkramRequestTransportationBloc extends Bloc<
 
     emitter(state.copyWith(
         deceassedDOBGorgian: Nullable(CommonFunctions.padHijriDate(gorgian)),
+        status: BlocStatus.success,
         errorMessage: "",
         deceassedDOBHijri: Nullable(CommonFunctions.padHijriDate(hijri))));
+    deceasedVerificationSectionValidator(emitter);
   }
 
   String? validateNationalId(String? input) {
@@ -577,6 +580,7 @@ class EkramRequestTransportationBloc extends Bloc<
       selectedNationalIdType: e.item,
       errorMsg: "",
     ));
+    deceasedVerificationSectionValidator(emitter);
   }
 
   Future<List<LookUpItem>?> getEkramNationalIdTypesEventHandler() async {
@@ -828,8 +832,9 @@ class EkramRequestTransportationBloc extends Bloc<
     if (state.requestDetailsModel?.burialInfo?.cityId != null) {
       if (nextPage == 4) {
         state
-                    .getCityById(state.requestDetailsModel?.burialInfo?.cityId)!
-                    .needApproval ??
+                    .getCemtryById(
+                        state.requestDetailsModel?.burialInfo?.cityId)
+                    ?.needApproval ??
                 false
             ? null
             : nextPage++;
@@ -896,12 +901,14 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         deceasedId: e.deceasedId,
         errorMessage: ""));
+    deceasedVerificationSectionValidator(emitter);
   }
 
   // fawzi
   Future<void> _verifyDeceasedHandler(
       VerifyDeceasedEvent e, Emitter emitter) async {
-    emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(
+        status: BlocStatus.loading, isDeceasedBtnEnabled: false));
 
     final failureOrSuccess = await _verifyDeceased(VerifyDeceasedParams(
         identityNumber: state.deceasedId!,
@@ -911,12 +918,14 @@ class EkramRequestTransportationBloc extends Bloc<
         submitterMobile: CommonProperties.userInfo!.getPhone()));
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
+          isDeceasedBtnEnabled: true,
           status: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,
           isVerified: false));
       return null;
     }, (success) {
       emit(state.copyWith(
+        isDeceasedBtnEnabled: false,
         status: BlocStatus.success,
         isVerified: true,
         requestId: success.data?.result,
@@ -1067,18 +1076,31 @@ class EkramRequestTransportationBloc extends Bloc<
         deathDate: e.deathInfo?.deathDate,
         gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
         countryId: e.deathInfo?.countryId ?? (info.countryId ?? 1),
-        cityId: e.deathInfo?.cityId,
-        corpseArrivalCityId: e.deathInfo?.corpseArrivalCityId,
+        cityId: isCountryChanged(e.deathInfo?.countryId) == false
+            ? e.deathInfo?.cityId
+            : -1,
+        corpseArrivalCityId: isCountryChanged(e.deathInfo?.countryId) == false
+            ? e.deathInfo?.corpseArrivalCityId
+            : -1,
         cityOther: e.deathInfo?.cityOther,
         hospitalId: e.deathInfo?.hospitalId,
         showHospitalOther: e.deathInfo?.showHospitalOther,
         hospitalOther: e.deathInfo?.hospitalOther,
         caseContagious: e.deathInfo?.caseContagious);
+    int? newCityId;
 
     params = params.copyWith(deathInfo: info);
-
+    if (state.requestDetailsModel?.deathInfo?.countryId == 1) {
+      newCityId = e.deathInfo?.cityId;
+    } else {
+      newCityId = e.deathInfo!.corpseArrivalCityId;
+    }
     emitter(state.copyWith(
-        hospitals: isCityChanged(e.deathInfo?.cityId) == true ? [] : null,
+        hospitals: isCityChanged(newCityId) == true
+            ? []
+            : isCountryChanged(e.deathInfo?.countryId) == true
+                ? []
+                : null,
         status: BlocStatus.success,
         requestDetailsModel: params));
   }
@@ -1093,7 +1115,6 @@ class EkramRequestTransportationBloc extends Bloc<
     if (e.burialInfo?.isBurialInsideDeathCity != false) {
       cityID = getBurialCityId();
     }
-
     info = info.copyWith(
         isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ?? true,
         cityId: e.burialInfo?.isBurialInsideDeathCity == false
@@ -1208,13 +1229,55 @@ class EkramRequestTransportationBloc extends Bloc<
 
   bool isCityChanged(int? newCityId) {
     if (newCityId != null) {
-      if (state.requestDetailsModel?.deathInfo?.cityId != newCityId) {
-        return true;
-      } else if (state.requestDetailsModel?.deathInfo?.corpseArrivalCityId !=
-          newCityId) {
+      if (state.requestDetailsModel?.deathInfo?.countryId == 1) {
+        if (state.requestDetailsModel?.deathInfo?.cityId != newCityId) {
+          return true;
+        }
+      } else {
+        if (state.requestDetailsModel?.deathInfo?.corpseArrivalCityId !=
+            newCityId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
+  bool isCountryChanged(int? newCountryId) {
+    if (newCountryId != null) {
+      if (state.requestDetailsModel?.deathInfo?.countryId != newCountryId) {
         return true;
       }
     }
     return false;
+  }
+
+  void deceasedVerificationSectionValidator(Emitter emitter) {
+    if (state.selectedNationalIdType == null) {
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        isDeceasedBtnEnabled: false,
+      ));
+    }
+
+    // ignore: curly_braces_in_flow_control_structures
+    else if (state.deceasedId == null || state.deceasedId?.isEmpty == true)
+      // ignore: curly_braces_in_flow_control_structures
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        isDeceasedBtnEnabled: false,
+      ));
+    else if (state.deceassedDOBGorgian == null)
+      // ignore: curly_braces_in_flow_control_structures
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        isDeceasedBtnEnabled: false,
+      ));
+    else
+      // ignore: curly_braces_in_flow_control_structures
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        isDeceasedBtnEnabled: true,
+      ));
   }
 }

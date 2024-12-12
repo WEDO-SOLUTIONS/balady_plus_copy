@@ -37,12 +37,16 @@ class _InquiryOrgnizaionDetailsPageState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: DefaultAppBarWidget(
-        title: "ekram_inquiry_orgnizations".tr(),
+        titleWidget: Text(
+          "ekram_inquiry_orgnizations".tr(),
+          overflow: TextOverflow.fade,
+          style: const TextStyle(color: AppColor.black),
+        ),
         x: true,
       ),
       body: BlocProvider(
         create: (context) =>
-            EkramInquiryOrgnizationBloc()..add(GetEkramCitiesEvent()),
+            EkramInquiryOrgnizationBloc()..add(const GetEkramCitiesEvent()),
         child: BlocConsumer<EkramInquiryOrgnizationBloc,
             EkramOrgnizationCemetryState>(
           listener: (context, state) {
@@ -83,7 +87,7 @@ class _InquiryOrgnizaionDetailsPageState
                           onPressed: () {
                             context
                                 .read<EkramInquiryOrgnizationBloc>()
-                                .add(FindCemetriesEvent());
+                                .add(const FindCemetriesEvent());
                           },
                           text: "searchButton".tr())
                     ]),

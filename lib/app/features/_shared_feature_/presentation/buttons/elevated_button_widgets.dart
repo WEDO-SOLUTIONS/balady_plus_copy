@@ -360,9 +360,10 @@ class ElevatedButtonWidget extends _ElevatedButton {
       double? fontSize,
       int? maxLines,
       Color? color,
+      Color? bgColor,
       double? width})
       : super(CustomElevatedButtonWidget(
-          btnColor: Colors.white,
+          btnColor:bgColor ?? Colors.white,
           btnBorderColor: color ?? AppColor.primary800Light,
           btnWidth: width,
           maxLines: maxLines,

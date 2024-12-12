@@ -4255,5 +4255,10 @@
   "arrivalTime": "وقت الوصول",
   "showAttachment": "عرض المرفق",
   "chosedeathcity": "اختر مدينة الوفاة/وصول الجثمان",
-  "ekram_transportation_apply": "تقديم طلب نقل متوفي"
+  "ekram_transportation_apply": "تقديم طلب نقل متوفي",
+  "ekram_death_date_validation":"يجب إدخال تاريخ الدفن",
+  "ekram_death_country_validation":"يجب إدخال دولة الوفاة",
+  "ekram_death_city_validation":"يجب إدخال مدينة الوفاة",
+  "ekram_death_hospital_validation":"يجب إدخال المستشفى",
+  "ekram_transportation_validation":"يجب إدخال جهة النقل"
 }

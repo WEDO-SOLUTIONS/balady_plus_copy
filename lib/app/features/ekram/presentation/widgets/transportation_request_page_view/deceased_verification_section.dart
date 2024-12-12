@@ -114,10 +114,21 @@ class DeceasedVerificationSection extends StatelessWidget {
                             const DeceasedBirthdateHijri(),
                             const DeceasedBirthdateGregorian(),
                             ElevatedButtonWidget.primaryCustomBorder(
+                              //     btnPressed: isBtnDisabled
+                              //         ? () {}
+                              //         : btnPressed,
+                              bgColor: state.isDeceasedBtnEnabled == true
+                                  ? AppColor.primary900Light
+                                  : AppColor.black200,
+                              color: state.isDeceasedBtnEnabled == true
+                                  ? AppColor.white
+                                  : AppColor.black400,
                               onPressed: () async {
-                                context
-                                    .read<EkramRequestTransportationBloc>()
-                                    .add(const VerifyDeceasedEvent());
+                                if (state.isDeceasedBtnEnabled == true) {
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(const VerifyDeceasedEvent());
+                                }
                               },
                               text: "verify".tr(),
                             )
@@ -129,13 +140,11 @@ class DeceasedVerificationSection extends StatelessWidget {
                 ),
               ),
             ),
-            EkramPreviousNextButtons(
-              btnPressed: () {
-                context
-                    .read<EkramRequestTransportationBloc>()
-                    .add(const GoToNextPageEvent());
-              },
-            )
+            EkramPreviousNextButtons(btnPressed: () {
+              context
+                  .read<EkramRequestTransportationBloc>()
+                  .add(const GoToNextPageEvent());
+            })
           ],
         );
       },

@@ -59,6 +59,7 @@ class EkramRequestTransportationState extends Equatable {
   final String? deceasedId;
   final RequestDetailsResponseModel? requestDetailsModel;
   final bool? editInfoSection;
+  final bool? isDeceasedBtnEnabled;
 
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
@@ -118,7 +119,8 @@ class EkramRequestTransportationState extends Equatable {
       // this.deceasedInfoDto,
       this.requestDetailsModel,
       this.letter,
-      this.editInfoSection});
+      this.editInfoSection,
+      this.isDeceasedBtnEnabled});
 
   EkramRequestTransportationState copyWith({
     final Nullable<String?>? deceassedDOBHijri,
@@ -177,6 +179,7 @@ class EkramRequestTransportationState extends Equatable {
     final String? deceasedId,
     final RequestDetailsResponseModel? requestDetailsModel,
     final bool? editInfoSection,
+    final bool? isDeceasedBtnEnabled,
   }) {
     return EkramRequestTransportationState(
       isdeceasedInfoReadOnly:
@@ -261,11 +264,13 @@ class EkramRequestTransportationState extends Equatable {
           : burialDateHijri.value,
       requestDetailsModel: requestDetailsModel ?? this.requestDetailsModel,
       editInfoSection: editInfoSection ?? this.editInfoSection,
+      isDeceasedBtnEnabled: isDeceasedBtnEnabled ?? this.isDeceasedBtnEnabled,
     );
   }
 
   @override
   List<Object?> get props => [
+        isDeceasedBtnEnabled,
         cities,
         countries,
         cemetries,
@@ -314,22 +319,6 @@ class EkramRequestTransportationState extends Equatable {
         transportations,
         bodyArrivalCities
       ];
-
-  bool isNextButtonEnabled() {
-    if (currentPageValue == 0) {
-      return isVerified ?? false;
-    }
-
-    if (currentPageValue == 1) {
-      return validateDeceasedInfoSection(false);
-    } else if (currentPageValue == 2) {
-      return true;
-    } else if (currentPageValue == 3) {
-      return true;
-    }
-
-    return true;
-  }
 
   LookUpItem? getCityById(int? id) {
     if (cities != null && id != null) {
@@ -498,5 +487,47 @@ class EkramRequestTransportationState extends Equatable {
         CommonFunctions.showError("lbl_first_name_hint2".tr());
       return false;
     }
+  }
+
+  bool validateDeathAndBurialInfoSection(bool ShowErrorMessage) {
+    if (requestDetailsModel != null) {
+      if (requestDetailsModel?.deathInfo?.deathDate?.isEmpty ?? true) {
+        if (ShowErrorMessage == true)
+          CommonFunctions.showError("ekram_death_date_validation".tr());
+        return false;
+      } else if (requestDetailsModel?.deathInfo?.countryId == null) {
+        if (ShowErrorMessage == true)
+          CommonFunctions.showError("ekram_death_country_validation".tr());
+        return false;
+      } else if (requestDetailsModel?.deathInfo?.cityId == null) {
+        if (ShowErrorMessage == true)
+          CommonFunctions.showError("ekram_death_city_validation".tr());
+        return false;
+      } else if (requestDetailsModel?.deathInfo?.hospitalId == null) {
+        if (ShowErrorMessage == true)
+          CommonFunctions.showError("ekram_death_hospital_validation".tr());
+        return false;
+      } else if (requestDetailsModel?.transportInfo?.charityId == null) {
+        if (ShowErrorMessage == true)
+          CommonFunctions.showError("ekram_transportation_validation".tr());
+        return false;
+      }
+    }
+    return true;
+  }
+
+  bool isNextButtonEnabled() {
+    if (currentPageValue == 0) {
+      return isVerified ?? false;
+    }
+    if (currentPageValue == 1) {
+      return validateDeceasedInfoSection(false);
+    } else if (currentPageValue == 2) {
+      return true;
+    } else if (currentPageValue == 3) {
+      return validateDeathAndBurialInfoSection(false);
+    }
+
+    return true;
   }
 }
