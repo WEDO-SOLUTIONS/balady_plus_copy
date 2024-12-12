@@ -62,7 +62,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
                 isEnabled: isParkingEnabled,
                 isNoTopBorderRadius: isTrafficVisable,
                 onParkingTap: () {
-                  if (autoEnableParking.autoEnableParking == null) {
+                  if (autoEnableParking == null) {
                     widget.bottomSheetController.open();
                     return;
                   }

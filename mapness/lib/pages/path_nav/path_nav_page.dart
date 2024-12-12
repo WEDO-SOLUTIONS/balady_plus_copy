@@ -257,6 +257,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 child: Column(
                   children: [
                     ParkingBanner(
+                      navigatorType: widget.navType,
                       navigationState: _navigationState,
                       isHomeOrWork: widget.isHomeOrWork,
                       bottomSheetController: _bottomSheetController,
