@@ -370,7 +370,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.calcPositionForPolylines(polylines, options);
   }
 
-  /// Animation to the representative area.
+  /// Animation of the camera to the representative area (or out view port) of the search.
+  /// Search returns a Geometry that represents the best area to show.
   Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
       CameraAnimationTypeMessage animationType) {
     return _api.animateToRepresentativeArea(area, options, duration, animationType);
