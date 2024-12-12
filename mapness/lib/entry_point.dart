@@ -333,7 +333,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     _navigationEventsListener = dgisController.navigationEvents.listen((event) async {
       final segments = ref.read(appRouterProvider).currentSegments;
 
-      final currentRouteName = segments.isEmpty ? null : ref.read(appRouterProvider).currentSegments.last.name;
+      final currentRouteName = segments.isEmpty ? null : segments.last.name;
 
       final isNavPage = currentRouteName == PathNavRoute.name || currentRouteName == FreeRoamRoute.name;
       final navigation = event == NavigationEvent.navigation || event == NavigationEvent.routeSearch;
