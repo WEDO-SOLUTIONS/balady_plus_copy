@@ -211,9 +211,14 @@ class ObjectTapHandler {
     private func removeAllObjects<T: DGis.SimpleMapObject>(_ managerId: String?,_ objects: inout Dictionary<String, (T, String?)>, completion: @escaping (Result<Void, any Error>) -> Void) {
         // Sync threading memory access
         self.objectsQueue.sync {
-            let filtered = objects.filter { $0.value.1 == managerId }
-            objects.removeAll()
-            objects.merge(filtered) { (_, new) in new }
+            let hasManager = managerId != nil && self.managers[managerId!] != nil
+            if (hasManager) {
+                let filtered = objects.filter { $0.value.1 != managerId }
+                objects.removeAll()
+                objects.merge(filtered) { (_, new) in new }
+            } else {
+                objects.removeAll()
+            }
         }
 
         self.objectsQueue.async {

@@ -187,14 +187,14 @@ class ObjectTapHandler(
     private fun <T>removeAllObjects(managerId: String?, objects: MutableMap<String, Pair<T, String?>>, callback: (Result<Unit>) -> Unit) {
         mapObjectsExecutorService.submit {
             getManager(managerId).removeAll()
-            val filtered = objects.filter {
-                if (managerId != null)
-                    it.value.second == managerId
-                else
-                    false
-            }.toMutableMap()
-            objects.clear()
-            objects.putAll(filtered)
+            val hasManager = managerId != null && managers[managerId] != null
+            if (hasManager) {
+                val filtered = objects.filter { it.value.second != managerId }.toMutableMap()
+                objects.clear()
+                objects.putAll(filtered)
+            } else {
+                objects.clear()
+            }
             callback(Result.success(Unit))
         }
     }
