@@ -32,9 +32,10 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const SizedBox(height: Spacing.$1_5x),
-          const SheetDragger(),
-          const SizedBox(height: Spacing.$1_5x),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+            child: SheetDragger(),
+          ),
           ContentRow(
             options: ContentRowOptions(
               title: context.l10n.profilePhoto,
