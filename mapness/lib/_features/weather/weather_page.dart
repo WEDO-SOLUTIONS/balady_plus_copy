@@ -6,9 +6,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/_features/weather/weather_controls.dart';
 import 'package:mapness/_features/weather/weather_dashboard.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 
 @RoutePage()
 class WeatherPage extends ConsumerStatefulWidget {
@@ -43,7 +46,9 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   }
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+  Widget build(BuildContext context) {
+    if (ref.watch(forecastWeatherProvider) != null) {
+      return AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
         child: Material(
           type: MaterialType.transparency,
@@ -63,6 +68,14 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
           ),
         ),
       );
+    } else {
+      return ErrorSheetWidget(
+        onRetry: () => ref.invalidate(forecastWeatherProvider),
+        onClose: (_) => context.router.popForced(),
+        buttonLabel: context.l10n.tryAgain,
+      );
+    }
+  }
 }
 
 class WeatherPageContent extends StatefulWidget {
