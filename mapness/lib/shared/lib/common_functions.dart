@@ -10,11 +10,17 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonFunctions {
+  static StreamSubscription? _authSubscription;
+
   static Future<void> externalLaunch(String url) async {
     final convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $convertUrl');
     }
+  }
+
+  static Future<void> cancelAuthSubscription() async {
+    await _authSubscription?.cancel();
   }
 
   static Future<void> launch(String url) async {
@@ -41,6 +47,7 @@ class CommonFunctions {
     VoidCallback? callback,
   }) async {
     var isAuth = CommonProperties.isLoggedIn;
+    await cancelAuthSubscription();
     if (!isAuth) {
       if (context.mounted) {
         await context.router.push(const SigninRoute());
@@ -58,16 +65,15 @@ class CommonFunctions {
     VoidCallback? callback,
   }) async {
     var isAuth = CommonProperties.isLoggedIn;
-    StreamSubscription? sub;
     if (!isAuth) {
       if (context.mounted) {
         await context.router.push(const SigninRoute());
       }
-      sub = CommonProperties.userStateStream.listen((event) {
+      _authSubscription = CommonProperties.userStateStream.listen((event) {
         if (event.userInfo != null) {
           callback?.call();
           isAuth = CommonProperties.isLoggedIn;
-          sub?.cancel();
+          cancelAuthSubscription();
         }
       });
     } else {
