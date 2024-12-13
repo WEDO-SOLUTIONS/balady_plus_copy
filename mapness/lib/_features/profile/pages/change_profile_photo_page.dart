@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 import 'dart:typed_data';
 
@@ -10,7 +11,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -52,14 +52,14 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: ContentWrapper(color: context.color.surfaceBasePrimary, children: [
               ContentRow(
-                onTap: () {
+                onTap: () async {
                   if (isPermanentlyDenied) {
                     // If status is [isPermanentlyDenied] we have to return "Yes, I want to open new sheet and ask about
                     // permissions"
                     context.router.popForced(true);
                   } else {
+                    await updateAvatar(ref, context);
                     context.router.popForced();
-                    updateAvatar(ref);
                   }
                 },
                 options: ContentRowOptions(
@@ -80,7 +80,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     );
   }
 
-  Future<void> updateAvatar(WidgetRef ref) async {
+  Future<void> updateAvatar(WidgetRef ref, BuildContext context) async {
     final picker = ImagePicker();
     XFile? image;
     try {
@@ -92,10 +92,16 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
     if (image == null) {
       return;
     }
+
     final bytes = await image.readAsBytes();
-    final Uint8List? croppedBytes = await ref.read(appRouterProvider).push(ImageEditorRoute(image: bytes));
+    if (!context.mounted) {
+      return;
+    }
+    final Uint8List? croppedBytes = await context.pushRoute(
+      ImageEditorRoute(image: bytes),
+    );
     if (croppedBytes != null) {
-      await ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes);
+      unawaited(ref.read(profileImageProvider.notifier).changeUserProfileImageByBytes(croppedBytes));
     }
   }
 }
