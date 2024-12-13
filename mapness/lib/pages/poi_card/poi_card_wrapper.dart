@@ -4,13 +4,9 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
   final DgisObjectIdMessage objectId;
   final PoiCameraConfig? cameraConfig;
 
-  final double biggestHeight;
-  final double biggestWidth;
   final LatLng? closestPoint;
 
   const _PoiCardWrapper({
-    required this.biggestHeight,
-    required this.biggestWidth,
     required this.objectId,
     required this.closestPoint,
     this.cameraConfig,
