@@ -241,7 +241,7 @@ class DgisMapController {
     String queryText, {
     List<SearchCategoryMessage>? categories,
     List<GeoPointMessage>? spatialRestriction,
-    required SortingTypeMessage sortingType,
+    SortingTypeMessage sortingType = SortingTypeMessage.byRelevance,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
@@ -264,7 +264,7 @@ class DgisMapController {
   Future<SearchResultMessage> searchByQuery(
     SearchQueryMessage query, {
     List<GeoPointMessage>? spatialRestriction,
-    required SortingTypeMessage sortingType,
+    SortingTypeMessage sortingType = SortingTypeMessage.byRelevance,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
@@ -286,7 +286,7 @@ class DgisMapController {
   Future<SearchResultMessage> searchByCategory(
     SearchCategoryMessage category, {
     List<GeoPointMessage>? spatialRestriction,
-    required SortingTypeMessage sortingType,
+    SortingTypeMessage sortingType = SortingTypeMessage.byRelevance,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
@@ -308,7 +308,7 @@ class DgisMapController {
   Future<SearchResultMessage> searchByRubrics(
     List<int> rubrics, {
     List<GeoPointMessage>? spatialRestriction,
-    required SortingTypeMessage sortingType,
+    SortingTypeMessage sortingType = SortingTypeMessage.byRelevance,
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
