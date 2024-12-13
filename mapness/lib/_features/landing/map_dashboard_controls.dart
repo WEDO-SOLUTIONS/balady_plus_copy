@@ -32,6 +32,11 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
     super.initState();
     _bottomPadding = ValueNotifier(widget.scrollController.sheetHeight);
     widget.scrollController.addListener(update);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // TODO(Ayat): There are problems that the bottom shield does not have time to draw and this is a temporary fix for now temporary fix
+      setState(() {});
+    });
   }
 
   @override
@@ -98,8 +103,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Spacer(),
-                                    if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
-                                      const IndoorControl(),
+                                    const IndoorControl(),
                                     const Spacer(),
                                     const EtaSharingControl(),
                                     uikit.Spacing.$4x.heightBox,
