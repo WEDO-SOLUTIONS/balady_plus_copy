@@ -20,6 +20,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_ext
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -117,6 +118,7 @@ class LayersControls extends _$LayersControls {
     final controller = await ref.read(dgisControllerProvider.future);
     await selectedPoint.removeAllMarkers();
     await controller.removeAllHighlights();
+    await controller.removeAllPolylines();
   }
 
   @override
@@ -191,6 +193,8 @@ class LayersControls extends _$LayersControls {
         await toggleWhiteLands();
       case LayerType.parkingLots:
         await toggleParking();
+      case LayerType.metro:
+        toggleMetro();
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -263,6 +267,10 @@ class LayersControls extends _$LayersControls {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
     }
+  }
+
+  void toggleMetro() {
+    ref.read(metroLayerProvider.notifier).toggleMetro();
   }
 
   void update({

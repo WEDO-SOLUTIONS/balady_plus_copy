@@ -3,12 +3,14 @@ enum LayerType {
   invest,
   buildings,
   parkingLots,
+  metro,
   fencing;
   // joy;
 
   static List<LayerType> get lifestyle => [
         LayerType.favourites,
         LayerType.parkingLots,
+        LayerType.metro,
         // LayerType.joy,
       ];
 
@@ -26,6 +28,7 @@ extension LayerTypeEx on LayerType {
         'buildings' => LayerType.buildings,
         'parkingLots' => LayerType.parkingLots,
         'fencing' => LayerType.fencing,
+        'metro' => LayerType.metro,
         // 'joy' => LayerType.joy,
         _ => null,
       };
