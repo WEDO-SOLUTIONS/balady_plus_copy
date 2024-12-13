@@ -78,13 +78,13 @@ class Routes {
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(
-        path: 'bottom_menu',
+        path: '',
         page: BottomMenuRoute.page,
         initial: true,
         barrierDismissible: false,
         children: [
           CustomRoute(
-            path: 'explore',
+            path: 'landing',
             initial: true,
             page: LandingRoute.page,
           ),

@@ -48,27 +48,37 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
-part 'poi_card_wrapper.dart';
 part 'poi_card_content.dart';
+part 'poi_card_wrapper.dart';
 
 @RoutePage()
 class PoiCardWidgetPage extends StatelessWidget {
-  final DgisObjectIdMessage objectId;
+  final DgisObjectIdMessage? objectId;
+  final int? dGisObjectId;
   final LatLng? closestPoint;
   final PoiCameraConfig? cameraConfig;
 
   const PoiCardWidgetPage({
-    required this.objectId,
+    this.objectId,
+    @QueryParam('dgis-object-id') this.dGisObjectId,
     this.closestPoint,
     this.cameraConfig,
     super.key,
   });
 
-  @override
-  Widget build(BuildContext context) => _PoiCardWrapper(
-        objectId: objectId,
+@override
+Widget build(BuildContext context) => LayoutBuilder(
+      builder: (context, constraints) => _PoiCardWrapper(
+        objectId: objectId ??
+            DgisObjectIdMessage(
+              objectId: dGisObjectId ?? 0,
+              entranceId: 0,
+            ),
         cameraConfig: cameraConfig,
         closestPoint: closestPoint,
+        biggestHeight: constraints.biggest.height,
+        biggestWidth: constraints.biggest.width,
         key: key,
-      );
+      ),
+    );
 }
