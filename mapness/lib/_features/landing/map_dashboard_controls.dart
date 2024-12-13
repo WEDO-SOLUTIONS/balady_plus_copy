@@ -103,7 +103,8 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     const Spacer(),
-                                    const IndoorControl(),
+                                    if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
+                                      const IndoorControl(),
                                     const Spacer(),
                                     const EtaSharingControl(),
                                     uikit.Spacing.$4x.heightBox,
