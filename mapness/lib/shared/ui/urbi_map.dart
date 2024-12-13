@@ -23,8 +23,8 @@ class UrbiMap extends ConsumerWidget {
         onMapCreated: (controller) async {
           await controller.initialize();
 
-          // Styles
-          await controller.loadStyles('assets/maps/styles/styles.2gis');
+          //Styles
+          await controller.loadStyles('packages/map_styles/src/styles.2gis');
 
           // Appearance
           await controller.setZoomRestrictions(
