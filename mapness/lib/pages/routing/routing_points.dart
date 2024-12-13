@@ -17,7 +17,6 @@ import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/ui/measure_size.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
@@ -40,6 +39,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
   static const _bottomSheetAspectRatios = [.15, .7, .931];
+  static const controlsBottomExtent = 136.0;
 
   List<RoutePoint> points = [
     RoutePointMyLocation(),
@@ -51,7 +51,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
   /// Bottom sheet controller
   late final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
-  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(controlsBottomExtent);
 
   @override
   void initState() {
@@ -95,32 +95,27 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
       child: Stack(
         children: [
           RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
-          MeasureSize(
-            onChange: (size) {
-              _bottomHeightNotifier.value = size.height + Spacing.$3x;
-            },
-            child: StatefulBottomSheet<ThreeStateBottomSheet>(
-              animateOpening: false,
-              sliverBeforeContent: SliverPersistentHeader(
-                delegate: RoutingHeaderDelegate(
-                  points: points,
-                  updatePoints: _updatePoints,
-                ),
-                pinned: true,
-                floating: true,
+          StatefulBottomSheet<ThreeStateBottomSheet>(
+            animateOpening: false,
+            sliverBeforeContent: SliverPersistentHeader(
+              delegate: RoutingHeaderDelegate(
+                points: points,
+                updatePoints: _updatePoints,
               ),
-              content: [
-                Column(
-                  children: [
-                    RoutingHistory(
-                      updatePoint: _updatePoint,
-                      searchByQuery: _searchQuery,
-                    ),
-                  ],
-                ),
-              ],
-              scrollController: bottomSheetController,
+              pinned: true,
+              floating: true,
             ),
+            content: [
+              Column(
+                children: [
+                  RoutingHistory(
+                    updatePoint: _updatePoint,
+                    searchByQuery: _searchQuery,
+                  ),
+                ],
+              ),
+            ],
+            scrollController: bottomSheetController,
           ),
         ],
       ),

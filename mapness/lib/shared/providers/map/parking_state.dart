@@ -20,12 +20,12 @@ class ParkingState extends _$ParkingState {
 
   @override
   ParkingStateEvent build() {
-    final autoParkingState = ref.read(navigatorAutoEnableParkingProvider);
+    final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
     _initListeners();
 
     return ParkingStateEvent(
       filter: ParkingFilter.all,
-      visible: autoParkingState.autoEnableParking ?? false,
+      visible: autoEnableParking ?? false,
     );
   }
 

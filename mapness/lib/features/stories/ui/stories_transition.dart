@@ -84,9 +84,10 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
             }
             _controller.forward(from: _controller.value);
           },
-          child: AnimatedBuilder(
-              animation: _controller,
-              builder: (_, child) => Stack(
+          child: widget.type != StoryTypes.onboarding
+              ? AnimatedBuilder(
+                  animation: _controller,
+                  builder: (_, child) => Stack(
                     fit: StackFit.expand,
                     children: [
                       ColoredBox(
@@ -108,8 +109,20 @@ class _StoriesTransitionState extends State<StoriesTransition> with SingleTicker
                         ),
                       ),
                     ],
-            ),
-          ),
+                  ),
+                )
+              : Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    const ColoredBox(color: Colors.black),
+                    Padding(
+                      padding: EdgeInsets.only(
+                        top: MediaQuery.paddingOf(context).top,
+                      ),
+                      child: widget.child,
+                    ),
+                  ],
+                ),
         ),
       );
 }

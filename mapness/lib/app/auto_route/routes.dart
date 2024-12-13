@@ -25,62 +25,50 @@ class Routes {
         CustomRoute(
           path: '/settings',
           page: SettingsRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/dark_map',
           page: DarkMapRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/about_balady',
           page: AboutBaladyRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/help_center',
           page: HelpCenterRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/profile_info',
           page: ProfileInfoRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/momra_website',
           page: MomraWebsiteRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/image_editor',
           page: ImageEditorRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/signin',
           page: SigninRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/navigator_settings',
           page: NavigatorSettingsRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/sound_settings',
           page: SoundSettingsRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/voice_settings',
           page: VoiceSettingsRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/photo_viewer',
           page: PhotoViewerRoute.page,
-          transitionsBuilder: TransitionsBuilders.fadeIn,
         ),
         CustomRoute(
           path: '/language_pick_sheet',
@@ -89,33 +77,40 @@ class Routes {
         ),
       ];
 
-  static AutoRoute get bottomMenuRoute => CustomRoute(
-        path: 'bottom_menu',
+  static AutoRoute get bottomMenuRoute => AppRoute(
+        path: '',
         page: BottomMenuRoute.page,
         initial: true,
         barrierDismissible: false,
-        customRouteBuilder: RouteBuilders.customModalSheetBuilder,
         children: [
           CustomRoute(
-            path: 'explore',
+            path: 'landing',
             initial: true,
             page: LandingRoute.page,
-            transitionsBuilder: TransitionsBuilders.noTransition,
           ),
           CustomRoute(
             path: 'routing',
             page: RoutingPointsRoute.page,
-            transitionsBuilder: TransitionsBuilders.noTransition,
           ),
           CustomRoute(
             path: 'services',
             page: MapnessServicesRoute.page,
-            transitionsBuilder: TransitionsBuilders.noTransition,
           ),
-          CustomRoute(
+          AutoRoute(
             path: 'profile',
-            page: ProfileRoute.page,
-            transitionsBuilder: TransitionsBuilders.noTransition,
+            page: const EmptyShellRoute('').page,
+            children: [
+              CustomRoute(
+                path: '',
+                page: ProfileRoute.page,
+                transitionsBuilder: TransitionsBuilders.noTransition,
+              ),
+              CustomRoute(
+                path: 'change_profile_photo_sheet',
+                page: ChangeProfilePhotoRoute.page,
+                customRouteBuilder: RouteBuilders.modalSheetBuilder,
+              ),
+            ],
           ),
         ],
       );
