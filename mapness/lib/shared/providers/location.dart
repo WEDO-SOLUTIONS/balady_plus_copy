@@ -107,6 +107,8 @@ class _Location extends _$Location {
           desiredAccuracy: DesiredAccuracyMessage.high,
         ),
       );
+
+      CommonFunctions.locationDialogShowed = false;
       ref.invalidateSelf();
       return true;
     }
