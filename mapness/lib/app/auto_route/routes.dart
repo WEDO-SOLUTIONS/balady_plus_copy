@@ -96,9 +96,21 @@ class Routes {
             path: 'services',
             page: MapnessServicesRoute.page,
           ),
-          CustomRoute(
+          AutoRoute(
             path: 'profile',
-            page: ProfileRoute.page,
+            page: const EmptyShellRoute('').page,
+            children: [
+              CustomRoute(
+                path: '',
+                page: ProfileRoute.page,
+                transitionsBuilder: TransitionsBuilders.noTransition,
+              ),
+              CustomRoute(
+                path: 'change_profile_photo_sheet',
+                page: ChangeProfilePhotoRoute.page,
+                customRouteBuilder: RouteBuilders.modalSheetBuilder,
+              ),
+            ],
           ),
         ],
       );
