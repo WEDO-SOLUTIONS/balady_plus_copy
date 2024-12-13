@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/features/metro/metro_provider.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -19,6 +20,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 }) async {
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
+
+  await ref.watch(metroProviders(objectId.objectId.toString()).future);
+
+  final metroProviderInit = ref.read(metroProviders(objectId.objectId.toString()).notifier);
 
   final position = LatLng(
     latitude: directoryObject?.markerPosition!.latitude ?? 0,
@@ -66,6 +71,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   if (isMarkerPositionIsNull) {
     return null;
   }
+
+  await metroProviderInit.showMetro();
 
   return directoryObject;
 }
