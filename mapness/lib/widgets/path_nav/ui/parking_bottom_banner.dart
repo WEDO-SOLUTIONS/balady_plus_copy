@@ -17,10 +17,12 @@ class ParkingBanner extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
   final bool isHomeOrWork;
   final StatelessBottomSheetController bottomSheetController;
+  final RouteSearchOptionsMessage navigatorType;
 
   const ParkingBanner({
     required this.navigationState,
     required this.bottomSheetController,
+    required this.navigatorType,
     this.isHomeOrWork = false,
     super.key,
   });
@@ -56,7 +58,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
     final distance = double.tryParse(eta?.distanceEta ?? '--');
-    final autoParkingState = ref.watch(navigatorAutoEnableParkingProvider);
+    final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
     final layers = ref.watch(layersControlsProvider);
 
     const boxShadow = [
@@ -74,12 +76,8 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
       return const SizedBox.shrink();
     }
 
-    if (autoParkingState.autoEnableParking != null || widget.isHomeOrWork) {
+    if (autoEnableParking != null || widget.isHomeOrWork) {
       return const SizedBox.shrink();
-    }
-
-    if (autoParkingState.navigatorType == null) {
-      ref.read(navigatorAutoEnableParkingProvider.notifier).refresh();
     }
 
     if (_animationController.isCompleted ||
@@ -91,8 +89,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
 
     // We check that our banner is not displayed for pedestrians and should be shown after 15 seconds,
     // when there are 500 m left to the point.
-    if (distance != null && distance > 500 ||
-        RouteSearchOptionsMessage.pedestrian.name == autoParkingState.navigatorType) {
+    if (distance != null && distance > 500 || RouteSearchOptionsMessage.pedestrian == widget.navigatorType) {
       return const SizedBox.shrink();
     }
 
