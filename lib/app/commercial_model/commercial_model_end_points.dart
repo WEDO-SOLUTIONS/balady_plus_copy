@@ -407,10 +407,24 @@ class CommercialModelEndPoints {
   static  String InitialApprovalsubActivityDetails(String isicCode) =>
       "/v1/balady-commercial-initial-approval-services/activities/$isicCode";
 
+  static  String InitialApprovalAddIsicActivities (int requestID)=>
+      "/v1/balady-commercial-initial-approval-services/cr-isic-activities/$requestID";
 
   static String InitialApprovalAddetionalDetailsActivity(
       String subActivity, int addetioanlActivityId) =>
       'v1/balady-commercial-services/new-request/additional/activities/$subActivity/$addetioanlActivityId';
+  static String InitialApprovalRequestDetails( int requestId) =>
+      '/v1/balady-commercial-initial-approval-services/request/details/$requestId';
+
+  static String InitialApprovalCalculateFessInteractively(int requestId) =>
+      '/v1/balady-commercial-initial-approval-services/calculate-fees-interactively/$requestId';
+
+  static String InitialApprovalSubmit(int requestId) =>
+      '/v1/balady-commercial-initial-approval-services/issuing/submit/$requestId';
+
+
+  static String InitialApprovalSaveActivityAndSites(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/site-and-activities/$requestId";
 
 
 

@@ -9,15 +9,17 @@ import '../../data/models/citizen_info.dart';
 import '../../data/models/commercial_request_details_response_entity.dart';
 import '../../data/models/conclusion_response_entity.dart';
 import '../../data/models/attachment_response_entity.dart';
-import '../../data/models/isics_main_activity.dart';
+import '../../data/models/initialApproval/fees_request.dart';
+import '../../data/models/initialApproval/isics_main_activity.dart';
+import '../../data/models/initialApproval/request_details_model.dart';
 import '../../data/models/qr/submit_commercial_response_model.dart';
 import '../../data/models/qr/qr_details.dart';
 import '../../data/models/qr/qr_lookup_model.dart';
 import '../../data/models/qr/qr_submit_response.dart';
 import '../../data/models/qr/save_enterprise_data_request_model.dart';
 import '../../data/models/salama_warning_request.dart';
-import '../../data/models/save_com_submitter_and_owner_request_model.dart';
-import '../../data/models/sub_activity_details_data.dart';
+import '../../data/models/initialApproval/save_com_submitter_and_owner_request_model.dart';
+import '../../data/models/initialApproval/sub_activity_details_data.dart';
 import '../entities/addetional_activity_details_request.dart';
 import '../entities/citizen_info_params.dart';
 import '../entities/cr_submit_request.dart';
@@ -25,8 +27,7 @@ import '../entities/save_shop_details_request.dart';
 import '../entities/verifiy_salama_requst.dart';
 
 abstract class Repository {
-  Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
-      {required String crNumber, required String role});
+  Future<Either<Failure, ResponseBodyModel<RequestDetailsModel>>> getInitialApprovalRequestDetails(int requestId);
 
   Future<Either<Failure, ResponseBodyModel<SubActivityDetailsData>>>
       getSubActivityDetails({required String id});
@@ -35,7 +36,7 @@ abstract class Repository {
   Future<Either<Failure, List<IsicsMainActivity>>> getMainActivities( int requestID);
 
   Future<Either<Failure, bool>> addIsicActivities(
-      {required AddIsicActivitiesParams params});
+      {required AddIsicActivityData params});
 
   Future<Either<Failure, List<LookupsModel>>> getAccommodationTypes();
 
@@ -66,10 +67,14 @@ abstract class Repository {
   Future<Either<Failure, CalculateFeesResponseModel>> crCalculateFee(
       {required CrCalculateFeesRequest params});
 
+  Future<Either<Failure, CalculateFeesResponseModel>> CalculateFeesInteractively(
+      {required FeesRequest params});
+
+
   Future<Either<Failure, int>> addBeneficiaryNotes(
       {required CrAddNotesRequest params});
 
-  Future<Either<Failure, ResponseBodyModel<CrSubmitResponseModel>>> submitCr(
+  Future<Either<Failure, ResponseBodyModel<SubmitRequestResponseModel>>> submitCr(
       {required CrSubmitRequest params});
 
   Future<Either<Failure, dynamic>> saveShopDetails(
@@ -94,11 +99,8 @@ abstract class Repository {
 
   Future<Either<Failure, bool>> fawrySalamaBills({required int params});
 
-  Future<Either<Failure, AdditionalActivityResponseModel>> getAddetionalActivites(
-      {final String subActivityId});
-  Future<Either<Failure, AddetionalActivityDetailsResponse>>
-      getAddetionalDetailsActivites(
-          {final AddetionalActivityDetailsRequest params});
+  Future<Either<Failure, SubmitRequestResponseModel>> submitInitialApproval(int requestId);
+
 
   Future<Either<Failure, SubmitCommercialResponseModel>> applyCommercialRequest(
       {required int params});

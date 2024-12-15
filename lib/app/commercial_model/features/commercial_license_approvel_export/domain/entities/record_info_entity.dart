@@ -7,7 +7,7 @@ class RecordInfo {
   String? crNumber;
   int? crType;
   CrInfo? crInfo;
-  List<CrOwner>? crOwners;
+  List<RecordInfoOwner>? crOwners;
 
   RecordInfo({
     this.crNumber,
@@ -108,7 +108,7 @@ class Status {
   });
 }
 
-class CrOwner {
+class RecordInfoOwner {
   OwnerId? ownerId;
   String? ownerName;
   String? ownerNationalityAr;
@@ -118,7 +118,10 @@ class CrOwner {
   int? ownerIdType;
   String? relationTypeId;
 
-  CrOwner({
+
+
+
+  RecordInfoOwner({
     this.ownerId,
     this.ownerName,
     this.ownerNationalityAr,

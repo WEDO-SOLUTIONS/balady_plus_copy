@@ -8,12 +8,7 @@ class LookupsModel extends DropDownItem {
     required this.lookupMame,
   }) : super(name: lookupMame, id: lookupId);
 
-
-
-
-
   String? get text => lookupMame;
-
 
   factory LookupsModel.fromJson(Map<String, dynamic> json) => LookupsModel(
     lookupId: json["id"],

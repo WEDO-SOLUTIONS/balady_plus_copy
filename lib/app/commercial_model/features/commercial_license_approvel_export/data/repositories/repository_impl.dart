@@ -10,7 +10,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_app
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/qr/qr_submit_response.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/qr/save_enterprise_data_request_model.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/salama_warning_request.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/save_com_submitter_and_owner_request_model.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/initialApproval/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/addetional_activity_details_request.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/citizen_info_params.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/cr_submit_request.dart';
@@ -23,8 +23,10 @@ import '../../commercial_license_exports.dart';
 import '../models/attachment_response_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-import '../models/isics_main_activity.dart';
-import '../models/sub_activity_details_data.dart';
+import '../models/initialApproval/fees_request.dart';
+import '../models/initialApproval/isics_main_activity.dart';
+import '../models/initialApproval/request_details_model.dart';
+import '../models/initialApproval/sub_activity_details_data.dart';
 
 class RepositoryImpl implements Repository {
   final RemoteDataSource remoteDataSource;
@@ -52,11 +54,10 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<RecordInfo>>> getRecordInfo(
-      {required String crNumber, required String role}) async {
+  Future<Either<Failure, ResponseBodyModel<RequestDetailsModel>>> getInitialApprovalRequestDetails(int requestId) async {
     try {
       final data =
-          await remoteDataSource.getRecordInfo(crNumber: crNumber, role: role);
+          await remoteDataSource.getInitialApprovalRequestDetails(requestId);
 
       return Right(data);
     } on ServerException catch (error, stackTrace) {
@@ -112,7 +113,7 @@ class RepositoryImpl implements Repository {
 
   @override
   Future<Either<Failure, bool>> addIsicActivities(
-      {required AddIsicActivitiesParams params}) async {
+      {required AddIsicActivityData params}) async {
     try {
       final data = await remoteDataSource.addIsicActivities(params: params);
 
@@ -341,6 +342,26 @@ class RepositoryImpl implements Repository {
     }
   }
 
+
+
+  Future<Either<Failure, CalculateFeesResponseModel>> CalculateFeesInteractively(
+      {required FeesRequest params})async{
+    try {
+      final data = await remoteDataSource.CalculateFeesInteractively(params: params);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
   @override
   Future<Either<Failure, int>> addBeneficiaryNotes(
       {required CrAddNotesRequest params}) async {
@@ -361,7 +382,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, ResponseBodyModel<CrSubmitResponseModel>>> submitCr(
+  Future<Either<Failure, ResponseBodyModel<SubmitRequestResponseModel>>> submitCr(
       {required CrSubmitRequest params}) async {
     try {
       final data = await remoteDataSource.submitCr(params: params);
@@ -721,11 +742,9 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, AdditionalActivityResponseModel>> getAddetionalActivites(
-      {String? subActivityId}) async {
+  Future<Either<Failure, SubmitRequestResponseModel>> submitInitialApproval(int requestId)async {
     try {
-      final data = await remoteDataSource.getAddetionalActivites(
-          subActivityId: subActivityId!);
+      final data = await remoteDataSource.submitInitialApproval(requestId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -740,26 +759,26 @@ class RepositoryImpl implements Repository {
     }
   }
 
-  @override
-  Future<Either<Failure, AddetionalActivityDetailsResponse>>
-      getAddetionalDetailsActivites(
-          {AddetionalActivityDetailsRequest? params}) async {
-    try {
-      final data =
-          await remoteDataSource.getAddetionalDetailsActivites(params: params!);
-      return Right(data);
-    } on ServerException catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(ServerFailure(error.errorMessage,
-          statusCode: error.statusCode, errorCode: error.errorCode));
-    }
-  }
+  // @override
+  // Future<Either<Failure, AddetionalActivityDetailsResponse>>
+  //     getAddetionalDetailsActivites(
+  //         {AddetionalActivityDetailsRequest? params}) async {
+  //   try {
+  //     final data =
+  //         await remoteDataSource.getAddetionalDetailsActivites(params: params!);
+  //     return Right(data);
+  //   } on ServerException catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     return Left(ServerFailure(error.errorMessage,
+  //         statusCode: error.statusCode, errorCode: error.errorCode));
+  //   }
+  // }
 
   @override
   Future<Either<Failure, QrLookUpResponseModel>> getMalls(

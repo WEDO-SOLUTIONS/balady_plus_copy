@@ -24,10 +24,12 @@ import '../models/citizen_info.dart';
 import '../models/commercial_request_details_response_entity.dart';
 import '../models/conclusion_response_entity.dart';
 import '../models/attachment_response_entity.dart';
-import '../models/cr_submit_response_model.dart';
-import '../models/isics_main_activity.dart';
+import '../models/initialApproval/submit_request_response_model.dart';
+import '../models/initialApproval/fees_request.dart';
+import '../models/initialApproval/isics_main_activity.dart';
+import '../models/initialApproval/request_details_model.dart';
 import '../models/qr/qr_lookup_model.dart';
-import '../models/save_com_submitter_and_owner_request_model.dart';
+import '../models/initialApproval/save_com_submitter_and_owner_request_model.dart';
 import 'package:balady_plus/app/core/remote_services/pega_web_service.dart' as web;
 import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dart';
 import '../models/qr/additional_qr_data_request_model.dart';
@@ -37,16 +39,15 @@ import '../models/qr/save_worktimes_request_model.dart';
 import '../models/qr/qr_submit_response.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-import '../models/sub_activity_details_data.dart';
+import '../models/initialApproval/sub_activity_details_data.dart';
 
 abstract class RemoteDataSource {
-  Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
-      {required String crNumber, required String role});
+  Future<ResponseBodyModel<RequestDetailsModel>> getInitialApprovalRequestDetails( int requestId) ;
   Future<List<SubActivityModel>> getSubActivities(int requestID, int isicCode) ;
   Future<List<IsicsMainActivity>> getMainActivities(int requestID);
   Future<ResponseBodyModel<SubActivityDetailsData>> getSubActivityDetails(
       {required String subActivityId});
-  Future<bool> addIsicActivities({required AddIsicActivitiesParams params});
+  Future<bool> addIsicActivities({required AddIsicActivityData params});
   Future<List<LookupsModel>> getAccommodationTypes();
 
   Future<int> saveComSubmitterAndOwner(
@@ -74,9 +75,13 @@ abstract class RemoteDataSource {
 
   Future<CalculateFeesResponseModel> crCalculateFees(
       {required CrCalculateFeesRequest params});
+  Future<CalculateFeesResponseModel> CalculateFeesInteractively(
+      {required FeesRequest params});
+
+
   Future<int> addBeneficiaryNotes({required CrAddNotesRequest params});
 
-  Future<ResponseBodyModel<CrSubmitResponseModel>> submitCr(
+  Future<ResponseBodyModel<SubmitRequestResponseModel>> submitCr(
       {required CrSubmitRequest params});
 
   Future<CleanOptionResponseEntity> getCleanOptions({required int params});
@@ -94,11 +99,12 @@ abstract class RemoteDataSource {
   Future<bool>? fawrySalamaReports({required int params});
   Future<bool>? fawrySalamaBills({required int params});
 
-  Future<AdditionalActivityResponseModel> getAddetionalActivites(
-      {final String subActivityId});
+  Future<SubmitRequestResponseModel> submitInitialApproval(int requestId);
 
-  Future<AddetionalActivityDetailsResponse> getAddetionalDetailsActivites(
-      {final AddetionalActivityDetailsRequest params});
+
+
+  // Future<AddetionalActivityDetailsResponse> getAddetionalDetailsActivites(
+  //     {final AddetionalActivityDetailsRequest params});
 
   Future<BoardContractResponseModel> getBoardContracts({required int params});
 
@@ -201,16 +207,16 @@ class RemoteDataSourceImpl extends RemoteDataSource {
 
   @override
   Future<bool> addIsicActivities(
-      {required AddIsicActivitiesParams params}) async {
+      {required AddIsicActivityData params}) async {
     var response;
 
     try {
-      response = await webService.dio.post(CommercialModelEndPoints.addIsicActivities,
+      response = await webService.dio.post(CommercialModelEndPoints.InitialApprovalAddIsicActivities(params.requestId!),
           data: params.toJson(),
           options: Options(
             headers: {"sid": ""},
           ));
-      print("FHH");
+
 
       final decodedResponse =
           ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
@@ -252,19 +258,18 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<RecordInfoModel>> getRecordInfo(
-      {required String crNumber, required String role}) async {
+  Future<ResponseBodyModel<RequestDetailsModel>> getInitialApprovalRequestDetails( int requestId) async {
     var response;
 
     try {
       response = await webService.dio.get(
-        CommercialModelEndPoints.recordInfo(crNumber: crNumber, role: role),
+        CommercialModelEndPoints.InitialApprovalRequestDetails(requestId),
       );
 
       var data = response.data["data"]["result"];
 
-      var parsedResult = data != null ? RecordInfoModel.fromJson(data) : null;
-      final decodedResponse = ResponseBodyModel<RecordInfoModel>.fromMap(
+      var parsedResult = data != null ? RequestDetailsModel.fromJson(data) : null;
+      final decodedResponse = ResponseBodyModel<RequestDetailsModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
@@ -613,8 +618,8 @@ class RemoteDataSourceImpl extends RemoteDataSource {
 
     try {
       response = await webService.dio.post(
-          CommercialModelEndPoints.saveActivityDetails(params!.requestId!),
-          data: params.toMap());
+          CommercialModelEndPoints.InitialApprovalSaveActivityAndSites(params!.requestId!),
+          data: params.toJson());
 
       var data = response.data["data"]?["result"];
 
@@ -1304,6 +1309,96 @@ class RemoteDataSourceImpl extends RemoteDataSource {
     }
   }
 
+
+
+
+
+  Future<CalculateFeesResponseModel> CalculateFeesInteractively(
+      {required FeesRequest params})async {
+    var response;
+
+    try {
+      response = await webService.dio.post(
+          CommercialModelEndPoints.InitialApprovalCalculateFessInteractively(
+            params.requestId!,
+          ),
+          data: params.toJson());
+
+      var data = response.data["data"]["result"];
+
+      var parsedResult =
+      data != null ? CalculateFeesResponseModel.fromJson(data) : null;
+      final decodedResponse =
+      ResponseBodyModel<CalculateFeesResponseModel>.fromMap(response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+        ResponseBodyModel<CalculateFeesResponseModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: error.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+
+
   @override
   Future<int> addBeneficiaryNotes({required CrAddNotesRequest params}) async {
     var response;
@@ -1384,7 +1479,7 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<CrSubmitResponseModel>> submitCr(
+  Future<ResponseBodyModel<SubmitRequestResponseModel>> submitCr(
       {required CrSubmitRequest params}) async {
     var response;
 
@@ -1397,9 +1492,9 @@ class RemoteDataSourceImpl extends RemoteDataSource {
 
       var data = response.data["data"]["result"];
       var parsedResult =
-          data != null ? CrSubmitResponseModel.fromJson(data) : null;
+          data != null ? SubmitRequestResponseModel.fromJson(data) : null;
 
-      final decodedResponse = ResponseBodyModel<CrSubmitResponseModel>.fromMap(
+      final decodedResponse = ResponseBodyModel<SubmitRequestResponseModel>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
@@ -2862,22 +2957,19 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   }
 
   @override
-  Future<AdditionalActivityResponseModel> getAddetionalActivites(
-      {String? subActivityId}) async {
+  Future<SubmitRequestResponseModel> submitInitialApproval(int requestId) async {
     var response;
 
     try {
-      response = await webService.dio.get(CommercialModelEndPoints.addetionalActivites(
-        subActivityId!,
-      ));
+      response = await webService.dio.post(CommercialModelEndPoints.InitialApprovalSubmit(requestId));
 
       var data = response.data["data"];
 
       var parsedResult =
-          data != null ? AdditionalActivityResponseModel.fromJson(data) : null;
+          data != null ? SubmitRequestResponseModel.fromJson(data["result"]) : null;
 
       final decodedResponse =
-          ResponseBodyModel<AdditionalActivityResponseModel>.fromMap(response.data,
+          ResponseBodyModel<SubmitRequestResponseModel>.fromMap(response.data,
               parsedResult: parsedResult);
 
       return decodedResponse.data!.result!.toFuture();
@@ -2945,92 +3037,92 @@ class RemoteDataSourceImpl extends RemoteDataSource {
     }
   }
 
-  @override
-  Future<AddetionalActivityDetailsResponse> getAddetionalDetailsActivites(
-      {AddetionalActivityDetailsRequest? params}) async {
-    var response;
-
-    try {
-      response = await webService.dio.get(CommercialModelEndPoints.InitialApprovalAddetionalDetailsActivity(
-        params!.subActivityId,
-        params.addetionalActivityId,
-      ));
-
-      var data = response.data["data"];
-
-      var parsedResult = data != null
-          ? AddetionalActivityDetailsResponse.fromJson(data)
-          : null;
-
-      final decodedResponse =
-          ResponseBodyModel<AddetionalActivityDetailsResponse>.fromMap(
-              response.data,
-              parsedResult: parsedResult);
-
-      return decodedResponse.data!.result!.toFuture();
-    } on DioError catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      print(error);
-      var errorCode;
-      try {
-        final decodedResponse =
-            ResponseBodyModel<AddetionalActivityDetailsResponse>.fromMap(
-          error.response?.data,
-        );
-        errorCode = decodedResponse.data?.responseCode;
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-
-      throw ServerException(
-        error.toString(),
-        errorCode: errorCode,
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      print(error);
-      if (error is ServerException)
-        throw error;
-      else {
-        try {
-          //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
-        } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
-        throw ServerException("errors_server_error_2".tr(),
-            exception: APIException(
-              errorMessage: error.toString(),
-            ),
-            response: response);
-      }
-    }
-  }
+  // @override
+  // Future<AddetionalActivityDetailsResponse> getAddetionalDetailsActivites(
+  //     {AddetionalActivityDetailsRequest? params}) async {
+  //   var response;
+  //
+  //   try {
+  //     response = await webService.dio.get(CommercialModelEndPoints.InitialApprovalAddetionalDetailsActivity(
+  //       params!.subActivityId,
+  //       params.addetionalActivityId,
+  //     ));
+  //
+  //     var data = response.data["data"];
+  //
+  //     var parsedResult = data != null
+  //         ? AddetionalActivityDetailsResponse.fromJson(data)
+  //         : null;
+  //
+  //     final decodedResponse =
+  //         ResponseBodyModel<AddetionalActivityDetailsResponse>.fromMap(
+  //             response.data,
+  //             parsedResult: parsedResult);
+  //
+  //     return decodedResponse.data!.result!.toFuture();
+  //   } on DioError catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     print(error);
+  //     var errorCode;
+  //     try {
+  //       final decodedResponse =
+  //           ResponseBodyModel<AddetionalActivityDetailsResponse>.fromMap(
+  //         error.response?.data,
+  //       );
+  //       errorCode = decodedResponse.data?.responseCode;
+  //     } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
+  //
+  //     throw ServerException(
+  //       error.toString(),
+  //       errorCode: errorCode,
+  //       statusCode: error.response?.statusCode,
+  //       dioError: error,
+  //     );
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     print(error);
+  //     if (error is ServerException)
+  //       throw error;
+  //     else {
+  //       try {
+  //         //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
+  //       } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
+  //       throw ServerException("errors_server_error_2".tr(),
+  //           exception: APIException(
+  //             errorMessage: error.toString(),
+  //           ),
+  //           response: response);
+  //     }
+  //   }
+  // }
 
   @override
   Future<QrLookUpResponseModel> getMalls({required String params}) async {

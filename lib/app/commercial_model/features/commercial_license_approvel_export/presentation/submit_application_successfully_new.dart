@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/cr_submit_response_model.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/initialApproval/submit_request_response_model.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
@@ -39,14 +39,14 @@ class _SubmitApplicationSuccessfullyNewState
   Widget build(BuildContext context) {
     (
       String from,
-    CrSubmitResponseModel submitResponse,
+    SubmitRequestResponseModel submitResponse,
       double totalCost,
     ) arguments = ModalRoute.of(context)!.settings.arguments as (
       String from,
-    CrSubmitResponseModel submitResponse,
+    SubmitRequestResponseModel submitResponse,
       double totalCost,
     );
-    CrSubmitResponseModel submitResponse = arguments.$2;
+    SubmitRequestResponseModel submitResponse = arguments.$2;
     return WillPopScope(
       onWillPop: () async {
         return Future<bool>.value(false);

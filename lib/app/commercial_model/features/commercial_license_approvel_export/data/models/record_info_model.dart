@@ -115,7 +115,7 @@ class StatusModel extends Status {
       );
 }
 
-class CrOwnerModel extends CrOwner {
+class CrOwnerModel extends RecordInfoOwner {
   CrOwnerModel({
     super.ownerId,
     super.ownerName,

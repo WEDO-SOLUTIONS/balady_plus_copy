@@ -244,6 +244,10 @@ class CommercialRouteName {
   static const submitApplicationSuccessfullyNew =
       'CommercialLicense_Create_Success_Page';
 
+  static const IntialApprovalSuccessfullyPage =
+      'IntialApprovalSuccessfullyPage';
+
+
   static const violationResultsPage = 'ViolationGuide_Results_Page';
 
   static const violationRegulationDetailsPage =

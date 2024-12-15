@@ -4454,5 +4454,7 @@
   "complinace_clause": "Clause",
   "complaince_edit_clause":"Edit Clause",
   "isicName2": "activity Name",
-  "commerical_license_export": "إصدار مبدئي لرخصة تجارية"
+  "commerical_license_export": "إصدار مبدئي لرخصة تجارية",
+  "commerical_add_activity_sucessfull": "Request Send Successfully"
+,
 }
