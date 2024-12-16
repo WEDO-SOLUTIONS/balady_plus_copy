@@ -18,12 +18,12 @@ import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
+  final ScrollController scrollController;
+
   const MapSearchContent({
     required this.scrollController,
     super.key,
   });
-
-  final ScrollController scrollController;
 
   @override
   ConsumerState<MapSearchContent> createState() => _MapSearchContentState();

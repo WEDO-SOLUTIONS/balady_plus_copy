@@ -18,10 +18,8 @@ class FeedbackImagesActionErrorSheet extends StatelessWidget {
     final l10n = context.l10n;
     final label = switch (error) {
       FeedbackImageWrongFormatError(supportedFormats: final supportedFormats) =>
-        l10n.feedbackImageWrongFormatFailure(
-            supportedFormats.formatAcceptedFormats(l10n)),
-      FeedbackImageSizeExceededError(maxFileSize: final maxFileSize) =>
-        l10n.feedbackImageSizeExceedFailure(
+        l10n.feedbackImageWrongFormatFailure(supportedFormats.formatAcceptedFormats(l10n)),
+      FeedbackImageSizeExceededError(maxFileSize: final maxFileSize) => l10n.feedbackImageSizeExceedFailure(
           maxFileSize.formatAsFileSize(),
         ),
     };

@@ -23,27 +23,27 @@ class ErrorWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Material(
-    color: Colors.white,
-    borderRadius: const BorderRadius.vertical(
-      top: Radius.circular(16),
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        const Center(
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 6),
-            child: SheetDragger(),
-          ),
+        color: Colors.white,
+        borderRadius: const BorderRadius.vertical(
+          top: Radius.circular(16),
         ),
-        const SizedBox(height: Spacing.$1x),
-        BaseErrorWidget(
-          onRetry: onRetry,
-          buttonLabel: buttonLabel,
-          errorLabel: errorLabel,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Center(
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 6),
+                child: SheetDragger(),
+              ),
+            ),
+            const SizedBox(height: Spacing.$1x),
+            BaseErrorWidget(
+              onRetry: onRetry,
+              buttonLabel: buttonLabel,
+              errorLabel: errorLabel,
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 }

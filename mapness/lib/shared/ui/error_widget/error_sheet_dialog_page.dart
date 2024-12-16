@@ -11,6 +11,7 @@ class ErrorSheetDialogPage extends ConsumerWidget {
   final String? buttonLabel;
   final String? errorLabel;
   final BottomSheetOnCloseCallback? onClose;
+
   /// Add barrier to bottom sheet background
   final bool hasBarrier;
 
