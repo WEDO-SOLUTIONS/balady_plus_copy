@@ -43,8 +43,7 @@ class HeaderInfoComponent extends ConsumerWidget {
   }
 }
 
-class _HeaderInfoWidget
-    extends BottomSheetStateComponent<PoiCardBottomSheetState> {
+class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
   final PoiContentFullAddress fullAddress;
   final String? worktime;
   const _HeaderInfoWidget({
@@ -55,8 +54,7 @@ class _HeaderInfoWidget
         );
 
   @override
-  Widget build(BuildContext context, PoiCardBottomSheetState state,
-      double interpolation) {
+  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     if (state.index > PoiCardBottomSheetState.halfOpen.index) {
       return const SizedBox.shrink();
     }
@@ -97,7 +95,7 @@ class _HeaderInfoWidget
                 ),
               )
             else
-              Spacing.$4x.heightBox,
+              Spacing.$5x.heightBox,
           ],
         ),
       ),

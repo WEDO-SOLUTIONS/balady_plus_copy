@@ -1,7 +1,8 @@
 part of 'poi_card_widget_page.dart';
 
 const _titleHorizontalPadding = 84.0;
-const _headerHegihtWithoutTitle = 205;
+const _headerHegihtWithoutTitle = 170.0;
+const _minBottomPadding = 16.0;
 
 class _PoiCardContent extends ConsumerStatefulWidget {
   final DirectoryObjectMessage data;
@@ -60,7 +61,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         maxWidth: width,
       );
 
-    return _headerHegihtWithoutTitle + painter.height;
+    final bottomPadding = max(_minBottomPadding, MediaQuery.paddingOf(context).bottom);
+
+    return _headerHegihtWithoutTitle + painter.height + bottomPadding;
   }
 
   @override
