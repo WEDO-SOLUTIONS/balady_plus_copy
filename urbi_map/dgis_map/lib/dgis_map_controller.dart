@@ -376,7 +376,7 @@ class DgisMapController {
   Future<void> removeMapObjectManager(MapObjectManagerMessage manager) => _instance.removeMapObjectManager(manager);
 
   /// Changes [MapObjectManagerMessage] visibility
-  Future<void> setMapObjectManagerIsVisible({required bool isVisible, required MapObjectManagerMessage? manager}) =>
+  Future<void> setMapObjectManagerIsVisible({required bool isVisible, MapObjectManagerMessage? manager}) =>
       _instance.setMapObjectManagerIsVisible(isVisible: isVisible, manager: manager);
 
   /// Remove all markers added with [addMarker].
