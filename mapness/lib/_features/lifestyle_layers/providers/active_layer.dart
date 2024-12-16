@@ -11,7 +11,7 @@ class ActiveLayer extends _$ActiveLayer {
 
   @override
   LayerType? build() {
-    final sharedPrefs = ref.watch(sharedPrefsProvider);
+    final sharedPrefs = ref.read(sharedPrefsProvider);
     final string = sharedPrefs.getString(_activeLayerKey);
 
     final layerState = LayerTypeEx.stringToType(string);

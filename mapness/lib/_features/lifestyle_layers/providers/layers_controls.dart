@@ -617,8 +617,7 @@ class LayersControls extends _$LayersControls {
   List<Marker> _makeMarkers(
     List<InvestmentSites>? response,
   ) {
-    final markers = response
-            ?.nonNulls
+    final markers = response?.nonNulls
             .map<Marker>(
               (e) => Marker(
                 id: e.id,
