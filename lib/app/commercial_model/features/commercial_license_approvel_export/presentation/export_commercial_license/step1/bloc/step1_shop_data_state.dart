@@ -1,6 +1,6 @@
-part of 'cr_step4_shop_data_cubit.dart';
+part of 'step1_shop_data_cubit.dart';
 
-class CrStep4ShopDataState extends Equatable {
+class Step1ShopDataState extends Equatable {
   final BlocStatus status;
 
   final BlocStatus accommodationTypesStatus;
@@ -99,7 +99,7 @@ class CrStep4ShopDataState extends Equatable {
   final String? currentDistrctId;
   final bool? insidePetrolStation;
 
-  const CrStep4ShopDataState(
+  const Step1ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
       this.contractsListStatus = BlocStatus.initial,
       this.investmentListStatus = BlocStatus.initial,
@@ -242,7 +242,7 @@ class CrStep4ShopDataState extends Equatable {
     ];
   }
 
-  CrStep4ShopDataState copyWith(
+  Step1ShopDataState copyWith(
       {BlocStatus? accommodationTypesStatus,
       BlocStatus? contractsListStatus,
       BlocStatus? investmentListStatus,
@@ -309,7 +309,7 @@ class CrStep4ShopDataState extends Equatable {
       BlocStatus? draftStatus,
       Nullable<String?>? currentDistrctId,
       bool? insidePetrolStation}) {
-    return CrStep4ShopDataState(
+    return Step1ShopDataState(
         status: status ?? this.status,
         ejarVerified:
             ejarVerified == null ? this.ejarVerified : ejarVerified.value,

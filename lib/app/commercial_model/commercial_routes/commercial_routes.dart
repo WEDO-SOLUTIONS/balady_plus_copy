@@ -1,9 +1,12 @@
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_list_screen.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/request_details/presentation/pages/RequestDetailsPage.dart';
 import 'package:flutter/widgets.dart';
+import '../features/commercial_license_approvel_export/presentation/export_commercial_license/export_license_start_service_screen.dart';
+import '../features/commercial_license_approvel_export/presentation/export_commercial_license/license_export_intiation/screens/license_export_initial_screen.dart';
 import '../features/commercial_license_approvel_export/presentation/intial_approval/commercial_license/screens/commercial_license__initial_approvel_screen.dart';
 import '../features/commercial_license_approvel_export/presentation/intial_approval/intial_approval_successfully.dart';
 import '../features/commercial_license_approvel_export/presentation/intial_approval/step2/page/export_map_page.dart';
-import '../features/commercial_license_approvel_export/presentation/start_service_screen.dart';
+import '../features/commercial_license_approvel_export/presentation/intial_approval/start_service_initial_approval_screen.dart';
 
 import 'commercial_route_names.dart';
 import '../features/comercial_license_renew/presentation/commercial_license/screens/renew_commercial_license_screen.dart';
@@ -161,12 +164,22 @@ class CommercialRoutes {
 
 
     //Commercial approvel export
-    CommercialRouteName.CommercialLicenseExportStartService: (context) =>
-    const StartServicePage(),
+    CommercialRouteName.LicenseIntialApprovalStartService: (context) => const InitialApprovalStartServicePage(),
 
     CommercialRouteName.CommercialLicenseInitialApprovelScreen: (context) => const CommercialLicenseInitialApprovelScreen(),
     CommercialRouteName.ExportMapScreen: (context) => ExportMapScreen(),
 
 
-  };
+  CommercialRouteName.LicenseExportStartServicePage: (context) => const LicenseExportStartServicePage(),
+  CommercialRouteName.LicenseExportInitialScreen: (context) => const LicenseExportInitialScreen(),
+  CommercialRouteName.IntialApprovalRequestDetailsPage: (context) => const RequestDetailsPage(),
+
+
+
+
+
+
+
+
+};
 }

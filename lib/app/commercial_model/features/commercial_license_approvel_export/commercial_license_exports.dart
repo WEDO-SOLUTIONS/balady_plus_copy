@@ -14,7 +14,7 @@ export 'presentation/intial_approval/step2/page/step2_intial_approval__activity_
 export 'presentation/intial_approval/step2/page/step2_intial_approval_conditions_page.dart';
 
 export 'presentation/intial_approval/step2/page/step2_intial_approval_geolocation_data.dart';
-export 'presentation/export_commercial_license/step4/page/cr_step4_shop_data.dart';
+export 'presentation/export_commercial_license/step1/page/step1_shop_data.dart';
 export 'presentation/export_commercial_license/step5/page/cr_step5_attachment_data.dart';
 export 'presentation/export_commercial_license/step6/page/cr_step6_establishment_data.dart';
 export 'presentation/export_commercial_license/step7/page/cr_step7_establishment_contact_data.dart';
@@ -30,10 +30,10 @@ export 'presentation/intial_approval/step1/widgets/isic_activities_dialog_not_ex
 export 'presentation/intial_approval/step2/widgets/workers_type_component.dart';
 export 'presentation/intial_approval/step2/widgets/extra_activity_card.dart';
 export 'presentation/intial_approval/step2/widgets/extra_activity_component.dart';
-export 'presentation/export_commercial_license/step4/widgets/yes_no_radio_group_widget.dart';
-export 'presentation/export_commercial_license/step4/widgets/billboard_card.dart';
-export 'presentation/export_commercial_license/step4/widgets/billboard_component.dart';
-export 'presentation/export_commercial_license/step4/widgets/investment_contract_card.dart';
+export 'presentation/export_commercial_license/step1/widgets/yes_no_radio_group_widget.dart';
+export 'presentation/export_commercial_license/step1/widgets/billboard_card.dart';
+export 'presentation/export_commercial_license/step1/widgets/billboard_component.dart';
+export 'presentation/export_commercial_license/step1/widgets/investment_contract_card.dart';
 
 export 'presentation/export_commercial_license/step5/widgets/pick_file_component.dart';
 export 'presentation/export_commercial_license/step6/widgets/owner_info_card.dart';

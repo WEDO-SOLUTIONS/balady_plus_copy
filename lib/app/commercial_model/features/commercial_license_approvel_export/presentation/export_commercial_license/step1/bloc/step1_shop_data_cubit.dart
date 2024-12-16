@@ -12,11 +12,6 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-
-
-import 'package:collection/collection.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
 import '../../../../../../../features/_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../data/models/board_contract_responseModel.dart';
 import '../../../../data/models/clean_contracts_response_entity.dart';
@@ -45,10 +40,10 @@ import '../../../../domain/use_cases/validate_salama_bill.dart';
 import '../../../../domain/use_cases/validate_salama_permit.dart';
 import '../../../../domain/use_cases/validate_salama_report.dart';
 
-part 'cr_step4_shop_data_state.dart';
+part 'step1_shop_data_state.dart';
 
 
-class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
+class Step1ShopDataCubit extends Cubit<Step1ShopDataState> {
   final GetAccommodationTypes _getAccommodationTypes;
   final GetCleanContracts _getCleanContracts;
   final GetInvestmentContracts _getInvestmentContracts;
@@ -66,7 +61,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final ValidateSalamaReport _validateSalamaReport;
   final GetBoardContracts _getBoardContracts;
 
-  CrStep4ShopDataCubit()
+  Step1ShopDataCubit()
       : _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getCleanContracts = GetCleanContracts(repository: sl()),
         _getInvestmentContracts = GetInvestmentContracts(repository: sl()),
@@ -82,7 +77,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         _validateSalamaBill = ValidateSalamaBill(repository: sl()),
         _validateSalamaReport = ValidateSalamaReport(repository: sl()),
         _getBoardContracts = GetBoardContracts(repository: sl()),
-        super(const CrStep4ShopDataState());
+        super(const Step1ShopDataState());
 
   void getAccommodationTypes() async {
     emit(state.copyWith(accommodationTypesStatus: BlocStatus.loading));

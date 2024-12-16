@@ -434,6 +434,8 @@ Map<String, dynamic> servicesConfig = {
     },
   ],
   "business_license_services": [
+
+
     {
       "id": 301,
       "icon": "issue-commercial",
@@ -444,7 +446,7 @@ Map<String, dynamic> servicesConfig = {
       "requireLogin": true,
       "action": {
         "type": "page",
-        "value": CommercialRouteName.CommercialLicenseExportStartService
+        "value": CommercialRouteName.LicenseIntialApprovalStartService
       },
       "ar": {
         "title": "commerical_license_export",

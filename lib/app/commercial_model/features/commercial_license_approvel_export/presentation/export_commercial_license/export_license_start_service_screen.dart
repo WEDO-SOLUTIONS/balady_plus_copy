@@ -15,14 +15,14 @@ import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 
-class StartServicePage extends StatefulWidget {
-  const StartServicePage({Key? key}) : super(key: key);
+class LicenseExportStartServicePage extends StatefulWidget {
+  const LicenseExportStartServicePage({Key? key}) : super(key: key);
 
   @override
-  State<StartServicePage> createState() => _StartServicePageState();
+  State<LicenseExportStartServicePage> createState() => _LicenseExportStartServicePageState();
 }
 
-class _StartServicePageState extends State<StartServicePage> {
+class _LicenseExportStartServicePageState extends State<LicenseExportStartServicePage> {
   @override
   void initState() {
     // TODO: implement initState
@@ -67,7 +67,7 @@ class _StartServicePageState extends State<StartServicePage> {
                         if (CommonProperties.isLoggedIn) {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
-                              CommercialRouteName.CommercialLicenseInitialApprovelScreen,
+                              CommercialRouteName.LicenseExportInitialScreen,
                               arguments: requestId,
                             );
 
@@ -78,8 +78,8 @@ class _StartServicePageState extends State<StartServicePage> {
                               dialogKeyName:
                                   DialogName.notAuthorizedIndivisualDialog,
                               currentRouteName:
-                                  CommercialRouteName.CommercialLicenseExportStartService,
-                              child: NotAuthorizedIndivisualDialog(routName:CommercialRouteName.CommercialLicenseExportStartService),
+                                  CommercialRouteName.LicenseExportStartServicePage,
+                              child: NotAuthorizedIndivisualDialog(routName:CommercialRouteName.LicenseExportStartServicePage),
                             );
                           }
                         } else {
@@ -91,7 +91,7 @@ class _StartServicePageState extends State<StartServicePage> {
                                   if (CommonProperties.selectedDelegator !=
                                       null) {
                                     Navigator.of(context).pushNamed(
-                                      CommercialRouteName.CommercialLicenseInitialApprovelScreen,
+                                      CommercialRouteName.LicenseExportInitialScreen,
                                       arguments: requestId,
                                     );
                                   } else {
@@ -100,8 +100,8 @@ class _StartServicePageState extends State<StartServicePage> {
                                       isFullHeight: false,
                                       dialogKeyName: DialogName
                                           .notAuthorizedIndivisualDialog,
-                                      currentRouteName: CommercialRouteName.CommercialLicenseExportStartService,
-                                      child: NotAuthorizedIndivisualDialog(routName:CommercialRouteName.CommercialLicenseExportStartService ,),
+                                      currentRouteName: CommercialRouteName.LicenseExportStartServicePage,
+                                      child: NotAuthorizedIndivisualDialog(routName:CommercialRouteName.LicenseExportStartServicePage ,),
                                     );
                                   }
                                 }

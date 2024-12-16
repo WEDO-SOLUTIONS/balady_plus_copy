@@ -54,7 +54,8 @@ String getScreenName(String tag, {int? typeId}) {
           return RouteName.objectionsDetailsPage;
 
         case 1801:
-          return RouteName.CommercialLicenseInitialApprovelScreen;
+            return RouteName.IntialApprovalRequestDetailsPage;
+
       }
     case 'license':
       switch (typeId) {

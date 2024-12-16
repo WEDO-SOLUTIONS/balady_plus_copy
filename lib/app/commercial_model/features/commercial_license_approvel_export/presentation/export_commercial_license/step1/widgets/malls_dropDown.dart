@@ -7,21 +7,21 @@ import '../../../../../../../features/_shared_feature_/presentation/components/b
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
 import '../../../../data/models/qr/qr_lookup_model.dart';
-import '../bloc/cr_step4_shop_data_cubit.dart';
+import '../bloc/step1_shop_data_cubit.dart';
 
 class MallsDropDown extends StatelessWidget {
   const MallsDropDown({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep4ShopDataCubit, CrStep4ShopDataState>(
+    return BlocBuilder<Step1ShopDataCubit, Step1ShopDataState>(
         builder: (context, state) {
       return DropDownWithTitle(
         title: "step4label7".tr(),
         selectedValue: state.selectedMall?.name,
         blocStatus: state.mallsStatus,
         onRetry: () {
-          context.read<CrStep4ShopDataCubit>().getMalls();
+          context.read<Step1ShopDataCubit>().getMalls();
         },
         onTap: () {
           // if (state.requestDetails?.usageDisable == true) return;
@@ -35,7 +35,7 @@ class MallsDropDown extends StatelessWidget {
               noDataMsg: "no_malls_available".tr(),
               selectedValue: state.selectedMall,
               onTap: (item) {
-                context.read<CrStep4ShopDataCubit>().updateMall(item);
+                context.read<Step1ShopDataCubit>().updateMall(item);
                 Navigator.pop(context);
               },
             ),

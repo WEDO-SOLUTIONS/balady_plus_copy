@@ -379,6 +379,8 @@ class RouteName {
 
 
   static const CommercialLicenseInitialApprovelScreen = 'Commercial_license_initial_approvel_screen';
+  static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
+
 
 }
 

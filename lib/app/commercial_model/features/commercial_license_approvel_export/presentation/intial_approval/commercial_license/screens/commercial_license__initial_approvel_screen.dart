@@ -35,15 +35,11 @@ class _CommercialLicenseInitialApprovelScreenState extends State<CommercialLicen
 
   @override
   Widget build(BuildContext context) {
-    Map? params = ModalRoute.of(context)!.settings.arguments as Map<String, String?>?;
+    int? requestId = ModalRoute.of(context)!.settings.arguments as int;
 
 
 
-    int? requestId;
-    if(params?["requestNumber"] != null)
-      {
-        requestId= int.parse(params?["requestNumber"]);
-      }
+
 
     return MultiBlocProvider(
       providers: [

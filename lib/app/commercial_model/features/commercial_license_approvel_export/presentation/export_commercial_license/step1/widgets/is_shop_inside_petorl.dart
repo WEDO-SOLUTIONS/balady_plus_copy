@@ -6,7 +6,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
-import '../bloc/cr_step4_shop_data_cubit.dart';
+import '../bloc/step1_shop_data_cubit.dart';
 import 'yes_no_radio_group_widget.dart';
 
 class IsShopInsidePetroStationWidget extends StatelessWidget {
@@ -14,14 +14,14 @@ class IsShopInsidePetroStationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep4ShopDataCubit, CrStep4ShopDataState>(
+    return BlocBuilder<Step1ShopDataCubit, Step1ShopDataState>(
       builder: (context, state) {
         return YesNoRadioGroupWidget(
             groupName: "is_license_inside_petrol_station".tr(),
             currentValue: state.insidePetrolStation,
             onChanged: (value) {
               if (value != null)
-                context.read<CrStep4ShopDataCubit>().updateInsidePetrol(value);
+                context.read<Step1ShopDataCubit>().updateInsidePetrol(value);
             });
         // return Column(
         //   crossAxisAlignment: CrossAxisAlignment.start,

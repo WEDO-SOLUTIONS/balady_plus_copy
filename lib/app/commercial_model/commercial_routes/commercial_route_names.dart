@@ -387,11 +387,16 @@ class CommercialRouteName {
 
 
 
-  static const CommercialLicenseExportStartService =
-      'Commercial_License_export_start_service';
-  static const CommercialLicenseInitialApprovelScreen =
-      'Commercial_license_initial_approvel_screen';
+  static const LicenseIntialApprovalStartService = 'Commercial_License_Initial_approval_start_service';
+  static const CommercialLicenseInitialApprovelScreen = 'Commercial_license_initial_approvel_screen';
+  static const ExportMapScreen = 'ExportMapScreen';
 
-  static const ExportMapScreen =
-      'ExportMapScreen';
+
+  static const LicenseExportStartServicePage = 'LicenseExportStartServicePage';
+  static const LicenseExportInitialScreen = 'LicenseExportInitialScreen';
+  static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
+
+
+
+
 }

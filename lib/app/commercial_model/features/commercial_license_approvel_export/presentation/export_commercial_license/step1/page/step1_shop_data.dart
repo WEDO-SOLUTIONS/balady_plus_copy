@@ -1,5 +1,5 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/export_commercial_license/step4/bloc/cr_step4_shop_data_cubit.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/export_commercial_license/step4/widgets/yes_no_radio_group_widget.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/export_commercial_license/step1/bloc/step1_shop_data_cubit.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/export_commercial_license/step1/widgets/yes_no_radio_group_widget.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -30,17 +30,16 @@ import '../widgets/board_contract_card.dart';
 import '../widgets/clean_contract_card.dart';
 import '../widgets/investment_contract_card.dart';
 import '../widgets/is_shop_inside_petorl.dart';
-
 import '../widgets/malls_dropDown.dart';
 
-class CRStep4ShopData extends StatefulWidget {
-  const CRStep4ShopData({Key? key}) : super(key: key);
+class Step1ShopData extends StatefulWidget {
+  const Step1ShopData({Key? key}) : super(key: key);
 
   @override
-  State<CRStep4ShopData> createState() => _CRStep4ShopDataState();
+  State<Step1ShopData> createState() => _Step1ShopDataState();
 }
 
-class _CRStep4ShopDataState extends State<CRStep4ShopData> {
+class _Step1ShopDataState extends State<Step1ShopData> {
   TextEditingController _deedServiceController = TextEditingController();
 
   @override
@@ -48,18 +47,18 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
     // TODO: implement initState
     super.initState();
     Future.microtask(() {
-      context.read<CrStep4ShopDataCubit>().initForm();
-      context.read<CrStep4ShopDataCubit>().salamaBillFawery();
-      context.read<CrStep4ShopDataCubit>().salamaReportFawery();
-      context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
-      context.read<CrStep4ShopDataCubit>().getCleanOptions();
-      context.read<CrStep4ShopDataCubit>().getMalls();
+      context.read<Step1ShopDataCubit>().initForm();
+      context.read<Step1ShopDataCubit>().salamaBillFawery();
+      context.read<Step1ShopDataCubit>().salamaReportFawery();
+      context.read<Step1ShopDataCubit>().getDeedOwnerShipsTypes();
+      context.read<Step1ShopDataCubit>().getCleanOptions();
+      context.read<Step1ShopDataCubit>().getMalls();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<CrStep4ShopDataCubit, CrStep4ShopDataState>(
+    return BlocConsumer<Step1ShopDataCubit, Step1ShopDataState>(
         listener: (context, state) {
       if (state.status == BlocStatus.failure ||
           state.deedOptionsStatus == BlocStatus.failure ||
@@ -88,7 +87,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             RetryWidget(
                               onRetry: () {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .salamaBillFawery();
                               },
                             ),
@@ -97,7 +96,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             RetryWidget(
                               onRetry: () {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .salamaReportFawery();
                               },
                             ),
@@ -108,7 +107,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             currentValue: state.brand,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(brand: value);
                             },
                           ),
@@ -119,7 +118,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             initialValue: state.shopName,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(shopName: value);
                             },
                           ),
@@ -132,7 +131,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             bottomMargin: 24,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(shopUnitNumber: value);
                             },
                           ),
@@ -146,7 +145,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             initialValue: state.blockNumber,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(blockNumber: value);
                             },
                           ),
@@ -159,7 +158,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             initialValue: state.holesCount,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(holesCount: value);
                             },
                           ),
@@ -172,7 +171,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             initialValue: state.floorCount,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(floorCount: value);
                             },
                           ),
@@ -185,22 +184,22 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             bottomMargin: 24,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(noOfCameras: value);
                             },
                           ),
                           if (context
-                              .read<CrStep4ShopDataCubit>()
+                              .read<Step1ShopDataCubit>()
                               .cameraEndorsmentText
                               .isNotEmpty)
                             UndertakingWidget(
                               text: "cr_pleadge_title".tr(),
                               desc: context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .cameraEndorsmentText,
                               onChange: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateEndorsmentAgreement(value);
                               },
                               initialValue: state.endorsmentAgreement ?? false,
@@ -210,7 +209,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             currentValue: state.hasElevator,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateFields(hasElevator: value);
                             },
                           ),
@@ -219,7 +218,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             currentValue: state.existInMall,
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateExistsInMallFields(existInMall: value);
                             },
                           ),
@@ -234,7 +233,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               initialValue: state.floorNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateFields(floorNumber: value);
                               },
                             ),
@@ -246,7 +245,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             onChanged: (value) {
                               if (value != null) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateIsCitizenPledgedToClean(value);
                               }
                             },
@@ -261,7 +260,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               currentVlaue: state.cleanContractEndDate,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateCleanContractDate(value ?? "");
                               },
                             ),
@@ -283,14 +282,14 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                           .items![index],
                                       onSelect: (CleanContractItemEntity? item) {
                                         context
-                                            .read<CrStep4ShopDataCubit>()
+                                            .read<Step1ShopDataCubit>()
                                             .selectCleanContract(item);
                                       },
                                       selected: state.selectedCleanContract);
                                 }),
                           ],
                           if (context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .saveLocationResponse
                                   ?.showSalamaPermit ==
                               true) ...[
@@ -299,7 +298,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               currentValue: state.salamaPermitExist,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateSalamaPermitExists(
                                         salamaPermitExist: value);
                               },
@@ -316,12 +315,12 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                 currentValue: state.slamaReportNumber,
                                 verify: () {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .verifySalamaReport();
                                 },
                                 onTextChanged: (value) {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .updateSalamaPermitReport(
                                           salamaReportNumber: value);
                                 },
@@ -337,12 +336,12 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                 topPadding: CommonFunctions.isAppAR ? 0 : 60,
                                 verify: () {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .verifySalamaBill();
                                 },
                                 onTextChanged: (value) {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .updateSalamaPermitBill(
                                           salamaBillNumber: value);
                                 },
@@ -358,12 +357,12 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                 currentValue: state.salamaPermitNumber,
                                 verify: () {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .verifySalamaPermit();
                                 },
                                 onTextChanged: (value) {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .updateSalamaPermitNumber(
                                           salamaPermitNumber: value);
                                 },
@@ -391,7 +390,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             ],
                             onChanged: (value) {
                               context
-                                  .read<CrStep4ShopDataCubit>()
+                                  .read<Step1ShopDataCubit>()
                                   .updateSubmitterType(value!);
                             },
                           ),
@@ -406,7 +405,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateCRContractType(value!);
                               },
                             ),
@@ -427,7 +426,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateCRContractOption(value!);
                               },
                             ),
@@ -444,7 +443,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               initialValue: state.contractNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateContractNumber(value);
                               },
                             ),
@@ -454,7 +453,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               currentVlaue: state.contractDate,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateContractDate(value ?? "");
                               },
                             ),
@@ -472,7 +471,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               }).toList(),
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateDeedInfo(ownershipType: value);
                               },
                             ),
@@ -485,12 +484,12 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               currentValue: state.contractNumber,
                               verify: () {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .getDeedInfoHandler();
                               },
                               onTextChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateDeedInfo(deedNumber: value);
                               },
                             ),
@@ -509,7 +508,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateCRContractType(value!);
                               },
                             ),
@@ -534,7 +533,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateCRContractOption(value!);
                               },
                             )
@@ -552,7 +551,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               initialValue: state.contractNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateContractNumber(value);
                               },
                             ),
@@ -562,7 +561,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               currentVlaue: state.contractDate,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateContractDate(value ?? "");
                               },
                             ),
@@ -582,7 +581,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                   state.ejarInfoRequst?.tenancyContractNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateTenancyInfo(
                                         tenancyContractNumber: value);
                               },
@@ -596,7 +595,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               initialValue: state.ejarInfoRequst?.versionNumber,
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateTenancyInfo(versionNumber: value);
                               },
                             ),
@@ -609,7 +608,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               initialValue: state.ejarInfoRequst?.getId(),
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateTenancyInfo(id: value);
                               },
                             ),
@@ -619,7 +618,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                     : "verify".tr(),
                                 onPressed: () {
                                   context
-                                      .read<CrStep4ShopDataCubit>()
+                                      .read<Step1ShopDataCubit>()
                                       .getEjarInfoHandler();
                                 }),
                             const CustomVerticalSpace(
@@ -644,7 +643,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                               ],
                               onChanged: (value) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateCRContractOption(value!);
                               },
                             ),
@@ -675,7 +674,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                         onSelect:
                                             (InvestmentContractItemModel? item) {
                                           context
-                                              .read<CrStep4ShopDataCubit>()
+                                              .read<Step1ShopDataCubit>()
                                               .selectInvestmentContract(item);
                                         },
                                         selected:
@@ -702,7 +701,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                             onChanged: (value) {
                               if (value != null) {
                                 context
-                                    .read<CrStep4ShopDataCubit>()
+                                    .read<Step1ShopDataCubit>()
                                     .updateBoardContractSetting(value);
                               }
                             },
@@ -720,7 +719,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                       item: state.boardContractItems![index],
                                       onSelect: (BoardContractItem? item) {
                                         context
-                                            .read<CrStep4ShopDataCubit>()
+                                            .read<Step1ShopDataCubit>()
                                             .selectBoardContractNumber(item!);
                                       },
                                       selected: state.boardContractNumber);
@@ -742,7 +741,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                     : CRPreviousNextButtons(
                         isBtnDisabled: !state.isFormValid(),
                         onPressed: () {
-                          context.read<CrStep4ShopDataCubit>().save();
+                          context.read<Step1ShopDataCubit>().save();
                         },
                       ),
               ],
@@ -751,8 +750,8 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
               state.cleanOptionsStatus == BlocStatus.failure)
             RetryWidget(
               onRetry: () {
-                context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
-                context.read<CrStep4ShopDataCubit>().getCleanOptions();
+                context.read<Step1ShopDataCubit>().getDeedOwnerShipsTypes();
+                context.read<Step1ShopDataCubit>().getCleanOptions();
               },
             ),
           if (state.status.isSubmissionLoading ||

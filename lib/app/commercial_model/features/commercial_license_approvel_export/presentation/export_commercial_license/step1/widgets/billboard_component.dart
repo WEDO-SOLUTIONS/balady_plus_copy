@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/export_commercial_license/step4/widgets/billboard_card.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/export_commercial_license/step1/widgets/billboard_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -14,7 +14,7 @@ import '../../../../../../../features/_shared_feature_/presentation/widgets/cust
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../domain/entities/commercial_board_type.dart';
-import '../bloc/cr_step4_shop_data_cubit.dart';
+import '../bloc/step1_shop_data_cubit.dart';
 
 class BillboardComponent extends StatelessWidget {
   const BillboardComponent({
@@ -23,7 +23,7 @@ class BillboardComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CrStep4ShopDataCubit, CrStep4ShopDataState>(
+    return BlocBuilder<Step1ShopDataCubit, Step1ShopDataState>(
         builder: (context, state) {
       return Container(
         margin: const EdgeInsets.only(top: 32, bottom: 24),
@@ -58,7 +58,7 @@ class BillboardComponent extends StatelessWidget {
               itemBuilder: (_, index) => BillboardCard(
                 type: state.selectedBoards![index],
                 onDelete: () {
-                  context.read<CrStep4ShopDataCubit>().deleteBoard(index);
+                  context.read<Step1ShopDataCubit>().deleteBoard(index);
                 },
               ),
             ),
@@ -74,7 +74,7 @@ class BillboardComponent extends StatelessWidget {
                   ).then((value) {
                     print(value);
                     if (value != null) {
-                      context.read<CrStep4ShopDataCubit>().addBoard(value);
+                      context.read<Step1ShopDataCubit>().addBoard(value);
                     }
                   });
                 }),
