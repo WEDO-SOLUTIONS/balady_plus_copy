@@ -230,25 +230,11 @@ enum ParkingPurposeMessage {
   scooter,
 }
 
-enum ParkingAccessMessage {
-  publicAccess,
-  handicappedOnly,
-  customersOnly,
-  residentsOnly,
-  taxiOnly
-}
+enum ParkingAccessMessage { publicAccess, handicappedOnly, customersOnly, residentsOnly, taxiOnly }
 
 enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
 
-enum SpecialSpaceTypeMessage {
-  bicycle,
-  motorbike,
-  family,
-  handicapped,
-  babyCarriage,
-  truck,
-  scooter
-}
+enum SpecialSpaceTypeMessage { bicycle, motorbike, family, handicapped, babyCarriage, truck, scooter }
 
 class SpecialSpaceMessage {
   SpecialSpaceMessage(this.type, this.name, this.count);
@@ -481,15 +467,7 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
-enum RouteSearchOptionsMessage {
-  car,
-  publicTransport,
-  bicycle,
-  pedestrian,
-  scooter,
-  truck,
-  taxi
-}
+enum RouteSearchOptionsMessage { car, publicTransport, bicycle, pedestrian, scooter, truck, taxi }
 
 class RouteEditorRoutePointMessage {
   RouteEditorRoutePointMessage(
@@ -653,8 +631,7 @@ class MarkerTextStyleMessage {
 
 /// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection,
-      this.iconOpacity, this.pngData, this.pngPath);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
 
   final String? svgPath;
   final Uint8List? pngData;
@@ -673,6 +650,7 @@ class MarkerOptionsMessage {
     this.textStyle,
     this.animatedAppearance,
     this.zIndex,
+    this.isVisible,
   });
 
   final GeoPointWithElevationMessage position;
@@ -681,6 +659,29 @@ class MarkerOptionsMessage {
   final String? text;
   final MarkerTextStyleMessage? textStyle;
   final bool? animatedAppearance;
+  final bool? isVisible;
+  final int? zIndex;
+}
+
+class ChangeMarkerOptionsMessage {
+  ChangeMarkerOptionsMessage({
+    this.position,
+    this.icon,
+    this.anchor,
+    this.text,
+    this.textStyle,
+    this.animatedAppearance,
+    this.zIndex,
+    this.isVisible,
+  });
+
+  final GeoPointWithElevationMessage? position;
+  final MarkerIconMessage? icon;
+  final MarkerAnchorMessage? anchor;
+  final String? text;
+  final MarkerTextStyleMessage? textStyle;
+  final bool? animatedAppearance;
+  final bool? isVisible;
   final int? zIndex;
 }
 
@@ -784,8 +785,7 @@ class FlagFilterMessage {
 }
 
 class RangeFilterMessage {
-  RangeFilterMessage(
-      this.tagName, this.displayName, this.minValue, this.maxValue);
+  RangeFilterMessage(this.tagName, this.displayName, this.minValue, this.maxValue);
 
   final String tagName;
   final String displayName;
@@ -1023,8 +1023,7 @@ class LogOptionsMessage {
 }
 
 class RouteSearchPointMessage {
-  RouteSearchPointMessage(
-      this.coordinates, this.course, this.objectId, this.levelId);
+  RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
 
   final GeoPointMessage coordinates;
   final BearingMessage? course;
@@ -1066,8 +1065,8 @@ class PackageMessage {
 }
 
 class PackageInfoMessage {
-  PackageInfoMessage(this.name, this.installed, this.incomplete,
-      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
+  PackageInfoMessage(this.name, this.installed, this.incomplete, this.preinstalled, this.compatible, this.hasUpdate,
+      this.updateStatus);
 
   final String name;
   final bool installed;
@@ -1207,8 +1206,7 @@ class VendorConfigContentMessage {
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
     swiftOut: '../dgis_map/ios/Classes/Messages.swift',
-    kotlinOut:
-        '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
+    kotlinOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
     kotlinOptions: KotlinOptions(
       package: 'com.dgis.map.map_api',
     ),
@@ -1292,8 +1290,7 @@ abstract class MapApi {
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
-  List<DistanceResponseMessage> getDistanceTo(
-      List<DistanceRequestMessage> points);
+  List<DistanceResponseMessage> getDistanceTo(List<DistanceRequestMessage> points);
 
   @async
   SearchResultMessage search(
@@ -1353,10 +1350,13 @@ abstract class MapApi {
   );
 
   @async
-  void setMarkerOptions(MarkerOptionsMessageOld options);
+  void setMarkerOptionsOld(MarkerOptionsMessageOld options);
 
   @async
   void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
+
+  @async
+  void setMarkerOptions(String id, ChangeMarkerOptionsMessage options);
 
   @async
   void addMarkers(
@@ -1616,7 +1616,5 @@ abstract class FlutterMapApi {
 abstract class PluginApi {
   @async
   void initialize(
-      LogOptionsMessage? message,
-      VendorConfigMessage? configMessage,
-      VendorConfigContentMessage? contentMessage);
+      LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
 }

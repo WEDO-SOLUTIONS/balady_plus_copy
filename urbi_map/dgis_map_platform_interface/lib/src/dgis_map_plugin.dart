@@ -427,8 +427,8 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.getDistanceTo(points);
   }
 
-  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) {
-    return _api.setMarkerOptions(markerOptions);
+  Future<void> setMarkerOptionsOld(MarkerOptionsMessageOld markerOptions) {
+    return _api.setMarkerOptionsOld(markerOptions);
   }
 
   Future<void> addMarker(
@@ -446,6 +446,10 @@ class DgisMapPlugin extends FlutterMapApi {
       MarkerMessage(id: marker.id, options: marker.options),
       manager,
     );
+  }
+
+  Future<void> setMarkerOptions(String id, MarkerOptionsMessage options) {
+    return _api.setMarkerOptions(id, options);
   }
 
   Future<void> addMarkers(

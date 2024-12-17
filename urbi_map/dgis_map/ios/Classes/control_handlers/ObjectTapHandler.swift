@@ -337,6 +337,61 @@ class ObjectTapHandler {
         }
     }
     
+    func setMarkerOptions(_ id: String, options: ChangeMarkerOptionsMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        var markerImage: Image? = nil
+        
+        // Проверка и создание изображения из svgPath
+        if let svgPath = options.icon?.svgPath {
+            markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
+        }
+        // Проверка и создание изображения из pngPath
+        else if let pngPath = options.icon?.pngPath {
+            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
+                width: options.icon!.width,
+                height: options.icon!.width
+            ), completion: completion)
+        }
+        // Проверка и создание изображения из pngData
+        else if let pngData = options.icon?.pngData {
+            let data = pngData.data
+            markerImage = imageFactory.make(pngData: data, size: CGSize(
+                width: options.icon!.width,
+                height: options.icon!.width
+            ))
+        }
+        
+        if let position = options.position {
+            self.markers[id]?.0.position = position.geoPointWithElevation
+        }
+        if let markerImage {
+            self.markers[id]?.0.icon = markerImage
+        }
+        if let iconMapDirection = options.icon?.iconMapDirection {
+            self.markers[id]?.0.iconMapDirection = MapDirection(value: iconMapDirection.degree)
+        }
+        if let anchor = options.anchor {
+            self.markers[id]?.0.anchor = Anchor(x: Float(anchor.x), y: Float(anchor.y))
+        }
+        if let text = options.text {
+            self.markers[id]?.0.text = text
+        }
+        if let textStyle = options.textStyle?.textStyle {
+            self.markers[id]?.0.textStyle = textStyle
+        }
+        if let iconWidth = options.icon?.width {
+            self.markers[id]?.0.iconWidth = LogicalPixel(value: Float(iconWidth))
+        }
+        if let zIndex = options.zIndex {
+            self.markers[id]?.0.zIndex = ZIndex(value: UInt32(zIndex))
+        }
+        if let animatedAppearance = options.animatedAppearance {
+            self.markers[id]?.0.animatedAppearance = animatedAppearance
+        }
+        if let isVisible = options.isVisible {
+            self.markers[id]?.0.isVisible = isVisible
+        }
+    }
+    
     func addMarkers(_ markers: [MarkerMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             var markerObjects = [String:Marker]()
