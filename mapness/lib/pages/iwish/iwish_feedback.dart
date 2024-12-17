@@ -9,7 +9,7 @@ import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
 import 'package:mapness/features/iwish/providers/iwish_tags.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
@@ -95,10 +95,10 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final title = isCompleted ? context.l10n.shareYourFeelingsAboutPark : context.l10n.voteWhatDoYouWantToHaveInThePark;
     final onPressedSubmit = () async {
-      await CommonFunctions.authOrOpen(
-        context,
-        callback: feedbackNotifier.submitFeedback,
-      );
+      await ref.read(authMethodsProvider.notifier).authOrOpen(
+            context,
+            callback: feedbackNotifier.submitFeedback,
+          );
     };
 
     return LabeledDraggableSheet(

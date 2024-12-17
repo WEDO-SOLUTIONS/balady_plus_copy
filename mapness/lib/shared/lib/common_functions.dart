@@ -1,26 +1,16 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart' show VisibleRect;
-import 'package:flutter/widgets.dart';
 import 'package:geobase/geobase.dart' as gb;
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonFunctions {
-  static StreamSubscription? _authSubscription;
-
   static Future<void> externalLaunch(String url) async {
     final convertUrl = Uri.parse(url);
     if (!await launchUrl(convertUrl, mode: LaunchMode.externalApplication)) {
       throw Exception('Could not launch $convertUrl');
     }
-  }
-
-  static Future<void> cancelAuthSubscription() async {
-    await _authSubscription?.cancel();
   }
 
   static Future<void> launch(String url) async {
@@ -39,45 +29,6 @@ class CommonFunctions {
   static Future<void> email(String? mail) async {
     if (mail != null && mail.isNotEmpty) {
       await CommonFunctions.launch('mailto:$mail');
-    }
-  }
-
-  static Future<void> authOrOpen(
-    BuildContext context, {
-    VoidCallback? callback,
-  }) async {
-    var isAuth = CommonProperties.isLoggedIn;
-    await cancelAuthSubscription();
-    if (!isAuth) {
-      if (context.mounted) {
-        await context.router.push(const SigninRoute());
-        isAuth = CommonProperties.isLoggedIn;
-      }
-    }
-
-    if (isAuth) {
-      callback?.call();
-    }
-  }
-
-  static Future<void> authAndOpen(
-    BuildContext context, {
-    VoidCallback? callback,
-  }) async {
-    var isAuth = CommonProperties.isLoggedIn;
-    if (!isAuth) {
-      if (context.mounted) {
-        await context.router.push(const SigninRoute());
-      }
-      _authSubscription = CommonProperties.userStateStream.listen((event) {
-        if (event.userInfo != null) {
-          callback?.call();
-          isAuth = CommonProperties.isLoggedIn;
-          cancelAuthSubscription();
-        }
-      });
-    } else {
-      callback?.call();
     }
   }
 

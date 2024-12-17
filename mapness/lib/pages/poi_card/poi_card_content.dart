@@ -283,7 +283,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     required DirectoryObjectMessage data,
     FavouriteItem? favouriteItem,
   }) async {
-    await CommonFunctions.authOrOpen(
+    await ref.read(authMethodsProvider.notifier).authOrOpen(
       context,
       callback: () {
         Metrics.logEventAdvanced(
