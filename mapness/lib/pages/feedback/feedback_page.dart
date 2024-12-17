@@ -35,7 +35,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
 }
 
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
-  final _isFormValidNotifier = ValueNotifier(true);
+  final _isFormValidNotifier = ValueNotifier<bool>(false);
 
   @override
   void dispose() {
