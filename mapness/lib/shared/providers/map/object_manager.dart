@@ -17,6 +17,9 @@ class MapObjectLayers {
   /// Layer for markers that should be on the top of all other objects.
   /// E.g. My location marker because it should be on top of my location circle.
   static const priorityLayerId = '977194';
+
+  /// Layer for metro lines.
+  static const metroLayerId = '676767';
 }
 
 class MapObjectManagerSettings {
@@ -60,6 +63,11 @@ class MapObjectManagerSettings {
   factory MapObjectManagerSettings.selectedMarker() => const MapObjectManagerSettings._(
         name: 'selected-marker',
         layerId: MapObjectLayers.defaultLayerId,
+      );
+
+  factory MapObjectManagerSettings.metro() => const MapObjectManagerSettings._(
+        name: 'metro',
+        layerId: MapObjectLayers.metroLayerId,
       );
 }
 

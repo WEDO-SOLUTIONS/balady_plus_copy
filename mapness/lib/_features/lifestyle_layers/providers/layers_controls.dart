@@ -185,16 +185,22 @@ class LayersControls extends _$LayersControls {
     switch (value) {
       case LayerType.favourites:
         await toggleFavourites(currentState);
+        break;
       case LayerType.buildings:
         await toggleComplianceBuildings();
+        break;
       case LayerType.invest:
         await toggleInvestOpportunities();
+        break;
       case LayerType.fencing:
         await toggleWhiteLands();
+        break;
       case LayerType.parkingLots:
         await toggleParking();
+        break;
       case LayerType.metro:
-        toggleMetro();
+        toggleMetro(currentState);
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -269,8 +275,13 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  void toggleMetro() {
+  void toggleMetro(LayerType? currentState) {
     ref.read(metroLayerProvider.notifier).toggleMetro();
+    if (currentState == (LayerType.metro)) {
+      setSelection();
+    } else {
+      setSelection(selectedType: LayerType.metro);
+    }
   }
 
   void update({

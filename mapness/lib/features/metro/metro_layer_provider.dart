@@ -10,9 +10,15 @@ part 'metro_layer_provider.g.dart';
 
 @riverpod
 class MetroLayer extends _$MetroLayer {
+  final mapOptions = MapObjectManagerSettings.metro();
+
   @override
   Future<List<MetroLineModel>> build() async {
     final metroLayerJsonDatasource = await ref.watch(metroLayerRepositoryProvider.future);
+    ref.watch(mapObjectManagerProvider(
+      named: mapOptions.name,
+      layerId: mapOptions.layerId,
+    ));
 
     return metroLayerJsonDatasource;
   }
@@ -24,7 +30,6 @@ class MetroLayer extends _$MetroLayer {
 
     final metroLines = state.value!;
 
-    final mapOptions = MapObjectManagerSettings.esri();
     final mapManager = ref.read(mapObjectManagerProvider(
       named: mapOptions.name,
       layerId: mapOptions.layerId,
@@ -67,7 +72,6 @@ class MetroLayer extends _$MetroLayer {
   }
 
   Future<void> hideMetro() async {
-    final mapOptions = MapObjectManagerSettings.esri();
     final mapManager = ref.read(mapObjectManagerProvider(
       named: mapOptions.name,
       layerId: mapOptions.layerId,
