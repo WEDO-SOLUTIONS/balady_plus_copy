@@ -23,4 +23,9 @@ class MapnessConstants {
   static const envTypeKey = 'envTypeKey';
   static const vendorConfigKey = 'vendorConfigKey';
   static const firebaseAppEnvConfigKey = 'app_env_config';
+
+  ///styles region
+  //uncomment for tests
+  // static const mapStylesPath = 'assets/maps/styles/styles.2gis';
+  static const mapStylesPath = 'packages/map_styles/src/styles.2gis';
 }
