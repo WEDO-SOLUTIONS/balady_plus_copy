@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_positional_boolean_parameters
+// ignore_for_file: avoid_positional_boolean_parameters, camel_case_types
 
 import 'package:pigeon/pigeon.dart';
 
