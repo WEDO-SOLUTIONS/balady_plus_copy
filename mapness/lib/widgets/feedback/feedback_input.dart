@@ -67,7 +67,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   @override
   void dispose() {
-    // _controller.dispose();
     _inputErrorState.dispose();
     _focusNode.dispose();
     super.dispose();

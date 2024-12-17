@@ -65,9 +65,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     return FormBuilder(
       key: _formKey,
-      onChanged: () {
-        _isFormValidNotifier.value = _formKey.currentState?.isValid ?? false;
-      },
+      onChanged: () => _isFormValidNotifier.value = _formKey.currentState?.isValid ?? false,
 
       /// limit rebuilds to form title with send
       child: ValueListenableBuilder(
