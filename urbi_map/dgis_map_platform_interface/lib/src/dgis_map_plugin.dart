@@ -448,7 +448,7 @@ class DgisMapPlugin extends FlutterMapApi {
     );
   }
 
-  Future<void> setMarkerOptions(String id, MarkerOptionsMessage options) {
+  Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) {
     return _api.setMarkerOptions(id, options);
   }
 

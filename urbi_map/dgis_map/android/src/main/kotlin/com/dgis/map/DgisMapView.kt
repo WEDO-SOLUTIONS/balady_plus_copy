@@ -546,7 +546,7 @@ class DgisMapView(
     }
 
     // --- MARKER ---
-    override fun setMarkerOptions(
+    override fun setMarkerOptionsOld(
         options: MarkerOptionsMessageOld,
         callback: (Result<Unit>) -> Unit
     ) {
@@ -565,6 +565,14 @@ class DgisMapView(
         callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.addMarker(marker, manager?.id, callback)
+    }
+
+    override fun setMarkerOptions(
+        id: String, 
+        options: ChangeMarkerOptionsMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.setMarkerOptions(id, options, callback)
     }
 
     override fun addMarkers(

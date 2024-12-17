@@ -294,6 +294,65 @@ class ObjectTapHandler(
         }
     }
 
+    fun setMarkerOptions(
+        id: String,
+        options: ChangeMarkerOptionsMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        var markerImage: Image? = null
+        if (options.icon != null) {
+            val iconOptions = options.icon
+
+            val svgPath = iconOptions.svgPath
+            val pngPath = iconOptions.pngPath
+            val pngData = iconOptions.pngData
+
+            if (svgPath != null) {
+                markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
+            }
+            // Проверка и создание изображения из pngPath
+            else if (pngPath != null) {
+                markerImage = getImageFromAsset(pngPath, Size(iconOptions.width.toInt(),iconOptions.width.toInt()), callback)
+            }
+            // Проверка и создание изображения из pngData
+            else if (pngData != null) {
+                val data = pngData
+                markerImage = getImageFromBytes(data, iconOptions.width.toInt())
+            }
+        }
+
+        options.position?.let { position ->
+            markers[id]?.first?.position = position.toGeoPointWithElevation()
+        }
+        markerImage?.let { image ->
+            markers[id]?.first?.icon = image
+        }
+        options.icon?.iconMapDirection?.let { iconMapDirection ->
+            markers[id]?.first?.iconMapDirection = MapDirection(iconMapDirection.degree)
+        }
+        options.anchor?.let { anchor ->
+            markers[id]?.first?.anchor = Anchor(anchor.x.toFloat(), anchor.y.toFloat())
+        }
+        options.text?.let { text ->
+            markers[id]?.first?.text = text
+        }
+        options.textStyle?.let { textStyle ->
+            markers[id]?.first?.textStyle = textStyle.toTextStyle()
+        }
+        options.icon?.width?.let { iconWidth ->
+            markers[id]?.first?.iconWidth = LogicalPixel(iconWidth.toFloat())
+        }
+        options.zIndex?.let { zIndex ->
+            markers[id]?.first?.zIndex = ZIndex(zIndex.toInt())
+        }
+        options.animatedAppearance?.let { animatedAppearance ->
+            markers[id]?.first?.animatedAppearance = animatedAppearance
+        }
+        options.isVisible?.let { isVisible ->
+            markers[id]?.first?.isVisible = isVisible
+        }
+    }
+
     fun addMarkers(markers: List<MarkerMessage>, managerId: String?, callback: (Result<Unit>) -> Unit) {
         val markerObjects = mutableMapOf<String, Pair<Marker, String?>>()
         for (marker in markers) {

@@ -340,7 +340,8 @@ class DgisMapController {
   Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) => _instance.addMarker(marker, toManager);
 
   /// Change marker options.
-  Future<void> setMarkerOptions(String id, MarkerOptionsMessage options) => _instance.setMarkerOptions(id, options);
+  Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) =>
+      _instance.setMarkerOptions(id, options);
 
   /// Add several markers to map.
   Future<void> addMarkers(List<Marker> markers, {MapObjectManagerMessage? toManager}) =>
