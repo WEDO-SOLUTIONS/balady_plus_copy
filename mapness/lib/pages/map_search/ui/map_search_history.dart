@@ -64,7 +64,7 @@ class MapSearchHistory extends ConsumerWidget {
             );
             await ref.read(searchHistoryProvider(scope.value).notifier).delete(item);
 
-            if (result as bool) {
+            if (result != null && result as bool) {
               await ref.read(searchProvider(scope.value).notifier).fetchSuggest(item.title);
             }
           }

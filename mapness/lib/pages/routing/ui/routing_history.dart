@@ -82,7 +82,7 @@ class RoutingHistory extends ConsumerWidget {
                   ),
                 );
                 await ref.read(searchHistoryProvider(SearchScopeEnum.routes.value).notifier).delete(item);
-                if (result as bool) {
+                if (result != null && result as bool) {
                   searchByQuery(item.title);
                 }
               }
