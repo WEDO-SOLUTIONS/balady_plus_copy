@@ -98,8 +98,6 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   /// -- MARKER --
-  String? currentMarkerIcon;
-
   List<Marker> get markers => _markers;
 
   final _markers = <Marker>[];
@@ -116,7 +114,6 @@ class MapObjectManager extends _$MapObjectManager {
         );
 
     _markers.add(marker);
-    currentMarkerIcon = marker.options.icon?.svgPath;
   }
 
   Future<void> addMarkers(List<Marker> markers) async {
@@ -126,7 +123,6 @@ class MapObjectManager extends _$MapObjectManager {
         );
 
     _markers.addAll(markers);
-    currentMarkerIcon = markers.firstOrNull?.options.icon?.svgPath;
   }
 
   Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
@@ -154,7 +150,6 @@ class MapObjectManager extends _$MapObjectManager {
         );
 
     _markers.clear();
-    currentMarkerIcon = null;
   }
 
   /// --- POLYLINE ---

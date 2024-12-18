@@ -190,6 +190,7 @@ extension BigIconPath on String {
     'ic_wc.svg',
     'ic_tooth.svg',
     'ic_school_ltr.svg',
+    'ic_recreation.svg',
   ];
 
   String? get bigIconPath {
