@@ -50,9 +50,10 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   late final TextEditingController _controller;
   late final FocusNode _focusNode;
 
-  final _inputErrorState = ValueNotifier<bool>(false);
+  // TODO(ilyasov): Temporary fix, need to remove it after implementing custom form field
+  final _globalKey = GlobalKey<FormFieldState<String>>();
 
-  var _autovalidateMode = AutovalidateMode.onUnfocus;
+  final _inputErrorState = ValueNotifier<bool>(false);
   var _isForceLtr = false;
 
   @override
@@ -60,7 +61,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
 
-    _focusNode = FocusNode()..addListener(_focusNodeListener);
+    _focusNode = FocusNode();
 
     _controller.addListener(_controllerListener);
   }
@@ -69,6 +70,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   void dispose() {
     _inputErrorState.dispose();
     _focusNode.dispose();
+    _controller.removeListener(_controllerListener);
     super.dispose();
   }
 
@@ -85,13 +87,24 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     }
   }
 
-  void _focusNodeListener() {
-    final hasFocus = _focusNode.hasFocus;
-    final hasError = _inputErrorState.value;
-    widget.onFocusChange?.call(hasFocus);
-    if (hasFocus) {
-      _autovalidateMode = hasError ? AutovalidateMode.onUserInteraction : AutovalidateMode.onUserInteraction;
+  String? _onValidate(String? value) {
+    if (_focusNode.hasFocus) {
+      return null;
     }
+    final result = widget.onValidate?.call(value);
+    _inputErrorState.value = result != null;
+    return result;
+  }
+
+  void _onChanged(String value) {
+    if (_globalKey.currentState?.hasError ?? false) {
+      _globalKey.currentState?.validate();
+    }
+    var formattedValue = value;
+    if (widget.type == FeedbackTextType.phone) {
+      formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
+    }
+    widget.onChanged?.call(formattedValue);
   }
 
   @override
@@ -116,29 +129,20 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         Directionality(
           textDirection: direction,
           child: BaladyInput(
+            stateKey: _globalKey,
             controller: _controller,
             focusNode: _focusNode,
             hintText: widget.hintText,
             fillColor: context.colorsV2.backgroundSurface1,
-            onValidate: (value) {
-              final result = widget.onValidate?.call(value);
-              _inputErrorState.value = result != null;
-              return result;
-            },
-            autovalidateMode: _autovalidateMode,
+            onValidate: _onValidate,
+            autovalidateMode: AutovalidateMode.onUnfocus,
             allowedInputPattern: widget.allowedInputPattern,
             isRequired: widget.isRequired,
             maxLength: widget.maxLength,
             maxLines: widget.maxLines,
             keyboardType: widget.keyboardType,
             suffixIcon: widget.type == FeedbackTextType.phone ? const SizedBox.shrink() : null,
-            onChanged: (value) {
-              var formattedValue = value;
-              if (widget.type == FeedbackTextType.phone) {
-                formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
-              }
-              widget.onChanged?.call(formattedValue);
-            },
+            onChanged: _onChanged,
             inputFormatters: [
               if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
             ],
