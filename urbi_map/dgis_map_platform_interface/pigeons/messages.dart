@@ -4,7 +4,7 @@ import 'package:pigeon/pigeon.dart';
 
 enum ZoomControlMessage {
   zoomIn,
-  zoomOut;
+  zoomOut,
 }
 
 class InitializeMessage {
@@ -69,7 +69,7 @@ class CameraPositionPointMessage {
 enum CameraAnimationTypeMessage {
   defaultType,
   linear,
-  showBothPositions;
+  showBothPositions,
 }
 
 class DgisObjectIdMessage {
@@ -103,7 +103,7 @@ enum WeekDayMessage {
   thursday,
   friday,
   saturday,
-  sunday;
+  sunday,
 }
 
 class WeekTimeMessage {
@@ -229,7 +229,7 @@ enum ParkingTypeMessage {
   ground,
   underground,
   multilevel,
-  none;
+  none,
 }
 
 enum ParkingPurposeMessage {
@@ -237,7 +237,7 @@ enum ParkingPurposeMessage {
   bike,
   motorbike,
   babyCarriage,
-  scooter;
+  scooter,
 }
 
 enum ParkingAccessMessage {
@@ -245,7 +245,7 @@ enum ParkingAccessMessage {
   handicappedOnly,
   customersOnly,
   residentsOnly,
-  taxiOnly;
+  taxiOnly,
 }
 
 enum ParkingPavingTypeMessage {
@@ -253,7 +253,7 @@ enum ParkingPavingTypeMessage {
   concrete,
   gravel,
   unpaved,
-  none;
+  none,
 }
 
 enum SpecialSpaceTypeMessage {
@@ -263,7 +263,7 @@ enum SpecialSpaceTypeMessage {
   handicapped,
   babyCarriage,
   truck,
-  scooter;
+  scooter,
 }
 
 class SpecialSpaceMessage {
@@ -385,7 +385,7 @@ enum ObjectTypeMessage {
   stationMetro,
   stationPlatform,
   street,
-  unknown;
+  unknown,
 }
 
 class ObjectTypeItemMessage {
@@ -458,7 +458,7 @@ class DirectoryObjectMessage {
 enum SortingTypeMessage {
   byRelevance,
   byDistance,
-  byRating;
+  byRating,
 }
 
 class WeekTimeSearchMessage {
@@ -508,7 +508,7 @@ enum RouteSearchOptionsMessage {
   pedestrian,
   scooter,
   truck,
-  taxi;
+  taxi,
 }
 
 class RouteEditorRoutePointMessage {
@@ -553,7 +553,7 @@ class CarRouteSearchOptionParamsMessage {
 enum DesiredAccuracyMessage {
   low,
   medium,
-  high;
+  high,
 }
 
 class MarkerWithPhotoMessage {
@@ -602,7 +602,7 @@ class GeoRectMessage {
 enum WorkingFilterMessage {
   none,
   isOpen,
-  isOpen24x7;
+  isOpen24x7,
 }
 
 class CameraSetPaddingMessage {
@@ -650,7 +650,7 @@ enum TextPlacementMessage {
   leftCenter,
   leftBottom,
   circleBottomLeft,
-  centerCenter;
+  centerCenter,
 }
 
 class MarkerTextPlacementMessage {
@@ -782,7 +782,7 @@ enum GeometryKindMessage {
   point,
   polyline,
   polygon,
-  complex;
+  complex,
 }
 
 class GeometryMessage {
@@ -802,7 +802,7 @@ class PolygonGeometryMessage {
 
 enum SearchResultTypeMessage {
   recovery,
-  discovery;
+  discovery,
 }
 
 class FlagFilterMessage {
@@ -941,7 +941,7 @@ enum SuggestedTypeMessage {
   stationMetro,
   street,
   text,
-  unknown;
+  unknown,
 }
 
 class MarkedUpTextSpanMessage {
@@ -992,7 +992,7 @@ enum SearchCategoryMessage {
   hotels,
   beautyCenters,
   recreationCenters,
-  beaches;
+  beaches,
 }
 
 class SearchCategoryMessage_ {
@@ -1042,7 +1042,7 @@ class MapObjectManagerMessage {
 enum MapAppearanceMessage {
   day,
   night,
-  system;
+  system,
 }
 
 enum LogLevelMessage {
@@ -1051,7 +1051,7 @@ enum LogLevelMessage {
   warning,
   error,
   fatal,
-  off;
+  off,
 }
 
 class LogOptionsMessage {
@@ -1120,7 +1120,7 @@ class PackageInfoMessage {
 enum PackageUpdateStatusMessage {
   notAvailable,
   inProgress,
-  paused;
+  paused,
 }
 
 enum BriefExtraRouteInfoTypeMessage {
@@ -1128,7 +1128,7 @@ enum BriefExtraRouteInfoTypeMessage {
   car,
   pedestrian,
   publicTransport,
-  scooter;
+  scooter,
 }
 
 class BriefExtraRouteInfoMessage {
@@ -1140,7 +1140,7 @@ class BriefExtraRouteInfoMessage {
 
 enum WeatherMapType {
   temperature,
-  precipitation;
+  precipitation,
 }
 
 class WeatherMapMessage {
@@ -1167,19 +1167,19 @@ class RenderedObjectMessage {
 enum VendorConfigMessage {
   urbiPreProd,
   momrahProd,
-  momrahStg;
+  momrahStg,
 }
 
 enum FollowStateMessage {
   off,
   followPosition,
-  followDirection;
+  followDirection,
 }
 
 enum BetterRouteResponseMessage {
   accept,
   reject,
-  timeout;
+  timeout,
 }
 
 class SpeedRangeZoom {
@@ -1199,7 +1199,7 @@ class SpeedRangeZoom {
 enum NavigationState {
   navigation,
   finish,
-  disabled;
+  disabled,
 }
 
 class NavigationStateMessage {
@@ -1223,7 +1223,7 @@ enum SoundToggleType {
   important,
 
   /// Represents all sound toggle.
-  all;
+  all,
 }
 
 /// Settings for better route searching
