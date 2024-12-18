@@ -69,9 +69,9 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
         );
       }
       return ErrorSheetWidget(
-        onClose: (controller) {
-          ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-          ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+        onClose: (controller) async {
+          await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+          await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
           context.router.popForced();
         },
         onRetry: () {

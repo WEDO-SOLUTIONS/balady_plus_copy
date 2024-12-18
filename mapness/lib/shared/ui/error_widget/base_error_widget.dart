@@ -72,15 +72,16 @@ class BaseErrorWidget extends StatelessWidget {
               'assets/images_svg/illustration_error.svg',
               package: PackageConfig.packageName,
             ),
-            if (errorTitle != null) ...[
-              const SizedBox(height: Spacing.$3x),
-              Text(
-                errorTitle!,
-                textAlign: TextAlign.center,
-                style: context.textStyleV3.h3Medium,
-              ),
-              const SizedBox(height: Spacing.$3x),
-            ] else
+            if (errorTitle != null)
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                child: Text(
+                  errorTitle!,
+                  textAlign: TextAlign.center,
+                  style: context.textStyleV3.h3Medium,
+                ),
+              )
+            else
               const SizedBox(height: Spacing.$2x),
             Text(
               errorText,
@@ -89,14 +90,15 @@ class BaseErrorWidget extends StatelessWidget {
                 color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
               ),
             ),
-            if (withRetryButton) ...[
-              const SizedBox(height: Spacing.$6x),
-              AppButton(
-                onTap: onRetry,
-                buttonColorScheme: buttonColorScheme,
-                primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+            if (withRetryButton)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.$6x),
+                child: AppButton(
+                  onTap: onRetry,
+                  buttonColorScheme: buttonColorScheme,
+                  primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+                ),
               ),
-            ],
           ],
         ),
       ),

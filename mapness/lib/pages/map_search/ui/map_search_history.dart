@@ -54,7 +54,7 @@ class MapSearchHistory extends ConsumerWidget {
               toCompareRoutes: [PoiCardWidgetRoute.page],
             );
           } catch (e) {
-            final result = context.router.push(
+            final result = await context.router.push(
               ErrorSheetDialogRoute(
                 buttonLabel: context.l10n.tryAgain,
                 onRetry: () => context.router.popForced(true),
