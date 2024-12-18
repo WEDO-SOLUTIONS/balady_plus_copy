@@ -17,7 +17,7 @@ class SaveLocationResponse extends Equatable {
   final int? requestId;
   final int? minYears;
   final int? maxYears;
-  final ContractOptionsResponseDto? contractOptionsResponseDto;
+  final ContractOptionsResDto? contractOptionsResponseDto;
   final List<String>? slamaBillOptions;
   final List<String>? slamaReportOptions;
   final bool? selectLicYears;
@@ -45,7 +45,7 @@ class SaveLocationResponse extends Equatable {
         maxYears: json["maxYears"],
         contractOptionsResponseDto: json["contractOptionsResponseDto"] == null
             ? null
-            : ContractOptionsResponseDto.fromJson(
+            : ContractOptionsResDto.fromJson(
                 json["contractOptionsResponseDto"]),
         slamaBillOptions: json["slamaBillOptions"] == null
             ? []
@@ -94,19 +94,19 @@ class SaveLocationResponse extends Equatable {
   }
 }
 
-class ContractOptionsResponseDto {
+class ContractOptionsResDto {
   final List<String>? ejarOptions;
   final List<String>? deedOptions;
   final List<String>? investOptions;
 
-  ContractOptionsResponseDto({
+  ContractOptionsResDto({
     this.ejarOptions,
     this.deedOptions,
     this.investOptions,
   });
 
-  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) =>
-      ContractOptionsResponseDto(
+  factory ContractOptionsResDto.fromJson(Map<String, dynamic> json) =>
+      ContractOptionsResDto(
         ejarOptions: json["ejarOptions"] == null
             ? []
             : List<String>.from(json["ejarOptions"]!.map((x) => x)),

@@ -8,7 +8,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import '../../step3/bloc/step3_conclusion_cubit.dart';
-import '../blocs/commercial_license_initial_export_bloc.dart';
+import '../blocs/commercial_license_initial_Approval_bloc.dart';
 import '../widgets/commercial_license_body.dart';
 
 
@@ -35,7 +35,7 @@ class _CommercialLicenseInitialApprovelScreenState extends State<CommercialLicen
 
   @override
   Widget build(BuildContext context) {
-    int? requestId = ModalRoute.of(context)!.settings.arguments as int;
+    int? requestId = ModalRoute.of(context)!.settings.arguments as int?;
 
 
 
@@ -54,7 +54,7 @@ class _CommercialLicenseInitialApprovelScreenState extends State<CommercialLicen
 
 
         BlocProvider.value(
-          value: sl<CommercialLicenseInitialExportBloc>(),
+          value: sl<CommercialLicenseInitialAprrovalBloc>(),
         ),
         BlocProvider(
           create: (context) => Step3ConclusionCubit(),

@@ -171,6 +171,25 @@ class RepositoryImpl implements Repository {
   }
 
   @override
+  Future<Either<Failure, int>> applyLicenseExport(int request) async {
+    try {
+      final data =
+      await remoteDataSource.applyLicenseExport(request);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
+  @override
   Future<Either<Failure, int>> saveActivityDetails(
       SubmitActivityDetailRequest? params) async {
     try {

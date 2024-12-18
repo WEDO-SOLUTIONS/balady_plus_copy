@@ -4,11 +4,11 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import '../../commercial_license_exports.dart';
 import '../../data/models/commercial_request_details_response_entity.dart';
 
-class GetCommercialRequestData
+class GetExportRequestDetails
     extends UseCase<CommercialRequestDetailsResponseEntity, int> {
   final Repository repository;
 
-  GetCommercialRequestData({required this.repository});
+  GetExportRequestDetails({required this.repository});
   @override
   Future<Either<Failure, CommercialRequestDetailsResponseEntity>> call(
       int params) async {

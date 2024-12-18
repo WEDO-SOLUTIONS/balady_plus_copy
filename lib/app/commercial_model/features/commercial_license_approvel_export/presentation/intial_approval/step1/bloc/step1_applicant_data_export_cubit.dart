@@ -16,7 +16,7 @@ import '../../../../domain/use_cases/step1_add_isic_activities.dart';
 import '../../../../domain/use_cases/get_initial_approval_request_details.dart';
 import '../../../../domain/use_cases/get_main_activities.dart';
 import '../../../../domain/use_cases/step1_initial_approval_apply.dart';
-import '../../commercial_license/blocs/commercial_license_initial_export_bloc.dart';
+import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
 
 part 'step1_applicant_data_export_state.dart';
 
@@ -24,14 +24,14 @@ class Step1ApplicantDataExportCubit extends Cubit<Step1ApplicantDataExportState>
   final getInitialApprovalRequestDetails _getInitialApprovalRequestDetails;
   final AddIsicActivities _addIsicActivities;
   final InitialApprovalApply _saveSubmitterAndOwner;
-  final CommercialLicenseInitialExportBloc commercialLicenseBloc;
+  final CommercialLicenseInitialAprrovalBloc commercialLicenseBloc;
   final GetMainActivities _GetMainActivities;
   Step1ApplicantDataExportCubit()
       : _getInitialApprovalRequestDetails = getInitialApprovalRequestDetails(repository: sl()),
         _addIsicActivities = AddIsicActivities(repository: sl()),
         _GetMainActivities = GetMainActivities(repository: sl()),
         _saveSubmitterAndOwner = InitialApprovalApply(repository: sl()),
-        commercialLicenseBloc = sl<CommercialLicenseInitialExportBloc>(),
+        commercialLicenseBloc = sl<CommercialLicenseInitialAprrovalBloc>(),
 
         super(const Step1ApplicantDataExportState());
 
@@ -44,7 +44,7 @@ class Step1ApplicantDataExportCubit extends Cubit<Step1ApplicantDataExportState>
               recordStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
-      sl<CommercialLicenseInitialExportBloc>().updateRequestDetails(info: success.data?.result);
+      sl<CommercialLicenseInitialAprrovalBloc>().updateRequestDetails(info: success.data?.result);
 
       emit(state.copyWith(
           recordStatus: BlocStatus.success, recordInfo: success.data?.result));
@@ -108,7 +108,7 @@ class Step1ApplicantDataExportCubit extends Cubit<Step1ApplicantDataExportState>
                 status: BlocStatus.failure,
                 errorMessage: (failure as ServerFailure).errorMessage,
               )), (success) {
-        sl<CommercialLicenseInitialExportBloc>().add((UpdateFieldEvent(requestId: success)));
+        sl<CommercialLicenseInitialAprrovalBloc>().add((UpdateFieldEvent(requestId: success)));
 
         emit(state.copyWith(status: BlocStatus.success, requestId: success));
         getMainActivites();

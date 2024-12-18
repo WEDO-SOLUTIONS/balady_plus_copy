@@ -13,7 +13,7 @@ import '../../../../../../../features/_shared_feature_/presentation/dialogs/bott
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../commercial_license/blocs/commercial_license_initial_export_bloc.dart';
+import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
 import '../../step2/widgets/map_widgets/warning_message.dart';
 import '../bloc/step1_applicant_data_export_cubit.dart';
 
@@ -60,7 +60,7 @@ class IsicActivitiesDialogNotExistInBalady extends StatelessWidget {
                   if (state.isicActivitiesExistInBalady.isNotEmpty)
                     ElevatedButtonWidget.issuing(onPressed: () {
                       context.popDialog();
-                      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
+                      sl<CommercialLicenseInitialAprrovalBloc>().add((const NextPageEvent()));
                     }),
                   const SizedBox(height: 16),
                 ],

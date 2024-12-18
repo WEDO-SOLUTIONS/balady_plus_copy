@@ -43,6 +43,9 @@ abstract class Repository {
   Future<Either<Failure, int>> saveComSubmitterAndOwner(
       SubmitterAndOwnerRequestModel? params);
 
+  Future<Either<Failure, int>> applyLicenseExport(
+      int request);
+
   Future<Either<Failure, int>> saveActivityDetails(
       SubmitActivityDetailRequest? params);
 

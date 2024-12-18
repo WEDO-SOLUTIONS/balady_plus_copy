@@ -211,9 +211,11 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           status: BlocStatus.failure,
           errorMessage: (l as ServerFailure).errorMessage));
     }, (r) async {
+
       sl<CommercialLicenseBloc>().add((const GoToNextPageEvent()));
       sl<CommercialLicenseBloc>().updateGISData(gis: state.gisResponse);
       emitter(state.copyWith(status: BlocStatus.success, locationResponse: r));
+
       sl<CommercialLicenseBloc>().add((UpdateRequestFieldEvent(
           saveLocationResponse: r, requestId: requestId)));
     });

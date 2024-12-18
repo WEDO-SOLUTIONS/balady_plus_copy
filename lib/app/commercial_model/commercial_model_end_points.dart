@@ -426,6 +426,11 @@ class CommercialModelEndPoints {
   static String InitialApprovalSaveActivityAndSites(int requestId) =>
       "/v1/balady-commercial-initial-approval-services/site-and-activities/$requestId";
 
+  static String applyLicenseExport(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/commercial/apply/$requestId";
+
+
+
 
 
 }

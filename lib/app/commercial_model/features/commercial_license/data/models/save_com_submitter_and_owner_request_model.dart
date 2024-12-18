@@ -5,17 +5,20 @@ class SaveComSubmitterAndOwnerRequestModel {
   String? entityType;
   int? crType;
   int? requestId;
+  String? submitterType;
 
   SaveComSubmitterAndOwnerRequestModel(
-      {this.crNumber, this.crType, this.entityType, this.requestId});
+      {this.crNumber, this.crType, this.entityType, this.requestId,this.submitterType});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'crNumber': crNumber,
       'entityType': entityType,
       'crType': crType,
+      "submitterType":submitterType,
     };
   }
+
 
   factory SaveComSubmitterAndOwnerRequestModel.fromMap(
       Map<String, dynamic> map) {

@@ -65,6 +65,9 @@ class CrStep1ApplicantDataCubit extends Cubit<CrStep1ApplicantDataState> {
             crNumber: state.recordInfo?.crNumber,
             crType: state.recordInfo?.crType,
             entityType: "SHOP",
+            submitterType:CommonProperties.getCurrentUserProfile()?.getRole() ??"",
+
+
             requestId: sl<CommercialLicenseBloc>().state.requestId));
 
     response.fold(

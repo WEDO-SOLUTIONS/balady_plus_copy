@@ -19,18 +19,18 @@ import '../../../../domain/use_cases/get_initial_approval_request_details.dart';
 import '../../step3/bloc/step3_conclusion_cubit.dart';
 import '../../step3/page/step3_conclusion.dart';
 
-part 'commercial_license_initial_export_event.dart';
+part 'commercial_license_initial_Arrpoval_event.dart';
 
-part 'commercial_license_initial_export_state.dart';
+part 'commercial_license_initial_Approval_state.dart';
 
-class CommercialLicenseInitialExportBloc
-    extends Bloc<CommercialLicenseInitialExportEvent, CommercialLicenseInitialExportState> {
+class CommercialLicenseInitialAprrovalBloc
+    extends Bloc<CommercialLicenseInitialApprovalEvent, CommercialLicenseInitialApprovalState> {
   PageController controller = PageController();
   final getInitialApprovalRequestDetails _getInitialApprovalRequestDetails;
 
-  CommercialLicenseInitialExportBloc()
+  CommercialLicenseInitialAprrovalBloc()
       : _getInitialApprovalRequestDetails = getInitialApprovalRequestDetails(repository: sl()),
-        super(const CommercialLicenseInitialExportState()) {
+        super(const CommercialLicenseInitialApprovalState()) {
     on<NextPageEvent>(_goToNextPageHandler);
     on<PreviousPageEvent>(_goToPreviousPageHandler);
 

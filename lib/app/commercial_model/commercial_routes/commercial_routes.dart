@@ -1,8 +1,7 @@
 import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/pages/commercial_debts_list_screen.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/request_details/presentation/pages/RequestDetailsPage.dart';
 import 'package:flutter/widgets.dart';
-import '../features/commercial_license_approvel_export/presentation/export_commercial_license/export_license_start_service_screen.dart';
-import '../features/commercial_license_approvel_export/presentation/export_commercial_license/license_export_intiation/screens/license_export_initial_screen.dart';
+import '../features/commercial_license_approvel_export/presentation/export_commercial_license/license_export_intiation/screens/export_license_start_service_screen.dart';
 import '../features/commercial_license_approvel_export/presentation/intial_approval/commercial_license/screens/commercial_license__initial_approvel_screen.dart';
 import '../features/commercial_license_approvel_export/presentation/intial_approval/intial_approval_successfully.dart';
 import '../features/commercial_license_approvel_export/presentation/intial_approval/step2/page/export_map_page.dart';
@@ -170,10 +169,9 @@ class CommercialRoutes {
     CommercialRouteName.ExportMapScreen: (context) => ExportMapScreen(),
 
 
-  CommercialRouteName.LicenseExportStartServicePage: (context) => const LicenseExportStartServicePage(),
-  CommercialRouteName.LicenseExportInitialScreen: (context) => const LicenseExportInitialScreen(),
-  CommercialRouteName.IntialApprovalRequestDetailsPage: (context) => const RequestDetailsPage(),
 
+      CommercialRouteName.IntialApprovalRequestDetailsPage: (context) => const RequestDetailsPage(),
+    CommercialRouteName.LicenseExportStartServicePage: (context) => const LicenseExportStartServicePage(),
 
 
 

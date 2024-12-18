@@ -27,7 +27,7 @@ class SaveLocationResponseModel extends SaveLocationResponse {
         maxYears: json["maxYears"],
         contractOptionsResponseDto: json["contractOptionsResponseDto"] == null
             ? null
-            : ContractOptionsResponseDto.fromJson(
+            : ContractOptionsResDto.fromJson(
                 json["contractOptionsResponseDto"]),
         slamaBillOptions: json["slamaBillOptions"] == null
             ? []
@@ -42,7 +42,7 @@ class SaveLocationResponseModel extends SaveLocationResponse {
       );
 }
 
-class ContractOptionsResponseDtoModel extends ContractOptionsResponseDto {
+class ContractOptionsResponseDtoModel extends ContractOptionsResDto {
   ContractOptionsResponseDtoModel({
     super.ejarOptions,
     super.deedOptions,

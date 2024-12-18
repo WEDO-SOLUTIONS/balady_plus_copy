@@ -15,6 +15,8 @@ import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 
+import '../domain/entities/request_info_arragments.dart';
+
 class IssueStartService extends StatefulWidget {
   const IssueStartService({Key? key}) : super(key: key);
 
@@ -68,7 +70,8 @@ class _IssueStartServiceState extends State<IssueStartService> {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
                               CommercialRouteName.commercialLicensePage,
-                              arguments: requestId,
+                              arguments: RequestInfoArragments(requestId:requestId,isFromIntialApproval: false),
+
                             );
                           } else {
                             await BottomSheetDialog.showDraggableSheet(
@@ -91,7 +94,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
                                       null) {
                                     Navigator.of(context).pushNamed(
                                       CommercialRouteName.commercialLicensePage,
-                                      arguments: requestId,
+                                      arguments: RequestInfoArragments(requestId:requestId,isFromIntialApproval: false),
                                     );
                                   } else {
                                     await BottomSheetDialog.showDraggableSheet(

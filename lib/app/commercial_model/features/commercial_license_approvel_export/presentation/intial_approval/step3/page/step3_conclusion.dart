@@ -17,7 +17,7 @@ import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
 import '../../../../../../../features/_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
-import '../../commercial_license/widgets/previous_next_button.dart';
+import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 import '../bloc/step3_conclusion_cubit.dart';
 
 
@@ -74,7 +74,7 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
                       const CustomVerticalSpace(height: 16),
 
 
-                      CRPreviousNextButtons(
+                      IntialApprovalPreviousNextButtons(
 
                         onPressed: () {
                           context.read<Step3ConclusionCubit>()

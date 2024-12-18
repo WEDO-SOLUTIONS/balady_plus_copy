@@ -5,10 +5,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../../features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import '../blocs/commercial_license_export_bloc.dart';
+import '../blocs/commercial_license_initial_Approval_bloc.dart';
 
-class ExportPreviousNextButtons extends StatelessWidget {
-  const ExportPreviousNextButtons({
+class IntialApprovalPreviousNextButtons extends StatelessWidget {
+  const IntialApprovalPreviousNextButtons({
     Key? key,
     required this.isBtnDisabled,
     this.onPressed,
@@ -19,9 +19,9 @@ class ExportPreviousNextButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CommercialLicenseExportBloc, CommercialLicenseExportState>(
+    return BlocBuilder<CommercialLicenseInitialAprrovalBloc, CommercialLicenseInitialApprovalState>(
       builder: (context, state) {
-        bool isLastPage = context.read<CommercialLicenseExportBloc>().isLastPage();
+        bool isLastPage = context.read<CommercialLicenseInitialAprrovalBloc>().isLastPage();
         return Container(
           color: Colors.transparent,
           padding:
@@ -36,7 +36,7 @@ class ExportPreviousNextButtons extends StatelessWidget {
                     () {
                       if (!isLastPage) {
                         context
-                            .read<CommercialLicenseExportBloc>()
+                            .read<CommercialLicenseInitialAprrovalBloc>()
                             .add(const NextPageEvent());
                       } else {
 

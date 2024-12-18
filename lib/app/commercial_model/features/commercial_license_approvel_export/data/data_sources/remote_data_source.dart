@@ -53,6 +53,8 @@ abstract class RemoteDataSource {
   Future<int> saveComSubmitterAndOwner(
       {SubmitterAndOwnerRequestModel? params});
 
+  Future<int> applyLicenseExport(int params);
+
   Future<int> saveActivityDetails({SubmitActivityDetailRequest? params});
 
   Future<SaveLocationResponseModel> saveLocationDetails(
@@ -608,6 +610,83 @@ class RemoteDataSourceImpl extends RemoteDataSource {
       }
     }
   }
+
+  @override
+  Future<int> applyLicenseExport(int params) async {
+    var response;
+
+    try {
+
+      response = await webService.dio.post(CommercialModelEndPoints.applyLicenseExport(params),
+      data: {"submitterType":CommonProperties.getCurrentUserProfile()?.getRole() ??"",});
+      var data = response.data["data"]?["result"]["requestNumber"];
+
+
+      return data;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+        ResponseBodyModel<SubActivityModelDetailsModel>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
+      else {
+        try {
+          //MM    CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: error.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
 
 
 

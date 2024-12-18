@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import '../../domain/entities/save_location_response.dart';
+
 // CommercialRequestDetailsResponseEntity commercialRequestDetailsResponseFromJson(
 //         String str) =>
 //     CommercialRequestDetailsResponseEntity.fromJson(json.decode(str));
@@ -960,7 +962,7 @@ class ContractInfoResponseDto {
   final dynamic deedInfoResponse;
   final String? contractDate;
   final String? contractNumber;
-  final ContractOptionsResponseDto? contractOptionsResponseDto;
+  final ContractOptionsResDto? contractOptionsResponseDto;
   final dynamic investmentContractNumber;
 
   ContractInfoResponseDto({
@@ -984,7 +986,7 @@ class ContractInfoResponseDto {
         contractNumber: json["contractNumber"],
         contractOptionsResponseDto: json["contractOptionsResponseDto"] == null
             ? null
-            : ContractOptionsResponseDto.fromJson(
+            : ContractOptionsResDto.fromJson(
                 json["contractOptionsResponseDto"]),
         investmentContractNumber: json["investmentContractNumber"],
       );
@@ -1014,42 +1016,42 @@ class StatusDto {
       StatusDto(id: json["id"], name: json['name']);
 }
 
-class ContractOptionsResponseDto {
-  final List<String>? ejarOptions;
-  final List<String>? deedOptions;
-  final List<String>? investOptions;
-
-  ContractOptionsResponseDto({
-    this.ejarOptions,
-    this.deedOptions,
-    this.investOptions,
-  });
-
-  factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) =>
-      ContractOptionsResponseDto(
-        ejarOptions: json["ejarOptions"] == null
-            ? []
-            : List<String>.from(json["ejarOptions"]!.map((x) => x)),
-        deedOptions: json["deedOptions"] == null
-            ? []
-            : List<String>.from(json["deedOptions"]!.map((x) => x)),
-        investOptions: json["investOptions"] == null
-            ? []
-            : List<String>.from(json["investOptions"]!.map((x) => x)),
-      );
-
-  Map<String, dynamic> toJson() => {
-        "ejarOptions": ejarOptions == null
-            ? []
-            : List<dynamic>.from(ejarOptions!.map((x) => x)),
-        "deedOptions": deedOptions == null
-            ? []
-            : List<dynamic>.from(deedOptions!.map((x) => x)),
-        "investOptions": investOptions == null
-            ? []
-            : List<dynamic>.from(investOptions!.map((x) => x)),
-      };
-}
+// class ContractOptionsResponseDto {
+//   final List<String>? ejarOptions;
+//   final List<String>? deedOptions;
+//   final List<String>? investOptions;
+//
+//   ContractOptionsResponseDto({
+//     this.ejarOptions,
+//     this.deedOptions,
+//     this.investOptions,
+//   });
+//
+//   factory ContractOptionsResponseDto.fromJson(Map<String, dynamic> json) =>
+//       ContractOptionsResponseDto(
+//         ejarOptions: json["ejarOptions"] == null
+//             ? []
+//             : List<String>.from(json["ejarOptions"]!.map((x) => x)),
+//         deedOptions: json["deedOptions"] == null
+//             ? []
+//             : List<String>.from(json["deedOptions"]!.map((x) => x)),
+//         investOptions: json["investOptions"] == null
+//             ? []
+//             : List<String>.from(json["investOptions"]!.map((x) => x)),
+//       );
+//
+//   Map<String, dynamic> toJson() => {
+//         "ejarOptions": ejarOptions == null
+//             ? []
+//             : List<dynamic>.from(ejarOptions!.map((x) => x)),
+//         "deedOptions": deedOptions == null
+//             ? []
+//             : List<dynamic>.from(deedOptions!.map((x) => x)),
+//         "investOptions": investOptions == null
+//             ? []
+//             : List<dynamic>.from(investOptions!.map((x) => x)),
+//       };
+// }
 
 class SubmitterInfo {
   final String? entityType;

@@ -11,8 +11,8 @@ import '../../../../../../../features/_shared_feature_/presentation/widgets/cust
 import '../../../../../../../features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../../../../commercial_license/presentation/commercial_license/widgets/cr_header_desc.dart';
-import '../../commercial_license/blocs/commercial_license_initial_export_bloc.dart';
-import '../../commercial_license/widgets/previous_next_button.dart';
+import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
+import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 
 
 class CRStep1ApplicantData extends StatelessWidget {
@@ -89,7 +89,7 @@ class CRStep1ApplicantData extends StatelessWidget {
                   (state.recordStatus.isSubmissionLoading ||
                           state.status.isSubmissionLoading)
                       ? const Center(child: CustomCircularLoadingWidget())
-                      : CRPreviousNextButtons(
+                      : IntialApprovalPreviousNextButtons(
                           isBtnDisabled: false,
                           onPressed: () {
                             if (state
@@ -102,7 +102,7 @@ class CRStep1ApplicantData extends StatelessWidget {
                                           const IsicActivitiesDialogNotExistInBalady()));
                             } else {
 
-                              sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
+                              sl<CommercialLicenseInitialAprrovalBloc>().add((const NextPageEvent()));
 
 
                             }

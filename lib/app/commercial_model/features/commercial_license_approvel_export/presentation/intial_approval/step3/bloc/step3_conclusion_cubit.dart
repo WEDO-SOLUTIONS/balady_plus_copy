@@ -12,17 +12,17 @@ import '../../../../../../commercial_routes/commercial_route_names.dart';
 import '../../../../data/models/initialApproval/isics_main_activity.dart';
 import '../../../../data/models/initialApproval/request_details_model.dart';
 import '../../../../domain/use_cases/step3_initial_approval_submit.dart';
-import '../../commercial_license/blocs/commercial_license_initial_export_bloc.dart';
+import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
 
 part 'step3_conclusion_state.dart';
 
 class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
   final InitialApprovalSubmit _initialApprovalSubmit;
-  final CommercialLicenseInitialExportBloc commercialLicenseBloc;
+  final CommercialLicenseInitialAprrovalBloc commercialLicenseBloc;
 
   Step3ConclusionCubit()
       :_initialApprovalSubmit = InitialApprovalSubmit(repository: sl()),
-        commercialLicenseBloc = sl<CommercialLicenseInitialExportBloc>(),
+        commercialLicenseBloc = sl<CommercialLicenseInitialAprrovalBloc>(),
 
         super(const Step3ConclusionState());
 
@@ -32,7 +32,7 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
 
 
       emit(state.copyWith(status: BlocStatus.loading));
-      final response = await _initialApprovalSubmit(sl<CommercialLicenseInitialExportBloc>().state.requestId!);
+      final response = await _initialApprovalSubmit(sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!);
 
       response.fold(
               (failure) {

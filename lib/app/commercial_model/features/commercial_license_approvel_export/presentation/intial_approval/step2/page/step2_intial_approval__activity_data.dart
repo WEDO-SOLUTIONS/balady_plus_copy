@@ -19,7 +19,7 @@ import '../../../../../../../features/_shared_feature_/presentation/widgets/text
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../data/models/initialApproval/isics_main_activity.dart';
 import 'package:collection/collection.dart';
-import '../../commercial_license/widgets/previous_next_button.dart';
+import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 import '../widgets/accomodation_types_drop_down.dart';
 
 class Step2IntialApprovalActivityData extends StatefulWidget {
@@ -264,7 +264,7 @@ class _Step2IntialApprovalActivityDataState extends State<Step2IntialApprovalAct
             (state.subActivityDetailsStatus.isSubmissionLoading ||
                     state.status.isSubmissionLoading)
                 ? const Center(child: CustomCircularLoadingWidget())
-                : CRPreviousNextButtons(
+                : IntialApprovalPreviousNextButtons(
                     isBtnDisabled: !state.isFormValid(),
                     onPressed: () {
                       context

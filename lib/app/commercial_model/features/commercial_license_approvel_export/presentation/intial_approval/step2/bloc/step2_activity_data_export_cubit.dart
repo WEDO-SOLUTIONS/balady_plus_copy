@@ -40,7 +40,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../data/models/initialApproval/submit_activity_details_request.dart';
 import '../../../../data/models/lookups_model.dart';
-import '../../commercial_license/blocs/commercial_license_initial_export_bloc.dart';
+import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
 import '../page/salama_warning_message.dart';
 import 'package:collection/collection.dart';
 part 'step2_activity_data_export_state.dart';
@@ -129,7 +129,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         subActivitiesStatus: BlocStatus.loading,
         errorMessage: ""));
 //4617349072
-    int? requestId= sl<CommercialLicenseInitialExportBloc>().state.requestId;
+    int? requestId= sl<CommercialLicenseInitialAprrovalBloc>().state.requestId;
     final response = await _getSubActivities([requestId!,int.parse(isicActivity.id)]);
     response.fold(
         (failure) => emit(state.copyWith(
@@ -293,7 +293,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
 
   void saveSiteAndActivities() async {
-    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
@@ -346,7 +346,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
           errorMessage: (failure as ServerFailure).errorMessage,
         )), (success) {
 
-      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
+      sl<CommercialLicenseInitialAprrovalBloc>().add((const NextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
   }
@@ -472,10 +472,10 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     // bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;
     // bool draftLoaded = state.isDraft ?? false;
 
-    if (sl<CommercialLicenseInitialExportBloc>().state.requestId != null &&sl<CommercialLicenseInitialExportBloc>().state.isDraft==true ) {
+    if (sl<CommercialLicenseInitialAprrovalBloc>().state.requestId != null &&sl<CommercialLicenseInitialAprrovalBloc>().state.isDraft==true ) {
       emit(state.copyWith(draftStatus: BlocStatus.loading,));
 
-      RequestDetailsModel? requestData = sl<CommercialLicenseInitialExportBloc>().state.requestDetails;
+      RequestDetailsModel? requestData = sl<CommercialLicenseInitialAprrovalBloc>().state.requestDetails;
 
       if(requestData != null) {
 
@@ -746,7 +746,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
   Future<void> _saveLocationHandler(
       SaveLocationDataEvent e, Emitter emitter) async {
-    int requestId = sl<CommercialLicenseInitialExportBloc>().state.requestId!;
+    int requestId = sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!;
     emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
 
     final failOrSuccess = await _saveLocationDetails(SaveLocationDataRequest(
@@ -767,10 +767,10 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
           status: BlocStatus.failure,
           errorMessage: (l as ServerFailure).errorMessage));
     }, (r) async {
-      sl<CommercialLicenseInitialExportBloc>().add((const NextPageEvent()));
-      sl<CommercialLicenseInitialExportBloc>().updateGISData(gis: state.gisResponse);
+      sl<CommercialLicenseInitialAprrovalBloc>().add((const NextPageEvent()));
+      sl<CommercialLicenseInitialAprrovalBloc>().updateGISData(gis: state.gisResponse);
       emitter(state.copyWith(status: BlocStatus.success, locationResponse: r));
-      sl<CommercialLicenseInitialExportBloc>().add((UpdateFieldEvent(
+      sl<CommercialLicenseInitialAprrovalBloc>().add((UpdateFieldEvent(
           saveLocationResponse: r, requestId: requestId)));
     });
   }

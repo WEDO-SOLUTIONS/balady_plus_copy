@@ -5,7 +5,7 @@ import 'package:balady_plus/app/commercial_model/features/commercial_debts/prese
 import 'package:balady_plus/app/features/vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../blocs/commercial_license_initial_export_bloc.dart';
+import '../blocs/commercial_license_initial_Approval_bloc.dart';
 
 class InitialApprovalLicenseBody extends StatefulWidget {
   final int? requestId;
@@ -20,31 +20,31 @@ class _InitialApprovalLicenseBodyState extends State<InitialApprovalLicenseBody>
   @override
   void initState() {
     super.initState();
-    context.read<CommercialLicenseInitialExportBloc>().initState(
+    context.read<CommercialLicenseInitialAprrovalBloc>().initState(
           requestId: widget.requestId,
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CommercialLicenseInitialExportBloc, CommercialLicenseInitialExportState>(
+    return BlocBuilder<CommercialLicenseInitialAprrovalBloc, CommercialLicenseInitialApprovalState>(
       builder: (context, state) {
         return WillPopScope(
           onWillPop: () {
             context
-                .read<CommercialLicenseInitialExportBloc>()
+                .read<CommercialLicenseInitialAprrovalBloc>()
                 .add(const PreviousPageEvent());
             return Future<bool>.value(false);
           },
           child: GestureDetector(
-            onTap: () => context.read<CommercialLicenseInitialExportBloc>().hideKeyboard(),
+            onTap: () => context.read<CommercialLicenseInitialAprrovalBloc>().hideKeyboard(),
             child: Scaffold(
               appBar: DetailsAppBarTwo(
                 pageLength: state.pagesList.length,
                 currentStep: state.currentPageValue + 1,
                 backOnPress: () =>
                     context
-                        .read<CommercialLicenseInitialExportBloc>()
+                        .read<CommercialLicenseInitialAprrovalBloc>()
                         .add(const PreviousPageEvent()),
                 onTapCloseAction: () {
                   FocusManager.instance.primaryFocus?.unfocus();
@@ -59,7 +59,7 @@ class _InitialApprovalLicenseBodyState extends State<InitialApprovalLicenseBody>
                 scrollDirection: Axis.vertical,
                 physics: const NeverScrollableScrollPhysics(),
                 controller: context
-                    .read<CommercialLicenseInitialExportBloc>()
+                    .read<CommercialLicenseInitialAprrovalBloc>()
                     .controller,
                 itemBuilder: (context, position) {
                   return AnimatedContainer(
@@ -74,7 +74,7 @@ class _InitialApprovalLicenseBodyState extends State<InitialApprovalLicenseBody>
 
                     CommercialDebtsScreen(
                     transactionType: TransactionType.REQUEST,
-                    transactionId: context.read<CommercialLicenseInitialExportBloc>().state.requestId,
+                    transactionId: context.read<CommercialLicenseInitialAprrovalBloc>().state.requestId,
                     steps:[listIssueSteps[position]],
                     serviceId: CommercialLicenseServiceId.issueCommercialLicense,
                     child: AnimatedContainer(

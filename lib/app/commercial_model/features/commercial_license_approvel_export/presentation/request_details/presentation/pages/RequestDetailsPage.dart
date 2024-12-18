@@ -22,6 +22,7 @@ import '../../../../../../../features/_shared_feature_/presentation/widgets/text
 import '../../../../../../commercial_routes/commercial_route_names.dart';
 import '../../../../../request_commercial_license_details/presentation/mvvm/commercial_license_request_action_view_model.dart';
 import '../../../../../request_commercial_license_details/presentation/widgets/request_commercial_license_action_sheet.dart';
+import '../../../export_commercial_license/license_export_intiation/blocs/commercial_license_export_bloc.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 
 class RequestDetailsPage extends StatelessWidget {
@@ -81,6 +82,24 @@ class RequestDetailsPage extends StatelessWidget {
                                         arguments: state.requestId,
                                       );
                                       break;
+                                    case "apply-commercial-issuing-request":
+
+
+                                      Navigator.of(context).pushNamed(
+                                        CommercialRouteName.LicenseExportStartServicePage,
+                                        arguments: state.requestId,
+                                      );
+
+
+
+                                      break;
+
+                                    case "print":
+
+                                      break;
+
+
+
 
                                     case "cancel":
 
