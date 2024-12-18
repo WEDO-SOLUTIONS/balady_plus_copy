@@ -212,7 +212,7 @@ packages:
       sha256: "23c2bdbfac3bca47b56790f19d245d7d443dd6f9f443dc9e8daebed5afece59f"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   battery_plus:
     dependency: transitive
     description:
