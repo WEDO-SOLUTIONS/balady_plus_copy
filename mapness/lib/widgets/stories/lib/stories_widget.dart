@@ -43,7 +43,8 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   void _openStory(BuildContext context, String id) {
-    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.storyBanner,
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
       group: MetricsConstants.exploreTag,
       action: MetricAction.tap.name,
       props: {'id': id},
