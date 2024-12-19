@@ -8,7 +8,6 @@ import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/ui/buttons/refresh_button.dart';
 import 'package:mapness/widgets/stories/lib/stories_row.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
@@ -44,7 +43,8 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
   }
 
   void _openStory(BuildContext context, String id) {
-    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.storyBanner,
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
       group: MetricsConstants.exploreTag,
       action: MetricAction.tap.name,
       props: {'id': id},
@@ -85,17 +85,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
           stories: data,
         ),
         orElse: () => const SizedBox.shrink(),
-        error: (_, __) => RefreshButton(
-          onPressed: () {
-            Metrics.logEventAdvanced(
-              MetricsConstants.exploreKeys.storiesRefresh,
-              group: MetricsConstants.exploreTag,
-              action: MetricAction.tap.name,
-            );
-
-            ref.read(storyServiceProvider.notifier).refresh();
-          },
-        ),
+        error: (_, __) => const SizedBox.shrink(),
         skipLoadingOnReload: true,
       ),
     );
