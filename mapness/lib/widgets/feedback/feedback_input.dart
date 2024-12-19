@@ -24,7 +24,6 @@ class FeedbackTextInput extends StatefulWidget {
     this.keyboardType,
     this.onChanged,
     this.onValidate,
-    this.onFocusChange,
     super.key,
   });
 
@@ -39,8 +38,6 @@ class FeedbackTextInput extends StatefulWidget {
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? onValidate;
-
-  final Function({bool hasFocus})? onFocusChange;
 
   @override
   State<FeedbackTextInput> createState() => _FeedbackTextInputState();
