@@ -700,6 +700,7 @@ class MarkerOptionsMessage {
     this.textStyle,
     this.animatedAppearance,
     this.zIndex,
+    this.isVisible,
   });
 
   final GeoPointWithElevationMessage position;
@@ -708,6 +709,29 @@ class MarkerOptionsMessage {
   final String? text;
   final MarkerTextStyleMessage? textStyle;
   final bool? animatedAppearance;
+  final bool? isVisible;
+  final int? zIndex;
+}
+
+class ChangeMarkerOptionsMessage {
+  ChangeMarkerOptionsMessage({
+    this.position,
+    this.icon,
+    this.anchor,
+    this.text,
+    this.textStyle,
+    this.animatedAppearance,
+    this.zIndex,
+    this.isVisible,
+  });
+
+  final GeoPointWithElevationMessage? position;
+  final MarkerIconMessage? icon;
+  final MarkerAnchorMessage? anchor;
+  final String? text;
+  final MarkerTextStyleMessage? textStyle;
+  final bool? animatedAppearance;
+  final bool? isVisible;
   final int? zIndex;
 }
 
@@ -1398,10 +1422,10 @@ abstract class MapApi {
   );
 
   @async
-  void setMarkerOptions(MarkerOptionsMessageOld options);
+  void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
 
   @async
-  void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
+  void setMarkerOptions(String id, ChangeMarkerOptionsMessage options);
 
   @async
   void addMarkers(
