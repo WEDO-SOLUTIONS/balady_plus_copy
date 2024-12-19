@@ -40,7 +40,7 @@ class FeedbackTextInput extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final FormFieldValidator<String>? onValidate;
 
-  final Function(bool)? onFocusChange;
+  final Function({bool hasFocus})? onFocusChange;
 
   @override
   State<FeedbackTextInput> createState() => _FeedbackTextInputState();
