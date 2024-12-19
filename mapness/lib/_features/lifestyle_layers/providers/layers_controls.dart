@@ -743,8 +743,4 @@ class LayersControls extends _$LayersControls {
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
   }
-
-  void showParking() {
-    update(layersWidgetType: LayersPanelType.parking);
-  }
 }

@@ -1,6 +1,11 @@
+// ignore_for_file: avoid_positional_boolean_parameters, camel_case_types
+
 import 'package:pigeon/pigeon.dart';
 
-enum ZoomControlMessage { zoomIn, zoomOut }
+enum ZoomControlMessage {
+  zoomIn,
+  zoomOut,
+}
 
 class InitializeMessage {
   InitializeMessage(this.wasInitialized, this.errorDescription);
@@ -220,7 +225,12 @@ class ReviewsMessage {
   final int count;
 }
 
-enum ParkingTypeMessage { ground, underground, multilevel, none }
+enum ParkingTypeMessage {
+  ground,
+  underground,
+  multilevel,
+  none,
+}
 
 enum ParkingPurposeMessage {
   car,
@@ -235,10 +245,16 @@ enum ParkingAccessMessage {
   handicappedOnly,
   customersOnly,
   residentsOnly,
-  taxiOnly
+  taxiOnly,
 }
 
-enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
+enum ParkingPavingTypeMessage {
+  asphalt,
+  concrete,
+  gravel,
+  unpaved,
+  none,
+}
 
 enum SpecialSpaceTypeMessage {
   bicycle,
@@ -247,7 +263,7 @@ enum SpecialSpaceTypeMessage {
   handicapped,
   babyCarriage,
   truck,
-  scooter
+  scooter,
 }
 
 class SpecialSpaceMessage {
@@ -369,7 +385,7 @@ enum ObjectTypeMessage {
   stationMetro,
   stationPlatform,
   street,
-  unknown;
+  unknown,
 }
 
 class ObjectTypeItemMessage {
@@ -439,7 +455,11 @@ class DirectoryObjectMessage {
   final TradeLicenseMessage? tradeLicense;
 }
 
-enum SortingTypeMessage { byRelevance, byDistance, byRating }
+enum SortingTypeMessage {
+  byRelevance,
+  byDistance,
+  byRating,
+}
 
 class WeekTimeSearchMessage {
   const WeekTimeSearchMessage({
@@ -488,7 +508,7 @@ enum RouteSearchOptionsMessage {
   pedestrian,
   scooter,
   truck,
-  taxi
+  taxi,
 }
 
 class RouteEditorRoutePointMessage {
@@ -530,7 +550,11 @@ class CarRouteSearchOptionParamsMessage {
   final bool avoidUnpavedRoads;
 }
 
-enum DesiredAccuracyMessage { low, medium, high }
+enum DesiredAccuracyMessage {
+  low,
+  medium,
+  high,
+}
 
 class MarkerWithPhotoMessage {
   MarkerWithPhotoMessage({
@@ -575,7 +599,11 @@ class GeoRectMessage {
   final GeoPointMessage southWest;
 }
 
-enum WorkingFilterMessage { none, isOpen, isOpen24x7 }
+enum WorkingFilterMessage {
+  none,
+  isOpen,
+  isOpen24x7,
+}
 
 class CameraSetPaddingMessage {
   CameraSetPaddingMessage({
@@ -622,7 +650,7 @@ enum TextPlacementMessage {
   leftCenter,
   leftBottom,
   circleBottomLeft,
-  centerCenter
+  centerCenter,
 }
 
 class MarkerTextPlacementMessage {
@@ -653,8 +681,7 @@ class MarkerTextStyleMessage {
 
 /// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
 class MarkerIconMessage {
-  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection,
-      this.iconOpacity, this.pngData, this.pngPath);
+  MarkerIconMessage(this.svgPath, this.width, this.iconMapDirection, this.iconOpacity, this.pngData, this.pngPath);
 
   final String? svgPath;
   final Uint8List? pngData;
@@ -773,7 +800,10 @@ class PolygonGeometryMessage {
   final List<Object> contours;
 }
 
-enum SearchResultTypeMessage { recovery, discovery }
+enum SearchResultTypeMessage {
+  recovery,
+  discovery,
+}
 
 class FlagFilterMessage {
   FlagFilterMessage(this.tagName, this.displayName, this.flagValue);
@@ -784,8 +814,7 @@ class FlagFilterMessage {
 }
 
 class RangeFilterMessage {
-  RangeFilterMessage(
-      this.tagName, this.displayName, this.minValue, this.maxValue);
+  RangeFilterMessage(this.tagName, this.displayName, this.minValue, this.maxValue);
 
   final String tagName;
   final String displayName;
@@ -963,7 +992,7 @@ enum SearchCategoryMessage {
   hotels,
   beautyCenters,
   recreationCenters,
-  beaches
+  beaches,
 }
 
 class SearchCategoryMessage_ {
@@ -1010,9 +1039,20 @@ class MapObjectManagerMessage {
   final String id;
 }
 
-enum MapAppearanceMessage { day, night, system }
+enum MapAppearanceMessage {
+  day,
+  night,
+  system,
+}
 
-enum LogLevelMessage { verbose, info, warning, error, fatal, off }
+enum LogLevelMessage {
+  verbose,
+  info,
+  warning,
+  error,
+  fatal,
+  off,
+}
 
 class LogOptionsMessage {
   LogOptionsMessage(this.systemLevel, this.customLevel, this.customSink);
@@ -1023,8 +1063,7 @@ class LogOptionsMessage {
 }
 
 class RouteSearchPointMessage {
-  RouteSearchPointMessage(
-      this.coordinates, this.course, this.objectId, this.levelId);
+  RouteSearchPointMessage(this.coordinates, this.course, this.objectId, this.levelId);
 
   final GeoPointMessage coordinates;
   final BearingMessage? course;
@@ -1066,8 +1105,8 @@ class PackageMessage {
 }
 
 class PackageInfoMessage {
-  PackageInfoMessage(this.name, this.installed, this.incomplete,
-      this.preinstalled, this.compatible, this.hasUpdate, this.updateStatus);
+  PackageInfoMessage(this.name, this.installed, this.incomplete, this.preinstalled, this.compatible, this.hasUpdate,
+      this.updateStatus);
 
   final String name;
   final bool installed;
@@ -1078,7 +1117,11 @@ class PackageInfoMessage {
   final PackageUpdateStatusMessage updateStatus;
 }
 
-enum PackageUpdateStatusMessage { notAvailable, inProgress, paused }
+enum PackageUpdateStatusMessage {
+  notAvailable,
+  inProgress,
+  paused,
+}
 
 enum BriefExtraRouteInfoTypeMessage {
   bicycle,
@@ -1133,7 +1176,11 @@ enum FollowStateMessage {
   followDirection,
 }
 
-enum BetterRouteResponseMessage { accept, reject, timeout }
+enum BetterRouteResponseMessage {
+  accept,
+  reject,
+  timeout,
+}
 
 class SpeedRangeZoom {
   SpeedRangeZoom({
@@ -1207,8 +1254,7 @@ class VendorConfigContentMessage {
   PigeonOptions(
     dartOut: 'lib/src/pigeons/messages.g.dart',
     swiftOut: '../dgis_map/ios/Classes/Messages.swift',
-    kotlinOut:
-        '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
+    kotlinOut: '../dgis_map/android/src/main/kotlin/com/dgis/map/map_api/Messages.kt',
     kotlinOptions: KotlinOptions(
       package: 'com.dgis.map.map_api',
     ),
@@ -1292,8 +1338,7 @@ abstract class MapApi {
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
-  List<DistanceResponseMessage> getDistanceTo(
-      List<DistanceRequestMessage> points);
+  List<DistanceResponseMessage> getDistanceTo(List<DistanceRequestMessage> points);
 
   @async
   SearchResultMessage search(
@@ -1616,7 +1661,5 @@ abstract class FlutterMapApi {
 abstract class PluginApi {
   @async
   void initialize(
-      LogOptionsMessage? message,
-      VendorConfigMessage? configMessage,
-      VendorConfigContentMessage? contentMessage);
+      LogOptionsMessage? message, VendorConfigMessage? configMessage, VendorConfigContentMessage? contentMessage);
 }
