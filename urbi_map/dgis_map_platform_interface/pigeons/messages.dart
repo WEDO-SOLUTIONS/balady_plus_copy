@@ -1,6 +1,11 @@
+// ignore_for_file: avoid_positional_boolean_parameters, camel_case_types
+
 import 'package:pigeon/pigeon.dart';
 
-enum ZoomControlMessage { zoomIn, zoomOut }
+enum ZoomControlMessage {
+  zoomIn,
+  zoomOut,
+}
 
 class InitializeMessage {
   InitializeMessage(this.wasInitialized, this.errorDescription);
@@ -220,7 +225,12 @@ class ReviewsMessage {
   final int count;
 }
 
-enum ParkingTypeMessage { ground, underground, multilevel, none }
+enum ParkingTypeMessage {
+  ground,
+  underground,
+  multilevel,
+  none,
+}
 
 enum ParkingPurposeMessage {
   car,
@@ -230,11 +240,31 @@ enum ParkingPurposeMessage {
   scooter,
 }
 
-enum ParkingAccessMessage { publicAccess, handicappedOnly, customersOnly, residentsOnly, taxiOnly }
+enum ParkingAccessMessage {
+  publicAccess,
+  handicappedOnly,
+  customersOnly,
+  residentsOnly,
+  taxiOnly,
+}
 
-enum ParkingPavingTypeMessage { asphalt, concrete, gravel, unpaved, none }
+enum ParkingPavingTypeMessage {
+  asphalt,
+  concrete,
+  gravel,
+  unpaved,
+  none,
+}
 
-enum SpecialSpaceTypeMessage { bicycle, motorbike, family, handicapped, babyCarriage, truck, scooter }
+enum SpecialSpaceTypeMessage {
+  bicycle,
+  motorbike,
+  family,
+  handicapped,
+  babyCarriage,
+  truck,
+  scooter,
+}
 
 class SpecialSpaceMessage {
   SpecialSpaceMessage(this.type, this.name, this.count);
@@ -355,7 +385,7 @@ enum ObjectTypeMessage {
   stationMetro,
   stationPlatform,
   street,
-  unknown;
+  unknown,
 }
 
 class ObjectTypeItemMessage {
@@ -425,7 +455,11 @@ class DirectoryObjectMessage {
   final TradeLicenseMessage? tradeLicense;
 }
 
-enum SortingTypeMessage { byRelevance, byDistance, byRating }
+enum SortingTypeMessage {
+  byRelevance,
+  byDistance,
+  byRating,
+}
 
 class WeekTimeSearchMessage {
   const WeekTimeSearchMessage({
@@ -467,7 +501,15 @@ class MarkerOptionsMessageOld {
   final double iconWidth;
 }
 
-enum RouteSearchOptionsMessage { car, publicTransport, bicycle, pedestrian, scooter, truck, taxi }
+enum RouteSearchOptionsMessage {
+  car,
+  publicTransport,
+  bicycle,
+  pedestrian,
+  scooter,
+  truck,
+  taxi,
+}
 
 class RouteEditorRoutePointMessage {
   RouteEditorRoutePointMessage(
@@ -508,7 +550,11 @@ class CarRouteSearchOptionParamsMessage {
   final bool avoidUnpavedRoads;
 }
 
-enum DesiredAccuracyMessage { low, medium, high }
+enum DesiredAccuracyMessage {
+  low,
+  medium,
+  high,
+}
 
 class MarkerWithPhotoMessage {
   MarkerWithPhotoMessage({
@@ -553,7 +599,11 @@ class GeoRectMessage {
   final GeoPointMessage southWest;
 }
 
-enum WorkingFilterMessage { none, isOpen, isOpen24x7 }
+enum WorkingFilterMessage {
+  none,
+  isOpen,
+  isOpen24x7,
+}
 
 class CameraSetPaddingMessage {
   CameraSetPaddingMessage({
@@ -600,7 +650,7 @@ enum TextPlacementMessage {
   leftCenter,
   leftBottom,
   circleBottomLeft,
-  centerCenter
+  centerCenter,
 }
 
 class MarkerTextPlacementMessage {
@@ -774,7 +824,10 @@ class PolygonGeometryMessage {
   final List<Object> contours;
 }
 
-enum SearchResultTypeMessage { recovery, discovery }
+enum SearchResultTypeMessage {
+  recovery,
+  discovery,
+}
 
 class FlagFilterMessage {
   FlagFilterMessage(this.tagName, this.displayName, this.flagValue);
@@ -963,7 +1016,7 @@ enum SearchCategoryMessage {
   hotels,
   beautyCenters,
   recreationCenters,
-  beaches
+  beaches,
 }
 
 class SearchCategoryMessage_ {
@@ -1010,9 +1063,20 @@ class MapObjectManagerMessage {
   final String id;
 }
 
-enum MapAppearanceMessage { day, night, system }
+enum MapAppearanceMessage {
+  day,
+  night,
+  system,
+}
 
-enum LogLevelMessage { verbose, info, warning, error, fatal, off }
+enum LogLevelMessage {
+  verbose,
+  info,
+  warning,
+  error,
+  fatal,
+  off,
+}
 
 class LogOptionsMessage {
   LogOptionsMessage(this.systemLevel, this.customLevel, this.customSink);
@@ -1077,7 +1141,11 @@ class PackageInfoMessage {
   final PackageUpdateStatusMessage updateStatus;
 }
 
-enum PackageUpdateStatusMessage { notAvailable, inProgress, paused }
+enum PackageUpdateStatusMessage {
+  notAvailable,
+  inProgress,
+  paused,
+}
 
 enum BriefExtraRouteInfoTypeMessage {
   bicycle,
@@ -1132,7 +1200,11 @@ enum FollowStateMessage {
   followDirection,
 }
 
-enum BetterRouteResponseMessage { accept, reject, timeout }
+enum BetterRouteResponseMessage {
+  accept,
+  reject,
+  timeout,
+}
 
 class SpeedRangeZoom {
   SpeedRangeZoom({
