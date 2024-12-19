@@ -42,6 +42,8 @@ class CalcPositionOptionsMessage {
   final ScreenSizeMessage? size;
 }
 
+/// A point in a geographic coordinate system (latitude, longitude, elevation).
+/// elevation (Elevation) in meters above the surface, not above sea level.
 class GeoPointWithElevationMessage {
   GeoPointWithElevationMessage(this.latitude, this.longitude, this.elevation);
 
@@ -611,8 +613,9 @@ class MarkerAzimuthMessage {
   final double degree;
 }
 
+/// Image anchor point (0, 0) - upper left corner, (1, 1) - lower right
 class MarkerAnchorMessage {
-  MarkerAnchorMessage(this.x, this.y);
+  const MarkerAnchorMessage(this.x, this.y);
 
   final double x;
   final double y;
@@ -645,6 +648,7 @@ class MarkerTextPlacementMessage {
   final TextPlacementMessage placement;
 }
 
+/// Text appearance settings.
 class MarkerTextStyleMessage {
   MarkerTextStyleMessage({
     this.fontSize,
@@ -677,25 +681,41 @@ class MarkerIconMessage {
   final MarkerAzimuthMessage? iconMapDirection;
 }
 
+/// Marker parameters.
 class MarkerOptionsMessage {
-  MarkerOptionsMessage({
+  const MarkerOptionsMessage({
     required this.position,
     required this.icon,
-    this.anchor,
     required this.text,
+    this.anchor,
     this.textStyle,
     this.animatedAppearance,
     this.zIndex,
     this.isVisible,
   });
 
+  /// Getting the location of the marker.
   final GeoPointWithElevationMessage position;
+
+  /// Getting a marker icon.
   final MarkerIconMessage? icon;
+
+  /// Getting the marker icon anchor point.
   final MarkerAnchorMessage? anchor;
+
+  /// Getting the text of the marker.
   final String? text;
+
+  /// Getting the text style of the marker.
   final MarkerTextStyleMessage? textStyle;
+
+  /// Should I animate the appearance?
   final bool? animatedAppearance;
+
+  /// Is the marker visible?
   final bool? isVisible;
+
+  /// Object rendering level.
   final int? zIndex;
 }
 
