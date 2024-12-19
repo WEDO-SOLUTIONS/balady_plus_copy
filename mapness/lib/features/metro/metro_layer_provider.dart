@@ -10,7 +10,7 @@ part 'metro_layer_provider.g.dart';
 
 @riverpod
 class MetroLayer extends _$MetroLayer {
-  final mapOptions = MapObjectManagerSettings.metro();
+  final mapOptions = MapObjectManagerSettings.esri(); // TODO: change to metro
 
   @override
   Future<List<MetroLineModel>> build() async {
