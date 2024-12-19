@@ -487,20 +487,6 @@ class DistanceResponseMessage {
   final DgisObjectIdMessage? dgisObjectId;
 }
 
-class MarkerOptionsMessageOld {
-  const MarkerOptionsMessageOld({
-    required this.svgAsset,
-    required this.width,
-    required this.height,
-    required this.iconWidth,
-  });
-
-  final String svgAsset;
-  final double width;
-  final double height;
-  final double iconWidth;
-}
-
 enum RouteSearchOptionsMessage {
   car,
   publicTransport,
