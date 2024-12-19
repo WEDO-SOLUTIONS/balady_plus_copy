@@ -35,7 +35,13 @@ class FeedbackPage extends ConsumerStatefulWidget {
 }
 
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
-  final _isFormValidNotifier = ValueNotifier(false);
+  final _isFormValidNotifier = ValueNotifier<bool>(false);
+
+  @override
+  void dispose() {
+    _isFormValidNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +50,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       return const FeedbackFailureWidget();
     }
     final poiData = ref.watch(poiFeedbackProvider(objectId));
-    final objectType = poiData.valueOrNull?.types[0]?.type;
+    final objectType = poiData.valueOrNull?.types[0].type;
     final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
     final categories = ref.watch(provider);
     final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
