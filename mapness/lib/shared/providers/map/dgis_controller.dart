@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_features/common/providers/permissions.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -48,7 +49,7 @@ class DgisController extends _$DgisController {
     await controller.initialize();
 
     // Styles
-    await controller.loadStyles('packages/map_styles/src/styles.2gis');
+    await controller.loadStyles(MapnessConstants.mapStylesPath);
 
     // Appearance
     await controller.setZoomRestrictions(
