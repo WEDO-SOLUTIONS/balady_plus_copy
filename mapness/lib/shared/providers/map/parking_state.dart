@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
@@ -42,9 +44,12 @@ class ParkingState extends _$ParkingState {
   }
 
   Future<void> showParking() async {
-    final read = ref.read(sharedPrefsProvider);
-    final attribute = read.getString(parkingTypeKey);
+    final prefs = ref.read(sharedPrefsProvider);
+    final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
+    final activeLayersNotifier = ref.read(activeLayerProvider.notifier);
+
+    await activeLayersNotifier.setActiveLayer(LayerType.parkingLots);
 
     state = ParkingStateEvent(
       filter: parkingFilter,
@@ -57,10 +62,12 @@ class ParkingState extends _$ParkingState {
   }
 
   Future<void> hideParking() async {
-    final read = ref.read(sharedPrefsProvider);
-    final attribute = read.getString(parkingTypeKey);
+    final prefs = ref.read(sharedPrefsProvider);
+    final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
+    final activeLayersNotifier = ref.read(activeLayerProvider.notifier);
 
+    await activeLayersNotifier.removeActiveLayer();
     state = ParkingStateEvent(
       filter: parkingFilter,
       visible: false,
