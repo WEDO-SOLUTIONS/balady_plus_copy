@@ -19,7 +19,7 @@ class ActiveLayer extends _$ActiveLayer {
   }
 
   Future<void> setActiveLayer(LayerType? type) async {
-    final sharedPrefs = ref.watch(sharedPrefsProvider);
+    final sharedPrefs = ref.read(sharedPrefsProvider);
     if (type != null) {
       await sharedPrefs.setString(_activeLayerKey, type.name);
     }
@@ -27,7 +27,8 @@ class ActiveLayer extends _$ActiveLayer {
   }
 
   Future<void> removeActiveLayer() async {
-    final sharedPrefs = ref.watch(sharedPrefsProvider);
+    final sharedPrefs = ref.read(sharedPrefsProvider);
     await sharedPrefs.remove(_activeLayerKey);
+    ref.invalidateSelf();
   }
 }
