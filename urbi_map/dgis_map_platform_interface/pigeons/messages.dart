@@ -1350,9 +1350,6 @@ abstract class MapApi {
   );
 
   @async
-  void setMarkerOptionsOld(MarkerOptionsMessageOld options);
-
-  @async
   void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
 
   @async

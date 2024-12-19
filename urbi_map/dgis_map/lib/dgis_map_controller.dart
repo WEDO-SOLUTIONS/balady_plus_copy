@@ -332,10 +332,6 @@ class DgisMapController {
   /// Releases page from memory
   Future<void> releasePage(PageMessage page) => _instance.releasePage(page.id);
 
-  /// Options for marker that appears on map on object tap. Used by [addMarker].
-  Future<void> setMarkerOptionsOld(MarkerOptionsMessageOld markerOptions) =>
-      _instance.setMarkerOptionsOld(markerOptions);
-
   /// Add marker to map.
   Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) => _instance.addMarker(marker, toManager);
 

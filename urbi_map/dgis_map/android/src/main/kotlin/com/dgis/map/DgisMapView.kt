@@ -546,18 +546,6 @@ class DgisMapView(
     }
 
     // --- MARKER ---
-    override fun setMarkerOptionsOld(
-        options: MarkerOptionsMessageOld,
-        callback: (Result<Unit>) -> Unit
-    ) {
-        objectTapHandler?.setMarkerOptions(
-            svgAsset = options.svgAsset,
-            size = Size(options.width.roundToInt(), options.height.roundToInt()),
-            iconWidth = options.iconWidth,
-            sdkContext = sdkContext,
-            callback = callback
-        )
-    }
 
     override fun addMarker(
         marker: MarkerMessage,

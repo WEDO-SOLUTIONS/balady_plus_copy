@@ -149,29 +149,6 @@ class ObjectTapHandler(
         }
     }
 
-    fun setMarkerOptions(
-        svgAsset: String,
-        size: Size,
-        iconWidth: Double,
-        sdkContext: Context,
-        callback: (Result<Unit>) -> Unit
-    ) {
-        try {
-            val asset =
-                FlutterInjector
-                    .instance()
-                    .flutterLoader()
-                    .getLookupKeyForAsset(svgAsset)
-
-            markerImage = imageFromAsset(sdkContext, asset, size)
-            this.iconWidth = LogicalPixel(iconWidth.toFloat())
-
-            callback(Result.success(Unit))
-        } catch (e: FileNotFoundException) {
-            callback(Result.failure(e))
-        }
-    }
-
     /// --- HELPERS ---
     private fun getManager(managerId: String?): MapObjectManager {
         if (managerId != null && managers[managerId] != null) {
@@ -249,11 +226,9 @@ class ObjectTapHandler(
             if (svgPath != null) {
                 markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
             }
-            // Проверка и создание изображения из pngPath
             else if (pngPath != null) {
                 markerImage = getImageFromAsset(pngPath, Size(iconOptions.width.toInt(),iconOptions.width.toInt()), callback)
             }
-            // Проверка и создание изображения из pngData
             else if (pngData != null) {
 
                 val data = pngData
@@ -310,11 +285,9 @@ class ObjectTapHandler(
             if (svgPath != null) {
                 markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
             }
-            // Проверка и создание изображения из pngPath
             else if (pngPath != null) {
                 markerImage = getImageFromAsset(pngPath, Size(iconOptions.width.toInt(),iconOptions.width.toInt()), callback)
             }
-            // Проверка и создание изображения из pngData
             else if (pngData != null) {
                 val data = pngData
                 markerImage = getImageFromBytes(data, iconOptions.width.toInt())
