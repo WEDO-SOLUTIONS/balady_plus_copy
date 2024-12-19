@@ -12,7 +12,7 @@ import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -88,7 +88,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
       height: widget.height,
       isDashboard: widget.isDashboard,
       itemScrollController: widget.itemScrollController,
-      onFavouritesBookmarkTap: () => CommonFunctions.authAndOpen(
+      onFavouritesBookmarkTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
         context,
         callback: () {
           if (!mounted) {

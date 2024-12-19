@@ -8,18 +8,18 @@ import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/widgets/poi_favorite_dialog_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
 class PoiFavoriteDialog extends ConsumerStatefulWidget {
+  final FavouriteItem favItem;
+
   const PoiFavoriteDialog({
     required this.favItem,
     super.key,
   });
-
-  final FavouriteItem favItem;
 
   @override
   ConsumerState<PoiFavoriteDialog> createState() => _PoiFavoriteDialogState();
@@ -105,7 +105,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   }
 
   Future<void> _onFavTap(bool isFavourite) async {
-    await CommonFunctions.authOrOpen(
+    await ref.read(authMethodsProvider.notifier).authOrOpen(
       context,
       callback: () {
         final favNotifier = ref.read(favouriteCacheProvider.notifier);
