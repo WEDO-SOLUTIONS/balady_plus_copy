@@ -31,11 +31,20 @@ class IndoorControlHandler(
     init {
         focusedBuildingChannel = indoorManager.focusedBuildingChannel.connect { building ->
             focusedBuilding = building
-            val levels = building?.levels?.map { it.name } ?: emptyList()
+            if (building == null) {
+                eventSink.success(
+                    mapOf(
+                        "event" to Events.hideLevels.name,
+                    )
+                )
+                return@connect
+            }
+            val levels = building.levels.map { it.name }
             eventSink.success(
                 mapOf(
                     "event" to Events.levelNames.name,
-                    "value" to levels
+                    "value" to levels,
+                    "objectId" to building.id.objectId
                 )
             )
         }
@@ -52,6 +61,7 @@ class IndoorControlHandler(
     companion object {
         private enum class Events {
             levelNames,
+            hideLevels,
             activeLevelIndex,
         }
     }

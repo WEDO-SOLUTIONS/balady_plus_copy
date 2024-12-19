@@ -139,7 +139,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           safeAreaColor: context.colorsV2.backgroundScreen,
           backgroundColor: context.colorsV2.backgroundSurface4,
           backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
-          outside: PoiCardMapControlsWrapper(bottomSheetController: _bottomSheetController),
+          outside: PoiCardMapControlsWrapper(
+              bottomSheetController: _bottomSheetController,
+              // we should not use objectIdForIndoorLevels if POI has levelId
+              objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : objectId),
           topHeader: PoiPhotosHeader(objectId: objectId),
           footer: PoiCardFooter(
             data: data,
