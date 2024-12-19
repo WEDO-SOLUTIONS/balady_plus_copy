@@ -43,7 +43,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final hasError = entityState.hasError || feedbackState.hasError;
     if (hasError) {
-      return ErrorSheet(
+      return ErrorSheetWidget(
         onRetry: feedbackNotifier.submitFeedback,
         buttonLabel: context.l10n.tryAgain,
       );

@@ -336,38 +336,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           favRepo.addItem(data.mapToFavourite());
         } else {
           /// show dialog to choose home, work or regular
-          _showDialog(context, favItem);
+          context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
         }
       },
-    );
-  }
-
-  Future<void> _showDialog(
-    BuildContext context,
-    FavouriteItem newFavourite,
-  ) async {
-    await showDialog(
-      context: context,
-      builder: (contextDialog) => ProviderScope(
-        child: Theme(
-          data: Theme.of(context),
-          child: MediaQuery(
-            data: MediaQuery.of(context),
-            child: Directionality(
-              textDirection: Directionality.of(context),
-              child: Localizations.override(
-                context: context,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: PoiFavoriteDialog(
-                    favItem: newFavourite,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

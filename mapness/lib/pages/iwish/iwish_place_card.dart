@@ -48,7 +48,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
       children: [
         MapControls(bottomExtent: controlsBottomExtent),
         entity.when(
-          error: (_, __) => ErrorSheet(
+          error: (_, __) => ErrorSheetWidget(
             onRetry: entityNotifier.refresh,
             buttonLabel: context.l10n.tryAgain,
           ),
