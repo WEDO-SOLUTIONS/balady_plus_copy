@@ -7,17 +7,20 @@ import 'package:mapness/shared/providers/map/indoor_levels.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
 class IndoorControl extends ConsumerWidget {
-  const IndoorControl({super.key});
+  const IndoorControl({super.key, this.objectId});
+
+  final int? objectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final indoorState = ref.watch(indoorLevelsProvider);
+    final indoorLevels = indoorLevelsProvider(objectId: objectId);
+    final indoorState = ref.watch(indoorLevels);
 
     return indoorState == null
         ? const SizedBox.shrink()
         : _IndoorControl(
             state: indoorState,
-            onSelect: (level) => ref.read(indoorLevelsProvider.notifier).selectLevel(level),
+            onSelect: (level) => ref.read(indoorLevels.notifier).selectLevel(level),
           );
   }
 }
