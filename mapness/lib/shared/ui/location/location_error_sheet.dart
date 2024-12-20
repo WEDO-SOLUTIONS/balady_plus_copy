@@ -54,6 +54,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
         context.router.popForced(result);
       } else {
         unawaited(context.router.navigate(const BottomMenuRoute()));
+        CommonFunctions.locationDialogShowed = false;
       }
     }
   }
@@ -77,7 +78,12 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                         context.router.popForced(widget.routeOnClose);
                       }
                     : () {
-                        context.router.popForced();
+                        if (context.router.stack.length != 1) {
+                          context.router.popForced();
+                        } else {
+                          context.router.navigate(const BottomMenuRoute());
+                          CommonFunctions.locationDialogShowed = false;
+                        }
                       },
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
