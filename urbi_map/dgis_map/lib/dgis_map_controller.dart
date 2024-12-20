@@ -228,7 +228,7 @@ class DgisMapController {
 
   /// Set panorama marker to follow user's sight on 360° panorama.
   Future<void> setPanoramaMarkerAzimuth(double degree) =>
-      _instance.setPanoramaMarkerAzimuth(MarkerAzimuthMessage(degree: degree));
+      _instance.setPanoramaMarkerAzimuth(MapDirectionMessage(degree: degree));
 
   /// Returns directory object info by it's id.
   Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId) => _instance.searchByObjectId(objectId);

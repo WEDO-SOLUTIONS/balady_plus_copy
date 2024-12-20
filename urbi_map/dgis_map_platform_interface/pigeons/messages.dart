@@ -607,8 +607,10 @@ class CameraSetPaddingMessage {
   final int bottomPadding;
 }
 
-class MarkerAzimuthMessage {
-  MarkerAzimuthMessage(this.degree);
+/// The angle of rotation of the object relative to the direction north,
+/// in degrees, is counted clockwise.
+class MapDirectionMessage {
+  const MapDirectionMessage(this.degree);
 
   final double degree;
 }
@@ -678,7 +680,7 @@ class MarkerIconMessage {
   final String? pngPath;
   final double width;
   final double? iconOpacity;
-  final MarkerAzimuthMessage? iconMapDirection;
+  final MapDirectionMessage? iconMapDirection;
 }
 
 /// Marker parameters.
@@ -1579,7 +1581,7 @@ abstract class MapApi {
   void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
 
   @async
-  void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
+  void setPanoramaMarkerAzimuth(MapDirectionMessage message);
 
   @async
   void onCompassClicked();

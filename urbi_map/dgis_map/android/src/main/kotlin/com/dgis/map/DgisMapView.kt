@@ -856,7 +856,7 @@ class DgisMapView(
     }
 
     override fun setPanoramaMarkerAzimuth(
-        message: MarkerAzimuthMessage,
+        message: MapDirectionMessage,
         callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.setPanoramasAzimuth(message.degree)

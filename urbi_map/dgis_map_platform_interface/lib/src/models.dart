@@ -81,7 +81,7 @@ class SimpleClusterObject {
   final String text;
   final MarkerTextStyleMessage? textStyle;
   final double iconWidth;
-  final MarkerAzimuthMessage? iconMapDirection;
+  final MapDirectionMessage? iconMapDirection;
 
   /// Sets cluster icon. Should be called only inside onTap handler
   void setIcon(String icon) async {
