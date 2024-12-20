@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 part 'widgets/routing_favourites_button.dart';
@@ -25,7 +25,7 @@ class RoutingFavourites extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final onFavouritesTap = () async {
       if (showBookmark) {
-        await CommonFunctions.authAndOpen(
+        await ref.read(authMethodsProvider.notifier).authAndOpen(
           context,
           callback: () async {
             final result = await context.router.push(const FavouritesPickerRoute());
@@ -42,7 +42,7 @@ class RoutingFavourites extends ConsumerWidget {
       final favouritesState = await ref.read(favouriteCacheProvider.future);
       final home = favouritesState.home;
       if (home == null) {
-        await CommonFunctions.authAndOpen(
+        await ref.read(authMethodsProvider.notifier).authAndOpen(
           context,
           callback: () async {
             final favouritesState = await ref.read(favouriteCacheProvider.future);
@@ -66,7 +66,7 @@ class RoutingFavourites extends ConsumerWidget {
       final favouritesState = await ref.read(favouriteCacheProvider.future);
       final work = favouritesState.work;
       if (work == null) {
-        await CommonFunctions.authAndOpen(
+        await ref.read(authMethodsProvider.notifier).authAndOpen(
           context,
           callback: () async {
             final favouritesState = await ref.read(favouriteCacheProvider.future);

@@ -55,6 +55,10 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             makeZoomOutButton(),
             makeMyLocationButton()
         ]
+        
+        mapTemplate.trailingNavigationBarButtons = [
+            makePanHeaderButton()
+        ]
 
         self.interfaceController?.setRootTemplate(mapTemplate, animated: true, completion: nil)
     }
@@ -120,6 +124,45 @@ extension FlutterCarPlaySceneDelegate {
         button.isEnabled = true
         button.image = UIImage(named: "FollowOn")!.withRenderingMode(.alwaysOriginal)
         button.focusedImage = UIImage(named: "FollowOn")!.withRenderingMode(.alwaysOriginal)
+        
+        return button
+    }
+    
+    func makeAcceptHeaderButton() -> CPBarButton {
+        let button = CPBarButton(title: "Accept") { _ in
+            FlutterCarPlaySceneDelegate.mapTemplate?.dismissPanningInterface(animated: true)
+            FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
+                self.makePanHeaderButton()
+            ]
+            FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = []
+        }
+        button.isEnabled = true
+        
+        return button
+    }
+    
+    func makePanHeaderButton() -> CPBarButton {
+        let image = UIImage(named: "Pan")!.withRenderingMode(.alwaysOriginal)
+        let button = CPBarButton(image: image) { _ in
+            FlutterCarPlaySceneDelegate.mapTemplate?.showPanningInterface(animated: true)
+            FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
+                self.makeMyLocationHeaderButton()
+            ]
+            FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = [
+                self.makeAcceptHeaderButton()
+            ]
+        }
+        button.isEnabled = true
+        
+        return button
+    }
+    
+    func makeMyLocationHeaderButton() -> CPBarButton {
+        let image = UIImage(named: "MyLocation")!.withRenderingMode(.alwaysOriginal)
+        let button = CPBarButton(image: image) { _ in
+            FlutterCarPlaySceneDelegate.mapView?.myLocation()
+        }
+        button.isEnabled = true
         
         return button
     }

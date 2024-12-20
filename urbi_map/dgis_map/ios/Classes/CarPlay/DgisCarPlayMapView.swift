@@ -124,7 +124,29 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     }
     
     func mapTemplate(_ mapTemplate: CPMapTemplate, panWith direction: CPMapTemplate.PanDirection) {
-        print("panWith \(direction)")
+        let shiftedPoint = ScreenPoint(x: 0.5, y: 0.5)
+        
+        var screenShift = ScreenShift(dx: 0, dy: 0)
+        if direction == .left {
+            screenShift = ScreenShift(dx: -5, dy: 0)
+        }
+        else if direction == .right {
+            screenShift = ScreenShift(dx: 5, dy: 0 )
+        }
+        else if direction == .up {
+            screenShift = ScreenShift(dx: 0, dy: -5)
+        }
+        else if direction == .down {
+            screenShift = ScreenShift(dx: 0, dy: 5)
+        }
+        
+        self.eventProcessor!.process(
+            event: DirectMapShiftEvent(
+                screenShift: screenShift,
+                shiftedPoint: shiftedPoint,
+                timestamp: TimeInterval(CACurrentMediaTime())
+            )
+        )
     }
     
     func mapTemplate(_ mapTemplate: CPMapTemplate, didUpdatePanGestureWithTranslation translation: CGPoint, velocity: CGPoint) {

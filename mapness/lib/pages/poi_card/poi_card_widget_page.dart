@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -30,14 +31,13 @@ import 'package:mapness/features/poi_card/widgets/info_widget.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
-import 'package:mapness/features/poi_card/widgets/poi_favorite_dialog.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -49,6 +49,7 @@ import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 part 'poi_card_content.dart';
+
 part 'poi_card_wrapper.dart';
 
 @RoutePage()

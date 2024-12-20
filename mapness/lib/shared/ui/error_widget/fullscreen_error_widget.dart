@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 
 class FullscreenErrorWidget extends StatelessWidget {
   const FullscreenErrorWidget({

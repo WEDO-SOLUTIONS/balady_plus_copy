@@ -660,22 +660,13 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     // MARK: Marker
-    func setMarkerOptions(options: MarkerOptionsMessageOld, completion: @escaping (Result<Void, any Error>) -> Void) {
-        let assetKey = registrar.lookupKey(forAsset: options.svgAsset)
-        
-        self.objectTapHandler?.setMarkerOptions(
-            assetKey: assetKey,
-            svgSize: CGSize(
-                width: options.width,
-                height: options.height
-            ),
-            iconWidth: Float(options.iconWidth),
-            completion: completion
-        )
-    }
     
     func addMarker(marker: MarkerMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectTapHandler?.addMarker(marker, to: manager?.id, completion: completion)
+    }
+    
+    func setMarkerOptions(id: String, options: ChangeMarkerOptionsMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.setMarkerOptions(id, options: options, completion: completion)
     }
 
     func addMarkers( markers: [MarkerMessage], manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {

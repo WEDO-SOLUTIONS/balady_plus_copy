@@ -123,11 +123,12 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
   Widget build(BuildContext ctx) {
     final asyncState = ref.watch(favouriteCacheProvider);
     return asyncState.map(
-      error: (error) => ErrorSheet(
+      error: (error) => ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
         onRetry: () {
           ref.invalidate(favouriteCacheProvider);
         },
+        onClose: (_) => context.router.popForced(),
       ),
       loading: (_) => Material(
         color: ctx.color.surfaceBasePrimary,

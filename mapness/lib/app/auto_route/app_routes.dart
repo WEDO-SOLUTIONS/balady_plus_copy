@@ -182,6 +182,16 @@ class AppRouter extends RootStackRouter {
               page: AppFeedbackInputSheet.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
+            CustomRoute(
+              path: 'poi_favorite_dialog',
+              page: PoiFavoriteDialogRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'error_sheet_dialog',
+              page: ErrorSheetDialogRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
           ],
         ),
         ...Routes.upperRoutesMap,
