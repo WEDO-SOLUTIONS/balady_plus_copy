@@ -56,12 +56,6 @@ class TrafficAndParkingControlHandler {
                 "score": trafficState.score ?? 0
             ])
         })
-        
-        self.eventChannel.success([
-            "event": Events.trafficStateChanged,
-            "status":  self.trafficControlModel.state.status.rawValue,
-            "score": self.trafficControlModel.state.score ?? 0
-        ])
     }
     
     func enableRoadEvents() {

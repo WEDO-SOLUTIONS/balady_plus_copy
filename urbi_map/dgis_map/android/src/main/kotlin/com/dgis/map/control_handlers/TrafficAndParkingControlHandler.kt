@@ -52,7 +52,6 @@ class TrafficAndParkingControlHandler(
                 )
             }
         }
-
         closeables += trafficControlModel.stateChannel.connect {
             when (it.status) {
                 TrafficControlStatus.ENABLED -> enableRoadEvents()
@@ -67,14 +66,6 @@ class TrafficAndParkingControlHandler(
                     )
             )
         }
-
-        eventSink.success(
-            mapOf(
-                "event" to Companion.Events.trafficStateChanged.name,
-                "status" to trafficControlModel.state.status.value,
-                "score" to (trafficControlModel.state.score ?: 0),
-            )
-        )
     }
 
     private fun enableRoadEvents() {
