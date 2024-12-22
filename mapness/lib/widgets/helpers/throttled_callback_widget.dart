@@ -23,8 +23,7 @@ class _ThrottledCallbackWidgetState extends State<ThrottledCallbackWidget> {
   Widget build(BuildContext context) => widget.builder(context, _callback);
 
   void _callback() {
-    if (_lastCall != null &&
-        DateTime.now().difference(_lastCall!).inMilliseconds < widget.throttleDuration.inMilliseconds) {
+    if (_lastCall != null && DateTime.now().difference(_lastCall!) < widget.throttleDuration) {
       return;
     }
 
