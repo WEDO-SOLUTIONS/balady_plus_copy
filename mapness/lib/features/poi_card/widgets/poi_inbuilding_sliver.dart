@@ -144,26 +144,28 @@ class OrganizationWidget extends StatelessWidget {
         shape: smoothBorder(RadiusBorder.xl),
         color: context.color.surfaceBasePrimary,
         child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-            child: ContentRow(
-              onTap: () {
-                final itemId = item.id;
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+          child: ContentRow(
+            onTap: () {
+              final itemId = item.id;
 
-                if (itemId == null) {
-                  return;
-                }
+              if (itemId == null) {
+                return;
+              }
 
-                final id = int.tryParse(itemId);
-                if (id == null) {
-                  return;
-                }
-                onTap?.call(id);
-              },
-              options: ContentRowOptions(
-                title: item.title,
-                subtitle: item.rubricsNames,
-                subtitleExtra: item.addressComment,
-              ),
-            )),
+              final id = int.tryParse(itemId);
+              if (id == null) {
+                return;
+              }
+              onTap?.call(id);
+            },
+            options: ContentRowOptions(
+              title: item.title,
+              subtitle: item.rubricsNames,
+              subtitleExtra: item.addressComment,
+              titleStyle: context.textStyleV3.bodyLargeSemiBold,
+            ),
+          ),
+        ),
       );
 }

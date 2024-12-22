@@ -1,7 +1,8 @@
 part of 'poi_card_widget_page.dart';
 
 const _titleHorizontalPadding = 84.0;
-const _headerHegihtWithoutTitle = 205;
+const _headerHegihtWithoutTitle = 170.0;
+const _minBottomPadding = 16.0;
 
 class _PoiCardContent extends ConsumerStatefulWidget {
   final DirectoryObjectMessage data;
@@ -60,7 +61,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
         maxWidth: width,
       );
 
-    return _headerHegihtWithoutTitle + painter.height;
+    final bottomPadding = max(_minBottomPadding, MediaQuery.paddingOf(context).bottom);
+
+    return _headerHegihtWithoutTitle + painter.height + bottomPadding;
   }
 
   @override
@@ -136,7 +139,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           safeAreaColor: context.colorsV2.backgroundScreen,
           backgroundColor: context.colorsV2.backgroundSurface4,
           backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
-          outside: PoiCardMapControlsWrapper(bottomSheetController: _bottomSheetController),
+          outside: PoiCardMapControlsWrapper(
+              bottomSheetController: _bottomSheetController,
+              // we should not use objectIdForIndoorLevels if POI has levelId
+              objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : objectId),
           topHeader: PoiPhotosHeader(objectId: objectId),
           footer: PoiCardFooter(
             data: data,
@@ -283,7 +289,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     required DirectoryObjectMessage data,
     FavouriteItem? favouriteItem,
   }) async {
-    await CommonFunctions.authOrOpen(
+    await ref.read(authMethodsProvider.notifier).authOrOpen(
       context,
       callback: () {
         Metrics.logEventAdvanced(
@@ -330,38 +336,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           favRepo.addItem(data.mapToFavourite());
         } else {
           /// show dialog to choose home, work or regular
-          _showDialog(context, favItem);
+          context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
         }
       },
-    );
-  }
-
-  Future<void> _showDialog(
-    BuildContext context,
-    FavouriteItem newFavourite,
-  ) async {
-    await showDialog(
-      context: context,
-      builder: (contextDialog) => ProviderScope(
-        child: Theme(
-          data: Theme.of(context),
-          child: MediaQuery(
-            data: MediaQuery.of(context),
-            child: Directionality(
-              textDirection: Directionality.of(context),
-              child: Localizations.override(
-                context: context,
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: PoiFavoriteDialog(
-                    favItem: newFavourite,
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

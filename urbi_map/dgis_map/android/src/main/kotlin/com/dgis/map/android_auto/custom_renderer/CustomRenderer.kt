@@ -65,7 +65,7 @@ class CustomRenderer {
             setShadowLayer(2f, 0f, 0f, Color.parseColor("#12000000"))
         }
         val centerX = canvas.width - 120f
-        val centerY = canvas.height - 46f
+        val centerY = canvas.height - 51f
         canvas.drawCircle(centerX, centerY, 36f, paint)
         paint.apply {
             color = Color.WHITE
@@ -84,8 +84,8 @@ class CustomRenderer {
     }
 
     private fun drawSpeedLimit(speedLimit: Int, exceeded: Boolean, canvas: Canvas) {
-        val centerX = canvas.width - 169f
-        val centerY = canvas.height - 46f
+        val centerX = canvas.width - 173f
+        val centerY = canvas.height - 45f
         if (exceeded) {
             paint.apply {
                 color = Color.RED

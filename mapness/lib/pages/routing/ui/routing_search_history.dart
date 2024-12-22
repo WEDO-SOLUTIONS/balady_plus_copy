@@ -12,16 +12,16 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/routing/ui/routing_favourites.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/widgets/routing/ui/search_action.dart';
 
 class RoutingSearchHistory extends ConsumerWidget {
+  final bool showMyLocation;
+
   const RoutingSearchHistory({
     required this.showMyLocation,
     super.key,
   });
-
-  final bool showMyLocation;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -69,7 +69,7 @@ class RoutingSearchHistory extends ConsumerWidget {
                 text: ContentRowTextOptions(
                   title: context.l10n.findInFavorites,
                 ),
-                onTap: () => _onFavouriteTap(context),
+                onTap: () => _onFavouriteTap(context, ref),
               ),
             ],
           ),
@@ -95,8 +95,8 @@ class RoutingSearchHistory extends ConsumerWidget {
     }
   }
 
-  Future<void> _onFavouriteTap(BuildContext context) async {
-    await CommonFunctions.authOrOpen(
+  Future<void> _onFavouriteTap(BuildContext context, WidgetRef ref) async {
+    await ref.read(authMethodsProvider.notifier).authOrOpen(
       context,
       callback: () async {
         if (context.mounted) {

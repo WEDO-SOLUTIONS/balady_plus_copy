@@ -316,15 +316,12 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     _appLinks = AppLinks();
 
     final appLink = await _appLinks.getInitialLink();
-    if (appLink != null) {
-      await openAppLink(appLink, isFirstRun: true);
-    }
 
     _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
       if (kDebugMode) {
         print('_linkSubscription $uri');
       }
-      openAppLink(uri);
+      openAppLink(uri, isFirstRun: appLink != null);
     });
   }
 

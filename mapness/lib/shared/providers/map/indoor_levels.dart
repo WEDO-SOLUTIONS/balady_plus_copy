@@ -22,13 +22,15 @@ class LevelsState {
       );
 }
 
+/// Provider of indoor levels information. If [objectId] is passed, provider will handle [IndoorLevelsEvent] with this [objectId] only
 @riverpod
 class IndoorLevels extends _$IndoorLevels {
   StreamSubscription? _levelsSubscription;
   StreamSubscription? _indexSubscription;
+  StreamSubscription? _hideLevelsSubscription;
 
   @override
-  LevelsState? build() {
+  LevelsState? build({int? objectId}) {
     final dgisController = ref.watch(dgisControllerProvider);
 
     _cancelSubscriptions();
@@ -37,7 +39,9 @@ class IndoorLevels extends _$IndoorLevels {
     final lastIndoorLevelNames = dgisController.value?.lastIndoorLevelNames;
     final lastIndoorActiveLevel = dgisController.value?.lastIndoorActiveLevel;
 
-    state = lastIndoorLevelNames != null && lastIndoorActiveLevel != null
+    state = lastIndoorLevelNames != null &&
+            lastIndoorActiveLevel != null &&
+            (objectId == null || lastIndoorLevelNames.objectId == objectId)
         ? LevelsState(
             lastIndoorLevelNames.levelNames,
             lastIndoorActiveLevel.index,
@@ -61,9 +65,7 @@ class IndoorLevels extends _$IndoorLevels {
   }
 
   void _levelsListener(IndoorLevelsEvent event) {
-    if (event.levelNames.isEmpty) {
-      state = null;
-    } else {
+    if (objectId == null || objectId == event.objectId) {
       state = state?.copyWith(levels: event.levelNames) ?? LevelsState(event.levelNames, 0);
     }
   }
@@ -71,6 +73,7 @@ class IndoorLevels extends _$IndoorLevels {
   Future<void> _subscribeToStreams(AsyncValue<DgisMapController> dgisController) async {
     _levelsSubscription = dgisController.value?.indoorLevelNames.listen(_levelsListener);
     _indexSubscription = dgisController.value?.indoorActiveIndex.listen(_indexListener);
+    _hideLevelsSubscription = dgisController.value?.hideIndoorLevels.listen((_) => state = null);
   }
 
   void _cancelSubscriptions() {
@@ -78,5 +81,7 @@ class IndoorLevels extends _$IndoorLevels {
     _levelsSubscription = null;
     _indexSubscription?.cancel();
     _indexSubscription = null;
+    _hideLevelsSubscription?.cancel();
+    _hideLevelsSubscription = null;
   }
 }

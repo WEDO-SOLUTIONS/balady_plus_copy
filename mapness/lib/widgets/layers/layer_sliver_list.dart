@@ -8,7 +8,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart' as layers_state;
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 
 class LayerSliverList extends ConsumerWidget {
   final List<layers_state.LayerType> layerType;
@@ -41,7 +41,7 @@ class LayerSliverList extends ConsumerWidget {
             ref.read(searchByRubricsQueryProvider.notifier).update(null);
 
             if (value == layers_state.LayerType.favourites) {
-              await CommonFunctions.authOrOpen(
+              await ref.read(authMethodsProvider.notifier).authOrOpen(
                 context,
                 callback: () async {
                   watch.handleTap(value);
@@ -67,10 +67,7 @@ class LayerSliverList extends ConsumerWidget {
             title: value.titleLocale(context.l10n),
             customActionWidget: value == layers_state.LayerType.parkingLots
                 ? GestureDetector(
-                    onTap: () {
-                      tapOnParkingLotsMenu();
-                      watch.showParking();
-                    },
+                    onTap: tapOnParkingLotsMenu,
                     child: Container(
                       height: _iconDefaultSize + Spacing.$3x * 2,
                       width: _iconDefaultSize + Spacing.$4x * 2,

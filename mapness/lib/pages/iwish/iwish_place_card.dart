@@ -14,7 +14,7 @@ import 'package:mapness/features/iwish/providers/iwish_distance.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/routing/ui/brief_route_widgets.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
@@ -25,9 +25,13 @@ import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 
 @RoutePage()
 class IwishPlaceCardPage extends ConsumerWidget {
-  const IwishPlaceCardPage({required this.iwishId, super.key});
-
   final String iwishId;
+
+  const IwishPlaceCardPage({
+    required this.iwishId,
+    super.key,
+  });
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     const double minSizeInPhoto = 0.45;
@@ -44,7 +48,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
       children: [
         MapControls(bottomExtent: controlsBottomExtent),
         entity.when(
-          error: (_, __) => ErrorSheet(
+          error: (_, __) => ErrorSheetWidget(
             onRetry: entityNotifier.refresh,
             buttonLabel: context.l10n.tryAgain,
           ),
@@ -126,7 +130,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
                                               horizontal: 9,
                                             ),
                                             onPressed: () async {
-                                              await CommonFunctions.authOrOpen(
+                                              await ref.read(authMethodsProvider.notifier).authOrOpen(
                                                 context,
                                                 callback: () {
                                                   context.router.push(

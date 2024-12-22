@@ -45,31 +45,63 @@ class FeedbackTextInput extends StatefulWidget {
 
 class _FeedbackTextInputState extends State<FeedbackTextInput> {
   late final TextEditingController _controller;
-  bool _isForceLtr = false;
+  late final FocusNode _focusNode;
+
+  // TODO(ilyasov): Temporary fix, need to remove it after implementing custom form field
+  final _globalKey = GlobalKey<FormFieldState<String>>();
+
+  final _inputErrorState = ValueNotifier<bool>(false);
+  var _isForceLtr = false;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
 
-    _controller.addListener(() {
-      // This is a hack, because the phone number formatter doesn't work well with the text direction
+    _focusNode = FocusNode();
 
-      if (widget.type == FeedbackTextType.phone) {
-        final isTextNotEmpty = _controller.text.isNotEmpty;
-        if (_isForceLtr != isTextNotEmpty) {
-          setState(() {
-            _isForceLtr = isTextNotEmpty;
-          });
-        }
-      }
-    });
+    _controller.addListener(_controllerListener);
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _inputErrorState.dispose();
+    _focusNode.dispose();
+    _controller.removeListener(_controllerListener);
     super.dispose();
+  }
+
+  void _controllerListener() {
+    // This is a hack, because the phone number formatter doesn't work well with the text direction
+
+    if (widget.type == FeedbackTextType.phone) {
+      final isTextNotEmpty = _controller.text.isNotEmpty;
+      if (_isForceLtr != isTextNotEmpty) {
+        setState(() {
+          _isForceLtr = isTextNotEmpty;
+        });
+      }
+    }
+  }
+
+  String? _onValidate(String? value) {
+    if (_focusNode.hasFocus) {
+      return null;
+    }
+    final result = widget.onValidate?.call(value);
+    _inputErrorState.value = result != null;
+    return result;
+  }
+
+  void _onChanged(String value) {
+    if (_globalKey.currentState?.hasError ?? false) {
+      _globalKey.currentState?.validate();
+    }
+    var formattedValue = value;
+    if (widget.type == FeedbackTextType.phone) {
+      formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
+    }
+    widget.onChanged?.call(formattedValue);
   }
 
   @override
@@ -94,23 +126,20 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         Directionality(
           textDirection: direction,
           child: BaladyInput(
+            stateKey: _globalKey,
             controller: _controller,
+            focusNode: _focusNode,
             hintText: widget.hintText,
             fillColor: context.colorsV2.backgroundSurface1,
-            onValidate: widget.onValidate,
+            onValidate: _onValidate,
+            autovalidateMode: AutovalidateMode.onUnfocus,
             allowedInputPattern: widget.allowedInputPattern,
             isRequired: widget.isRequired,
             maxLength: widget.maxLength,
             maxLines: widget.maxLines,
             keyboardType: widget.keyboardType,
             suffixIcon: widget.type == FeedbackTextType.phone ? const SizedBox.shrink() : null,
-            onChanged: (value) {
-              var formattedValue = value;
-              if (widget.type == FeedbackTextType.phone) {
-                formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
-              }
-              widget.onChanged?.call(formattedValue);
-            },
+            onChanged: _onChanged,
             inputFormatters: [
               if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
             ],

@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 
 /// We use this method to throw away the part of the organization description that contains
 /// additional information that is not necessary on the map next to the marker
@@ -190,6 +191,8 @@ extension BigIconPath on String {
     'ic_wc.svg',
     'ic_tooth.svg',
     'ic_school_ltr.svg',
+    'ic_recreation.svg',
+    'ic_shopping.svg',
   ];
 
   String? get bigIconPath {
@@ -199,7 +202,7 @@ extension BigIconPath on String {
 
       return path;
     } else {
-      return null;
+      return Markers.defaultPin;
     }
   }
 }
