@@ -18,7 +18,6 @@ class Auth extends _$Auth {
     Metrics.logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
-    await ref.read(authMethodsProvider.notifier).cancelAuthSubscription();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: doAuth');
   }
@@ -52,10 +51,12 @@ class Auth extends _$Auth {
     }
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
+      print('fdskfks: $event');
       state = AsyncValue.data(event.userInfo);
       ref
         ..invalidate(favouriteCacheProvider)
-        ..invalidate(profileImageProvider);
+        ..invalidate(profileImageProvider)
+        ..invalidate(authMethodsProvider);
     });
     ref.onDispose(authSubscription.cancel);
 
