@@ -51,7 +51,6 @@ class Auth extends _$Auth {
     }
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
-      print('fdskfks: $event');
       state = AsyncValue.data(event.userInfo);
       ref
         ..invalidate(favouriteCacheProvider)
