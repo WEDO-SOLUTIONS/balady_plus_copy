@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/toast/toast_localization.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 
 part 'toast_transition.dart';
 
@@ -33,6 +33,8 @@ class ToastOverlay extends StatefulWidget {
 }
 
 class ToastOverlayState extends State<ToastOverlay> {
+  static const _betaNotificationTitleKey = 'beta_notification';
+
   OverlayEntry? _overlayEntry;
 
   /// Displays a toast overlay with the specified [title], [actionText], and [onActionTap] callback.
@@ -172,14 +174,14 @@ class ToastOverlayState extends State<ToastOverlay> {
   /// ```
   void showBetaNotification() {
     show(
-      title: 'beta_notification',
+      title: _betaNotificationTitleKey,
       titleStyle: context.textStyleV3.captionLargeRegular.copyWith(fontSize: context.isLTR ? 12 : 13),
       isDismissible: true,
       isClosable: true,
       isFlipped: true,
       iconData: General16Icons.infoCircleFill,
       iconColor: context.colorsV2.accentDefault,
-      displayDuration: const Duration(seconds: 20),
+      displayDuration: const Duration(seconds: 200),
     );
   }
 

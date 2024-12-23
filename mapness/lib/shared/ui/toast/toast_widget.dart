@@ -49,7 +49,7 @@ class _ToastWidget extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    _getTitle(l10n: ref.watch(toastLocaleProvider), title: title),
+                    _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
                     style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
                   ),
                   if (hasAction)
