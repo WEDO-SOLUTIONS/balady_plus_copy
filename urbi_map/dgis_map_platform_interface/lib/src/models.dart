@@ -73,18 +73,36 @@ class SimpleClusterObject {
 
   final String _id;
   final MapApi _api;
+
+  /// Position of the object
   final GeoPointWithElevationMessage position;
+
+  /// Number of objects in the cluster
   final int objectCount;
+
+  /// List of markers in the cluster
   final List<String> markers;
+
+  /// Anchor of the cluster
   final MarkerAnchorMessage anchor;
+
+  /// Opacity of the cluster icon
   final double iconOpacity;
+
+  /// Text of the cluster icon
   final String text;
+
+  /// Text style of the cluster text
   final MarkerTextStyleMessage? textStyle;
+
+  /// Width of the cluster icon
   final double iconWidth;
+
+  /// Map direction of the cluster icon
   final MapDirectionMessage? iconMapDirection;
 
   /// Sets cluster icon. Should be called only inside onTap handler
-  void setIcon(String icon) async {
+  Future<void> setIcon(String icon) async {
     await _api.setClusterIcon(_id, icon);
   }
 }
