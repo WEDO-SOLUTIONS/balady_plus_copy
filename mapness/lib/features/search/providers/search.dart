@@ -6,6 +6,7 @@ import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/lib/search/language_detector.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -81,6 +82,16 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
+      final dgisController = await ref.read(dgisControllerProvider.future);
+      final currentLang = ref.read(appLanguageProvider).languageCode;
+      final localeOfRequest = LanguageDetector.detectLanguageConLocale(query, currentLang);
+
+      if (localeOfRequest != SearchRequestLang.unknown) {
+        final localeOfRequestStr = localeOfRequest.locale;
+        if (localeOfRequestStr != null) {
+          await dgisController.overrideLocales([localeOfRequestStr]);
+        }
+      }
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -97,7 +108,6 @@ class Search extends _$Search {
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
 
-      final dgisController = await ref.read(dgisControllerProvider.future);
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
 
