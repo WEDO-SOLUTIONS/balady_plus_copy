@@ -75,6 +75,20 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     final bearing = cameraData?.bearing;
     final newPoint = point;
 
+    final cameraPosition = ref.read(cameraPositionProvider.notifier);
+
+    // Normolize camera tilt to calculate the viewports
+    if (cameraData != null && cameraData.tilt != 0) {
+      await cameraPosition.animateTo(
+        CameraPositionMessage(
+          point: cameraData.point,
+          zoom: cameraZoom ?? 17,
+          tilt: 0,
+          bearing: bearing ?? 0,
+        ),
+      );
+    }
+
     // Get viewports: visible (whole screen) and tappable (area of the screen where marker will not overlap on other elements)
     CustomRect? visibleRect;
     final dgisControllerValue = dgisController.valueOrNull;
@@ -117,7 +131,6 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     // c) zoom set to 17 if point is not in view zone or if zoom is not set
     // d) bearing set to 0 if not set
 
-    final cameraPosition = ref.read(cameraPositionProvider.notifier);
     await cameraPosition.animateTo(
       CameraPositionMessage(
         point: cameraPoint,
