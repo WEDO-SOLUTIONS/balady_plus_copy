@@ -29,7 +29,7 @@ on:
 
 jobs:
   check-typos:
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     steps:
       - name: typos-action
         uses: crate-ci/typos@v1.23.1
@@ -39,7 +39,7 @@ jobs:
 
   auto-request-review:
     name: Auto Request Review CODEOWNERS
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -52,7 +52,7 @@ jobs:
   notify-reviewers:
     name: Notify reviewers
     if: ${{ !github.event.pull_request.draft }}
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     needs: auto-request-review
     steps:
       - name: Check out code
@@ -126,7 +126,7 @@ jobs:
           fi
 
   linter:
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     name: Lint flutter code
     steps:
       - name: Checkout code

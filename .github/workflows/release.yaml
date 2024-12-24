@@ -9,7 +9,7 @@ on:
 jobs:
   release:
     name: "Release"
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
