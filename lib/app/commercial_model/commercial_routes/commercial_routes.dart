@@ -160,17 +160,13 @@ class CommercialRoutes {
 
 
 
-
-
     //Commercial approvel export
     CommercialRouteName.LicenseIntialApprovalStartService: (context) => const InitialApprovalStartServicePage(),
 
     CommercialRouteName.CommercialLicenseInitialApprovelScreen: (context) => const CommercialLicenseInitialApprovelScreen(),
     CommercialRouteName.ExportMapScreen: (context) => ExportMapScreen(),
 
-
-
-      CommercialRouteName.IntialApprovalRequestDetailsPage: (context) => const RequestDetailsPage(),
+      CommercialRouteName.IntialApprovalRequestDetailsPage: (context) =>  RequestDetailsPage(),
     CommercialRouteName.LicenseExportStartServicePage: (context) => const LicenseExportStartServicePage(),
 
 

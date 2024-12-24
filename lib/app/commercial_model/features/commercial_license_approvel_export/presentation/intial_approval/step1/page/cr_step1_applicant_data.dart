@@ -113,7 +113,7 @@ class CRStep1ApplicantData extends StatelessWidget {
               ErrorLoadingComponent(
                 message: state.errorMessage,
                 onTryAgain: () =>
-                    context.read<Step1ApplicantDataExportCubit>().getRequestDetails(),
+                    context.read<Step1ApplicantDataExportCubit>().getMainActivites(),
               ),
             if (state.recordStatus.isSubmissionLoading ||
                 state.status.isSubmissionLoading)

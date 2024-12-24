@@ -1,11 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/additional_activity_details_response.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/additional_activity_response.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/sub_activity_details_entity.dart';
 import 'package:equatable/equatable.dart';
 
+import '../../../../../../features/_shared_feature_/data/entities/drop_down_item.dart';
 import 'sub_activity_details_data.dart';
 
 class AddetionalActivityRequest extends Equatable {
@@ -38,4 +36,56 @@ class AddetionalActivityRequest extends Equatable {
 
   @override
   List<Object?> get props => [item];
+}
+
+class AddetionalActivityItemDetails extends DropDownItem {
+  final int? activityId;
+  final String? activityName;
+  final int? isicNumber;
+  final String? isicName;
+  final int? masterActivityId;
+  final String? masterActivityName;
+  final double? maxArea;
+  final double? minArea;
+  final bool? homogeneous;
+
+  AddetionalActivityItemDetails({
+    this.activityId,
+    this.activityName,
+    this.isicNumber,
+    this.isicName,
+    this.masterActivityId,
+    this.masterActivityName,
+    this.maxArea,
+    this.minArea,
+    this.homogeneous,
+  }) : super(
+    id: activityId ?? '',
+    name: isicName ?? '',
+  );
+
+  factory AddetionalActivityItemDetails.fromJson(Map<String, dynamic> json) =>
+      AddetionalActivityItemDetails(
+        activityId: json["activityId"],
+        activityName: json["activityName"],
+        isicNumber: json["isicNumber"],
+        isicName: json["isicName"],
+        masterActivityId: json["masterActivityId"],
+        masterActivityName: json["masterActivityName"],
+        maxArea: json["maxArea"]?.toDouble(),
+        minArea: json["minArea"]?.toDouble(),
+        homogeneous: json["homogeneous"],
+      );
+
+  Map<String, dynamic> toJson() => {
+    "activityId": activityId,
+    "activityName": activityName,
+    "isicNumber": isicNumber,
+    "isicName": isicName,
+    "masterActivityId": masterActivityId,
+    "masterActivityName": masterActivityName,
+    "maxArea": maxArea,
+    "minArea": minArea,
+    "homogeneous": homogeneous,
+  };
 }

@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/record_info_entity.dart';
 
 import 'isics_main_activity.dart';
 

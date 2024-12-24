@@ -17,14 +17,15 @@ import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
 import '../../../../../../../features/_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
+import '../../../../domain/entities/conclusion_section.dart';
 import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 import '../bloc/step3_conclusion_cubit.dart';
 
 
 class Step3ConclusionPage extends StatefulWidget {
-  final List<ActivityTerm>? activityTerms;
 
-  const Step3ConclusionPage({super.key, this.activityTerms});
+
+  const Step3ConclusionPage({super.key});
 
   @override
   State<Step3ConclusionPage> createState() => _Step3ConclusionPageState();
@@ -34,64 +35,68 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
   bool isAgree = false;
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-      child: Container(
-        color: AppColor.scaffoldBackground,
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
 
-              const SizedBox(height: 16),
-              Flexible(
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ListView.builder(
-                          itemCount: widget.activityTerms?.length ?? 0,
-                          shrinkWrap: true,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemBuilder: (ctx, index) {
-                            return Container(
-                              margin: EdgeInsets.only(bottom: 8),
-                              child: ExpansionSectionItem(
-                                term: widget.activityTerms![index],
-                              ),
-                            );
-                          }),
-                      FormPledgesSummuryWidget(
-                          title: "cr_consent_conditions_title".tr(),
-                          consent: "cr_consent_conditions_desc".tr(),
-                          consentcheck: "cr_consent_conditions_check".tr(),
-                          currentValue: isAgree,
-                          onChanged: (val) {
-                            setState(() {
-                              isAgree = val;
-                            });
-                          }),
-                      const CustomVerticalSpace(height: 16),
+    context.read<Step3ConclusionCubit>().getConclusion();
 
 
-                      IntialApprovalPreviousNextButtons(
+    return BlocConsumer<Step3ConclusionCubit, Step3ConclusionState>(
+        listener: (context, state) {
 
-                        onPressed: () {
-                          context.read<Step3ConclusionCubit>()
-                              .SubmitInitialApproval();
-                        }, isBtnDisabled: false,
-                      ),
+        }, builder: (context, state) {
+      return GestureDetector(
+          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+          child: Container(
+            color: AppColor.scaffoldBackground,
+            padding: EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                const SizedBox(height: 16),
+                Flexible(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(state.issueCommercialConculsionEntity?.requestFlow),),
 
 
-                    ],
+                        FormPledgesSummuryWidget(
+                            title: "cr_consent_conditions_title".tr(),
+                            consent: "cr_consent_conditions_desc".tr(),
+                            consentcheck: "cr_consent_conditions_check".tr(),
+                            currentValue: isAgree,
+                            onChanged: (val) {
+                              setState(() {
+                                isAgree = val;
+                              });
+                            }),
+                        const CustomVerticalSpace(height: 16),
+
+
+                        IntialApprovalPreviousNextButtons(
+
+                          onPressed: () {
+                            context.read<Step3ConclusionCubit>()
+                                .SubmitInitialApproval();
+                          }, isBtnDisabled: false,
+                        ),
+
+
+                      ],
+                    ),
                   ),
-                ),
-              )
+                )
 
-          ],
-        ),
-      ),
-    );
+              ],
+            ),
+          ),
+        );
+    });
+
+
+
+
   }
 }
 
@@ -177,19 +182,17 @@ class ConditionItem extends StatelessWidget {
 }
 
 class ExpansionSectionItem extends StatelessWidget {
-  final ActivityTerm term;
+  final ConclusionSection? term;
 
   const ExpansionSectionItem({super.key, required this.term});
 
   @override
   Widget build(BuildContext context) {
     return CustomExpansionPanelWidget(
-      title: term.sectionName,
+      title: term?.sectionName,
       leading: SvgPicture.asset(IconPath.serviceCardDesc),
-      children: term.sectionContent?.map((e) {
-        return ConditionItem(name: e.label, values: e.value ?? []);
-      }).toList() ??
-          [],
+      children: [ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [])]
+      ,
     );
   }
 }

@@ -87,6 +87,7 @@ class _CommercialLicenseCancelScreenState
             // BlocProvider(
             //   create: (context) => CommercialLicenseCancelPagesBloc(),
             // ),
+
             BlocProvider(
               create: (context) => CommercialLicenseCancelBloc(
                 webService: sl(),

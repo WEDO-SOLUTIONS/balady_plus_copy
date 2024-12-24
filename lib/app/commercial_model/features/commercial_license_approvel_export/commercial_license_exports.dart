@@ -25,23 +25,16 @@ export 'presentation/intial_approval/step2/widgets/extra_activity_component.dart
 
 /// Domain
 // Entities
-export 'domain/entities/work_times_entity.dart';
-export 'domain/entities/record_info_entity.dart';
-export 'domain/entities/submit_step1_params.dart';
+
 export 'domain/entities/sub_activit_entity.dart';
 export 'domain/entities/sub_activity_details_entity.dart';
 export 'data/models/initialApproval/add_isic_activity_data.dart';
 export 'data/models/initialApproval/submit_activity_details_request.dart';
 export 'domain/entities/save_location_data_request.dart';
 export 'domain/entities/save_location_response.dart';
-export 'domain/entities/ejar_info_request.dart';
-export 'domain/entities/deed_info_request.dart';
-export 'domain/entities/investment_contracts_request.dart';
-export 'domain/entities/clean_contracts_request.dart';
-export 'domain/entities/cr_attachment_request.dart';
+
 export 'domain/entities/cr_calculate_fees_request.dart';
-export 'domain/entities/cr_add_notes_request.dart';
-export 'domain/entities/validate_salama_attachments_reuqest.dart';
+
 
 // repo
 export 'domain/repositories/repository.dart';
@@ -55,34 +48,21 @@ export 'domain/use_cases/step1_add_isic_activities.dart';
 export 'domain/use_cases/get_accommodation_types.dart';
 export 'domain/use_cases/step2_save_activity_details.dart';
 export 'domain/use_cases/step2_save_location_details.dart';
-export 'domain/use_cases/upload_credence.dart';
-export 'domain/use_cases/get_request_credence.dart';
-export 'domain/use_cases/get_clean_options.dart';
-export 'domain/use_cases/validate_salama_permit.dart';
-export 'domain/use_cases/get_deed_options.dart';
-export 'domain/use_cases/add_beneficiary_notes.dart';
 
 /// Data
 // data sources
 export 'data/data_sources/remote_data_source.dart';
 
 // Models
-export 'data/models/record_info_model.dart';
+
 export 'data/models/initialApproval/sub_activity_model.dart';
-export 'data/models/sub_activity_details_model.dart';
+
 export 'data/models/lookups_model.dart';
 export 'data/models/save_location_response_model.dart';
-export 'data/models/ejar_info_response_model.dart';
-export 'data/models/deed_info_response_model.dart';
-export 'data/models/investment_contracts_response_model.dart';
-export 'data/models/clean_contracts_response_entity.dart';
+
 export 'data/models/calculate_fees_response_model.dart';
 export 'data/models/initialApproval/submit_request_response_model.dart';
-export 'data/models/credence_response_model.dart';
-export 'data/models/clean_option_response_entity.dart';
 
-export 'data/models/qr/additional_qr_data_request_model.dart';
-export 'data/models/qr/save_worktimes_request_model.dart';
 
 // repo
 export 'data/repositories/repository_impl.dart';

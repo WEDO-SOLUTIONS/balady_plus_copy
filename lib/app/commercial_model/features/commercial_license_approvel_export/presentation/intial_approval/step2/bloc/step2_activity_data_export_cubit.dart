@@ -7,8 +7,6 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_app
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/get_accommodation_types.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/get_sub_activities.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/get_sub_activity_details.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/get_warning_messsage.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/get_warning_workflow_messsage.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/step2_save_activity_details.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/use_cases/step2_save_location_details.dart';
 import 'package:balady_plus/app/core/services/local/use_case.dart';
@@ -51,8 +49,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   final GetAccommodationTypes _getAccommodationTypes;
   final GetSubActivityDetails _getSubActivityDetails;
   final SaveActivityDetails _saveActivityDetails;
-  final GetWarningMessage _getWarningMessage;
-  final GetWarningWorkFlowMessage _getWarninFlowMessage;
+
 
 
 
@@ -68,9 +65,6 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
         _saveActivityDetails = SaveActivityDetails(repository: sl()),
-        _getWarningMessage = GetWarningMessage(repository: sl()),
-        _getWarninFlowMessage = GetWarningWorkFlowMessage(repository: sl()),
-
         _getGisData = GetGISData(repository: sl()),
         _saveLocationDetails = SaveLocationDetails(repository: sl()),
         _getGISImage = GetGISImage(sl()),

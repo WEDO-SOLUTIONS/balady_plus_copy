@@ -13,29 +13,26 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/dialog_names.dart';
-import '../../../../../../../events_logs/controller/logs_controller.dart';
-import '../../../../../../../events_logs/events_names.dart';
-import '../../../../../../../events_logs/models/error_exception_model.dart';
 import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../../commercial_routes/commercial_route_names.dart';
-import '../../../../../request_commercial_license_details/presentation/mvvm/commercial_license_request_action_view_model.dart';
-import '../../../../../request_commercial_license_details/presentation/widgets/request_commercial_license_action_sheet.dart';
-import '../../../export_commercial_license/license_export_intiation/blocs/commercial_license_export_bloc.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 
 class RequestDetailsPage extends StatelessWidget {
-  const RequestDetailsPage({super.key});
-
+   RequestDetailsPage({super.key});
+   CommercialLicenseDetailsBloc?  bloc;
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
     return BlocProvider(
-      create: (context) => CommercialLicenseDetailsBloc(
-        int.parse(data['requestNumber']),
-      ),
+      create: (context)
+        {
+       bloc= CommercialLicenseDetailsBloc(int.parse(data['requestNumber']));
+        return bloc!;
+        }
+      ,
       child: Scaffold(
         appBar: DefaultAppBarWidget(
           title: '${"request".tr()} #${data['requestNumber']}',
@@ -97,36 +94,8 @@ class RequestDetailsPage extends StatelessWidget {
                                     case "print":
 
                                       break;
-
-
-
-
                                     case "cancel":
-
-                                      try {
-                                        Navigator.of(context)
-                                            .popAndPushNamed(
-                                          CommercialRouteName.commercialLicenseCancel,
-                                          arguments: {
-                                            "from": "request",
-                                            "requestId": state.requestId,
-                                            // "reasonCancel": provider.reasonCancel,
-                                            // "availableCloseDate": provider.availableCloseDate,
-                                            "crNumber": "",
-                                            "crType": "",
-                                          },
-                                        );
-                                      } catch (error, stackTrace) {
-                                        LogsViewModel().sendEventFromModel(
-                                          event: ErrorExceptionModel(
-                                            nameEvent:
-                                            EventsName.handledException,
-                                            message: error.toString(),
-                                            stackTrace:
-                                            stackTrace.toString(),
-                                          ),
-                                        );
-                                      }
+                                     bloc?.cancelIntialApproval();
                                       break;
                                     case "view-details":
 

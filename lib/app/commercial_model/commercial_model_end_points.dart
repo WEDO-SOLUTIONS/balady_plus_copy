@@ -428,8 +428,11 @@ class CommercialModelEndPoints {
 
   static String applyLicenseExport(int requestId) =>
       "/v1/balady-commercial-initial-approval-services/commercial/apply/$requestId";
+  static String intialApprovalConclusion(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/lookups/$requestId?typeId=issuing";
 
-
+  static String cancelIntialApproval(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/requests/$requestId";
 
 
 

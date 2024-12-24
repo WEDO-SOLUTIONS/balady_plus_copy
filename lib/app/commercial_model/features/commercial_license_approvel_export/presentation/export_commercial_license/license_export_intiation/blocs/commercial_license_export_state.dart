@@ -3,7 +3,6 @@ part of 'commercial_license_export_bloc.dart';
 class CommercialLicenseExportState extends Equatable {
 
   final BlocStatus detailsStatus;
-
   final int? requestId;
 
 
@@ -31,7 +30,6 @@ class CommercialLicenseExportState extends Equatable {
       BlocStatus? detailsStatus,
       Nullable<int?>? requestId,
         String? errorMessage,
-      Nullable<CommercialRequestDetailsResponseEntity?>? requestDetails,
        }) {
     return CommercialLicenseExportState(
 

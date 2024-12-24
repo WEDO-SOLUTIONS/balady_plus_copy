@@ -28,13 +28,8 @@ class _RequestDetailsBodyState
 
   @override
   Widget build(BuildContext context) {
-    CommercialLicenseDetailsBloc bloc =
-    context.watch<CommercialLicenseDetailsBloc>();
+    CommercialLicenseDetailsBloc bloc = context.watch<CommercialLicenseDetailsBloc>();
 
-    // CustomTextWidget(
-    //   '#${license.licenseNumber}'.tr(),
-    //   textStyle: AppStyle.requestNumberTextStle,
-    // )
     return BlocConsumer<CommercialLicenseDetailsBloc,
         CommercialLicenseDetailsState>(
       listenWhen: (previous, current) => previous.status != current.status,

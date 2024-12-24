@@ -56,10 +56,11 @@ class Step1ApplicantDataExportCubit extends Cubit<Step1ApplicantDataExportState>
     emit(state.copyWith(recordStatus: BlocStatus.loading));
     final response = await _GetMainActivities(state.requestId!);
     response.fold(
-            (failure) => emit(state.copyWith(
-          recordStatus: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-        )), (success) {
+            (failure) {
+              emit(state.copyWith(recordStatus: BlocStatus.failure, errorMessage: (failure as ServerFailure).errorMessage,));
+            }
+
+            , (success) {
       emit(state.copyWith(status: BlocStatus.success,lstMainActivity:success));
       getRequestDetails();
 
