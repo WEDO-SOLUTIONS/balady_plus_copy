@@ -54,6 +54,17 @@ class AppFeedbackTagMapper {
         _ => {},
       };
 
+  static String getIconByTag(Tag tag) => switch (tag) {
+        Tag.badDirections || Tag.wrongDirections || Tag.helpfulDirections => 'assets/icons/svg/tag_directions.svg',
+        Tag.locationProblems || Tag.location => 'assets/icons/svg/tag_gps.svg',
+        Tag.poorTraffic || Tag.traffic => 'assets/icons/svg/tag_traffic.svg',
+        Tag.wrongArrivalTime || Tag.arrivalTime => 'assets/icons/svg/tag_arrival.svg',
+        Tag.poorDesign || Tag.design || Tag.niceDesign || Tag.greatDesign => 'assets/icons/svg/tag_design.svg',
+        Tag.easyToUse => 'assets/icons/svg/tag_easy_to_use.svg',
+        Tag.goodNavigation => 'assets/icons/svg/tag_navi.svg',
+        Tag.parkingProblems || Tag.parking => 'assets/icons/svg/tag_parking.svg',
+      };
+
   /// Because in task requirements, the tags must send to backend localized in English
   static String getSourceTagText(Tag tag) {
     final l10n = lookupAppLocalizations(const Locale('en'));
