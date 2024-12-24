@@ -35,6 +35,10 @@ class TagCloud extends HookWidget {
           runSpacing: 10.0,
           children: useTags.map((tag) {
             final isSelected = selectedTagsValue.contains(tag);
+            final textColor = isSelected ? context.colorsV3.onAccent : context.colorsV2.foregroundDefault;
+            final iconColor = isSelected ? context.colorsV3.onAccent : context.colorsV2.accentDefault;
+            final backgroundColor = isSelected ? context.colorsV2.accentDefault : context.colorsV2.backgroundSurface4;
+
             return GestureDetector(
               onTap: () {
                 final newSelectedTags = Set<Tag>.from(selectedTags.value);
@@ -48,26 +52,32 @@ class TagCloud extends HookWidget {
               },
               child: Chip(
                 shape: RoundedRectangleBorder(
+                  // Maximuem border value for the chip
                   borderRadius: BorderRadius.circular(50),
                 ),
                 padding: EdgeInsets.zero,
-                labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                backgroundColor: isSelected ? context.colorsV2.accentDefault : context.colorsV2.backgroundSurface4,
+                labelPadding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.$2x,
+                  vertical: Spacing.$1x,
+                ),
+                backgroundColor: backgroundColor,
                 label: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
                       AppFeedbackTagMapper.getLocalizedText(context.l10n, tag),
                       style: context.textStyleV3.bodySmallRegular.copyWith(
-                        color: isSelected ? context.colorsV3.onAccent : context.colorsV2.foregroundDefault,
+                        color: textColor,
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(
+                      width: Spacing.$1x,
+                    ),
                     SvgPicture.asset(
                       AppFeedbackTagMapper.getIconByTag(tag),
-                      colorFilter: isSelected ? ColorFilter.mode(context.colorsV3.onAccent, BlendMode.srcIn) : null,
-                      width: 16,
-                      height: 16,
+                      colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                      width: Spacing.$4x,
+                      height: Spacing.$4x,
                       package: PackageConfig.packageName,
                     ),
                   ],
