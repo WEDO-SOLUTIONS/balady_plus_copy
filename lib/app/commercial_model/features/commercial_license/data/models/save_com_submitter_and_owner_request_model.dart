@@ -5,15 +5,22 @@ class SaveComSubmitterAndOwnerRequestModel {
   String? entityType;
   int? crType;
   int? requestId;
+  String? roleName;
 
-  SaveComSubmitterAndOwnerRequestModel(
-      {this.crNumber, this.crType, this.entityType, this.requestId});
+  SaveComSubmitterAndOwnerRequestModel({
+    this.crNumber,
+    this.crType,
+    this.entityType,
+    this.requestId,
+    required this.roleName,
+  });
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'crNumber': crNumber,
       'entityType': entityType,
       'crType': crType,
+      'submitterType': roleName,
     };
   }
 
@@ -24,6 +31,7 @@ class SaveComSubmitterAndOwnerRequestModel {
       entityType:
           map['entityType'] != null ? map['entityType'] as String : null,
       crType: map['crType'] != null ? map['crType'] as int : null,
+      roleName: map['roleName'] != null ? map['roleName'] as String : null,
     );
   }
 

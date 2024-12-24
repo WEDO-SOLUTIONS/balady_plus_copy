@@ -131,11 +131,7 @@ dependencies:
 
   firebase_core: ^3.1.0
   # eliminate this after lazy-ass author update the package
-  firebase_messaging:
-    git:
-      url: https://github.com/AlexStrNik/flutterfire.git
-      ref: master
-      path: packages/firebase_messaging/firebase_messaging
+  firebase_messaging: 15.1.5
   firebase_analytics: ^11.0.1
   firebase_remote_config: ^5.1.3
 
