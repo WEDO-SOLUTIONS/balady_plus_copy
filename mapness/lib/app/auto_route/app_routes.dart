@@ -87,9 +87,7 @@ class AppRouter extends RootStackRouter {
               path: 'weather_router',
               page: WeatherRoute.page,
             ),
-            AppRoute(
-              page: RoutingSearchSheetRoute.page,
-            ),
+            AppRoute(page: RoutingSearchSheetRoute.page),
             CustomRoute(
               path: 'road_panel_sheet',
               page: RoadPanelSheetRoute.page,
