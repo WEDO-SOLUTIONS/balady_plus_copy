@@ -1,11 +1,12 @@
 enum SearchRequestLang {
-  arabic('ar-SA'),
-  english('en-SA'),
+  arabic('ar-SA', 'ar_SA'),
+  english('en-SA', 'en_SA'),
   unknown();
 
-  final String? locale;
+  final String? localeForSDK;
+  final String? localeForMapness;
 
-  const SearchRequestLang([this.locale]);
+  const SearchRequestLang([this.localeForSDK, this.localeForMapness]);
 }
 
 class LanguageDetector {
@@ -29,13 +30,15 @@ class LanguageDetector {
   }
 
   static SearchRequestLang detectLanguageConLocale(String text, String currentLocale) {
-    if (_isArabic(text)) {
+    final hasArabic = _isArabic(text);
+    final hasEnglish = _isEnglish(text);
+    if (hasArabic && !hasEnglish) {
       return SearchRequestLang.arabic;
-    } else if (_isEnglish(text)) {
+    } else if (!hasArabic && hasEnglish) {
       return SearchRequestLang.english;
     }
     for (final value in SearchRequestLang.values) {
-      if (value.locale == currentLocale) {
+      if (value.localeForMapness == currentLocale) {
         return value;
       }
     }

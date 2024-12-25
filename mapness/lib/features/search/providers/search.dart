@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -45,6 +47,7 @@ class Search extends _$Search {
   SearchQueryMessage? _previousSearchQueryMessage;
   QuickFilter? _previousQuickSearch;
   CancelableOperation? _searchOperation;
+  SearchRequestLang? _currentQueryLocale;
 
   bool get isSearchRunning => _previousType != null;
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
@@ -59,6 +62,8 @@ class Search extends _$Search {
     _previousQuery = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
+    _currentQueryLocale = null;
+    resetLocale();
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -82,16 +87,7 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
-      final dgisController = await ref.read(dgisControllerProvider.future);
-      final currentLang = ref.read(appLanguageProvider).languageCode;
-      final localeOfRequest = LanguageDetector.detectLanguageConLocale(query, currentLang);
-
-      if (localeOfRequest != SearchRequestLang.unknown) {
-        final localeOfRequestStr = localeOfRequest.locale;
-        if (localeOfRequestStr != null) {
-          await dgisController.overrideLocales([localeOfRequestStr]);
-        }
-      }
+      // await _setUpLocale(query);
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -110,6 +106,7 @@ class Search extends _$Search {
 
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
         dgisController.fetchSuggest(
@@ -420,5 +417,27 @@ class Search extends _$Search {
             ),
           );
     }
+  }
+
+  Future<void> _setUpLocale(String query) async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    final currentLang = ref.read(appLanguageProvider).languageCode;
+    final localeOfRequest = LanguageDetector.detectLanguageConLocale(query, currentLang);
+
+    if (localeOfRequest != _currentQueryLocale) {
+      _currentQueryLocale = localeOfRequest;
+      if (localeOfRequest != SearchRequestLang.unknown) {
+        final localeOfRequestStr = localeOfRequest.localeForSDK;
+        if (localeOfRequestStr != null) {
+          await dgisController.overrideLocales([localeOfRequestStr]);
+        }
+      }
+    }
+  }
+
+  Future<void> resetLocale() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    final currentLang = ref.read(appLanguageProvider).languageCode;
+    await dgisController.overrideLocales([currentLang]);
   }
 }
