@@ -13,6 +13,9 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
+import '../../../../../../../core/utils/enums/bloc_status.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../domain/entities/conclusion_section.dart';
 import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 import '../bloc/step3_conclusion_cubit.dart';
@@ -29,69 +32,95 @@ class Step3ConclusionPage extends StatefulWidget {
 }
 
 class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
-  bool isAgree = false;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    context.read<Step3ConclusionCubit>().getConclusion();
+  }
   @override
   Widget build(BuildContext context) {
-
-    context.read<Step3ConclusionCubit>().getConclusion();
-
 
     return BlocConsumer<Step3ConclusionCubit, Step3ConclusionState>(
         listener: (context, state) {
 
         }, builder: (context, state) {
       return Container(
-        color: AppColor.scaffoldBackground,
-        padding: EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(height: 16),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-
-                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
-                    const SizedBox(height: 15,),
-                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),),
-                    const SizedBox(height: 15,),
-                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
-                    const SizedBox(height: 15,),
-                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
-                    const SizedBox(height: 15,),
-
-                    OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
-                    const SizedBox(height: 15,),
-
-                    OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
-                    const SizedBox(height: 15,),
-                    CustomExpansionPanelWidget(
-                        title:"fee_calculator".tr(),
-                        leading: SvgPicture.asset(IconPath.serviceCardDesc),
-                        children: [CalcualtorFees(),]
-                    ),
-                    const SizedBox(height: 15,),
-
-
-
-
-                  ],
-                ),
+      color: AppColor.scaffoldBackground,
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          
+          
+          const SizedBox(height: 16),
+          CustomTextWidget(
+            "municipalAdvisorRequirementsTitle".tr(),
+            fontColor: AppColor.primary700Light,
+            fontSize: 18,
+            fontWeight: AppFontWeight.bold,
+          ),
+          const SizedBox(height: 16),
+          (state.status == BlocStatus.failure)?
+          ReloadWidget(
+            onTab: () {
+              context.read<Step3ConclusionCubit>().getConclusion();
+            },):Container(),
+          
+          
+          (state.status == BlocStatus.success)?
+          Expanded(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+      
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
+                  const SizedBox(height: 15,),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),),
+                  const SizedBox(height: 15,),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
+                  const SizedBox(height: 15,),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
+                  const SizedBox(height: 15,),
+      
+                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
+                  const SizedBox(height: 15,),
+      
+                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
+                  const SizedBox(height: 15,),
+                  CustomExpansionPanelWidget(
+                      title:"fee_calculator".tr(),
+                      leading: SvgPicture.asset(IconPath.serviceCardDesc),
+                      children: [CalcualtorFees(),]
+                  ),
+                  const SizedBox(height: 15,),
+      
+      
+      
+      
+                ],
               ),
             ),
-            IntialApprovalPreviousNextButtons(
+          ):Expanded(child: Container()),
+          
 
-              onPressed: () {
-                context.read<Step3ConclusionCubit>()
-                    .SubmitInitialApproval();
-              }, isBtnDisabled: false,
-            ),
-
-          ],
-        ),
-      );
+      
+          (state.status == BlocStatus.loading)
+              ? const Center(child: CustomCircularLoadingWidget()):Container(),
+      
+          IntialApprovalPreviousNextButtons(
+            onPressed: () {
+              context.read<Step3ConclusionCubit>()
+                  .SubmitInitialApproval();
+            }, isBtnDisabled: false,
+          ),
+      
+        ],
+      ),
+              );
 
 
     });
