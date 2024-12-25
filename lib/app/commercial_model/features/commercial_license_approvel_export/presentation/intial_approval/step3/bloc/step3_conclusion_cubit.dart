@@ -41,11 +41,9 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
 
 
             (res) {
-
-          emit(state.copyWith(issueCommercialConculsionEntity:res,status: BlocStatus.success));
-
-
-
+             res= res.copyWith(engOffices: [EngOffices(cityName: "riyadh",officeName: "test1",officeMobile: "0562718752"),EngOffices(cityName: "riyadh",officeName: "test2",officeMobile: "0562718752")]);
+             res= res.copyWith(commercialOffices: [CommercialOffices(cityName: "riyadh",officeName: "test1 com",officeMobile: "0562718752"),CommercialOffices(cityName: "riyadh",officeName: "test2 com",officeMobile: "0562718752")]);
+              emit(state.copyWith(issueCommercialConculsionEntity:res,status: BlocStatus.success));
 
         });
 
@@ -81,7 +79,11 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
 
 
 
-  ConclusionSection? getConclusionSection(List<RequestFlow>? requestFlow) {
+  ConclusionSection? getConclusionSection({List<RequestFlow>? requestFlow,List<AllowedPermits>? allowedPermits
+    ,List<CivilDefenseAllowedDocuments>? civilDefenseDocuments,List<CleaningOptions>? cleaningOptions,
+    List<CommercialOffices>? commercialOffices, List<EngOffices>? engOffices
+
+  }) {
 
 
     if(requestFlow != null&& requestFlow.isNotEmpty)
@@ -99,6 +101,78 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
 
         return obj;
       }
+    else  if(allowedPermits != null&& allowedPermits.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "permits".tr();
+
+      Content section = Content();
+      section.label="permits".tr();
+      section.value=[];
+      allowedPermits.asMap().forEach((index, value) {
+        section.value?.add(value.name!);
+      });
+      obj.sectionContent = section;
+
+      return obj;
+    }
+    else  if(civilDefenseDocuments != null&& civilDefenseDocuments.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "municipalAdvisorCivilDefenseTitle".tr();
+      Content section = Content();
+      section.label="municipalAdvisorCivilDefenseTitle".tr();
+      section.value=[];
+      civilDefenseDocuments.asMap().forEach((index, value) {
+        section.value?.add(value.name!);
+      });
+      obj.sectionContent = section;
+
+      return obj;
+    }
+    else  if(cleaningOptions != null&& cleaningOptions.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "municipalAdvisorCleaningMechanismsTitle".tr();
+      Content section = Content();
+      section.label="municipalAdvisorCleaningMechanismsTitle".tr();
+      section.value=[];
+      cleaningOptions.asMap().forEach((index, value) {
+        section.value?.add(value.name!);
+      });
+      obj.sectionContent = section;
+
+      return obj;
+    }
+
+    else  if(commercialOffices != null&& commercialOffices.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "commercialOffice".tr();
+      Content section = Content();
+      section.label="commercialOffice".tr();
+      section.offices=[];
+      commercialOffices.asMap().forEach((index, value) {
+        section.offices?.add(OfficeSection(officeName:value.officeName,officeMobile: value.officeMobile,cityName: value.cityName));
+      });
+      obj.sectionContent = section;
+
+      return obj;
+    }
+    else  if(engOffices != null&& engOffices.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "municipalAdvisorEngineeringOfficesTitle".tr();
+      Content section = Content();
+      section.label="municipalAdvisorEngineeringOfficesTitle".tr();
+      section.offices=[];
+      engOffices.asMap().forEach((index, value) {
+        section.offices?.add(OfficeSection(officeName:value.officeName,officeMobile: value.officeMobile,cityName: value.cityName));
+      });
+      obj.sectionContent = section;
+
+      return obj;
+    }
 
     return null;
 

@@ -10,6 +10,40 @@ class IssueCommercialConculsionEntity {
       this.requestFlow, 
       this.supervisingAuthoritiesForActivities,});
 
+
+  List<AllowedPermits>? allowedPermits;
+  CalculateStandardFees? calculateStandardFees;
+  List<CivilDefenseAllowedDocuments>? civilDefenseAllowedDocuments;
+  List<CleaningOptions>? cleaningOptions;
+  List<CommercialOffices>? commercialOffices;
+  List<EngOffices>? engOffices;
+  List<PreDefinedConditionTypes>? preDefinedConditionTypes;
+  List<RequestFlow>? requestFlow;
+  List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities;
+
+
+IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits,
+  CalculateStandardFees? calculateStandardFees,
+  List<CivilDefenseAllowedDocuments>? civilDefenseAllowedDocuments,
+  List<CleaningOptions>? cleaningOptions,
+  List<CommercialOffices>? commercialOffices,
+  List<EngOffices>? engOffices,
+  List<PreDefinedConditionTypes>? preDefinedConditionTypes,
+  List<RequestFlow>? requestFlow,
+  List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities,
+}) => IssueCommercialConculsionEntity( allowedPermits: allowedPermits ?? this.allowedPermits,
+  calculateStandardFees: calculateStandardFees ?? this.calculateStandardFees,
+  civilDefenseAllowedDocuments: civilDefenseAllowedDocuments ?? this.civilDefenseAllowedDocuments,
+  cleaningOptions: cleaningOptions ?? this.cleaningOptions,
+  commercialOffices: commercialOffices ?? this.commercialOffices,
+  engOffices: engOffices ?? this.engOffices,
+  preDefinedConditionTypes: preDefinedConditionTypes ?? this.preDefinedConditionTypes,
+  requestFlow: requestFlow ?? this.requestFlow,
+  supervisingAuthoritiesForActivities: supervisingAuthoritiesForActivities ?? this.supervisingAuthoritiesForActivities,
+);
+
+
+
   IssueCommercialConculsionEntity.fromJson(dynamic json) {
     if (json['allowedPermits'] != null) {
       allowedPermits = [];
@@ -61,34 +95,6 @@ class IssueCommercialConculsionEntity {
       });
     }
   }
-  List<AllowedPermits>? allowedPermits;
-  CalculateStandardFees? calculateStandardFees;
-  List<CivilDefenseAllowedDocuments>? civilDefenseAllowedDocuments;
-  List<CleaningOptions>? cleaningOptions;
-  List<CommercialOffices>? commercialOffices;
-  List<EngOffices>? engOffices;
-  List<PreDefinedConditionTypes>? preDefinedConditionTypes;
-  List<RequestFlow>? requestFlow;
-  List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities;
-IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits,
-  CalculateStandardFees? calculateStandardFees,
-  List<CivilDefenseAllowedDocuments>? civilDefenseAllowedDocuments,
-  List<CleaningOptions>? cleaningOptions,
-  List<CommercialOffices>? commercialOffices,
-  List<EngOffices>? engOffices,
-  List<PreDefinedConditionTypes>? preDefinedConditionTypes,
-  List<RequestFlow>? requestFlow,
-  List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities,
-}) => IssueCommercialConculsionEntity(  allowedPermits: allowedPermits ?? this.allowedPermits,
-  calculateStandardFees: calculateStandardFees ?? this.calculateStandardFees,
-  civilDefenseAllowedDocuments: civilDefenseAllowedDocuments ?? this.civilDefenseAllowedDocuments,
-  cleaningOptions: cleaningOptions ?? this.cleaningOptions,
-  commercialOffices: commercialOffices ?? this.commercialOffices,
-  engOffices: engOffices ?? this.engOffices,
-  preDefinedConditionTypes: preDefinedConditionTypes ?? this.preDefinedConditionTypes,
-  requestFlow: requestFlow ?? this.requestFlow,
-  supervisingAuthoritiesForActivities: supervisingAuthoritiesForActivities ?? this.supervisingAuthoritiesForActivities,
-);
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     if (allowedPermits != null) {

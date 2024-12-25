@@ -1,7 +1,5 @@
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/sub_activity_details_entity.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/under_testing/custom_enhanced_expansion_panel_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
@@ -12,14 +10,13 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
-import '../../../../../../../features/_shared_feature_/balady_features/widgets/shared/circle_icon.dart';
 import '../../../../domain/entities/conclusion_section.dart';
 import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 import '../bloc/step3_conclusion_cubit.dart';
+import '../widgets/calculator.dart';
 
 
 class Step3ConclusionPage extends StatefulWidget {
@@ -43,60 +40,83 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
         listener: (context, state) {
 
         }, builder: (context, state) {
-      return GestureDetector(
-          onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-          child: Container(
-            color: AppColor.scaffoldBackground,
-            padding: EdgeInsets.all(16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
+      return Container(
+        color: AppColor.scaffoldBackground,
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 16),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
 
-                const SizedBox(height: 16),
-                Flexible(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(state.issueCommercialConculsionEntity?.requestFlow),),
+                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
+                    const SizedBox(height: 15,),
+                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),),
+                    const SizedBox(height: 15,),
+                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
+                    const SizedBox(height: 15,),
+                    ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
+                    const SizedBox(height: 15,),
 
+                    OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
+                    const SizedBox(height: 15,),
 
-                        FormPledgesSummuryWidget(
-                            title: "cr_consent_conditions_title".tr(),
-                            consent: "cr_consent_conditions_desc".tr(),
-                            consentcheck: "cr_consent_conditions_check".tr(),
-                            currentValue: isAgree,
-                            onChanged: (val) {
-                              setState(() {
-                                isAgree = val;
-                              });
-                            }),
-                        const CustomVerticalSpace(height: 16),
-
-
-                        IntialApprovalPreviousNextButtons(
-
-                          onPressed: () {
-                            context.read<Step3ConclusionCubit>()
-                                .SubmitInitialApproval();
-                          }, isBtnDisabled: false,
-                        ),
-
-
-                      ],
+                    OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
+                    const SizedBox(height: 15,),
+                    CustomExpansionPanelWidget(
+                        title:"fee_calculator".tr(),
+                        leading: SvgPicture.asset(IconPath.serviceCardDesc),
+                        children: [CalcualtorFees(),]
                     ),
-                  ),
-                )
+                    const SizedBox(height: 15,),
 
-              ],
+
+
+
+                  ],
+                ),
+              ),
             ),
-          ),
-        );
+            IntialApprovalPreviousNextButtons(
+
+              onPressed: () {
+                context.read<Step3ConclusionCubit>()
+                    .SubmitInitialApproval();
+              }, isBtnDisabled: false,
+            ),
+
+          ],
+        ),
+      );
+
+
     });
 
 
 
 
+  }
+}
+
+
+
+class ExpansionSectionItem extends StatelessWidget {
+  final ConclusionSection? term;
+
+  const ExpansionSectionItem({super.key, required this.term});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomExpansionPanelWidget(
+      title: term?.sectionName,
+      leading: SvgPicture.asset(IconPath.serviceCardDesc),
+      children: [ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [])]
+      ,
+    );
   }
 }
 
@@ -171,7 +191,8 @@ class ConditionItem extends StatelessWidget {
                           ),
                         ],
                       ),
-                      const CustomVerticalSpace(height: 8)
+
+                      // const CustomVerticalSpace(height: 8)
                     ],
                   );
                 }),
@@ -181,18 +202,104 @@ class ConditionItem extends StatelessWidget {
   }
 }
 
-class ExpansionSectionItem extends StatelessWidget {
+
+class OfficeExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
 
-  const ExpansionSectionItem({super.key, required this.term});
+  const OfficeExpansionSectionItem({super.key, required this.term});
 
   @override
   Widget build(BuildContext context) {
     return CustomExpansionPanelWidget(
       title: term?.sectionName,
       leading: SvgPicture.asset(IconPath.serviceCardDesc),
-      children: [ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [])]
+      children: [OfficeItem(values:  term?.sectionContent?.offices ?? [])]
       ,
     );
   }
+
+
 }
+
+class OfficeItem extends StatelessWidget {
+
+  final List<OfficeSection>? values;
+  const OfficeItem({super.key, this.values});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: values?.length ?? 0,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.all(8),
+                  margin: EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                      color: Color(0x80E6EFEF),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const CustomVerticalSpace(height: 15),
+                      CustomTextWidget(
+                       "officeName".tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 10),
+                      CustomTextWidget(
+                        values![index].officeName??"",
+                        fontColor: AppColor.black,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 20),
+
+                      CustomTextWidget(
+                        "complianace_eng_office_mobile".tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 10),
+                      CustomTextWidget(
+                        values![index].officeMobile??"",
+                        fontColor: AppColor.black,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+
+                      const CustomVerticalSpace(height: 20),
+                      CustomTextWidget(
+                        "order_city".tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 10),
+                      CustomTextWidget(
+                        values![index].cityName??"",
+                        fontColor: AppColor.black,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+
+                      // const CustomVerticalSpace(height: 8)
+                    ],
+                  ),
+                );
+              }),
+      ],
+    );
+  }
+}
+
