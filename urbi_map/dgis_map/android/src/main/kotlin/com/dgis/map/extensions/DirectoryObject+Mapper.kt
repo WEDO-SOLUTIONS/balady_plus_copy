@@ -39,7 +39,8 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
         entrances = this.entrances.map {
             it.toMessage()
         },
-        tradeLicense = this.tradeLicense?.toMessage()
+        tradeLicense = this.tradeLicense?.toMessage(),
+        rubricIds = this.rubricIds.map { it.value }
     )
 }
 

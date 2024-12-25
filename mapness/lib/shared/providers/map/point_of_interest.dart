@@ -1,7 +1,9 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
+import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -17,6 +19,11 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   LatLng? closestPoint,
 }) async {
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
+
+  final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
+  final rubrics = Set<int>.from(cleanupRubrics);
+  final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier).getMarkerType(rubrics);
+
   final isMarkerPositionIsNull = directoryObject == null || directoryObject.markerPosition == null;
 
   final position = LatLng(
@@ -24,7 +31,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     longitude: directoryObject?.markerPosition!.longitude ?? 0,
   );
 
-  if (closestPoint == null) {
+  if (closestPoint != null) {
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.showMarker(
       Markers.pinMarker(
@@ -33,6 +40,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           longitude: position.longitude,
           elevation: 1,
         ),
+        icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
       ),
     );
