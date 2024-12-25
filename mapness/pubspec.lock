@@ -2119,10 +2119,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: db1428848f2fb16ccb35e388c15afe8a7d59d9b385bfad63f8f8da46e76c2923
+      sha256: e1452e34d3a76515b6bb140af74370adae11071e33d570ae716ac1beb63c659c
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.9"
+    version: "1.0.10"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
