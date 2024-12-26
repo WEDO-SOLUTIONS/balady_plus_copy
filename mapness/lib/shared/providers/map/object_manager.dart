@@ -100,8 +100,6 @@ class MapObjectManager extends _$MapObjectManager {
             element.options.position.longitude == geoPoint.longitude,
       );
 
-  Marker? markerById(String id) => _markers.firstWhereOrNull((element) => element.id == id);
-
   Future<void> addMarker(Marker marker) async {
     await ref.read(dgisControllerProvider).value?.addMarker(
           marker,
