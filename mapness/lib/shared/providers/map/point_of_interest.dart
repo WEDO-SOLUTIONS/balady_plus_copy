@@ -31,20 +31,18 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     longitude: directoryObject?.markerPosition!.longitude ?? 0,
   );
 
-  if (closestPoint != null) {
-    final read = ref.read(selectedMarkerProvider.notifier);
-    await read.showMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          elevation: 1,
-        ),
-        icon: mapMarkerMapper?.iconPath.bigIconPath,
-        id: poiPinId,
+  final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+  await selectedMarker.showMarker(
+    Markers.pinMarker(
+      GeoPointWithElevationMessage(
+        latitude: position.latitude,
+        longitude: position.longitude,
+        elevation: 1,
       ),
-    );
-  }
+      icon: mapMarkerMapper?.iconPath.bigIconPath,
+      id: poiPinId,
+    ),
+  );
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
