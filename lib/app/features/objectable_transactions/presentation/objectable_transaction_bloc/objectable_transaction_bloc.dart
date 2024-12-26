@@ -55,6 +55,7 @@ class ObjectableTransactionBloc
         validateObjectableTransaction =
             ValidateObjectableTransaction(repository: sl()),
         super(const ObjectableTransactionState()) {
+
     on<GetRequestsEvent>((event, emit) async {
       emit(
         state.copyWith(requestsStatus: BlocRequestStatus.submissionGetLoading),

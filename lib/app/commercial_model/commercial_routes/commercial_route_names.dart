@@ -244,6 +244,10 @@ class CommercialRouteName {
   static const submitApplicationSuccessfullyNew =
       'CommercialLicense_Create_Success_Page';
 
+  static const IntialApprovalSuccessfullyPage =
+      'IntialApprovalSuccessfullyPage';
+
+
   static const violationResultsPage = 'ViolationGuide_Results_Page';
 
   static const violationRegulationDetailsPage =
@@ -378,4 +382,21 @@ class CommercialRouteName {
   static const SucessfullScreen = 'Sucessfull_Screen';
 
   static const commercialDebtsListScreen = 'commercialDebtsListScreen';
+
+
+
+
+
+  static const LicenseIntialApprovalStartService = 'Commercial_License_Initial_approval_start_service';
+  static const CommercialLicenseInitialApprovelScreen = 'Commercial_license_initial_approvel_screen';
+  static const ExportMapScreen = 'ExportMapScreen';
+
+
+  static const LicenseExportStartServicePage = 'LicenseExportStartServicePage';
+  static const LicenseExportInitialScreen = 'LicenseExportInitialScreen';
+  static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
+
+
+
+
 }

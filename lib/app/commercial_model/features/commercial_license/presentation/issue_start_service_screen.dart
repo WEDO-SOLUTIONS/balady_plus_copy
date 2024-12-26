@@ -15,6 +15,8 @@ import 'package:balady_plus/app/core/utils/app_analytics_events.dart';
 import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 
+import '../domain/entities/request_info_arragments.dart';
+
 class IssueStartService extends StatefulWidget {
   const IssueStartService({Key? key}) : super(key: key);
 
@@ -68,7 +70,8 @@ class _IssueStartServiceState extends State<IssueStartService> {
                           if (CommonProperties.selectedDelegator != null) {
                             Navigator.of(context).pushNamed(
                               CommercialRouteName.commercialLicensePage,
-                              arguments: requestId,
+                              arguments: RequestInfoArragments(requestId:requestId,isFromIntialApproval: false),
+
                             );
                           } else {
                             await BottomSheetDialog.showDraggableSheet(
@@ -91,7 +94,7 @@ class _IssueStartServiceState extends State<IssueStartService> {
                                       null) {
                                     Navigator.of(context).pushNamed(
                                       CommercialRouteName.commercialLicensePage,
-                                      arguments: requestId,
+                                      arguments: RequestInfoArragments(requestId:requestId,isFromIntialApproval: false),
                                     );
                                   } else {
                                     await BottomSheetDialog.showDraggableSheet(
@@ -118,80 +121,4 @@ class _IssueStartServiceState extends State<IssueStartService> {
           ),
         ));
   }
-
-/*
-  ServiceModel model() => ServiceModel.fromJson(
-        {
-          "id": 1,
-          "icon": "send_image",
-          "3d_icon": null,
-          "order": 1,
-          "isNew": false,
-          "isImportant": false,
-          "action": {"type": "cards", "value": ""},
-          "ar": {
-            "title": "issue_trade_license",
-            "description": "",
-            "tag": null,
-            "warning": null
-          },
-          "en": {
-            "title": "issue_trade_license",
-            "description": "",
-            "tag": null,
-            "warning": null
-          },
-          "cards": [
-            {
-              "iconName": IconPath.serviceCardDesc,
-              "type": ServiceCardsTypes.desc,
-              "rate": 0,
-              "duration": "duration_10_days",
-              "fees": -1,
-              "feesName": "calculator_fees",
-              "feesLink": "https://apps.balady.gov.sa/Eservices/FeesCalculator",
-              "ar": {
-                "title": "service_desc",
-                "description": "issue_service_desc"
-              },
-              "en": {"title": "Service Description", "description": ""}
-            },
-            {
-              "iconName": IconPath.serviceCardReq,
-              "type": ServiceCardsTypes.req,
-              "rate": 0,
-              "duration": "0",
-              "requirements": [
-                "issue_service_req1",
-                "issue_service_req2",
-                "issue_service_req3",
-                "issue_service_req4",
-                "issue_service_req5"
-              ],
-              "ar": {"title": "requirements", "description": ""},
-              "en": {"title": "requirements", "description": ""}
-            },
-            {
-              "iconName": IconPath.warning2,
-              "type": ServiceCardsTypes.authorInfo,
-              "rate": 0,
-              "duration": "",
-              "fees": null,
-              "ar": {
-                "title": "conditions_and_fines",
-                "description": "service_conditions_and_fess",
-                "descriptionLink": "https://new.balady.gov.sa/ar/node/10856",
-                "feesName": "list_municipal_violations",
-                "feesLink":
-                    "https://balady.gov.sa/sites/default/files/2023-06/%D8%AC%D8%AF%D9%88%D9%84%20%D8%A7%D9%84%D8%AC%D8%B2%D8%A7%D8%A1%D8%A7%D8%AA%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D8%AE%D8%A7%D9%84%D9%81%D8%A7%D8%AA%20%D8%A7%D9%84%D8%A8%D9%84%D8%AF%D9%8A%D8%A9.pdf",
-              },
-              "en": {"title": "Service Description", "description": ""}
-            },
-          ]
-        },
-      );
-
-
-
-*/
 }

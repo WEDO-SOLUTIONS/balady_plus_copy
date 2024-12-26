@@ -3708,6 +3708,7 @@
   "cancel_applying_step3": "دفع الرسوم في حال الإلغاء الفوري أو إرسال الطلب للبلدية في حال أن الإلغاء غير فوري.",
   "accomodation": "الفئة",
   "isic": "نشاط ايزيك",
+  "isicName2": "اسم النشاط ",
   "fire_approval_type": "نوع موافقة الدفاع المدني",
   "activity_area": "مساحة النشاط",
   "addetional_data": "نشاط اضافي",
@@ -4195,5 +4196,11 @@
   "biometrics_failed":"فشل المصادقة الحيوية! .فضلا المحاولة مرة أخرى أو يمكنك تسجيل الدخول عن طريق الرمز السريع أو إسم المستخدم و كلمة المرور",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
-  "complianceFAQ":"الإسئلة الشائعة"
+  "complianceFAQ":"الإسئلة الشائعة",
+
+  "commerical_license_export": "إصدار مبدئي لرخصة تجارية",
+  "commerical_add_activity_sucessfull": "تم ارسال الطلب بنجاح",
+  "requestFlow": "المتطلبات المبدئية لاصدار رخصة تجارية",
+  "officeName": "اسم المكتب",
+  "commercialOffice": "المكاتب الدعائية"
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
@@ -66,7 +67,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                 ),
               ),
               const SizedBox(height: 12),
-              PlusAddButton(
+              sl<CommercialLicenseBloc>().state.isFromIntialApproval !=true? PlusAddButton(
                 text: "attach_activity".tr(),
                 onPressed: () => BottomSheetDialog.showDraggableSheet(
                   context,
@@ -195,7 +196,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                     },
                   ),
                 ),
-              ),
+              ):Container(),
             ],
           ),
         );

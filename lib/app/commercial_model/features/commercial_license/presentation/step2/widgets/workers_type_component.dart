@@ -10,8 +10,8 @@ class WorkerTypeComponent extends StatelessWidget {
     required this.onSelectedType,
   });
 
-  final WorkersTypes? selectedWorkerType;
-  final Function(WorkersTypes type) onSelectedType;
+  final WorkersTypesEnum? selectedWorkerType;
+  final Function(WorkersTypesEnum type) onSelectedType;
 
   @override
   Widget build(BuildContext context) {
@@ -30,19 +30,19 @@ class WorkerTypeComponent extends StatelessWidget {
           children: [
             WorkerTypeItem(
               onTap: onSelectedType,
-              workersType: WorkersTypes.men,
+              workersType: WorkersTypesEnum.men,
               selectedWorkersType: selectedWorkerType,
             ),
             const SizedBox(width: 8),
             WorkerTypeItem(
               onTap: onSelectedType,
-              workersType: WorkersTypes.women,
+              workersType: WorkersTypesEnum.women,
               selectedWorkersType: selectedWorkerType,
             ),
             const SizedBox(width: 8),
             WorkerTypeItem(
               onTap: onSelectedType,
-              workersType: WorkersTypes.menWomen,
+              workersType: WorkersTypesEnum.menWomen,
               selectedWorkersType: selectedWorkerType,
             ),
           ],
@@ -60,9 +60,9 @@ class WorkerTypeItem extends StatelessWidget {
     required this.selectedWorkersType,
   });
 
-  final Function(WorkersTypes type) onTap;
-  final WorkersTypes workersType;
-  final WorkersTypes? selectedWorkersType;
+  final Function(WorkersTypesEnum type) onTap;
+  final WorkersTypesEnum workersType;
+  final WorkersTypesEnum? selectedWorkersType;
 
   @override
   Widget build(BuildContext context) {

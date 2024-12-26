@@ -4452,5 +4452,11 @@
   "complianceFAQ": "Frequently asked questions",
   "complaince_save_clause":"Save Clause",
   "complinace_clause": "Clause",
-  "complaince_edit_clause":"Edit Clause"
+  "complaince_edit_clause":"Edit Clause",
+  "isicName2": "activity Name",
+  "commerical_add_activity_sucessfull": "Request Send Successfully",
+  "commerical_license_export": "commerical License Intial Approval",
+  "requestFlow": "request Flow",
+  "officeName": "office Name",
+  "commercialOffice": "Commercial Offices"
 }
