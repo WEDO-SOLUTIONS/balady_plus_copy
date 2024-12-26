@@ -99,6 +99,9 @@ class MapObjectManager extends _$MapObjectManager {
             element.options.position.latitude == geoPoint.latitude &&
             element.options.position.longitude == geoPoint.longitude,
       );
+
+  Marker? markerById(String id) => _markers.firstWhereOrNull((element) => element.id == id);
+
   Future<void> addMarker(Marker marker) async {
     await ref.read(dgisControllerProvider).value?.addMarker(
           marker,
@@ -122,6 +125,10 @@ class MapObjectManager extends _$MapObjectManager {
           isVisible: isVisible,
           manager: await future,
         );
+  }
+
+  Future<void> setMarkerOptions(String markerId, ChangeMarkerOptionsMessage options) async {
+    await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
   }
 
   Future<void> removeMarkerById(String markerId) async {
