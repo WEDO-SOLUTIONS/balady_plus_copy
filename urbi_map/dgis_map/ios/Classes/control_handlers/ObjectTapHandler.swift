@@ -356,6 +356,10 @@ class ObjectTapHandler {
         if let animatedAppearance = options.animatedAppearance {
             self.markers[id]?.0.animatedAppearance = animatedAppearance
         }
+        
+        if let iconOpacity = options.icon?.iconOpacity {
+            self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
+        }
         if let isVisible = options.isVisible {
             self.markers[id]?.0.isVisible = isVisible
         }

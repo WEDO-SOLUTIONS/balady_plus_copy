@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 
 extension ChangeMarkerOptionsExt on MarkerOptionsMessage {
   ChangeMarkerOptionsMessage copyWith({
@@ -20,5 +21,24 @@ extension ChangeMarkerOptionsExt on MarkerOptionsMessage {
         animatedAppearance: animatedAppearance ?? this.animatedAppearance,
         zIndex: zIndex ?? this.zIndex,
         isVisible: isVisible ?? this.isVisible,
+      );
+}
+
+extension ChagneMarkerIconMessage on MarkerIconMessage {
+  MarkerIconMessage copyWith({
+    String? svgPath,
+    Uint8List? pngData,
+    String? pngPath,
+    double? width,
+    double? iconOpacity,
+    MarkerAzimuthMessage? iconMapDirection,
+  }) =>
+      MarkerIconMessage(
+        width: width ?? this.width,
+        svgPath: svgPath ?? this.svgPath,
+        pngData: pngData ?? this.pngData,
+        pngPath: pngPath ?? this.pngPath,
+        iconOpacity: iconOpacity ?? this.iconOpacity,
+        iconMapDirection: iconMapDirection ?? this.iconMapDirection,
       );
 }

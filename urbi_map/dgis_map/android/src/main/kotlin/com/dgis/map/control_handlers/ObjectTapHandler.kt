@@ -318,6 +318,9 @@ class ObjectTapHandler(
         options.zIndex?.let { zIndex ->
             markers[id]?.first?.zIndex = ZIndex(zIndex.toInt())
         }
+        options.icon?.iconOpacity?.let { iconOpacity ->
+            markers[id]?.first?.iconOpacity = Opacity(iconOpacity.toFloat())
+        }
         options.animatedAppearance?.let { animatedAppearance ->
             markers[id]?.first?.animatedAppearance = animatedAppearance
         }

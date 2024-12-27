@@ -37,7 +37,10 @@ class SelectedMarker extends _$SelectedMarker {
       _hiddenMarker = currentSearchMarker;
       marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
 
-      final options = currentSearchMarker.options.copyWith(isVisible: false);
+      final options = currentSearchMarker.options.copyWith(
+        isVisible: false,
+        icon: currentSearchMarker.options.icon?.copyWith(iconOpacity: 0),
+      );
       unawaited(searchObjectManager.setMarkerOptions(currentSearchMarker.id, options));
     }
 
@@ -69,7 +72,10 @@ class SelectedMarker extends _$SelectedMarker {
         ).notifier,
       );
 
-      final options = _hiddenMarker!.options.copyWith(isVisible: true);
+      final options = _hiddenMarker!.options.copyWith(
+        isVisible: true,
+        icon: _hiddenMarker!.options.icon?.copyWith(iconOpacity: 1),
+      );
       unawaited(searchObjectManager.setMarkerOptions(_hiddenMarker!.id, options));
       _hiddenMarker = null;
     }
