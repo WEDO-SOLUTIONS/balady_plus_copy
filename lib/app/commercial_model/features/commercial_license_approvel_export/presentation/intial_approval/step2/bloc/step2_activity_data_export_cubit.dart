@@ -22,12 +22,17 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../../../../core/utils/constants/remote_config.dart';
+import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
+import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../../features/municipal_services/municipal_advisor/domain/use_cases/get_gis_image.dart';
 import '../../../../../../../features/vd/domain/entities/gis/gis_params.dart';
 
 import '../../../../../../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../../../../../../features/vd/domain/entities/map/map_screen_params.dart';
 import '../../../../../../../features/vd/domain/use_cases/get_gis_data.dart';
+import '../../../../data/models/initialApproval/fees_request.dart';
 import '../../../../data/models/initialApproval/isics_main_activity.dart';
 import '../../../../data/models/initialApproval/request_details_model.dart';
 import '../../../../data/models/initialApproval/sub_activity_details_data.dart';
@@ -38,9 +43,13 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../data/models/initialApproval/submit_activity_details_request.dart';
 import '../../../../data/models/lookups_model.dart';
+import '../../../../domain/use_cases/setp2_caluclate_fees_interactively.dart';
 import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
+import '../../step3/widgets/calculator.dart';
 import '../page/salama_warning_message.dart';
 import 'package:collection/collection.dart';
+
+import '../widgets/intactive_calculator_fees.dart';
 part 'step2_activity_data_export_state.dart';
 part 'map_export_event.dart';
 
@@ -49,6 +58,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   final GetAccommodationTypes _getAccommodationTypes;
   final GetSubActivityDetails _getSubActivityDetails;
   final SaveActivityDetails _saveActivityDetails;
+  CaluclateFeesInteractively _caluclateFeesInteractively;
 
 
 
@@ -62,6 +72,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
   Step2ActivityDataExportCubit()
       : _getSubActivities = GetSubActivities(repository: sl()),
+        _caluclateFeesInteractively = CaluclateFeesInteractively(repository: sl()),
         _getAccommodationTypes = GetAccommodationTypes(repository: sl()),
         _getSubActivityDetails = GetSubActivityDetails(repository: sl()),
         _saveActivityDetails = SaveActivityDetails(repository: sl()),
@@ -88,6 +99,68 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
 
   /////////Activity Actions*************************************************
+
+  void calculateFeesInteractivly() async {
+
+    if(state.location?.lon != null && state.location?.lat != null && state.selectedSubActivity?.id != null) {
+      emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
+
+      FeesRequest request = FeesRequest();
+      request.requestId = 4617349072; //sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!;
+      request.latitude = "24.664704809803055"; //state.location?.lat.toString(),
+      request.longitude = "46.72137710621826"; // state.location?.lon.toString(),
+      request.mainDetailedActivityId = 1758 ;//state.selectedSubActivity!.id!;
+      final response = await _caluclateFeesInteractively(request);
+      response.fold(
+              (failure) =>
+              emit(state.copyWith(
+                status: BlocStatus.failure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              )), (res) {
+               emit(state.copyWith(status: BlocStatus.success,));
+                if(res.activitiesCostDetailes != null) {
+
+                  BottomSheetDialog.showDraggableSheet(
+                      NavigationService.navigatorKey.currentContext!,
+                      child: BottomSheetWithActions(
+                          title: "warning_2".tr(),
+                          action: Row(
+                            children: [
+
+                              Expanded(
+                                child: ElevatedButtonWidget.primaryCustom(
+                                    text: "agree".tr(),
+                                    onPressed: () {
+                                      NavigationService.goBack();
+                                    }),
+                              ),
+                              const CustomHorizontalSpace(width: 32),
+
+                              Expanded(
+                                child: ElevatedButtonWidget.primaryCustomBorder(
+                                    text: "cancelButton".tr(),
+                                    onPressed: () {
+                                      NavigationService.goBack();
+                                    }),
+
+                              ),
+                            ],
+                          ),
+                          body:  IntactiveCalculatorFees( model: res,)
+                      ));
+
+
+
+                }
+
+
+
+      });
+    }
+  }
+
+
+
   void getSubActivityDetails(SubActivityEntity subActivity) async {
     emit(state.copyWith(
         subActivityDetailsStatus: BlocStatus.loading, errorMessage: "",
@@ -110,6 +183,8 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
           subActivityDetails: Nullable(success.data?.result),
          lstAddetionalActivities:  success.data?.result?.allowedActivities
       ));
+
+      calculateFeesInteractivly();
 
     });
   }
@@ -152,6 +227,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   }
   void onSelectSubActivity(SubActivityEntity subActivity) async {
     getSubActivityDetails(subActivity);
+
   }
   void onAccommodationTypes(LookupsModel accommodationTypes) =>
       emit(state.copyWith(selectedAccommodationType: Nullable(accommodationTypes)));
@@ -171,39 +247,6 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   }
 
 
-
-
-
-
-  // void onSelectAddetionalDetailsActivity(
-  //     AddetionalActivityItemDetails subActivity) async {
-  //   emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-  //   final response =
-  //       await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
-  //   response.fold(
-  //       (failure) => emit(state.copyWith(
-  //             status: BlocStatus.failure,
-  //             errorMessage: (failure as ServerFailure).errorMessage,
-  //           )), (success) {
-  //
-  //     emit(state.copyWith(
-  //         status: BlocStatus.success,
-  //         addetionalDetailsItem: Nullable(subActivity),
-  //         addetionalDetails: Nullable(success.data?.result)));
-  //
-  //     // if (state.selectedIsicActivity?.craft == false) {
-  //     //   BottomSheetDialog.showDraggableSheet(
-  //     //       NavigationService.navigatorKey.currentContext!,
-  //     //       child: CrStep2ConditionsPage(
-  //     //         activityTerms: success.data?.result?.activityTerms,
-  //     //       ));
-  //     // }
-  //     //
-  //     // if (state.selectedIsicActivity?.craft == true) {
-  //     //   showCraftMessage();
-  //     // }
-  //   });
-  // }
 
   void addAddetionalItemRequest({AllowedActivities? activity,required double area}) async {
     List<AddetionalActivityRequest> selectedAddetionalList =
@@ -231,47 +274,8 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     ));
 
 
-
-    // emit(state.copyWith(
-    //     addetionalActivityDetailsListStatus: BlocStatus.loading,
-    //     errorMessage: ""));
-    // final response = await _getAddetionalDetailsActivites(
-    //     AddetionalActivityDetailsRequest(
-    //         subActivityId: state.selectedSubActivity!.id.toString(),
-    //         addetionalActivityId: item.isicCode!));
-    // response.fold(
-    //     (failure) => emit(state.copyWith(
-    //           addetionalActivityDetailsListStatus: BlocStatus.failure,
-    //           errorMessage: (failure as ServerFailure).errorMessage,
-    //         )), (success) {
-    //   emit(state.copyWith(
-    //       addetionalActivityDetailsListStatus: BlocStatus.success,
-    //       addetionalItem: Nullable(item),
-    //       addetionalDetails: Nullable(null),
-    //       addetionalDetailsItem: Nullable(null),
-    //       addetionalActivityItemDetails: success.result));
-   // });
   }
-  // void getAddetionalActivites() async {
-  //   emit(state.copyWith(
-  //       additionalActivityListStatus: BlocStatus.loading,
-  //       errorMessage: "",
-  //       addetionalItem: Nullable(null),
-  //       addetionalDetails: Nullable(null),
-  //       addetionalDetailsItem: Nullable(null),
-  //       selectedAddetionalList: Nullable(null)));
-  //   final response = await _getAddetionalActivites(
-  //       state.selectedSubActivity?.id.toString() ?? "");
-  //   response.fold(
-  //       (failure) => emit(state.copyWith(
-  //             additionalActivityListStatus: BlocStatus.failure,
-  //             errorMessage: (failure as ServerFailure).errorMessage,
-  //           )), (success) {
-  //     emit(state.copyWith(
-  //         additionalActivityListStatus: BlocStatus.success,
-  //         addetionalActivityItems: success.result));
-  //   });
-  // }
+
   void deleteAddetionalActivity(int index) {
     List<AddetionalActivityRequest> selectedAddetionalList =
         state.lstSelectedAddetionalActivity ?? [];
@@ -496,41 +500,6 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
         atmFeesPaid = requestData.activities?.isAtmPaid;
 
-
-        // if (requestData?.activityInfo?.mainActivity?.isicActivityId != null) {
-        //   selectedIsicActivity = recordInfo?.crInfo?.activities?.isicActivities
-        //       ?.firstWhereOrNull((element) =>
-        //           element.isicCode ==
-        //           requestData?.activityInfo?.mainActivity?.isicActivityId
-        //               .toString());
-        //
-        //   final response =
-        //       await _getSubActivities(selectedIsicActivity?.id ?? '');
-        //   response.fold(
-        //       (failure) => emit(state.copyWith(
-        //             subActivitiesStatus: BlocStatus.failure,
-        //             errorMessage: (failure as ServerFailure).errorMessage,
-        //           )), (success) {
-        //     emit(state.copyWith(
-        //         selectedIsicActivity: selectedIsicActivity,
-        //         subActivitiesStatus: BlocStatus.success,
-        //         subActivities: List.from(success)));
-        //   });
-        //
-        //   if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
-        //       null) {
-        //     selectedSubActivity = state.subActivities.firstWhereOrNull(
-        //         (element) =>
-        //             element.id ==
-        //             requestData?.activityInfo?.mainActivity?.detailedActivityId);
-        //
-        //     if (selectedSubActivity != null) {
-        //       getSubActivityDetails(selectedSubActivity);
-        //     }
-        //   }
-        // }
-        //
-
         double? latitude =
         double.tryParse(requestData.location?.latitude ?? "");
         double? longitude =
@@ -612,7 +581,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   /////// map actions ***************************************************************************
 
   Future<void> _getGisDataHandler(GetGISDataExportEvent e, Emitter emitter) async {
-    if ((state.status == BlocStatus.loading)) return;
+   if ((state.status == BlocStatus.loading)) return;
     emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     GISParams params = e.params;
 
@@ -643,6 +612,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       ));
 
       if (e.popPage) {
+
         mapNpController.text =
         success.planNo != "Null" ? success.planNo ?? "" : "";
         landNpController.text =
@@ -655,7 +625,11 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
           NavigationService.navigatorKey.currentState
               ?.pop(MapScreenParams(gisParams: e.params, gisResponse: success));
         }
+
+        calculateFeesInteractivly();
       }
+
+
     });
   }
 
@@ -766,6 +740,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       emitter(state.copyWith(status: BlocStatus.success, locationResponse: r));
       sl<CommercialLicenseInitialAprrovalBloc>().add((UpdateFieldEvent(
           saveLocationResponse: r, requestId: requestId)));
+
     });
   }
 
@@ -881,15 +856,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     return false;
   }
 
-  static showCustomDialog(Widget dialog, {bool isDismiss = true}) {
-    showDialog(
-        context: NavigationService.navigatorKey.currentState!.context,
-        barrierDismissible: isDismiss,
-        builder: (ctx) => Dialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12.0)),
-            child: dialog));
-  }
+
 
   // void initDraft() async {
   //   bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;

@@ -23,7 +23,9 @@ abstract class Repository {
   Future<Either<Failure, int>> saveActivityDetails(SubmitActivityDetailRequest? params);
   Future<Either<Failure, SaveLocationResponseModel>> saveLocationDetails(SaveLocationDataRequest? params);
   Future<Either<Failure, CalculateFeesResponseModel>> crCalculateFee({required CrCalculateFeesRequest params});
+
   Future<Either<Failure, CalculateFeesResponseModel>> CalculateFeesInteractively({required FeesRequest params});
+
   Future<Either<Failure, SubmitRequestResponseModel>> submitInitialApproval(int requestId);
 
   Future<Either<Failure, IssueCommercialConculsionEntity>> getCommercialConculsion({required int params});

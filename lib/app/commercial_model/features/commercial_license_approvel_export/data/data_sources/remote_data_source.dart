@@ -775,7 +775,7 @@ class RemoteDataSourceImpl extends RemoteDataSource {
           ),
           data: params.toJson());
 
-      var data = response.data["data"]["result"];
+      var data = response.data["data"]["result"]["calculatorResponseBody"];
 
       var parsedResult =
       data != null ? CalculateFeesResponseModel.fromJson(data) : null;

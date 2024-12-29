@@ -35,21 +35,6 @@ class _CalcualtorFeesState extends State<CalcualtorFees> {
           child: Column(
             children: [
               Container(
-                // padding: const EdgeInsets.all(16),
-                // decoration: const BoxDecoration(
-                //   borderRadius: BorderRadius.only(
-                //     topLeft: Radius.circular(16),
-                //     topRight: Radius.circular(16),
-                //   ),
-                //   boxShadow: [
-                //     BoxShadow(
-                //       color: AppColor.darkSlateBlue6,
-                //       offset: Offset(0, -4),
-                //       blurRadius: 32,
-                //     )
-                //   ],
-                //   color: AppColor.blackModern50Light,
-                // ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
