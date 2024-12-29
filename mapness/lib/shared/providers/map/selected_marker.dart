@@ -39,8 +39,8 @@ class SelectedMarker extends _$SelectedMarker {
 
       final options = currentSearchMarker.options.copyWith(
         isVisible: false,
-        icon: currentSearchMarker.options.icon?.copyWith(iconOpacity: 0),
       );
+
       unawaited(searchObjectManager.setMarkerOptions(currentSearchMarker.id, options));
     }
 
@@ -65,18 +65,11 @@ class SelectedMarker extends _$SelectedMarker {
     );
 
     if (_hiddenMarker != null) {
-      final searchObjectManager = ref.read(
-        mapObjectManagerProvider(
-          named: searchSettings.name,
-          layerId: searchSettings.layerId,
-        ).notifier,
-      );
-
       final options = _hiddenMarker!.options.copyWith(
         isVisible: true,
-        icon: _hiddenMarker!.options.icon?.copyWith(iconOpacity: 1),
       );
-      unawaited(searchObjectManager.setMarkerOptions(_hiddenMarker!.id, options));
+
+      unawaited(mapObjectManager.setMarkerOptions(_hiddenMarker!.id, options));
       _hiddenMarker = null;
     }
 

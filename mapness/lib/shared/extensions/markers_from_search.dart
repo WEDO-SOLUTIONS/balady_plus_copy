@@ -6,6 +6,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
@@ -105,7 +106,9 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               ),
             ),
             position: markerInfo.geoPoint,
-            icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(size: 16),
+            isVisible: true,
+            icon: icon?.copyWith(iconOpacity: 1) ??
+                LayersSvgPaths.basicMarker.markerIcon(size: 16).copyWith(iconOpacity: 1),
           ),
         ),
       );

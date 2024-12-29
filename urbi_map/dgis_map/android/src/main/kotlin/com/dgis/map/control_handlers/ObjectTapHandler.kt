@@ -1,5 +1,8 @@
 package com.dgis.map.control_handlers
 
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.util.Log
 import android.util.Size
 import com.dgis.map.FlutterClusterRenderer
 import com.dgis.map.R
@@ -9,6 +12,19 @@ import com.dgis.map.extensions.toMap
 import com.dgis.map.extensions.toMessage
 import com.dgis.map.extensions.toTextStyle
 import com.dgis.map.extensions.unsafeLazy
+import com.dgis.map.map_api.AddLayerPointObjectsMessage
+import com.dgis.map.map_api.AddMarkersWithPhotoMessage
+import com.dgis.map.map_api.CalcPositionOptionsMessage
+import com.dgis.map.map_api.CameraPositionMessage
+import com.dgis.map.map_api.CameraSetPaddingMessage
+import com.dgis.map.map_api.ChangeMarkerOptionsMessage
+import com.dgis.map.map_api.ClusteringMapObjectManagerOptionsMessage
+import com.dgis.map.map_api.FlutterMapApi
+import com.dgis.map.map_api.MapObjectManagerMessage
+import com.dgis.map.map_api.MarkerMessage
+import com.dgis.map.map_api.PolygonMessage
+import com.dgis.map.map_api.PolylineMessage
+import com.dgis.map.map_api.RenderedObjectMessage
 import com.dgis.map.user_data.PhotoData
 import io.flutter.FlutterInjector
 import io.flutter.plugin.common.EventChannel.EventSink
@@ -19,15 +35,42 @@ import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
-import ru.dgis.sdk.map.*
+import ru.dgis.sdk.map.Anchor
+import ru.dgis.sdk.map.Attributes
+import ru.dgis.sdk.map.Color
+import ru.dgis.sdk.map.DgisMapObject
+import ru.dgis.sdk.map.DgisSource
+import ru.dgis.sdk.map.GeometryMapObject
+import ru.dgis.sdk.map.Image
+import ru.dgis.sdk.map.LogicalPixel
+import ru.dgis.sdk.map.MapDirection
+import ru.dgis.sdk.map.MapObjectManager
+import ru.dgis.sdk.map.Marker
+import ru.dgis.sdk.map.MarkerOptions
+import ru.dgis.sdk.map.MyLocationMapObject
+import ru.dgis.sdk.map.Opacity
+import ru.dgis.sdk.map.Padding
+import ru.dgis.sdk.map.Polygon
+import ru.dgis.sdk.map.PolygonOptions
+import ru.dgis.sdk.map.Polyline
+import ru.dgis.sdk.map.PolylineOptions
+import ru.dgis.sdk.map.RenderedObjectInfo
+import ru.dgis.sdk.map.RoadEventMapObject
+import ru.dgis.sdk.map.RouteMapObject
+import ru.dgis.sdk.map.ScreenDistance
+import ru.dgis.sdk.map.SimpleClusterObject
+import ru.dgis.sdk.map.SimpleMapObject
+import ru.dgis.sdk.map.Tilt
+import ru.dgis.sdk.map.ZIndex
+import ru.dgis.sdk.map.Zoom
+import ru.dgis.sdk.map.calcPosition
+import ru.dgis.sdk.map.imageFromAsset
+import ru.dgis.sdk.map.imageFromBitmap
+import ru.dgis.sdk.map.imageFromResource
 import ru.dgis.sdk.road_events.RoadEventType
 import java.io.FileNotFoundException
-import java.lang.IllegalArgumentException
-import java.util.*
+import java.util.UUID
 import java.util.concurrent.Executors
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import com.dgis.map.map_api.*
 
 class ObjectTapHandler(
     private val map: ru.dgis.sdk.map.Map,
@@ -213,11 +256,11 @@ class ObjectTapHandler(
         }
     }
 
-    private fun mapMarker(marker: MarkerMessage, callback: (Result<Unit>) -> Unit): Marker? {
+    private fun mapMarker(marker: MarkerMessage, callback: (Result<Unit>) -> Unit): Marker {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
-            
-            val iconOptions = marker.options.icon!!
+
+            val iconOptions = marker.options.icon
 
             val svgPath = iconOptions.svgPath
             val pngPath = iconOptions.pngPath
@@ -253,7 +296,9 @@ class ObjectTapHandler(
             } ?: LogicalPixel(0f),
             userData = MarkerId(marker.id),
             animatedAppearance = marker.options.animatedAppearance ?: false,
-            zIndex = ZIndex(marker.options.zIndex?.toInt() ?: 0)
+            zIndex = ZIndex(marker.options.zIndex?.toInt() ?: 0),
+            visible = (marker.options.isVisible ?: true),
+            iconOpacity = Opacity(marker.options.icon?.iconOpacity?.toFloat() ?: 1.0f)
         )
 
         return Marker(options)
@@ -493,7 +538,7 @@ class ObjectTapHandler(
     fun addPolygons(polygons: List<PolygonMessage>, managerId: String?, callback: (Result<Unit>) -> Unit) {
         val polygonObjects = mutableMapOf<String, Pair<Polygon, String?>>()
         for (polygon in polygons) {
-            val polygonObject = mapPolygon(polygon) ?: return
+            val polygonObject = mapPolygon(polygon)
             polygonObjects[polygon.id] = Pair(polygonObject, managerId)
         }
 

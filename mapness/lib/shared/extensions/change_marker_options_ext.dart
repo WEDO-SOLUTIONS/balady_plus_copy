@@ -24,6 +24,27 @@ extension ChangeMarkerOptionsExt on MarkerOptionsMessage {
       );
 }
 
+extension ChangeTextStyleExt on MarkerTextStyleMessage {
+  MarkerTextStyleMessage copyWith({
+    double? fontSize,
+    int? color,
+    double? strokeWidth,
+    int? strokeColor,
+    MarkerTextPlacementMessage? textPlacement,
+    double? textOffset,
+    String? fontName,
+  }) =>
+      MarkerTextStyleMessage(
+        fontSize: fontSize ?? this.fontSize,
+        color: color ?? this.color,
+        strokeWidth: strokeWidth ?? this.strokeWidth,
+        strokeColor: strokeColor ?? this.strokeColor,
+        textPlacement: textPlacement ?? this.textPlacement,
+        textOffset: textOffset ?? this.textOffset,
+        fontName: fontName ?? this.fontName,
+      );
+}
+
 extension ChagneMarkerIconMessage on MarkerIconMessage {
   MarkerIconMessage copyWith({
     String? svgPath,

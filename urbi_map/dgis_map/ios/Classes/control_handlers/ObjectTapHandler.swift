@@ -356,7 +356,6 @@ class ObjectTapHandler {
         if let animatedAppearance = options.animatedAppearance {
             self.markers[id]?.0.animatedAppearance = animatedAppearance
         }
-        
         if let iconOpacity = options.icon?.iconOpacity {
             self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
         }
@@ -402,20 +401,10 @@ class ObjectTapHandler {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage(id: managerId)
         
-        let manager = MapObjectManager.withClustering(
+        let manager = MapObjectManager.withGeneralization(
             map: self.map,
-            logicalPixel: LogicalPixel(value: Float(options.logicalPixel)),
-            maxZoom: Zoom(value: Float(options.maxZoom)),
-            clusterRenderer: FlutterClusterRenderer(
-                api: self.flutterApi,
-                registrar: self.registrar,
-                imageFactory: self.imageFactory,
-                manager: managerMessage,
-                objectsQueue: objectsQueue
-            ),
-            minZoom: options.minZoom.map {
-                Zoom(value: Float($0))
-            } ?? Zoom(value: 0),
+            logicalPixel: LogicalPixel(value: 70),
+            maxZoom: Zoom(value: 18),
             layerId: layerId
         )
         
