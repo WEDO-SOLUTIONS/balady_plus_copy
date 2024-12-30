@@ -100,10 +100,10 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
 
       FeesRequest request = FeesRequest();
-      request.requestId = 4617349072; //sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!;
-      request.latitude = "24.664704809803055"; //state.location?.lat.toString(),
-      request.longitude = "46.72137710621826"; // state.location?.lon.toString(),
-      request.mainDetailedActivityId = 1758 ;//state.selectedSubActivity!.id!;
+      request.requestId = sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!;
+      request.latitude = state.location?.lat.toString();
+      request.longitude =  state.location?.lon.toString();
+      request.mainDetailedActivityId = state.selectedSubActivity!.id!;
       final response = await _caluclateFeesInteractively(request);
       response.fold(
               (failure) =>
