@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/initialApproval/addetional_activity_request.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/save_location_data_request.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/save_location_response.dart';
@@ -28,7 +29,6 @@ import '../../../../../../../features/_shared_feature_/presentation/dialogs/bott
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../../features/municipal_services/municipal_advisor/domain/use_cases/get_gis_image.dart';
 import '../../../../../../../features/vd/domain/entities/gis/gis_params.dart';
-
 import '../../../../../../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../../../../../../features/vd/domain/entities/map/map_screen_params.dart';
 import '../../../../../../../features/vd/domain/use_cases/get_gis_data.dart';
@@ -36,18 +36,12 @@ import '../../../../data/models/initialApproval/fees_request.dart';
 import '../../../../data/models/initialApproval/isics_main_activity.dart';
 import '../../../../data/models/initialApproval/request_details_model.dart';
 import '../../../../data/models/initialApproval/sub_activity_details_data.dart';
-
-
 import 'package:localize_and_translate/localize_and_translate.dart';
-
-
 import '../../../../data/models/initialApproval/submit_activity_details_request.dart';
 import '../../../../data/models/lookups_model.dart';
 import '../../../../domain/use_cases/setp2_caluclate_fees_interactively.dart';
 import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
-import '../../step3/widgets/calculator.dart';
-import '../page/salama_warning_message.dart';
-import 'package:collection/collection.dart';
+
 
 import '../widgets/intactive_calculator_fees.dart';
 part 'step2_activity_data_export_state.dart';
@@ -122,31 +116,34 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
                   BottomSheetDialog.showDraggableSheet(
                       NavigationService.navigatorKey.currentContext!,
+                      backgroundColor:AppColor.black,
                       child: BottomSheetWithActions(
                           title: "warning_2".tr(),
-                          action: Row(
-                            children: [
+                          action: ElevatedButtonWidget.primaryCustom(
+                              text: "agree".tr(),
+                              onPressed: () {
+                                NavigationService.goBack();
+                              }),
 
-                              Expanded(
-                                child: ElevatedButtonWidget.primaryCustom(
-                                    text: "agree".tr(),
-                                    onPressed: () {
-                                      NavigationService.goBack();
-                                    }),
-                              ),
-                              const CustomHorizontalSpace(width: 32),
-
-                              Expanded(
-                                child: ElevatedButtonWidget.primaryCustomBorder(
-                                    text: "cancelButton".tr(),
-                                    onPressed: () {
-                                      NavigationService.goBack();
-                                    }),
-
-                              ),
-                            ],
-                          ),
-                          body:  IntactiveCalculatorFees( model: res,)
+                          // Row(
+                          //   children: [
+                          //
+                          //     // Expanded(
+                          //     //   child: ,
+                          //     // ),
+                          //     // const CustomHorizontalSpace(width: 32),
+                          //     //
+                          //     // Expanded(
+                          //     //   child: ElevatedButtonWidget.primaryCustomBorder(
+                          //     //       text: "cancelButton".tr(),
+                          //     //       onPressed: () {
+                          //     //         NavigationService.goBack();
+                          //     //       }),
+                          //     //
+                          //     // ),
+                          //   ],
+                          // ),
+                          body:IntactiveCalculatorFees( model: res,)
                       ));
 
 
@@ -162,6 +159,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
 
   void getSubActivityDetails(SubActivityEntity subActivity) async {
+    if(subActivity.id == null) return;
     emit(state.copyWith(
         subActivityDetailsStatus: BlocStatus.loading, errorMessage: "",
         userSelectedAddetionalItem:state.isDraft==true?null: Nullable(null),
@@ -187,8 +185,11 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
       calculateFeesInteractivly();
 
     });
+
   }
   void onSelectIsicActivity(IsicsMainActivity isicActivity) async {
+    if(isicActivity.id == null||isicActivity.id.toString().isEmpty) return;
+
     emit(state.copyWith(
         selectedSubActivity:state.isDraft==true?null: Nullable(null),
         subActivityDetails: state.isDraft==true?null: Nullable(null),
@@ -531,11 +532,12 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
             selectedWorkerType: Nullable(workerType),
             unitCount:requestData.activities?.unitCount ,
             selectedAccommodationType: Nullable(requestData.activities?.accommodationType),
-            selectedIsicActivity: Nullable(selectedMainActivity),
+            selectedIsicActivity:selectedMainActivity.id != null? Nullable(selectedMainActivity):Nullable(null),
             atmFeesPaid: atmFeesPaid,
-            isDraft: true,
+            isDraft: false,
             draftStatus: BlocStatus.success,
-            selectedSubActivity: Nullable(selectedSubActivity)));
+            selectedSubActivity:selectedSubActivity.id != null? Nullable(selectedSubActivity):Nullable(null)
+        ));
 
 
         if(requestData.activities!.addedActivities != null) {
@@ -549,7 +551,9 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
                 activity: item, area:requestData.activities!.addedActivities![index].area!);
           }
         }
-        onSelectIsicActivity(selectedMainActivity);
+        if(selectedMainActivity.id != null && selectedMainActivity.id.toString().isNotEmpty ) {
+          onSelectIsicActivity(selectedMainActivity);
+        }
         getSubActivityDetails(selectedSubActivity);
 
 

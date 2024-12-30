@@ -30,7 +30,8 @@ class _Step2IntialApprovalGeolocationDataState extends State<Step2IntialApproval
 
    // context.read<MapExportBloc>().initDraft();
 
-    context.read<Step2ActivityDataExportCubit>().initDraft();
+    //context.read<Step2ActivityDataExportCubit>().initDraft();
+
   }
 
   @override

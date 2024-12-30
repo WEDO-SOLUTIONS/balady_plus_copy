@@ -78,24 +78,17 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
                 children: [
       
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
-                  const SizedBox(height: 15,),
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),),
-                  const SizedBox(height: 15,),
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
-                  const SizedBox(height: 15,),
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
-                  const SizedBox(height: 15,),
-      
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
-                  const SizedBox(height: 15,),
-      
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
-                  const SizedBox(height: 15,),
-                  CustomExpansionPanelWidget(
+
+                  state.issueCommercialConculsionEntity?.calculateStandardFees != null?  CustomExpansionPanelWidget(
                       title:"fee_calculator".tr(),
                       leading: SvgPicture.asset(IconPath.serviceCardDesc),
                       children: [CalcualtorFees(),]
-                  ),
+                  ):Container(),
                   const SizedBox(height: 15,),
       
       
@@ -140,12 +133,18 @@ class ExpansionSectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomExpansionPanelWidget(
-      title: term?.sectionName,
-      leading: SvgPicture.asset(IconPath.serviceCardDesc),
-      children: [ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [])]
-      ,
-    );
+    return term != null?
+    Column(
+      children: [
+        CustomExpansionPanelWidget(
+          title: term?.sectionName,
+          leading: SvgPicture.asset(IconPath.serviceCardDesc),
+          children: [ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [])]
+          ,
+        ),
+        const SizedBox(height: 15,),
+      ],
+    ):Container();
   }
 }
 
@@ -239,12 +238,18 @@ class OfficeExpansionSectionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomExpansionPanelWidget(
-      title: term?.sectionName,
-      leading: SvgPicture.asset(IconPath.serviceCardDesc),
-      children: [OfficeItem(values:  term?.sectionContent?.offices ?? [])]
-      ,
-    );
+    return term != null?Column(
+      children: [
+
+        CustomExpansionPanelWidget(
+          title: term?.sectionName,
+          leading: SvgPicture.asset(IconPath.serviceCardDesc),
+          children: [OfficeItem(values:  term?.sectionContent?.offices ?? [])]
+          ,
+        ),
+        const SizedBox(height: 15,),
+      ],
+    ):Container();
   }
 
 
