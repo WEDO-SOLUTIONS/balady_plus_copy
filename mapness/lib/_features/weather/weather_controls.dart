@@ -1,4 +1,7 @@
+import 'package:balady_uikit/balady_uikit.dart'
+    show RadiusBorder, Spacing, StatefulBottomSheetController, ThreeStateBottomSheet;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
@@ -10,7 +13,10 @@ import 'package:mapness/_features/weather/provider/weather_map_controls.dart';
 import 'package:mapness/_features/weather/widgets/weather_state_icon.dart';
 
 class WeatherControls extends ConsumerWidget {
+  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+
   const WeatherControls({
+    required this.bottomSheetController,
     super.key,
   });
 
@@ -25,12 +31,10 @@ class WeatherControls extends ConsumerWidget {
         children: [
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 12,
-                top: 12,
-                right: 12,
-                bottom: 16,
-              ),
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.$3x,
+                vertical: Spacing.$3x,
+              ).copyWith(bottom: Spacing.$4x),
               child: Row(
                 children: [
                   Column(
@@ -39,7 +43,7 @@ class WeatherControls extends ConsumerWidget {
                       const Spacer(),
                       AnimatedOpacity(
                         opacity: mapControls.controlsVisible ? 1 : 0,
-                        duration: const Duration(milliseconds: 150),
+                        duration: Durations.short3,
                         child: const Legend(),
                       ),
                       SizedBox(
@@ -48,18 +52,16 @@ class WeatherControls extends ConsumerWidget {
                     ],
                   ),
                   const Spacer(),
-                  const Column(
+                  Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      WeatherStateIcon(),
-                      Spacer(),
-                      ZoomControl(),
-                      Spacer(),
-                      CompassControl(),
-                      SizedBox(
-                        height: 8,
-                      ),
-                      FollowControl(),
+                      const WeatherStateIcon(),
+                      const Spacer(),
+                      const ZoomControl(),
+                      const Spacer(),
+                      const CompassControl(),
+                      Spacing.$2x.heightBox,
+                      const FollowControl(),
                     ],
                   ),
                 ],
@@ -91,8 +93,8 @@ class Legend extends ConsumerWidget {
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(8),
-              topRight: Radius.circular(8),
+              topLeft: Radius.circular(RadiusBorder.m),
+              topRight: Radius.circular(RadiusBorder.m),
             ),
           ),
           child: Text(measureUnit, style: style),
@@ -101,8 +103,8 @@ class Legend extends ConsumerWidget {
           width: 30,
           decoration: const BoxDecoration(
             borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(8),
-              bottomRight: Radius.circular(8),
+              bottomLeft: Radius.circular(RadiusBorder.m),
+              bottomRight: Radius.circular(RadiusBorder.m),
             ),
             gradient: LinearGradient(
               begin: Alignment.topCenter,
@@ -126,7 +128,7 @@ class Legend extends ConsumerWidget {
             ),
           ),
           child: Padding(
-            padding: const EdgeInsets.only(bottom: 4, top: 4),
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
             child: Column(
               children: measures.map((e) => Text(e, style: style)).toList(),
             ),

@@ -168,12 +168,22 @@
                 <data android:host="balady.gov.sa"/>
                 <data android:host="apps.balady.gov.sa"/>
             </intent-filter>
+
+
+            <intent-filter >
+               <action android:name="android.intent.action.VIEW"/>
+               <category android:name="android.intent.category.DEFAULT"/>
+               <category android:name="android.intent.category.BROWSABLE"/>
+               <data android:scheme="geo"/>
+           </intent-filter>
+
         </activity>
 
         <activity
         android:name="net.openid.appauth.RedirectUriReceiverActivity"
             android:exported="true"
         tools:node="replace">
+
     <intent-filter>
         <action android:name="android.intent.action.VIEW"/>
         <category android:name="android.intent.category.DEFAULT"/>

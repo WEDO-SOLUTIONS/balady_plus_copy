@@ -3,10 +3,9 @@ import 'dart:async';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mapness/app/router.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
-import 'package:mapness/shared/ui/sheets/location_required_sheet.dart';
 import 'package:permission_handler/permission_handler.dart' as perm;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -48,7 +47,7 @@ class _Location extends _$Location {
   Future<bool> checkLocationPermission({String? routeOnClose}) async {
     const routeLocation = '/request_location';
     final serviceStatus = await perm.Permission.location.serviceStatus;
-    final router = ref.read(goRouterProvider);
+    final router = ref.read(appRouterProvider);
 
     if (serviceStatus != perm.ServiceStatus.disabled) {
       final status = await perm.Permission.location.request();
@@ -57,14 +56,14 @@ class _Location extends _$Location {
         if (CommonFunctions.locationDialogShowed) {
           return false;
         }
-        if (ref.read(currentRouteProvider)?.currentPath == routeLocation) {
+        if (router.isPathActive(routeLocation)) {
           return false;
         }
         CommonFunctions.locationDialogShowed = true;
 
         unawaited(
           router
-              .push(LocationErrorSheetRoute(routeOnClose: routeOnClose).location)
+              .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
               .then((value) => CommonFunctions.locationDialogShowed = false),
         );
         return false;
@@ -83,14 +82,14 @@ class _Location extends _$Location {
       if (CommonFunctions.locationDialogShowed) {
         return false;
       }
-      if (ref.read(currentRouteProvider)?.currentPath == routeLocation) {
+      if (router.isPathActive(routeLocation)) {
         return false;
       }
       CommonFunctions.locationDialogShowed = true;
 
       unawaited(
         router
-            .push(LocationErrorSheetRoute(routeOnClose: routeOnClose).location)
+            .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
             .then((value) => CommonFunctions.locationDialogShowed = false),
       );
     }
@@ -108,6 +107,8 @@ class _Location extends _$Location {
           desiredAccuracy: DesiredAccuracyMessage.high,
         ),
       );
+
+      CommonFunctions.locationDialogShowed = false;
       ref.invalidateSelf();
       return true;
     }

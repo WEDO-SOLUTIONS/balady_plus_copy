@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map_platform_interface/library.dart';
-import 'package:dgis_map_platform_interface/src/events/object_tap_events.dart';
 
 typedef OnObjectTap = void Function();
 typedef ClusterRenderer = SimpleClusterOptionsMessage Function(int objectCount);
@@ -78,9 +77,7 @@ class ObjectTapEventHandler {
         fontName: textStyle["fontName"],
       ),
       cluster["iconWidth"],
-      cluster["iconMapDirection"] != null
-          ? MarkerAzimuthMessage(degree: cluster["iconMapDirection"])
-          : null,
+      cluster["iconMapDirection"] != null ? MarkerAzimuthMessage(degree: cluster["iconMapDirection"]) : null,
       cluster["text"],
     );
     await clusterHandlers[id]?.call(clusterObject);

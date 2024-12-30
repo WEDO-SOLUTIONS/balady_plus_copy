@@ -3,7 +3,6 @@ package com.dgis.map.android_auto
 import android.graphics.Color
 import androidx.car.app.AppManager
 import androidx.car.app.CarContext
-import androidx.car.app.Screen
 import androidx.car.app.ScreenManager
 import androidx.car.app.model.Action
 import androidx.car.app.model.ActionStrip
@@ -42,7 +41,7 @@ class NavigationScreen(
         carContext: CarContext,
         private val mapController: CarMapController,
         private val customRenderer: CustomRenderer,
-) : Screen(carContext), CarNavigationHandler.NavigationListener {
+) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener {
 
     private val navigationManager: NavigationManager
     private val carNotificationManager: CarNotificationManager
@@ -53,7 +52,7 @@ class NavigationScreen(
                 carContext.getCarService(NavigationManager::class.java).apply {
                     setNavigationManagerCallback(
                             object : NavigationManagerCallback {
-                                override fun onStopNavigation() = stopNavigation(bySystem = true)
+                                override fun onStopNavigation() = stopNavigation()
                                 override fun onAutoDriveEnabled() =
                                         mapController.startNavigationSimulation()
                             }
@@ -74,7 +73,6 @@ class NavigationScreen(
         )
     }
 
-    private var isPanMode: Boolean = false
     private var isTrafficEnabled: Boolean = false
     private var isEndTripShown: Boolean = false
 
@@ -125,28 +123,12 @@ class NavigationScreen(
             actionStrip.addAction(buildStopNavigationAction())
         }
 
-        val panIconBuilder =
-                CarIcon.Builder(IconCompat.createWithResource(carContext, R.drawable.pan))
-        if (isPanMode) {
-            panIconBuilder.setTint(CarColor.BLUE)
-        }
-        val panAction = Action.Builder(Action.PAN).setIcon(panIconBuilder.build())
-
-        val mapActionStrip =
-                ActionStrip.Builder()
-                        .addAction(panAction.build())
-                        .addAction(zoomInAction)
-                        .addAction(zoomOutAction)
-                        .addAction(followMyLocationAction)
-
+        val mapActionStrip = buildMapActionStrip(isNavigation)
         val navigationTemplate = NavigationTemplate.Builder()
         navigationTemplate.setBackgroundColor(CarColor.GREEN)
         navigationTemplate.setActionStrip(actionStrip.build())
-        navigationTemplate.setMapActionStrip(mapActionStrip.build())
-        navigationTemplate.setPanModeListener { isPanMode ->
-            this.isPanMode = isPanMode
-            invalidate()
-        }
+        navigationTemplate.setMapActionStrip(mapActionStrip)
+        navigationTemplate.setPanModeListener(panModeListener)
 
         if (isNavigation) {
             if (locationState == LocationState.NOT_AVAILABLE) {
@@ -353,7 +335,7 @@ class NavigationScreen(
         customRenderer.render(CustomRendererData(speedInfo))
     }
 
-    private fun stopNavigation(bySystem: Boolean = false) {
+    private fun stopNavigation() {
         navigationState = NavigationState.DISABLED
         speedInfo = SpeedInfoModel()
         step = null
@@ -365,10 +347,6 @@ class NavigationScreen(
         val notification = NavigationCarAppService.getDefaultNotification(carContext)
         carNotificationManager.notify(NavigationCarAppService.notificationId, notification)
         mapController.stopNavigation()
-        val screenManager = carContext.getCarService(ScreenManager::class.java)
-        if (!bySystem && screenManager.top is NavigationScreen) {
-            screenManager.push(StartNavigationMessageScreen(carContext))
-        }
     }
 
     private fun openFavorites() {
@@ -499,54 +477,6 @@ class NavigationScreen(
                                 .build()
                 )
     }
-
-    private val zoomInAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.zoom_plus
-                                            )
-                                    )
-                                    .build()
-                    )
-                    .setOnClickListener { mapController.zoomIn() }
-                    .build()
-
-    private val zoomOutAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.zoom_minus
-                                            )
-                                    )
-                                    .build()
-                    )
-                    .setOnClickListener { mapController.zoomOut() }
-                    .build()
-
-    private val followMyLocationAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.location
-                                            )
-                                    )
-                                    .build()
-                    )
-                    .setOnClickListener {
-                        if (navigationState == NavigationState.DISABLED) {
-                            mapController.showMyLocation()
-                        } else {
-                            mapController.followNavigation()
-                        }
-                    }
-                    .build()
 
     private val favouriteAction =
             Action.Builder()

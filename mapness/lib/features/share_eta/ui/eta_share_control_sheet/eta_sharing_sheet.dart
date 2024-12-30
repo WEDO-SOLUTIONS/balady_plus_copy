@@ -25,7 +25,8 @@ class EtaSharingSheet extends StatelessWidget {
                 title: context.l10n.liveLocation,
                 titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                   color: context.colorsV2.foregroundDefault,
-                )),
+              ),
+            ),
           ),
           ContentRow(
             onTap: onCurrentLocationPressed,
@@ -41,7 +42,8 @@ class EtaSharingSheet extends StatelessWidget {
                 title: context.l10n.currentLocation,
                 titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                   color: context.colorsV2.foregroundDefault,
-                )),
+              ),
+            ),
           )
         ],
       );

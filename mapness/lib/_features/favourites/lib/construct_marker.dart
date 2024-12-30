@@ -1,24 +1,30 @@
 import 'package:dgis_map/library.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
 
-Marker constructMarker(
-    FavouriteItem item, MarkerIconMessage icon, GoRouter router) {
+Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter router) {
   final position = GeoPointWithElevationMessage(
     latitude: item.coordinates.latitude,
     longitude: item.coordinates.longitude,
     elevation: 1,
   );
 
-  final onTapInsideOnTap = () async {
+  final onTapInsideOnTap = () {
     final id = int.tryParse(item.entity?.id ?? '');
     if (id == null) {
       return;
     }
-    router.go(const LandingRoute().location);
-    await router.push(PoiMapRoute(dgisObjectId: id).location);
+    router.replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: DgisObjectIdMessage(
+          objectId: id,
+          entranceId: 0,
+        ),
+      ),
+      toCompareRoutes: [PoiCardWidgetRoute.page],
+    );
   };
 
   return Marker(

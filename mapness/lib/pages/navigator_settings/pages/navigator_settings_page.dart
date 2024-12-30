@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -5,18 +6,18 @@ import 'package:balady_uikit/core/utils/constants.dart';
 import 'package:balady_uikit/gen/assets/assets.gen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/dark_map.dart';
-import 'package:mapness/app/routes/sound_settings.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:mapness/shared/providers/map/navigator_route_settings.dart';
 import 'package:mapness/shared/providers/map/navigator_speed_cameras_settings.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+@RoutePage()
 class NavigatorSettingsPage extends ConsumerWidget {
   const NavigatorSettingsPage({super.key});
 
@@ -48,7 +49,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                   color: colorsV2.foregroundDefault,
                 ),
                 leading: ActionModel(
-                  onPressed: () => context.pop(),
+                  onPressed: () => context.router.popForced(),
                   icon: SystemIcons.arrowCornerLeftLarge,
                 ),
               ),
@@ -67,70 +68,97 @@ class NavigatorSettingsPage extends ConsumerWidget {
                           ),
                           child: Column(
                             children: [
-                              Consumer(builder: (context, ref, _) {
-                                final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
 
-                                return ContentRow(
-                                  onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
-                                  options: ContentRowOptions(
-                                    title: l10n.avoidTollRoads,
-                                    dividerEnabled: true,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
+                                  return ContentRow(
+                                    onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidTollRoads(),
+                                    options: ContentRowOptions(
+                                      title: l10n.avoidTollRoads,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: navigatorRouteSettings.avoidTollRoads,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
-                              Consumer(builder: (context, ref, _) {
-                                final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
-                                return ContentRow(
-                                  onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
-                                  options: ContentRowOptions(
-                                    title: l10n.avoidUnpavedRoads,
-                                    dividerEnabled: true,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
+                                  );
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final navigatorRouteSettings = ref.watch(navigatorRouteSettingsProvider);
+                                  return ContentRow(
+                                    onToggle: (_) => navigatorRouteSettingsNotifier.toggleAvoidUnpavedRoads(),
+                                    options: ContentRowOptions(
+                                      title: l10n.avoidUnpavedRoads,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: navigatorRouteSettings.avoidUnpavedRoads,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
-                              Consumer(builder: (context, ref, _) {
-                                final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
-                                return ContentRow(
-                                  onToggle: (_) => betterRouteSettingsNotifier.toggle(),
-                                  options: ContentRowOptions(
-                                    title: l10n.suggestRouteBetter,
-                                    dividerEnabled: true,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: betterRouteSettings,
+                                  );
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final betterRouteSettings = ref.watch(betterRouteSuggestionsProvider);
+                                  return ContentRow(
+                                    onToggle: (_) => betterRouteSettingsNotifier.toggle(),
+                                    options: ContentRowOptions(
+                                      title: l10n.suggestRouteBetter,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: betterRouteSettings,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
-                              Consumer(builder: (context, ref, _) {
-                                final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
-                                return ContentRow(
-                                  onToggle: (_) {
-                                    ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart();
-                                  },
-                                  options: ContentRowOptions(
-                                    title: l10n.autorunNavigator,
-                                    titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
-                                    subtitle: l10n.automaticallyLaunchNavigator,
-                                    subtitleMaxlines: 2,
-                                    actionWidget: ContentRowActionOptions(
-                                      enabledToggle: true,
-                                      toggleInitialValue: autorun,
+                                  );
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, _) {
+                                  final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider) ?? false;
+                                  return ContentRow(
+                                    onToggle: (_) => ref
+                                        .read(navigatorAutoEnableParkingProvider.notifier)
+                                        .toggleAutoEnableParking(value: !autoEnableParking),
+                                    options: ContentRowOptions(
+                                      title: l10n.automaticParkingLayer,
+                                      dividerEnabled: true,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: autoEnableParking,
+                                      ),
                                     ),
-                                  ),
-                                );
-                              }),
+                                  );
+                                },
+                              ),
+                              Consumer(
+                                builder: (context, ref, child) {
+                                  final autorun = ref.watch(freeRoamAutostartSettingsProvider.notifier).isEnabled;
+
+                                  return ContentRow(
+                                    onToggle: (_) =>
+                                        ref.read(freeRoamAutostartSettingsProvider.notifier).toggleAutostart(),
+                                    options: ContentRowOptions(
+                                      title: l10n.autorunNavigator,
+                                      titleStyle: textStyle.text.copyWith(color: color.textAndIconsBasePrimary),
+                                      subtitle: l10n.automaticallyLaunchNavigator,
+                                      subtitleMaxlines: 2,
+                                      actionWidget: ContentRowActionOptions(
+                                        enabledToggle: true,
+                                        toggleInitialValue: autorun,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
                             ],
                           ),
                         ),
@@ -140,7 +168,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                       headerTitle: l10n.mapStyle,
                       content: [
                         ContentRow(
-                          onTap: () => const DarkMapRoute().push(context),
+                          onTap: () => context.router.push(const DarkMapRoute()),
                           options: ContentRowOptions(
                             wrapperColor: color.surfaceBaseTertiary,
                             wrapperEnabled: true,
@@ -160,7 +188,7 @@ class NavigatorSettingsPage extends ConsumerWidget {
                       headerTitle: l10n.soundAndAlerts,
                       content: [
                         ContentRow(
-                          onTap: () => const SoundSettingsRoute().push(context),
+                          onTap: () => context.router.push(const SoundSettingsRoute()),
                           options: ContentRowOptions(
                             titleStyle: textStyleV3.bodyLargeRegular.copyWith(
                               color: colorsV2.foregroundDefault,

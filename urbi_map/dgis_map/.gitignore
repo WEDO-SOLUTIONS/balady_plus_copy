@@ -49,7 +49,9 @@ GeneratedPluginRegistrant.swift
 build/
 .flutter-plugins
 *.g.dart
-Messages.java
+Messages.kt
+Messages.swift
+messages.java
 messages.h
 messages.m
 

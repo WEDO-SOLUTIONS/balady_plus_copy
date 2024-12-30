@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
@@ -8,6 +10,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -60,8 +63,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
     ref.listen(searchProvider(scope.value), (previous, next) {
-
-      if(next.searchText.isEmpty){
+      if (next.searchText.isEmpty) {
         ref.read(searchInRectProvider.notifier).update();
       }
 
@@ -85,6 +87,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             },
           );
         },
+        onTap: () {
+          _controller.selection = TextSelection.fromPosition(
+            TextPosition(
+              offset: _controller.text.length,
+            ),
+          );
+        },
         onSubmitted: (query) async {
           Metrics.logEventAdvanced(
             MetricsConstants.searchKeys.searchField,
@@ -105,6 +114,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                     createdAt: DateTime.timestamp().toIso8601String(),
                   ),
                 );
+            unawaited(ref.read(SendStatisticProvider(query).future));
           }
           _focusNode.requestFocus();
         },

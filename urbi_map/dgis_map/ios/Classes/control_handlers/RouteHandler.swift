@@ -98,15 +98,15 @@ class RouteHandler {
             if let pStartPoint = params.startPoint {
                 return RouteSearchPoint(
                     coordinates: GeoPoint(
-                        latitude: pStartPoint.point.latitude.doubleValue,
-                        longitude: pStartPoint.point.longitude.doubleValue
+                        latitude: pStartPoint.point.latitude,
+                        longitude: pStartPoint.point.longitude
                     ),
                     objectId: DgisObjectId(
-                        objectId: pStartPoint.objectId?.objectId.uint64Value ?? 0,
-                        entranceId: pStartPoint.objectId?.entranceId.uint64Value ?? 0
+                        objectId: UInt64(pStartPoint.objectId?.objectId ?? 0),
+                        entranceId: UInt64(pStartPoint.objectId?.entranceId ?? 0)
                     ),
                     levelId: pStartPoint.levelId.map {
-                        LevelId(value: $0.uint64Value)
+                        LevelId(value: UInt64($0))
                     }
                 )
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
@@ -123,15 +123,15 @@ class RouteHandler {
             if let pFinishPoint = params.finishPoint {
                 return RouteSearchPoint(
                     coordinates: GeoPoint(
-                        latitude: pFinishPoint.point.latitude.doubleValue,
-                        longitude: pFinishPoint.point.longitude.doubleValue
+                        latitude: pFinishPoint.point.latitude,
+                        longitude: pFinishPoint.point.longitude
                     ),
                     objectId: DgisObjectId(
-                        objectId: pFinishPoint.objectId?.objectId.uint64Value ?? 0,
-                        entranceId: pFinishPoint.objectId?.entranceId.uint64Value ?? 0
+                        objectId: UInt64(pFinishPoint.objectId?.objectId ?? 0),
+                        entranceId: UInt64(pFinishPoint.objectId?.entranceId ?? 0)
                     ),
                     levelId: pFinishPoint.levelId.map {
-                        LevelId(value: $0.uint64Value)
+                        LevelId(value: UInt64($0))
                     }
                 )
             } else if let lastLocation = self.locationService.lastLocation?.coordinates {
@@ -163,7 +163,7 @@ class RouteHandler {
         
         let showOnlyActiveRoute: Bool
         
-        if let showOnlyActive = params.showOnlyActiveRoute?.boolValue {
+        if let showOnlyActive = params.showOnlyActiveRoute {
             showOnlyActiveRoute = showOnlyActive
         } else {
             showOnlyActiveRoute = params.options == .publicTransport
@@ -325,7 +325,7 @@ class RouteHandler {
         _ routeSearchOptions: RouteSearchOptions,
         startPoint: RouteSearchPoint?,
         finishPoint: RouteSearchPoint?,
-        completion: @escaping ([BriefRouteInfoMessage]?, FlutterError?)->Void)
+        completion: @escaping (Result<[BriefRouteInfoMessage], any Error>)->Void)
     {
         let startSearchPoint: RouteSearchPoint
         let finishSearchPoint: RouteSearchPoint
@@ -339,12 +339,12 @@ class RouteHandler {
             ))
         } else {
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "Failed to get route information",
                     message: nil,
                     details: nil
-                )
+                ))
             )
             return // Возвращаем nil или промежуточное значение в случае ошибки получения стартовой точки
         }
@@ -358,12 +358,12 @@ class RouteHandler {
             ))
         } else {
             completion(
-                nil,
+                Result.failure(
                 FlutterError(
                     code: "Failed to get route information",
                     message: nil,
                     details: nil
-                )
+                ))
             )
             return // Возвращаем nil или промежуточное значение в случае ошибки получения стартовой точки
         }
@@ -378,12 +378,12 @@ class RouteHandler {
                 [weak self] response in
                 guard let self = self else {
                     completion(
-                        nil,
+                        Result.failure(
                         FlutterError(
                             code: "Failed to get route information",
                             message: nil,
                             details: nil)
-                    )
+                    ))
                     return
                 }
                 
@@ -393,17 +393,17 @@ class RouteHandler {
                     return result
                 }
                 
-                completion(briefRouteInfoMessages, nil)
+                completion(Result.success(briefRouteInfoMessages))
                 
                 
             }, failure: { error in
                 completion(
-                    nil,
+                    Result.failure(
                     FlutterError(
                         code: "FindBriefRouteInfo error",
                         message: error.description,
                         details: nil
-                    )
+                    ))
                 )
             })
         )

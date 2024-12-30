@@ -5,9 +5,6 @@ import 'package:dgis_map/library.dart';
 /// Controller for traffic and parking layers
 class NaviTrafficParkingController {
   /// @nodoc
-  static const parkingFilterAttribute = 'parkingFilter';
-
-  /// @nodoc
   NaviTrafficParkingController({
     required this.trafficStateEvents,
     required this.parkingStateEvents,
@@ -17,6 +14,9 @@ class NaviTrafficParkingController {
     required this.onParkingClicked,
     required this.setParkingFilter,
   });
+
+  /// @nodoc
+  static const parkingFilterAttribute = 'parkingFilter';
 
   /// All traffic events without filtering
   final Stream<TrafficStateEvent> trafficStateEvents;

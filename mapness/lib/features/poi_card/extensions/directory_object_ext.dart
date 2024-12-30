@@ -98,9 +98,9 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
   /// and its address
   PoiContentFullAddress getFullAddress(
     List<BriefRouteInfoMessage>? briefInfo,
-    AppLocalizations l10n,
-    VoidCallback onEntrancesTap,
-  ) {
+    AppLocalizations l10n, [
+    VoidCallback? onEntrancesTap,
+  ]) {
     // Brief distance from my location to the object
     String briefDistance = '';
     if (briefInfo?.isNotEmpty ?? false) {
@@ -108,12 +108,15 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
 
     // Entrances
-    final entrancesCount = entrances.fold(0, (prev, e) => prev + (e?.geometry?.entrancePoints.length ?? 0));
-    final entrances_ = PoiContentFullAddressEntrances(
-      title: l10n.exits,
-      onTap: onEntrancesTap,
-      count: entrancesCount,
-    );
+    final entrancesCount = entrances.fold(
+        0, (prev, e) => prev + (e?.geometry?.entrancePoints.length ?? 0));
+    final entrances_ = onEntrancesTap != null
+        ? PoiContentFullAddressEntrances(
+            title: l10n.exits,
+            onTap: onEntrancesTap,
+            count: entrancesCount,
+          )
+        : null;
 
     // Floor currently is not used
     return PoiContentFullAddress(

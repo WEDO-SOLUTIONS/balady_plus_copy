@@ -3,13 +3,13 @@ import 'dart:async';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/app/router.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search_by_rubrics.g.dart';
@@ -38,7 +38,7 @@ class SearchByRubrics extends _$SearchByRubrics {
       return null;
     }
 
-    final searchRect = ref.watch(searchInRectProvider.select((value) => value.$1));
+    final searchRect = ref.watch(searchInRectProvider.select((value) => value.rect));
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
     unawaited(performSearch(
@@ -98,14 +98,15 @@ class SearchByRubrics extends _$SearchByRubrics {
         layerId: mapSetting.layerId,
       ).notifier,
     );
+    final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
-    final selectedFilter = ref.read(searchByRubricsQueryProvider);
     final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-    final markerIconPath = selectedFilter?.markerType?.iconPath;
-    final icon =
-        markerIconPath != null ? markerIconPath.markerIcon(size: 32) : LayersSvgPaths.basicMarker.markerIcon(size: 16);
 
-    final markers = await value.getMarkers(router: ref.read(goRouterProvider), icon: icon, isRtl: isRtl);
+    final markers = await value.getMarkers(
+      router: ref.read(appRouterProvider),
+      iconResolver: mapMarkerMapper.getMarkerType,
+      isRtl: isRtl,
+    );
 
     await searchObjectManager.removeAllMarkers();
     await searchObjectManager.addMarkers(markers);

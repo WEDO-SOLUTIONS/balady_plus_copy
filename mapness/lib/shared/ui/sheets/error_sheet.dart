@@ -1,16 +1,12 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 
-class ErrorSheet extends StatelessWidget {
-  const ErrorSheet({
-    required this.onRetry,
-    this.buttonLabel,
-    this.errorLabel,
-    super.key,
-  });
-
+class ErrorSheetWidget extends HookConsumerWidget {
   /// action how to recover state
   final VoidCallback onRetry;
 
@@ -20,29 +16,60 @@ class ErrorSheet extends StatelessWidget {
   /// error label (localized default: somethingWentWrong)
   final String? errorLabel;
 
+  /// Add barrier to bottom sheet background
+  final bool hasBarrier;
+
+  /// Called on background barrier tap (cause not always context.pop is not enough)
+  final VoidCallback? onBarrierTap;
+
+  final BottomSheetOnCloseCallback? onClose;
+
+  const ErrorSheetWidget({
+    required this.onRetry,
+    this.buttonLabel,
+    this.errorLabel,
+    this.onClose,
+    this.hasBarrier = false,
+    this.onBarrierTap,
+    super.key,
+  });
+
   @override
-  Widget build(BuildContext context) => Material(
-        color: Colors.white,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(16),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            const Center(
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 6),
-                child: SheetDragger(),
+  Widget build(BuildContext context, WidgetRef ref) {
+    final scrollController = useStatelessBottomsheetController(
+      onClose: (controller) {
+        onClose?.call(controller);
+      },
+      heightModel: BottomSheetHeightModel.aspect(0.35),
+    );
+    return Stack(
+      children: [
+        if (hasBarrier)
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: () {
+                if (onBarrierTap != null) {
+                  onBarrierTap!.call();
+                } else {
+                  context.router.popForced();
+                }
+              },
+              child: ColoredBox(
+                color: context.color.surfaceOverlayModal,
               ),
             ),
-            const SizedBox(height: Spacing.$1x),
+          ),
+        StatelessBottomSheet(
+          content: [
             BaseErrorWidget(
               onRetry: onRetry,
               buttonLabel: buttonLabel,
               errorLabel: errorLabel,
             ),
           ],
+          scrollController: scrollController,
         ),
-      );
+      ],
+    );
+  }
 }

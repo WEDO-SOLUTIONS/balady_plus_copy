@@ -6,6 +6,7 @@ import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,9 +18,8 @@ class Auth extends _$Auth {
     Metrics.logEvent('Auth/doAuth');
     mixpanel?.timeEvent('Auth: doAuth');
     await CommonFunctions.onLogin();
-    ref
-      ..invalidateSelf()
-      ..invalidate(favouriteCacheProvider);
+    await ref.read(authMethodsProvider.notifier).cancelAuthSubscription();
+    ref.invalidateSelf();
     await mixpanel?.track('Auth: doAuth');
   }
 

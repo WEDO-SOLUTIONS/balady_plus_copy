@@ -6,12 +6,14 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
     let registrar: FlutterPluginRegistrar
     let imageFactory: IImageFactory
     let manager: MapObjectManagerMessage
+    let objectsQueue: DispatchQueue
     
-    init(api: FlutterMapApi, registrar: FlutterPluginRegistrar, imageFactory: IImageFactory, manager: MapObjectManagerMessage) {
+    init(api: FlutterMapApi, registrar: FlutterPluginRegistrar, imageFactory: IImageFactory, manager: MapObjectManagerMessage, objectsQueue: DispatchQueue) {
         self.api = api
         self.registrar = registrar
         self.imageFactory = imageFactory
         self.manager = manager
+        self.objectsQueue = objectsQueue
     }
     
     private var iconCache: Dictionary<String, Image> = [:]
@@ -21,13 +23,15 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         var message: SimpleClusterOptionsMessage? = nil
         var options: SimpleClusterOptions? = nil
         
-        api.renderClusterManager(
-            manager,
-            objectCount: NSNumber(value: cluster.objectCount)
-        ) { (response, error) in
-            message = response!
-            semaphore.signal()
-        }
+        objectsQueue.async(execute: {
+                self.api.renderCluster(
+                    manager: self.manager,
+                    objectCount: Int64(cluster.objectCount)) {result in
+                        message = try? result.get()
+                        semaphore.signal()
+                    }
+        })
+      
         
         semaphore.wait()
         
@@ -54,15 +58,15 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
         options = SimpleClusterOptions(
             icon: markerImage,
             iconMapDirection: message!.icon?.iconMapDirection.map {
-                MapDirection(value: $0.degree.doubleValue)
+                MapDirection(value: $0.degree)
             },
             anchor: message!.anchor.map {
-                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
+                Anchor(x: Float($0.x), y: Float($0.y))
             } ?? Anchor(x: 0.5, y: 0.5),
             text: message!.text,
             textStyle: message!.textStyle?.textStyle,
             iconWidth: (message!.icon?.width).map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
             userData: manager,
             animatedAppearance: false

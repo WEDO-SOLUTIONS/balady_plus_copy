@@ -26,6 +26,8 @@ fileprivate extension LogLevelMessage {
             return .fatal
         case .off:
             return .off
+        @unknown default:
+            return .off
         }
     }
 }

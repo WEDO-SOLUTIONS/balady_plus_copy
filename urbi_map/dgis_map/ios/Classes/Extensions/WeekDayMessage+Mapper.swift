@@ -1,6 +1,7 @@
 import Foundation
 import DGis
 
+
 extension WeekDayMessage {
     func toWeekDay() -> WeekDay? {
         switch self {
@@ -27,8 +28,8 @@ extension WeekDayMessage {
 extension DayTimeMessage {
     func toDayTime() -> DayTime {
         return DayTime(
-            hours: self.hours.uint8Value,
-            minutes: self.minutes.uint8Value
+            hours: UInt8(self.hours),
+            minutes: UInt8(self.minutes)
         )
     }
 }

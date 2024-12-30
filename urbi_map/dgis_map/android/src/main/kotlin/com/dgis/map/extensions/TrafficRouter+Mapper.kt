@@ -1,14 +1,14 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.BearingMessage
-import com.dgis.map.map_api.Messages.BriefExtraRouteInfoMessage
-import com.dgis.map.map_api.Messages.BriefExtraRouteInfoTypeMessage
-import com.dgis.map.map_api.Messages.BriefRouteInfoMessage
-import com.dgis.map.map_api.Messages.DgisObjectIdMessage
-import com.dgis.map.map_api.Messages.LevelIdMessage
-import com.dgis.map.map_api.Messages.RouteSearchOptionsMessage
-import com.dgis.map.map_api.Messages.RouteSearchPointMessage
+
+import com.dgis.map.map_api.BearingMessage
+import com.dgis.map.map_api.BriefExtraRouteInfoMessage
+import com.dgis.map.map_api.BriefExtraRouteInfoTypeMessage
+import com.dgis.map.map_api.BriefRouteInfoMessage
+import com.dgis.map.map_api.DgisObjectIdMessage
+import com.dgis.map.map_api.LevelIdMessage
+import com.dgis.map.map_api.RouteSearchOptionsMessage
+import com.dgis.map.map_api.RouteSearchPointMessage
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.LevelId
 import ru.dgis.sdk.coordinates.Bearing
@@ -94,17 +94,15 @@ fun BriefExtraRouteInfo.toBriefExtraRouteInfoMessage(): BriefExtraRouteInfoMessa
         isPublicTransport -> BriefExtraRouteInfoTypeMessage.PUBLIC_TRANSPORT
         else -> BriefExtraRouteInfoTypeMessage.CAR
     }
-
-    return BriefExtraRouteInfoMessage.Builder()
-        .setType(routeType)
-        .setDistance(distanceValue)
-        .build()
+    return BriefExtraRouteInfoMessage(
+        type = routeType,
+        distance = distanceValue
+    )
 }
 
 fun BriefRouteInfo.toBriefRouteInfoMessage(): BriefRouteInfoMessage {
-    return BriefRouteInfoMessage.Builder()
-        .setDuration(duration.inSeconds.toDouble())
-        .setExtraInfo(extraInfo.toBriefExtraRouteInfoMessage())
-        .build()
+    return BriefRouteInfoMessage(
+        duration = duration.inSeconds.toDouble(),
+        extraInfo = extraInfo.toBriefExtraRouteInfoMessage()
+    )
 }
-

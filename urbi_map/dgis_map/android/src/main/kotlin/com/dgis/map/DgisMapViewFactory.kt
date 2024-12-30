@@ -2,8 +2,8 @@ package com.dgis.map
 
 import android.content.Context
 import com.dgis.map.extensions.toLogOptions
-import com.dgis.map.map_api.Messages.LogOptionsMessage
-import com.dgis.map.map_api.Messages.MapApi
+import com.dgis.map.map_api.LogOptionsMessage
+import com.dgis.map.map_api.MapApi
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.StandardMessageCodec
 import io.flutter.plugin.platform.PlatformView
@@ -11,7 +11,7 @@ import io.flutter.plugin.platform.PlatformViewFactory
 
 class DgisMapViewFactory(
     private val binaryMessenger: BinaryMessenger,
-) : PlatformViewFactory(MapApi.getCodec()) {
+) : PlatformViewFactory(MapApi.codec) {
     override fun create(context: Context, viewId: Int, args: Any?): PlatformView {
         val sdkContext = DgisMapInitializer.getSdkContext()
         val locationSource = DgisMapInitializer.getLocationSource()

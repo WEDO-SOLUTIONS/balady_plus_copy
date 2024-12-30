@@ -1,6 +1,5 @@
 class MapnessConstants {
   static const showFavouritesOnMapKey = 'showFavouritesOnMap';
-  static const activeLayerKey = 'activeLayerKey';
   static const mapLayerName = 'common-marker-layer';
   static const appStoreId = 'id1522185123';
   static const poiDataBoxName = 'poiDataBoxName';
@@ -15,11 +14,17 @@ class MapnessConstants {
   static const voicesLanguagePrefsKey = 'voices_language';
   static const camerasOn = 'camerasOn';
   static const analyticsTripStopped = 'tripStopped';
+  static const analyticsSearchInThisAreaPressed = 'analyticsSearchInThisAreaPressed';
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
+
   ///config region
   static const envConfigBoxKey = 'envConfigKey';
   static const envTypeKey = 'envTypeKey';
   static const vendorConfigKey = 'vendorConfigKey';
   static const firebaseAppEnvConfigKey = 'app_env_config';
 
+  ///styles region
+  //uncomment for tests
+  // static const mapStylesPath = 'assets/maps/styles/styles.2gis';
+  static const mapStylesPath = 'packages/map_styles/src/styles.2gis';
 }

@@ -1,11 +1,20 @@
 package momra.balady.android
 
+import com.dgis.map.android_auto.MainAppScreenStateNotifier
 import io.flutter.embedding.android.FlutterFragmentActivity
 
 
- class MainActivity: FlutterFragmentActivity() {
-      
-  }
+class MainActivity : FlutterFragmentActivity() {
+    override fun onStart() {
+        super.onStart()
+        MainAppScreenStateNotifier.screenShown()
+    }
+
+    override fun onStop() {
+        MainAppScreenStateNotifier.screenHidden()
+        super.onStop()
+    }
+}
 
 //import io.flutter.embedding.android.FlutterActivity
  //class MainActivity: FlutterActivity() {

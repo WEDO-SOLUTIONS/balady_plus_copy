@@ -1,13 +1,13 @@
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum WeekDay {
+  saturday,
+  sunday,
   monday,
   tuesday,
   wednesday,
   thursday,
   friday,
-  saturday,
-  sunday,
 }
 
 extension WeekDayExt on WeekDay {

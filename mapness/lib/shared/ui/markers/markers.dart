@@ -1,21 +1,23 @@
 import 'package:dgis_map/library.dart';
 
 class Markers {
-  static const double defaultWidth = 24;
-  static const double defaultHeight = 48;
+  static const double defaultWidth = 58;
+  static const double defaultHeight = 58;
+  static const defaultPin = 'packages/mapness/assets/icons/svg/ic_pin.svg';
 
   static Marker pinMarker(
     GeoPointWithElevationMessage position, {
     String? id,
     String? icon,
     double? width,
+    double? height,
   }) =>
       Marker(
         id: id ?? 'PIN-MARKER',
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: icon ?? 'packages/mapness/assets/icons/svg/ic_pin.svg',
+            svgPath: icon ?? defaultPin,
             width: width ?? defaultWidth,
           ),
           anchor: MarkerAnchorMessage(x: 0.5, y: 1),

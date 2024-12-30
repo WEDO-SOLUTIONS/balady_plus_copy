@@ -1,6 +1,7 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/routes/free_roam.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/free_roam/free_roam_start_state.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 
@@ -47,7 +48,7 @@ mixin FreeRoamAnimationMixin<T extends ConsumerStatefulWidget> on ConsumerState<
 
   void _update() {
     if (autostartAnimationController.status == AnimationStatus.completed) {
-      const FreeRoamRoute().go(context);
+      context.router.push(const FreeRoamRoute());
       ref.read(freeRoamStarterProvider.notifier).setShown();
       return;
     }

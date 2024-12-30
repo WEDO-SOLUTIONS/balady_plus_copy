@@ -1,11 +1,10 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/lib/construct_marker.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -17,40 +16,32 @@ final favouriteMarkersProvider = _favouriteMarkersProvider;
 class FavouriteToggle extends _$FavouriteToggle {
   @override
   bool build() {
-    final sharedPrefs = ref.watch(sharedPrefsProvider);
-    final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
-    final bool = string == LayerType.favourites.name;
-    return bool;
+    final currentLayer = ref.read(activeLayerProvider);
+    final isFavourites = currentLayer == LayerType.favourites;
+
+    return isFavourites;
   }
 
   Future<void> enable() async {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.setString(
-      MapnessConstants.activeLayerKey,
-      LayerType.favourites.name,
-    );
+    final activeLayer = ref.read(activeLayerProvider.notifier);
+    await activeLayer.setActiveLayer(LayerType.favourites);
     ref.invalidateSelf();
   }
 
   Future<void> disable() async {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.remove(
-      MapnessConstants.activeLayerKey,
-    );
+    final activeLayer = ref.read(activeLayerProvider.notifier);
+    await activeLayer.removeActiveLayer();
     ref.invalidateSelf();
   }
 
   Future<void> toggle() async {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-    final name = LayerType.favourites.name;
-    final currentState = sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
-    if (currentState) {
-      await sharedPrefs.remove(MapnessConstants.activeLayerKey);
+    final activeLayersNotifier = ref.read(activeLayerProvider.notifier);
+
+    final isFavourites = ref.read(activeLayerProvider) == LayerType.favourites;
+    if (isFavourites) {
+      await activeLayersNotifier.removeActiveLayer();
     } else {
-      await sharedPrefs.setString(
-        MapnessConstants.activeLayerKey,
-        name,
-      );
+      await activeLayersNotifier.setActiveLayer(LayerType.favourites);
     }
 
     ref.invalidateSelf();
@@ -68,7 +59,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
         layerId: settings.layerId,
       ).notifier,
     );
-    final router = ref.watch(goRouterProvider);
+    final router = ref.watch(appRouterProvider);
     final favItemsAsync = ref.watch(favouriteCacheProvider);
     final showMarkers = ref.watch(favouriteToggleProvider);
 

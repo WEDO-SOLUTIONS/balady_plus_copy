@@ -1,12 +1,11 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages.VoiceMessage
+import com.dgis.map.map_api.VoiceMessage
 import ru.dgis.sdk.navigation.Voice
 
 fun Voice.toVoiceMessage(): VoiceMessage {
-    return VoiceMessage
-        .Builder()
-        .setLanguage(language)
-        .setPackageMessage(toMessage())
-        .build()
+    return VoiceMessage(
+        language = this.language,
+        packageMessage = this.toMessage()
+    )
 }

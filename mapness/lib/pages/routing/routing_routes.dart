@@ -1,15 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/routes/home_shell.dart';
-import 'package:mapness/app/routes/iwish.dart';
-import 'package:mapness/app/routes/poi_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -22,15 +20,18 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
+import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
 import 'package:mapness/widgets/routing/ui_kit/ab_point/ab_points.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
+@RoutePage()
 class RoutingRoutesPage extends ConsumerStatefulWidget {
   final List<RouteParamsPointWithLabel> points;
+  final bool isHomeOrWork;
 
   const RoutingRoutesPage({
     required this.points,
+    this.isHomeOrWork = false,
     super.key,
   });
 
@@ -40,11 +41,18 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
+  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
+  }
+
+  @override
+  void dispose() {
+    _bottomHeightNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -56,7 +64,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     /// if route from user location make sure he has location permission
     if (widget.points.map((e) => e.value).any((element) => element == null)) {
       locationPermission.checkLocationPermission(
-        routeOnClose: const RoutingRoute().location,
+        routeOnClose: RoutingRoutesRoute.name,
       );
     }
   }
@@ -87,51 +95,59 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       alignment: Alignment.bottomCenter,
       children: [
         RoutingMapControls(
-          bottomExtent: MediaQuery.of(context).size.height * 0.3,
+          bottomHeightNotifier: _bottomHeightNotifier,
         ),
-        BottomSheet(
-          backgroundColor: context.color.surfaceBasePrimary,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
+        MeasureSize(
+          onChange: (size) {
+            _bottomHeightNotifier.value = size.height + Spacing.$3x;
+          },
+          child: BottomSheet(
+            backgroundColor: context.color.surfaceBasePrimary,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(16),
+                topRight: Radius.circular(16),
+              ),
             ),
-          ),
-          onClosing: () => {},
-          builder: (context) => SafeArea(
-            top: false,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    left: Spacing.$4x,
-                    right: Spacing.$4x,
-                    top: Spacing.$4x,
-                  ),
-                  child: Row(
-                    children: <Widget>[
-                      AppButton(
-                        primaryIcon: SystemIcons.arrowLeft,
-                        buttonColorScheme: ButtonColorScheme.tertiary,
-                        onTap: _onClose,
-                      ),
-                      AppButton(
-                        primaryIcon: TransportIcons.verticalChange,
-                        buttonColorScheme: ButtonColorScheme.tertiary,
-                        onTap: _onSwipeRoutes,
-                      ),
-                      Expanded(
-                        child: ABPoints(
-                          locations: points.map((e) => e.label).toList(),
-                          onTap: _changeRoute,
+            onClosing: () => {},
+            builder: (context) => SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: Spacing.$4x,
+                      right: Spacing.$4x,
+                      top: Spacing.$4x,
+                    ),
+                    child: Row(
+                      children: <Widget>[
+                        AppButton(
+                          primaryIcon: SystemIcons.arrowLeft,
+                          buttonColorScheme: ButtonColorScheme.tertiary,
+                          onTap: _onClose,
                         ),
-                      ),
-                    ].insertBetween(Spacing.$3x.widthBox).toList(),
+                        AppButton(
+                          primaryIcon: TransportIcons.verticalChange,
+                          buttonColorScheme: ButtonColorScheme.tertiary,
+                          onTap: _onSwipeRoutes,
+                        ),
+                        Expanded(
+                          child: ABPoints(
+                            locations: points.map((e) => e.label).toList(),
+                            onTap: _changeRoute,
+                          ),
+                        ),
+                      ].insertBetween(Spacing.$3x.widthBox).toList(),
+                    ),
                   ),
-                ),
-                RoutingInfo(points: points.map((e) => e.value).toList()),
-              ],
+                  RoutingInfo(
+                    points: points.map((e) => e.value).toList(),
+                    isHomeOrWork: widget.isHomeOrWork,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -174,7 +190,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
         // We need to pass the points and labels as copy (List.of) to manipulate the data and
         // change original data only when user confirms
         points: List.of(points),
-        onClose: context.pop,
+        onClose: () => context.router.popForced(),
         // We have to pass external context to the sheet to be able to get the colors, text styles, etc.
         externalContext: context,
       ),
@@ -188,7 +204,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
     setState(() {
       this.points = points;
     });
-    context.pop();
+    context.router.popForced();
   }
 
   void _onClose() {
@@ -208,18 +224,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
       action: MetricAction.tap.toString(),
     );
 
-    final routes = ref.read(currentRouteProvider);
-
-    switch (routes?.previousPath) {
-      case PoiMapRoute.path:
-      case IwishCardRoute.path:
-        context.pop();
-        break;
-      case LandingRoute.path:
-        const LandingRoute().go(context);
-        break;
-      default:
-        const RoutingRoute().pushReplacement(context);
-    }
+    context.router.popForced();
   }
 }

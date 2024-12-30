@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:auto_route/annotations.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -8,24 +9,25 @@ import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/widgets/poi_favorite_dialog_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
-class PoiFavoriteDialog extends ConsumerStatefulWidget {
-  const PoiFavoriteDialog({
+@RoutePage()
+class PoiFavoriteDialogPage extends ConsumerStatefulWidget {
+  final FavouriteItem favItem;
+
+  const PoiFavoriteDialogPage({
     required this.favItem,
     super.key,
   });
 
-  final FavouriteItem favItem;
-
   @override
-  ConsumerState<PoiFavoriteDialog> createState() => _PoiFavoriteDialogState();
+  ConsumerState<PoiFavoriteDialogPage> createState() => _PoiFavoriteDialogPageState();
 }
 
-class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
+class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
   void _withPop(Future<void> future) {
     unawaited(future);
     Navigator.of(context).pop();
@@ -40,7 +42,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
       return const LoadingSheet();
     }
     if (favState.hasError) {
-      return ErrorSheet(
+      return ErrorSheetWidget(
         onRetry: () => ref.invalidate(favouriteCacheProvider),
       );
     }
@@ -59,6 +61,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Material(
               borderRadius: BorderRadius.circular(8),
@@ -105,7 +108,7 @@ class _PoiFavoriteDialogState extends ConsumerState<PoiFavoriteDialog> {
   }
 
   Future<void> _onFavTap(bool isFavourite) async {
-    await CommonFunctions.authOrOpen(
+    await ref.read(authMethodsProvider.notifier).authOrOpen(
       context,
       callback: () {
         final favNotifier = ref.read(favouriteCacheProvider.notifier);

@@ -174,30 +174,6 @@ class ObjectTapHandler {
         }
     }
     
-    func setMarkerOptions(
-        assetKey: String,
-        svgSize: CGSize,
-        iconWidth: Float,
-        completion: @escaping (FlutterError?) -> Void
-    ) {
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-              let url = URL(string: "file://\(assetPath)"),
-              let data = try? Data(contentsOf: url) else {
-            completion(
-                FlutterError(
-                    code: "Error loading asset for marker",
-                    message: nil,
-                    details: nil
-                ))
-            return
-        }
-        
-        self.markerImage = imageFactory.make(svgData: data, size: svgSize)
-        self.iconWidth = LogicalPixel(floatLiteral: iconWidth)
-        
-        completion(nil)
-    }
-    
     // MARK: Handlers
     
     private func getManager(_ managerId: String?) -> MapObjectManager {
@@ -207,22 +183,27 @@ class ObjectTapHandler {
         return self.mapObjectManager
     }
     
-    private func removeAllObjects<T: DGis.SimpleMapObject>(_ managerId: String?,_ objects: inout Dictionary<String, (T, String?)>, completion: @escaping (FlutterError?) -> Void) {
+    private func removeAllObjects<T: DGis.SimpleMapObject>(_ managerId: String?,_ objects: inout Dictionary<String, (T, String?)>, completion: @escaping (Result<Void, any Error>) -> Void) {
         // Sync threading memory access
         self.objectsQueue.sync {
-            let filtered = objects.filter { $0.value.1 == managerId }
-            objects.removeAll()
-            objects.merge(filtered) { (_, new) in new }
+            let hasManager = managerId != nil && self.managers[managerId!] != nil
+            if (hasManager) {
+                let filtered = objects.filter { $0.value.1 != managerId }
+                objects.removeAll()
+                objects.merge(filtered) { (_, new) in new }
+            } else {
+                objects.removeAll()
+            }
         }
 
         self.objectsQueue.async {
             self.getManager(managerId).removeAll()
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
     // MARK: Marker
-    private func getImage(fromAsset assetPath: String, isSvg: Bool, size: CGSize, completion: @escaping (FlutterError?) -> Void) -> Image? {
+    private func getImage(fromAsset assetPath: String, isSvg: Bool, size: CGSize, completion: @escaping (Result<Void, any Error>) -> Void) -> Image? {
         if let cachedIcon = iconCache[assetPath] {
             return cachedIcon
         }
@@ -232,11 +213,12 @@ class ObjectTapHandler {
             let url = URL(string: "file://\(path)"),
             let data = try? Data(contentsOf: url) else {
             completion(
+                Result.failure(
                 FlutterError(
                     code: "Error loading asset for marker",
                     message: nil,
                     details: nil
-                ))
+                )))
             return nil
         }
 
@@ -251,35 +233,32 @@ class ObjectTapHandler {
         return image
     }
     
-    func mapMarker(_ marker: MarkerMessage, completion: @escaping (FlutterError?) -> Void) -> Marker? {
+    func mapMarker(_ marker: MarkerMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Marker? {
         var markerImage: Image? = nil
 
-        // Проверка и создание изображения из svgPath
         if let svgPath = marker.options.icon?.svgPath {
             markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
         }
-        // Проверка и создание изображения из pngPath
         else if let pngPath = marker.options.icon?.pngPath {
             markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
-                width: marker.options.icon!.width.doubleValue,
-                height: marker.options.icon!.width.doubleValue
+                width: marker.options.icon!.width,
+                height: marker.options.icon!.width
             ), completion: completion)
         }
-        // Проверка и создание изображения из pngData
         else if let pngData = marker.options.icon?.pngData {
             let data = pngData.data
             markerImage = imageFactory.make(pngData: data, size: CGSize(
-                width: marker.options.icon!.width.doubleValue,
-                height: marker.options.icon!.width.doubleValue
+                width: marker.options.icon!.width,
+                height: marker.options.icon!.width
             ))
         }
         else {
-            completion(
+            completion(Result.failure(
                     FlutterError(
                         code: "No icon provided for marker",
                         message: nil,
                         details: nil
-                    ))
+                    )))
                     return nil
         }
 
@@ -287,37 +266,38 @@ class ObjectTapHandler {
             position: marker.options.position.geoPointWithElevation,
             icon: markerImage,
             iconMapDirection: marker.options.icon?.iconMapDirection.map {
-                MapDirection(value: $0.degree.doubleValue)
+                MapDirection(value: $0.degree)
             },
             anchor: marker.options.anchor.map {
-                Anchor(x: $0.x.floatValue, y: $0.y.floatValue)
+                Anchor(x: Float($0.x), y: Float($0.y))
             } ?? Anchor(x: 0.5, y: 0.5),
             text: marker.options.text,
             textStyle: marker.options.textStyle?.textStyle,
             iconWidth: (marker.options.icon?.width).map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
             userData: MarkerId(marker.id),
-            zIndex: ZIndex(value: marker.options.zIndex?.uint32Value ?? 0),
-            animatedAppearance: marker.options.animatedAppearance?.boolValue ?? false
+            zIndex: ZIndex(value: UInt32(marker.options.zIndex ?? 0)),
+            animatedAppearance: marker.options.animatedAppearance ?? false
         )
         
         do {
             return try Marker(options: options)
         } catch {
             completion(
+                Result.failure(
                 FlutterError(
                     code: "Error creating marker \(error.localizedDescription)",
                     message: nil,
                     details: nil
-                )
+                ))
             )
         }
         
         return nil
     }
     
-    func addMarker(_ marker: MarkerMessage, to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addMarker(_ marker: MarkerMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let markerObject = mapMarker(marker, completion: completion) else {
             return
         }
@@ -325,11 +305,63 @@ class ObjectTapHandler {
         self.objectsQueue.async {
             self.markers[marker.id] = (markerObject, managerId)
             self.getManager(managerId).addObject(item: markerObject)
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func addMarkers(_ markers: [MarkerMessage], to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func setMarkerOptions(_ id: String, options: ChangeMarkerOptionsMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        var markerImage: Image? = nil
+        
+        if let svgPath = options.icon?.svgPath {
+            markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
+        }
+        else if let pngPath = options.icon?.pngPath {
+            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
+                width: options.icon!.width,
+                height: options.icon!.width
+            ), completion: completion)
+        }
+        else if let pngData = options.icon?.pngData {
+            let data = pngData.data
+            markerImage = imageFactory.make(pngData: data, size: CGSize(
+                width: options.icon!.width,
+                height: options.icon!.width
+            ))
+        }
+        
+        if let position = options.position {
+            self.markers[id]?.0.position = position.geoPointWithElevation
+        }
+        if let markerImage {
+            self.markers[id]?.0.icon = markerImage
+        }
+        if let iconMapDirection = options.icon?.iconMapDirection {
+            self.markers[id]?.0.iconMapDirection = MapDirection(value: iconMapDirection.degree)
+        }
+        if let anchor = options.anchor {
+            self.markers[id]?.0.anchor = Anchor(x: Float(anchor.x), y: Float(anchor.y))
+        }
+        if let text = options.text {
+            self.markers[id]?.0.text = text
+        }
+        if let textStyle = options.textStyle?.textStyle {
+            self.markers[id]?.0.textStyle = textStyle
+        }
+        if let iconWidth = options.icon?.width {
+            self.markers[id]?.0.iconWidth = LogicalPixel(value: Float(iconWidth))
+        }
+        if let zIndex = options.zIndex {
+            self.markers[id]?.0.zIndex = ZIndex(value: UInt32(zIndex))
+        }
+        if let animatedAppearance = options.animatedAppearance {
+            self.markers[id]?.0.animatedAppearance = animatedAppearance
+        }
+        if let isVisible = options.isVisible {
+            self.markers[id]?.0.isVisible = isVisible
+        }
+    }
+    
+    func addMarkers(_ markers: [MarkerMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             var markerObjects = [String:Marker]()
             for marker in markers {
@@ -343,48 +375,49 @@ class ObjectTapHandler {
                 self.markers[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(markerObjects.values))
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func removeMarker(_ id: String, from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func removeMarker(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             if let markerObject = self.markers.removeValue(forKey: id) {
                 self.getManager(managerId).removeObject(item: markerObject.0)
-                completion(nil)
+                completion(Result.success(()))
             }
         }
     }
     
-    func removeAllMarkers(from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func removeAllMarkers(from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         removeAllObjects(managerId, &self.markers, completion: completion)
     }
     
     // MARK: Cluster
     
-    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, _ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+    func createClusteringMapObjectManager(_ options: ClusteringMapObjectManagerOptionsMessage, _ layerId: String?, completion: @escaping (Result<MapObjectManagerMessage, any Error>) -> Void) {
         let managerId = UUID().uuidString
-        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
+        let managerMessage = MapObjectManagerMessage(id: managerId)
         
         let manager = MapObjectManager.withClustering(
             map: self.map,
-            logicalPixel: LogicalPixel(value: options.logicalPixel.floatValue),
-            maxZoom: Zoom(value: options.maxZoom.floatValue),
+            logicalPixel: LogicalPixel(value: Float(options.logicalPixel)),
+            maxZoom: Zoom(value: Float(options.maxZoom)),
             clusterRenderer: FlutterClusterRenderer(
                 api: self.flutterApi,
                 registrar: self.registrar,
                 imageFactory: self.imageFactory,
-                manager: managerMessage
+                manager: managerMessage,
+                objectsQueue: objectsQueue
             ),
             minZoom: options.minZoom.map {
-                Zoom(value: $0.floatValue)
+                Zoom(value: Float($0))
             } ?? Zoom(value: 0),
             layerId: layerId
         )
         
         self.objectsQueue.async {
             self.managers[managerId] = manager
-            completion(managerMessage, nil)
+            completion(Result.success(managerMessage))
         }
     }
     
@@ -392,13 +425,14 @@ class ObjectTapHandler {
         self.clusters.removeValue(forKey: id)
     }
     
-    func setClusterIcon(_ icon: String, for clusterId: String, completion: @escaping (FlutterError?) -> Void) {
+    func setClusterIcon(_ icon: String, for clusterId: String, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let cluster = self.clusters[clusterId] else {
-            completion(FlutterError(
+            completion(Result.failure(
+                    FlutterError(
                 code: "Error setting icon for cluster",
                 message: "Cluster not found or already released",
                 details: nil)
-            )
+            ))
             return
         }
         
@@ -411,12 +445,12 @@ class ObjectTapHandler {
             guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
                   let url = URL(string: "file://\(assetPath)"),
                   let data = try? Data(contentsOf: url) else {
-                completion(
+                completion(Result.failure(
                     FlutterError(
                         code: "Error loading asset for marker",
                         message: nil,
                         details: nil
-                    ))
+                    )))
                 return
             }
             
@@ -430,9 +464,9 @@ class ObjectTapHandler {
     
     // MARK: Map Object
     
-    func createMapObjectManager(_ layerId: String?, completion: @escaping (MapObjectManagerMessage?, FlutterError?) -> Void) {
+    func createMapObjectManager(_ layerId: String?, completion: @escaping (Result<MapObjectManagerMessage,any Error >) -> Void) {
         let managerId = UUID().uuidString
-        let managerMessage = MapObjectManagerMessage.make(withId: managerId)
+        let managerMessage = MapObjectManagerMessage(id: managerId)
         
         let manager = MapObjectManager.withGeneralization(
             map: self.map,
@@ -442,45 +476,45 @@ class ObjectTapHandler {
         )
         self.objectsQueue.async {
             self.managers[managerId] = manager
-            completion(managerMessage, nil)
+            completion(Result.success(managerMessage))
         }
     }
 
-    func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (FlutterError?) -> Void) {
+    func removeMapObjectManager(_ manager: MapObjectManagerMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             if self.managers.removeValue(forKey: manager.id) != nil {
-                completion(nil)
+                completion(Result.success(()))
             }
         }
     }
     
-    func setMapObjectManagerIsVisible(_ isVisible: Bool, for managerId: String?,  completion: @escaping (FlutterError?) -> Void) {
+    func setMapObjectManagerIsVisible(_ isVisible: Bool, for managerId: String?,  completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             self.getManager(managerId).isVisible = isVisible
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
     //MARK:  Polygons
     
-    private func mapPolygon(_ polygon: PolygonMessage, completion: @escaping (FlutterError?) -> Void) -> Polygon? {
+    private func mapPolygon(_ polygon: PolygonMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Polygon? {
         let options = PolygonOptions(
+            // TODO : fix force unwrap
             contours: polygon.options.contours.map { contour in
-                contour.map {
+                contour.compactMap {
                     GeoPoint(
-                        latitude: Latitude(value: $0.latitude.doubleValue),
-                        longitude: Longitude(value: $0.longitude.doubleValue)
-                    )
-                }
-            },
+                        latitude: Latitude(value: $0.latitude),
+                      longitude: Longitude(value: $0.longitude)
+                  )
+                }            },
             color: polygon.options.color.map {
-                Color(argb: UInt32($0.intValue))
+                Color(argb: UInt32($0))
             } ?? Color(),
             strokeWidth: polygon.options.strokeWidth.map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),
             strokeColor: polygon.options.strokeColor.map {
-                Color(argb: UInt32($0.intValue))
+                Color(argb: UInt32($0))
             } ?? Color(),
             userData: PolygonId(polygon.id)
         )
@@ -489,18 +523,19 @@ class ObjectTapHandler {
             return try Polygon(options: options)
         } catch {
             completion(
+                Result.failure(
                 FlutterError(
                     code: "Error creating polygon \(error.localizedDescription)",
                     message: nil,
                     details: nil
-                )
+                ))
             )
         }
         
         return nil
     }
     
-    func addPolygon(_ polygon: PolygonMessage, to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolygon(_ polygon: PolygonMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let polygonObject = mapPolygon(polygon, completion: completion) else {
             return
         }
@@ -508,11 +543,11 @@ class ObjectTapHandler {
         self.objectsQueue.async {
             self.polygons[polygon.id] = (polygonObject, managerId)
             self.getManager(managerId).addObject(item: polygonObject)
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func addPolygons(_ polygons: [PolygonMessage], to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolygons(_ polygons: [PolygonMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         var polygonObjects = [String:Polygon]()
         for polygon in polygons {
             guard let polygonObject = mapPolygon(polygon, completion: completion) else {
@@ -526,38 +561,38 @@ class ObjectTapHandler {
                 self.polygons[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(polygonObjects.values))
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func removePolygon(_ id: String, from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func removePolygon(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             if let polygonObject = self.polygons.removeValue(forKey: id) {
                 self.getManager(managerId).removeObject(item: polygonObject.0)
-                completion(nil)
+                completion(Result.success(()))
             }
         }
     }
     
-    func removeAllPolygons(from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func removeAllPolygons(from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         removeAllObjects(managerId, &self.polygons, completion: completion)
     }
     
     // MARK: Polyline
     
-    private func mapPolyline(_ polyline: PolylineMessage, completion: @escaping (FlutterError?) -> Void) -> Polyline? {
+    private func mapPolyline(_ polyline: PolylineMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Polyline? {
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
-                    latitude: Latitude(value: $0.latitude.doubleValue),
-                    longitude: Longitude(value: $0.longitude.doubleValue)
+                    latitude: Latitude(value: $0.latitude),
+                    longitude: Longitude(value: $0.longitude)
                 )
             },
             width: polyline.options.width.map {
-                LogicalPixel(value: $0.floatValue)
+                LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 1),
             color: polyline.options.color.map {
-                Color(argb: UInt32($0.intValue))
+                Color(argb: UInt32($0))
             } ?? Color(),
             userData: PolylineId(polyline.id)
         )
@@ -566,18 +601,19 @@ class ObjectTapHandler {
             return try Polyline(options: options)
         } catch {
             completion(
+                Result.failure(
                 FlutterError(
                     code: "Error creating polyline \(error.localizedDescription)",
                     message: nil,
                     details: nil
-                )
+                ))
             )
         }
         
         return nil
     }
     
-    func addPolyline(_ polyline: PolylineMessage, to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolyline(_ polyline: PolylineMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let polylineObject = mapPolyline(polyline, completion: completion) else {
             return
         }
@@ -585,11 +621,11 @@ class ObjectTapHandler {
         self.objectsQueue.async {
             self.polylines[polyline.id] = (polylineObject, managerId)
             self.getManager(managerId).addObject(item: polylineObject)
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func addPolylines(_ polylines: [PolylineMessage], to managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func addPolylines(_ polylines: [PolylineMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         var polylineObjects = [String:Polyline]()
         for polyline in polylines {
             guard let polylineObject = mapPolyline(polyline, completion: completion) else {
@@ -603,37 +639,39 @@ class ObjectTapHandler {
                 self.polylines[id] = (object, managerId)
             }
             self.getManager(managerId).addObjects(objects: Array(polylineObjects.values))
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func removePolyline(_ id: String, from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func removePolyline(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectsQueue.async {
             if let polylineObject = self.polylines.removeValue(forKey: id) {
                 self.getManager(managerId).removeObject(item: polylineObject.0)
-                completion(nil)
+                completion(Result.success(()))
             }
         }
     }
     
-    func removeAllPolylines(from managerId: String?, completion: @escaping (FlutterError?) -> Void) {
+    func removeAllPolylines(from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         removeAllObjects(managerId, &self.polylines, completion: completion)
     }
     
     // MARK: Other
     
-    func addIoMarkers(_ message: AddLayerPointObjectsMessage, _ completion: @escaping (FlutterError?) -> Void) {
+    func addIoMarkers(_ message: AddLayerPointObjectsMessage, _ completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let markerImage = self.markerImage, let iconWidth = self.iconWidth else {
-            completion(FlutterError(
+            completion(Result.failure(
+                    FlutterError(
                 code: "Error adding marker",
                 message: "Call setMarkerOptions method first",
-                details: nil)
+                details: nil))
             )
             return
         }
         
         var markers = [Marker]()
         for marker in message.objects {
+            // TODO fix forceunwrap
             let position = marker.position.geoPointWithElevation
 
             do {
@@ -646,12 +684,12 @@ class ObjectTapHandler {
                 ))
                 markers.append(marker)
             } catch {
-                completion(
+                completion(Result.failure(
                     FlutterError(
                         code: "Error creating marker \(error.localizedDescription)",
                         message: nil,
                         details: nil
-                    )
+                    ))
                 )
                 return
             }
@@ -663,11 +701,11 @@ class ObjectTapHandler {
             )
             self.ioLayerMarkers.removeAll()
             self.ioLayerMarkers.append(contentsOf: markers)
-            completion(nil)
+            completion(Result.success(()))
         }
     }
     
-    func setHighlighted(_ objects: [DgisObjectId], _ completion: @escaping (FlutterError?) -> Void) {
+    func setHighlighted(_ objects: [DgisObjectId], _ completion: @escaping (Result<Void, any Error>) -> Void) {
         for source in map.sources {
             let mSource = source as? DgisSource
             if mSource != nil {
@@ -677,35 +715,36 @@ class ObjectTapHandler {
         }
         
         guard let source = self.source else {
-            completion(FlutterError(code: "Map source is null", message: nil, details: nil))
+            completion(Result.failure(
+                    FlutterError(code: "Map source is null", message: nil, details: nil)))
             return
         }
         
         source.setHighlighted(directoryObjectIds: source.highlightedObjects, highlighted: false)
         source.setHighlighted(directoryObjectIds: objects, highlighted: true)
         
-        completion(nil)
+        completion(Result.success(()))
     }
     
-    func addPanoramasMarkers(_ message: AddMarkersWithPhotoMessage) {
-        self.objectsQueue.async { [weak self] in
-            var newObjects: Array<Marker> = []
-            message.markers.forEach { it in
-                guard let self = self else { return }
-                
-                let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic.boolValue, azimuth: it.azimuth.doubleValue);
-                
-                let opts = MarkerOptions(
-                    position: it.position.geoPointWithElevation,
-                    icon: self.panoramaMarkerImage,
-                    userData: photoData)
-                if let marker = try? Marker(options: opts) {
-                    newObjects.append(marker)
+    func addPanoramasMarkers(message: AddMarkersWithPhotoMessage) {
+        self.objectsQueue.async {[weak self] in
+                var newObjects: Array<Marker> = []
+                message.markers.forEach { it in
+                    guard let self = self else { return }
+                    
+                    let photoData = PhotoData(photoUrl: it.photoUrl, isPanoramic: it.isPanoramic, azimuth: it.azimuth);
+                    
+                    let opts = MarkerOptions(
+                        position: (it.position.geoPointWithElevation),
+                        icon: self.panoramaMarkerImage,
+                        userData: photoData)
+                    if let marker = try? Marker(options: opts) {
+                        newObjects.append(marker)
+                    }
                 }
+                self?.panoramasObjectManager.addObjects(objects: newObjects)
+                self?.panoramasMarkers.append(contentsOf: newObjects)
             }
-            self?.panoramasObjectManager.addObjects(objects: newObjects)
-            self?.panoramasMarkers.append(contentsOf: newObjects)
-        }
     }
     
     func showPanoramasMarkers() {
@@ -729,10 +768,10 @@ class ObjectTapHandler {
     
     func setPanoramasPadding(map: Map, message: CameraSetPaddingMessage) {
         map.camera.padding = Padding(
-            left: UInt32(truncating: message.leftPadding),
-            top: UInt32(truncating: message.topPadding),
-            right: UInt32(truncating: message.rightPadding),
-            bottom: UInt32(truncating: message.bottomPadding)
+            left: UInt32(message.leftPadding),
+            top: UInt32( message.topPadding),
+            right: UInt32(message.rightPadding),
+            bottom: UInt32(message.bottomPadding)
         )
     }
     
@@ -775,7 +814,7 @@ class ObjectTapHandler {
         self.lastTappedSearchMarker?.iconOpacity = Opacity(value: 1.0)
     }
     
-    func calcPosition(markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+    func calcPosition(markers: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         calcPosition(
             objects: markers.compactMap { self.markers[$0]?.0 },
             options: options,
@@ -783,7 +822,7 @@ class ObjectTapHandler {
         )
     }
     
-    func calcPosition(polygons: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+    func calcPosition(polygons: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         calcPosition(
             objects: polygons.compactMap { self.polygons[$0]?.0 },
             options: options,
@@ -791,7 +830,7 @@ class ObjectTapHandler {
         )
     }
     
-    func calcPosition(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+    func calcPosition(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         calcPosition(
             objects: polylines.compactMap { self.polylines[$0]?.0 },
             options: options,
@@ -799,40 +838,40 @@ class ObjectTapHandler {
         )
     }
     
-    private func calcPosition(objects: [SimpleMapObject], options: CalcPositionOptionsMessage, completion: @escaping (CameraPositionMessage?, FlutterError?) -> Void) {
+    private func calcPosition(objects: [SimpleMapObject], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         let cameraPosition = DGis.calcPosition(
             camera: map.camera,
             objects: objects,
             screenArea: options.screenArea.map {
                 Padding(
-                    left: $0.leftPadding.uint32Value,
-                    top: $0.topPadding.uint32Value,
-                    right: $0.rightPadding.uint32Value,
-                    bottom: $0.bottomPadding.uint32Value
+                    left: UInt32($0.leftPadding),
+                    top: UInt32($0.topPadding),
+                    right: UInt32($0.rightPadding),
+                    bottom: UInt32($0.bottomPadding)
                 )
             },
             tilt: options.tilt.map {
-                Tilt(value: $0.floatValue)
+                Tilt(value: Float($0))
             },
             bearing: options.bearing.map {
-                Bearing(value: $0.doubleValue)
+                Bearing(value: $0)
             },
             size: options.size.map {
                 ScreenSize(
-                    width: $0.width.uint32Value,
-                    height: $0.height.uint32Value
+                    width: UInt32($0.width),
+                    height: UInt32($0.height)
                 )
             }
         )
         
         completion(
-            CameraPositionMessage.make(
-                withPoint: cameraPosition.point.toMessage(),
-                zoom: NSNumber(value: cameraPosition.zoom.value),
-                tilt: NSNumber(value: cameraPosition.tilt.value),
-                bearing: NSNumber(value: cameraPosition.bearing.value)
-            ),
-            nil
+            Result.success(
+            CameraPositionMessage(
+                point: cameraPosition.point.toMessage(),
+                zoom:  Double(cameraPosition.zoom.value),
+                tilt:  Double(cameraPosition.tilt.value),
+                bearing:  cameraPosition.bearing.value
+            ))
         )
     }
     
@@ -937,14 +976,14 @@ class ObjectTapHandler {
         ] as [String : Any])
     }
     
-    func getNearestObjects(completion: @escaping ([RenderedObjectMessage]?, FlutterError?) -> Void) {
+    func getNearestObjects(completion: @escaping (Result<[RenderedObjectMessage], any Error>) -> Void) {
         let cameraPosition = map.camera.position.point
         guard let screenPoint = map.camera.projection.mapToScreen(point: cameraPosition) else {
-            completion(nil, FlutterError(
+            completion(Result.failure( FlutterError(
                 code: "IllegalArgumentException",
                 message: "Camera was not initialized properly",
                 details: nil
-            ))
+            )))
             return
         }
     
@@ -954,19 +993,19 @@ class ObjectTapHandler {
                 let objects = renderedObjects.filter {
                     $0.item.item is DgisMapObject
                 }.map {
-                    RenderedObjectMessage.make(
-                        withObject: ($0.item.item as! DgisMapObject).id.toMessage(),
+                    RenderedObjectMessage(
+                        objectId: ($0.item.item as! DgisMapObject).id.toMessage(),
                         closestMapPoint: $0.closestMapPoint.toMessage()
                     )
                 }
                 
-                completion(objects, nil)
+                completion(Result.success(objects))
             } failure: { _ in
-                completion(nil, FlutterError(
+                completion(Result.failure( FlutterError(
                     code: "IllegalArgumentException",
                     message: "Camera was not initialized properly",
                     details: nil
-                ))
+                )))
             }
         )
     }

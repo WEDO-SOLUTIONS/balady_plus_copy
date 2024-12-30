@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_features/landing/providers/models/search_in_rect_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -12,7 +13,7 @@ part 'search_in_rect.g.dart';
 @riverpod
 class SearchInRect extends _$SearchInRect {
   @override
-  (GeoRectMessage?, bool) build() {
+  SearchInRectState build() {
     final dgisController = ref.watch(dgisControllerProvider).value;
 
     final subscription =
@@ -21,32 +22,34 @@ class SearchInRect extends _$SearchInRect {
 
       final isSearchRunning = ref.watch(searchProvider(SearchScopeEnum.map.value).notifier).isSearchRunning;
       if (!isSearchRunning) {
-        state = (event.visibleRect.geoRectMessage(), false);
-      } else {
-        state = (
-          state.$1,
-          _buttonVisible(
-            state.$1,
-            event.visibleRect.geoRectMessage(),
-          )
+        state = SearchInRectState(
+          rect: event.visibleRect.geoRectMessage(),
+          isButtonVisible: false,
         );
+      } else {
+        state = SearchInRectState(
+            rect: state.rect,
+            isButtonVisible: _buttonVisible(
+              state.rect,
+              event.visibleRect.geoRectMessage(),
+            ));
       }
     });
     ref.onDispose(() {
       subscription?.cancel();
     });
 
-    return (
-      ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage(),
-      false,
+    return SearchInRectState(
+      rect: ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage(),
+      isButtonVisible: false,
     );
   }
 
   void _setDefaultValue(VisibleRectEvent event) {
-    if (state.$1 == null) {
-      state = (
-        event.visibleRect.geoRectMessage(),
-        state.$2,
+    if (state.rect == null) {
+      state = SearchInRectState(
+        rect: event.visibleRect.geoRectMessage(),
+        isButtonVisible: state.isButtonVisible,
       );
     }
   }
@@ -54,7 +57,14 @@ class SearchInRect extends _$SearchInRect {
   void update() {
     final dgisController = ref.read(dgisControllerProvider.notifier);
 
-    state = (dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(), false);
+    state = SearchInRectState(
+      rect: dgisController.visibleRectSubject.value?.visibleRect.geoRectMessage(),
+      isButtonVisible: false,
+    );
+  }
+
+  void searchInThisAreaSwitch(bool value) {
+    state = state.copyWith(isSearchInThisAreaRequest: value);
   }
 
   bool _buttonVisible(GeoRectMessage? oldRect, GeoRectMessage newRect) {
@@ -84,11 +94,11 @@ class SearchInRect extends _$SearchInRect {
 
     // Calculate the distance between the two rectangles' points
     final distance = CommonFunctions.distance(
-      oldRect.northEast.latitude,
-      oldRect.northEast.longitude,
-      newRect.northEast.latitude,
-      newRect.northEast.longitude,
-    ) +
+          oldRect.northEast.latitude,
+          oldRect.northEast.longitude,
+          newRect.northEast.latitude,
+          newRect.northEast.longitude,
+        ) +
         CommonFunctions.distance(
           oldRect.southWest.latitude,
           oldRect.southWest.longitude,

@@ -89,7 +89,7 @@ class BetterRoute extends _$BetterRoute {
 
     final suggestBetterRoute = ref.watch(betterRouteSuggestionsProvider);
 
-    dgisController.value?.setBetterRouteEnabled(suggestBetterRoute);
+    dgisController.value?.setBetterRouteEnabled(enabled: suggestBetterRoute);
 
     if (suggestBetterRoute) {
       betterRouteSubscription ??= dgisController.value?.betterRouteInfoEvents.listen((event) {
@@ -156,7 +156,7 @@ class BetterRouteSettings extends _$BetterRouteSettings {
   Future<void> setSettings(BetterRouteSettingsMessage settings) async {
     final dgisController = ref.read(dgisControllerProvider);
     final betterRoute = ref.read(betterRouteSuggestionsProvider);
-    await dgisController.value?.setBetterRouteEnabled(betterRoute);
+    await dgisController.value?.setBetterRouteEnabled(enabled: betterRoute);
     await dgisController.value?.setBetterRouteSettings(settings);
     state = AsyncData(settings);
   }
