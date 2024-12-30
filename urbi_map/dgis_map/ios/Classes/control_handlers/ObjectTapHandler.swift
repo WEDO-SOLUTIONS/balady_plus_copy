@@ -401,10 +401,20 @@ class ObjectTapHandler {
         let managerId = UUID().uuidString
         let managerMessage = MapObjectManagerMessage(id: managerId)
         
-        let manager = MapObjectManager.withGeneralization(
+        let manager = MapObjectManager.withClustering(
             map: self.map,
-            logicalPixel: LogicalPixel(value: 70),
-            maxZoom: Zoom(value: 18),
+            logicalPixel: LogicalPixel(value: Float(options.logicalPixel)),
+            maxZoom: Zoom(value: Float(options.maxZoom)),
+            clusterRenderer: FlutterClusterRenderer(
+                api: self.flutterApi,
+                registrar: self.registrar,
+                imageFactory: self.imageFactory,
+                manager: managerMessage,
+                objectsQueue: objectsQueue
+            ),
+            minZoom: options.minZoom.map {
+                Zoom(value: Float($0))
+            } ?? Zoom(value: 0),
             layerId: layerId
         )
         
