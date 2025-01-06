@@ -44,6 +44,18 @@ class CertificateNumberSearchRequestModel extends NormalSearchRequestModel {
   });
 
   @override
+  CertificateNumberSearchRequestModel copyWith({
+    String? searchQuery,
+    int? pageSize,
+    int? pageNumber,
+  }) =>
+      CertificateNumberSearchRequestModel(
+        searchQuery: searchQuery ?? this.searchQuery,
+        pageSize: pageSize ?? this.pageSize,
+        pageNumber: pageSize ?? this.pageNumber,
+      );
+
+  @override
   Map<String, dynamic> toJson() {
     Map<String, dynamic> data = super.toJson();
     data['serial-number'] = super.searchQuery;
@@ -54,9 +66,21 @@ class CertificateNumberSearchRequestModel extends NormalSearchRequestModel {
 class FacilityNameSearchRequestModel extends NormalSearchRequestModel {
   FacilityNameSearchRequestModel({
     required super.searchQuery,
-     super.pageSize,
-     super.pageNumber,
+    super.pageSize,
+    super.pageNumber,
   });
+
+  @override
+  FacilityNameSearchRequestModel copyWith({
+    String? searchQuery,
+    int? pageSize,
+    int? pageNumber,
+  }) =>
+      FacilityNameSearchRequestModel(
+        searchQuery: searchQuery ?? this.searchQuery,
+        pageSize: pageSize ?? this.pageSize,
+        pageNumber: pageSize ?? this.pageNumber,
+      );
 
   @override
   Map<String, dynamic> toJson() {
@@ -69,9 +93,21 @@ class FacilityNameSearchRequestModel extends NormalSearchRequestModel {
 class CRLICNumberSearchRequestModel extends NormalSearchRequestModel {
   CRLICNumberSearchRequestModel({
     required super.searchQuery,
-     super.pageSize,
-     super.pageNumber,
+    super.pageSize,
+    super.pageNumber,
   });
+
+  @override
+  CRLICNumberSearchRequestModel copyWith({
+    String? searchQuery,
+    int? pageSize,
+    int? pageNumber,
+  }) =>
+      CRLICNumberSearchRequestModel(
+        searchQuery: searchQuery ?? this.searchQuery,
+        pageSize: pageSize ?? this.pageSize,
+        pageNumber: pageSize ?? this.pageNumber,
+      );
 
   @override
   Map<String, dynamic> toJson() {
@@ -84,9 +120,21 @@ class CRLICNumberSearchRequestModel extends NormalSearchRequestModel {
 class EstablishmentIdSearchRequestModel extends NormalSearchRequestModel {
   EstablishmentIdSearchRequestModel({
     required super.searchQuery,
-     super.pageSize,
-     super.pageNumber,
+    super.pageSize,
+    super.pageNumber,
   });
+
+  @override
+  EstablishmentIdSearchRequestModel copyWith({
+    String? searchQuery,
+    int? pageSize,
+    int? pageNumber,
+  }) =>
+      EstablishmentIdSearchRequestModel(
+        searchQuery: searchQuery ?? this.searchQuery,
+        pageSize: pageSize ?? this.pageSize,
+        pageNumber: pageSize ?? this.pageNumber,
+      );
 
   @override
   Map<String, dynamic> toJson() {

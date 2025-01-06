@@ -16,38 +16,37 @@ reviewers:
     support-team:
       - Demezy
       - AyatAliev
-      - ekinsdrow
       - RomanSurjan
 files:
+  ".github/**":
+    - doldrums
+    - r9odt
+    - alexstrnik
+  ".lefthook/**":
+    - doldrums
+    - r9odt
+    - demezy
+  "justscripts/**":
+    - doldrums
+    - r9odt
+    - platform-team
+  "urbi_map/**":
+    - platform-team
+    - doldrums
+  "mapness/scripts/**":
+    - platform-team
+    - doldrums
+    - r9odt
+  "tests/**":
+    - doldrums
+    - support-team
+  "mapness/features/**":
+    - feature-team
+    - doldrums
+  "mapness/**":
+    - support-team
+    - doldrums
   "**":
     - doldrums
     - alexstrnik
     - demezy
-  ".github/**":
-    - doldrums
-    - JIexa24
-    - alexstrnik
-  ".lefthook/**":
-    - doldrums
-    - JIexa24
-    - demezy
-  "./justscripts/**":
-    - doldrums
-    - JIexa24
-    - platform-team
-  "./urbi_map":
-    - platform-team
-    - doldrums
-  "./mapness/scripts/**":
-    - platform-team
-    - doldrums
-    - JIexa24
-  "./tests/**":
-    - doldrums
-    - support-team
-  "./mapness/features/**":
-    - feature-team
-    - doldrums
-  "./mapness/**":
-    - support-team
-    - doldrums

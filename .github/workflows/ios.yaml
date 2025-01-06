@@ -128,8 +128,8 @@ jobs:
           sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
-          git apply mapness/scripts/sdkkey.patch || print_style '' 'red' 'could not apply sdk key patch'
-          git apply mapness/scripts/icon.patch || print_style '' 'red' 'could not apply ios icon patch'
+          git apply mapness/scripts/sdkkey.patch || echo 'could not apply sdk key patch'
+          git apply mapness/scripts/icon.patch || echo 'could not apply ios icon patch'
 
           # Build
           security unlock-keychain -p $KC_PASS $KC

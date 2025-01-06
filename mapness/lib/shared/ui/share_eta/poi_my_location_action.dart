@@ -1,7 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/poi_card/widgets/footer/footer_style.dart';
+import 'package:mapness/features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MyLocationPoiActions extends StatelessWidget {

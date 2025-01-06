@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/features/share_eta/models/eta_stream_payload.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
-import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocker_error_handler_porvider.dart';
@@ -99,10 +98,6 @@ class ShareEtaBtn extends HookConsumerWidget {
   }
 
   Future<void> _stopSharingPrevious(WidgetRef ref) async {
-    final tokenId = EtaStreamStorage().state.streamToken;
-    final xStreamData = EtaStreamStorage().state.xStreamData;
-    if (tokenId != null && xStreamData != null) {
-      await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, xStreamData);
-    }
+    await ref.read(shareEtaProvider.notifier).stopSharing();
   }
 }

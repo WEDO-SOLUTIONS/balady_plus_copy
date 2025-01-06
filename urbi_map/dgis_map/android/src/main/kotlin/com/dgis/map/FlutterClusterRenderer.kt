@@ -4,9 +4,9 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Size
 import com.dgis.map.extensions.toTextStyle
-import com.dgis.map.map_api.Messages.FlutterMapApi
-import com.dgis.map.map_api.Messages.MapObjectManagerMessage
-import com.dgis.map.map_api.Messages.SimpleClusterOptionsMessage
+import com.dgis.map.map_api.FlutterMapApi
+import com.dgis.map.map_api.MapObjectManagerMessage
+import com.dgis.map.map_api.SimpleClusterOptionsMessage
 import io.flutter.FlutterInjector
 import kotlinx.coroutines.runBlocking
 import ru.dgis.sdk.Context
@@ -28,12 +28,15 @@ class FlutterClusterRenderer(
                 manager,
                 objectCount.toLong()
             ) {
-                cont.resume(it)
+                var options = it.getOrNull() ?: SimpleClusterOptionsMessage()
+
+                cont.resume(options)
             }
         }
     }
 
     override fun renderCluster(cluster: SimpleClusterObject): SimpleClusterOptions {
+        // TODO(ilyasov): fix force unwrap
         val options = runBlocking { apiRenderCluster(manager, cluster.objectCount) }
 
         var markerImage: Image? = null

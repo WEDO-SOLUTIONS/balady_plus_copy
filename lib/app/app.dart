@@ -33,34 +33,11 @@ import '../app/core/utils/utils_exports.dart' show EnvType;
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
 
 class App extends StatelessWidget {
-  final TrackingStatus status;
-  const App({super.key, required this.status});
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    if (kDebugMode) {
-      print(status.name);
-    }
-String statusText;
-switch (status) {
-  case TrackingStatus.authorized:
-  statusText = 'Tracking status authorized';
-  break;
-  case TrackingStatus.denied:
-  statusText = 'Tracking status denied';
-  break;
-  case TrackingStatus.notDetermined:
-  statusText = 'Tracking status notDetermined';
-  break;
-  case TrackingStatus.notSupported:
-  statusText = 'Tracking status notSupported';
-  break;
-  case TrackingStatus.restricted:
-  statusText = 'Tracking status restricted';
-  break;
-  default:
-  statusText = 'default condition';
-}
+
 
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(

@@ -1,14 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:mapness/app/routes/iwish.dart';
+
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_entity.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
 import 'package:mapness/features/iwish/providers/iwish_tags.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/common_functions.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
@@ -42,7 +43,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final hasError = entityState.hasError || feedbackState.hasError;
     if (hasError) {
-      return ErrorSheet(
+      return ErrorSheetWidget(
         onRetry: feedbackNotifier.submitFeedback,
         buttonLabel: context.l10n.tryAgain,
       );
@@ -78,7 +79,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
             triggerOnComplete: feedbackState.valueOrNull?.mood == IwishFeedbackMoodType.happy,
             onClose: () {
               if (mounted) {
-                IwishCardRoute(iwishId: widget.iwishId).replace(context);
+                context.router.replace(IwishPlaceCardRoute(iwishId: widget.iwishId));
               }
             },
           ),
@@ -94,14 +95,14 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
 
     final title = isCompleted ? context.l10n.shareYourFeelingsAboutPark : context.l10n.voteWhatDoYouWantToHaveInThePark;
     final onPressedSubmit = () async {
-      await CommonFunctions.authOrOpen(
-        context,
-        callback: feedbackNotifier.submitFeedback,
-      );
+      await ref.read(authMethodsProvider.notifier).authOrOpen(
+            context,
+            callback: feedbackNotifier.submitFeedback,
+          );
     };
 
     return LabeledDraggableSheet(
-      onClose: context.pop,
+      onClose: context.router.popForced,
       title: title,
       child: SafeArea(
         top: false,
@@ -126,7 +127,7 @@ class _IwishFeedbackState extends ConsumerState<IwishFeedback> {
                 BaladyInput(
                   hintText: context.l10n.shareYourFeedback,
                   initialValue: feedbackState.value?.comment ?? feedback.comment,
-                  onTap: () => IwishFeedbackCommentRoute(iwishId: widget.iwishId).replace(context),
+                  onTap: () => context.router.push(IwishFeedbackCommentRoute(iwishId: widget.iwishId)),
                 ),
                 const SizedBox(height: 16),
                 LabeledElevatedButton(

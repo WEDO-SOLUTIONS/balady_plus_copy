@@ -1,11 +1,9 @@
 import 'dart:async';
 
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
@@ -15,18 +13,19 @@ import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.da
 import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/layer_details.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
@@ -204,24 +203,16 @@ class LayersControls extends _$LayersControls {
     }
   }
 
-  LayerType? _getLayerState() {
-    final sharedPrefs = ref.watch(sharedPrefsProvider);
-    final string = sharedPrefs.getString(MapnessConstants.activeLayerKey);
-
-    final layerState = LayerTypeEx.stringToType(string);
-    return layerState;
-  }
+  LayerType? _getLayerState() => ref.read(activeLayerProvider);
 
   Future<void> _saveLayersState(LayerType type) async {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.setString(MapnessConstants.activeLayerKey, type.name);
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
+    await activeLayerNotifier.setActiveLayer(type);
   }
 
   Future<void> _removeLayersState() async {
-    final sharedPrefs = ref.read(sharedPrefsProvider);
-    await sharedPrefs.remove(
-      MapnessConstants.activeLayerKey,
-    );
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
+    await activeLayerNotifier.removeActiveLayer();
   }
 
   Future<void> disable() async {
@@ -234,17 +225,13 @@ class LayersControls extends _$LayersControls {
     if (type == null) {
       return;
     }
-    final sharedPrefs = ref.read(sharedPrefsProvider);
+    final activeLayerNotifier = ref.read(activeLayerProvider.notifier);
 
-    final name = type.name;
-    final currentState = sharedPrefs.getString(MapnessConstants.activeLayerKey) == name;
-    if (currentState) {
-      await sharedPrefs.remove(MapnessConstants.activeLayerKey);
+    final isCurrentState = ref.read(activeLayerProvider) == type;
+    if (isCurrentState) {
+      await activeLayerNotifier.removeActiveLayer();
     } else {
-      await sharedPrefs.setString(
-        MapnessConstants.activeLayerKey,
-        name,
-      );
+      await activeLayerNotifier.setActiveLayer(type);
     }
 
     setSelection(selectedType: type);
@@ -427,6 +414,15 @@ class LayersControls extends _$LayersControls {
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
     }
+  }
+
+  Future<void> hideParking() async {
+    await _viewPortSubscription?.cancel();
+
+    await _removeMapObjects();
+
+    setSelection();
+    await ref.read(parkingStateProvider.notifier).hideParking();
   }
 
   MapRequestParams _createParams(
@@ -621,8 +617,7 @@ class LayersControls extends _$LayersControls {
   List<Marker> _makeMarkers(
     List<InvestmentSites>? response,
   ) {
-    final markers = response
-            ?.whereNotNull()
+    final markers = response?.nonNulls
             .map<Marker>(
               (e) => Marker(
                 id: e.id,
@@ -696,6 +691,7 @@ class LayersControls extends _$LayersControls {
     await computeCameraPosition(
       markers,
       ref.read(cameraPositionProvider),
+      ref.read(locationProvider),
       ref.read(cameraPositionProvider.notifier).animateTo,
     );
   }
@@ -706,8 +702,7 @@ class LayersControls extends _$LayersControls {
   }
 
   void _showEsriCard(PointLayersData e) {
-    final goRouter = ref.read(goRouterProvider);
-    LayerDetailsRoute.open(goRouter, e);
+    ref.read(appRouterProvider).push(LayersDetailsWidgetRoute(data: e));
   }
 
   Future<void> _removeAll() async {
@@ -732,9 +727,5 @@ class LayersControls extends _$LayersControls {
     await mapObjectManager.removeAllMarkers();
     await map.removeAllPolygons();
     await map.removeAllPolyLines();
-  }
-
-  void showParking() {
-    update(layersWidgetType: LayersPanelType.parking);
   }
 }

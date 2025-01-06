@@ -1,6 +1,6 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages.*
+import com.dgis.map.map_api.*
 import ru.dgis.sdk.map.*
 
 fun TextPlacementMessage.toTextPlacement() = when (this) {

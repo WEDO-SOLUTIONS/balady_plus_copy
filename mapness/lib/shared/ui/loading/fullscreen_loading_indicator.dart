@@ -5,12 +5,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A widget that displays a fullscreen loading indicator.
 class FullscreenLoadingIndicator extends StatelessWidget {
-  const FullscreenLoadingIndicator({
-    super.key,
-    this.title,
-    this.isDisplayTitle = true,
-  });
-
   /// The title of the loading indicator.
   ///
   /// By default, it is set to "loading".
@@ -18,6 +12,16 @@ class FullscreenLoadingIndicator extends StatelessWidget {
 
   /// Whether to display the title or not.
   final bool isDisplayTitle;
+
+  /// The color of the loading indicator.
+  final Color? color;
+
+  const FullscreenLoadingIndicator({
+    super.key,
+    this.title,
+    this.color,
+    this.isDisplayTitle = true,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +33,7 @@ class FullscreenLoadingIndicator extends StatelessWidget {
           title: loadingTitle,
           orientation: Axis.vertical,
           isDisplayTitle: isDisplayTitle,
-          color: context.color.strokeAccent,
+          color: color ?? context.color.strokeAccent,
           backgroundColor: context.color.strokeAccent.withOpacity(0.1),
         ),
       ),

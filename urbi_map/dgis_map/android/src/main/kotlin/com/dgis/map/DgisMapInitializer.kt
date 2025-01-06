@@ -2,8 +2,7 @@ package com.dgis.map
 
 import android.annotation.SuppressLint
 import android.content.Context
-import com.dgis.map.map_api.Messages
-import com.dgis.map.map_api.Messages.VendorConfigContentMessage
+import com.dgis.map.map_api.*
 import ru.dgis.sdk.DGis
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.map.CalloutVisualizationMode
@@ -29,7 +28,7 @@ object DgisMapInitializer {
 
     fun init(
         appContext: Context,
-        vendorConfig: Messages.VendorConfigMessage?,
+        vendorConfig: VendorConfigMessage?,
         vendorConfigContentMessage: VendorConfigContentMessage? = null,
         logOptions: LogOptions? = null,
     ) {
@@ -40,9 +39,9 @@ object DgisMapInitializer {
 
         ///TODO(ve): remove after refactorig android auto
         val vendorConfigFile = when (vendorConfig) {
-            Messages.VendorConfigMessage.URBI_PRE_PROD -> "flutter_assets/assets/maps/configs/urbi-pre-prod-vendor-config.jsonx"
-            Messages.VendorConfigMessage.MOMRAH_PROD -> "flutter_assets/assets/maps/configs/momrah-prod-vendor-config.jsonx"
-            Messages.VendorConfigMessage.MOMRAH_STG -> "flutter_assets/assets/maps/configs/momrah-staging-vendor-config.jsonx"
+            VendorConfigMessage.URBI_PRE_PROD -> "flutter_assets/assets/maps/configs/urbi-pre-prod-vendor-config.jsonx"
+            VendorConfigMessage.MOMRAH_PROD -> "flutter_assets/assets/maps/configs/momrah-prod-vendor-config.jsonx"
+            VendorConfigMessage.MOMRAH_STG -> "flutter_assets/assets/maps/configs/momrah-staging-vendor-config.jsonx"
             null -> "flutter_assets/assets/maps/configs/momrah-prod-vendor-config.jsonx"
         }
 

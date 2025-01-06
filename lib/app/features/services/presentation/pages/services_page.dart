@@ -78,7 +78,7 @@ class _ServicesPageState extends State<ServicesPage> {
                                 .DashBoard_Click_Switch_Account_From_Services_Event);
                           },
                           icon: SvgPicture.asset(
-                            "assets/icons/svg/refresh.svg",
+                            "assets/icons/svg/shift_persona.svg",
                             color: color,
                           ))
                     ],

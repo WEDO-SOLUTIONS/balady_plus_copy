@@ -16,6 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
 import 'package:collection/collection.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart' as balady;
+import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:smart_advisor/app/core/utils/constants/app_config.dart';
 import '../../../../../../../app/core/dependency_injection/injection_container.dart';
 import '../../../../../../../app/core/utils/constants/ux_cam_events.dart';
 import '../../../../../../../app/features/_shared_feature_/data/entities/drop_down_item.dart';
@@ -31,6 +33,7 @@ import '../../../../../dynamic_form/domain/use_cases/validate_dynamic_form.dart'
 import '../../../../../etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 
 part 'submit_request_event.dart';
+
 part 'submit_request_state.dart';
 
 class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
@@ -293,8 +296,11 @@ class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
             dependantFields.putIfAbsent(
                 field!.field!.id!, () => CommonProperties.cityId);
           } else {
-            CommonFunctions.showError(trans("bidding_fill_filed")
-                .replaceAll("{}", field?.fieldLabel ?? ""));
+            CommonFunctions.showError(
+              "bidding_fill_filed"
+                  .tr()
+                  .replaceAll("{}", field?.fieldLabel ?? ""),
+            );
           }
         });
       }
@@ -311,10 +317,18 @@ class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
 
         return await failureOrSuccess.fold((failure) async {
           print(failure);
-          emit(state.copyWith(
-            status: BlocStatus.failure,
-            errorMessage: (failure as ServerFailure).errorMessage,
-          ));
+          String errorMessage = "";
+
+          if (failure is ServerFailure) {
+            errorMessage = "no_data".tr();
+          }
+          emit(
+            state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage:
+                  errorMessage.isEmpty ? failure.toString() : errorMessage,
+            ),
+          );
           return null;
         }, (success) async {
           print(success);
@@ -363,9 +377,9 @@ class SubmitRequestBloc extends Bloc<SubmitRequestEvent, SubmitRequestState> {
             formValidation: success.data?.result));
         add(SubmitEvent(params: e.params));
       } else {
-/**
- *  Set Validations Errors for each field 
- */
+        /**
+         *  Set Validations Errors for each field
+         */
 
         List<ValidationsErrors> errors = success.data?.result?.errors ?? [];
 

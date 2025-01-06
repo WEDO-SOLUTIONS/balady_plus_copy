@@ -1,9 +1,11 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class DeleteAllContent extends StatelessWidget {
-  const DeleteAllContent({
+@RoutePage()
+class DeleteAllContentPage extends StatelessWidget {
+  const DeleteAllContentPage({
     required this.onConfirm,
     required this.onCancel,
     super.key,

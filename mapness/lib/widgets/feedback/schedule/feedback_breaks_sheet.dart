@@ -1,8 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/time_of_day_extension.dart';
@@ -160,7 +160,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetClose,
                   buttonColorScheme: ButtonColorScheme.tertiary,
-                  onTap: () => context.pop(),
+                  onTap: () => context.router.popForced,
                 ),
               ),
               const SizedBox(width: 8),
@@ -229,10 +229,8 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
       _isNoBreaksSelected ? null : selectedStartEnd,
     );
 
-    context.pop();
+    context.router.popForced();
   }
 }
 
-TimeOfDay _timeOfDayFromMinutes(int minutes) {
-  return TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);
-}
+TimeOfDay _timeOfDayFromMinutes(int minutes) => TimeOfDay(hour: minutes ~/ 60, minute: minutes % 60);

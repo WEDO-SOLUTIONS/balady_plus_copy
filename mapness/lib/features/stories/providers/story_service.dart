@@ -12,12 +12,12 @@ part 'story_service.g.dart';
 
 @riverpod
 class StoryService extends _$StoryService {
-  late Box<dynamic> _viewedStories;
+  Box<dynamic>? _viewedStories;
 
   Future<void> markStoryAsRead(final String storyId, int frameIndex) async {
-    await _viewedStories.put(
+    await _viewedStories?.put(
       storyId,
-      max(frameIndex, (_viewedStories.get(storyId) as int?) ?? 0),
+      max(frameIndex, (_viewedStories?.get(storyId) as int?) ?? 0),
     );
     state.whenData(
       (value) => state = AsyncValue.data(syncronizeWatcheness(value)),
@@ -29,7 +29,7 @@ class StoryService extends _$StoryService {
   }
 
   List<StoryData> syncronizeWatcheness(List<StoryData> stories) {
-    final watchStored = Map.of(_viewedStories.toMap()).cast<String, int>();
+    final watchStored = Map.of(_viewedStories?.toMap() ?? {}).cast<String, int>();
 
     final updatedStories = stories.map(
       (story) {

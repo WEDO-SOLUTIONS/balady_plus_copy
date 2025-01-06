@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_features/auth_quick_access_biometric_widget/widgets/auth_quick_access_biometric_widget.dart';
 import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -7,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/app/routes/dark_map.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
 
+@RoutePage()
 class SettingsPage extends ConsumerStatefulWidget {
   const SettingsPage({super.key});
 
@@ -42,7 +43,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                   title: context.l10n.settings,
                   colorEnabled: context.color.textAndIconsStatusAccent,
                   leading: ActionModel(
-                    onPressed: () => context.pop(),
+                    onPressed: () => context.router.popForced(),
                     icon: SystemIcons.arrowCornerLeftLarge,
                   ),
                 ),
@@ -94,7 +95,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                         color: context.color.surfaceBaseSecondary,
                         children: [
                           ContentRow(
-                            onTap: () => const DarkMapRoute().push(context),
+                            onTap: () => context.router.push(const DarkMapRoute()),
                             options: ContentRowOptions(
                               leadingIcon: AppIcons(
                                 iconData: GeneralIcons.darkMode,

@@ -23,6 +23,14 @@ class NavigationEventHandler {
     if (value == NavigationEvent.disabled.name) {
       return _controller.sink.add(NavigationEvent.disabled);
     }
+
+    if (value == NavigationEvent.navigation.name) {
+      return _controller.sink.add(NavigationEvent.navigation);
+    }
+
+    if (value == NavigationEvent.routeSearch.name) {
+      return _controller.sink.add(NavigationEvent.routeSearch);
+    }
   }
 
   void routeOptionsEvent(Map<dynamic, dynamic> map) {

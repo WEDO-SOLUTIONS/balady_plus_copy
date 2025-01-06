@@ -201,6 +201,9 @@ class SoundSettings extends _$SoundSettings {
 
     state = state.copyWith(voicesLanguage: currentVoiceLanguage);
     ref.invalidateSelf();
+    if (state.installedVoices.isNotEmpty) {
+      ref.read(navigatorVoiceProvider.notifier).update(state.installedVoices.first.id);
+    }
   }
 
   Future<void> toggleBackgroundNavigation({required bool backgroundNavigation}) async {

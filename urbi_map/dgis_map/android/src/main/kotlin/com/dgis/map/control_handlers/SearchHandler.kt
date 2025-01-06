@@ -3,13 +3,16 @@ package com.dgis.map.control_handlers
 import android.content.res.Resources.NotFoundException
 import com.dgis.map.FusedLocationSource
 import com.dgis.map.extensions.*
-import com.dgis.map.map_api.Messages.*
-import java.util.UUID
+import com.dgis.map.map_api.*
+import org.json.JSONObject
+import org.json.JSONTokener
+import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
+import java.util.UUID
 import ru.dgis.sdk.map.Map as DgisMap
 
 class SearchHandler(
@@ -42,34 +45,32 @@ class SearchHandler(
                 )
     }
 
-    fun searchByDirectoryObjectId(objectId: DgisObjectId, result: Result<DirectoryObjectMessage>?) {
-        objectSearchFuture =
-                searchManager.searchByDirectoryObjectId(objectId).apply {
-                    onResult { response ->
-                        if (response == null) {
-                            result?.error(
-                                    NotFoundException(
-                                            "Object with id ${objectId.objectId} not found"
-                                    )
-                            )
-                            return@onResult
-                        }
-
-                        result?.success(response.toMessage())
-                    }
-                    onError { result?.error(it) }
+    fun searchByDirectoryObjectId(
+        objectId: DgisObjectId,
+        callback: (Result<DirectoryObjectMessage>)->Unit
+    ) {
+        objectSearchFuture = searchManager.searchByDirectoryObjectId(objectId).apply {
+            onResult { response ->
+                if (response == null) {
+                    callback(Result.failure(NotFoundException("Object with id ${objectId.objectId} not found")))
+                    return@onResult
                 }
+
+                callback(Result.success(response.toMessage()))
+            }
+            onError { callback(Result.failure(it)) }
+        }
     }
 
     fun search(
-            queryText: String,
-            categories: List<RubricId>?,
-            spatialRestriction: List<GeoPoint>?,
-            searchGeoRect: GeoRect?,
-            weekTimeMessage: WeekTimeSearchMessage? = null,
-            sortingType: SortingTypeMessage,
-            pageSize: Int,
-            result: Result<SearchResultMessage>?
+        queryText: String,
+        categories: List<RubricId>?,
+        spatialRestriction: List<GeoPoint>?,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        callback: (Result<SearchResultMessage>)->Unit
     ) {
         val queryBuilder =
                 if (categories != null)
@@ -87,20 +88,23 @@ class SearchHandler(
                         .setSpatialRestriction(spatialRestriction ?: saRestrictions)
                         .build()
 
-        performSearch(query = query, result = result)
+        performSearch(
+            query = query,
+            callback = callback
+        )
     }
 
     fun searchByQuery(
-            queryId: SearchQueryMessage,
-            spatialRestriction: List<GeoPoint>?,
-            searchGeoRect: GeoRect?,
-            weekTimeMessage: WeekTimeSearchMessage? = null,
-            sortingType: SortingTypeMessage,
-            pageSize: Int,
-            result: Result<SearchResultMessage>?
+        queryId: SearchQueryMessage,
+        spatialRestriction: List<GeoPoint>?,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        callback: (Result<SearchResultMessage>)->Unit
     ) {
         if (this.queries[queryId.id] == null) {
-            result?.error(IllegalArgumentException("SearchQuery with given id not exists"))
+            callback(Result.failure(IllegalArgumentException("SearchQuery with given id not exists")))
             return
         }
 
@@ -117,17 +121,20 @@ class SearchHandler(
                         .setSpatialRestriction(spatialRestriction ?: saRestrictions)
                         .build()
 
-        performSearch(query = query, result = result)
+        performSearch(
+            query = query,
+            callback = callback
+        )
     }
 
     fun searchByCategories(
-            categories: List<RubricId>,
-            spatialRestriction: List<GeoPoint>?,
-            searchGeoRect: GeoRect?,
-            weekTimeMessage: WeekTimeSearchMessage? = null,
-            sortingType: SortingTypeMessage,
-            pageSize: Int,
-            result: Result<SearchResultMessage>?
+        categories: List<RubricId>,
+        spatialRestriction: List<GeoPoint>?,
+        searchGeoRect: GeoRect?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
                 SearchQueryBuilder.fromRubricIds(categories)
@@ -140,16 +147,19 @@ class SearchHandler(
                         .setSpatialRestriction(spatialRestriction ?: saRestrictions)
                         .build()
 
-        performSearch(query = query, result = result)
+        performSearch(
+            query = query,
+            callback = callback
+        )
     }
 
     fun searchByParkCategory(
-            searchGeoRect: GeoRect?,
-            spatialRestriction: List<GeoPoint>?,
-            weekTimeMessage: WeekTimeSearchMessage? = null,
-            sortingType: SortingTypeMessage,
-            pageSize: Int,
-            result: Result<SearchResultMessage>?
+        searchGeoRect: GeoRect?,
+        spatialRestriction: List<GeoPoint>?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
                 SearchQueryBuilder.fromQueryText("park")
@@ -163,16 +173,19 @@ class SearchHandler(
                         .setSpatialRestriction(spatialRestriction ?: saRestrictions)
                         .build()
 
-        performSearch(query = query, result = result)
+        performSearch(
+            query = query,
+            callback = callback
+        )
     }
 
     fun searchByBeachCategory(
-            searchGeoRect: GeoRect?,
-            spatialRestriction: List<GeoPoint>?,
-            weekTimeMessage: WeekTimeSearchMessage? = null,
-            sortingType: SortingTypeMessage,
-            pageSize: Int,
-            result: Result<SearchResultMessage>?
+        searchGeoRect: GeoRect?,
+        spatialRestriction: List<GeoPoint>?,
+        weekTimeMessage: WeekTimeSearchMessage? = null,
+        sortingType: SortingTypeMessage,
+        pageSize: Int,
+        callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
                 SearchQueryBuilder.fromQueryText("beach")
@@ -186,36 +199,39 @@ class SearchHandler(
                         .setSpatialRestriction(spatialRestriction ?: saRestrictions)
                         .build()
 
-        performSearch(query = query, result = result)
+        performSearch(
+            query = query,
+            callback = callback
+        )
     }
 
-    private fun performSearch(query: SearchQuery, result: Result<SearchResultMessage>?) {
+    private fun performSearch(query: SearchQuery, callback: (Result<SearchResultMessage>)->Unit) {
         searchFuture =
-                searchManager.search(query).apply {
-                    onResult { response ->
-                        this@SearchHandler.itemMarkerInfosFuture =
-                                response.itemMarkerInfos.apply {
-                                    onResult { items ->
-                                        val pageId = UUID.randomUUID().toString()
-                                        if (response.firstPage != null) {
-                                            this@SearchHandler.pages[pageId] = response.firstPage!!
-                                        }
-
-                                        result?.success(
-                                                response.toMessage(pageId, map.camera, items)
-                                        )
-                                    }
-                                    onError { error -> result?.error(error) }
+            searchManager.search(query).apply {
+                onResult { response ->
+                    this@SearchHandler.itemMarkerInfosFuture =
+                        response.itemMarkerInfos.apply {
+                            onResult { items ->
+                                val pageId = UUID.randomUUID().toString()
+                                if (response.firstPage != null) {
+                                    this@SearchHandler.pages[pageId] = response.firstPage!!
                                 }
-                    }
-                    onError { error -> result?.error(error) }
+
+                                callback(Result.success(
+                                    response.toMessage(pageId, map.camera, items)
+                                ))
+                            }
+                            onError { error -> callback(Result.failure(error)) }
+                        }
                 }
+                onError { error -> callback(Result.failure(error)) }
+            }
     }
 
-    fun fetchNextPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
+    fun fetchNextPage(pageId: PageIdMessage,callback: (Result<PageMessage>)->Unit) {
         if (this.pages[pageId.id] == null) {
-            result?.error(IllegalArgumentException("Page with given id not exists"))
-            //            return txtCilor = while. naturalOrder<>()
+            callback(Result.failure(IllegalArgumentException("Page with given id not exists")))
+//            return txtCilor = while. naturalOrder<>()
         }
 
         searchFuture =
@@ -225,18 +241,22 @@ class SearchHandler(
                             val pageId = UUID.randomUUID().toString()
                             this@SearchHandler.pages[pageId] = response
 
-                            result?.success(response.toMessage(pageId))
-                        } else {
-                            result?.error(IllegalArgumentException("Failed to fetch page"))
-                        }
-                    }
-                    onError { error -> result?.error(error) }
+                    callback(Result.success(
+                        response.toMessage(pageId))
+                    )
+                } else {
+                    callback(Result.failure(IllegalArgumentException("Failed to fetch page")))
                 }
+            }
+            onError { error ->
+                callback(Result.failure(error))
+            }
+        }
     }
 
-    fun fetchPrevPage(pageId: PageIdMessage, result: Result<PageMessage>?) {
+    fun fetchPrevPage(pageId: PageIdMessage,callback: (Result<PageMessage>)->Unit) {
         if (this.pages[pageId.id] == null) {
-            result?.error(IllegalArgumentException("Page with given id not exists"))
+            callback(Result.failure(IllegalArgumentException("Page with given id not exists")))
             return
         }
 
@@ -247,30 +267,34 @@ class SearchHandler(
                             val pageId = UUID.randomUUID().toString()
                             this@SearchHandler.pages[pageId] = response
 
-                            result?.success(response.toMessage(pageId))
-                        } else {
-                            result?.error(IllegalArgumentException("Failed to fetch page"))
-                        }
-                    }
-                    onError { error -> result?.error(error) }
+                    callback(Result.success(
+                        response.toMessage(pageId)
+                    ))
+                } else {
+                    callback(Result.failure(IllegalArgumentException("Failed to fetch page")))
                 }
+            }
+            onError { error ->
+                callback(Result.failure(error))
+            }
+        }
     }
 
-    fun releasePage(pageId: PageIdMessage, result: Result<Void>?) {
+    fun releasePage(pageId: PageIdMessage, callback: (Result<Unit>) -> Unit) {
         if (this.pages[pageId.id] == null) {
-            result?.error(IllegalArgumentException("Page with given id not exists"))
+            callback(Result.failure(IllegalArgumentException("Page with given id not exists")))
             return
         }
 
         this.pages.remove(pageId.id)
-        result?.success(null)
+        callback(Result.success(Unit))
     }
 
     fun fetchSuggests(
-            queryText: String,
-            allowedResultTypes: List<SuggestedTypeMessage_>?,
-            searchGeoRect: GeoRect?,
-            result: Result<SuggestResultMessage>?
+        queryText: String,
+        allowedResultTypes: List<SuggestedTypeMessage_>?,
+        searchGeoRect: GeoRect?,
+        callback: (Result<SuggestResultMessage>)->Unit
     ) {
         var suggestQueryBuilder =
                 SuggestQueryBuilder.fromQueryText(queryText)
@@ -292,39 +316,39 @@ class SearchHandler(
                     onResult { response ->
                         this@SearchHandler.queries.clear()
                         val suggests =
-                                response.suggests.map {
-                                    var queryId: String? = null
-                                    if (it.handler.isPerformSearchHandler) {
-                                        queryId = UUID.randomUUID().toString()
-                                        this@SearchHandler.queries[queryId] =
-                                                it.handler.asPerformSearchHandler!!.searchQuery
-                                    }
-
-                                    it.toMessage(queryId)
+                            response.suggests.map {
+                                var queryId: String? = null
+                                if (it.handler.isPerformSearchHandler) {
+                                    queryId = UUID.randomUUID().toString()
+                                    this@SearchHandler.queries[queryId] =
+                                        it.handler.asPerformSearchHandler!!.searchQuery
                                 }
 
-                        result?.success(
-                                SuggestResultMessage.Builder().setSuggests(suggests).build()
+                                it.toMessage(queryId)
+                            }
+
+                        callback(
+                            Result.success(
+                                SuggestResultMessage(suggests = suggests)
+                            )
                         )
                     }
-                    onError { result?.error(it) }
+                    onError { callback(Result.failure(it)) }
                 }
-    }
+            }
 
     fun getDistanceTo(
-            points: List<DistanceRequestMessage>,
-            result: Result<List<DistanceResponseMessage>>?
+        points: List<DistanceRequestMessage>,
+        callback: (Result<List<DistanceResponseMessage>>)-> Unit
     ) {
-        val location =
-                locationSource.lastLocation
-                        ?: run {
-                            result?.error(IllegalArgumentException("Last location unknown"))
-                            return
-                        }
+        val location = locationSource.lastLocation ?: run {
+            callback(Result.failure(IllegalArgumentException("Last location unknown")))
+            return
+        }
 
         val current = GeoPoint(location.latitude, location.longitude)
         val distance = points.map { it.toResponse(current) }
 
-        result?.success(distance)
+        callback(Result.success(distance))
     }
 }

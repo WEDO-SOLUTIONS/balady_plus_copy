@@ -3,8 +3,8 @@ import DGis
 
 extension Voice {
     func toVoiceMessage() -> VoiceMessage {
-        return VoiceMessage.make(
-            withLanguage: self.language,
+        return VoiceMessage(
+            language: self.language,
             packageMessage: self.toMessage()
         )
     }

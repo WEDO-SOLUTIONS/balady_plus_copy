@@ -1,18 +1,19 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 
-class FavouritesPicker extends ConsumerWidget {
-  const FavouritesPicker({super.key});
+@RoutePage()
+class FavouritesPickerPage extends ConsumerWidget {
+  const FavouritesPickerPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,9 +29,10 @@ class FavouritesPicker extends ConsumerWidget {
       );
     }
     if (asyncState.hasError) {
-      return ErrorSheet(
+      return ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
         onRetry: () => ref.invalidate(favouriteCacheProvider),
+        onClose: (_) => context.router.popForced(),
       );
     }
     final state = asyncState.requireValue;
@@ -66,7 +68,7 @@ class FavouritesPicker extends ConsumerWidget {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () {
-                          context.pop();
+                          context.router.popForced();
                         },
                         borderRadius: BorderRadius.circular(8),
                         child: Padding(
@@ -118,7 +120,7 @@ class FavouritesPicker extends ConsumerWidget {
                                 index == (state.items.length - 1) ? const EdgeInsets.only(bottom: 8) : EdgeInsets.zero,
                             child: FavouriteItemWidget(
                               key: ValueKey(item.id),
-                              onTap: () => context.pop(item),
+                              onTap: () => context.router.popForced(item),
                               isEditing: false,
                               isDeletable: false,
                               item: item,

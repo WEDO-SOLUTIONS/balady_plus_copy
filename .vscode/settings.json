@@ -9,9 +9,5 @@
   "editor.rulers": [
     120
   ],
-  "editor.formatOnSave": true,
-  "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
-  },
-  "jsonToDart.runBuilder": true
+  "editor.formatOnSave": true
 }

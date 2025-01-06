@@ -1,46 +1,38 @@
 package com.dgis.map.extensions
 
-import com.dgis.map.map_api.Messages.*
+import com.dgis.map.map_api.*
 import ru.dgis.sdk.*
 import ru.dgis.sdk.directory.*
 
 fun Suggest.toMessage(searchQueryId: String?): SuggestMessage {
-    return SuggestMessage.Builder()
-        .setHandler(this.handler.toMessage(searchQueryId))
-        .setSuggestedType(this.suggestedType.toMessage())
-        .setTitle(this.title.toMessage())
-        .setSubtitle(this.subtitle.toMessage())
-        .build()
+    return SuggestMessage(
+        handler = this.handler.toMessage(searchQueryId),
+        suggestedType = this.suggestedType.toMessage(),
+        title = this.title.toMessage(),
+        subtitle = this.subtitle.toMessage()
+    )
 }
 
 fun SuggestHandler.toMessage(searchQueryId: String?): SuggestHandlerMessage {
-    return SuggestHandlerMessage.Builder()
-        .setObjectHandler(
-            this.asObjectHandler?.let {
-                SuggestObjectHandlerMessage.Builder()
-                    .setItem(it.item.toMessage())
-                    .build()
-            }
-        )
-        .setIncompleteTextHandler(
-            this.asIncompleteTextHandler?.let {
-                IncompleteTextHandlerMessage.Builder()
-                    .setQueryText(it.queryText)
-                    .build()
-            }
-        )
-        .setPerformSearchHandler(
-            this.asPerformSearchHandler?.let {
-                PerformSearchHandlerMessage.Builder()
-                    .setSearchQuery(
-                        SearchQueryMessage.Builder()
-                            .setId(searchQueryId!!)
-                            .build()
-                    )
-                    .build()
-            }
-        )
-        .build()
+    return SuggestHandlerMessage(
+        objectHandler = this.asObjectHandler?.let {
+            SuggestObjectHandlerMessage(
+                item = it.item.toMessage()
+            )
+        },
+        incompleteTextHandler = this.asIncompleteTextHandler?.let {
+            IncompleteTextHandlerMessage(
+                queryText = it.queryText
+            )
+        },
+        performSearchHandler = this.asPerformSearchHandler?.let {
+            PerformSearchHandlerMessage(
+                searchQuery = SearchQueryMessage(
+                    id = searchQueryId!!
+                )
+            )
+        }
+    )
 }
 
 fun SuggestedType.toMessage(): SuggestedTypeMessage = when(this) {
@@ -79,7 +71,6 @@ fun SuggestedType.toMessage(): SuggestedTypeMessage = when(this) {
     SuggestedType.ROUTE_TYPE -> SuggestedTypeMessage.ROUTE_TYPE
     SuggestedType.RUBRIC -> SuggestedTypeMessage.RUBRIC
     SuggestedType.STATION_METRO -> SuggestedTypeMessage.STATION_METRO
-
 }
 
 fun SuggestedTypeMessage.toSuggestType(): SuggestedType = when(this) {
@@ -121,17 +112,17 @@ fun SuggestedTypeMessage.toSuggestType(): SuggestedType = when(this) {
 }
 
 fun MarkedUpText.toMessage(): MarkedUpTextMessage {
-    return MarkedUpTextMessage.Builder()
-        .setText(this.text)
-        .setMatchedParts(this.matchedParts.map {
+    return MarkedUpTextMessage(
+        text = this.text,
+        matchedParts = this.matchedParts.map {
             it.toMessage()
-        })
-        .build()
+        }
+    )
 }
 
 fun MarkedUpTextSpan.toMessage(): MarkedUpTextSpanMessage {
-    return MarkedUpTextSpanMessage.Builder()
-        .setOffset(this.offset)
-        .setLength(this.length)
-        .build()
+    return MarkedUpTextSpanMessage(
+        offset = this.offset,
+        length = this.length
+    )
 }

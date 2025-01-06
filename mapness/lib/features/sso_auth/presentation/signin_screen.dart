@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -5,7 +6,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -14,8 +15,9 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/balady_logo/balady_logo.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
-class SigninScreen extends ConsumerWidget {
-  const SigninScreen({super.key});
+@RoutePage()
+class SigninPage extends ConsumerWidget {
+  const SigninPage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Scaffold(
@@ -67,7 +69,7 @@ class SigninScreen extends ConsumerWidget {
                             if (!context.mounted) {
                               return;
                             }
-                            context.pop();
+                            context.router.popForced();
                           },
                           label: context.l10n.signIn,
                           textColor: AppColor.authSubtitleColorV2,
@@ -96,7 +98,7 @@ class SigninScreen extends ConsumerWidget {
               action: MetricAction.tap.toString(),
             );
 
-            context.pop();
+            context.router.popForced();
           },
           child: Container(
             height: Spacing.$10x,

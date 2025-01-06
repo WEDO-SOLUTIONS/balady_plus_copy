@@ -10,133 +10,169 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:provider/provider.dart';
+import 'package:provider/provider.dart' as provider;
 
-class PrayerCard extends StatelessWidget {
+class PrayerCard extends ConsumerWidget {
   const PrayerCard({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final bloc = sl<PrayerTimesCubit>();
 
-    return Padding(
-      padding: const EdgeInsets.only(
-        left: Spacing.$4x,
-        right: Spacing.$4x,
-        bottom: Spacing.$8x,
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        child: SizedBox(
-          height: 347,
-          child: BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
-              bloc: bloc,
-              builder: (context, state) {
-                final nextPrayer = state.nextPrayer;
+    ref.listen(networkStatusProvider, (prev, next) {
+      final wasNotConnected = !(prev ?? false);
+      final nowIsConnected = next;
 
-                if (state.status == BlocRequestStatus.submissionGetFailure) {
-                  return const SizedBox();
-                } else if (nextPrayer == null || state.status == BlocRequestStatus.submissionGetCanceled) {
-                  return const Padding(
-                    padding: EdgeInsets.only(bottom: Spacing.$8x),
-                    child: CustomShimmerWidget(),
-                  );
-                }
+      if (wasNotConnected && nowIsConnected) {
+        bloc
+          ..getPrayerTime()
+          ..getPrayerSettings()
+          ..getPrayerTimeRange();
+      }
+    });
 
-                return Material(
-                  child: Ink.image(
-                    alignment: Alignment.topCenter,
-                    fit: BoxFit.cover,
-                    image: const AssetImage(
-                      'assets/images/ishan-seefromthesky-unsplash.jpg',
-                      package: PackageConfig.packageName,
-                    ),
-                    child: InkWell(
-                      onTap: () {
-                        Metrics.logEventAdvanced(
-                          MetricsConstants.exploreKeys.prayerTimesBannerButton,
-                          action: MetricAction.tap.name,
-                          group: MetricsConstants.exploreTag,
-                        );
-                        NavigationService.navigatorKey.currentState!.pushNamed(
-                          RouteName.prayerTimes,
-                          arguments: bloc,
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          vertical: Spacing.$5x,
-                          horizontal: Spacing.$6x,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
-                              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                                color: context.color.textAndIconsBaseInversePrimary,
+    return BlocBuilder<PrayerTimesCubit, PrayerTimesState>(
+        bloc: bloc,
+        builder: (context, state) {
+          final nextPrayer = state.nextPrayer;
+
+          if (state.status == BlocRequestStatus.submissionGetFailure) {
+            return const SizedBox();
+          }
+
+          final isLoading = nextPrayer == null ||
+              state.status == BlocRequestStatus.submissionGetCanceled;
+
+          return Padding(
+            padding: const EdgeInsets.only(
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              bottom: Spacing.$8x,
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(RadiusBorder.xl),
+              child: SizedBox(
+                height: 347,
+                child: isLoading
+                    ? const Padding(
+                        padding: EdgeInsets.only(bottom: Spacing.$8x),
+                        child: CustomShimmerWidget(),
+                      )
+                    : Material(
+                        child: Ink.image(
+                          alignment: Alignment.topCenter,
+                          fit: BoxFit.cover,
+                          image: const AssetImage(
+                            'assets/images/ishan-seefromthesky-unsplash.jpg',
+                            package: PackageConfig.packageName,
+                          ),
+                          child: InkWell(
+                            onTap: () {
+                              Metrics.logEventAdvanced(
+                                MetricsConstants
+                                    .exploreKeys.prayerTimesBannerButton,
+                                action: MetricAction.tap.name,
+                                group: MetricsConstants.exploreTag,
+                              );
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(
+                                RouteName.prayerTimes,
+                                arguments: bloc,
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: Spacing.$5x,
+                                horizontal: Spacing.$6x,
                               ),
-                            ),
-                            _NextPrayerTimer(
-                              key: Key(nextPrayer.prayer.name),
-                              onTimerEnd: () => bloc.updateNextPrayer(),
-                              prayer: nextPrayer.prayer,
-                              time: nextPrayer.dateTime,
-                            ),
-                            const Spacer(),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
-                                      style: context.textStyleV3.bodySmallRegular.copyWith(
-                                        color: context.color.textAndIconsBaseInversePrimary,
-                                      ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'remain_to_azan'.tr().replaceAll('{}',
+                                        state.nextPrayer!.prayer.label.tr()),
+                                    style: context.textStyleV3.bodyLargeRegular
+                                        .copyWith(
+                                      color: context
+                                          .color.textAndIconsBaseInversePrimary,
                                     ),
-                                    RichText(
-                                      textDirection: TextDirection.ltr,
-                                      text: TextSpan(
-                                        style: context.textStyleV3.h2Medium.copyWith(
-                                          color: context.colorsV2.staticWhite,
-                                        ),
+                                  ),
+                                  _NextPrayerTimer(
+                                    key: Key(nextPrayer.prayer.name),
+                                    onTimerEnd: () => bloc.updateNextPrayer(),
+                                    prayer: nextPrayer.prayer,
+                                    time: nextPrayer.dateTime,
+                                  ),
+                                  const Spacer(),
+                                  Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
-                                          TextSpan(
-                                            text: DateFormat('hh:mm').format(state.nextPrayer!.dateTime),
+                                          Text(
+                                            '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
+                                            style: context
+                                                .textStyleV3.bodySmallRegular
+                                                .copyWith(
+                                              color: context.color
+                                                  .textAndIconsBaseInversePrimary,
+                                            ),
                                           ),
-                                          TextSpan(
-                                            text: state.nextPrayer!.dateTime.hour > 12 ? ' pm' : ' am',
+                                          RichText(
+                                            textDirection: TextDirection.ltr,
+                                            text: TextSpan(
+                                              style: context
+                                                  .textStyleV3.h2Medium
+                                                  .copyWith(
+                                                color: context
+                                                    .colorsV2.staticWhite,
+                                              ),
+                                              children: [
+                                                TextSpan(
+                                                  text: DateFormat('hh:mm')
+                                                      .format(state.nextPrayer!
+                                                          .dateTime),
+                                                ),
+                                                TextSpan(
+                                                  text: state.nextPrayer!
+                                                              .dateTime.hour >
+                                                          12
+                                                      ? ' pm'
+                                                      : ' am',
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                         ],
                                       ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  width: 40,
-                                  height: 40,
-                                  child: _NotificationIconSwitch(),
-                                )
-                              ],
+                                      const SizedBox(
+                                        width: 40,
+                                        height: 40,
+                                        child: _NotificationIconSwitch(),
+                                      )
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ],
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-                );
-              }),
-        ),
-      ),
-    );
+              ),
+            ),
+          );
+        });
   }
 }
 
@@ -144,7 +180,8 @@ class _NotificationIconSwitch extends StatefulWidget {
   const _NotificationIconSwitch();
 
   @override
-  State<_NotificationIconSwitch> createState() => _NotificationIconSwitchState();
+  State<_NotificationIconSwitch> createState() =>
+      _NotificationIconSwitchState();
 }
 
 class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
@@ -159,7 +196,8 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
             action: MetricAction.tap.name,
             group: MetricsConstants.exploreTag,
           );
-          Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
+          provider.Provider.of<PrayerTimesCubit>(context, listen: false)
+              .prayerSettingsOnOff();
         },
         onTapDown: (_) {
           setState(() {
@@ -182,8 +220,12 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
                   builder: (context, state) {
                     final isNotificationDisabled = state.isNotificationDisable;
                     return Icon(
-                      isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
-                      color: isPressed ? context.colorsV2.foregroundMuted : Colors.white,
+                      isNotificationDisabled
+                          ? SystemIcons.notification
+                          : SystemIcons.notificationFill,
+                      color: isPressed
+                          ? context.colorsV2.foregroundMuted
+                          : Colors.white,
                     );
                   },
                 ),
@@ -266,7 +308,8 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
 
         return Text(
           '$hours:$minutes:$seconds',
-          style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
+          style: context.textStyleV3.h1Medium
+              .copyWith(color: context.colorsV2.staticWhite),
           textDirection: TextDirection.ltr,
         );
       },

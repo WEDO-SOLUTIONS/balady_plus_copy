@@ -1,30 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/events.dart';
-import 'package:mapness/app/routes/kiblah.dart';
-import 'package:mapness/app/routes/poi_map.dart';
-import 'package:mapness/app/routes/routes.dart';
-import 'package:mapness/app/routes/routing.dart';
-import 'package:mapness/app/routes/search.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
-import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
-
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/beta_notification.dart';
@@ -33,10 +27,9 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/routing/current_route_provider.dart';
-import 'package:mapness/shared/ui/loading/service_not_available_sheet.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
+@RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
   const LandingPage({super.key});
 
@@ -45,7 +38,13 @@ class LandingPage extends ConsumerStatefulWidget {
 }
 
 class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingObserver {
-  late StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
+      StatefulBottomSheetController(
+    initialState: ThreeStateBottomSheet.open,
+    behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
+    stateMapper: const LandingStateMapper(),
+  );
+
   MediaQueryData? _mediaQuery;
   StreamSubscription<TapEvent>? _streamSubscription;
 
@@ -58,37 +57,16 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       _mediaQuery = ref.read(mediaQueryInfoProvider);
     });
 
-    bottomSheetController = StatefulBottomSheetController(
-      initialState: ThreeStateBottomSheet.open,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
-      stateMapper: const LandingStateMapper(),
-    );
+    _bottomSheetController.addListener(_calculatePadding);
 
-    bottomSheetController.addListener(_calculatePadding);
-
-    setupTapListener();
+    _setupTapListener();
   }
 
-  Future<void> setupTapListener() async {
+  Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
 
     _calculatePadding();
-  }
-
-  void _showServiceNotAvilibleSheet() {
-    // Show not available sheet if service is not available
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (rootNavigatorKey.currentContext?.mounted ?? false) {
-        showModalBottomSheet(
-          context: rootNavigatorKey.currentContext!,
-          backgroundColor: Colors.transparent,
-          builder: (_) => Builder(
-            builder: (ctx) => const ServiceNotAvailableSheet(),
-          ),
-        );
-      }
-    });
   }
 
   void _showBetaNotification() {
@@ -106,14 +84,14 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
             topPadding: _mediaQuery?.padding.top.toInt() ?? 0,
-            bottomPadding: bottomSheetController.sheetHeight.toInt(),
+            bottomPadding: _bottomSheetController.sheetHeight.toInt(),
           ),
         );
   }
 
   @override
   void dispose() {
-    bottomSheetController.removeListener(_calculatePadding);
+    _bottomSheetController.removeListener(_calculatePadding);
 
     WidgetsBinding.instance.removeObserver(this);
 
@@ -124,8 +102,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
       ref.read(locationProvider.notifier).checkLocationPermission();
-      ref.read(freeRoamStarterProvider.notifier).reset();
-      AdvancedMetrics.instance.resumeMeasureBattery();
     } else if (state == AppLifecycleState.paused) {
       AdvancedMetrics.instance.pauseMeasureBattery();
     }
@@ -156,21 +132,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     ref
-      ..watch(currentRouteProvider.select((value) => null))
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
-      ..listen(currentRouteProvider, (_, next) {
-        if (next?.currentPath == KiblahRoute.path) {
-          bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-        }
-      })
       ..listen(serviceNotAvailableProvider, (prev, isAvailible) {
         final isPrevIsAvailible = prev?.valueOrNull ?? true;
         final isAvailibleValue = isAvailible.valueOrNull;
 
         // Show only if service is not available
         if (isPrevIsAvailible == true && isAvailibleValue == false) {
-          _showServiceNotAvilibleSheet();
+          context.router.push(const ServiceNotAvailableSheetRoute());
         }
       })
 
@@ -187,33 +157,21 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           child: Stack(
             children: [
               ListenableBuilder(
-                listenable: bottomSheetController,
+                listenable: _bottomSheetController,
                 builder: (_, __) {
-                  if (bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+                  if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
                     return const SizedBox.shrink();
                   }
 
                   return GestureDetector(
-                    onTapDown: (_) {
-                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTapUp: (_) {
-                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
-                    onTap: () {
-                      if (bottomSheetController.state != ThreeStateBottomSheet.hidden) {
-                        bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-                      }
-                    },
+                    onTapDown: (_) => _hideBottomSheet(),
+                    onTapUp: (_) => _hideBottomSheet(),
+                    onTap: _hideBottomSheet,
                   );
                 },
               ),
-              MapDashboardControls(bottomSheetController, key: const ValueKey('MapDashboardControls')),
-              Dashboard(bottomSheetController: bottomSheetController),
+              MapDashboardControls(_bottomSheetController, key: const ValueKey('MapDashboardControls')),
+              Dashboard(bottomSheetController: _bottomSheetController),
             ],
           ),
         ),
@@ -221,21 +179,19 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     );
   }
 
+  void _hideBottomSheet() {
+    if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
+      _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    }
+  }
+
   void _objectTapListener(TapEvent event) {
-    final currentRoute = ref.watch(currentRouteProvider);
+    final objectIgnoreRoute = [RoutingMapSelectRoute.name, SearchRoute.name, RoutingRoutesRoute.name];
 
-    const routingRoutePath = RoutingRoutesRoute.path;
-
-    ///TODO: need to refactor after Dashboard refactoring to designSystem
-    final goRouter = ref.read(goRouterProvider);
-
-    if (goRouter.isCurrentRoute(RoutingMapRoute.path)) {
-      return;
-    } else if (goRouter.isCurrentRoute(RoutingRoutesRoute.path)) {
-      return;
-    } else if (goRouter.isCurrentRoute(SearchRoute.path)) {
+    if (objectIgnoreRoute.any(context.router.isRouteActive)) {
       return;
     }
+
     if (event is ObjectTapEvent) {
       Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
           group: MetricsConstants.poiTag,
@@ -245,13 +201,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           });
 
       if (context.mounted) {
-        if (currentRoute?.currentPath == routingRoutePath) {
-          context.pop();
-        }
-        PoiMapRoute.open(
-          ref.read(goRouterProvider),
-          event.dgisObjectId.objectId,
-          latLng: event.latLng,
+        context.router.replaceOrPush(
+          route: PoiCardWidgetRoute(
+            objectId: DgisObjectIdMessage(
+              objectId: event.dgisObjectId.objectId,
+              entranceId: 0,
+            ),
+            closestPoint: event.latLng,
+          ),
+          toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
         );
       }
     } else if (event is RoadEventTapEvent) {
@@ -262,7 +220,15 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
         props: {'event': event.id.objectId, 'title': event.title},
       );
 
-      EventsRoute.open(context, event);
+      context.router.push(RoadClosureRoute(
+        id: event.id,
+        title: event.title,
+        description: event.description,
+        startTime: event.startTime,
+        finishTime: event.finishTime,
+        latitude: event.latLng.latitude,
+        longitude: event.latLng.longitude,
+      ));
     } else if (event is MyLocationTapEvent) {
       if (context.mounted) {
         Metrics.logEventAdvanced(
@@ -271,16 +237,16 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
           action: MetricAction.tap.toString(),
         );
 
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+
         final userLocation = ref.read(locationProvider);
-        PoiMapRoute.open(
-          ref.read(goRouterProvider),
-          -1,
-          latLng: userLocation != null
-              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-              : event.latLng,
-          zoom: 17,
-          bearing: 0,
-          tilt: 0,
+        context.router.push(
+          ShareMyLocationRoute(
+            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+            closestPoint: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+          ),
         );
       }
     }

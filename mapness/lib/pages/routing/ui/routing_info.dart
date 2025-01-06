@@ -1,15 +1,17 @@
 import 'dart:async';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:mapness/app/router.dart';
-import 'package:mapness/app/routes/path_nav.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
+import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
 import 'package:mapness/pages/routing/ui/routing_tab_bar.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -26,8 +28,13 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPoint?> points;
+  final bool isHomeOrWork;
 
-  const RoutingInfo({required this.points, super.key});
+  const RoutingInfo({
+    required this.points,
+    this.isHomeOrWork = false,
+    super.key,
+  });
 
   @override
   ConsumerState<RoutingInfo> createState() => _RoutingInfoState();
@@ -223,6 +230,9 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       action: MetricAction.tap.toString(),
     );
 
+    // log advert analytics event
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
+
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
       properties: {
@@ -231,9 +241,11 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       },
     );
 
-    PathNavRoute.open(
-      ref.watch(goRouterProvider),
-      navigatingType,
+    context.router.push(
+      PathNavRoute(
+        navType: navigatingType,
+        isHomeOrWork: widget.isHomeOrWork,
+      initAction: PathNavPageInitAction.startNavigation,),
     );
   }
 

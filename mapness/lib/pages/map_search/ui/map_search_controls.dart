@@ -33,7 +33,6 @@ class MapSearchSheetControls extends ConsumerStatefulWidget {
 }
 
 class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> {
-
   void _searchInArea() {
     Metrics.logEventAdvanced(
       MetricsConstants.searchKeys.searchInThisArea,
@@ -65,13 +64,10 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
     } else {
       bottomPadding = 16;
     }
-
-    bool visibleSearchArea = false;
+    final ValueNotifier<bool> visibleSearchArea = ValueNotifier(false);
     ref.watch(searchInRectProvider.select((value) {
-      if (visibleSearchArea != value.$2) {
-        setState(() {
-          visibleSearchArea = value.$2;
-        });
+      if (visibleSearchArea.value != value.isButtonVisible) {
+        visibleSearchArea.value = value.isButtonVisible;
       }
     }));
 
@@ -113,10 +109,13 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                           const SizedBox(height: 8),
                           Row(
                             children: [
-                              uikit.SearchInArea(
-                                visible: !visibleSearchArea,
-                                title: context.l10n.searchInThisArea,
-                                onTap: _searchInArea,
+                              ValueListenableBuilder(
+                                valueListenable: visibleSearchArea,
+                                builder: (context, value, child) => uikit.SearchInArea(
+                                  visible: !value,
+                                  title: context.l10n.searchInThisArea,
+                                  onTap: _searchInArea,
+                                ),
                               ),
                               const Spacer(),
                               const FollowControl(),
@@ -136,4 +135,3 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
     );
   }
 }
-

@@ -1,10 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -14,22 +14,19 @@ class EtaShareControlSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     Future<void> _closeStream() async {
-      final tokenId = EtaStreamStorage().state.streamToken;
-      final xStreamData = EtaStreamStorage().state.xStreamData;
-      if (tokenId != null && xStreamData != null) {
-        await ref.read(shareEtaProvider.notifier).stopSharing(tokenId, xStreamData);
-      }
+      // Close stream without clear storage
+      await ref.read(shareEtaProvider.notifier).stopSharing();
     }
 
     Future<void> _stopShare() async {
       await _closeStream();
-      context.pop();
+      context.router.popForced();
     }
 
     Future<void> _shareMore() async {
       await _closeStream();
       await ref.read(shareEtaProvider.notifier).startSharingEta();
-      context.pop();
+      context.router.popForced();
     }
 
     return Container(
@@ -59,7 +56,7 @@ class EtaShareControlSheet extends ConsumerWidget {
                   color: context.colorsV2.foregroundDefault,
                 ),
                 customActionWidget: AppButton.close(
-                  onTap: () => context.pop(),
+                  onTap: () => context.router.popForced(),
                   padding: EdgeInsets.zero,
                   textColor: context.colorsV2.neutralOnContainer,
                   color: context.colorsV2.neutralContainerDefault,

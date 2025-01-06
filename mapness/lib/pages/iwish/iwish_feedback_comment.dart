@@ -1,23 +1,25 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/routes/iwish.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/iwish/providers/iwish_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/labeled_draggable_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_text_editing_field.dart';
 
-class IwishFeedbackComment extends ConsumerStatefulWidget {
-  const IwishFeedbackComment({required this.iwishId, super.key});
+@RoutePage()
+class IwishFeedbackCommentPage extends ConsumerStatefulWidget {
+  const IwishFeedbackCommentPage({required this.iwishId, super.key});
   final String iwishId;
 
   @override
-  ConsumerState<IwishFeedbackComment> createState() => _IwishFeedbackCommentState();
+  ConsumerState<IwishFeedbackCommentPage> createState() => _IwishFeedbackCommentState();
 }
 
-class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackComment> {
+class _IwishFeedbackCommentState extends ConsumerState<IwishFeedbackCommentPage> {
   void onClose() {
-    IwishFeedbackRoute(iwishId: widget.iwishId).replace(context);
+    context.router.replace(IwishFeedbackContainerRoute(iwishId: widget.iwishId));
   }
 
   void onSubmit() {
