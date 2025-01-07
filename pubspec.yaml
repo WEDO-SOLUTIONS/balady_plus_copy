@@ -232,6 +232,7 @@ dependencies:
   ############################################################
 
   syncfusion_localizations:
+  home_widget: ^0.7.0
 
 dependency_overrides:
   # for dio_http_cache

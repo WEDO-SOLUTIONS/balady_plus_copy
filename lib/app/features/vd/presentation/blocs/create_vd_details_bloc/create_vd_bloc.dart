@@ -50,9 +50,7 @@ import '../../../../_shared_feature_/data/entities/validators/name_validation.da
 import '../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../dialogs/duplicate_request_dialog.dart';
 
-
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
 
 part 'create_vd_event.dart';
 
@@ -483,14 +481,19 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           errorMessage: (failure as ServerFailure).errorMessage,
           selectedSPLIndex: -1));
     }, (success) {
-      //print("succcss");
-      //print(success);
       success.selectedSPLID = e.params.splID;
       emitter(state.copyWith(
         status: BlocStatus.success,
         splDetailsResponse: success,
         errorMessage: "",
       ));
+
+      if (e.autoSelect == true) {
+        emitter(state.copyWith(
+            status: BlocStatus.success,
+            currentPageValue: state.currentPageValue + 1));
+        add(GoToNextPageEvent());
+      }
     });
   }
 
@@ -696,26 +699,26 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         if (pos == null) pos = (await Geolocator.getLastKnownPosition());
         emitter(state.copyWith(status: BlocStatus.success));
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         emitter(state.copyWith(status: BlocStatus.success));
         if (pos == null)
           try {
             pos = (await Geolocator.getLastKnownPosition());
           } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+            LogsViewModel().sendEventFromModel(
+              event: ErrorExceptionModel(
+                nameEvent: EventsName.handledException,
+                message: error.toString(),
+                stackTrace: stackTrace.toString(),
+              ),
+            );
+          }
       }
       if (pos != null)
         currentLocation = GISParams(x: pos.longitude, y: pos.latitude);
@@ -763,11 +766,23 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           errorMessage: "",
         ));
 
-        controller.jumpToPage(e.nextPage);
-        sendEventStep(e.nextPage);
+        if (success.items?.length == 1 &&
+            state.selectedCategory?.categoryId ==
+                RemoteConfig.movingVeichleCategoryKey) {
+          await Future.delayed(Duration(milliseconds: 200));
 
-        emitter(state.copyWith(
-            status: BlocStatus.success, currentPageValue: e.nextPage));
+          add(GetSPLDetailsEvent(
+              autoSelect: true,
+              selectedIndex: 0,
+              params: SPLDetailsParams(
+                  municipalityID: state.gisResponse?.adminMunicipalityId ?? "",
+                  splID: success.items?[0].id ?? "")));
+        } else {
+          controller.jumpToPage(e.nextPage);
+          sendEventStep(e.nextPage);
+          emitter(state.copyWith(
+              status: BlocStatus.success, currentPageValue: e.nextPage));
+        }
 
         return true;
         //return navigateToCreateVDPage(e.createVDBloc);

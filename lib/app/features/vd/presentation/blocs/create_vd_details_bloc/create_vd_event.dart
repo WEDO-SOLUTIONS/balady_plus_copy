@@ -42,7 +42,11 @@ class ChangeIssueDescEvent extends CreateVDEvent {
 class GetSPLDetailsEvent extends CreateVDEvent {
   final SPLDetailsParams params;
   final int selectedIndex;
-  GetSPLDetailsEvent({required this.params, required this.selectedIndex});
+  final bool? autoSelect;
+  GetSPLDetailsEvent(
+      {required this.params,
+      required this.selectedIndex,
+      this.autoSelect = false});
 }
 
 class UploadFileEvent extends CreateVDEvent {

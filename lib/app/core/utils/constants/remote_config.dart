@@ -56,6 +56,9 @@ class RemoteConfig {
   static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
 
   static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
+
+  static String get movingVeichleCategoryKey =>
+      _RemoteConfig.movingVeichleCategoryKey[env]!;
 }
 
 //! First solution
@@ -471,6 +474,15 @@ class _RemoteConfig {
     prodVal: "https://fees.balady.gov.sa/ewaa",
     urbiPreVal: "https://fees.balady.gov.sa/ewaa",
   );
+
+  static final movingVeichleCategoryKey = _initValues<String>(
+    devVal: "CG-53",
+    stgVal: "CG-53",
+    preVal: "CG-53",
+    prodVal: "CG-53",
+    urbiPreVal: "CG-53",
+  );
+
   static Map<EnvType, T> _initValues<T>({
     dynamic devVal,
     dynamic stgVal,
