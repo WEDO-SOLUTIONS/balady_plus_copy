@@ -24,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -323,6 +324,11 @@ class CommonFunctions {
     final url = file.path;
 
     await OpenFile.open(url);
+  }
+
+
+  static Future<bool>  isHawaiiDevice() async{
+    return await FlutterHmsGmsAvailability.isGmsAvailable;
   }
 
   static String getDayName(String? dateStr) {
@@ -1370,6 +1376,9 @@ class CommonFunctions {
       );
     }
   }
+
+
+
 
   static void showApigeeFile(String fileUrl, String fileName,
       {int? serviceId}) async {

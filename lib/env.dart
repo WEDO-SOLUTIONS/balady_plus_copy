@@ -27,6 +27,7 @@ import './app/core/services/services_exports.dart'
 import './app/core/utils/utils_exports.dart'
     show AppConfig, CommonFunctions, EnvType;
 import 'app/core/services/local/initializer.dart';
+import 'app/core/services/local/notification_hawaii.dart';
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
@@ -88,7 +89,9 @@ abstract class AppEnv {
     configLoading();
     await Initializer.init();
     NotificationService.init(initScheduled: true);
+
     await NotificationService.configure();
+    await HawaiiNotificationService().configure();
   }
 
   static void configLoading() {
