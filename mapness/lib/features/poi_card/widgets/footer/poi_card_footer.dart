@@ -59,7 +59,7 @@ class PoiCardFooter extends ConsumerWidget {
       items: [
         ItemActionBar(
           icon: TransportIcons.car,
-          colorScheme: ButtonColorScheme.primary,
+          colorScheme: BaladyButtonType.primary,
           label:
               hasContactsAndHasEntrances ? null : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
           onPressed: onTapCar,
@@ -67,25 +67,25 @@ class PoiCardFooter extends ConsumerWidget {
         if (hasContactsAndHasEntrances)
           ItemActionBar(
             icon: GeneralIcons.phoneLTR,
-            colorScheme: ButtonColorScheme.secondary,
+            colorScheme: BaladyButtonType.secondary,
             label: hasContactsAndHasEntrances ? null : context.l10n.call,
             onPressed: callPhone,
           ),
         if (hasEntrances)
           ItemActionBar(
             icon: SystemIcons.turnRight,
-            colorScheme: ButtonColorScheme.secondary,
+            colorScheme: BaladyButtonType.secondary,
             onPressed: onEntranceTap,
           ),
         ItemActionBar(
           icon: iconData,
-          colorScheme: ButtonColorScheme.secondary,
+          colorScheme: BaladyButtonType.secondary,
           label: hasContactsAndHasEntrances ? null : context.l10n.save,
           onPressed: () => onTapFavorite(favouriteItem),
         ),
         ItemActionBar(
           icon: SystemIcons.share,
-          colorScheme: ButtonColorScheme.secondary,
+          colorScheme: BaladyButtonType.secondary,
           label: hasContactsAndHasEntrances ? null : context.l10n.share,
           onPressed: share,
         ),
