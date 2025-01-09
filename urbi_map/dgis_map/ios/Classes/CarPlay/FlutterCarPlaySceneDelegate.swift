@@ -3,15 +3,20 @@ import CarPlay
 import DGis
 import AVFoundation
 
-final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, DgisCarPlayMapViewDelegate, SwiftDgisMapPluginDelegate {
+final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, DgisCarPlayMapViewDelegate {
     static var mapView: DgisCarPlayMapView?
-    
-    private var carWindow: CPWindow?
-    private var interfaceController: CPInterfaceController?
-    
+
     static private var mapTemplate: CPMapTemplate?
     static private var navigationSession: CPNavigationSession?
-    static private var trip: CPTrip?
+    static private let trip = CPTrip(
+        origin: MKMapItem(
+            placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
+        ),
+        destination: MKMapItem(
+            placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 1, longitude: 1))
+        ),
+        routeChoices: []
+    )
     
     static private(set) var map: Map?
     
@@ -20,21 +25,8 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {        
-        self.carWindow = window
-        self.interfaceController = interfaceController
-        
-        if SwiftDgisMapPlugin.initialized {
-            initMapView()
-        } else {
-            SwiftDgisMapPlugin.delegate = self
-        }
-    }
-    
-    func pluginInitialized() {
-        initMapView()
-    }
-    
-    func initMapView() {
+        DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
+
         let mapTemplate = CPMapTemplate()
         mapTemplate.hidesButtonsWithNavigationBar = false
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
@@ -44,10 +36,10 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         FlutterCarPlaySceneDelegate.mapView = mapView
         
         mapTemplate.mapDelegate = mapView
-        self.carWindow?.rootViewController = mapView
+        window.rootViewController = mapView
         
-        self.carWindow?.isUserInteractionEnabled = true
-        self.carWindow?.isMultipleTouchEnabled = true
+        window.isUserInteractionEnabled = true
+        window.isMultipleTouchEnabled = true
         
         mapTemplate.mapButtons = [
             makeZoomInButton(),
@@ -60,7 +52,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             makeTrafficButton(),
         ]
 
-        self.interfaceController?.setRootTemplate(mapTemplate, animated: true, completion: nil)
+        interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
     }
     
     func viewDidLoad(with map: DGis.Map) {
@@ -72,8 +64,6 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
-        self.interfaceController = nil
-        self.carWindow = nil
         FlutterCarPlaySceneDelegate.map = nil
     }
 }
@@ -173,31 +163,20 @@ extension FlutterCarPlaySceneDelegate {
             navigationSession.cancelTrip()
             self.navigationSession = nil
         }
-        
-        self.trip = CPTrip(
-            origin: MKMapItem(
-                placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
-            ),
-            destination: MKMapItem(
-                placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 1, longitude: 1))
-            ),
-            routeChoices: []
-        )
+
         self.navigationSession = self.mapTemplate?.startNavigationSession(
-            for: self.trip!
+            for: self.trip
         )
     }
     
     static func updateEstimates(distanceRemaining distance: Measurement<UnitLength>, timeRemaining time: TimeInterval) {
-        if let trip = self.trip {
-            self.mapTemplate?.updateEstimates(
-                CPTravelEstimates(
-                    distanceRemaining: distance.humanReadable,
-                    timeRemaining: time
-                ),
-                for: trip
-            )
-        }
+        self.mapTemplate?.updateEstimates(
+            CPTravelEstimates(
+                distanceRemaining: distance.humanReadable,
+                timeRemaining: time
+            ),
+            for: self.trip
+        )
     }
     
     static func updateManeuver(

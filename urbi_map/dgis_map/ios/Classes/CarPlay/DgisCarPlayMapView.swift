@@ -8,6 +8,9 @@ protocol DgisCarPlayMapViewDelegate {
 }
 
 class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
+    static let defaultCameraPositionPoint = CameraPositionPoint(x: 0.5, y: 0.8)
+    static let defaultCameraPosition = GeoPoint(latitude: 24.712301, longitude: 46.674175)
+    
     var delegate: DgisCarPlayMapViewDelegate?
     
     private var map: Map?
@@ -28,9 +31,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        guard let sdk = SwiftDgisMapPlugin.sdkContext else {
-            fatalError("Plugin has not been initialized")
-        }
+        let sdk = DgisMapInitializer.shared.getSdkContainer()
         
         guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
             fatalError("Plugin has not been initialized")
@@ -39,7 +40,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         let map = mapFactory.map
         let mapView = mapFactory.mapView
         self.eventProcessor = mapFactory.mapEventProcessor
-        try? map.camera.setPositionPoint(positionPoint: CameraPositionPoint(x: 0.5, y: 0.8))
+        try? map.camera.setPositionPoint(positionPoint: Self.defaultCameraPositionPoint)
         
         myLocationControlModel = MyLocationControlModel(map: map)
         zoomControlModel = ZoomControlModel(map: map)
@@ -58,9 +59,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         ))
         
         try? map.camera.setPosition(
-            point: GeoPoint(
-                latitude: 24.712301, longitude: 46.674175
-            ),
+            point: Self.defaultCameraPosition,
             zoom: Zoom(value: 17)
         )
         myLocationControlModel?.onClicked()
@@ -83,23 +82,9 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         
         self.delegate?.viewDidLoad(with: map)
         
-        loadStylesAsset("assets/maps/styles/styles.2gis")
-    }
-    
-    func loadStylesAsset(_ asset: String) {
-        let assetKey = SwiftDgisMapPlugin.registrar!.lookupKey(forAsset: asset)
-        
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil) else { return }
-        
-        let styleFuture = try! SwiftDgisMapPlugin.sdkContext!.styleFactory.loadFile(path: assetPath)
-        cancellables.insert(
-            styleFuture.sink (
-                receiveValue: { [map = self.map] style in
-                    map?.style = style
-                },
-                failure: { _ in }
-            )
-        )
+        if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
+            cancellables.insert(cancellable)
+        }
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -108,8 +93,9 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     
     func addSpeedControl() {
         guard self.speedControl == nil else { return }
-
-        if let model = NavigationHandler.navigationManager?.uiModel, let speedControl = navigationViewFactory?.makeSpeedControl(uiModel: model) {
+        
+        let model = DgisMapInitializer.shared.getNavigationManager().uiModel
+        if let speedControl = navigationViewFactory?.makeSpeedControl(uiModel: model) {
             self.speedControl = speedControl
             speedControl.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(speedControl)
@@ -201,5 +187,18 @@ extension UIView {
         let xPadding = 1/scale * (anchorPoint.x - 0.5)*bounds.width
         let yPadding = 1/scale * (anchorPoint.y - 0.5)*bounds.height
         transform = CGAffineTransform(scaleX: scale, y: scale).translatedBy(x: xPadding, y: yPadding)
+    }
+}
+
+extension Map {
+    func loadStyle(styleFactory: DGis.IStyleFactory) -> DGis.Cancellable? {
+        let stylePath = "Frameworks/App.framework/flutter_assets/assets/maps/styles/styles.2gis"
+        guard let assetPath = Bundle.main.path(forResource: stylePath, ofType: nil) else { return nil }
+        return styleFactory.loadFile(path: assetPath).sink(
+            receiveValue: { style in
+                self.style = style
+            },
+            failure: { _ in }
+        )
     }
 }
