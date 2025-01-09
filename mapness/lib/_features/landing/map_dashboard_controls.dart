@@ -32,6 +32,11 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
     super.initState();
     _bottomPadding = ValueNotifier(widget.scrollController.sheetHeight);
     widget.scrollController.addListener(update);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // TODO(Ayat): There are problems that the bottom shield does not have time to draw and this is a temporary fix for now temporary fix
+      setState(() {});
+    });
   }
 
   @override

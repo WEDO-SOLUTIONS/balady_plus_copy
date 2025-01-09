@@ -138,7 +138,10 @@ class MapObjectManager extends _$MapObjectManager {
   }
 
   Future<void> setMapObjectManagerIsVisible({required bool isVisible}) async {
-    await ref.read(dgisControllerProvider).value?.setMapObjectManagerIsVisible(isVisible, await future);
+    await ref.read(dgisControllerProvider).value?.setMapObjectManagerIsVisible(
+          isVisible: isVisible,
+          manager: await future,
+        );
   }
 
   Future<void> removeMarkerById(String markerId) async {
