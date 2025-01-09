@@ -112,8 +112,8 @@ class HawaiiNotificationService {
   }
   void handleMessage(Map<String, dynamic> message) {
 
-    if (message["remoteMessage"]["data"]!= null && message["remoteMessage"]["data"].containsKey('url')==true) {
-      String? url = message["remoteMessage"]["data"]['url'];
+    if (message["extras"] != null && message["extras"].containsKey('url')==true) {
+      String? url = message["extras"]['url'];
       if(url != null && url.isNotEmpty) {
         launchURL(url);
       }
@@ -245,17 +245,28 @@ class HawaiiNotificationService {
   // }
 
   void backgroundMessageCallback(RemoteMessage remoteMessage) async {
-    String? data = remoteMessage.data;
-    if (data != null) {
+    Map? data = remoteMessage.dataOfMap;
 
-      Push.localNotification(
-        <String, String>{
-          HMSLocalNotificationAttr.TITLE: '[Headless] DataMessage Received',
-          HMSLocalNotificationAttr.MESSAGE: data,
-        },
-      );
-    } else {
 
+    if (data != null && data.isNotEmpty) {
+      _notifications.show(
+          remoteMessage.hashCode,
+          data["title"],
+          data['body'],
+          NotificationDetails(
+            android: AndroidNotificationDetails(
+              CommonFunctions.generateUUID(),
+              "Notification",
+              channelDescription: "Notification",
+
+              playSound: true,
+
+
+              // TODO add a proper drawable resource to android, for now using
+              //      one that already exists in example app.
+              icon: 'mipmap/ic_launcher',
+            ),
+          ));
     }
   }
 

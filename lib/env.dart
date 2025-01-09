@@ -12,6 +12,7 @@ import 'package:flutter/material.dart'
     show BoxShadow, Color, Colors, WidgetsFlutterBinding;
 import 'package:flutter/services.dart' show SystemChrome, DeviceOrientation;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -90,8 +91,15 @@ abstract class AppEnv {
     await Initializer.init();
     NotificationService.init(initScheduled: true);
 
-    await NotificationService.configure();
-    await HawaiiNotificationService().configure();
+
+    FlutterHmsGmsAvailability.isGmsAvailable.then((t) async{
+      await NotificationService.configure();
+    });
+    FlutterHmsGmsAvailability.isHmsAvailable.then((t) async{
+
+      await HawaiiNotificationService().configure();
+    });
+
   }
 
   static void configLoading() {
