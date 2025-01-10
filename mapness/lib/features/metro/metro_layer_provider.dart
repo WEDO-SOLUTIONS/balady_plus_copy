@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/metro/metro_line_model.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -15,10 +18,17 @@ class MetroLayer extends _$MetroLayer {
   @override
   Future<List<MetroLineModel>> build() async {
     final metroLayerJsonDatasource = await ref.watch(metroLayerRepositoryProvider.future);
-    ref.watch(mapObjectManagerProvider(
-      named: mapOptions.name,
-      layerId: mapOptions.layerId,
-    ));
+    ref
+      ..watch(darkModeProvider)
+      ..watch(mapObjectManagerProvider(
+        named: mapOptions.name,
+        layerId: mapOptions.layerId,
+      ));
+
+    final isMetroShown = ref.read(metroLayerVisibleProvider);
+    if (isMetroShown) {
+      unawaited(showMetro());
+    }
 
     return metroLayerJsonDatasource;
   }
@@ -34,6 +44,8 @@ class MetroLayer extends _$MetroLayer {
       named: mapOptions.name,
       layerId: mapOptions.layerId,
     ).notifier);
+    final darkMode = await ref.read(darkModeProvider.future);
+    final isDarkMode = darkMode.isDark;
 
     await mapManager.removeAllPolyLines();
 
@@ -45,9 +57,9 @@ class MetroLayer extends _$MetroLayer {
         'red' => Colors.red,
         'green' => Colors.green,
         'blue' => Colors.blue,
-        'yellow' => Colors.yellow,
+        'yellow' => const Color(0xFFD5CD3E),
         'purple' => Colors.purple,
-        'orange' => Colors.orange,
+        'orange' => const Color(0xFFC76B27),
         _ => Colors.black,
       };
 
@@ -63,6 +75,8 @@ class MetroLayer extends _$MetroLayer {
             points: geoPoints,
             width: 5,
             color: lineColor.value,
+            borderWidth: 2,
+            borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
           ),
         ),
       ]);
