@@ -36,7 +36,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final halfOpenHeight = _calculateInitialHeight();
     return StatefulBottomSheetController(
       behavior: AspectRatioSnappingBehavior(
-        aspectRatios: [0.0, halfOpenHeight / height, openSheetHeight / height, 1.0],
+        aspectRatios: {0.0, halfOpenHeight / height, openSheetHeight / height, 1.0},
       ),
       stateMapper: const PoiCardStateMapper(),
       initialState: PoiCardBottomSheetState.halfOpen,

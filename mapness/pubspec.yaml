@@ -38,14 +38,9 @@ dependencies:
   balady_plus:
     path: ..
 
-  # TODO: remove git using
-  #  balady_uikit:
-  #    hosted: https://baladyapp-unpub.urbi.ae/
-  #    version: 3.1.2
   balady_uikit:
-    git:
-      url: https://github.com/urbi-ae/balady_uikit
-      ref: feat/BSA-1575/undate-colors
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 3.2.0
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/

@@ -41,7 +41,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
       StatefulBottomSheetController(
     initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
+    behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
     stateMapper: const LandingStateMapper(),
   );
 

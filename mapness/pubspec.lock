@@ -208,12 +208,11 @@ packages:
   balady_uikit:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feat/BSA-1575/undate-colors"
-      resolved-ref: d21213fad74ac2b26f94fbec4f8648735e72e58b
-      url: "https://github.com/urbi-ae/balady_uikit"
-    source: git
-    version: "3.1.3"
+      name: balady_uikit
+      sha256: f92b2216c2680b4cce34121bae472fc0e6c4933d5e114e6e529e0809380cd198
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
+    version: "3.2.0"
   battery_plus:
     dependency: transitive
     description:
@@ -3206,10 +3205,10 @@ packages:
     dependency: "direct main"
     description:
       name: urbi_utils
-      sha256: "04179fb6c137e45bdec84ff946198fcd61cd9d468067002465c41a391aa5def5"
+      sha256: "7762c3015180b748dc39c3f6f323ddaed3e037b294caf1dcc4afa3313c2ea31d"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   url_launcher:
     dependency: "direct main"
     description:
