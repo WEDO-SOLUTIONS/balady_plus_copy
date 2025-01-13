@@ -130,8 +130,8 @@ extension FlutterCarPlaySceneDelegate {
         let button = CPBarButton(title: "Accept") { _ in
             FlutterCarPlaySceneDelegate.mapTemplate?.dismissPanningInterface(animated: true)
             FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
-                self.makeTrafficButton(),
-                self.makePanHeaderButton()
+                self.makePanHeaderButton(),
+                self.makeTrafficButton()
             ]
             FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = []
         }
