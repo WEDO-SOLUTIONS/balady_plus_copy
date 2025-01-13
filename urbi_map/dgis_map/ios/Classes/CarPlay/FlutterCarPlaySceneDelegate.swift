@@ -190,13 +190,15 @@ extension FlutterCarPlaySceneDelegate {
     }
     
     static func updateEstimates(distanceRemaining distance: Measurement<UnitLength>, timeRemaining time: TimeInterval) {
-        self.mapTemplate?.updateEstimates(
-            CPTravelEstimates(
-                distanceRemaining: distance.humanReadable,
-                timeRemaining: time
-            ),
-            for: self.trip!
-        )
+        if let trip = self.trip {
+            self.mapTemplate?.updateEstimates(
+                CPTravelEstimates(
+                    distanceRemaining: distance.humanReadable,
+                    timeRemaining: time
+                ),
+                for: trip
+            )
+        }
     }
     
     static func updateManeuver(
@@ -259,6 +261,8 @@ extension FlutterCarPlaySceneDelegate {
         case .uTurn, .crossroadUTurn:
             "Turn_over_right_hand"
         case .roadCrossing:
+            nil
+        @unknown default:
             nil
         }
         
