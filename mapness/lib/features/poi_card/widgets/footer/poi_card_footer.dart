@@ -9,6 +9,7 @@ import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class PoiCardFooter extends ConsumerWidget {
   static const double height = 40;
@@ -55,41 +56,46 @@ class PoiCardFooter extends ConsumerWidget {
     final hasEntrances = data.entrances.isNotEmpty == true;
     final hasContacts = data.contactInfos.isNotEmpty == true;
     final hasContactsAndHasEntrances = hasContacts && hasEntrances;
-    return BottomActionBar(
-      items: [
-        ItemActionBar(
-          icon: TransportIcons.car,
-          buttonType: BaladyButtonType.primary,
-          label:
-              hasContactsAndHasEntrances ? null : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
-          onPressed: onTapCar,
-        ),
-        if (hasContactsAndHasEntrances)
+
+    return ThrottledCallbackWidget(
+      callback: share,
+      builder: (context, throttledShare) => BottomActionBar(
+        items: [
           ItemActionBar(
-            icon: GeneralIcons.phoneLTR,
-            buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances ? null : context.l10n.call,
-            onPressed: callPhone,
+            icon: TransportIcons.car,
+            buttonType: BaladyButtonType.primary,
+            label: hasContactsAndHasEntrances
+                ? null
+                : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
+            onPressed: onTapCar,
           ),
-        if (hasEntrances)
+          if (hasContactsAndHasEntrances)
+            ItemActionBar(
+              icon: GeneralIcons.phoneLTR,
+              buttonType: BaladyButtonType.secondary,
+              label: hasContactsAndHasEntrances ? null : context.l10n.call,
+              onPressed: callPhone,
+            ),
+          if (hasEntrances)
+            ItemActionBar(
+              icon: SystemIcons.turnRight,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: onEntranceTap,
+            ),
           ItemActionBar(
-            icon: SystemIcons.turnRight,
+            icon: iconData,
             buttonType: BaladyButtonType.secondary,
-            onPressed: onEntranceTap,
+            label: hasContactsAndHasEntrances ? null : context.l10n.save,
+            onPressed: () => onTapFavorite(favouriteItem),
           ),
-        ItemActionBar(
-          icon: iconData,
-          buttonType: BaladyButtonType.secondary,
-          label: hasContactsAndHasEntrances ? null : context.l10n.save,
-          onPressed: () => onTapFavorite(favouriteItem),
-        ),
-        ItemActionBar(
-          icon: SystemIcons.share,
-          buttonType: BaladyButtonType.secondary,
-          label: hasContactsAndHasEntrances ? null : context.l10n.share,
-          onPressed: share,
-        ),
-      ],
+          ItemActionBar(
+            icon: SystemIcons.share,
+            buttonType: BaladyButtonType.secondary,
+            label: hasContactsAndHasEntrances ? null : context.l10n.share,
+            onPressed: throttledShare,
+          ),
+        ],
+      ),
     );
   }
 }
