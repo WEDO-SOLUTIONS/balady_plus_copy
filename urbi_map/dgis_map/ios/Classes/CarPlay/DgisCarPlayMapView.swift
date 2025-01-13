@@ -19,7 +19,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     private var zoomControlModel: ZoomControlModel?
     
     private var trafficControlModel: TrafficControlModel?
-    var trafficButton: CPMapButton?
+    var trafficButton: CPBarButton?
     
     private var navigationViewFactory: INavigationViewControlsFactory?
     
@@ -181,11 +181,9 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     func trafficStateChanged(_ state: TrafficControlState) {
         switch state.status {
         case .enabled, .loading:
-            trafficButton?.image = UIImage(named: "TrafficOn")!.withRenderingMode(.alwaysOriginal)
-            trafficButton?.focusedImage = UIImage(named: "TrafficOn")!.withRenderingMode(.alwaysOriginal)
+            trafficButton?.image = UIImage(named: "TrafficOnNavBar")!.withRenderingMode(.alwaysOriginal)
         default:
-            trafficButton?.image = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
-            trafficButton?.focusedImage = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
+            trafficButton?.image = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(.alwaysOriginal)
         }
     }
     

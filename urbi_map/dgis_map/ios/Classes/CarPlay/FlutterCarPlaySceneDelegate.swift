@@ -50,14 +50,14 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         self.carWindow?.isMultipleTouchEnabled = true
         
         mapTemplate.mapButtons = [
-            makeTrafficButton(),
             makeZoomInButton(),
             makeZoomOutButton(),
             makeMyLocationButton()
         ]
         
         mapTemplate.trailingNavigationBarButtons = [
-            makePanHeaderButton()
+            makePanHeaderButton(),
+            makeTrafficButton(),
         ]
 
         self.interfaceController?.setRootTemplate(mapTemplate, animated: true, completion: nil)
@@ -79,15 +79,13 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
 }
 
 extension FlutterCarPlaySceneDelegate {
-    func makeTrafficButton() -> CPMapButton {
-        let button = CPMapButton { _ in
+    func makeTrafficButton() -> CPBarButton {
+        let image = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(.alwaysOriginal)
+        let button = CPBarButton(image: image) { _ in
             FlutterCarPlaySceneDelegate.mapView?.trafficClicked()
         }
         FlutterCarPlaySceneDelegate.mapView?.trafficButton = button
-        button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
         
         return button
     }
@@ -132,6 +130,7 @@ extension FlutterCarPlaySceneDelegate {
         let button = CPBarButton(title: "Accept") { _ in
             FlutterCarPlaySceneDelegate.mapTemplate?.dismissPanningInterface(animated: true)
             FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
+                self.makeTrafficButton(),
                 self.makePanHeaderButton()
             ]
             FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = []
