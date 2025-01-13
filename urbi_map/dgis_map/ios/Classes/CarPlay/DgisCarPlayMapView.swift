@@ -118,8 +118,10 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
             
             NSLayoutConstraint.activate([
                 speedControl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
-                speedControl.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
             ])
+            
+            let topAnchorConstraint = speedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
+            topAnchorConstraint.isActive = true
         }
     }
     
