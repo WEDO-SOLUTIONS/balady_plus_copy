@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -15,14 +16,21 @@ import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
-import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
-class PlacePreview extends ConsumerWidget {
+const kPlaceCardSize = 300.0;
+
+class PlacePreview extends ConsumerStatefulWidget {
   const PlacePreview({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ref.watch(interestingPlacesProvider).when(
+  ConsumerState<PlacePreview> createState() => _PlacePreviewState();
+}
+
+class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return ref.watch(interestingPlacesProvider).when(
         data: (items) {
           final places = items
               .where(
@@ -36,7 +44,8 @@ class PlacePreview extends ConsumerWidget {
 
           return SliderListView(
             items: places,
-            contentHeight: 347,
+            viewportWidth: MediaQuery.sizeOf(context).width,
+            contentSize: kPlaceCardSize,
             onTap: (item) {
               final objectId = int.tryParse(item.entity.id) ?? 0;
               Metrics.logEventAdvanced(
@@ -65,11 +74,12 @@ class PlacePreview extends ConsumerWidget {
             itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
           );
         },
-        error: (error, trace) => ErrorWidget(
-          onRetry: () => ref.invalidate(interestingPlacesProvider),
-        ),
-        loading: () => const LoadingSheet(),
-      );
+        error: (error, trace) => const _PlaceCard(null),
+        loading: () => const _PlaceCard(null));
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _PlaceCard extends StatelessWidget {
@@ -83,7 +93,7 @@ class _PlaceCard extends StatelessWidget {
         child: Stack(
           children: [
             CachedNetworkImage(
-              height: 347,
+              height: kPlaceCardSize,
               imageUrl: item?.preview.image.url ?? '',
               fit: BoxFit.cover,
               imageBuilder: (context, imageProvider) => Stack(
@@ -133,17 +143,11 @@ class _ImagePlaceholder extends StatelessWidget {
   const _ImagePlaceholder({this.progress});
 
   @override
-  Widget build(BuildContext context) => ColoredBox(
-        color: context.colorsV2.backgroundSurface5,
-        child: Center(
-          child: SizedBox(
-            child: CircularProgressIndicator(
-              value: progress,
-              color: context.colorsV2.borderDefault,
-              backgroundColor: context.colorsV2.borderMuted,
-              strokeCap: StrokeCap.round,
-            ),
-          ),
+  Widget build(BuildContext context) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+          child: const ShimmerEffectWidget(),
         ),
       );
 }
