@@ -40,7 +40,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   );
 
   MediaQueryData? _mediaQuery;
-  // StreamSubscription<TapEvent>? _streamSubscription;
 
   @override
   void initState() {
@@ -100,12 +99,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     }
 
     super.didChangeAppLifecycleState(state);
-  }
-
-  @override
-  void deactivate() {
-    // _streamSubscription?.cancel();
-    super.deactivate();
   }
 
   @override
