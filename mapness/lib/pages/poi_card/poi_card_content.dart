@@ -1,9 +1,5 @@
 part of 'poi_card_widget_page.dart';
 
-const _titleHorizontalPadding = 84.0;
-const _headerHegihtWithoutTitle = 170.0;
-const _minBottomPadding = 16.0;
-
 class _PoiCardContent extends ConsumerStatefulWidget {
   final DirectoryObjectMessage data;
   final PoiCardState? poiCardState;
@@ -30,41 +26,23 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   late final int objectId = widget.objectId;
   late final PoiCardState? poiCardState = widget.poiCardState;
 
-  late final StatefulBottomSheetController<PoiCardBottomSheetState> _bottomSheetController = () {
-    final height = MediaQuery.sizeOf(context).height;
-    final openSheetHeight = height - photosMaxHeight - Spacing.$8x;
-    final halfOpenHeight = _calculateInitialHeight();
-    return StatefulBottomSheetController(
-      behavior: AspectRatioSnappingBehavior(
-        aspectRatios: {0.0, halfOpenHeight / height, openSheetHeight / height, 1.0},
-      ),
-      stateMapper: const PoiCardStateMapper(),
-      initialState: PoiCardBottomSheetState.halfOpen,
-    );
-  }();
-
-  /// TODO(ilyasov): This is a temporart solution.
-  /// Need to be rafactored after [StatefulBottomSheet] supports multisnapping behavior
-  double _calculateInitialHeight() {
-    final span = TextSpan(
-      text: data.title,
-      style: context.textStyleV3.h2SemiBold,
-    );
-    final width = MediaQuery.sizeOf(context).width - _titleHorizontalPadding;
-    final textDirection = Directionality.of(context);
-
-    final painter = TextPainter(
-      text: span,
-      maxLines: 2,
-      textDirection: textDirection,
-    )..layout(
-        maxWidth: width,
-      );
-
-    final bottomPadding = max(_minBottomPadding, MediaQuery.paddingOf(context).bottom);
-
-    return _headerHegihtWithoutTitle + painter.height + bottomPadding;
-  }
+  late final StatefulBottomSheetController<PoiCardBottomSheetState> _bottomSheetController =
+      StatefulBottomSheetController(
+    behavior: MultiSnappingBehavior(
+      models: [
+        AspectRatioSnappingModel({0.0, 1.0}),
+        ComponentsSnappingModel(componentsDescriptions: [
+          SnapComponent.merge(
+            a: const SnapComponent.size(component: Components.header),
+            b: const SnapComponent.size(component: Components.footer),
+            merge: (a, b) => a + b,
+          )
+        ])
+      ],
+    ),
+    stateMapper: const PoiCardStateMapper(),
+    initialState: PoiCardBottomSheetState.halfOpen,
+  );
 
   @override
   void didUpdateWidget(covariant _PoiCardContent oldWidget) {
