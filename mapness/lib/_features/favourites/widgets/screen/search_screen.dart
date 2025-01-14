@@ -35,9 +35,9 @@ class SearchScreen extends ConsumerWidget {
         child: CustomScrollView(
           slivers: [
             SliverPersistentHeader(
-                pinned: true,
-                delegate: SearchHeaderDelegate(
-                    child: Container(
+              pinned: true,
+              delegate: SearchHeaderDelegate(
+                child: Container(
                   color: context.color.surfaceBasePrimary,
                   padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: 12),
                   child: BaladySearchWithBackButton(
@@ -60,8 +60,9 @@ class SearchScreen extends ConsumerWidget {
                       textStyle: context.textStyleV3.bodySmallRegular,
                     ),
                   ),
-                ))),
-
+                ),
+              ),
+            ),
             if (itemCount == 0)
               SliverToBoxAdapter(
                 child: SearchHistory(
