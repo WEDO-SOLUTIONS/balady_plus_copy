@@ -6,7 +6,7 @@ on:
 
 jobs:
   stats:
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     steps:
       - name: Run pull request stats
         uses: flowwer-dev/pull-request-stats@master
