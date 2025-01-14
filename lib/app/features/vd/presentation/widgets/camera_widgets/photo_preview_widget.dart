@@ -32,14 +32,16 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
               height: double.infinity,
               color: AppColor.black200,
               child: !(state.showCamera ?? true)
-                  ? Image.file(
-                      File(state.files?.first.filePath ?? ""),
+                  ?
+
+                  Image.memory(
+                    state.files!.first.encodeImage!,
+                    // Image.file(
+                    //   File(state.files?.first.filePath ?? ""),
                       fit: BoxFit.cover,
                     )
                   : Container(),
             ),
-
-            //
             Align(
               alignment: AlignmentDirectional.bottomCenter,
               child: Row(
@@ -49,7 +51,10 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                     flex: 2,
                     child: Container(
                       margin: const EdgeInsetsDirectional.only(
-                          bottom: 30, end: 16, start: 16),
+                        bottom: 30,
+                        end: 16,
+                        start: 16,
+                      ),
                       child: EnhancedCustomElevatedButtonWidget(
                         btnText: ("take_photo_again").tr(),
                         btnHeight: 48,
@@ -62,22 +67,25 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                       ),
                     ),
                   ),
-                  Expanded(
-                      flex: 1,
-                      child: SizedBox(
-                        height: 1,
-                      )),
+                  const Expanded(
+                    flex: 1,
+                    child: SizedBox(
+                      height: 1,
+                    ),
+                  ),
                   Expanded(
                     flex: 2,
                     child: Container(
-                      margin:
-                          const EdgeInsetsDirectional.only(bottom: 30, end: 16),
+                      margin: const EdgeInsetsDirectional.only(
+                        bottom: 30,
+                        end: 16,
+                      ),
                       child: EnhancedCustomElevatedButtonWidget(
                         btnPressed: () {
                           // CreateVDParamsPage
-                          context
-                              .read<CameraBloc>()
-                              .add(GetUserLocationEvent());
+                          context.read<CameraBloc>().add(
+                                GetUserLocationEvent(),
+                              );
                         },
                         btnText: ("next").tr(),
                         btnColor: AppColor.primary800Light,
@@ -87,13 +95,14 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                         btnWidth: 105,
                         btnRadius: 8,
                         icon: RotatedBox(
-                            quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
-                            child: Image.asset(
-                              IconPath.vdarrowLeftIcon,
-                              height: 16,
-                              width: 16,
-                              color: AppColor.white,
-                            )),
+                          quarterTurns: CommonFunctions.isAppAR ? 0 : 2,
+                          child: Image.asset(
+                            IconPath.vdarrowLeftIcon,
+                            height: 16,
+                            width: 16,
+                            color: AppColor.white,
+                          ),
+                        ),
                         buttonIconPosition: BUTTON_ICON_POSITION.left,
                       ),
                     ),
@@ -109,11 +118,10 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                     top: MediaQuery.of(context).padding.top + 16,
                     left: 16,
                     right: 16),
-                child: CustomIconButtonWidget(
-                  icon: IconPath.vdCameraExit,
+                child: IconButton(
+                  icon: const Icon(Icons.close),
                   iconSize: 36,
-                  btnHeight: 40,
-                  btnWidth: 40,
+                  color: Colors.black,
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
@@ -122,9 +130,10 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
             ),
 
             if (state.status == BlocStatus.loading)
-              Align(
-                  alignment: Alignment.center,
-                  child: CustomCircularLoadingWidget())
+              const Align(
+                alignment: Alignment.center,
+                child: CustomCircularLoadingWidget(),
+              )
           ],
         );
       },
