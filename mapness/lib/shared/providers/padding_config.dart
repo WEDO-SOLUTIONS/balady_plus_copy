@@ -77,7 +77,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
 
     final cameraPosition = ref.read(cameraPositionProvider.notifier);
 
-    // Normolize camera tilt to calculate the viewports
+    // Normalize camera tilt to calculate the viewports
     if (cameraData != null && cameraData.tilt != 0) {
       await cameraPosition.animateTo(
         CameraPositionMessage(
