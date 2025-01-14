@@ -106,8 +106,12 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   @override
   Widget build(BuildContext context) {
+    final srcDirection = Directionality.of(context);
     // we need to force the text direction to ltr when the input is a phone number
-    final direction = _isForceLtr ? TextDirection.ltr : Directionality.of(context);
+    final direction = _isForceLtr ? TextDirection.ltr : srcDirection;
+    // in arabic phone texted ltr but should be aligned to right edge as other fields
+    final textAlign = _isForceLtr && srcDirection == TextDirection.rtl ? TextAlign.end : null;
+
     return Column(
       children: [
         Row(
@@ -126,6 +130,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         Directionality(
           textDirection: direction,
           child: BaladyInput(
+            textAlign: textAlign,
             stateKey: _globalKey,
             controller: _controller,
             focusNode: _focusNode,
