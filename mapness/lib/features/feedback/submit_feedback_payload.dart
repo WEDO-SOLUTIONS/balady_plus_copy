@@ -1,6 +1,7 @@
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
 import 'package:mapness/entities/feedback/feedback_form_payload_entity.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'submit_feedback_payload.g.dart';
@@ -8,7 +9,7 @@ part 'submit_feedback_payload.g.dart';
 /// God, please forgive me for this
 
 /// Provider that holds form data for a while and do necessary transformations
-/// If you want to actually see how data sent to backend refer to [submitFeedbackProvider]
+/// If you want to actually see how data sent to backend refer to [submitFeedbackPayloadProvider]
 @riverpod
 class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
   /// payloadId is needed just to collect form in one place and move to second screen.
@@ -23,6 +24,12 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
     /// complex fields should be already mapped to json
     required Iterable<MapEntry<String, dynamic>> fields,
   }) {
+    /// get curretn
+    final cameraViewport = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+    if (cameraViewport == null) {
+      return;
+    }
+
     state = FeedbackFormPayloadEntity(
       category: categoryId,
       objectId: objectId,
@@ -37,6 +44,7 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
           )
           .nonNulls
           .toIList(),
+      viewport: cameraViewport,
     );
   }
 
