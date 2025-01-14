@@ -23,7 +23,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
       StatefulBottomSheetController(
     initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: [.1, .38, .931]),
+    behavior: AspectRatioSnappingBehavior(aspectRatios: {.1, .38, .931}),
     stateMapper: const ThreeStateMapper(),
   );
 
@@ -44,25 +44,25 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
 
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Stack(
-          children: [
-            WeatherControls(
-              bottomSheetController: _bottomSheetController,
-            ),
-            LayoutBuilder(
-              builder: (context, constraints) => WeatherDashboard(
-                biggestHeight: constraints.biggest.height,
-                biggestWidth: constraints.biggest.width,
+        value: SystemUiOverlayStyle.dark,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Stack(
+            children: [
+              WeatherControls(
                 bottomSheetController: _bottomSheetController,
               ),
-            ),
-          ],
+              LayoutBuilder(
+                builder: (context, constraints) => WeatherDashboard(
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
+                  bottomSheetController: _bottomSheetController,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }
 
 class WeatherPageContent extends StatefulWidget {

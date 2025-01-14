@@ -91,7 +91,7 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
               Text(
                 worktime!,
                 style: context.textStyle.footNoteBold.copyWith(
-                  color: context.colorsV3.accentDefault,
+                  color: context.colorsV2.extra01Default,
                 ),
               )
             else

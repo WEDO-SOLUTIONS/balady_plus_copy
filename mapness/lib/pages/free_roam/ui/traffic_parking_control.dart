@@ -109,7 +109,7 @@ class _ParkingWidget extends StatelessWidget {
           height: 24,
           child: Icon(
             TransportIcons.parkingEnable,
-            color: isEnabled ? context.colorsV2.extra06OnContainer : context.colorsV2.foregroundDefault,
+            color: isEnabled ? context.colorsV2.foregroundDefault : context.colorsV2.foregroundMuted,
           ),
         ),
       );
