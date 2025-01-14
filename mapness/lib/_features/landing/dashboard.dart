@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -138,7 +139,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               children: [
                 QuickActionButton(
                     text: context.l10n.parkingAction,
-                    icon: uikit.TransportIcons.parkingActive,
+                    icon: General32Icons.parkingAction,
                     onTap: () {
                       widget.bottomSheetController.position
                           .animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
@@ -147,7 +148,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     }),
                 QuickActionButton(
                     text: context.l10n.qibla,
-                    icon: uikit.PlacesIcons.qibla,
+                    icon: General32Icons.qiblaAction,
                     onTap: () async {
                       Metrics.logEventAdvanced(
                         MetricsConstants.exploreKeys.qibla,
@@ -164,7 +165,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     }),
                 QuickActionButton(
                     text: context.l10n.locationAction,
-                    icon: uikit.GeneralIcons.location,
+                    icon: General32Icons.locationAction,
                     onTap: () {
                       Metrics.logEventAdvanced(
                         MetricsConstants.poiKeys.myLocation,
@@ -186,7 +187,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     }),
                 QuickActionButton(
                     text: context.l10n.snapAndSendAction,
-                    icon: uikit.TransportIcons.parkingActive,
+                    icon: General32Icons.snapAndSendAction,
                     onTap: () {
                       Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
                           action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
