@@ -50,14 +50,14 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         self.carWindow?.isMultipleTouchEnabled = true
         
         mapTemplate.mapButtons = [
-            makeTrafficButton(),
             makeZoomInButton(),
             makeZoomOutButton(),
             makeMyLocationButton()
         ]
         
         mapTemplate.trailingNavigationBarButtons = [
-            makePanHeaderButton()
+            makePanHeaderButton(),
+            makeTrafficButton(),
         ]
 
         self.interfaceController?.setRootTemplate(mapTemplate, animated: true, completion: nil)
@@ -79,15 +79,13 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
 }
 
 extension FlutterCarPlaySceneDelegate {
-    func makeTrafficButton() -> CPMapButton {
-        let button = CPMapButton { _ in
+    func makeTrafficButton() -> CPBarButton {
+        let image = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(.alwaysOriginal)
+        let button = CPBarButton(image: image) { _ in
             FlutterCarPlaySceneDelegate.mapView?.trafficClicked()
         }
         FlutterCarPlaySceneDelegate.mapView?.trafficButton = button
-        button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
         
         return button
     }
@@ -132,7 +130,8 @@ extension FlutterCarPlaySceneDelegate {
         let button = CPBarButton(title: "Accept") { _ in
             FlutterCarPlaySceneDelegate.mapTemplate?.dismissPanningInterface(animated: true)
             FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
-                self.makePanHeaderButton()
+                self.makePanHeaderButton(),
+                self.makeTrafficButton()
             ]
             FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = []
         }
@@ -190,13 +189,15 @@ extension FlutterCarPlaySceneDelegate {
     }
     
     static func updateEstimates(distanceRemaining distance: Measurement<UnitLength>, timeRemaining time: TimeInterval) {
-        self.mapTemplate?.updateEstimates(
-            CPTravelEstimates(
-                distanceRemaining: distance.humanReadable,
-                timeRemaining: time
-            ),
-            for: self.trip!
-        )
+        if let trip = self.trip {
+            self.mapTemplate?.updateEstimates(
+                CPTravelEstimates(
+                    distanceRemaining: distance.humanReadable,
+                    timeRemaining: time
+                ),
+                for: trip
+            )
+        }
     }
     
     static func updateManeuver(
@@ -259,6 +260,8 @@ extension FlutterCarPlaySceneDelegate {
         case .uTurn, .crossroadUTurn:
             "Turn_over_right_hand"
         case .roadCrossing:
+            nil
+        @unknown default:
             nil
         }
         
