@@ -38,7 +38,7 @@ class RoutingPointsSheet extends ConsumerStatefulWidget {
 }
 
 class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
-  static const _bottomSheetAspectRatios = [.15, .7, .931];
+  final _bottomSheetAspectRatios = {.15, .7, .931};
   static const controlsBottomExtent = 136.0;
 
   List<RoutePoint> points = [

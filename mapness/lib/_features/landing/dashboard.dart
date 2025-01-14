@@ -1,30 +1,31 @@
+import 'dart:math';
+
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/icons/general_32_icons.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/providers/color_scheme.dart';
+import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/landing/map_hidden_state_controls.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/landing/widgets/calendar_slider_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
+import 'package:mapness/_features/landing/widgets/dashboard_title.dart';
+import 'package:mapness/_features/landing/widgets/drive_back_home_card.dart';
+import 'package:mapness/_features/landing/widgets/feedback_card.dart';
 import 'package:mapness/_features/landing/widgets/place_preview.dart';
-import 'package:mapness/_features/landing/widgets/places_for_card.dart';
-import 'package:mapness/_features/landing/widgets/prayer_card.dart';
-import 'package:mapness/_features/landing/widgets/qibla_card.dart';
-import 'package:mapness/_features/landing/widgets/snap_and_send_card.dart';
-import 'package:mapness/_features/landing/widgets/weather_card.dart';
+import 'package:mapness/_features/landing/widgets/quick_action_button.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/entities/quick_filters/quick_filter.dart';
-import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/free_roam/free_roam_starter.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/widgets/app_feedback/app_feedback_card.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
@@ -40,6 +41,8 @@ class Dashboard extends ConsumerStatefulWidget {
 }
 
 class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProviderStateMixin {
+  final ValueNotifier<double> footerOpacity = ValueNotifier<double>(1.0);
+
   @override
   void initState() {
     super.initState();
@@ -66,93 +69,149 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         }
       });
 
-    return uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
-      animateOpening: false,
-      topHeader: MapHiddenStateControls(widget.bottomSheetController),
-      backgroundColor: context.colorsV2.backgroundSurface4,
-      header: DashboardHeader(
-        bottomSheetController: widget.bottomSheetController,
-      ),
-      scrollController: widget.bottomSheetController,
-      sliverBeforeContent: SliverPersistentHeader(
-        delegate: DashboardHeaderDelegate(vsync: this),
-        pinned: true,
-        floating: true,
-      ),
-      content: [
-        Column(
-          children: [
-            const AppFeedbackCard(),
-            const StoriesWidget(),
-            const SizedBox(height: uikit.Spacing.$8x),
-            // BSA-1108: See the instruction to revert here: https://github.com/urbi-ae/baladi/pull/1164
-            // JoyParksCardV2(controller: widget.bottomSheetController),
-            // const SizedBox(height: uikit.Spacing.$3x),
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-              child: Row(
-                textDirection: TextDirection.ltr,
-                children: [
-                  Expanded(child: WeatherCard()),
-                  SizedBox(width: uikit.Spacing.$3x),
-                  Expanded(child: QiblaCard()),
-                ],
-              ),
-            ),
-            const SizedBox(height: uikit.Spacing.$8x),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                textDirection: TextDirection.ltr,
-                children: [
-                  Expanded(
-                    child: PlacesForCart(
-                      title: context.l10n.placesForShopping,
-                      icon: General32Icons.shoppingLRTL,
-                      onTap: () => _openSearch(context, QuickFilter.shopping),
-                    ),
+    return SafeArea(
+      bottom: false,
+      child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
+        animateOpening: false,
+        keepContentBehindFooter: true,
+        scrollController: widget.bottomSheetController,
+        topHeader: MapHiddenStateControls(widget.bottomSheetController),
+        backgroundColor: context.colorsV2.backgroundSurface2,
+        header: const DashboardHeader(),
+        footer: IgnorePointer(
+          child: SizedBox(
+            height: uikit.Spacing.$16x + uikit.Spacing.$5x,
+            width: double.infinity,
+            child: FadeTransition(
+              opacity: Animation.fromValueListenable(footerOpacity),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  backgroundBlendMode: BlendMode.srcOver,
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [Colors.white.withOpacity(0), Colors.white.withOpacity(0.8)],
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: PlacesForCart(
-                      title: context.l10n.placesForEatingOut,
-                      icon: General32Icons.restourantLRTL,
-                      onTap: () => _openSearch(context, QuickFilter.eatOut),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            const SizedBox(height: uikit.Spacing.$8x),
-            const PlacePreview(),
-            const SizedBox(height: uikit.Spacing.$8x),
-            const SnapAndSendCard(),
-            // const SizedBox(height: uikit.Spacing.$8x),
-            // const ComplianceCard(),
-            const SizedBox(height: uikit.Spacing.$8x),
-            const PrayerCard(),
-            CalendarSliderCard(
-              colorScheme: ref.read(colorSchemeProvider),
-              onShowAll: () => Metrics.logEventAdvanced(
-                MetricsConstants.exploreKeys.kingdomCalendarViewAll,
-                action: MetricAction.tap.name,
-                group: MetricsConstants.exploreTag,
-              ),
-            ),
-          ],
+          ),
         ),
-      ],
+        outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
+        outsideOpacityDelegate: (controller) {
+          final aspectRatio = controller.aspectRatio;
+          final interpolation = controller.interpolation;
+          final state = controller.state;
+
+          final freeRoamState = ref.watch(freeRoamStarterProvider);
+          final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+
+          final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
+          final isSheetStateOpen = state == uikit.ThreeStateBottomSheet.open;
+          final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+
+          final isFull = isGoToNavigatorShown ||
+              (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+              isSheetCoversHalfOfTheScreen;
+
+          return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+        },
+        sliverBeforeContent: SliverPersistentHeader(
+          delegate: DashboardHeaderDelegate(vsync: this),
+          pinned: true,
+          floating: true,
+        ),
+        content: [
+          StoriesWidget(
+            titleWidget: Padding(
+              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+              child: DashboardTitle(context.l10n.whatIsNewInBalady),
+            ),
+          ),
+          const SizedBox(height: uikit.Spacing.$6x),
+          DashboardTitle(context.l10n.quickActions),
+          const SizedBox(height: uikit.Spacing.$4x),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                QuickActionButton(
+                    text: context.l10n.parkingAction,
+                    icon: uikit.TransportIcons.parkingActive,
+                    onTap: () {
+                      widget.bottomSheetController.position
+                          .animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
+                      widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
+                      ref.read(layersControlsProvider.notifier).enableParking();
+                    }),
+                QuickActionButton(
+                    text: context.l10n.qibla,
+                    icon: uikit.PlacesIcons.qibla,
+                    onTap: () async {
+                      Metrics.logEventAdvanced(
+                        MetricsConstants.exploreKeys.qibla,
+                        action: MetricAction.tap.name,
+                        group: MetricsConstants.exploreTag,
+                      );
+                      final location = ref.read(locationProvider.notifier);
+
+                      await location.checkLocationPermission().then((allowed) {
+                        if (allowed) {
+                          context.router.push(const KiblahRoute());
+                        }
+                      });
+                    }),
+                QuickActionButton(
+                    text: context.l10n.locationAction,
+                    icon: uikit.GeneralIcons.location,
+                    onTap: () {
+                      Metrics.logEventAdvanced(
+                        MetricsConstants.poiKeys.myLocation,
+                        group: MetricsConstants.poiTag,
+                        action: MetricAction.tap.toString(),
+                      );
+
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+
+                      final userLocation = ref.read(locationProvider);
+                      if (userLocation != null) {
+                        context.router.push(
+                          ShareMyLocationRoute(
+                            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+                            closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
+                          ),
+                        );
+                      }
+                    }),
+                QuickActionButton(
+                    text: context.l10n.snapAndSendAction,
+                    icon: uikit.TransportIcons.parkingActive,
+                    onTap: () {
+                      Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
+                          action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
+                      CommonFunctions.openSnapAndSend();
+                    }),
+              ],
+            ),
+          ),
+          const SizedBox(height: uikit.Spacing.$4x),
+          const DriveBackHomeCard(),
+          const SizedBox(height: uikit.Spacing.$6x),
+          DashboardTitle(context.l10n.exploreNearby),
+          const SizedBox(height: uikit.Spacing.$4x),
+          const PlacePreview(),
+          const SizedBox(height: uikit.Spacing.$6x),
+          const FeedbackCard(),
+          const SizedBox(height: uikit.Spacing.$6x),
+        ],
+      ),
     );
   }
 
-  void _openSearch(BuildContext context, QuickFilter quickFilter) {
-    context.router.push(SearchRoute(requestFocus: false));
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
-    });
-  }
-
   void _scrollListenHandler() {
+    footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.aspectRatio) * 2);
+
     Future.delayed(Duration.zero, () {
       if (widget.bottomSheetController.state != uikit.ThreeStateBottomSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(

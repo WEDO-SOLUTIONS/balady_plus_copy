@@ -208,11 +208,12 @@ packages:
   balady_uikit:
     dependency: "direct main"
     description:
-      name: balady_uikit
-      sha256: "4f3bea685bbdf8c6fa14e4ca15de749ec54ba9ae849089236765ed98dc4f8260"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
-    version: "3.1.2"
+      path: "."
+      ref: "feature/multisnapping"
+      resolved-ref: "23cd5bcd44a1a8f96199dacb1c90697dc1f2316d"
+      url: "https://github.com/urbi-ae/balady_uikit"
+    source: git
+    version: "3.2.0"
   battery_plus:
     dependency: transitive
     description:
@@ -3205,10 +3206,10 @@ packages:
     dependency: "direct main"
     description:
       name: urbi_utils
-      sha256: "04179fb6c137e45bdec84ff946198fcd61cd9d468067002465c41a391aa5def5"
+      sha256: "7762c3015180b748dc39c3f6f323ddaed3e037b294caf1dcc4afa3313c2ea31d"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.3"
+    version: "1.0.4"
   url_launcher:
     dependency: "direct main"
     description:
