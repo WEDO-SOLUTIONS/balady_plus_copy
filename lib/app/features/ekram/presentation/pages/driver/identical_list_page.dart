@@ -48,6 +48,15 @@ class _IdenticalListPageState
   }
 
   @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    sl<EkramLocationService>().stop();
+
+
+  }
+
+  @override
   Widget build(BuildContext context) {
 
     TransportRequestItemModel params =

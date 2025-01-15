@@ -139,11 +139,13 @@ class EkramLocationService {
     startTracking = true;
    // startTrackingUpdate();
     startTimer(requestId);
+
   }
 
   void stop() {
     startTracking = false;
     cancelTimer();
+    BackgroundLocation.stopLocationService();
   }
 
   void cancelTimer() {

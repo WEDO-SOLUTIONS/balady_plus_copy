@@ -7,6 +7,7 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -15,7 +16,9 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/helpers.dart';
 
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/common_functions.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -131,8 +134,18 @@ else
         status: BlocStatus.success,
         errorMessage: "",
       ));
+      
+      // NavigationService.navigatorKey.currentState
+      //     ?.popUntil((route) => route.settings.name == RouteName.driverEkramTransportationListScreen);
+      NavigationService.navigatorKey.currentState
+          ?.pushNamedAndRemoveUntil(RouteName.driverEkramTransportationListScreen,(route) => route.settings.name == RouteName.SpecificServicePage);
+
+     // NavigationService.navigatorKey.currentContext!.read<TransportRequestsBloc>().add(GetDeceasedTransportRequestsEvent(isDriver: true));
+      CommonFunctions.showSuccess("tripCompletesucessfully".tr());
+
 
     });
+
   }
   Future<void> _clearErrorMsg(ClearErrorMsgEvent e, Emitter emitter) async {
 

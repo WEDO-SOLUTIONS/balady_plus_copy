@@ -3367,7 +3367,7 @@
   "is_dead_fetus": "هل المتوفى جنين؟",
   "ekram_main_data": "البيانات الرئيسية",
   "ekram_benf_transport": "طلب نقل وتجهيز الموتى",
-  "ekram_empolyee_title": "سائق نقل الموتى",
+  "ekram_empolyee_title": "طلبات نقل وتجهيز الموتى للسائق",
   "ekram_inquiry_burial_grave": "الاستعلام عن المقابر",
   "ekram_inquiry_orgnizations": "استعلام عن مقدمي خدمات نقل وتجهيز الموتى",
   "ekram_inquiry_about_grave": "الاستعلام عن موقع قبر متوفى ",
@@ -4261,5 +4261,6 @@
   "ekram_death_country_validation":"يجب إدخال دولة الوفاة",
   "ekram_death_city_validation":"يجب إدخال مدينة الوفاة",
   "ekram_death_hospital_validation":"يجب إدخال المستشفى",
-  "ekram_transportation_validation":"يجب إدخال جهة النقل"
+  "ekram_transportation_validation":"يجب إدخال جهة النقل",
+  "tripCompletesucessfully": "تم إكمال رحلة نقل وتجهيز المتوفى بنجاح"
 }
