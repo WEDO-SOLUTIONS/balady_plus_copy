@@ -59,7 +59,10 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
         SizedBox(
           height: widget.contentSize,
           child: widget.items.isEmpty
-              ? widget.itemBuilder(null)
+              ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  child: widget.itemBuilder(null),
+                )
               : ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
                   scrollDirection: Axis.horizontal,
@@ -86,28 +89,31 @@ class _SliderListViewState<T> extends State<SliderListView<T>> {
                   },
                 ),
         ),
-        if (widget.items.length > 1) ...[
-          const SizedBox(height: Spacing.$3x),
-          SmoothPageIndicator(
-            textDirection: TextDirection.ltr,
-            onDotClicked: (index) {
-              controller.animateToPage(
-                index,
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.decelerate,
-              );
-            },
-            controller: controller,
-            count: widget.items.length,
-            effect: ScrollingDotsEffect(
-              radius: 100.0,
-              dotWidth: 6.0,
-              dotHeight: 6.0,
-              dotColor: context.colorsV2.foregroundDisabled,
-              activeDotColor: context.colorsV2.foregroundDefault,
+        if (widget.items.length > 1)
+          Padding(
+            padding: const EdgeInsets.only(top: Spacing.$3x),
+            child: SmoothPageIndicator(
+              textDirection: TextDirection.ltr,
+              onDotClicked: (index) {
+                // final offset = index * (widget.contentSize) - Spacing.$2x;
+
+                controller.animateToPage(
+                  index,
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.decelerate,
+                );
+              },
+              controller: controller,
+              count: widget.items.length,
+              effect: ScrollingDotsEffect(
+                radius: 100.0,
+                dotWidth: 6.0,
+                dotHeight: 6.0,
+                dotColor: context.colorsV2.foregroundDisabled,
+                activeDotColor: context.colorsV2.foregroundDefault,
+              ),
             ),
           ),
-        ],
       ],
     );
   }
@@ -120,7 +126,7 @@ class SliderScrollPhysics extends ScrollPhysics {
   const SliderScrollPhysics({
     required this.padding,
     required this.itemSize,
-  }) : super(parent: null);
+  }) : super(parent: const BouncingScrollPhysics());
 
   @override
   bool get allowImplicitScrolling => false;

@@ -31,51 +31,58 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
   Widget build(BuildContext context) {
     super.build(context);
     return ref.watch(interestingPlacesProvider).when(
-        data: (items) {
-          final places = items
-              .where(
-                (e) =>
-                    e.tags.contains(
-                      proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
-                    ) &&
-                    e.preview.image.url.isNotEmpty,
-              )
-              .toList();
+          data: (items) {
+            final places = items
+                .where(
+                  (e) =>
+                      e.tags.contains(
+                        proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+                      ) &&
+                      e.preview.image.url.isNotEmpty,
+                )
+                .toList();
 
-          return SliderListView(
-            items: places,
-            viewportWidth: MediaQuery.sizeOf(context).width,
-            contentSize: kPlaceCardSize,
-            onTap: (item) {
-              final objectId = int.tryParse(item.entity.id) ?? 0;
-              Metrics.logEventAdvanced(
-                MetricsConstants.exploreKeys.placesToVisitBanner,
-                action: MetricAction.tap.name,
-                group: MetricsConstants.exploreTag,
-                props: {
-                  'id': objectId,
-                  'title': item.titleOrFallback(
-                    locale: AppLocalizationsEn(),
-                  ),
-                },
-              );
+            return SliderListView(
+              items: places,
+              viewportWidth: MediaQuery.sizeOf(context).width,
+              contentSize: kPlaceCardSize,
+              onTap: (item) {
+                final objectId = int.tryParse(item.entity.id) ?? 0;
+                Metrics.logEventAdvanced(
+                  MetricsConstants.exploreKeys.placesToVisitBanner,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.exploreTag,
+                  props: {
+                    'id': objectId,
+                    'title': item.titleOrFallback(
+                      locale: AppLocalizationsEn(),
+                    ),
+                  },
+                );
 
-              context.router.replaceOrPush(
-                route: PoiCardWidgetRoute(
-                  objectId: DgisObjectIdMessage(
-                    objectId: objectId,
-                    entranceId: 0,
+                context.router.replaceOrPush(
+                  route: PoiCardWidgetRoute(
+                    objectId: DgisObjectIdMessage(
+                      objectId: objectId,
+                      entranceId: 0,
+                    ),
+                    cameraConfig: const PoiCameraConfig(zoom: 17),
                   ),
-                  cameraConfig: const PoiCameraConfig(zoom: 17),
-                ),
-                toCompareRoutes: [PoiCardWidgetRoute.page],
-              );
-            },
-            itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
-          );
-        },
-        error: (error, trace) => const _PlaceCard(null),
-        loading: () => const _PlaceCard(null));
+                  toCompareRoutes: [PoiCardWidgetRoute.page],
+                );
+              },
+              itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
+            );
+          },
+          error: (error, trace) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: _PlaceCard(null),
+          ),
+          loading: () => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: _PlaceCard(null),
+          ),
+        );
   }
 
   @override
@@ -94,6 +101,7 @@ class _PlaceCard extends StatelessWidget {
           children: [
             CachedNetworkImage(
               height: kPlaceCardSize,
+              width: double.infinity,
               imageUrl: item?.preview.image.url ?? '',
               fit: BoxFit.cover,
               imageBuilder: (context, imageProvider) => Stack(
@@ -143,11 +151,5 @@ class _ImagePlaceholder extends StatelessWidget {
   const _ImagePlaceholder({this.progress});
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-          child: const ShimmerEffectWidget(),
-        ),
-      );
+  Widget build(BuildContext context) => const ShimmerEffectWidget();
 }

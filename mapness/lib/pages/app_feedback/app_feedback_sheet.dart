@@ -81,6 +81,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
       source: source,
       child: StatelessBottomSheet(
         scrollController: scrollController,
+        resizeToAvoidBottomPadding: false,
         onWillPop: Future.value(false),
         content: [
           sendFeedbackState.when(

@@ -12,10 +12,10 @@ import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/landing/map_hidden_state_controls.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/_features/landing/widgets/dashboard_feedback_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_title.dart';
 import 'package:mapness/_features/landing/widgets/drive_back_home_card.dart';
-import 'package:mapness/_features/landing/widgets/feedback_card.dart';
 import 'package:mapness/_features/landing/widgets/place_preview.dart';
 import 'package:mapness/_features/landing/widgets/quick_action_button.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
@@ -138,61 +138,25 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 QuickActionButton(
-                    text: context.l10n.parkingAction,
-                    icon: General32Icons.parkingAction,
-                    onTap: () {
-                      widget.bottomSheetController.position
-                          .animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
-                      widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
-                      ref.read(layersControlsProvider.notifier).enableParking();
-                    }),
+                  text: context.l10n.parkingAction,
+                  icon: General32Icons.parkingAction,
+                  onTap: _openParking,
+                ),
                 QuickActionButton(
-                    text: context.l10n.qibla,
-                    icon: General32Icons.qiblaAction,
-                    onTap: () async {
-                      Metrics.logEventAdvanced(
-                        MetricsConstants.exploreKeys.qibla,
-                        action: MetricAction.tap.name,
-                        group: MetricsConstants.exploreTag,
-                      );
-                      final location = ref.read(locationProvider.notifier);
-
-                      await location.checkLocationPermission().then((allowed) {
-                        if (allowed) {
-                          context.router.push(const KiblahRoute());
-                        }
-                      });
-                    }),
+                  text: context.l10n.qibla,
+                  icon: General32Icons.qiblaAction,
+                  onTap: () => _openQible(context),
+                ),
                 QuickActionButton(
-                    text: context.l10n.locationAction,
-                    icon: General32Icons.locationAction,
-                    onTap: () {
-                      Metrics.logEventAdvanced(
-                        MetricsConstants.poiKeys.myLocation,
-                        group: MetricsConstants.poiTag,
-                        action: MetricAction.tap.toString(),
-                      );
-
-                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
-
-                      final userLocation = ref.read(locationProvider);
-                      if (userLocation != null) {
-                        context.router.push(
-                          ShareMyLocationRoute(
-                            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-                            closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
-                          ),
-                        );
-                      }
-                    }),
+                  text: context.l10n.locationAction,
+                  icon: General32Icons.locationAction,
+                  onTap: _openMyLocation,
+                ),
                 QuickActionButton(
-                    text: context.l10n.snapAndSendAction,
-                    icon: General32Icons.snapAndSendAction,
-                    onTap: () {
-                      Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
-                          action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
-                      CommonFunctions.openSnapAndSend();
-                    }),
+                  text: context.l10n.snapAndSendAction,
+                  icon: General32Icons.snapAndSendAction,
+                  onTap: _openSnapAndSend,
+                ),
               ],
             ),
           ),
@@ -203,11 +167,58 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: uikit.Spacing.$4x),
           const PlacePreview(),
           const SizedBox(height: uikit.Spacing.$6x),
-          const FeedbackCard(),
+          const DashboardFeedbackCard(),
           const SizedBox(height: uikit.Spacing.$6x),
         ],
       ),
     );
+  }
+
+  void _openParking() {
+    widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
+    widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
+    ref.read(layersControlsProvider.notifier).enableParking();
+  }
+
+  Future<void> _openQible(BuildContext context) async {
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.qibla,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
+    );
+    final location = ref.read(locationProvider.notifier);
+
+    await location.checkLocationPermission().then((allowed) {
+      if (allowed) {
+        context.router.push(const KiblahRoute());
+      }
+    });
+  }
+
+  void _openMyLocation() {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.myLocation,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+
+    final userLocation = ref.read(locationProvider);
+    if (userLocation != null) {
+      context.router.push(
+        ShareMyLocationRoute(
+          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+          closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
+        ),
+      );
+    }
+  }
+
+  void _openSnapAndSend() {
+    Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
+        action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
+    CommonFunctions.openSnapAndSend();
   }
 
   void _scrollListenHandler() {

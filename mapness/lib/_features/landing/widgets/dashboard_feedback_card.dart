@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class FeedbackCard extends StatelessWidget {
-  const FeedbackCard({
+class DashboardFeedbackCard extends StatelessWidget {
+  const DashboardFeedbackCard({
     super.key,
   });
 
