@@ -126,7 +126,7 @@ jobs:
           fi
 
   linter:
-    runs-on: [misc]
+    runs-on: [self-hosted, Linux]
     name: Lint flutter code
     steps:
       - name: Checkout code
