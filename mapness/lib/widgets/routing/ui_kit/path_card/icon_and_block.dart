@@ -14,10 +14,10 @@ class _IconAndTextBlock extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Row(
         children: [
-          Icon(icon, color: context.staticColor.surfaceStatusPositive, size: 16),
-          Spacing.horizontalGapBetweenChipContent.widthBox,
+          Icon(icon, color: context.colorsV2.neutralMuted, size: 16),
+          Spacing.$1x.widthBox,
           Text(value.toString(), style: context.textStyle.caption),
-          NumericBase.$0_5x.widthBox,
+          Spacing.$0_5x.widthBox,
           Text(
             label.toString(),
             style: context.textStyle.caption.copyWith(color: context.color.textAndIconsBaseSecondary),

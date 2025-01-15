@@ -24,7 +24,7 @@ class AppFeedbackCard extends ConsumerWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.l),
-                  color: context.colorsV2.accentDefault,
+                  color: context.colorsV2.accentSecondaryDefault,
                 ),
                 child: ContentRow(
                   options: ContentRowOptions(
