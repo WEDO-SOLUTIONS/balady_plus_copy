@@ -224,7 +224,11 @@ class ObjectTapHandler {
 
         let image: Image
         if isSvg {
-            image = imageFactory.make(svgData: data, size: .zero)
+            if path.contains(".json") {
+                image = imageFactory.make(lottieData: data, size: size)
+            } else {
+                image = imageFactory.make(svgData: data, size: size)
+            }
         } else {
             image = imageFactory.make(pngData: data, size: size)
         }
