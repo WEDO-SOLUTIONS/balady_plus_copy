@@ -194,17 +194,17 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: "5c88b8265eed77d46a585f69dbe77d3a041242f26710511b1e3822d9e16d2699"
+      sha256: "85ad6863ed7e27b9d90a6e27a750a14280fe692cb0c3369f0281737fd4aea3cb"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.30"
+    version: "0.0.31"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.11.17+233"
+    version: "3.11.21+262"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -2119,10 +2119,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: e1452e34d3a76515b6bb140af74370adae11071e33d570ae716ac1beb63c659c
+      sha256: "34c96f90321b3a0c56d3f8959f031052707d573083731cf04f351862e194b3c7"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.10"
+    version: "1.0.12"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -2179,6 +2179,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3"
+  mobile_device_identifier:
+    dependency: transitive
+    description:
+      name: mobile_device_identifier
+      sha256: "50c838c4783b84a3d70e3bb06960ba8a9d17d6852d49882c8c3f54c794791caa"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   mocktail:
     dependency: "direct main"
     description:

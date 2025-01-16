@@ -368,7 +368,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       longitude = double.tryParse(lonString);
 
       // So that we can process locations from social networks if we share a location there
-    } else if (url.host.contains('google.com') && url.queryParameters['q'] != null) {
+    } else if (url.queryParameters['q'] != null) {
       final coordinates = url.queryParameters['q']?.split(',');
       if (coordinates != null && coordinates.length == 2) {
         latitude = double.tryParse(coordinates[0]);
@@ -412,6 +412,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (url.toString().isNotEmpty) {
+      print('url.toString() ${url.toString()}');
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }
