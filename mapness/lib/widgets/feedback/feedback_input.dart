@@ -52,6 +52,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   final _inputErrorState = ValueNotifier<bool>(false);
   var _isForceLtr = false;
+  String? _errorText;
 
   @override
   void initState() {
@@ -102,6 +103,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
       formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
     }
     widget.onChanged?.call(formattedValue);
+    _errorText = _onValidate(value);
   }
 
   @override
@@ -112,8 +114,9 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     // in arabic phone texted ltr but should be aligned to right edge as other fields
     final textAlign = _isForceLtr && srcDirection == TextDirection.rtl ? TextAlign.end : null;
 
-    final errorText = _inputErrorState.value ? widget.onValidate?.call(_controller.text) : null;
-    final inputState = errorText != null ? BaladyInputState.error : BaladyInputState.defaultValue;
+    final inputState = _errorText != null || (_controller.text.length > widget.maxLength)
+        ? BaladyInputState.error
+        : BaladyInputState.defaultValue;
     return Column(
       children: [
         Row(
@@ -140,7 +143,8 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
               focusNode: _focusNode,
               hintText: widget.hintText,
               fillColor: context.colorsV2.backgroundSurface1,
-              onValidate: _onValidate,
+              // Need to validate on the client side
+              //  onValidate: _onValidate,
               autovalidateMode: AutovalidateMode.onUnfocus,
               allowedInputPattern: widget.allowedInputPattern,
               maxLines: widget.maxLines,
@@ -155,7 +159,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
                 : null,
             supportingText: BaladySupportingText(
               maxLength: widget.maxLength,
-              text: errorText,
+              text: _errorText,
             ),
           ),
         ),

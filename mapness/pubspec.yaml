@@ -39,9 +39,8 @@ dependencies:
     path: ..
 
   balady_uikit:
-    git:
-      url: https://github.com/urbi-ae/balady_uikit.git
-      ref: 07aea00556faddeee1435d371b533de7b9bda93f
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 3.2.1
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
