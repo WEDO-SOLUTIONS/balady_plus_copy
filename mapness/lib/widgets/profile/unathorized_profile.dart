@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -16,7 +15,7 @@ class UnautorizedProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Container(
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
-          color: AppColor.authBackgroundColorV2,
+          color: context.colorsV2.accentSecondaryDefault,
         ),
         child: Column(
           children: [
@@ -28,19 +27,22 @@ class UnautorizedProfile extends ConsumerWidget {
               child: Text(
                 context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
                 textAlign: TextAlign.center,
-                style: context.textStyle.text.copyWith(color: AppColor.authTitleColorV2),
+                style: context.textStyle.text.copyWith(
+                  color: context.colorsV2.staticWhite,
+                ),
               ),
             ),
             Spacing.$4x.heightBox,
             Row(
               children: [
                 Expanded(
-                  child: AppButton(
+                  child: BaladyAppButton(
                     padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                     primaryLabel: context.l10n.connectToMomrah,
-                    buttonColorScheme: ButtonColorScheme.onColor,
+                    buttonColorScheme: BaladyButtonColorScheme.accent,
                     onTap: onConnect,
-                    textColor: AppColor.authTitleColorV2,
+                    textColor: context.colorsV2.staticWhite,
+                    size: BaladyButtonSize.large,
                   ),
                 ),
               ],
