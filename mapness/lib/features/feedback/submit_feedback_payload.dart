@@ -26,8 +26,10 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
   }) {
     /// get curretn
     final cameraViewport = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;
+
+    /// should not fire under any regular circumstances, but still
     if (cameraViewport == null) {
-      return;
+      throw Exception('UserFeedback: collect form failed, unable to get camra viewport');
     }
 
     state = FeedbackFormPayloadEntity(
