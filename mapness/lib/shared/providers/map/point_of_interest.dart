@@ -14,10 +14,7 @@ const poiPinId = 'poi_pin_id';
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
-  Ref ref,
-  DgisObjectIdMessage objectId, {
-  LatLng? closestPoint,
-}) async {
+  Ref ref, DgisObjectIdMessage objectId) async {
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;

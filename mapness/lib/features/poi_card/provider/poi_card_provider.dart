@@ -100,7 +100,6 @@ class PoiCardProvider extends _$PoiCardProvider {
         .watch(
       pointOfInterestProvider(
         DgisObjectIdMessage(objectId: objectId, entranceId: 0),
-        closestPoint: closestPoint,
       ).future,
     )
         .timeout(
