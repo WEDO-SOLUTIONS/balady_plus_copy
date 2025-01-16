@@ -42,14 +42,14 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(cameraPaddingProvider.notifier).resetPadding();
-      ref.read(mapTapHandlerProvider.notifier).priorityMapTapHandler =
-          (_) {}; // Prevents the user from interacting with the map
+      // Prevents the user from interacting with the map
+      ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
     });
   }
 
   @override
   void deactivate() {
-    ref.read(mapTapHandlerProvider.notifier).resetPriorityMapTapHandler();
+    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = false;
     super.deactivate();
   }
 

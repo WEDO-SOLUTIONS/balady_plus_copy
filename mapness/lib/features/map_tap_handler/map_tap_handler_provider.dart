@@ -21,6 +21,7 @@ class MapTapHandler extends _$MapTapHandler {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
 
   OnMapTapHandler? _priorityMapTapHandler;
+  bool _isDisabledTapHandler = false;
 
   late final StreamController<TapEvent> _currentMapHandlers = StreamController.broadcast();
 
@@ -40,6 +41,12 @@ class MapTapHandler extends _$MapTapHandler {
   // ignore: avoid_setters_without_getters
   set priorityMapTapHandler(OnMapTapHandler handler) => _priorityMapTapHandler = handler;
 
+  /// Disables the default tap handler, preventing it from being called.
+  // ignore: avoid_setters_without_getters
+  set disableTapOnMap(bool value) => _isDisabledTapHandler = value;
+
+  bool get isDisabledTapHandler => _isDisabledTapHandler;
+
   /// Resets the previously set priority map tap handler, reverting to default behavior.
   void resetPriorityMapTapHandler() {
     _priorityMapTapHandler = null;
@@ -50,6 +57,11 @@ class MapTapHandler extends _$MapTapHandler {
 
   /// Handles all incoming tap events, passing them to the priority handler or the default one.
   void _onNewEvent(TapEvent event) {
+    /// If the tap handler is disabled, do not process the event.
+    if (_isDisabledTapHandler) {
+      return;
+    }
+
     if (_priorityMapTapHandler != null) {
       _priorityMapTapHandler!(event);
     } else {
@@ -73,62 +85,74 @@ class MapTapHandler extends _$MapTapHandler {
     }
 
     if (event is ObjectTapEvent) {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.map,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'objectId': event.dgisObjectId.objectId,
-        },
-      );
-
-      appRouter.replaceOrPush(
-        route: PoiCardWidgetRoute(
-          objectId: DgisObjectIdMessage(
-            objectId: event.dgisObjectId.objectId,
-            entranceId: 0,
-          ),
-          closestPoint: event.latLng,
-        ),
-        toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
-      );
+      _handleObjectTapEvent(event);
     } else if (event is RoadEventTapEvent) {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.roadEvent,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {'event': event.id.objectId, 'title': event.title},
-      );
-
-      appRouter.push(
-        RoadClosureRoute(
-          id: event.id,
-          title: event.title,
-          description: event.description,
-          startTime: event.startTime,
-          finishTime: event.finishTime,
-          latitude: event.latLng.latitude,
-          longitude: event.latLng.longitude,
-        ),
-      );
+      _handleRoadEventTapEvent(event);
     } else if (event is MyLocationTapEvent) {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.myLocation,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-      );
-
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
-
-      final userLocation = ref.read(locationProvider);
-      appRouter.push(
-        ShareMyLocationRoute(
-          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-          closestPoint: userLocation != null
-              ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-              : event.latLng,
-        ),
-      );
+      _handleMyLocationTapEvent(event);
     }
+  }
+
+  void _handleObjectTapEvent(ObjectTapEvent event) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.map,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'objectId': event.dgisObjectId.objectId,
+      },
+    );
+
+    ref.read(appRouterProvider).replaceOrPush(
+      route: PoiCardWidgetRoute(
+        objectId: DgisObjectIdMessage(
+          objectId: event.dgisObjectId.objectId,
+          entranceId: 0,
+        ),
+        closestPoint: event.latLng,
+      ),
+      toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
+    );
+  }
+
+  void _handleRoadEventTapEvent(RoadEventTapEvent event) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.roadEvent,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'event': event.id.objectId, 'title': event.title},
+    );
+
+    ref.read(appRouterProvider).push(
+          RoadClosureRoute(
+            id: event.id,
+            title: event.title,
+            description: event.description,
+            startTime: event.startTime,
+            finishTime: event.finishTime,
+            latitude: event.latLng.latitude,
+            longitude: event.latLng.longitude,
+          ),
+        );
+  }
+
+  void _handleMyLocationTapEvent(MyLocationTapEvent event) {
+    Metrics.logEventAdvanced(
+      MetricsConstants.poiKeys.myLocation,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+    );
+
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+
+    final userLocation = ref.read(locationProvider);
+    ref.read(appRouterProvider).push(
+          ShareMyLocationRoute(
+            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+            closestPoint: userLocation != null
+                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+                : event.latLng,
+          ),
+        );
   }
 }
