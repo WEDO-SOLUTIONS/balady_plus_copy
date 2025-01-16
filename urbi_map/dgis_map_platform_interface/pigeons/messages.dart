@@ -430,6 +430,7 @@ class DirectoryObjectMessage {
     this.buildingInfo,
     this.entrances,
     this.tradeLicense,
+    this.rubricIds,
   );
 
   final List<ObjectTypeItemMessage> types;
@@ -455,6 +456,7 @@ class DirectoryObjectMessage {
   final BuildingInfoMessage buildingInfo;
   final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
+  final List<int> rubricIds;
 }
 
 enum SortingTypeMessage {
