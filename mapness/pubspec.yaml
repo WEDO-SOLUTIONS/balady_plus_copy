@@ -172,6 +172,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/icons/lottie/
     - assets/icons/svg/social/
     - assets/icons/svg/quick_filters/
     - assets/icons/svg/weather/
