@@ -37,11 +37,9 @@ class DashboardFeedbackCard extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: BaladyAppButton(
-                        size: BaladyButtonSize.large,
+                      child: AppButton(
                         primaryLabel: context.l10n.yes,
-                        buttonType: BaladyButtonType.secondary,
-                        buttonColorScheme: BaladyButtonColorScheme.accent,
+                        buttonColorScheme: ButtonColorScheme.primary,
                         onTap: () {
                           context.router.push(AppFeedbackSheet(initialRating: 5));
                         },
@@ -49,11 +47,9 @@ class DashboardFeedbackCard extends StatelessWidget {
                     ),
                     const SizedBox(width: Spacing.$2x),
                     Expanded(
-                      child: BaladyAppButton(
-                        size: BaladyButtonSize.large,
+                      child: AppButton(
                         primaryLabel: context.l10n.no,
-                        buttonType: BaladyButtonType.secondary,
-                        buttonColorScheme: BaladyButtonColorScheme.neutral,
+                        buttonColorScheme: ButtonColorScheme.secondary,
                         onTap: () {
                           context.router.push(AppFeedbackSheet(initialRating: 2));
                         },
