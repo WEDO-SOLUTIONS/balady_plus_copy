@@ -350,17 +350,31 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
-    final url = Uri.parse(parse.fragment);
+    final url = parse.fragment.isNotEmpty ? Uri.parse(parse.fragment) : parse;
 
     final momrahId = url.queryParameters[BaldayDeeplink.momrahIdKey];
     final latString = url.queryParameters[BaldayDeeplink.latitudeKey];
-    final latitude = double.tryParse(latString ?? '');
     final lonString = url.queryParameters[BaldayDeeplink.longitudeKey];
-    final longitude = double.tryParse(lonString ?? '');
     final type = url.queryParameters[BaldayDeeplink.typeKey];
     final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
+
+    double? latitude;
+    double? longitude;
+
+    if (latString != null && lonString != null) {
+      latitude = double.tryParse(latString);
+      longitude = double.tryParse(lonString);
+
+      // So that we can process locations from social networks if we share a location there
+    } else if (url.queryParameters['q'] != null) {
+      final coordinates = url.queryParameters['q']?.split(',');
+      if (coordinates != null && coordinates.length == 2) {
+        latitude = double.tryParse(coordinates[0]);
+        longitude = double.tryParse(coordinates[1]);
+      }
+    }
 
     if (tokenId != null && streamId != null) {
       if (await EtaUtils.processShareLink(
@@ -398,6 +412,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (url.toString().isNotEmpty) {
+      print('url.toString() ${url.toString()}');
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }
