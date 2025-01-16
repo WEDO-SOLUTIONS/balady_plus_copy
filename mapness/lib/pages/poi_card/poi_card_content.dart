@@ -80,6 +80,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     );
 
     Future.delayed(const Duration(milliseconds: 250), () {
+      // Fix bug with Exception when calling ref after dispose
+      if (!mounted) {
+        return;
+      }
       ref.read(cameraPaddingProvider.notifier).resetPadding();
     });
   }

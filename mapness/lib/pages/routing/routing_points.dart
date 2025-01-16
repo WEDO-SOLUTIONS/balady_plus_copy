@@ -11,11 +11,11 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dar
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_point.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/pages/routing/ui/routing_header_delegate.dart';
 import 'package:mapness/pages/routing/ui/routing_history.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 
 @RoutePage()
@@ -193,11 +193,10 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
     }
   }
 
-  Future<void> _setupTapListener() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    _objectTapStreamSubscription = dgisController.objectTapEvents.listen(
-      _tapListener,
-    );
+  void _setupTapListener() {
+    _objectTapStreamSubscription = ref.read(mapTapHandlerProvider.notifier).listen(
+          _tapListener,
+        );
   }
 
   void _tapListener(event) {
