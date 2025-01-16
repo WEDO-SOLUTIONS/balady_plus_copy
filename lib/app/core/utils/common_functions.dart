@@ -201,6 +201,7 @@ class CommonFunctions {
     PackageDetails info = sl();
     NotificationRequest request = NotificationRequest();
     request.fcmToken = fcm;
+    request.FCMTokenSource = await isHawaiiDevice()?"HUAWEI":"FIREBASE";
     request.appId = GeneralKey.appId;
     request.device = device;
     request.appVersion = info.version;
@@ -328,7 +329,7 @@ class CommonFunctions {
 
 
   static Future<bool>  isHawaiiDevice() async{
-    return await FlutterHmsGmsAvailability.isGmsAvailable;
+    return await FlutterHmsGmsAvailability.isHmsAvailable;
   }
 
   static String getDayName(String? dateStr) {
