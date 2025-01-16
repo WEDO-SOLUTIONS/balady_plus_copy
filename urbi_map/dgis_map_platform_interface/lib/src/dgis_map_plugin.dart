@@ -862,7 +862,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Set panorama marker azimuth.
-  Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage message) {
+  Future<void> setPanoramaMarkerAzimuth(MapDirectionMessage message) {
     return _api.setPanoramaMarkerAzimuth(message);
   }
 

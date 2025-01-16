@@ -803,7 +803,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeAllMarkers(from: nil, completion: completion)
     }
     
-    func setPanoramaMarkerAzimuth( message: MarkerAzimuthMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func setPanoramaMarkerAzimuth( message: MapDirectionMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectTapHandler?.setPanoramasAzimuth(degrees: message.degree)
          completion(Result.success(()))
     }
