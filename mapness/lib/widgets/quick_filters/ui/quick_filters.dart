@@ -1,4 +1,4 @@
-import 'package:balady_uikit/components.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
@@ -10,19 +10,18 @@ class QuickFilters extends ConsumerStatefulWidget {
   final EdgeInsets padding;
   final List<FilterItem> filters;
   final QuickFilterScreen id;
-  final bool isDashboard;
+
   final double height;
   final ItemScrollController? itemScrollController;
 
-  static const defaultHeight = 40.0;
+  static const defaultHeight = AppSizes.m + Spacing.$2x;
 
   const QuickFilters({
     required this.filters,
     required this.id,
     double? height,
-    this.isDashboard = false,
     super.key,
-    this.padding = const EdgeInsets.only(bottom: 16),
+    this.padding = const EdgeInsets.only(),
     this.itemScrollController,
   }) : height = height ?? defaultHeight;
 
@@ -77,23 +76,23 @@ class _QuickFiltersState extends ConsumerState<QuickFilters> {
           reverse: reverse,
           padding: widget.padding,
           itemScrollController: itemScrollController,
-          separatorBuilder: (_, __) => const SizedBox(width: 8),
+          separatorBuilder: (_, __) => const SizedBox(width: Spacing.$2x),
           itemCount: widget.filters.length,
           itemBuilder: (context, index) {
             final item = widget.filters[index];
-            return Center(
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$0_5x),
               child: Directionality(
                 textDirection: originalDirectionality,
                 child: switch (item) {
                   FilterItemConfig() => QuickFilter(
                       item: item,
                       selected: item.selected,
-                      chipsType: widget.isDashboard ? ChipsType.neutral : ChipsType.map,
+                      chipsType: ChipsType.map,
                     ),
                   FilterItemBuilder() => item.builder(
                       context,
                       isSelected: item.selected,
-                      isDashboard: widget.isDashboard,
                     ),
                 },
               ),

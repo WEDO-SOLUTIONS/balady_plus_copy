@@ -15,9 +15,14 @@ import 'package:mapness/widgets/app_feedback/v2/app_feedback_main.dart';
 
 @RoutePage()
 class AppFeedbackSheet extends HookConsumerWidget {
+  final int? initialRating;
   final FeedbackSource source;
 
-  const AppFeedbackSheet({this.source = FeedbackSource.main, super.key});
+  const AppFeedbackSheet({
+    this.initialRating,
+    this.source = FeedbackSource.main,
+    super.key,
+  });
 
   static const _sheetPadding = EdgeInsets.symmetric(vertical: 29);
 
@@ -76,11 +81,13 @@ class AppFeedbackSheet extends HookConsumerWidget {
       source: source,
       child: StatelessBottomSheet(
         scrollController: scrollController,
+        resizeToAvoidBottomPadding: false,
         onWillPop: Future.value(false),
         content: [
           sendFeedbackState.when(
             data: (data) => switch (data) {
               AppFeedbackState.initial => AppFeedbackMain(
+                  initialRating: initialRating,
                   onNeedPopConfirm: () => _showConfirmDialog(context),
                 ),
               AppFeedbackState.loading => const AppFeedbackLoading(),

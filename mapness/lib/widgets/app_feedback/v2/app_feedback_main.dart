@@ -17,16 +17,18 @@ import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:mapness/widgets/app_feedback/v2/tag_cloud.dart';
 
 class AppFeedbackMain extends HookConsumerWidget {
+  final int? initialRating;
   final VoidCallback? onNeedPopConfirm;
 
   const AppFeedbackMain({
     super.key,
     this.onNeedPopConfirm,
+    this.initialRating,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rating = useState(0);
+    final rating = useState(initialRating ?? 0);
     final selectedTags = useState<Set<Tag>>({});
     final feedbackTextController = useTextEditingController();
 
@@ -60,7 +62,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             alignment: AlignmentDirectional.centerEnd,
             child: CustomCloseButton(
               onClose: () {
-                if (rating.value == 0) {
+                if (rating.value == (initialRating ?? 0)) {
                   context.router.popForced();
                 } else {
                   onNeedPopConfirm?.call();

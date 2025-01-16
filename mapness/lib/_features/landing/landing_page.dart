@@ -10,7 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
-import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
@@ -156,7 +155,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   );
                 },
               ),
-              MapDashboardControls(_bottomSheetController, key: const ValueKey('MapDashboardControls')),
               Dashboard(bottomSheetController: _bottomSheetController),
             ],
           ),
