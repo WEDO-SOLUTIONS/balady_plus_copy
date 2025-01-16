@@ -224,6 +224,7 @@ class ObjectTapHandler {
 
         let image: Image
         if isSvg {
+            // That it was possible to process lottie animation, it was easier to implement a new model and stretch it
             if path.contains(".json") {
                 image = imageFactory.make(lottieData: data, size: size)
             } else {
