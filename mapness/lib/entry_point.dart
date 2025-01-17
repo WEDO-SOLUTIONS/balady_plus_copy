@@ -234,48 +234,50 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
     });
 
-    return Directionality(
-      textDirection: direction,
-      child: Consumer(
-        builder: (context, ref, child) {
-          final colorScheme = ref.watch(colorSchemeProvider);
+    return DefaultTextHeightBehavior(
+      textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
+      child: Directionality(
+        textDirection: direction,
+        child: Consumer(
+          builder: (context, ref, child) {
+            final colorScheme = ref.watch(colorSchemeProvider);
+            return MaterialApp.router(
+              routerConfig: ref.read(appRouterProvider).config(
+                    navigatorObservers: () => [
+                      RoutesObserver(ref: ref),
+                    ],
+                  ),
+              theme: ThemeData(
+                scaffoldBackgroundColor: Colors.transparent,
+                dividerColor: Colors.grey[400],
+                useMaterial3: false,
+                extensions: <ThemeExtension<dynamic>>[
+                  if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                  if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
+                  AppColorsThemeExt.palette(colorScheme, isDark: false),
+                  AppColorsThemeV2.palette(isDark: false),
+                  AppStaticColorsThemeExt.palette(colorScheme),
 
-          return MaterialApp.router(
-            routerConfig: ref.read(appRouterProvider).config(
-                  navigatorObservers: () => [
-                    RoutesObserver(ref: ref),
-                  ],
-                ),
-            theme: ThemeData(
-              scaffoldBackgroundColor: Colors.transparent,
-              dividerColor: Colors.grey[400],
-              useMaterial3: false,
-              extensions: <ThemeExtension<dynamic>>[
-                if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
-                if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                AppColorsThemeExt.palette(colorScheme, isDark: false),
-                AppColorsThemeV2.palette(isDark: false),
-                AppStaticColorsThemeExt.palette(colorScheme),
-
-                // Temp palette for new colors disign
-                BaladyTempPalette.palette(),
-              ],
-            ),
-            builder: (context, child) => child != null
-                ? LoadingOverlay(
-                    child: ToastOverlay(
-                      child: GlobalScopes(
-                        child: child,
+                  // Temp palette for new colors disign
+                  BaladyTempPalette.palette(),
+                ],
+              ),
+              builder: (context, child) => child != null
+                  ? LoadingOverlay(
+                      child: ToastOverlay(
+                        child: GlobalScopes(
+                          child: child,
+                        ),
                       ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            locale: language.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            debugShowCheckedModeBanner: false,
-          );
-        },
+                    )
+                  : const SizedBox.shrink(),
+              locale: language.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        ),
       ),
     );
   }
@@ -346,7 +348,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
-  Future<void> openAppLink(uri, {isFirstRun = false}) async {
+  Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
@@ -412,7 +414,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (url.toString().isNotEmpty) {
-      print('url.toString() ${url.toString()}');
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }
