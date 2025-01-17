@@ -67,7 +67,19 @@ class MetroLayer extends _$MetroLayer {
       if (points == null || points.isEmpty) {
         continue;
       }
-      final geoPoints = points.map((e) => GeoPointMessage(latitude: e.lat!, longitude: e.lon!)).toList();
+      final geoPoints = points
+          .map((e) {
+            final lat = e.lat;
+            final lon = e.lon;
+
+            if (lat == null || lon == null) {
+              return null;
+            }
+
+            return GeoPointMessage(latitude: lat, longitude: lon);
+          })
+          .nonNulls
+          .toList();
 
       await mapManager.addPolyLines([
         Polyline(
