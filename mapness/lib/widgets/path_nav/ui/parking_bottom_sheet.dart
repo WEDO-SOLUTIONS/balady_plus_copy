@@ -21,7 +21,9 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final bottomSheetController = useStatelessBottomsheetController(onClose: (controller) => controller.close());
+    final parkingSheetProvider = ref.read(parkingAutoenabledSheetProvider.notifier);
+    final bottomSheetController = useStatelessBottomsheetController(
+        onClose: (controller) => parkingSheetProvider.showParkingAutoEnableSheet(value: false));
 
     ref.listen(
       parkingAutoenabledSheetProvider,
@@ -62,8 +64,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                   size: ButtonSize.small,
                   buttonColorScheme: ButtonColorScheme.tertiary,
                   primaryIcon: SystemIcons.close,
-                  onTap: () =>
-                      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false),
+                  onTap: () => parkingSheetProvider.showParkingAutoEnableSheet(value: false),
                 ),
               ],
             ),
@@ -87,7 +88,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                       onTap: () {
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: true);
 
-                        ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+                        parkingSheetProvider.showParkingAutoEnableSheet(value: false);
                       },
                     ),
                   ),
@@ -104,7 +105,8 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                         );
 
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: false);
-                        ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+
+                        parkingSheetProvider.showParkingAutoEnableSheet(value: false);
                       },
                     ),
                   ),
