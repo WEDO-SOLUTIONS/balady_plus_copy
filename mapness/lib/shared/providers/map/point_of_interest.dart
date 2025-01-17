@@ -13,8 +13,7 @@ part 'point_of_interest.g.dart';
 const poiPinId = 'poi_pin_id';
 
 @riverpod
-Future<DirectoryObjectMessage?> pointOfInterest(
-  Ref ref, DgisObjectIdMessage objectId) async {
+Future<DirectoryObjectMessage?> pointOfInterest(Ref ref, DgisObjectIdMessage objectId) async {
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;

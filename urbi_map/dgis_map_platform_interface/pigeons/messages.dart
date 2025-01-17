@@ -778,11 +778,15 @@ class PolylineOptionsMessage {
     required this.points,
     this.color,
     this.width,
+    this.borderWidth,
+    this.borderColor,
   });
 
   final List<GeoPointMessage> points;
   final int? color;
   final double? width;
+  final double? borderWidth;
+  final int? borderColor;
 }
 
 class PolylineMessage {

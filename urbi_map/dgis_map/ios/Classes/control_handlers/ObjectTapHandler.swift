@@ -586,6 +586,10 @@ class ObjectTapHandler {
     // MARK: Polyline
     
     private func mapPolyline(_ polyline: PolylineMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Polyline? {
+        let color = polyline.options.color.map {
+            Color(argb: UInt32($0))
+        } ?? Color()
+        
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
@@ -596,9 +600,12 @@ class ObjectTapHandler {
             width: polyline.options.width.map {
                 LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 1),
-            color: polyline.options.color.map {
-                Color(argb: UInt32($0))
-            } ?? Color(),
+            gradientPolylineOptions: GradientPolylineOptions(
+                borderWidth: polyline.options.borderWidth.map { LogicalPixel(value: Float($0)) } ?? LogicalPixel(value: 0), 
+                borderColor: polyline.options.borderColor.map { Color(argb: UInt32($0)) } ?? Color(),
+                colors: [color],
+                colorIndices: Data(Array(repeating: 0, count: polyline.options.points.count))
+            ),
             userData: PolylineId(polyline.id)
         )
         

@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
+import 'package:mapness/features/metro/metro_layer_provider.dart';
+import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
@@ -35,7 +37,9 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(layersControlsProvider.select((_) => null))
       ..watch(storiesOpenStateProvider.select((_) => null))
       ..watch(trafficStateProvider.select((_) => null))
-      ..watch(serviceNotAvailableProvider.select((_) => null));
+      ..watch(serviceNotAvailableProvider.select((_) => null))
+      ..watch(metroLayerProvider.select((_) => null))
+      ..watch(metroLayerVisibleProvider.select((_) => null));
 
     return child;
   }

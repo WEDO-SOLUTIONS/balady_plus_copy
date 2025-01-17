@@ -116,6 +116,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
+    final metro = MapObjectManagerSettings.metro();
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
@@ -131,7 +132,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
-      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
+      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
+      ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
