@@ -27,7 +27,7 @@ extension LayerTypeExt on LayerType {
 
   String titleLocale(AppLocalizations l10n) => switch (this) {
         LayerType.favourites => l10n.favourites,
-        LayerType.metro => 'Metro', //TODO: Add to localization
+        LayerType.metro => l10n.mapLayerMetro,
         LayerType.invest => l10n.investmentOpportunities,
         LayerType.buildings => l10n.compilanceBuildings,
         LayerType.fencing => l10n.fencingVacantLands,
