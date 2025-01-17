@@ -13,7 +13,10 @@ part 'point_of_interest.g.dart';
 const poiPinId = 'poi_pin_id';
 
 @riverpod
-Future<DirectoryObjectMessage?> pointOfInterest(Ref ref, DgisObjectIdMessage objectId) async {
+Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
+  DgisObjectIdMessage objectId,
+  LatLng? closestPoint,
+) async {
   final directoryObject = await ref.watch(directoryObjectFromDgisIdProvider(objectId).future);
 
   final cleanupRubrics = (directoryObject?.rubricIds ?? []).nonNulls;
@@ -28,17 +31,32 @@ Future<DirectoryObjectMessage?> pointOfInterest(Ref ref, DgisObjectIdMessage obj
   );
 
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
-  await selectedMarker.showMarker(
-    Markers.pinMarker(
-      GeoPointWithElevationMessage(
-        latitude: position.latitude,
-        longitude: position.longitude,
-        elevation: 1,
+
+  if (closestPoint != null) {
+    await selectedMarker.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: closestPoint.latitude,
+          longitude: closestPoint.longitude,
+          elevation: 1,
+        ),
+        icon: mapMarkerMapper?.iconPath.bigIconPath,
+        id: poiPinId,
       ),
-      icon: mapMarkerMapper?.iconPath.bigIconPath,
-      id: poiPinId,
-    ),
-  );
+    );
+  } else {
+    await selectedMarker.showMarker(
+      Markers.pinMarker(
+        GeoPointWithElevationMessage(
+          latitude: position.latitude,
+          longitude: position.longitude,
+          elevation: 1,
+        ),
+        icon: mapMarkerMapper?.iconPath.bigIconPath,
+        id: poiPinId,
+      ),
+    );
+  }
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();
