@@ -149,29 +149,6 @@ class ObjectTapHandler(
         }
     }
 
-    fun setMarkerOptions(
-        svgAsset: String,
-        size: Size,
-        iconWidth: Double,
-        sdkContext: Context,
-        callback: (Result<Unit>) -> Unit
-    ) {
-        try {
-            val asset =
-                FlutterInjector
-                    .instance()
-                    .flutterLoader()
-                    .getLookupKeyForAsset(svgAsset)
-
-            markerImage = imageFromAsset(sdkContext, asset, size)
-            this.iconWidth = LogicalPixel(iconWidth.toFloat())
-
-            callback(Result.success(Unit))
-        } catch (e: FileNotFoundException) {
-            callback(Result.failure(e))
-        }
-    }
-
     /// --- HELPERS ---
     private fun getManager(managerId: String?): MapObjectManager {
         if (managerId != null && managers[managerId] != null) {
@@ -249,11 +226,9 @@ class ObjectTapHandler(
             if (svgPath != null) {
                 markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
             }
-            // Проверка и создание изображения из pngPath
             else if (pngPath != null) {
                 markerImage = getImageFromAsset(pngPath, Size(iconOptions.width.toInt(),iconOptions.width.toInt()), callback)
             }
-            // Проверка и создание изображения из pngData
             else if (pngData != null) {
 
                 val data = pngData
@@ -291,6 +266,63 @@ class ObjectTapHandler(
             markers[marker.id] = Pair(markerObject, managerId)
             getManager(managerId).addObject(markerObject)
             callback(Result.success(Unit))
+        }
+    }
+
+    fun setMarkerOptions(
+        id: String,
+        options: ChangeMarkerOptionsMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        var markerImage: Image? = null
+        if (options.icon != null) {
+            val iconOptions = options.icon
+
+            val svgPath = iconOptions.svgPath
+            val pngPath = iconOptions.pngPath
+            val pngData = iconOptions.pngData
+
+            if (svgPath != null) {
+                markerImage = getImageFromAsset(svgPath, Size(0, 0), callback)
+            }
+            else if (pngPath != null) {
+                markerImage = getImageFromAsset(pngPath, Size(iconOptions.width.toInt(),iconOptions.width.toInt()), callback)
+            }
+            else if (pngData != null) {
+                val data = pngData
+                markerImage = getImageFromBytes(data, iconOptions.width.toInt())
+            }
+        }
+
+        options.position?.let { position ->
+            markers[id]?.first?.position = position.toGeoPointWithElevation()
+        }
+        markerImage?.let { image ->
+            markers[id]?.first?.icon = image
+        }
+        options.icon?.iconMapDirection?.let { iconMapDirection ->
+            markers[id]?.first?.iconMapDirection = MapDirection(iconMapDirection.degree)
+        }
+        options.anchor?.let { anchor ->
+            markers[id]?.first?.anchor = Anchor(anchor.x.toFloat(), anchor.y.toFloat())
+        }
+        options.text?.let { text ->
+            markers[id]?.first?.text = text
+        }
+        options.textStyle?.let { textStyle ->
+            markers[id]?.first?.textStyle = textStyle.toTextStyle()
+        }
+        options.icon?.width?.let { iconWidth ->
+            markers[id]?.first?.iconWidth = LogicalPixel(iconWidth.toFloat())
+        }
+        options.zIndex?.let { zIndex ->
+            markers[id]?.first?.zIndex = ZIndex(zIndex.toInt())
+        }
+        options.animatedAppearance?.let { animatedAppearance ->
+            markers[id]?.first?.animatedAppearance = animatedAppearance
+        }
+        options.isVisible?.let { isVisible ->
+            markers[id]?.first?.isVisible = isVisible
         }
     }
 

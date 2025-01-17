@@ -51,17 +51,17 @@ class _DelegatorListState extends State<DelegatorList> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (widget.fromService &&
-                      state.delegators.length == 0 &&
-                      state.agents.length == 0) ...[
-                    NoAccountsWidget()
+                      state.delegators.isEmpty &&
+                      state.agents.isEmpty) ...[
+                    const NoAccountsWidget()
                   ] else ...[
                     ProfileCard(
                       userInfo: CommonProperties.userInfo,
                       selected: state.selectedDelegate == null &&
                           state.selectedAgent == null,
                     ),
-                    ProfileHeader(),
-                    CustomVerticalSpace(
+                    const ProfileHeader(),
+                    const CustomVerticalSpace(
                       height: 16,
                     ),
                     if (state.tab == 0)
@@ -167,20 +167,20 @@ class ProfileHeader extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         CustomTextWidget(
           "profile_switch_entity".tr(),
           fontSize: 16,
           maxLines: 2,
           fontWeight: AppFontWeight.bold,
           textAlign: TextAlign.start,
-          fontColor: Color(0xFF27272A),
+          fontColor: const Color(0xFF27272A),
         ),
-        CustomVerticalSpace(height: 16),
+        const CustomVerticalSpace(height: 16),
         Container(
           height: 60,
           decoration: ShapeDecoration(
-            color: Color(0xFFFBFBFB),
+            color: const Color(0xFFFBFBFB),
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(12),
             ),
@@ -219,13 +219,14 @@ class TabWidget extends StatelessWidget {
               context.read<DelegatorsCubit>().changeTab(index);
             },
             child: Container(
-              margin: EdgeInsets.all(8),
+              margin: const EdgeInsets.all(8),
               decoration: ShapeDecoration(
-                color:
-                    state.tab == index ? Color(0xFFECECEC) : Color(0xffFFFFFF),
+                color: state.tab == index
+                    ? AppColor.primary900Light
+                    : AppColor.warmGrey3,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8)),
-                shadows: [
+                shadows: const [
                   BoxShadow(
                     color: Color(0x3F9EA5B7),
                     blurRadius: 20,
@@ -237,8 +238,7 @@ class TabWidget extends StatelessWidget {
               alignment: Alignment.center,
               child: CustomTextWidget(
                 name,
-                fontColor:
-                    state.tab == index ? Color(0xff18181B) : Color(0xFF737373),
+                fontColor: state.tab == index ? Colors.white : Colors.black,
                 fontSize: 14,
                 fontWeight: AppFontWeight.bold,
               ),

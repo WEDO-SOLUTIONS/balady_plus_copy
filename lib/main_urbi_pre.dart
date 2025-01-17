@@ -12,9 +12,6 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-      final status = await AppTrackingTransparency.requestTrackingAuthorization();
-
   AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
   await runMapnessApp(() async {
     await AppEnv.setupEnv(EnvType.urbiPre);
@@ -34,7 +31,7 @@ void main() async {
         options.captureFailedRequests = true;
         options.environment = sl<EnvType>().name;
       },
-      appRunner: () => runApp( MapnessProviderScope(child: LocalizedApp(child: App(status: status,)))),
+      appRunner: () => runApp(const MapnessProviderScope(child: LocalizedApp(child: App()))),
     );
   });
 }

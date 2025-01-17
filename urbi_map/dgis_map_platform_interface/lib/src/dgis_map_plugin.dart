@@ -62,8 +62,11 @@ class DgisMapPlugin extends FlutterMapApi {
   /// Location follow events stream.
   Stream<LocationFollowEvent> get locationFollowEvents => _locationEventHandler.locationFollowEvents;
 
-  /// Indoor active level events stream.
+  /// Indoor levels names events stream.
   Stream<IndoorLevelsEvent> get indoorLevelNames => _indoorEventHandler.indoorLevelNames;
+
+  /// Indoor levels hiding events stream.
+  Stream<HideIndoorLevelsEvent> get hideIndoorLevels => _indoorEventHandler.hideIndoorLevels;
 
   /// Last indoor active level event.
   IndoorActiveLevelEvent? get lastIndoorActiveLevel => _indoorEventHandler.lastIndoorActiveLevel;
@@ -218,6 +221,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _locationEventHandler.followEvent(map);
           case IndoorLevelsEvent.name:
             return _indoorEventHandler.levelNamesEvent(map);
+          case HideIndoorLevelsEvent.name:
+            return _indoorEventHandler.hideLevelsEvent();
           case IndoorActiveLevelEvent.name:
             return _indoorEventHandler.activeLevelEvent(map);
           case ObjectTapEvent.name:
@@ -514,11 +519,6 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.getDistanceTo(points);
   }
 
-  /// Set marker options.
-  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) {
-    return _api.setMarkerOptions(markerOptions);
-  }
-
   /// Add marker on the map.
   Future<void> addMarker(
     Marker marker,
@@ -535,6 +535,10 @@ class DgisMapPlugin extends FlutterMapApi {
       MarkerMessage(id: marker.id, options: marker.options),
       manager,
     );
+  }
+
+  Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) {
+    return _api.setMarkerOptions(id, options);
   }
 
   /// Add markers on the map.
@@ -860,7 +864,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }
 
   /// Set panorama marker azimuth.
-  Future<void> setPanoramaMarkerAzimuth(MarkerAzimuthMessage message) {
+  Future<void> setPanoramaMarkerAzimuth(MapDirectionMessage message) {
     return _api.setPanoramaMarkerAzimuth(message);
   }
 

@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.1+47
-version: 3.11.17+233
+#version: 3.30.1+292
+version: 3.11.21+262
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -152,6 +152,7 @@ dependencies:
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
+      ref: ab6b82c6754ba4103aa019f3f445de4b582c6655
   flutter_google_places:
     git:
       url: https://github.com/MahmoudBaha/flutter_google_places
@@ -187,7 +188,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.1.1
+    version: 3.2.1
 
   mapness:
     path: mapness
@@ -223,7 +224,7 @@ dependencies:
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.30
+    version: ^0.0.31
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization

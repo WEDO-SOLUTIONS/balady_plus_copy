@@ -4,7 +4,7 @@ import 'package:pigeon/pigeon.dart';
 
 enum ZoomControlMessage {
   zoomIn,
-  zoomOut;
+  zoomOut,
 }
 
 class InitializeMessage {
@@ -42,6 +42,8 @@ class CalcPositionOptionsMessage {
   final ScreenSizeMessage? size;
 }
 
+/// A point in a geographic coordinate system (latitude, longitude, elevation).
+/// elevation (Elevation) in meters above the surface, not above sea level.
 class GeoPointWithElevationMessage {
   GeoPointWithElevationMessage(this.latitude, this.longitude, this.elevation);
 
@@ -69,7 +71,7 @@ class CameraPositionPointMessage {
 enum CameraAnimationTypeMessage {
   defaultType,
   linear,
-  showBothPositions;
+  showBothPositions,
 }
 
 class DgisObjectIdMessage {
@@ -103,7 +105,7 @@ enum WeekDayMessage {
   thursday,
   friday,
   saturday,
-  sunday;
+  sunday,
 }
 
 class WeekTimeMessage {
@@ -229,7 +231,7 @@ enum ParkingTypeMessage {
   ground,
   underground,
   multilevel,
-  none;
+  none,
 }
 
 enum ParkingPurposeMessage {
@@ -237,7 +239,7 @@ enum ParkingPurposeMessage {
   bike,
   motorbike,
   babyCarriage,
-  scooter;
+  scooter,
 }
 
 enum ParkingAccessMessage {
@@ -245,7 +247,7 @@ enum ParkingAccessMessage {
   handicappedOnly,
   customersOnly,
   residentsOnly,
-  taxiOnly;
+  taxiOnly,
 }
 
 enum ParkingPavingTypeMessage {
@@ -253,7 +255,7 @@ enum ParkingPavingTypeMessage {
   concrete,
   gravel,
   unpaved,
-  none;
+  none,
 }
 
 enum SpecialSpaceTypeMessage {
@@ -263,7 +265,7 @@ enum SpecialSpaceTypeMessage {
   handicapped,
   babyCarriage,
   truck,
-  scooter;
+  scooter,
 }
 
 class SpecialSpaceMessage {
@@ -385,7 +387,7 @@ enum ObjectTypeMessage {
   stationMetro,
   stationPlatform,
   street,
-  unknown;
+  unknown,
 }
 
 class ObjectTypeItemMessage {
@@ -428,6 +430,7 @@ class DirectoryObjectMessage {
     this.buildingInfo,
     this.entrances,
     this.tradeLicense,
+    this.rubricIds,
   );
 
   final List<ObjectTypeItemMessage> types;
@@ -453,12 +456,13 @@ class DirectoryObjectMessage {
   final BuildingInfoMessage buildingInfo;
   final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
+  final List<int> rubricIds;
 }
 
 enum SortingTypeMessage {
   byRelevance,
   byDistance,
-  byRating;
+  byRating,
 }
 
 class WeekTimeSearchMessage {
@@ -487,20 +491,6 @@ class DistanceResponseMessage {
   final DgisObjectIdMessage? dgisObjectId;
 }
 
-class MarkerOptionsMessageOld {
-  const MarkerOptionsMessageOld({
-    required this.svgAsset,
-    required this.width,
-    required this.height,
-    required this.iconWidth,
-  });
-
-  final String svgAsset;
-  final double width;
-  final double height;
-  final double iconWidth;
-}
-
 enum RouteSearchOptionsMessage {
   car,
   publicTransport,
@@ -508,7 +498,7 @@ enum RouteSearchOptionsMessage {
   pedestrian,
   scooter,
   truck,
-  taxi;
+  taxi,
 }
 
 class RouteEditorRoutePointMessage {
@@ -553,7 +543,7 @@ class CarRouteSearchOptionParamsMessage {
 enum DesiredAccuracyMessage {
   low,
   medium,
-  high;
+  high,
 }
 
 class MarkerWithPhotoMessage {
@@ -602,7 +592,7 @@ class GeoRectMessage {
 enum WorkingFilterMessage {
   none,
   isOpen,
-  isOpen24x7;
+  isOpen24x7,
 }
 
 class CameraSetPaddingMessage {
@@ -619,14 +609,17 @@ class CameraSetPaddingMessage {
   final int bottomPadding;
 }
 
-class MarkerAzimuthMessage {
-  MarkerAzimuthMessage(this.degree);
+/// The angle of rotation of the object relative to the direction north,
+/// in degrees, is counted clockwise.
+class MapDirectionMessage {
+  const MapDirectionMessage(this.degree);
 
   final double degree;
 }
 
+/// Image anchor point (0, 0) - upper left corner, (1, 1) - lower right
 class MarkerAnchorMessage {
-  MarkerAnchorMessage(this.x, this.y);
+  const MarkerAnchorMessage(this.x, this.y);
 
   final double x;
   final double y;
@@ -650,7 +643,7 @@ enum TextPlacementMessage {
   leftCenter,
   leftBottom,
   circleBottomLeft,
-  centerCenter;
+  centerCenter,
 }
 
 class MarkerTextPlacementMessage {
@@ -659,6 +652,7 @@ class MarkerTextPlacementMessage {
   final TextPlacementMessage placement;
 }
 
+/// Text appearance settings.
 class MarkerTextStyleMessage {
   MarkerTextStyleMessage({
     this.fontSize,
@@ -688,26 +682,66 @@ class MarkerIconMessage {
   final String? pngPath;
   final double width;
   final double? iconOpacity;
-  final MarkerAzimuthMessage? iconMapDirection;
+  final MapDirectionMessage? iconMapDirection;
 }
 
+/// Marker parameters.
 class MarkerOptionsMessage {
-  MarkerOptionsMessage({
+  const MarkerOptionsMessage({
     required this.position,
     required this.icon,
-    this.anchor,
     required this.text,
+    this.anchor,
     this.textStyle,
     this.animatedAppearance,
     this.zIndex,
+    this.isVisible,
   });
 
+  /// Getting the location of the marker.
   final GeoPointWithElevationMessage position;
+
+  /// Getting a marker icon.
+  final MarkerIconMessage? icon;
+
+  /// Getting the marker icon anchor point.
+  final MarkerAnchorMessage? anchor;
+
+  /// Getting the text of the marker.
+  final String? text;
+
+  /// Getting the text style of the marker.
+  final MarkerTextStyleMessage? textStyle;
+
+  /// Should I animate the appearance?
+  final bool? animatedAppearance;
+
+  /// Is the marker visible?
+  final bool? isVisible;
+
+  /// Object rendering level.
+  final int? zIndex;
+}
+
+class ChangeMarkerOptionsMessage {
+  ChangeMarkerOptionsMessage({
+    this.position,
+    this.icon,
+    this.anchor,
+    this.text,
+    this.textStyle,
+    this.animatedAppearance,
+    this.zIndex,
+    this.isVisible,
+  });
+
+  final GeoPointWithElevationMessage? position;
   final MarkerIconMessage? icon;
   final MarkerAnchorMessage? anchor;
   final String? text;
   final MarkerTextStyleMessage? textStyle;
   final bool? animatedAppearance;
+  final bool? isVisible;
   final int? zIndex;
 }
 
@@ -786,7 +820,7 @@ enum GeometryKindMessage {
   point,
   polyline,
   polygon,
-  complex;
+  complex,
 }
 
 class GeometryMessage {
@@ -806,7 +840,7 @@ class PolygonGeometryMessage {
 
 enum SearchResultTypeMessage {
   recovery,
-  discovery;
+  discovery,
 }
 
 class FlagFilterMessage {
@@ -945,7 +979,7 @@ enum SuggestedTypeMessage {
   stationMetro,
   street,
   text,
-  unknown;
+  unknown,
 }
 
 class MarkedUpTextSpanMessage {
@@ -996,7 +1030,7 @@ enum SearchCategoryMessage {
   hotels,
   beautyCenters,
   recreationCenters,
-  beaches;
+  beaches,
 }
 
 class SearchCategoryMessage_ {
@@ -1046,7 +1080,7 @@ class MapObjectManagerMessage {
 enum MapAppearanceMessage {
   day,
   night,
-  system;
+  system,
 }
 
 enum LogLevelMessage {
@@ -1055,7 +1089,7 @@ enum LogLevelMessage {
   warning,
   error,
   fatal,
-  off;
+  off,
 }
 
 class LogOptionsMessage {
@@ -1124,7 +1158,7 @@ class PackageInfoMessage {
 enum PackageUpdateStatusMessage {
   notAvailable,
   inProgress,
-  paused;
+  paused,
 }
 
 enum BriefExtraRouteInfoTypeMessage {
@@ -1132,7 +1166,7 @@ enum BriefExtraRouteInfoTypeMessage {
   car,
   pedestrian,
   publicTransport,
-  scooter;
+  scooter,
 }
 
 class BriefExtraRouteInfoMessage {
@@ -1144,7 +1178,7 @@ class BriefExtraRouteInfoMessage {
 
 enum WeatherMapType {
   temperature,
-  precipitation;
+  precipitation,
 }
 
 class WeatherMapMessage {
@@ -1171,19 +1205,19 @@ class RenderedObjectMessage {
 enum VendorConfigMessage {
   urbiPreProd,
   momrahProd,
-  momrahStg;
+  momrahStg,
 }
 
 enum FollowStateMessage {
   off,
   followPosition,
-  followDirection;
+  followDirection,
 }
 
 enum BetterRouteResponseMessage {
   accept,
   reject,
-  timeout;
+  timeout,
 }
 
 class SpeedRangeZoom {
@@ -1203,7 +1237,7 @@ class SpeedRangeZoom {
 enum NavigationState {
   navigation,
   finish,
-  disabled;
+  disabled,
 }
 
 class NavigationStateMessage {
@@ -1227,7 +1261,7 @@ enum SoundToggleType {
   important,
 
   /// Represents all sound toggle.
-  all;
+  all,
 }
 
 /// Settings for better route searching
@@ -1402,10 +1436,10 @@ abstract class MapApi {
   );
 
   @async
-  void setMarkerOptions(MarkerOptionsMessageOld options);
+  void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
 
   @async
-  void addMarker(MarkerMessage marker, MapObjectManagerMessage? manager);
+  void setMarkerOptions(String id, ChangeMarkerOptionsMessage options);
 
   @async
   void addMarkers(
@@ -1553,7 +1587,7 @@ abstract class MapApi {
   void restoreNavigationState(Uint8List state, SpeedRangeZoom speedRangeZoom);
 
   @async
-  void setPanoramaMarkerAzimuth(MarkerAzimuthMessage message);
+  void setPanoramaMarkerAzimuth(MapDirectionMessage message);
 
   @async
   void onCompassClicked();

@@ -17,10 +17,8 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
-import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
-import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'poi_card_provider.g.dart';
@@ -96,28 +94,12 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
-    // TODO(Ayat) Refactoring all of this logic with new poi is required
-    if (closestPoint != null) {
-      final read = ref.read(selectedMarkerProvider.notifier);
-      await read.showMarker(
-        Markers.pinMarker(
-          GeoPointWithElevationMessage(
-            latitude: closestPoint.latitude,
-            longitude: closestPoint.longitude,
-            elevation: 1,
-          ),
-          id: poiPinId,
-        ),
-      );
-    }
-
     state = const AsyncValue.loading();
 
     final result = await ref
         .watch(
       pointOfInterestProvider(
         DgisObjectIdMessage(objectId: objectId, entranceId: 0),
-        closestPoint: closestPoint,
       ).future,
     )
         .timeout(
@@ -171,9 +153,7 @@ class PoiCardProvider extends _$PoiCardProvider {
       try {
         final json = jsonEncode(poiCardState.toJson());
         await poiBox.put(poiCardStateKey, json);
-      }
-      // ignore: avoid_catches_without_on_clauses
-      catch (e, s) {
+      } catch (e, s) {
         debugPrint('$e');
         state = AsyncValue.error(e, s);
       }

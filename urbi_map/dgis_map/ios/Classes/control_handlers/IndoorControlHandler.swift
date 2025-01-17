@@ -4,6 +4,7 @@ import DGis
 class IndoorControlHandler {
     private class Events {
         static let levelNames = "levelNames"
+        static let hideLevels = "hideLevels"
         static let activeLevelIndex = "activeLevelIndex"
     }
     
@@ -36,10 +37,17 @@ class IndoorControlHandler {
             [weak self] building in
             
             self?.focusedBuilding = building
-            let levels = building?.levels.map { $0.name } ?? []
+            guard let building = building else {
+                eventChannel.success([
+                    "event": Events.hideLevels,
+                ])
+                return
+            }
+            let levels = building.levels.map { $0.name }
             eventChannel.success([
                 "event": Events.levelNames,
-                "value": levels
+                "value": levels,
+                "objectId": building.id.objectId
             ])
         })
     }

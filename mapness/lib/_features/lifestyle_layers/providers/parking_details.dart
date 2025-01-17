@@ -53,8 +53,8 @@ class ParkingState {
 class ParkingDetails extends _$ParkingDetails {
   @override
   ParkingState build() {
-    final read = ref.read(sharedPrefsProvider);
-    final attribute = read.getString(parkingTypeKey);
+    final prefs = ref.read(sharedPrefsProvider);
+    final attribute = prefs.getString(parkingTypeKey);
     final parkingFilter = attribute != null ? ParkingFilter.fromAttribute(attribute) : ParkingFilter.all;
 
     return ParkingState(parkingFilter: parkingFilter);
@@ -67,8 +67,8 @@ class ParkingDetails extends _$ParkingDetails {
   Future<void> setParkingFilter(ParkingFilter parkingFilter) async {
     await _applyAttribute(parkingFilter);
 
-    final read = ref.read(sharedPrefsProvider);
-    await read.setString(parkingTypeKey, parkingFilter.name);
+    final prefs = ref.read(sharedPrefsProvider);
+    await prefs.setString(parkingTypeKey, parkingFilter.name);
 
     update(parkingFilter);
   }

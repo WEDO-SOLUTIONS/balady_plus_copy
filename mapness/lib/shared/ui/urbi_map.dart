@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 
 import '../providers/app_language.dart';
@@ -24,7 +25,7 @@ class UrbiMap extends ConsumerWidget {
           await controller.initialize();
 
           //Styles
-          await controller.loadStyles('packages/map_styles/src/styles.2gis');
+          await controller.loadStyles(MapnessConstants.mapStylesPath);
 
           // Appearance
           await controller.setZoomRestrictions(

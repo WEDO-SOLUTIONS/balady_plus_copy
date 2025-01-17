@@ -1,12 +1,8 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart' show VisibleRect;
-import 'package:flutter/widgets.dart';
 import 'package:geobase/geobase.dart' as gb;
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CommonFunctions {
@@ -33,45 +29,6 @@ class CommonFunctions {
   static Future<void> email(String? mail) async {
     if (mail != null && mail.isNotEmpty) {
       await CommonFunctions.launch('mailto:$mail');
-    }
-  }
-
-  static Future<void> authOrOpen(
-    BuildContext context, {
-    VoidCallback? callback,
-  }) async {
-    var isAuth = CommonProperties.isLoggedIn;
-    if (!isAuth) {
-      if (context.mounted) {
-        await context.router.push(const SigninRoute());
-        isAuth = CommonProperties.isLoggedIn;
-      }
-    }
-
-    if (isAuth) {
-      callback?.call();
-    }
-  }
-
-  static Future<void> authAndOpen(
-    BuildContext context, {
-    VoidCallback? callback,
-  }) async {
-    var isAuth = CommonProperties.isLoggedIn;
-    StreamSubscription? sub;
-    if (!isAuth) {
-      if (context.mounted) {
-        await context.router.push(const SigninRoute());
-      }
-      sub = CommonProperties.userStateStream.listen((event) {
-        if (event.userInfo != null) {
-          callback?.call();
-          isAuth = CommonProperties.isLoggedIn;
-          sub?.cancel();
-        }
-      });
-    } else {
-      callback?.call();
     }
   }
 

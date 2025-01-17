@@ -12,11 +12,12 @@ import 'package:mapness/shared/providers/app_features.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 class PoiCardMapControls extends StatelessWidget {
-  const PoiCardMapControls({super.key});
+  const PoiCardMapControls({super.key, this.objectIdForIndoorLevels});
 
   static const horizontalPadding = ui_kit.Spacing.$3x;
   static const topPadding = ui_kit.Spacing.$3x;
   static const bottomPadding = ui_kit.Spacing.$4x;
+  final int? objectIdForIndoorLevels;
 
   static const padding = EdgeInsets.only(
     left: PoiCardMapControls.horizontalPadding,
@@ -37,11 +38,11 @@ class PoiCardMapControls extends StatelessWidget {
                   padding: PoiCardMapControls.padding,
                   child: Row(
                     children: [
-                      const Column(
+                      Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          IndoorControl(),
+                          IndoorControl(objectId: objectIdForIndoorLevels),
                         ],
                       ),
                       const Spacer(),

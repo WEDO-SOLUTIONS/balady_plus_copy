@@ -1,10 +1,14 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/toast/app_locale.dart';
 
 part 'toast_transition.dart';
+
 part 'toast_widget.dart';
 
 /// A widget that overlays a toast on top of its child widget.
@@ -29,6 +33,8 @@ class ToastOverlay extends StatefulWidget {
 }
 
 class ToastOverlayState extends State<ToastOverlay> {
+  static const _betaNotificationTitleKey = 'beta_notification';
+
   OverlayEntry? _overlayEntry;
 
   /// Displays a toast overlay with the specified [title], [actionText], and [onActionTap] callback.
@@ -69,26 +75,28 @@ class ToastOverlayState extends State<ToastOverlay> {
     _overlayEntry?.remove();
     _overlayEntry = OverlayEntry(
       canSizeOverlay: true,
-      builder: (_) => Positioned(
-        left: Spacing.$2x,
-        right: Spacing.$2x,
-        top: Spacing.$2x,
-        child: Theme(
-          data: Theme.of(context),
-          child: _ToastTransition(
-            isDismissible: isDismissible,
-            isClosable: isClosable,
-            isFlipped: isFlipped,
-            hide: hide,
-            title: title,
-            titleStyle: titleStyle,
-            actionText: actionText,
-            onActionTap: onActionTap,
-            iconAsset: iconAsset,
-            displayDuration: displayDuration,
-            transitionDuration: transitionDuration,
-            iconData: iconData,
-            iconColor: iconColor,
+      builder: (_) => ProviderScope(
+        child: Positioned(
+          left: Spacing.$2x,
+          right: Spacing.$2x,
+          top: Spacing.$2x,
+          child: Theme(
+            data: Theme.of(context),
+            child: _ToastTransition(
+              isDismissible: isDismissible,
+              isClosable: isClosable,
+              isFlipped: isFlipped,
+              hide: hide,
+              title: title,
+              titleStyle: titleStyle,
+              actionText: actionText,
+              onActionTap: onActionTap,
+              iconAsset: iconAsset,
+              displayDuration: displayDuration,
+              transitionDuration: transitionDuration,
+              iconData: iconData,
+              iconColor: iconColor,
+            ),
           ),
         ),
       ),
@@ -153,12 +161,12 @@ class ToastOverlayState extends State<ToastOverlay> {
 
   /// Displays a toast notification only when it is the first time user opens the app.
   ///
-  /// [title] is set to 'You are among the first to try Balady Navigation'.
+  /// [title] is set to 'beta_notification' to resolve it with localization later.
   /// [iconData] is set to [General16Icons.infoCircleFill].
   /// [isDismissible] is set to `true`.
   /// [isClosable] is set to `true`.
   /// [isFlipped] is set to `true`.
-  /// [displayDuration] is set to `10 seconds`.
+  /// [displayDuration] is set to `20 seconds`.
   ///
   /// Example usage:
   /// ```dart
@@ -166,7 +174,7 @@ class ToastOverlayState extends State<ToastOverlay> {
   /// ```
   void showBetaNotification() {
     show(
-      title: context.l10n.firstToTryNavigation,
+      title: _betaNotificationTitleKey,
       titleStyle: context.textStyleV3.captionLargeRegular.copyWith(fontSize: context.isLTR ? 12 : 13),
       isDismissible: true,
       isClosable: true,

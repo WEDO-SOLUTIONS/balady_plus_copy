@@ -29,9 +29,10 @@ class FavouritesPickerPage extends ConsumerWidget {
       );
     }
     if (asyncState.hasError) {
-      return ErrorSheet(
+      return ErrorSheetWidget(
         buttonLabel: context.l10n.tryAgain,
         onRetry: () => ref.invalidate(favouriteCacheProvider),
+        onClose: (_) => context.router.popForced(),
       );
     }
     final state = asyncState.requireValue;

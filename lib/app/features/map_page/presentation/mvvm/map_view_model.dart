@@ -366,7 +366,8 @@ class MapViewModel extends BaseViewModel {
           message: error.toString(),
           stackTrace: stackTrace.toString(),
         ),
-      );}
+      );
+    }
   }
 
   List<DistanceRequestMessage> _mapToDistanceRequest(List<DirectoryObjectMessage> values) => values
@@ -398,14 +399,7 @@ class MapViewModel extends BaseViewModel {
 
     // await controller.loadStyles(Constants.mapStyle);
     await controller.overrideLocales(["ar-SA"]);
-    await controller.setMarkerOptions(
-      MarkerOptionsMessageOld(
-        svgAsset: "assets/maps/icons/ic_marker.svg",
-        width: 30.0,
-        height: 46.0,
-        iconWidth: 24,
-      ),
-    );
+
     await controller.setZoomRestrictions(min: 5.5);
     await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
@@ -678,14 +672,14 @@ class MapViewModel extends BaseViewModel {
       final data = event.photoData;
       unawaited(controller.moveCameraToSelectedPanorama());
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   void getLocationAndMoveCamera() async {
@@ -1313,14 +1307,14 @@ class MapViewModel extends BaseViewModel {
       layers.value?.insert(0, cityPlaces);
       layers.notifyListeners();
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future clearAll() async {
@@ -1331,14 +1325,14 @@ class MapViewModel extends BaseViewModel {
     try {
       await controller.removeAllHighlights();
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     return;
   }
 
@@ -1418,14 +1412,14 @@ class MapViewModel extends BaseViewModel {
         await controller.onLocationPermissionGranted();
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     await controller.toggleFollowState();
 
     await controller.setCameraPosition(

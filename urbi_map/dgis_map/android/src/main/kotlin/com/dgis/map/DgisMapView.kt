@@ -546,18 +546,6 @@ class DgisMapView(
     }
 
     // --- MARKER ---
-    override fun setMarkerOptions(
-        options: MarkerOptionsMessageOld,
-        callback: (Result<Unit>) -> Unit
-    ) {
-        objectTapHandler?.setMarkerOptions(
-            svgAsset = options.svgAsset,
-            size = Size(options.width.roundToInt(), options.height.roundToInt()),
-            iconWidth = options.iconWidth,
-            sdkContext = sdkContext,
-            callback = callback
-        )
-    }
 
     override fun addMarker(
         marker: MarkerMessage,
@@ -565,6 +553,14 @@ class DgisMapView(
         callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.addMarker(marker, manager?.id, callback)
+    }
+
+    override fun setMarkerOptions(
+        id: String, 
+        options: ChangeMarkerOptionsMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.setMarkerOptions(id, options, callback)
     }
 
     override fun addMarkers(
@@ -860,7 +856,7 @@ class DgisMapView(
     }
 
     override fun setPanoramaMarkerAzimuth(
-        message: MarkerAzimuthMessage,
+        message: MapDirectionMessage,
         callback: (Result<Unit>) -> Unit
     ) {
         objectTapHandler?.setPanoramasAzimuth(message.degree)

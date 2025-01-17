@@ -7,9 +7,11 @@ import 'package:mapness/features/poi_card/widgets/poi_card_map_controls.dart';
 
 class PoiCardMapControlsWrapper extends StatefulWidget {
   final StatefulBottomSheetController<PoiCardBottomSheetState> bottomSheetController;
+  final int? objectIdForIndoorLevels;
 
   const PoiCardMapControlsWrapper({
     required this.bottomSheetController,
+    required this.objectIdForIndoorLevels,
     super.key,
   });
 
@@ -67,7 +69,7 @@ class _PoiCardMapControlsWrapperState extends State<PoiCardMapControlsWrapper> w
         ),
         child: FadeTransition(
           opacity: opacityAnimation,
-          child: const PoiCardMapControls(),
+          child: PoiCardMapControls(objectIdForIndoorLevels: widget.objectIdForIndoorLevels),
         ),
       );
 }

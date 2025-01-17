@@ -87,9 +87,7 @@ class AppRouter extends RootStackRouter {
               path: 'weather_router',
               page: WeatherRoute.page,
             ),
-            AppRoute(
-              page: RoutingSearchSheetRoute.page,
-            ),
+            AppRoute(page: RoutingSearchSheetRoute.page),
             CustomRoute(
               path: 'road_panel_sheet',
               page: RoadPanelSheetRoute.page,
@@ -181,6 +179,16 @@ class AppRouter extends RootStackRouter {
               path: 'feedback/edit',
               page: AppFeedbackInputSheet.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'poi_favorite_dialog',
+              page: PoiFavoriteDialogRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'error_sheet_dialog',
+              page: ErrorSheetDialogRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
           ],
         ),

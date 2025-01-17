@@ -174,31 +174,6 @@ class ObjectTapHandler {
         }
     }
     
-    func setMarkerOptions(
-        assetKey: String,
-        svgSize: CGSize,
-        iconWidth: Float,
-        completion: @escaping (Result<Void, any Error>) -> Void
-    ) {
-        guard let assetPath = Bundle.main.path(forResource: assetKey, ofType: nil),
-              let url = URL(string: "file://\(assetPath)"),
-              let data = try? Data(contentsOf: url) else {
-            completion(
-                Result.failure(
-                FlutterError(
-                    code: "Error loading asset for marker",
-                    message: nil,
-                    details: nil
-                )))
-            return
-        }
-        
-        self.markerImage = imageFactory.make(svgData: data, size: svgSize)
-        self.iconWidth = LogicalPixel(floatLiteral: iconWidth)
-        
-        completion(Result.success(()))
-    }
-    
     // MARK: Handlers
     
     private func getManager(_ managerId: String?) -> MapObjectManager {
@@ -249,7 +224,12 @@ class ObjectTapHandler {
 
         let image: Image
         if isSvg {
-            image = imageFactory.make(svgData: data, size: .zero)
+            // That it was possible to process lottie animation, it was easier to implement a new model and stretch it
+            if path.contains(".json") {
+                image = imageFactory.make(lottieData: data, size: size)
+            } else {
+                image = imageFactory.make(svgData: data, size: size)
+            }
         } else {
             image = imageFactory.make(pngData: data, size: size)
         }
@@ -261,18 +241,15 @@ class ObjectTapHandler {
     func mapMarker(_ marker: MarkerMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Marker? {
         var markerImage: Image? = nil
 
-        // Проверка и создание изображения из svgPath
         if let svgPath = marker.options.icon?.svgPath {
             markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
         }
-        // Проверка и создание изображения из pngPath
         else if let pngPath = marker.options.icon?.pngPath {
             markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
                 width: marker.options.icon!.width,
                 height: marker.options.icon!.width
             ), completion: completion)
         }
-        // Проверка и создание изображения из pngData
         else if let pngData = marker.options.icon?.pngData {
             let data = pngData.data
             markerImage = imageFactory.make(pngData: data, size: CGSize(
@@ -334,6 +311,58 @@ class ObjectTapHandler {
             self.markers[marker.id] = (markerObject, managerId)
             self.getManager(managerId).addObject(item: markerObject)
             completion(Result.success(()))
+        }
+    }
+    
+    func setMarkerOptions(_ id: String, options: ChangeMarkerOptionsMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+        var markerImage: Image? = nil
+        
+        if let svgPath = options.icon?.svgPath {
+            markerImage = getImage(fromAsset: svgPath, isSvg: true, size: .zero, completion: completion)
+        }
+        else if let pngPath = options.icon?.pngPath {
+            markerImage = getImage(fromAsset: pngPath, isSvg: false, size: CGSize(
+                width: options.icon!.width,
+                height: options.icon!.width
+            ), completion: completion)
+        }
+        else if let pngData = options.icon?.pngData {
+            let data = pngData.data
+            markerImage = imageFactory.make(pngData: data, size: CGSize(
+                width: options.icon!.width,
+                height: options.icon!.width
+            ))
+        }
+        
+        if let position = options.position {
+            self.markers[id]?.0.position = position.geoPointWithElevation
+        }
+        if let markerImage {
+            self.markers[id]?.0.icon = markerImage
+        }
+        if let iconMapDirection = options.icon?.iconMapDirection {
+            self.markers[id]?.0.iconMapDirection = MapDirection(value: iconMapDirection.degree)
+        }
+        if let anchor = options.anchor {
+            self.markers[id]?.0.anchor = Anchor(x: Float(anchor.x), y: Float(anchor.y))
+        }
+        if let text = options.text {
+            self.markers[id]?.0.text = text
+        }
+        if let textStyle = options.textStyle?.textStyle {
+            self.markers[id]?.0.textStyle = textStyle
+        }
+        if let iconWidth = options.icon?.width {
+            self.markers[id]?.0.iconWidth = LogicalPixel(value: Float(iconWidth))
+        }
+        if let zIndex = options.zIndex {
+            self.markers[id]?.0.zIndex = ZIndex(value: UInt32(zIndex))
+        }
+        if let animatedAppearance = options.animatedAppearance {
+            self.markers[id]?.0.animatedAppearance = animatedAppearance
+        }
+        if let isVisible = options.isVisible {
+            self.markers[id]?.0.isVisible = isVisible
         }
     }
     

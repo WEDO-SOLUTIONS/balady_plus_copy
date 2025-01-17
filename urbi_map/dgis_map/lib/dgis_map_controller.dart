@@ -32,6 +32,9 @@ class DgisMapController {
   /// Names of indoor levels if any. Empty if there are no available levels.
   Stream<IndoorLevelsEvent> get indoorLevelNames => _instance.indoorLevelNames;
 
+  /// Indoor levels hiding events.
+  Stream<HideIndoorLevelsEvent> get hideIndoorLevels => _instance.hideIndoorLevels;
+
   /// Getting the IndoorLevelNames latest record values from a stream
   IndoorLevelsEvent? get lastIndoorLevelNames => _instance.lastIndoorLevelNames;
 
@@ -228,7 +231,7 @@ class DgisMapController {
 
   /// Set panorama marker to follow user's sight on 360° panorama.
   Future<void> setPanoramaMarkerAzimuth(double degree) =>
-      _instance.setPanoramaMarkerAzimuth(MarkerAzimuthMessage(degree: degree));
+      _instance.setPanoramaMarkerAzimuth(MapDirectionMessage(degree: degree));
 
   /// Returns directory object info by it's id.
   Future<DirectoryObjectMessage> searchByObjectId(DgisObjectIdMessage objectId) => _instance.searchByObjectId(objectId);
@@ -347,11 +350,12 @@ class DgisMapController {
   /// Releases page from memory
   Future<void> releasePage(PageMessage page) => _instance.releasePage(page.id);
 
-  /// Options for marker that appears on map on object tap. Used by [addMarker].
-  Future<void> setMarkerOptions(MarkerOptionsMessageOld markerOptions) => _instance.setMarkerOptions(markerOptions);
-
   /// Add marker to map.
   Future<void> addMarker(Marker marker, {MapObjectManagerMessage? toManager}) => _instance.addMarker(marker, toManager);
+
+  /// Change marker options.
+  Future<void> setMarkerOptions(String id, ChangeMarkerOptionsMessage options) =>
+      _instance.setMarkerOptions(id, options);
 
   /// Add several markers to map.
   Future<void> addMarkers(List<Marker> markers, {MapObjectManagerMessage? toManager}) =>

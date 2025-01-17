@@ -68,15 +68,17 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           ],
         );
       }
-      return Column(
-        children: [
-          const Spacer(flex: 3),
-          ErrorSheet(onRetry: () {
-            if (!state.isRefreshing) {
-              ref.invalidate(viewModelProvider);
-            }
-          }),
-        ],
+      return ErrorSheetWidget(
+        onClose: (controller) async {
+          await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+          await ref.read(highlightProvider.notifier).removeHighlight(widget.objectId);
+          context.router.popForced();
+        },
+        onRetry: () {
+          if (!state.isRefreshing) {
+            ref.invalidate(viewModelProvider);
+          }
+        },
       );
     }
 
