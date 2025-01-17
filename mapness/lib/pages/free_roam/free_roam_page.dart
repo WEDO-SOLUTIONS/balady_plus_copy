@@ -174,17 +174,15 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                             isControlsActive = true;
                             startControlsDisapearTimer();
                           },
-                          child: Column(
+                          child: const Column(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Padding(
                                 padding: padding,
-                                child: TrafficParkingControl(
-                                  bottomSheetController: _bottomSheetController,
-                                ),
+                                child: TrafficParkingControl(),
                               ),
-                              const Spacer(),
-                              const Padding(
+                              Spacer(),
+                              Padding(
                                 padding: padding,
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -194,17 +192,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                                   ],
                                 ),
                               ),
-                              const Spacer(),
-                              const Padding(
+                              Spacer(),
+                              Padding(
                                 padding: padding,
                                 child: CompassControl(),
                               ),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const Padding(
+                              SizedBox(height: uikit.Spacing.$2x),
+                              Padding(
                                 padding: padding,
                                 child: FollowControl(),
                               ),
-                              const SizedBox(height: uikit.Spacing.$3x),
+                              SizedBox(height: uikit.Spacing.$3x),
                             ],
                           ),
                         ),
@@ -221,7 +219,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                   const SizedBox(height: uikit.Spacing.$5x + uikit.Spacing.px),
                 ],
               ),
-              ParkingBottomSheetPage(bottomSheetController: _bottomSheetController)
+              const ParkingBottomSheetPage(),
             ],
           ),
         ),
