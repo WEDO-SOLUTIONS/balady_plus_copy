@@ -37,4 +37,19 @@ class CameraPadding extends _$CameraPadding {
 
     await cameraProvider.setPadding(padding);
   }
+
+  Future<void> setPaddingInBottom(double paddingBottom) async {
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+
+    final initPadding = (paddingBottom + (mediaQuery?.padding.bottom ?? 0)) * (mediaQuery?.devicePixelRatio ?? 1);
+
+    final padding = CameraSetPaddingMessage(
+      leftPadding: mediaQuery?.padding.left.toInt() ?? 0,
+      rightPadding: mediaQuery?.padding.right.toInt() ?? 0,
+      topPadding: mediaQuery?.padding.top.toInt() ?? 0,
+      bottomPadding: initPadding.toInt(),
+    );
+
+    await setPadding(padding);
+  }
 }

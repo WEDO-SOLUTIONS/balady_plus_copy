@@ -15,6 +15,9 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
+import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 @RoutePage()
@@ -29,8 +32,9 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
-
-    final additionPadding = MediaQuery.of(context).viewPadding.top * MediaQuery.of(context).devicePixelRatio;
+    final mediaQuery = ref.read(mediaQueryInfoProvider);
+    final mediaQueryTop = mediaQuery?.viewPadding.top ?? 0;
+    final additionPadding = mediaQueryTop * MediaQuery.of(context).devicePixelRatio;
 
     return Material(
       type: MaterialType.transparency,
@@ -77,85 +81,90 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                 ],
               ),
             ),
-            Container(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.vertical(
-                  top: Radius.circular(uikit.RadiusBorder.xl),
+            MeasureSize(
+              onChange: (size) {
+                ref.read(cameraPaddingProvider.notifier).setPaddingInBottom(size.height + mediaQueryTop);
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.vertical(
+                    top: Radius.circular(uikit.RadiusBorder.xl),
+                  ),
+                  color: context.colorsV2.backgroundSurface1,
                 ),
-                color: context.colorsV2.backgroundSurface1,
-              ),
-              child: SafeArea(
-                top: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    uikit.Spacing.$2x.heightBox,
-                    const Center(child: SheetDragger()),
-                    uikit.Spacing.$3x.heightBox,
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  context.l10n.pointToMap,
-                                  style: context.textStyleV3.h4SemiBold.copyWith(
-                                    color: context.color.textAndIconsBasePrimary,
+                child: SafeArea(
+                  top: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      uikit.Spacing.$2x.heightBox,
+                      const Center(child: SheetDragger()),
+                      uikit.Spacing.$3x.heightBox,
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    context.l10n.pointToMap,
+                                    style: context.textStyleV3.h4SemiBold.copyWith(
+                                      color: context.color.textAndIconsBasePrimary,
+                                    ),
                                   ),
-                                ),
-                                uikit.Spacing.$1x.heightBox,
-                                Text(
-                                  context.l10n.moveMap,
-                                  style: context.textStyleV3.bodySmallRegular.copyWith(
-                                    color: context.color.textAndIconsBaseSecondary,
+                                  uikit.Spacing.$1x.heightBox,
+                                  Text(
+                                    context.l10n.moveMap,
+                                    style: context.textStyleV3.bodySmallRegular.copyWith(
+                                      color: context.color.textAndIconsBaseSecondary,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
+                            uikit.AppButton.close(
+                              onTap: _onClose,
+                            ),
+                          ],
+                        ),
+                      ),
+                      uikit.Spacing.$3x.heightBox,
+                      _NearestObject(
+                        nearestObject: nearestObject,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: uikit.Spacing.$4x,
+                          right: uikit.Spacing.$4x,
+                          top: uikit.Spacing.$3x,
+                          bottom: uikit.Spacing.$2x,
+                        ),
+                        child: nearestObject.when(
+                          loading: () => uikit.BaladyAppButton(
+                            primaryLabel: context.l10n.done,
+                            buttonType: uikit.BaladyButtonType.secondary,
+                            buttonColorScheme: uikit.BaladyButtonColorScheme.neutral,
+                            onTap: null,
+                            buttonState: uikit.BaladyButtonState.loading,
                           ),
-                          uikit.AppButton.close(
-                            onTap: _onClose,
+                          data: (data) => uikit.BaladyAppButton(
+                            primaryLabel: context.l10n.done,
+                            buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
+                            onTap: () => _onTap(data),
                           ),
-                        ],
-                      ),
-                    ),
-                    uikit.Spacing.$3x.heightBox,
-                    _NearestObject(
-                      nearestObject: nearestObject,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: uikit.Spacing.$4x,
-                        right: uikit.Spacing.$4x,
-                        top: uikit.Spacing.$3x,
-                        bottom: uikit.Spacing.$2x,
-                      ),
-                      child: nearestObject.when(
-                        loading: () => uikit.BaladyAppButton(
-                          primaryLabel: context.l10n.done,
-                          buttonType: uikit.BaladyButtonType.secondary,
-                          buttonColorScheme: uikit.BaladyButtonColorScheme.neutral,
-                          onTap: null,
-                          buttonState: uikit.BaladyButtonState.loading,
-                        ),
-                        data: (data) => uikit.BaladyAppButton(
-                          primaryLabel: context.l10n.done,
-                          buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
-                          onTap: () => _onTap(data),
-                        ),
-                        error: (error, stackTrace) => uikit.BaladyAppButton(
-                          primaryLabel: context.l10n.done,
-                          buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
-                          onTap: null,
-                          buttonState: uikit.BaladyButtonState.disabled,
+                          error: (error, stackTrace) => uikit.BaladyAppButton(
+                            primaryLabel: context.l10n.done,
+                            buttonColorScheme: uikit.BaladyButtonColorScheme.accent,
+                            onTap: null,
+                            buttonState: uikit.BaladyButtonState.disabled,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
