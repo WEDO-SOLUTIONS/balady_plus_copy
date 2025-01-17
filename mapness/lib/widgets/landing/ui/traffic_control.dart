@@ -18,9 +18,7 @@ class TrafficControl extends ConsumerWidget {
     final isEnabled = trafficState.status == TrafficControlStatus.enabled;
 
     return uikit.TrafficControl(
-      // TODO(Ayat) figure out why the traffic display began to appear incorrectly when updating SDK to 12.3.0
-      // opacity: trafficState.status == TrafficControlStatus.hidden ? 0 : 1,
-      opacity: 1,
+      opacity: trafficState.status == TrafficControlStatus.hidden ? 0 : 1,
       isEnabled: isEnabled,
       onTap: () {
         Metrics.logEventAdvanced(

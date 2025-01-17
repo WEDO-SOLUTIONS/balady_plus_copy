@@ -517,17 +517,25 @@ class ObjectTapHandler(
     /// --- POLYLINE ---
 
     private fun mapPolyline(polyline: PolylineMessage): Polyline {
+        val color = polyline.options.color?.let {
+            Color(argb = it.toInt())
+        } ?: Color()
         val options = PolylineOptions(
             points = polyline.options.points.map {
                 it.toGeoPoint()
             },
-            color = polyline.options.color?.let {
-                Color(argb = it.toInt())
-            } ?: Color(),
             width = polyline.options.width?.let {
                 LogicalPixel(it.toFloat())
             } ?: LogicalPixel(1f),
             userData = PolylineId(polyline.id),
+            gradientPolylineOptions = GradientPolylineOptions(
+                borderWidth = polyline.options.borderWidth?.let { LogicalPixel(it.toFloat()) }
+                    ?: LogicalPixel(0f),
+                borderColor = polyline.options.borderColor?.let { Color(argb = it.toInt()) }
+                    ?: Color(),
+                colors = listOf(color),
+                colorIndices = ByteArray(polyline.options.points.size) { 0 },
+            )
         )
 
         return Polyline(options)

@@ -12,10 +12,8 @@ import './env.dart';
 import 'app/core/dependency_injection/injection_container.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
   unhandledExceptionBaladyLogs(() async {
     AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
-    final status = await AppTrackingTransparency.requestTrackingAuthorization();
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.prod);
       await setupMapness(EnvType.prod);
@@ -36,9 +34,9 @@ void main() async {
         appRunner: () => runApp(
           SentryScreenshotWidget(
             child: SentryUserInteractionWidget(
-              child:  MapnessProviderScope(
+              child:  const MapnessProviderScope(
                 child: LocalizedApp(
-                  child: App(status:status),
+                  child: const App(),
                 ),
               ),
             ),

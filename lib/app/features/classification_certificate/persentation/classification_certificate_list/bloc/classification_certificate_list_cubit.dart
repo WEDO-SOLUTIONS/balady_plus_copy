@@ -33,6 +33,7 @@ class ClassificationCertificateListCubit
           is! SucceedWithPaginationListClassificationCertificateState) {
         emit(const LoadingListClassificationCertificateState());
       }
+
       var response = await searchUseCases(searchRequestModel);
       response.fold(
         (filer) {

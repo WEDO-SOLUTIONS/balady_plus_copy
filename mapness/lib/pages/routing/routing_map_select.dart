@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,7 +15,6 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
 @RoutePage()
@@ -31,29 +29,6 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
   @override
   Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
-
-    ref.listen(
-      nearestObjectProvider,
-      (prev, next) {
-        final prevValue = prev?.valueOrNull;
-        final nextValue = next.valueOrNull;
-
-        if (nextValue is DGisNearestObject) {
-          final notEqual =
-              prevValue is DGisNearestObject && prevValue.object.id?.objectId != nextValue.object.id?.objectId;
-          if (prevValue == null || notEqual) {
-            ref.read(cameraPositionProvider.notifier).animateTo(
-                  CameraPositionMessage(
-                    point: nextValue.nearestPoint.geoPoint,
-                    zoom: 17,
-                    tilt: 0,
-                    bearing: 0,
-                  ),
-                );
-          }
-        }
-      },
-    );
 
     final additionPadding = MediaQuery.of(context).viewPadding.top * MediaQuery.of(context).devicePixelRatio;
 

@@ -10,7 +10,7 @@ on:
 
 jobs:
   lint:
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     permissions:
       statuses: write
     steps:

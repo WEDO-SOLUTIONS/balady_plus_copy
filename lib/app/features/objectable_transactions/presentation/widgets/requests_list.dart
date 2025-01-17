@@ -136,7 +136,7 @@ class _RequestsListState extends State<RequestsList> {
                 },
               ),
               if (state.detailsStatus == BlocRequestStatus.submissionGetLoading)
-                CustomCircularLoadingWidget(),
+                const CustomCircularLoadingWidget(),
             ],
           );
         }
@@ -189,6 +189,10 @@ class _RequestsListState extends State<RequestsList> {
           (item.hashingTransactionNumber ?? "") +
           '/requestType/' +
           "1100");
+    } 
+    else if (item.applicationId == "1300") {
+      var typeName = serviceTypeId == "1" ? 'requests' : "licenses";
+      CommonFunctions.openBaladyWebView(item.redirectUrl);
     }
   }
 

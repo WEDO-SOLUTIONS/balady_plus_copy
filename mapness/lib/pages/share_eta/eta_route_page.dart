@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
@@ -41,7 +42,15 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(cameraPaddingProvider.notifier).resetPadding();
+      // Prevents the user from interacting with the map
+      ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
     });
+  }
+
+  @override
+  void deactivate() {
+    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = false;
+    super.deactivate();
   }
 
   @override

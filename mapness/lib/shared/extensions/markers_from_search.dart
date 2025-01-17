@@ -193,6 +193,8 @@ extension BigIconPath on String {
     'ic_school_ltr.svg',
     'ic_recreation.svg',
     'ic_shopping.svg',
+    'ic_barbershop.svg',
+    'ic_beauty.svg',
   ];
 
   String? get bigIconPath {

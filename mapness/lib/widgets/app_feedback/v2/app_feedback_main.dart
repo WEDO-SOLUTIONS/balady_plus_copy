@@ -8,7 +8,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
-
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -18,16 +17,18 @@ import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 import 'package:mapness/widgets/app_feedback/v2/tag_cloud.dart';
 
 class AppFeedbackMain extends HookConsumerWidget {
+  final int? initialRating;
   final VoidCallback? onNeedPopConfirm;
 
   const AppFeedbackMain({
     super.key,
     this.onNeedPopConfirm,
+    this.initialRating,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final rating = useState(0);
+    final rating = useState(initialRating ?? 0);
     final selectedTags = useState<Set<Tag>>({});
     final feedbackTextController = useTextEditingController();
 
@@ -61,7 +62,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             alignment: AlignmentDirectional.centerEnd,
             child: CustomCloseButton(
               onClose: () {
-                if (rating.value == 0) {
+                if (rating.value == (initialRating ?? 0)) {
                   context.router.popForced();
                 } else {
                   onNeedPopConfirm?.call();
@@ -96,11 +97,16 @@ class AppFeedbackMain extends HookConsumerWidget {
           padding: const EdgeInsets.all(Spacing.$4x),
           child: ValueListenableBuilder(
             valueListenable: rating,
-            builder: (context, ratingValue, _) => Text(
-              _ratingText(context.l10n, rating.value),
-              textAlign: TextAlign.center,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
+            builder: (context, ratingValue, _) => SizedBox(
+              // For prevent the text from moving when the rating changes
+              // Approved by design team
+              height: 40,
+              child: Text(
+                _ratingText(context.l10n, rating.value),
+                textAlign: TextAlign.center,
+                style: context.textStyleV3.bodyLargeRegular.copyWith(
+                  color: context.colorsV2.foregroundSoft,
+                ),
               ),
             ),
           ),

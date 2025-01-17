@@ -10,15 +10,14 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
+import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:mapness/shared/providers/map/parking_state.dart';
 import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
   final bool trafficVisible;
-  final StatelessBottomSheetController bottomSheetController;
 
   const TrafficParkingControl({
-    required this.bottomSheetController,
     super.key,
     this.trafficVisible = true,
   });
@@ -63,7 +62,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
                 isNoTopBorderRadius: isTrafficVisable,
                 onParkingTap: () {
                   if (autoEnableParking == null) {
-                    widget.bottomSheetController.open();
+                    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
                     return;
                   }
 
@@ -109,7 +108,7 @@ class _ParkingWidget extends StatelessWidget {
           height: 24,
           child: Icon(
             TransportIcons.parkingEnable,
-            color: isEnabled ? context.colorsV2.extra06OnContainer : context.colorsV2.foregroundDefault,
+            color: isEnabled ? context.colorsV2.foregroundDefault : context.colorsV2.foregroundMuted,
           ),
         ),
       );

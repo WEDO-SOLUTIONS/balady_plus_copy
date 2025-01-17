@@ -119,63 +119,21 @@ Map<String, dynamic> servicesConfig = {
   ],
   "municipal_services": [
     {
-      "id": 11124,
-      "icon": "license_query",
+      "id": 206,
+      "icon": "submit_compliance",
       "3d_icon": null,
-      "order": 6,
+      "order": 4,
       "isNew": false,
-      "requireLogin": false,
       "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.constructionLicenseOverView
-      },
-      "ar": {
-        "title": "inquiry_construction_license",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "inquiry_construction_license",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 11428,
-      "icon": "license_query",
-      "3d_icon": null,
-      "order": 6,
-      "isNew": false,
-      "requireLogin": false,
-      "isImportant": false,
-      "action": {
-        "type": "page",
-        "value": RouteName.surveyReportInqueryOverView
-      },
-      "ar": {
-        "title": "survey_report_inquery",
-        "description": null,
-        "tag": null
-      },
-      "en": {"title": "survey_report_inquery", "description": null, "tag": null}
-    },
-    {
-      "id": 11134,
-      "icon": "license_query",
-      "3d_icon": null,
-      "order": 6,
-      "isNew": false,
       "requireLogin": true,
-      "isImportant": false,
-      "action": {"type": "page", "value": RouteName.commercialLicenseOverView},
+      "action": {"type": "page", "value": RouteName.createCompliancePage},
       "ar": {
-        "title": "CommerciallicenseQuery",
+        "title": "compliance_certificate",
         "description": null,
         "tag": null
       },
       "en": {
-        "title": "CommerciallicenseQuery",
+        "title": "compliance_certificate",
         "description": null,
         "tag": null
       }
@@ -241,8 +199,20 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "schedule_date", "description": null, "tag": null}
     },
     {
+      "id": 211,
+      "icon": "balady_business",
+      "3d_icon": null,
+      "order": 1,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "page", "value": RouteName.etmamMainPage},
+      "ar": {"title": "balady_works", "description": null, "tag": null},
+      "en": {"title": "balady_works", "description": null, "tag": null}
+    },
+    {
       "id": 205,
-      "icon": "general_inquiries",
+      "icon": "cities_services",
       "3d_icon": null,
       "order": 4,
       "isNew": false,
@@ -259,38 +229,6 @@ Map<String, dynamic> servicesConfig = {
         "description": null,
         "tag": null
       }
-    },
-    {
-      "id": 206,
-      "icon": "submit_compliance",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.createCompliancePage},
-      "ar": {
-        "title": "compliance_certificate",
-        "description": null,
-        "tag": null
-      },
-      "en": {
-        "title": "compliance_certificate",
-        "description": null,
-        "tag": null
-      }
-    },
-    {
-      "id": 207,
-      "icon": "self_rating",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": false,
-      "action": {"type": "page", "value": RouteName.selfRatingMainPage},
-      "ar": {"title": "review-building", "description": null, "tag": null},
-      "en": {"title": "review-building", "description": null, "tag": null}
     },
     {
       "id": 208,
@@ -317,38 +255,6 @@ Map<String, dynamic> servicesConfig = {
       "en": {"title": "dc_retreive_car", "description": null, "tag": null}
     },
     {
-      "id": 210,
-      "icon": "general_inquiries",
-      "3d_icon": "assets/images/home_icon_1.png",
-      "order": 2,
-      "isNew": false,
-      "isImportant": true,
-      "requireLogin": true,
-      "action": {"type": "dialog", "value": "/general-inquiries"},
-      "ar": {
-        "title": "general_requests",
-        "description": "ارسل استفسارك عن كل خدمه",
-        "tag": "الخدمات"
-      },
-      "en": {
-        "title": "general_requests",
-        "description": "Send your inquiry about any service",
-        "tag": "Services"
-      }
-    },
-    {
-      "id": 211,
-      "icon": "balady_business",
-      "3d_icon": null,
-      "order": 1,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "page", "value": RouteName.etmamMainPage},
-      "ar": {"title": "balady_works", "description": null, "tag": null},
-      "en": {"title": "balady_works", "description": null, "tag": null}
-    },
-    {
       "id": 212,
       "icon": "municipal_health",
       "3d_icon": null,
@@ -359,6 +265,31 @@ Map<String, dynamic> servicesConfig = {
       "action": {"type": "page", "value": RouteName.newHealthCertificatePage},
       "ar": {"title": "municipal_health", "description": null, "tag": null},
       "en": {"title": "municipal_health", "description": null, "tag": null}
+    },
+    {
+      "id": 221,
+      "icon": "ekram_inq_grave_dead",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": ""},
+      "ar": {"title": "ekram_services", "description": null, "tag": null},
+      "en": {"title": "ekram_services", "description": null, "tag": null}
+    },
+
+    {
+      "id": 207,
+      "icon": "self_rating",
+      "3d_icon": null,
+      "order": 4,
+      "isNew": false,
+      "isImportant": false,
+      "requireLogin": false,
+      "action": {"type": "page", "value": RouteName.selfRatingMainPage},
+      "ar": {"title": "review-building", "description": null, "tag": null},
+      "en": {"title": "review-building", "description": null, "tag": null}
     },
     {
       "id": 219,
@@ -393,20 +324,7 @@ Map<String, dynamic> servicesConfig = {
       },
       "ar": {"title": "municipal_shop", "description": null, "tag": null},
       "en": {"title": "municipal_shop", "description": null, "tag": null}
-    },
-    {
-      "id": 221,
-      "icon": "ekram_inq_grave_dead",
-      "3d_icon": null,
-      "order": 4,
-      "isNew": false,
-      "isImportant": false,
-      "requireLogin": true,
-      "action": {"type": "dialog", "value": ""},
-      "ar": {"title": "ekram_services", "description": null, "tag": null},
-      "en": {"title": "ekram_services", "description": null, "tag": null}
-    },
-    {
+    },    {
       "id": 222,
       "icon": "note",
       "3d_icon": null,
@@ -428,6 +346,88 @@ Map<String, dynamic> servicesConfig = {
         "title": "classification_certificate_verify",
         "description": null,
         "tag": null
+      }
+    },
+    {
+      "id": 11124,
+      "icon": "construction_license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.constructionLicenseOverView
+      },
+      "ar": {
+        "title": "inquiry_construction_license",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "inquiry_construction_license",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 11428,
+      "icon": "license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": false,
+      "isImportant": false,
+      "action": {
+        "type": "page",
+        "value": RouteName.surveyReportInqueryOverView
+      },
+      "ar": {
+        "title": "survey_report_inquery",
+        "description": null,
+        "tag": null
+      },
+      "en": {"title": "survey_report_inquery", "description": null, "tag": null}
+    },
+    {
+      "id": 11134,
+      "icon": "commercial_license_query",
+      "3d_icon": null,
+      "order": 6,
+      "isNew": false,
+      "requireLogin": true,
+      "isImportant": false,
+      "action": {"type": "page", "value": RouteName.commercialLicenseOverView},
+      "ar": {
+        "title": "CommerciallicenseQuery",
+        "description": null,
+        "tag": null
+      },
+      "en": {
+        "title": "CommerciallicenseQuery",
+        "description": null,
+        "tag": null
+      }
+    },
+    {
+      "id": 210,
+      "icon": "general_inquiries",
+      "3d_icon": "assets/images/home_icon_1.png",
+      "order": 2,
+      "isNew": false,
+      "isImportant": true,
+      "requireLogin": true,
+      "action": {"type": "dialog", "value": "/general-inquiries"},
+      "ar": {
+        "title": "general_requests",
+        "description": "ارسل استفسارك عن كل خدمه",
+        "tag": "الخدمات"
+      },
+      "en": {
+        "title": "general_requests",
+        "description": "Send your inquiry about any service",
+        "tag": "Services"
       }
     },
   ],
@@ -494,7 +494,7 @@ Map<String, dynamic> servicesConfig = {
       "ar": {"title": "municipal_health", "description": null, "tag": null},
       "en": {"title": "municipal_health", "description": null, "tag": null}
     },*/
-    {
+    /*{
       "id": 305,
       "icon": "municpal_housing",
       "3d_icon": null,
@@ -508,7 +508,7 @@ Map<String, dynamic> servicesConfig = {
       },
       "ar": {"title": "municpal_housing", "description": null, "tag": null},
       "en": {"title": "municpal_housing", "description": null, "tag": null}
-    },
+    },*/
     {
       "id": 306,
       "icon": "municipal_ewaa",
