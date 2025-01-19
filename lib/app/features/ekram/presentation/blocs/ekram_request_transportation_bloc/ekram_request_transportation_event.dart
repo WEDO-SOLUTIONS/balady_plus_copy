@@ -275,6 +275,10 @@ class getRequestDetailsEvent extends EkramRequestTransportationEvent {
   final int requestId;
   const getRequestDetailsEvent({required this.requestId});
 }
+class getCurrentTrackLocationEvent extends EkramRequestTransportationEvent {
+  final int requestId;
+  const getCurrentTrackLocationEvent({required this.requestId});
+}
 
 class saveDeceasedInfoEvent extends EkramRequestTransportationEvent {
   const saveDeceasedInfoEvent();

@@ -29,6 +29,7 @@ class _UsersEkramTransportationDetailsPageState
     extends State<UsersEkramTransportationDetailsPage> {
   AddTripBloc? bloc;
   ExtraDataBloc? extraDataBloc;
+  EkramRequestTransportationBloc? detailsBloc;
   @override
   void initState() {
     // TODO: implement initState
@@ -42,7 +43,6 @@ class _UsersEkramTransportationDetailsPageState
     TransportRequestItemModel params =
         ModalRoute.of(context)!.settings.arguments as TransportRequestItemModel;
 
-    // params.requestId = 4617335922;
     bloc ??= AddTripBloc(
         deleteTrip: sl(),
         completeTrip: sl(),
@@ -65,14 +65,19 @@ class _UsersEkramTransportationDetailsPageState
         .add(GetDeceasedAttachmentEvent(requestId: params.requestId!));
 
     return BlocProvider(
-      create: (context) => EkramRequestTransportationBloc(
-        getCities: sl(),
-        getRequestDetails: sl(),
-        getHospitals: sl(),
-        getNationalities: sl(),
-        applyDeceasedTransport: sl(),
-        getCemeteryTypesLookUp: sl(),
-      )..add(getRequestDetailsEvent(requestId: params.requestId!)), //
+      create: (context) {
+        detailsBloc = EkramRequestTransportationBloc(
+          getCities: sl(),
+          getRequestDetails: sl(),
+          getHospitals: sl(),
+          getNationalities: sl(),
+          applyDeceasedTransport: sl(),
+          getCemeteryTypesLookUp: sl(),
+        );
+        detailsBloc?.add(getRequestDetailsEvent(requestId: params.requestId!));
+
+        return detailsBloc!;
+      }, //
 
       child: BlocConsumer<EkramRequestTransportationBloc,
           EkramRequestTransportationState>(listener: (context, state) {
@@ -116,7 +121,8 @@ class _UsersEkramTransportationDetailsPageState
                         ],
                       ),
                       HomeTag(
-                        title: params.requestStatusName ?? "",
+                        title:
+                            state.requestDetailsModel?.requestStatusName ?? "",
                         backgroundColor: AppColor.secondary100Light,
                       )
                     ],
@@ -145,6 +151,8 @@ class _UsersEkramTransportationDetailsPageState
                     bloc: extraDataBloc,
                     requestId: params.requestId!,
                     model: state.requestDetailsModel?.locationInfo,
+                    requestStatusId: state.requestDetailsModel?.requestStatusId,
+                    detailsBloc: detailsBloc,
                   ),
                   const SizedBox(
                     height: 20,

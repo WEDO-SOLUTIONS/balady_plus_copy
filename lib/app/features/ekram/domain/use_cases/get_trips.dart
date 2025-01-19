@@ -9,13 +9,13 @@ import '../entities/trip_details.dart';
 import '../repositories/ekram_repository.dart';
 
 class GetTrips extends UseCase<ResponseBodyModel<List<TripDetailsModel>>,
-    TransportRequestItemModel> {
+    int> {
   final EkramRepository repository;
 
   GetTrips({required this.repository});
   @override
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> call(
-      TransportRequestItemModel params) async {
+      int params) async {
     return await repository.getTrips(params);
   }
 }

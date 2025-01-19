@@ -100,8 +100,8 @@ class EkramAddDeceasedBloc
 
     on<SelectOrgnizationEvent>(_changeOrgnizationHandler);
     on<GetBaquieApprovalEvent>(_getBaquieApprovalHandler);
-    getCitiesHandler();
     getNationalTypesHandler();
+    getCitiesHandler();
     getCemetryTypeItemsHandler();
     getBurialTimesItemsHandler();
   }

@@ -39,7 +39,7 @@ class _InquiryOrgnizaionDetailsPageState
       appBar: DefaultAppBarWidget(
         titleWidget: Text(
           "ekram_inquiry_orgnizations".tr(),
-          overflow: TextOverflow.fade,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(color: AppColor.black),
         ),
         x: true,

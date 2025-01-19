@@ -157,7 +157,7 @@ else
   Future<void> _getTripsHandler(GetTripsEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getTrips(state.model);
+    final failureOrSuccess = await _getTrips(state.model.requestId!);
 
     failureOrSuccess.fold((failure) async {
       CommonFunctions.showError((failure as ServerFailure).errorMessage);

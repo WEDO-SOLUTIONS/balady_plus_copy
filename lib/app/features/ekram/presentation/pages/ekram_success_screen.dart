@@ -1,10 +1,12 @@
 import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/ekram/data/model/driver/transport_request_item_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/features/_shared_features/rating_feature/widgets/submit_rating_widget.dart';
+import 'package:smart_advisor/app/core/services/local/navigation_services.dart';
 
 import '../../../../../etmam_app/core/utils/constants/app_config.dart';
 import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_spaces_widgets.dart';
@@ -29,8 +31,7 @@ class _EkramSuccessPageState extends State<EkramSuccessPage> {
   @override
   Widget build(BuildContext context) {
     String? msg = ModalRoute.of(context)!.settings.arguments as String?;
-    return   Scaffold(body: getBody(msg));
-
+    return Scaffold(body: getBody(msg));
 
     //   Scaffold(
     //   body: Container(
@@ -120,9 +121,7 @@ class _EkramSuccessPageState extends State<EkramSuccessPage> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-
-                         "${"request_number".tr()} $requestId ${"follow_request".tr()}",
-
+                    "${"request_number".tr()} $requestId ${"follow_request".tr()}",
                     style: AppStyle.personalInfoParameterValueTextStyle
                         .copyWith(fontSize: 12, height: 1.5),
                   ),
@@ -164,7 +163,10 @@ class _EkramSuccessPageState extends State<EkramSuccessPage> {
                     btnHeight: 56,
                     text: "show_request".tr(),
                     onPressed: () {
-
+                      Navigator.of(context).pushNamed(
+                          RouteName.driverEkramTransportationDetailsScreen,
+                          arguments: TransportRequestItemModel(
+                              requestId: int.parse(requestId!)));
                     },
                   ),
                   const SizedBox(
@@ -180,12 +182,11 @@ class _EkramSuccessPageState extends State<EkramSuccessPage> {
                     btnHeight: 56,
                     text: "go_to_request".tr(),
                     onPressed: () {
-
-                        Navigator.popUntil(
-                          context,
-                          ModalRoute.withName(RouteName.ekramTransportationListScreen),
-                        );
-
+                      Navigator.popUntil(
+                        context,
+                        ModalRoute.withName(
+                            RouteName.ekramTransportationListScreen),
+                      );
                     },
                   ),
                   const SizedBox(
@@ -196,7 +197,6 @@ class _EkramSuccessPageState extends State<EkramSuccessPage> {
             ),
           ],
         ),
-
       ]),
     );
   }

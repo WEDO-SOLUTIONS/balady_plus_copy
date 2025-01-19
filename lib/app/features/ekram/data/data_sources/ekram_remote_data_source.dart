@@ -72,7 +72,7 @@ abstract class EkramRemoteDataSource {
       int params);
 
   Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(
-      TransportRequestItemModel params);
+      int params);
 
   Future<ResponseBodyModel> addTrip(int requestId, TripDetailsModel params);
 
@@ -89,6 +89,8 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<dynamic>> upadateDriverLocation(
       UpdateDriverLocationParams params);
+  Future<ResponseBodyModel<dynamic>> currentTrackLocation(
+      int requestId);
 
   Future<ResponseBodyModel<TripLocationsResponseModel>> getTripsLocation(
       int params);
@@ -936,12 +938,12 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
 
   @override
   Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(
-      TransportRequestItemModel params) async {
+      int params) async {
     Response response;
 
     try {
       response = await webService.dio.put(
-          "${ApiUrl.initializeTripsRquest(params.requestId!)}",
+          "${ApiUrl.initializeTripsRquest(params)}",
           queryParameters: {"isDriver": true});
 
       var data = response.data["data"]?["result"];
@@ -1353,6 +1355,55 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       response = await webService.dio.post(
         ApiUrl.updateLocation(params.requestId),
         data: params.toMap(),
+      );
+
+      final decodedResponse =
+          ResponseBodyModel<dynamic>.fromMap(response.data, parsedResult: null);
+
+      return decodedResponse.toFuture();
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      throw ServerException(error.toString(),
+          statusCode: error.response?.statusCode, dioError: error);
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        try {
+          //CommonFunctions.sendExceptionLog(exception:  error, response: response);
+        } catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
+        throw ServerException(("errors_server_error_2").tr());
+      }
+    }
+  }
+    @override
+  Future<ResponseBodyModel> currentTrackLocation(int requestId) async{
+    Response response;
+
+    try {
+      response = await webService.dio.post(
+        ApiUrl.currentTrackLocation(requestId),
       );
 
       final decodedResponse =
@@ -3173,5 +3224,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
+  
+
 
 }

@@ -22,6 +22,8 @@ class EkramRequestTransportationState extends Equatable {
   final BlocStatus status;
   final String? errorMessage;
   final int currentPageValue;
+  final double? lat;
+  final double? long;
   final List<LookUpItem>? cities;
   final List<LookUpItem>? bodyArrivalCities;
   final List<LookUpItem>? hospitals;
@@ -87,6 +89,8 @@ class EkramRequestTransportationState extends Equatable {
       this.status = BlocStatus.initial,
       this.errorMessage,
       this.currentPageValue = 0,
+      this.lat ,
+      this.long ,
       this.cities,
       this.bodyArrivalCities,
       this.hospitals,
@@ -129,6 +133,8 @@ class EkramRequestTransportationState extends Equatable {
     final bool? isBurialDatesDisabled,
     final bool? isDeathDatesDisabled,
     final bool? isVerified,
+    final double? lat,
+    final double? long,
     final bool? isSpecialTransferNeeded,
     final bool? isBurialInsideDeathCity,
     final BlocStatus? status,
@@ -202,6 +208,8 @@ class EkramRequestTransportationState extends Equatable {
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
       currentPageValue: currentPageValue ?? this.currentPageValue,
+      lat: lat ?? this.lat,
+      long: long ?? this.long,
       agreementChecked: agreementChecked ?? this.agreementChecked,
       relation: relation ?? this.relation,
       deathLocation: deathLocation ?? this.deathLocation,
@@ -286,6 +294,8 @@ class EkramRequestTransportationState extends Equatable {
         selectedlaundry,
         selectedMosque,
         currentPageValue,
+        lat,
+        long,
         relation,
         deathLocation,
         selectedDeathCity,

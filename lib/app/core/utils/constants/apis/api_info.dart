@@ -628,6 +628,8 @@ class ApiUrl {
       'v1/superapp-ekram-services/trips/$id/finalize';
   static updateLocation(int id) =>
       'v1/superapp-ekram-services/transport/add-transport-track/$id';
+  static currentTrackLocation(int id) =>
+      'v1/superapp-ekram-services/transport/current-track-location/$id';
 
   static deleteAttachment(int requestId, int attachmentId) =>
       'v1/superapp-ekram-services/attachments/$attachmentId/delete';
