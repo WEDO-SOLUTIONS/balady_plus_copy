@@ -13,7 +13,8 @@ part 'point_of_interest.g.dart';
 const poiPinId = 'poi_pin_id';
 
 @riverpod
-Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
+Future<DirectoryObjectMessage?> pointOfInterest(
+  Ref ref,
   DgisObjectIdMessage objectId,
   LatLng? closestPoint,
 ) async {
@@ -40,6 +41,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
           longitude: closestPoint.longitude,
           elevation: 1,
         ),
+        text: directoryObject?.title,
+        textStyle: MarkerTextStyleMessage(
+          fontSize: 13,
+          strokeWidth: 3,
+          textPlacement: MarkerTextPlacementMessage(
+            placement: TextPlacementMessage.rightCenter,
+          ),
+        ),
         icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
       ),
@@ -51,6 +60,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
           latitude: position.latitude,
           longitude: position.longitude,
           elevation: 1,
+        ),
+        text: directoryObject?.title,
+        textStyle: MarkerTextStyleMessage(
+          fontSize: 13,
+          strokeWidth: 3,
+          textPlacement: MarkerTextPlacementMessage(
+            placement: TextPlacementMessage.rightCenter,
+          ),
         ),
         icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
