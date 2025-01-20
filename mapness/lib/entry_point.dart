@@ -359,6 +359,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
+    final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
 
     double? latitude;
     double? longitude;
@@ -411,6 +412,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
+    } else if (homeWidget != null) {
+      if (isFirstRun) {
+        await Future.delayed(const Duration(seconds: 8));
+      }
+      CommonFunctions.openMovingViolations(uri);
     } else if (url.toString().isNotEmpty) {
       print('url.toString() ${url.toString()}');
       await ref.watch(appRouterProvider).pushNamed(url.toString());
