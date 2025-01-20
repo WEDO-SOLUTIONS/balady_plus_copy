@@ -72,6 +72,9 @@ class TripDetailsModel {
       note: note ?? this.note,
     );
 
+
+
+
   }
 
 
@@ -179,6 +182,17 @@ class TripInfo {
     return map;
   }
 
+  bool isEditable()
+  {
+
+
+    if(typeId==30510||typeId==30509||typeId==30507||typeId==30506||typeId==30501) {
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
 
 
   @override

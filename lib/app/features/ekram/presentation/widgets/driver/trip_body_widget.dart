@@ -126,15 +126,32 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
         ),
 
-
         CustomVerticalSpace(height: 10),
+        widget.model?.startupInfo?.isEditable()==false|| enableEdit==false?
         ReadOnlyField(
           title: "currentTripStationName".tr(),
           subTitle: widget.model?.startupInfo?.name  ?? "",
           subTitleColor:AppColor.grey1000.withOpacity(0.5),
           decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
-        ),
+        ):
+        CustomTextFieldWidget(
+            enabled: true,
+            label: "currentTripStationName".tr(),
+            hintText: "currentTripStationName".tr(),
+            textFieldHeight: 55,
+            initialValue:   widget.model?.startupInfo?.name ??"",
+            onChanged: (String? text) {
+              if (text != null) {
+                setState(() {
+                  widget.model?.startupInfo?.name  = text;
+                });
+
+              }
+            },
+            onValidate: (String? value) {
+              return null;
+            }),
 
 
         CustomVerticalSpace(height: 10),
@@ -245,13 +262,31 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
 
 
         CustomVerticalSpace(height: 10),
+        widget.model?.arrivalInfo?.isEditable()==false || enableEdit==false?
         ReadOnlyField(
           title: "nextTripStationName".tr(),
           subTitle: widget.model?.arrivalInfo?.name  ?? "",
           subTitleColor:AppColor.grey1000.withOpacity(0.5),
           decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
-        ),
+        ):
+        CustomTextFieldWidget(
+            enabled: true,
+            label: "currentTripStationName".tr(),
+            hintText: "currentTripStationName".tr(),
+            textFieldHeight: 55,
+            initialValue:   widget.model?.arrivalInfo?.name ??"",
+            onChanged: (String? text) {
+              if (text != null) {
+                setState(() {
+                  widget.model?.arrivalInfo?.name  = text;
+                });
+
+              }
+            },
+            onValidate: (String? value) {
+              return null;
+            }),
 
 
         CustomVerticalSpace(height: 10),
