@@ -28,7 +28,6 @@ class FilterItemBuilder extends FilterItem {
   final Widget Function(
     BuildContext context, {
     required bool isSelected,
-    required bool isDashboard,
   }) builder;
 
   FilterItemBuilder({

@@ -19,7 +19,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     private var zoomControlModel: ZoomControlModel?
     
     private var trafficControlModel: TrafficControlModel?
-    var trafficButton: CPMapButton?
+    var trafficButton: CPBarButton?
     
     private var navigationViewFactory: INavigationViewControlsFactory?
     
@@ -118,8 +118,10 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
             
             NSLayoutConstraint.activate([
                 speedControl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
-                speedControl.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
             ])
+            
+            let topAnchorConstraint = speedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
+            topAnchorConstraint.isActive = true
         }
     }
     
@@ -179,11 +181,9 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     func trafficStateChanged(_ state: TrafficControlState) {
         switch state.status {
         case .enabled, .loading:
-            trafficButton?.image = UIImage(named: "TrafficOn")!.withRenderingMode(.alwaysOriginal)
-            trafficButton?.focusedImage = UIImage(named: "TrafficOn")!.withRenderingMode(.alwaysOriginal)
+            trafficButton?.image = UIImage(named: "TrafficOnNavBar")!.withRenderingMode(.alwaysOriginal)
         default:
-            trafficButton?.image = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
-            trafficButton?.focusedImage = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
+            trafficButton?.image = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(.alwaysOriginal)
         }
     }
     

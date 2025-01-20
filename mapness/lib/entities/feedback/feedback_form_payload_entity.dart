@@ -1,3 +1,4 @@
+import 'package:dgis_map/library.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
@@ -10,5 +11,6 @@ class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
     required String category,
     required int objectId,
     required IList<FeedbackFieldPayloadDto> fields,
+    required VisibleRect viewport,
   }) = _FeedbackFormPayloadEntity;
 }

@@ -28,7 +28,7 @@ class MapQuickFilters extends ConsumerStatefulWidget {
   final void Function(FilterItem)? onCustomTap;
   final bool forMap;
   final QuickFilterScreen id;
-  final bool isDashboard;
+
   final double? height;
   final ItemScrollController? itemScrollController;
 
@@ -38,7 +38,6 @@ class MapQuickFilters extends ConsumerStatefulWidget {
     this.customFilters,
     this.onCustomTap,
     this.forMap = false,
-    this.isDashboard = false,
     this.height,
     this.itemScrollController,
   });
@@ -86,7 +85,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     return QuickFilters(
       id: widget.id,
       height: widget.height,
-      isDashboard: widget.isDashboard,
       itemScrollController: widget.itemScrollController,
       onFavouritesBookmarkTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
         context,

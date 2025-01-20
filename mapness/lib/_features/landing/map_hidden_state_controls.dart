@@ -85,80 +85,112 @@ class _MapHiddenStateControlsState extends ConsumerState<MapHiddenStateControls>
       }
     });
 
-    return BottomSheetStateBuilder<ThreeStateBottomSheet>(
-      defaultState: ThreeStateBottomSheet.open,
-      builder: (context, state, interpolation, child) {
-        const hiddenHeight = 0.0;
-        const controlsHeight = 60.0;
+    final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
+    final isFreeRoamStart = freeRoamState.canStart && !freeRoamState.isAutorun;
 
-        final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
-        final delta = state == ThreeStateBottomSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
-        final isFreeRoamStart = freeRoamState.canStart && !freeRoamState.isAutorun;
-        return AnimatedCrossFade(
-          crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-          firstChild: Padding(
-            padding: const EdgeInsets.all(Spacing.$4x),
-            child: Row(
-              children: [
-                const Expanded(flex: 2, child: GoToNavigatorButton()),
-                Spacing.$2x.widthBox,
-                Expanded(
-                  child: SizedBox(
-                    height: 56,
-                    child: AppButton(
-                      onTap: () {
-                        ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-                        context.router.push(const AutostartSettingsSheetRoute());
-                      },
-                      buttonColorScheme: ButtonColorScheme.onColor,
-                      primaryLabel: context.l10n.cancel,
-                      textColor: context.colorsV2.foregroundDefault,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          secondChild: IgnorePointer(
-            ignoring: state != ThreeStateBottomSheet.hidden,
-            child: Opacity(
-              opacity: delta,
-              child: Align(
-                heightFactor: delta,
-                alignment: Alignment.topCenter,
-                child: Directionality(
-                  textDirection: uiDirection,
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: Spacing.$2x * delta),
-                    child: MapQuickFilters(
-                      height: controlsHeight,
-                      forMap: true,
-                      itemScrollController: quickScrollController,
-                      id: QuickFilterScreen.controls,
-                      customFilters: [
-                        FilterItemBuilder(
-                          filterType: FilterType.custom,
-                          builder: (
-                            context, {
-                            required isDashboard,
-                            required isSelected,
-                          }) =>
-                              _FreeRoamQuickAction(
-                            isLaunching: showLaunchingFreeRoam,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+    return AnimatedCrossFade(
+      crossFadeState: isFreeRoamStart ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+      firstChild: const FreeRoamBar(),
+      secondChild: QuickSearchBar(
+        direction: uiDirection,
+        quickScrollController: quickScrollController,
+        showLaunchingFreeRoam: showLaunchingFreeRoam,
+      ),
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+}
+
+class FreeRoamBar extends ConsumerWidget {
+  const FreeRoamBar({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
+        padding: const EdgeInsets.all(Spacing.$4x),
+        child: Row(
+          children: [
+            const Expanded(flex: 2, child: GoToNavigatorButton()),
+            Spacing.$2x.widthBox,
+            Expanded(
+              child: SizedBox(
+                height: 56,
+                child: AppButton(
+                  onTap: () {
+                    ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                    context.router.push(const AutostartSettingsSheetRoute());
+                  },
+                  buttonColorScheme: ButtonColorScheme.onColor,
+                  primaryLabel: context.l10n.cancel,
+                  textColor: context.colorsV2.foregroundDefault,
                 ),
               ),
             ),
+          ],
+        ),
+      );
+}
+
+class QuickSearchBar extends StatelessWidget {
+  static const hiddenHeight = 0.0;
+
+  final TextDirection direction;
+  final ItemScrollController quickScrollController;
+  final bool showLaunchingFreeRoam;
+
+  QuickSearchBar({
+    required this.quickScrollController,
+    required this.showLaunchingFreeRoam,
+    required this.direction,
+    super.key,
+  });
+
+  final ValueNotifier<double> opacity = ValueNotifier(1.0);
+
+  @override
+  Widget build(BuildContext context) => BottomSheetStateBuilder<ThreeStateBottomSheet>(
+        defaultState: ThreeStateBottomSheet.hidden,
+        builder: (context, state, interpolation, child) {
+          final delta = state == ThreeStateBottomSheet.hidden ? clampDouble(1 - interpolation * 3, 0, 1) : hiddenHeight;
+
+          opacity.value = delta;
+          return IgnorePointer(
+            ignoring: state != ThreeStateBottomSheet.hidden,
+            child: Align(
+              heightFactor: delta,
+              alignment: Alignment.topCenter,
+              child: child,
+            ),
+          );
+        },
+        child: FadeTransition(
+          opacity: Animation.fromValueListenable(opacity),
+          child: Directionality(
+            textDirection: direction,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: Spacing.$2x),
+              child: MapQuickFilters(
+                forMap: true,
+                itemScrollController: quickScrollController,
+                id: QuickFilterScreen.controls,
+                customFilters: [
+                  FilterItemBuilder(
+                    filterType: FilterType.custom,
+                    builder: (
+                      context, {
+                      required isSelected,
+                    }) =>
+                        _FreeRoamQuickAction(
+                      isLaunching: showLaunchingFreeRoam,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-          duration: const Duration(milliseconds: 300),
-        );
-      },
-    );
-  }
+        ),
+      );
 }
 
 class _FreeRoamQuickAction extends ConsumerStatefulWidget {
@@ -244,7 +276,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
         onTap: () {
-          context.router.push(FreeRoamRoute());
+          context.router.push(const FreeRoamRoute());
           ref.read(freeRoamStarterProvider.notifier).setShown();
         },
         child: ConstrainedBox(

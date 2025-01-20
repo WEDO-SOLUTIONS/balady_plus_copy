@@ -6,9 +6,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/_features/weather/weather_controls.dart';
 import 'package:mapness/_features/weather/weather_dashboard.dart';
 import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 
 @RoutePage()
 class WeatherPage extends ConsumerStatefulWidget {
@@ -23,7 +26,7 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
       StatefulBottomSheetController(
     initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: [.1, .38, .931]),
+    behavior: AspectRatioSnappingBehavior(aspectRatios: {.1, .38, .931}),
     stateMapper: const ThreeStateMapper(),
   );
 
@@ -43,26 +46,36 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
   }
 
   @override
-  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Stack(
-          children: [
-            WeatherControls(
-              bottomSheetController: _bottomSheetController,
-            ),
-            LayoutBuilder(
-              builder: (context, constraints) => WeatherDashboard(
-                biggestHeight: constraints.biggest.height,
-                biggestWidth: constraints.biggest.width,
+  Widget build(BuildContext context) {
+    if (ref.watch(forecastWeatherProvider) != null) {
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Material(
+          type: MaterialType.transparency,
+          child: Stack(
+            children: [
+              WeatherControls(
                 bottomSheetController: _bottomSheetController,
               ),
-            ),
-          ],
+              LayoutBuilder(
+                builder: (context, constraints) => WeatherDashboard(
+                  biggestHeight: constraints.biggest.height,
+                  biggestWidth: constraints.biggest.width,
+                  bottomSheetController: _bottomSheetController,
+                ),
+              ),
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return ErrorSheetWidget(
+        onRetry: () => ref.invalidate(forecastWeatherProvider),
+        onClose: (_) => context.router.popForced(),
+        buttonLabel: context.l10n.tryAgain,
+      );
+    }
+  }
 }
 
 class WeatherPageContent extends StatefulWidget {

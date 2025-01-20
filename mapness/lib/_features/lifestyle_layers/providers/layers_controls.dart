@@ -19,6 +19,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_ext
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -115,6 +116,7 @@ class LayersControls extends _$LayersControls {
     final controller = await ref.read(dgisControllerProvider.future);
     await selectedPoint.removeAllMarkers();
     await controller.removeAllHighlights();
+    await controller.removeAllPolylines();
   }
 
   @override
@@ -181,14 +183,22 @@ class LayersControls extends _$LayersControls {
     switch (value) {
       case LayerType.favourites:
         await toggleFavourites(currentState);
+        break;
       case LayerType.buildings:
         await toggleComplianceBuildings();
+        break;
       case LayerType.invest:
         await toggleInvestOpportunities();
+        break;
       case LayerType.fencing:
         await toggleWhiteLands();
+        break;
       case LayerType.parkingLots:
         await toggleParking();
+        break;
+      case LayerType.metro:
+        toggleMetro(currentState);
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
     }
@@ -248,6 +258,15 @@ class LayersControls extends _$LayersControls {
     } else {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
+    }
+  }
+
+  void toggleMetro(LayerType? currentState) {
+    ref.read(metroLayerProvider.notifier).toggleMetro();
+    if (currentState == (LayerType.metro)) {
+      setSelection();
+    } else {
+      setSelection(selectedType: LayerType.metro);
     }
   }
 

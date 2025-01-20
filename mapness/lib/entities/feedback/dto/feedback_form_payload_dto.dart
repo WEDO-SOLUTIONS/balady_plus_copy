@@ -1,5 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/feedback/dto/feedback_field_payload_dto.dart';
+import 'package:mapness/entities/feedback/dto/feedback_viewport_dto.dart';
 import 'package:mapness/entities/feedback/feedback_form_payload_entity.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 
@@ -14,8 +15,10 @@ class FeedbackFormPayloadDto {
   final String objectId;
   final String objectType;
   final String? userEmail;
+  final FeedbackViewportDto viewport;
 
   const FeedbackFormPayloadDto({
+    required this.viewport,
     required this.category,
     required this.fields,
     required this.latitude,
@@ -42,5 +45,6 @@ class FeedbackFormPayloadDto {
         objectId: entity.objectId.toString(),
         objectType: objectType.name,
         userEmail: userEmail,
+        viewport: FeedbackViewportDto.fromDomain(entity.viewport),
       );
 }

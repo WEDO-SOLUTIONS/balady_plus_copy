@@ -30,7 +30,10 @@ extension DirectoryObject {
             entrances: self.entrances.map {
                 $0.toMessage()
             },
-            tradeLicense: self.tradeLicense?.toMessage()
+            tradeLicense: self.tradeLicense?.toMessage(),
+            rubricIds: self.rubricIds.map {
+                Int64($0.value)
+            }
         )
     }
 }

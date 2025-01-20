@@ -35,7 +35,10 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
   }
 
   /// Delegate method for calculate background fill color inside bottom sheet.
-  static Color? backgroundColorDelegate(PoiCardBottomSheetState state, double interpolation) {
+  static Color? backgroundColorDelegate(StatefulBottomSheetController<PoiCardBottomSheetState> controller) {
+    final state = controller.state;
+    final interpolation = controller.interpolation;
+
     if (state == PoiCardBottomSheetState.hidden || state == PoiCardBottomSheetState.expanded) {
       return null;
     }
