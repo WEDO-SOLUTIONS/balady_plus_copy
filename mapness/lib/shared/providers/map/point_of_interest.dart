@@ -32,6 +32,13 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   );
 
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+  final textStyle = MarkerTextStyleMessage(
+    fontSize: 13,
+    strokeWidth: 3,
+    textPlacement: MarkerTextPlacementMessage(
+      placement: TextPlacementMessage.rightCenter,
+    ),
+  );
 
   if (closestPoint != null) {
     await selectedMarker.showMarker(
@@ -42,13 +49,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           elevation: 1,
         ),
         text: directoryObject?.title,
-        textStyle: MarkerTextStyleMessage(
-          fontSize: 13,
-          strokeWidth: 3,
-          textPlacement: MarkerTextPlacementMessage(
-            placement: TextPlacementMessage.rightCenter,
-          ),
-        ),
+        textStyle: textStyle,
         icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
       ),
@@ -62,13 +63,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
           elevation: 1,
         ),
         text: directoryObject?.title,
-        textStyle: MarkerTextStyleMessage(
-          fontSize: 13,
-          strokeWidth: 3,
-          textPlacement: MarkerTextPlacementMessage(
-            placement: TextPlacementMessage.rightCenter,
-          ),
-        ),
+        textStyle: textStyle,
         icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
       ),
