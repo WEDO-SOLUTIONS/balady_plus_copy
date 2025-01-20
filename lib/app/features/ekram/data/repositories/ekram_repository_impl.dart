@@ -266,7 +266,7 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
-      TransportRequestItemModel params) async {
+      int params) async {
     try {
       final data = await remoteDataSource.getTrips(params);
       return Right(data);
@@ -465,6 +465,24 @@ class EkramRepositoryImpl implements EkramRepository {
       UpdateDriverLocationParams params) async {
     try {
       final data = await remoteDataSource.upadateDriverLocation(params);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+          ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    }
+  }
+  @override
+  Future<Either<Failure, ResponseBodyModel>> currentTrackLocation(
+      int requestId) async {
+    try {
+      final data = await remoteDataSource.currentTrackLocation(requestId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

@@ -88,7 +88,7 @@ abstract class EkramRepository {
       getidenticalList(int params);
 
   Future<Either<Failure, ResponseBodyModel<List<TripDetailsModel>>>> getTrips(
-      TransportRequestItemModel params);
+      int params);
 
   Future<Either<Failure, ResponseBodyModel<TripLocationsResponse>>>
       getTripsLocation(int params);
@@ -112,6 +112,8 @@ abstract class EkramRepository {
 
   Future<Either<Failure, ResponseBodyModel<dynamic>>> upadateDriverLocation(
       UpdateDriverLocationParams params);
+  Future<Either<Failure, ResponseBodyModel<dynamic>>> currentTrackLocation(
+      int requestId);
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getStatus();
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getLocations();

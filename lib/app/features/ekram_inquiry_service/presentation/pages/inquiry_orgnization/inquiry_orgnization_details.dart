@@ -36,13 +36,21 @@ class _InquiryOrgnizaionDetailsPageState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: DefaultAppBarWidget(
-        titleWidget: Text(
-          "ekram_inquiry_orgnizations".tr(),
-          overflow: TextOverflow.fade,
-          style: const TextStyle(color: AppColor.black),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(80.0), // here the desired height
+
+        child: AppBar(
+          backgroundColor: Colors.transparent,
+          iconTheme: IconThemeData(
+            color: Colors.black, //change your color here
+          ),
+          elevation: 0,
+          title: Text(
+            "ekram_inquiry_orgnizations".tr(),
+            maxLines: 3,
+            style: TextStyle(fontSize: 15, color: Colors.black),
+          ),
         ),
-        x: true,
       ),
       body: BlocProvider(
         create: (context) =>

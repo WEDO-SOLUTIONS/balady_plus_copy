@@ -17,7 +17,6 @@ import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_fiel
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
 
-
 // class DeceasedInfoSection extends StatefulWidget  {
 //   const DeceasedInfoSection({Key? key}) : super(key: key);
 //
@@ -26,23 +25,15 @@ import '../../../data/model/request_details_response_model/deceased_info.dart';
 //       _DeceasedInfoSectionState();
 // }
 
-
-
-
-class DeceasedInfoSection extends  StatelessWidget  {
+class DeceasedInfoSection extends StatelessWidget {
   const DeceasedInfoSection({super.key});
 
   @override
   Widget build(BuildContext context) {
-
-
     return BlocConsumer<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
       listener: (context, state) {},
       builder: (context, state) {
-
-
-
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -88,8 +79,10 @@ class DeceasedInfoSection extends  StatelessWidget  {
                                       enabled: true,
                                       label: "ekram_first_name".tr(),
                                       hintText: "ekram_first_name".tr(),
-                                       textFieldHeight: 55,
-                                      initialValue:  state.requestDetailsModel?.deceasedInfo?.firstName??"",
+                                      textFieldHeight: 55,
+                                      initialValue: state.requestDetailsModel
+                                              ?.deceasedInfo?.firstName ??
+                                          "",
                                       onChanged: (String? text) {
                                         if (text != null) {
                                           //firstName?.text = text;
@@ -124,10 +117,11 @@ class DeceasedInfoSection extends  StatelessWidget  {
                                       label: "ekram_second_name".tr(),
                                       hintText: "ekram_second_name".tr(),
                                       textFieldHeight: 55,
-                                     initialValue:  state.requestDetailsModel?.deceasedInfo?.secondName??"",
+                                      initialValue: state.requestDetailsModel
+                                              ?.deceasedInfo?.secondName ??
+                                          "",
                                       onChanged: (String? text) {
                                         if (text != null) {
-
                                           context
                                               .read<
                                                   EkramRequestTransportationBloc>()
@@ -159,10 +153,11 @@ class DeceasedInfoSection extends  StatelessWidget  {
                                       label: "ekram_third_name".tr(),
                                       textFieldHeight: 55,
                                       hintText: "ekram_third_name".tr(),
-                                  initialValue:  state.requestDetailsModel?.deceasedInfo?.thirdName??"",
+                                      initialValue: state.requestDetailsModel
+                                              ?.deceasedInfo?.thirdName ??
+                                          "",
                                       onChanged: (String? text) {
                                         if (text != null) {
-
                                           context
                                               .read<
                                                   EkramRequestTransportationBloc>()
@@ -192,12 +187,13 @@ class DeceasedInfoSection extends  StatelessWidget  {
                               state.editInfoSection == true
                                   ? CustomTextFieldWidget(
                                       label: "ekram_fourth_name".tr(),
-                                    initialValue:  state.requestDetailsModel?.deceasedInfo?.fourthName??"",
-                                        textFieldHeight: 55,
+                                      initialValue: state.requestDetailsModel
+                                              ?.deceasedInfo?.fourthName ??
+                                          "",
+                                      textFieldHeight: 55,
                                       hintText: "ekram_fourth_name".tr(),
                                       onChanged: (String? text) {
                                         if (text != null) {
-
                                           context
                                               .read<
                                                   EkramRequestTransportationBloc>()

@@ -8,6 +8,7 @@ import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transpor
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetery_types_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_current_track_location.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_launduries_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_mosques_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_prayers.dart';
@@ -91,6 +92,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetDeathCities _deathCities;
   final VerifyDeceased _verifyDeceased;
   final GetRequestDetails _getRequestDetails;
+  final GetCurrentTrackLocation _getCurrentTrackLocation;
   final GetCountreies _getCountreies;
   final SaveDeceasedInfo _saveDeceasedInfo;
   final GetMadinahEmirateApprovalStatus _getMadinahEmirateApprovalStatus;
@@ -123,6 +125,7 @@ class EkramRequestTransportationBloc extends Bloc<
         _getNationalities = getNationalities,
         _applyDeceasedTransport = applyDeceasedTransport,
         _getRequestDetails = getRequestDetails,
+        _getCurrentTrackLocation = GetCurrentTrackLocation(repository: sl()),
         _saveDeceasedInfo = SaveDeceasedInfo(repository: sl()),
         _deathCities = GetDeathCities(repository: sl()),
         _getMadinahEmirateApprovalStatus =
@@ -191,6 +194,7 @@ class EkramRequestTransportationBloc extends Bloc<
     on<ChangeDeceasedUserInfoEvent>(_changeDeceasedInfoDataHanlder);
     on<SetApplicantInfoEvent>(_setApplicantInfoDataHanlder);
     on<getRequestDetailsEvent>(_getRequestDetailsHandler);
+    on<getCurrentTrackLocationEvent>(_getCurrentTrackLocationHandler);
     on<saveDeceasedInfoEvent>(_saveDeceasedInfoHandler);
     on<saveBurianDeathInfoEvent>(_saveDeceasedBurialInfoHandler);
     on<ChangeDeathInfoEvent>(_changeDeathandBurialHandler);
@@ -670,7 +674,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
       NavigationService.navigatorKey.currentState!.pushNamed(
           RouteName.ekramSuccessScreen,
-          arguments: "${state.requestId}");
+          arguments: "${state.requestId!}");
     });
   }
 
@@ -951,6 +955,26 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         requestDetailsModel: res.data?.result,
         editInfoSection: isScreenEditable(res.data?.result),
+        errorMessage: "",
+      ));
+    });
+  }
+  Future<void> _getCurrentTrackLocationHandler(
+      getCurrentTrackLocationEvent e, Emitter emitter) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await _getCurrentTrackLocation(e.requestId);
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+          isVerified: false));
+      return null;
+    }, (res) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+    lat:res.data?.result,
+    long:res.data?.result,
         errorMessage: "",
       ));
     });
