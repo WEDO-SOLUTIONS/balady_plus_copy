@@ -27,6 +27,7 @@ class Step5SummeryWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ComplianceBloc, ComplianceState>(
+
       builder: (context, state) {
         return CustomExpansionPanelWidget(
           title: ("compliance_clauses_title").tr(),
@@ -38,6 +39,7 @@ class Step5SummeryWidget extends StatelessWidget {
               itemCount: state.requestDetails?.emtithalItems?.length ?? 0,
               itemBuilder: (context, index) {
                 return Column(
+
                   children: [
                     ComplianceFieldData(
                         item: state.requestDetails!.emtithalItems![index]),
