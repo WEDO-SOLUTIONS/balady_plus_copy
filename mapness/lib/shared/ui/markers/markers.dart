@@ -11,6 +11,8 @@ class Markers {
     String? icon,
     double? width,
     double? height,
+    String? text,
+    MarkerTextStyleMessage? textStyle,
   }) =>
       Marker(
         id: id ?? 'PIN-MARKER',
@@ -20,6 +22,8 @@ class Markers {
             svgPath: icon ?? defaultPin,
             width: width ?? defaultWidth,
           ),
+          text: text,
+          textStyle: textStyle,
           anchor: MarkerAnchorMessage(x: 0.5, y: 1),
           animatedAppearance: true,
           zIndex: 50,
