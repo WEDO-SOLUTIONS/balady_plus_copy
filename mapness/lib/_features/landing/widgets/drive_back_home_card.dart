@@ -12,19 +12,12 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/features/share_eta/entities/route_type_mapper.dart';
-import 'package:mapness/features/share_eta/models/eta_route_info.dart' as eta;
-import 'package:mapness/features/share_eta/models/eta_route_info.dart';
-import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
-import 'package:mapness/features/share_eta/providers/eta_stream_storage.dart';
-import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 class DriveBackHomeCard extends ConsumerWidget {
@@ -106,11 +99,8 @@ class DriveBackHomeCard extends ConsumerWidget {
     ref.read(authMethodsProvider.notifier).authAndOpen(
       context,
       callback: () async {
-        if (!context.mounted) {
-          return;
-        }
-
-        final home = await getHome(context, ref);
+        /// We use [Future] to ensure that when we log into the app, the initial state of home will be set for this round of the event loop.
+        final home = await Future(() async => getHome(context, ref));
 
         /// If no home, exit from the function and not openning navigator to driving back home.
         if (home == null) {
@@ -193,33 +183,40 @@ class DriveBackHomeCard extends ConsumerWidget {
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
   ) async {
-    final _routeType = navigatingType.toRouteType();
     final routes = current.valueOrNull;
     final route = routes?.firstOrNull;
     if (route == null) {
       return;
     }
 
-    setupEta(finishLocation, ref, startLocation, _routeType);
     await setupMap(ref);
-    await openNavigation(ref, route, context);
+    await openNavigation(ref, context, startLocation, finishLocation);
   }
 
-  Future<void> openNavigation(WidgetRef ref, RouteInfo route, BuildContext context) async {
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
-    await ref.read(urbiAnalyticsProvider).track(
-      'startNavigation',
-      properties: {
-        'duration': route.duration,
-        'distance': route.distance,
-      },
-    );
-
+  Future<void> openNavigation(
+    WidgetRef ref,
+    BuildContext context,
+    RouteParamsPoint startLocation,
+    RouteParamsPoint finishLocation,
+  ) async {
     await context.router.push(
-      PathNavRoute(
-        navType: navigatingType,
-        isHomeOrWork: true,
-        initAction: PathNavPageInitAction.startNavigation,
+      RoutingRoutesRoute(
+        points: [
+          RouteParamsPointWithLabel(
+            value: startLocation,
+            label: context.l10n.myLocation,
+          ),
+          RouteParamsPointWithLabel(
+            value: RouteParamsPoint(
+              latitude: finishLocation.latitude,
+              longitude: finishLocation.longitude,
+              objectId: finishLocation.objectId,
+              entranceId: finishLocation.entranceId,
+              levelId: finishLocation.levelId,
+            ),
+            label: context.l10n.home,
+          ),
+        ],
       ),
     );
   }
@@ -240,27 +237,6 @@ class DriveBackHomeCard extends ConsumerWidget {
       group: MetricsConstants.routesTag,
       action: MetricAction.tap.toString(),
     );
-  }
-
-  void setupEta(
-      RouteParamsPoint finishLocation, WidgetRef ref, RouteParamsPoint startLocation, eta.RouteType _routeType) {
-    EtaStreamStorage()
-      ..setLatitude(finishLocation.latitude)
-      ..setLongitude(finishLocation.longitude);
-
-    ref.read(etaRouteInfoProvider.notifier).setRoute(eta.EtaRoute(
-          startPoint: EtaRoutePoint(
-            lat: startLocation.latitude,
-            lon: startLocation.longitude,
-          ),
-          endPoint: EtaRoutePoint(
-            lat: finishLocation.latitude,
-            lon: finishLocation.longitude,
-          ),
-          type: _routeType,
-          routeIndex: 0,
-          createdAt: DateTime.now().toUtc().toIso8601String(),
-        ));
   }
 }
 
