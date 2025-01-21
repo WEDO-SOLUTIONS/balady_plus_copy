@@ -20,7 +20,7 @@ final class FlutterCarPlayDashboardSceneDelegate: UIResponder, CPTemplateApplica
         let button = CPDashboardButton(titleVariants: [], subtitleVariants: [], image: UIImage(named: "MockImage")!.withRenderingMode(.alwaysOriginal))
         
         dashboardController.shortcutButtons = [button]
-        window.rootViewController = DgisCarPlayDashboardMapView()
+        window.rootViewController = mapView
     }
     
     func templateApplicationDashboardScene(

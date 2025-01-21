@@ -315,15 +315,6 @@ class NavigationHandler {
         
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            
-//            self.navigationManager.mapManager.addMap(map: self.map)
-//            if let carPlayDashboardMap = FlutterCarPlayDashboardSceneDelegate.map {
-//                self.navigationManager.mapManager.addMap(map: carPlayDashboardMap)
-//            }
-//            if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-//                self.navigationManager.mapManager.addMap(map: carPlayMap)
-//                FlutterCarPlaySceneDelegate.startNavigation()
-//            }
 
             try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
