@@ -1,6 +1,5 @@
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigator_auto_enable_parking.g.dart';
@@ -11,14 +10,6 @@ const String _autoEnableParkingKey = 'navigator_settings.auto_enable_parking';
 class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
   @override
   bool? build() {
-    ref.onDispose(() {
-      final layers = ref.read(layersControlsProvider);
-
-      if (layers.selectedType == LayerType.parkingLots) {
-        ref.read(layersControlsProvider.notifier).hideParking();
-      }
-    });
-
     final sharedPrefs = ref.read(sharedPrefsProvider);
     final autoEnableParking = sharedPrefs.getBool(_autoEnableParkingKey);
 
