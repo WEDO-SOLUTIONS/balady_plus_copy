@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -83,7 +84,12 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
             ),
             MeasureSize(
               onChange: (size) {
-                ref.read(cameraPaddingProvider.notifier).setPaddingInBottom(size.height + mediaQueryTop);
+                final initPadding = (size.height + mediaQueryTop + (mediaQuery?.padding.bottom ?? 0)) *
+                    (mediaQuery?.devicePixelRatio ?? 1);
+
+                ref
+                    .read(cameraPaddingProvider.notifier)
+                    .setPadding(CameraSetPaddingMessage(bottomPadding: initPadding.toInt()));
               },
               child: Container(
                 decoration: BoxDecoration(
