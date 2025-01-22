@@ -40,9 +40,9 @@ class _NewAppointmentPageState extends State<NewAppointmentPage> {
 
   @override
   Widget build(BuildContext context) {
+    var argument = ModalRoute.of(context)!.settings.arguments;
     AppointmentItemInfo? editedItem =
-        ModalRoute.of(context)!.settings.arguments as AppointmentItemInfo?;
-
+        argument is AppointmentItemInfo? ? argument : null;
     return BlocProvider<NewAppointmentBloc>(
       create: (context) => NewAppointmentBloc(
         withPreviousTransaction: false,
