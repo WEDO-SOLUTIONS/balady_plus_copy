@@ -1050,7 +1050,7 @@ Map<String, dynamic> newServicesConfig = {
   /////////////////////////////////////////////////////////////////////////////
   "servicesCategories": [
     {
-      "title": "خدمات يومية",
+      "title": "Daily services",
       "icon": "",
       "listOfServices": [
         {
@@ -1068,7 +1068,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         },
         {
           "id": 102,
@@ -1085,7 +1086,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         },
         {
           "id": 103,
@@ -1102,7 +1104,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         },
         {
           "id": 104,
@@ -1119,7 +1122,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         },
         {
           "id": 105,
@@ -1136,7 +1140,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         },
         {
           "id": 106,
@@ -1153,7 +1158,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         },
         {
           "id": 107,
@@ -1170,12 +1176,13 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Daily services"
         }
       ]
     },
     {
-      "title": "خدمات الأفراد",
+      "title": "Individual services",
       "icon": "",
       "listOfServices": [
         {
@@ -1193,7 +1200,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11429,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 201,
@@ -1210,7 +1218,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "SnapAndSend_Open_From_Services_Event",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 311,
@@ -1227,7 +1236,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 203,
@@ -1244,7 +1254,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 204,
@@ -1261,7 +1272,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 314,
@@ -1278,7 +1290,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 205,
@@ -1295,7 +1308,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 208,
@@ -1312,7 +1326,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 209,
@@ -1329,7 +1344,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 212,
@@ -1346,7 +1362,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 221,
@@ -1360,7 +1377,7 @@ Map<String, dynamic> newServicesConfig = {
           "levelLogin": "sso",
           "actionType": "page",
           "actionValue": "subServicesScreen",
-          "listOfServices": [
+          "subServices":  [
             {
               "id": 213,
               "title": "طلبات نقل وتجهيز متوفى",
@@ -1373,11 +1390,13 @@ Map<String, dynamic> newServicesConfig = {
               "levelLogin": "sso",
               "actionType": "page",
               "actionValue":
-                  "RequestsTransportingAndPreparingDeceased_List_Page",
+              "RequestsTransportingAndPreparingDeceased_List_Page",
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             },
             {
               "id": 214,
@@ -1394,7 +1413,9 @@ Map<String, dynamic> newServicesConfig = {
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             },
             {
               "id": 215,
@@ -1411,7 +1432,9 @@ Map<String, dynamic> newServicesConfig = {
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             },
             {
               "id": 216,
@@ -1428,7 +1451,9 @@ Map<String, dynamic> newServicesConfig = {
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             },
             {
               "id": 217,
@@ -1445,7 +1470,9 @@ Map<String, dynamic> newServicesConfig = {
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             },
             {
               "id": 218,
@@ -1462,7 +1489,9 @@ Map<String, dynamic> newServicesConfig = {
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             },
             {
               "id": 316,
@@ -1479,12 +1508,15 @@ Map<String, dynamic> newServicesConfig = {
               "listOfServices": [],
               "serviceId": null,
               "eventName": "",
-              "requireSelectedDelegator": false
+              "requireSelectedDelegator": false,
+              "categoryName": "Individual services",
+              "subServiceName": "إكرام"
             }
           ],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 308,
@@ -1501,7 +1533,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 219,
@@ -1518,7 +1551,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 220,
@@ -1535,7 +1569,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "Start_Service_MobileStores",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 222,
@@ -1552,7 +1587,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11340,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 11124,
@@ -1569,7 +1605,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11124,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 11428,
@@ -1586,7 +1623,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11428,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 11134,
@@ -1603,7 +1641,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11134,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         },
         {
           "id": 210,
@@ -1620,7 +1659,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Individual services"
         }
       ]
     },
@@ -1644,6 +1684,7 @@ Map<String, dynamic> newServicesConfig = {
           "serviceId": 11010,
           "eventName": "",
           "requireSelectedDelegator": true,
+          "categoryName": "Business services",
         },
         {
           "id": 302,
@@ -1661,6 +1702,7 @@ Map<String, dynamic> newServicesConfig = {
           "serviceId": null,
           "eventName": "",
           "requireSelectedDelegator": true,
+          "categoryName": "Business services",
         },
         {
           "id": 303,
@@ -1677,7 +1719,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 306,
@@ -1694,7 +1737,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "Start_Service_EwaaPlatform",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 307,
@@ -1711,7 +1755,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11429,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 308,
@@ -1728,7 +1773,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 309,
@@ -1745,7 +1791,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "Start_Service_CommercialServices",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 311,
@@ -1762,7 +1809,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 210,
@@ -1779,7 +1827,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 314,
@@ -1796,7 +1845,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 315,
@@ -1813,7 +1863,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "Start_Service_ConstructionServices",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
         },
         {
           "id": 222,
@@ -1830,8 +1881,9 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": 11340,
           "eventName": "",
-          "requireSelectedDelegator": false
-        }
+          "requireSelectedDelegator": false,
+          "categoryName": "Business services",
+        },
       ]
     },
     {
@@ -1853,7 +1905,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         },
         {
           "id": 499,
@@ -1870,7 +1923,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         },
         {
           "id": 402,
@@ -1887,7 +1941,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         },
         {
           "id": 403,
@@ -1904,7 +1959,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         },
         {
           "id": 404,
@@ -1921,7 +1977,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         },
         {
           "id": 405,
@@ -1938,7 +1995,8 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         },
         {
           "id": 406,
@@ -1955,9 +2013,12 @@ Map<String, dynamic> newServicesConfig = {
           "listOfServices": [],
           "serviceId": null,
           "eventName": "",
-          "requireSelectedDelegator": false
+          "requireSelectedDelegator": false,
+          "categoryName": "Assisting Services",
         }
       ]
     },
   ]
 };
+
+
