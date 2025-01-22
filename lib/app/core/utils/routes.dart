@@ -50,7 +50,7 @@ import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart
 import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
 import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
 import '../../core/utils/utils_exports.dart'
-    show EtmamRoutesNames, RouteName, RouteName;
+    show EtmamRoutesNames, RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
@@ -58,7 +58,6 @@ import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
 import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
-import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
@@ -96,9 +95,7 @@ import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_result_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_section_page.dart';
-import '../../features/services/presentation/pages/all_services_page.dart';
 import '../../features/services/presentation/pages/dashboard_page/presentation/pages/profile_page.dart';
-import '../../features/survey_license_inquery_report/persentation/survey_license_overview/survey_report_overview_screen.dart';
 import '../../features/survey_license_inquery_report/persentation/survey_license_query/survey_report_inquery_screen.dart';
 import '../../features/survey_license_inquery_report/persentation/survey_license_query_Details/survey_report_inquery_details.dart';
 import '../../features/unknow/pages/direct_page.dart';
@@ -166,7 +163,6 @@ import '../../features/retrive_car/presentation/pages/dc_select_retrive_request_
 import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
 
 import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
-import '../../features/services/services_exports.dart' show ServiceCardsPage;
 
 import '../../features/transaction_inquiry/presentation/pages/inquiry/general_inquiry/general_inquiry_page.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/inquiry_details_screen.dart';
@@ -314,6 +310,7 @@ class Routes {
 
     RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
     RouteName.etmamMainPage: (context) => const EtmamMainPage(),
+    RouteName.cityServicesEtmamMainPage: (context) => const CityServicesEtmamMainPage(),
     RouteName.etmamMainPageCitySelector: (context) => const EtmamMainCityPage(),
 
     //! Services
@@ -614,20 +611,16 @@ class Routes {
     RouteName.EkramRequestTransportationStartService: (context) =>
         const EkramRequestTransportationStartService(),
     RouteName.DashbordDataPage: (context) => const DashbordDataPage(),
-    RouteName.SpecificServicePage: (context) => const AllServicesPage(),
+    // RouteName.SpecificServicePage: (context) => const AllServicesPage(),
     RouteName.jodDonationPage: (context) => const JodDonationPage(),
     RouteName.chatbot: (context) => const ChatBotScreen(),
     RouteName.chatHistoryDetailsRoute: (context) =>
     const ChatHistoryDetails(),
 
-    RouteName.surveyReportInqueryOverView: (context) =>
-        const SurveyReportOverviewScreen(),
     RouteName.surveyReportInquery: (context) =>
         const SurveyReportInqueryScreen(),
     RouteName.surveyReportInqueryDetails: (context) =>
         const SurveyReportInqueryDetails(),
-    RouteName.constructionLicenseOverView: (context) =>
-        const ConstructionLicenseOverviewScreen(),
     RouteName.constructionLicenseInquery: (context) =>
         const ConstructionLicenseInqueryScreen(),
     RouteName.constructionLicenseInqueryDetails: (context) =>
