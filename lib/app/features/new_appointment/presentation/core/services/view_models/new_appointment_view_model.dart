@@ -5,7 +5,6 @@ import 'package:mime/mime.dart';
 import 'package:tuple/tuple.dart';
 
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,6 @@ import '../../../../../../core/utils/enums/enums.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
 import '../../../../../_shared_feature_/data/entities/success_screen_args.dart';
 import '../../../../../_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
-import '../../../pages/new_appointment_screens/new_appointment_first_step_screen.dart';
 import '../../models/appointment_details_model.dart';
 import '../../models/attachment_item_model.dart';
 import '../../models/available_dates_response.dart';
@@ -34,8 +32,6 @@ import '../../models/sub_class_response.dart';
 import '../../models/sub_municipalitiy_model.dart';
 import '../../models/upload_file_resepnse.dart';
 import '../repository/appointment_repository.dart';
-import 'new_appointment_first_step_view_model.dart';
-import 'new_appointment_view_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NewAppointmentViewModel extends BaseViewModel {
@@ -773,14 +769,14 @@ class NewAppointmentViewModel extends BaseViewModel {
   }
 
   Future<bool> loadInitialData() async {
-    showLoading();
+    // showLoading();
     List<bool> response = await Future.wait<bool>([
       getLookUpListSubmitter(),
       getLookUpListSpecialCondition(),
       getMunicipalities(),
       getLookUpListCategory()
     ]);
-    hideLoading();
+    // hideLoading();
 
     return !response.contains(false) ? true : false;
   }
