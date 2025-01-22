@@ -76,9 +76,6 @@ class NavigationHandler {
             self.navigationManager.uiModel.betterRouteChannel.sink(receiveValue: betterRouteListener)
         )
         
-        if let carMapView = FlutterCarPlaySceneDelegate.mapView {
-            carMapView.addSpeedControl()
-        }
         navigationManager.mapManager.addMap(map: map)
     }
     

@@ -18,7 +18,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
         guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
             fatalError("Plugin has not been initialized")
         }
-
+        
         let map = mapFactory.map
         let mapView = mapFactory.mapView
         try? map.camera.setPositionPoint(positionPoint: DgisCarPlayMapView.defaultCameraPositionPoint)
@@ -43,7 +43,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         self.view.addSubview(mapView)
-
+        
         NSLayoutConstraint.activate([
             mapView.leftAnchor.constraint(equalTo: view.leftAnchor),
             mapView.rightAnchor.constraint(equalTo: view.rightAnchor),
@@ -51,10 +51,26 @@ class DgisCarPlayDashboardMapView: UIViewController {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         self.mapView = mapView
+        addSpeedControl()
         self.delegate?.viewDidLoad(with: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
+        }
+    }
+    
+    func addSpeedControl() {
+        let model = DgisMapInitializer.shared.getNavigationManager().uiModel
+        let navigationViewFactory = (try? DgisMapInitializer.shared.getSdkContainer().makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
+        if let speedControl = navigationViewFactory?.makeSpeedControl(uiModel: model) {
+            speedControl.translatesAutoresizingMaskIntoConstraints = false
+            self.view.addSubview(speedControl)
+
+            speedControl.applyTransform(withScale: 0.6, anchorPoint: CGPoint(x: 0, y: 1))
+            NSLayoutConstraint.activate([
+                speedControl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+                speedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
+            ])
         }
     }
     

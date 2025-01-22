@@ -16,15 +16,12 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     private var map: Map?
     private var eventProcessor: IMapEventProcessor?
     private var mapView: (UIView & IMapView)?
-    private var speedControl: UIView?
     
     private var myLocationControlModel: MyLocationControlModel?
     private var zoomControlModel: ZoomControlModel?
     
     private var trafficControlModel: TrafficControlModel?
     var trafficButton: CPBarButton?
-    
-    private var navigationViewFactory: INavigationViewControlsFactory?
     
     private var cancellables = Set<Cancellable>()
     
@@ -75,11 +72,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
             mapView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
         self.mapView = mapView
-        
         addSpeedControl()
-        
-        self.navigationViewFactory = (try? sdk.makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
-        
         self.delegate?.viewDidLoad(with: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
@@ -92,22 +85,17 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     }
     
     func addSpeedControl() {
-        guard self.speedControl == nil else { return }
-        
         let model = DgisMapInitializer.shared.getNavigationManager().uiModel
+        let navigationViewFactory = (try? DgisMapInitializer.shared.getSdkContainer().makeNavigationViewFactory())?.makeNavigationViewControlsFactory()
         if let speedControl = navigationViewFactory?.makeSpeedControl(uiModel: model) {
-            self.speedControl = speedControl
             speedControl.translatesAutoresizingMaskIntoConstraints = false
             self.view.addSubview(speedControl)
-
-            speedControl.applyTransform(withScale: 0.6, anchorPoint: CGPoint(x: 0, y: 1))
             
+            speedControl.applyTransform(withScale: 0.6, anchorPoint: CGPoint(x: 0, y: 1))
             NSLayoutConstraint.activate([
                 speedControl.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -16),
+                speedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
             ])
-            
-            let topAnchorConstraint = speedControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16)
-            topAnchorConstraint.isActive = true
         }
     }
     
