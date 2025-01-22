@@ -21,7 +21,7 @@ class NotificationRequest {
     map['appId'] = appId;
     map['appVersion'] = appVersion;
     map['fcmToken'] = fcmToken;
-    map['FCMTokenSource'] = FCMTokenSource;
+    map['appNotificationsChannel'] = FCMTokenSource;
     return map;
   }
 }
