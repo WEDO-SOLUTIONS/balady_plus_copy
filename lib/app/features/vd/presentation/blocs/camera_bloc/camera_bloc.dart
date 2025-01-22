@@ -41,6 +41,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   final GetSpecialClassifications _getSplList;
   final GetGISData _getGisData;
   bool initializingCamera = false;
+
   CameraBloc(
       {required GetSpecialClassifications getSplList,
       required GetGISData getGisData,
@@ -49,25 +50,26 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       : _getSplList = getSplList,
         _getGisData = getGisData,
         super(CameraState(
-            location: (params.lat != null && params.lon != null)
-                ? GISParams(x: params.lon!, y: params.lat!)
-                : null,
-            qrCodeFlow: params.qrCodeFlow,
-            pageType: params.pageType,
-            selectedCattegory: params.selectedCategory!,
-            isFromHome: params.isFromHome)) {
+          location: (params.lat != null && params.lon != null)
+              ? GISParams(x: params.lon!, y: params.lat!)
+              : null,
+          qrCodeFlow: params.qrCodeFlow,
+          pageType: params.pageType,
+          selectedCattegory: params.selectedCategory!,
+          // isFromHome: params.isFromHome,
+        )) {
     on<InitCameraEvent>((event, emit) async {
       emit(state.copyWith(status: BlocStatus.loading));
       try {
         cameras = await availableCameras();
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         error.toString();
       }
       if (cameras?.length != 0) {
@@ -80,14 +82,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           initializingCamera = false;
           cameraController?.setFlashMode(FlashMode.off);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
       emit(state.copyWith(
           isFlashOn: false,
@@ -142,24 +144,24 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             timeLimit: const Duration(seconds: 20));
         emitter(state.copyWith(status: BlocStatus.success));
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         try {
           position = await Geolocator.getLastKnownPosition();
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         if (position != null) {
           emitter(state.copyWith(
             status: BlocStatus.success,
@@ -248,14 +250,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       initializingCamera = false;
       _controller.setFlashMode(FlashMode.off);
     } on CameraException catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     emitter(state.copyWith(
         status: BlocStatus.success,
         isCameraInitialized: cameraController?.value.isInitialized));
@@ -289,14 +291,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         }
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future<void> _onReTakePhotoHandler(

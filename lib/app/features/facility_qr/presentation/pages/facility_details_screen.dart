@@ -1,8 +1,6 @@
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
-import 'package:balady_plus/app/features/transaction_inquiry/presentation/core/models/selected_location.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' show StreamController;
 
@@ -21,7 +19,6 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view.dart';
 import '../../../../core/base/base_view_model.dart';
-import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
@@ -30,23 +27,18 @@ import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
-import '../../../../core/utils/map_utils.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show
         BottomSheetDialog,
         BottomSheetWithActions,
-        CustomHorizontalSpace,
         CustomNetworkImageWidget,
         CustomSvgIconWidget,
         CustomTextWidget,
         CustomVerticalSpace,
-        DrawLineWidget,
-        LabelIconComponent,
         LabelIconSubtitleComponent;
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
-import '../../../vd/domain/entities/categories/category_item.dart';
 import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 import '../widgets/facility_details_widgets/facility_rating_widget.dart';
 import '../widgets/facility_details_widgets/qr_classification_widget.dart';
@@ -322,15 +314,15 @@ class FacilityInfoSection extends StatelessWidget {
         ],
 
         /*
-      
-     
+
+
         CustomSectionSubHeaderAndDescWithImg(
           title: ('rating_tours').tr(),
           titleImg: "qr_rating_star@3x.png",
           desc: viewModel.getFacilityClassification(),
           descImg: viewModel.getFacilityClassificationImg(),
         ),
-    
+
      */
         const CustomVerticalSpace(height: 24),
       ],
@@ -651,11 +643,12 @@ class SubmitIncidentSection extends StatelessWidget {
                     title: "customerVoiceReportTypeWord".tr(),
                     body: QrTypesDialog(
                       cmeraParamsPage: CameraParamsPage(
-                          lat: lat,
-                          lon: long,
-                          qrCodeFlow: true,
-                          pageType: PAGE_TYPE.qrDetailsScreen,
-                          isFromHome: false),
+                        lat: lat,
+                        lon: long,
+                        qrCodeFlow: true,
+                        pageType: PAGE_TYPE.qrDetailsScreen,
+                        // isFromHome: false,
+                      ),
                     ),
                   ));
             }

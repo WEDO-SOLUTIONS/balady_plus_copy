@@ -1,30 +1,21 @@
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import 'package:balady_plus/app/features/map_page/data/model/excavations.dart';
 import 'package:balady_plus/app/features/map_page/data/model/resturant_model.dart';
 import 'package:balady_plus/app/features/map_page/presentation/widgets/map_details_header.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/working_time_widget.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../core/utils/enums/enums.dart';
 import '../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
-import '../../../_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
-import '../../../_shared_feature_/presentation/components/texts/label_icon_component.dart';
-import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
 import '../../../vd/domain/entities/categories/category_item.dart';
-import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 import '../../constants/constants.dart';
 import '../widgets/map_details_field.dart';
 import '../widgets/map_details_sub_header.dart';
@@ -141,16 +132,18 @@ class ResturantDetailsPage extends StatelessWidget {
                                   context);
                           if (isLocationAvailable && isCameraAllowed) {
                             NavigationService.navigatorKey.currentState!
-                                .pushNamed(RouteName.vdCameraPage,
-                                    arguments: CameraParamsPage(
-                                        lat: lat,
-                                        lon: long,
-                                        qrCodeFlow: true,
-                                        pageType: PAGE_TYPE.qrDialog,
-                                        selectedCategory: CategoryItem(
-                                            categoryId:
-                                                RemoteConfig.marketClass.first),
-                                        isFromHome: false));
+                                .pushNamed(
+                              RouteName.vdCameraPage,
+                              arguments: CameraParamsPage(
+                                lat: lat,
+                                lon: long,
+                                qrCodeFlow: true,
+                                pageType: PAGE_TYPE.qrDialog,
+                                selectedCategory: CategoryItem(
+                                    categoryId: RemoteConfig.marketClass.first),
+                                // isFromHome: false,
+                              ),
+                            );
                           }
                         },
                       ),
