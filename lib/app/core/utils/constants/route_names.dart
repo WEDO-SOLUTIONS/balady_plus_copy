@@ -12,6 +12,7 @@ class RouteName {
   static const apigeeImageFullScreen = '/apigeeImageFullScreen';
 
   static const etmamMainPage = '/etmamMainPage';
+  static const cityServicesEtmamMainPage = '/CityServicesEtmamMainPage';
   static const etmamMainPageCitySelector = '/etmamMainPageCitySelector';
 
   static const forceUpdateRoute = '/forceUpdateRoute';
