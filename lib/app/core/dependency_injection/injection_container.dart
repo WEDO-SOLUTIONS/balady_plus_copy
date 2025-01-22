@@ -61,7 +61,6 @@ import '../dependency_injection/dependency_injection_exports.dart'
         OTPInjection,
         PrayerTimesInjection,
         RequestsInjection,
-        ServicesInjection,
         SignUpInjection,
         VDInjection,
         ViolationsInjection;
@@ -101,8 +100,6 @@ void initialize() {
 
   //? Sign-Up
   SignUpInjection.init();
-  //? Services
-  ServicesInjection.init();
 
   //! Services
   //* Public Services
