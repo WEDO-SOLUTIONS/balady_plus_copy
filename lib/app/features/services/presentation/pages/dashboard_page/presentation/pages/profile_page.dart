@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/enhanced_app_bar.dart';
@@ -33,7 +34,7 @@ class _DashbordDataPageState extends State<DashbordDataPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: ModalRoute.of(context)!.settings.arguments as DelegatorsCubit,
+      value: sl<DelegatorsCubit>(),
       child: BlocBuilder<EntryPointCubit, EntryPointState>(
         builder: (context, state) {
           bool isLoggedin = CommonProperties.isLoggedIn;

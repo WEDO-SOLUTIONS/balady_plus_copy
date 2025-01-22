@@ -1,8 +1,9 @@
+import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/failures.dart' show Failure, CacheFailure;
 import '../../services_exports.dart'
-    show ServiceEntity, ServicesLocalDataSource, ServicesRepository;
+    show ServicesLocalDataSource, ServicesRepository;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class ServicesRepositoryImplementation implements ServicesRepository {
@@ -13,9 +14,9 @@ class ServicesRepositoryImplementation implements ServicesRepository {
   });
 
   @override
-  Future<Either<Failure, List<ServiceEntity>>> getEkramServices() async {
+  Future<Either<Failure, HomeServices>> getAllServices() async {
     try {
-      final services = await localDataSource.getEkramServices();
+      final services = await localDataSource.getAllServices();
       return Right(services);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -29,72 +30,4 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     }
   }
 
-  @override
-  Future<Either<Failure, List<ServiceEntity>>> getIslamicServices() async {
-    try {
-      final services = await localDataSource.getIslamicServices();
-      return Right(services);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ServiceEntity>>>
-      getBusinessLicenseServices() async {
-    try {
-      final services = await localDataSource.getBusinessLicenseServices();
-      return Right(services);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ServiceEntity>>> getHelpServices() async {
-    try {
-      final services = await localDataSource.getHelpServices();
-      return Right(services);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(CacheFailure());
-    }
-  }
-
-  @override
-  Future<Either<Failure, List<ServiceEntity>>> getMunicipalServices() async {
-    try {
-      final services = await localDataSource.getMunicipalServices();
-      return Right(services);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      return Left(CacheFailure());
-    }
-  }
 }

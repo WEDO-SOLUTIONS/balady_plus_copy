@@ -1,6 +1,6 @@
-import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
+import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, MultiBlocProvider;
@@ -12,7 +12,6 @@ import '../../../profile_features/delegators/delegators_exports.dart'
     show DelegatorsCubit;
 import '../../../public_services_features/prayer_times/prayer_times_exports.dart'
     show PrayerTimesCubit;
-import '../../../services/services_exports.dart' show ServicesCubit;
 import '../../../weather/presentation/bloc/weather_bloc.dart';
 import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
 import 'mapness_page.dart';
@@ -49,14 +48,9 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
         BlocProvider<PrayerTimesCubit>(
           create: (_) => sl<PrayerTimesCubit>(),
         ),
-        BlocProvider<ServicesCubit>(
-          create: (_) => ServicesCubit(
-            islamicServices: sl(),
-            businessLicenseServices: sl(),
-            municipalServices: sl(),
-            ekramServices: sl(),
-            //healthCertificatesServices: sl(),
-            helpServices: sl(),
+        BlocProvider<HomeServicesCubit>(
+          create: (_) => HomeServicesCubit(
+            homeServicesUseCases: sl(),
           ),
         ),
         BlocProvider<DelegatorsCubit>(

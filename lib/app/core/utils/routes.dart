@@ -1,9 +1,11 @@
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_routes.dart';
+import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
 import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_routes.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
+import 'package:balady_plus/app/features/daem/presentation/dialogs/daem_types_dialog.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/pages/jod_donation_page.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
@@ -15,9 +17,14 @@ import 'package:balady_plus/app/features/profile_features/help/presentation/scre
 import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
+import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_routes.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
+import 'package:balady_plus/app/features/vd/presentation/dialogs/vd_all_types_dialog.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:balady_plus/app/features/zmzm_points/zmzm_points_exports.dart';
+import 'package:balady_plus/etmam_app/features/home/presentation/pages/city_services_etmam_main_page.dart';
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -383,7 +390,7 @@ class Routes {
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
     RouteName.apigeeImageFullScreen: (context) => const ViewAPIGEEImageScreen(),
 
-    RouteName.serviceCards: (context) => const ServiceCardsPage(),
+    // RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
     //? General Services
 
@@ -645,6 +652,7 @@ class Routes {
     all.addAll(CommercialRoutes.routes);
     all.addAll(AuthenticationRoutes.routes);
     all.addAll(ClassificationCertificateRoutes.routes);
+    all.addAll(HomeServicesRoutes.routes);
     return all;
   }
 }

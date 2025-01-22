@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
-import 'package:flutter/material.dart';
 
 import '../../../../core/utils/utils_exports.dart'
-    show AppColor, AppStyle, ImagePath;
+    show AppColor;
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class EnhancedAppBar extends StatelessWidget implements PreferredSizeWidget {

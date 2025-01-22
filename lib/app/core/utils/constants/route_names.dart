@@ -19,7 +19,7 @@ class RouteName {
   static const QAPage = '/QAPage';
 
   //! Services
-  static const serviceCards = '/serviceCards';
+  // static const serviceCards = '/serviceCards';
 
   //? General Services
   static const prayerTimes = 'Prayer_Times_Page';
@@ -338,7 +338,7 @@ class RouteName {
   //! Dashboard Page
   static const DashbordDataPage = 'DashbordDataPage';
 
-  static const SpecificServicePage = 'SpecificServicePage';
+  // static const SpecificServicePage = 'SpecificServicePage';
   static const jodDonationPage = 'JodDonationPage';
   static const chatbot = '/chatbot';
 

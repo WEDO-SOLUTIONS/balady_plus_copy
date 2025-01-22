@@ -8,7 +8,6 @@ import 'package:balady_plus/app/features/services/presentation/mvvm/service_data
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/costume_list_tile.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_loading_widget.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
-import 'package:balady_uikit/core/icons/general_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -51,7 +50,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
             selector: (_, provider) => provider.isLoading,
             builder: (context, isLoading, child) {
               return isLoading
-                  ?  CustomLoadingWidget()
+                  ?  const CustomLoadingWidget()
                   : viewModel.servicesCardsDetails != null
                       ? SizedBox.expand(
                           child: Column(
@@ -68,8 +67,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                                      Row(
                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-                                        BackButton(color: Colors.white),
-
+                                        const BackButton(color: Colors.white),
                                         showDelagator==true?
                                         InkWell(
                                           onTap: () async {
@@ -660,7 +658,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                               ),
                               Row(
                                 children: [
-                                  BackButton(color: Colors.white),
+                                  const BackButton(color: Colors.white),
                                   Text(
                                     'error'.tr(),
                                     style: AppStyle.violationCreateTitle

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-import '../../services_exports.dart' show ServicesCubit, ServicesState;
+import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 
 class SearchServicesTextField extends StatefulWidget implements PreferredSizeWidget {
   const SearchServicesTextField({
@@ -24,16 +24,16 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
   void initState() {
     super.initState();
     _textEditingController.addListener(() {
-      context.read<ServicesCubit>().searchServices(
-            _textEditingController.text,
-          );
+      // context.read<ServicesCubit>().searchServices(
+      //       _textEditingController.text,
+      //     );
     });
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _textEditingController.text = context.read<ServicesCubit>().state.searchQuery ?? '';
+    // _textEditingController.text = context.read<ServicesCubit>().state.searchQuery ?? '';
   }
 
   @override
@@ -41,10 +41,10 @@ class _SearchServicesTextFieldState extends State<SearchServicesTextField> {
     // isFoundationDay is false by default so we don't change text color
     // Color? textColor = CommonFunctions.isFoundationDay() ? const Color(0xff6B4E45) : null;
 
-    return BlocBuilder<ServicesCubit, ServicesState>(
+    return BlocBuilder<HomeServicesCubit, ServicesState>(
       builder: (context, state) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 0),
           child: BaladyInput.search(
             hintText: context.l10n.search,
             controller: _textEditingController,
