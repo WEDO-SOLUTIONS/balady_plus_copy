@@ -10,8 +10,8 @@ import 'package:mapness/widgets/app_feedback/v2/app_feedback_sheet_header.dart';
 
 @RoutePage()
 class AppFeedbackInputSheet extends HookConsumerWidget {
-  final String initalText;
-  const AppFeedbackInputSheet({super.key, this.initalText = ''});
+  final String initialText;
+  const AppFeedbackInputSheet({super.key, this.initialText = ''});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -22,7 +22,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
       heightModel: BottomSheetHeightModel.aspect(0.9),
     );
 
-    final textEditingController = useTextEditingController(text: initalText);
+    final textEditingController = useTextEditingController(text: initialText);
 
     return StatelessBottomSheet(
       scrollController: scrollController,
