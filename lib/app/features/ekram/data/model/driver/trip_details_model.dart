@@ -131,7 +131,9 @@ class TripInfo {
     this.date,
     this.time,
     this.location,
-    this.dateTime,});
+    this.dateTime,
+    this.openStationName,
+  });
 
   TripInfo.fromJson(dynamic json) {
     id = json['id'];
@@ -145,6 +147,7 @@ class TripInfo {
     cityName = json['cityName'];
     date = json['date'];
     time = json['time'];
+    openStationName = json['openStationName'];
     location = json['location'] != null ? Location.fromJson(json['location']) : null;
     dateTime = json['dateTime'];
   }
@@ -161,6 +164,7 @@ class TripInfo {
   String? time;
   Location? location;
   int? dateTime;
+  bool? openStationName;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -182,16 +186,16 @@ class TripInfo {
     return map;
   }
 
-  bool isEditable()
+  bool? isEditable()
   {
-
-
-    if(typeId==30510||typeId==30509||typeId==30507||typeId==30506||typeId==30501) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    openStationName ??= false;
+    return openStationName;
+    // if(typeId==30510||typeId==30509||typeId==30507||typeId==30506||typeId==30501) {
+    //   return true;
+    // }
+    // else {
+    //   return false;
+    // }
   }
 
 
@@ -207,7 +211,8 @@ class TripInfo {
    cityId,
     cityName,
     date,
-  time,
+    time,
+    openStationName,
    location,
    dateTime
 
@@ -226,6 +231,7 @@ class TripInfo {
     String? time,
     Location? location,
     int? dateTime,
+    bool? openStationName,
   }) {
    return
      TripInfo(id: id ?? this.id,
@@ -241,6 +247,7 @@ class TripInfo {
       time: time ?? this.time,
       location: location ?? this.location,
       dateTime: dateTime ?? this.dateTime,
+       openStationName: openStationName ?? this.openStationName,
     );
   }
 
