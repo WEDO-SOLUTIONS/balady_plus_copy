@@ -11,6 +11,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
+const fontName = 'Noto Sans Arabic Regular';
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
@@ -34,7 +35,10 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
+    textOffset: 4,
+    strokeColor: 0xD3FFFFFF,
     strokeWidth: 3,
+    fontName: fontName,
     textPlacement: MarkerTextPlacementMessage(
       placement: TextPlacementMessage.rightCenter,
     ),
