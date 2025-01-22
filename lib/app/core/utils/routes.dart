@@ -631,9 +631,11 @@ class Routes {
         const NotificationsDetailsScreen(),
 
 
-
-
-
+    RouteName.vDAllTypesScreen: (context) => const VDAllTypesScreen(),
+    RouteName.daemTypeScreen: (context) => const DaemTypeScreen(),
+    RouteName.generalInquiryTypeScreen: (context) => const GeneralInquiryTypeScreen(),
+    RouteName.mSRTypeScreen: (context) => const MSRTypeScreen(),
+    RouteName.commercialPermitsScreen: (context) => const CommercialPermitsScreen()
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {
