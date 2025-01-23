@@ -5,13 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
-class PoiCardFooter extends ConsumerWidget {
+class PoiCardFooter extends ConsumerStatefulWidget {
   static const double height = 40;
   static const double padding = 8;
 
@@ -22,6 +23,7 @@ class PoiCardFooter extends ConsumerWidget {
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final RouteSearchPoint finishPoint;
+  final StatefulBottomSheetController<PoiCardBottomSheetState> bottomSheetController;
 
   PoiCardFooter({
     required this.data,
@@ -30,6 +32,7 @@ class PoiCardFooter extends ConsumerWidget {
     required this.onEntranceTap,
     required this.onTapCar,
     required this.onTapFavorite,
+    required this.bottomSheetController,
     super.key,
   }) : finishPoint = RouteSearchPoint(
           coordinates: data.markerPosition!.toGeoPointMessage(),
@@ -37,15 +40,54 @@ class PoiCardFooter extends ConsumerWidget {
         );
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<PoiCardFooter> createState() => _PoiCardFooterState();
+}
+
+class _PoiCardFooterState extends ConsumerState<PoiCardFooter> {
+  bool displayShadow = true;
+
+  @override
+  void initState() {
+    super.initState();
+    widget.bottomSheetController.addListener(updateShadow);
+  }
+
+  @override
+  void didUpdateWidget(covariant PoiCardFooter oldWidget) {
+    if (widget.bottomSheetController != oldWidget.bottomSheetController) {
+      oldWidget.bottomSheetController.removeListener(updateShadow);
+      widget.bottomSheetController.addListener(updateShadow);
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
+  void dispose() {
+    widget.bottomSheetController.removeListener(updateShadow);
+    super.dispose();
+  }
+
+  void updateShadow() {
+    final isHidden = widget.bottomSheetController.state == PoiCardBottomSheetState.hidden &&
+        widget.bottomSheetController.interpolation == 0.0;
+    if (!isHidden != displayShadow) {
+      setState(() {
+        displayShadow = !isHidden;
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final briefInfo = ref.watch(
       briefRouteInfoProvider(
-        finishPoint: finishPoint,
+        finishPoint: widget.finishPoint,
         navType: RouteSearchOptionsMessage.car,
       ),
     );
 
-    final objectId = data.id?.objectId;
+    final objectId = widget.data.id?.objectId;
 
     ref.watch(favouriteCacheProvider).valueOrNull;
     final provider = ref.watch(favouriteCacheProvider.notifier);
@@ -53,13 +95,14 @@ class PoiCardFooter extends ConsumerWidget {
     final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
     final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
-    final hasEntrances = data.entrances.isNotEmpty == true;
-    final hasContacts = data.contactInfos.isNotEmpty == true;
+    final hasEntrances = widget.data.entrances.isNotEmpty == true;
+    final hasContacts = widget.data.contactInfos.isNotEmpty == true;
     final hasContactsAndHasEntrances = hasContacts && hasEntrances;
 
     return ThrottledCallbackWidget(
-      callback: share,
+      callback: widget.share,
       builder: (context, throttledShare) => BottomActionBar(
+        displayShadow: displayShadow,
         items: [
           ItemActionBar(
             icon: TransportIcons.car,
@@ -67,26 +110,26 @@ class PoiCardFooter extends ConsumerWidget {
             label: hasContactsAndHasEntrances
                 ? null
                 : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
-            onPressed: onTapCar,
+            onPressed: widget.onTapCar,
           ),
           if (hasContactsAndHasEntrances)
             ItemActionBar(
               icon: GeneralIcons.phoneLTR,
               buttonType: BaladyButtonType.secondary,
               label: hasContactsAndHasEntrances ? null : context.l10n.call,
-              onPressed: callPhone,
+              onPressed: widget.callPhone,
             ),
           if (hasEntrances)
             ItemActionBar(
               icon: SystemIcons.turnRight,
               buttonType: BaladyButtonType.secondary,
-              onPressed: onEntranceTap,
+              onPressed: widget.onEntranceTap,
             ),
           ItemActionBar(
             icon: iconData,
             buttonType: BaladyButtonType.secondary,
             label: hasContactsAndHasEntrances ? null : context.l10n.save,
-            onPressed: () => onTapFavorite(favouriteItem),
+            onPressed: () => widget.onTapFavorite(favouriteItem),
           ),
           ItemActionBar(
             icon: SystemIcons.share,
