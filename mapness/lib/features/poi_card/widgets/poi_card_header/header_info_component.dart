@@ -33,7 +33,7 @@ class HeaderInfoComponent extends ConsumerWidget {
       ),
     );
 
-    final worktime = data.getOpeningHours(context.l10n)?.title;
+    final worktime = data.getOpeningHoursHeader(context.l10n)?.title;
 
     final fullAddress = data.getFullAddress(briefInfo, context.l10n);
     return _HeaderInfoWidget(

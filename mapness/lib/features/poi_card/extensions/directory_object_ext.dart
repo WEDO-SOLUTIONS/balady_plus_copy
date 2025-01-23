@@ -227,6 +227,47 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
   }
 
+  PoiContentWorkTime? getOpeningHoursHeader(AppLocalizations l10n) {
+    if (openingHours == null) {
+      return null;
+    }
+
+    final model = _getOpeningHoursModel(l10n);
+
+    final is24x7 = model.isAlwaysOpen == true;
+    final isOpenSameTime = model.isDailySameOpenHours == true;
+    final days = _createWorkTimeDays(
+      model.openingHours,
+      l10n,
+    );
+
+    final title = StringBuffer();
+    final todayOpeningInfo = model.getTodayOpeningInfo(l10n);
+    final isWeekend = todayOpeningInfo?.isWeekend ?? false;
+
+    OpenHours? openHours;
+
+    if (model.openingHours != null && model.openingHours!.isNotEmpty) {
+      openHours = model.openingHours?.first;
+    }
+
+    if (openHours == null) {
+      return null;
+    }
+
+    if (!is24x7 && openHours.openHour != null && openHours.closeHour != null) {
+      title
+        ..write(l10n.openUntil)
+        ..write(' ')
+        ..write(openHours.closeHour);
+    }
+
+    return PoiContentWorkTime(
+      title: title.toString(),
+      days: !isOpenSameTime ? days : null,
+    );
+  }
+
   OpeningHoursModel _getOpeningHoursModel(AppLocalizations locale) {
     final displayOpenHours = openingHours?.getDisplayOpenHours(locale);
     return OpeningHoursModel(
