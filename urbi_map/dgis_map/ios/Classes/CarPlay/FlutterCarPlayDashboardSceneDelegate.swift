@@ -12,6 +12,7 @@ final class FlutterCarPlayDashboardSceneDelegate: UIResponder, CPTemplateApplica
     }
     
     func templateApplicationDashboardScene(_ templateApplicationDashboardScene: CPTemplateApplicationDashboardScene, didConnect dashboardController: CPDashboardController, to window: UIWindow) {
+        // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
         
         let mapView = DgisCarPlayDashboardMapView()

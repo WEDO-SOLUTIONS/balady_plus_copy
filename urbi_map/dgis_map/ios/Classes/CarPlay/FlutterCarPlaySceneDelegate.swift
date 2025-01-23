@@ -25,6 +25,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {        
+        // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
 
         let mapTemplate = CPMapTemplate()
