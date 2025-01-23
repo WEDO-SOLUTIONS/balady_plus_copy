@@ -7,16 +7,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/dialog_names.dart';
-import '../../../../core/utils/utils_exports.dart'
-    show CommonProperties;
+import '../../../../core/utils/utils_exports.dart' show CommonProperties;
 import '../../../_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../_shared_feature_/shared_feature_exports.dart'
     show BottomSheetDialog;
 import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import '../../../profile_features/delegators/presentation/widgets/delegator_list.dart';
-import '../../services_exports.dart'
-    show SearchServicesTextField;
+import '../../services_exports.dart' show SearchServicesTextField;
 
 class HomeServicesScreen extends StatefulWidget {
   const HomeServicesScreen({super.key});
@@ -213,5 +211,4 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
               }));
     }
   }
-
 }

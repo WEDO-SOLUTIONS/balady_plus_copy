@@ -17,11 +17,9 @@ class ServicesRepositoryImplementation implements ServicesRepository {
     try {
       services = await localDataSource.getAllServices();
       // This for Sort The List of Services in Each Category
-      services.servicesCategories.map(
-        (element) {
+      for (var element in services.servicesCategories) {
           element.listOfServices.sort((a, b) => a.order.compareTo(b.order));
-        },
-      );
+        }
       return Right(services);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

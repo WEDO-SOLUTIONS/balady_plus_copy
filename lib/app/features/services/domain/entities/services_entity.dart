@@ -29,8 +29,11 @@ class HomeServices {
               json["mostUsedServices"]!.map((x) => Service.fromJson(x))),
       servicesCategories: json["servicesCategories"] == null
           ? []
-          : List<ServicesCategory>.from(json["servicesCategories"]!
-              .map((x) => ServicesCategory.fromJson(x))),
+          : List<ServicesCategory>.from(
+              json["servicesCategories"]!.map(
+                (x) => ServicesCategory.fromJson(x),
+              ),
+            ),
     );
   }
 
@@ -169,16 +172,15 @@ class Service {
       levelLogin: LevelLoginMap.fromString(json['level_login']),
       actionType: ActionTypeMap.fromString(json['actiontype']),
       actionValue: json["actionvalue"],
-      subServices: json["subServices"] == null
+      subServices: json["sub_services"] == null
           ? []
           : List<Service>.from(
               json["sub_services"]!.map((x) => Service.fromJson(x))),
-      serviceId: int.tryParse(json["serviceId"]),
+      serviceId: int.tryParse(json["serviceId"] ?? ""),
       eventName: json["eventName"],
       requireSelectedDelegator: json["requireSelectedDelegator"] == "1",
     );
   }
-
 
   Map<String, dynamic> toJson() => {
         "id": id,
@@ -274,7 +276,7 @@ class ServicesCategory {
   factory ServicesCategory.fromJson(Map<String, dynamic> json) {
     return ServicesCategory(
       title: json["title"],
-      icon: json["icon"] ?? json["name"],
+      icon: json["category_icon"] ?? json["name"],
       listOfServices: json["listOfServices"] == null
           ? []
           : List<Service>.from(

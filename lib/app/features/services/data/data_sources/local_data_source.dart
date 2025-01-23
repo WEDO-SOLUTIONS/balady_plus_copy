@@ -18,13 +18,14 @@ class ServicesLocalDataSourceImplementation implements ServicesLocalDataSource {
   @override
   Future<HomeServices> getAllServices() async {
     var response;
-    try {
-      response = await webServices.dio.get(HomeServicesEndpoints.getHomeServices);
-      var data = response.data["data"]["result"];
-      return HomeServices.fromJson(data);
-    } catch (_) {
-      return HomeServices.fromJson(newServicesConfig);
-    }
+    return HomeServices.fromJson(newServicesConfig);
+    // try {
+    //   response = await webServices.dio.get(HomeServicesEndpoints.getHomeServices);
+    //   var data = response.data["data"]["result"];
+    //   return HomeServices.fromJson(data);
+    // } catch (_) {
+    //   return HomeServices.fromJson(newServicesConfig);
+    // }
   }
 
 
