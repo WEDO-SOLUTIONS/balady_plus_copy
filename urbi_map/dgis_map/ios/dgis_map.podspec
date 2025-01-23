@@ -19,7 +19,7 @@ A new Flutter plugin project.
   s.dependency 'DGisMobileSDK', '12.3.0-full'
   # s.vendored_frameworks = '_DELETE_ME_/DGis.xcframework'
   
-  s.platform = :ios, '12.0'
+  s.platform = :ios, '13.0'
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
