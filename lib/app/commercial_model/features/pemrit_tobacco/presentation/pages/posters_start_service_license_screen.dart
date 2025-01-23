@@ -1,10 +1,9 @@
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
-import 'package:balady_plus/app/features/services/presentation/widgets/service_cards/service_card_desc_widget.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
 
-import '../../../../../features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -14,7 +13,6 @@ import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import '../../../../../features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../commercial_license_details/data/models/commercial_licence_details.dart';
-import '../../data/models/service_card.dart';
 import '../blocs/permit_tobacco_bloc.dart';
 
 class PermitsTobaccoLicenseStartService extends StatefulWidget {
@@ -41,7 +39,6 @@ class _PermitsTobaccoLicenseStartServiceState
 
   @override
   Widget build(BuildContext context) {
-    ServiceEntity service = permitsTobaccoModel();
     CommercialLicenceDetails? commercialLicenceDetails =
         ModalRoute.of(context)!.settings.arguments as CommercialLicenceDetails;
 
@@ -50,7 +47,7 @@ class _PermitsTobaccoLicenseStartServiceState
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 10526,
+            serviceId: RemoteConfig.MunicipalServicesIDs["PermitsTobaccoLicense"]["id"],
           ),
         ),
         BlocProvider(
