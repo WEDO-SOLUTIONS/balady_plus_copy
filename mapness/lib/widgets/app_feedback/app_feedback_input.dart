@@ -47,6 +47,7 @@ class AppFeedbackInput extends HookWidget {
       if (newStateValue != inputState.value) {
         inputState.value = newStateValue;
       }
+
       final newTextValue = _isLessChars ? null : context.l10n.appFeedbackCharacterLimitReached;
       if (newTextValue != supportingText.value) {
         supportingText.value = newTextValue;
