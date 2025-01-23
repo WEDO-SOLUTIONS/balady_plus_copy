@@ -36,8 +36,6 @@ class _EkramRequestTransportationPageState
 
   @override
   Widget build(BuildContext context) {
-    TransportRequestsBloc ekramRequestsBloc =
-        ModalRoute.of(context)!.settings.arguments as TransportRequestsBloc;
 
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(

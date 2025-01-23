@@ -327,7 +327,8 @@ class EkramRequestTransportationState extends Equatable {
         laundries,
         mosques,
         transportations,
-        bodyArrivalCities
+        bodyArrivalCities,
+        nationalities
       ];
 
   LookUpItem? getCityById(int? id) {

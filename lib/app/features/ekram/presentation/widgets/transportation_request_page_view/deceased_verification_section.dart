@@ -63,6 +63,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                                 )
                               ],
                             ),
+
                             CustomLookUpLongDialog(
                               items: state.nationalIdTypes ?? [],
                               value: state.selectedNationalIdType,

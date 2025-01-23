@@ -562,6 +562,7 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
+      getNationalitiesHandler();
       return null;
     }, (success) {
       emit(state.copyWith(
@@ -924,8 +925,9 @@ class EkramRequestTransportationBloc extends Bloc<
       emit(state.copyWith(
           isDeceasedBtnEnabled: true,
           status: BlocStatus.failure,
+          requestId: 4617341852,
           errorMessage: (failure as ServerFailure).errorMessage,
-          isVerified: false));
+          isVerified: true));
       return null;
     }, (success) {
       emit(state.copyWith(
