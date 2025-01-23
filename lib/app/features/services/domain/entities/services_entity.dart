@@ -20,20 +20,26 @@ class HomeServices {
         servicesCategories: servicesCategories ?? this.servicesCategories,
       );
 
-
-  factory HomeServices.fromJson(Map<String, dynamic> json){
+  factory HomeServices.fromJson(Map<String, dynamic> json) {
     return HomeServices(
-      mostUsedService: MostUsedServiceModel.fromJson(json["mostUsedService"]),
-      mostUsedServices: json["mostUsedServices"] == null ? [] : List<Service>.from(json["mostUsedServices"]!.map((x) => Service.fromJson(x))),
-      servicesCategories: json["servicesCategories"] == null ? [] : List<ServicesCategory>.from(json["servicesCategories"]!.map((x) => ServicesCategory.fromJson(x))),
+      mostUsedService: MostUsedServiceModel.fromJson(json["featuredService"]),
+      mostUsedServices: json["mostUsedServices"] == null
+          ? []
+          : List<Service>.from(
+              json["mostUsedServices"]!.map((x) => Service.fromJson(x))),
+      servicesCategories: json["servicesCategories"] == null
+          ? []
+          : List<ServicesCategory>.from(json["servicesCategories"]!
+              .map((x) => ServicesCategory.fromJson(x))),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    "mostUsedService": mostUsedService.toJson(),
-    "mostUsedServices": mostUsedServices.map((x) => x.toJson()).toList(),
-    "servicesCategories": servicesCategories.map((x) => x.toJson()).toList(),
-  };
+        "mostUsedService": mostUsedService.toJson(),
+        "mostUsedServices": mostUsedServices.map((x) => x.toJson()).toList(),
+        "servicesCategories":
+            servicesCategories.map((x) => x.toJson()).toList(),
+      };
 }
 
 class MostUsedServiceModel {
@@ -62,8 +68,7 @@ class MostUsedServiceModel {
         service: service ?? this.service,
       );
 
-
-  factory MostUsedServiceModel.fromJson(Map<String, dynamic> json){
+  factory MostUsedServiceModel.fromJson(Map<String, dynamic> json) {
     return MostUsedServiceModel(
       title: json["title"],
       label: json["label"],
@@ -73,11 +78,11 @@ class MostUsedServiceModel {
   }
 
   Map<String, dynamic> toJson() => {
-    "title": title,
-    "label": label,
-    "color": color,
-    "service": service?.toJson(),
-  };
+        "title": title,
+        "label": label,
+        "color": color,
+        "service": service?.toJson(),
+      };
 }
 
 class Service {
@@ -147,50 +152,51 @@ class Service {
         subServices: subServices ?? this.subServices,
         serviceId: serviceId ?? this.serviceId,
         eventName: eventName ?? this.eventName ?? "",
-        requireSelectedDelegator: requireSelectedDelegator ?? this.requireSelectedDelegator,
+        requireSelectedDelegator:
+            requireSelectedDelegator ?? this.requireSelectedDelegator,
       );
 
-
-
-
-  factory Service.fromJson(Map<String, dynamic> json){
+  factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
       id: json["id"],
       title: json["title"],
       label: json["label"],
-      icon: json["icon"],
-      image: json["image"],
-      order: json["order"],
-      isNew: json["isNew"],
-      requireLogin: json["requireLogin"],
-      levelLogin: LevelLoginMap.fromString(json['levelLogin']),
-      actionType: ActionTypeMap.fromString(json['actionType']),
-      actionValue: json["actionValue"],
-      subServices: json["subServices"] == null ? [] : List<Service>.from(json["subServices"]!.map((x) => Service.fromJson(x))),
-      serviceId: json["serviceId"],
+      icon: json["service_icon"],
+      image: json["services_image"],
+      order: json["order"].isNotEmpty ? (int.tryParse(json["order"]) ?? 0) : 0,
+      isNew: json["isnew"] == "1",
+      requireLogin: json["require_login"] == "1",
+      levelLogin: LevelLoginMap.fromString(json['level_login']),
+      actionType: ActionTypeMap.fromString(json['actiontype']),
+      actionValue: json["actionvalue"],
+      subServices: json["subServices"] == null
+          ? []
+          : List<Service>.from(
+              json["sub_services"]!.map((x) => Service.fromJson(x))),
+      serviceId: int.tryParse(json["serviceId"]),
       eventName: json["eventName"],
-      requireSelectedDelegator: json["requireSelectedDelegator"] ?? false,
+      requireSelectedDelegator: json["requireSelectedDelegator"] == "1",
     );
   }
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "title": title,
-    "label": label,
-    "icon": icon,
-    "image": image,
-    "order": order,
-    "isNew": isNew,
-    "requireLogin": requireLogin,
-    "levelLogin": levelLogin,
-    "actionType": actionType,
-    "actionValue": actionValue,
-    "subServices": subServices.map((x) => x?.toJson()).toList(),
-    "serviceId": serviceId,
-    "eventName": eventName,
-    "requireSelectedDelegator": requireSelectedDelegator,
-  };
 
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "title": title,
+        "label": label,
+        "icon": icon,
+        "image": image,
+        "order": order,
+        "isNew": isNew,
+        "requireLogin": requireLogin,
+        "levelLogin": levelLogin,
+        "actionType": actionType,
+        "actionValue": actionValue,
+        "subServices": subServices.map((x) => x?.toJson()).toList(),
+        "serviceId": serviceId,
+        "eventName": eventName,
+        "requireSelectedDelegator": requireSelectedDelegator,
+      };
 }
 
 enum ActionType {
@@ -198,19 +204,20 @@ enum ActionType {
   openBaladyWebView,
 }
 
-
 extension ActionTypeMap on ActionType {
   static const valueMap = {
     ActionType.page: "page",
     ActionType.openBaladyWebView: "openBaladyWebView",
   };
+
   String? get value => valueMap[this];
 
   static ActionType fromString(String input) {
-    final reverseValueMap = valueMap.map<String, ActionType>((key, value) => MapEntry(value, key));
+    final reverseValueMap =
+        valueMap.map<String, ActionType>((key, value) => MapEntry(value, key));
 
     ActionType? output = reverseValueMap[input];
-    if(output == null) {
+    if (output == null) {
       throw 'Invalid String Input';
     }
 
@@ -218,32 +225,28 @@ extension ActionTypeMap on ActionType {
   }
 }
 
-
-enum LevelLogin {
-  guest,
-  sso
-}
+enum LevelLogin { guest, sso }
 
 extension LevelLoginMap on LevelLogin {
   static const valueMap = {
     LevelLogin.guest: "guest",
     LevelLogin.sso: "sso",
   };
+
   String? get value => valueMap[this];
 
   static LevelLogin fromString(String input) {
-    final reverseValueMap = valueMap.map<String, LevelLogin>((key, value) => MapEntry(value, key));
+    final reverseValueMap =
+        valueMap.map<String, LevelLogin>((key, value) => MapEntry(value, key));
 
     LevelLogin? output = reverseValueMap[input];
-    if(output == null) {
+    if (output == null) {
       throw 'Invalid String Input';
     }
 
     return output;
   }
 }
-
-
 
 class ServicesCategory {
   final String title;
@@ -268,18 +271,20 @@ class ServicesCategory {
         listOfServices: listOfServices ?? this.listOfServices,
       );
 
-  factory ServicesCategory.fromJson(Map<String, dynamic> json){
+  factory ServicesCategory.fromJson(Map<String, dynamic> json) {
     return ServicesCategory(
       title: json["title"],
-      icon: json["icon"],
-      listOfServices: json["listOfServices"] == null ? [] : List<Service>.from(json["listOfServices"]!.map((x) => Service.fromJson(x))),
+      icon: json["icon"] ?? json["name"],
+      listOfServices: json["listOfServices"] == null
+          ? []
+          : List<Service>.from(
+              json["listOfServices"]!.map((x) => Service.fromJson(x))),
     );
   }
 
   Map<String, dynamic> toJson() => {
-    "title": title,
-    "icon": icon,
-    "listOfServices": listOfServices.map((x) => x?.toJson()).toList(),
-  };
-
+        "title": title,
+        "icon": icon,
+        "listOfServices": listOfServices.map((x) => x?.toJson()).toList(),
+      };
 }

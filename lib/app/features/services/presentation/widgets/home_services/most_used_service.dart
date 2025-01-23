@@ -1,8 +1,10 @@
 import 'package:balady_plus/app/features/services/core/help_function.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 
 
 class MostUsedService extends StatelessWidget {
@@ -30,10 +32,10 @@ class MostUsedService extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Image.asset(
-                mostUsedService.service.icon,
-                width: 50,
-                height: 50,
+              NetworkIconBasedTypeWidget(
+                icon: mostUsedService.service.icon,
+                iconSize: 50,
+                iconColor: const Color(0xff31C3B9),
               ),
               const SizedBox(width: 16),
               Flexible(

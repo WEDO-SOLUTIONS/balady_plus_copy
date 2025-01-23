@@ -23,17 +23,20 @@ class FeatureServiceItem extends StatelessWidget {
       child: SizedBox(
         width: MediaQuery.of(context).size.width * 0.31,
         height: double.maxFinite,
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(13),
+        child: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/images/constructions.png"),
+              fit: BoxFit.cover,
+            ),
           ),
           margin: const EdgeInsetsDirectional.only(end: 12),
-          color: const Color(0xff9547E9),
+          // color: const Color(0xff9547E9),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
               service.title,
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+              style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w500,
                   ),

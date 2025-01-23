@@ -134,7 +134,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                       ),
                       const SizedBox(height: 16),
                       Text(
-                        "Services Categories",
+                        "services_categories".tr(),
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                       const SizedBox(height: 16),
@@ -166,7 +166,9 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                 );
               }
 
-              return const SizedBox();
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
             },
           ),
         );

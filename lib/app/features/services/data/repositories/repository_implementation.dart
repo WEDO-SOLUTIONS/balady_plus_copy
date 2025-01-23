@@ -9,14 +9,19 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class ServicesRepositoryImplementation implements ServicesRepository {
   final ServicesLocalDataSource localDataSource;
 
-  ServicesRepositoryImplementation({
-    required this.localDataSource,
-  });
+  ServicesRepositoryImplementation({required this.localDataSource});
 
   @override
   Future<Either<Failure, HomeServices>> getAllServices() async {
+    late HomeServices services;
     try {
-      final services = await localDataSource.getAllServices();
+      services = await localDataSource.getAllServices();
+      // This for Sort The List of Services in Each Category
+      services.servicesCategories.map(
+        (element) {
+          element.listOfServices.sort((a, b) => a.order.compareTo(b.order));
+        },
+      );
       return Right(services);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -26,8 +31,7 @@ class ServicesRepositoryImplementation implements ServicesRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(CacheFailure());
+      return Right(services);
     }
   }
-
 }

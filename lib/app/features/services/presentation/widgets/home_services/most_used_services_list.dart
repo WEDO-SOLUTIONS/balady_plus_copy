@@ -20,12 +20,12 @@ class FeatureServicesList extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
-          "Feature Services",
+          "feature_services".tr(),
           style: Theme.of(context).textTheme.titleLarge,
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: MediaQuery.of(context).size.width * 0.25,
+          height: MediaQuery.of(context).size.width * 0.28,
           child: Row(
             children: [
               FeatureServiceItem(

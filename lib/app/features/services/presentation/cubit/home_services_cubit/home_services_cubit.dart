@@ -5,7 +5,6 @@ import 'package:balady_plus/app/features/services/domain/use_cases/home_services
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-
 part 'home_services_state.dart';
 
 class HomeServicesCubit extends Cubit<ServicesState> {
@@ -14,78 +13,34 @@ class HomeServicesCubit extends Cubit<ServicesState> {
   HomeServicesCubit({
     required this.homeServicesUseCases,
   }) : super(
-          ServicesSuccessState(
-            homeServices: HomeServices.fromJson(newServicesConfig),
+    ServicesState(
+            // homeServices: HomeServices.fromJson(newServicesConfig),
           ),
         ) {
     loadServices();
   }
 
-  // Future<bool> checkForjoodService() async {
-  //   WebService webService = sl();
-  //   Response? response;
-  //   try {
-  //     response = await webService.dio.get(ApiUrl.getJoodShowStatus);
-  //     final data = response.data;
-  //     final result = ResponseBodyModel.fromMap(data).data?.result;
-  //     return result['isEnabled'];
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     return true;
-  //   }
-  // }
-
-  // Future<bool> checkForChatBotEnabled() async {
-  //   WebService webService = sl();
-  //   Response? response;
-  //   try {
-  //     response = await webService.dio.get(ApiUrl.chatBotEnabled);
-  //     final data = response.data;
-  //     final result = ResponseBodyModel.fromMap(data).data?.result;
-  //     return result['isEnabled'];
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     return true;
-  //   }
-  // }
 
   Future<void> loadServices() async {
-    homeServicesUseCases.call(NoParams()).then((value) {
-      value.fold(
-        (l) {
-          emit(
-            ServicesSuccessState(
-              homeServices: HomeServices.fromJson(newServicesConfig),
-            ),
-          );
-        },
-        (r) {
-          emit(
-            ServicesSuccessState(homeServices: r),
-          );
-        },
-      );
-    });
+    homeServicesUseCases.call(NoParams()).then(
+      (value) {
+        value.fold(
+          (l) {
+            emit(
+              ServicesSuccessState(
+                homeServices: HomeServices.fromJson(newServicesConfig),
+              ),
+            );
+          },
+          (r) {
+            emit(
+              ServicesSuccessState(homeServices: r),
+            );
+          },
+        );
+      },
+    );
   }
-
-
-
-
-
-
-
 
 // void checkEkramServices() async {
 //   print("checkEkramServices");
