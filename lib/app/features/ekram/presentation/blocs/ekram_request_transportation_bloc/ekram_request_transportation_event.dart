@@ -228,11 +228,11 @@ class ChangeIsNeedSpecialTransferEvent extends EkramRequestTransportationEvent {
   const ChangeIsNeedSpecialTransferEvent({this.isNeeded});
 }
 
-class ChangeIsBurialInsideDeathCityEvent extends EkramRequestTransportationEvent {
-  final bool? isBurialInsideDeathCity;
-
-  const ChangeIsBurialInsideDeathCityEvent({this.isBurialInsideDeathCity});
-}
+// class ChangeIsBurialInsideDeathCityEvent extends EkramRequestTransportationEvent {
+//   final bool? isBurialInsideDeathCity;
+//
+//   const ChangeIsBurialInsideDeathCityEvent({this.isBurialInsideDeathCity});
+// }
 class setBurialInfoEvent extends EkramRequestTransportationEvent {
   final BurialInfo? burialInfo;
   setBurialInfoEvent({this.burialInfo});

@@ -363,7 +363,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   .requestDetailsModel?.burialInfo?.burialDate,
                               isDeathDatesDisabled: state.isBurialDatesDisabled,
                               onChanged: (String? date) {
-                                print('sdfds');
+
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(setBurialInfoEvent(
