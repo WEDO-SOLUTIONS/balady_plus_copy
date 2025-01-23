@@ -32,6 +32,14 @@ class PolylineTapEvent extends TapEvent {
   final int id;
 }
 
+class CircleTapEvent extends TapEvent {
+  const CircleTapEvent(this.id);
+
+  static const name = "onCircleTap";
+
+  final int id;
+}
+
 class ObjectTapEvent extends TapEvent {
   const ObjectTapEvent(this.dgisObjectId, this.latLng, this.levelId);
 
