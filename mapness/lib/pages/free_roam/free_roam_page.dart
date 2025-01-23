@@ -105,7 +105,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                 },
               ),
               GestureDetector(
-                behavior: HitTestBehavior.translucent,
+                behavior: isControlsActive ? HitTestBehavior.deferToChild : HitTestBehavior.translucent,
                 onTap: () {
                   setState(() {
                     if (wasSetActive) {
