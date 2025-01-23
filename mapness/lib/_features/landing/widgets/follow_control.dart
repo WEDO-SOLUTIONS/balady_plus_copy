@@ -23,7 +23,7 @@ class FollowControl extends ConsumerWidget {
 
     final iconColor = followState.type == LocationFollowType.off
         ? context.colorsV2.foregroundDefault
-        : context.colorsV2.accentDefault;
+        : context.colorsV3.accentDefault;
 
     return MapButton(
       onTap: () async {
