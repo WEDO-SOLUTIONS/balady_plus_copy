@@ -127,8 +127,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
-            sdkContext: self.sdk,
-            vendorConfig: SwiftDgisMapPlugin.vendorConfig
+            sdkContext: self.sdk
         )
         
         self.compassControlHandler = CompassControlHandler(

@@ -103,7 +103,20 @@
 					<string>Main</string>
 				</dict>
 			</array>
+			<key>CPTemplateApplicationDashboardSceneSessionRoleApplication</key>
+            <array>
+                <dict>
+                    <key>UISceneClassName</key>
+                    <string>CPTemplateApplicationDashboardScene</string>
+                    <key>UISceneConfigurationName</key>
+                    <string>DashboardSceneConfiguration</string>
+                    <key>UISceneDelegateClassName</key>
+                    <string>dgis_map.FlutterCarPlayDashboardSceneDelegate</string>
+                </dict>
+            </array>
 		</dict>
+		<key>CPSupportsDashboardNavigationScene</key>
+        <true/>
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
