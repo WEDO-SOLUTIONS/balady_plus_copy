@@ -33,7 +33,8 @@ class MostUsedService extends StatelessWidget {
           child: Row(
             children: [
               NetworkIconBasedTypeWidget(
-                icon: mostUsedService.service.icon,
+                // icon: mostUsedService.service.icon,
+                icon: "https://balady.momra.gov.sa/sites/default/files/2025-01/logo_2.svg",
                 iconSize: 50,
                 iconColor: const Color(0xff31C3B9),
               ),

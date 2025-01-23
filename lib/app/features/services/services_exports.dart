@@ -20,7 +20,6 @@ export 'domain/repositories/repository.dart';
 
 
 /// presentation -> cubits
-export 'presentation/cubit/service_cards_cubit/service_cards_cubit.dart';
 
 
 /// presentation -> widgets
