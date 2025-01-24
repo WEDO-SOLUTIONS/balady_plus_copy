@@ -11,9 +11,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
+const fontName = 'Noto Sans Arabic Regular';
 
 @riverpod
-Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
+Future<DirectoryObjectMessage?> pointOfInterest(
+  Ref ref,
   DgisObjectIdMessage objectId,
   LatLng? closestPoint,
 ) async {
@@ -31,6 +33,16 @@ Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
   );
 
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+  final textStyle = MarkerTextStyleMessage(
+    fontSize: 13,
+    textOffset: 4,
+    strokeColor: 0xD3FFFFFF,
+    strokeWidth: 3,
+    fontName: fontName,
+    textPlacement: MarkerTextPlacementMessage(
+      placement: TextPlacementMessage.rightCenter,
+    ),
+  );
 
   if (closestPoint != null) {
     await selectedMarker.showMarker(
@@ -40,6 +52,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
           longitude: closestPoint.longitude,
           elevation: 1,
         ),
+        text: directoryObject?.title,
+        textStyle: textStyle,
         icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
       ),
@@ -52,6 +66,8 @@ Future<DirectoryObjectMessage?> pointOfInterest(Ref ref,
           longitude: position.longitude,
           elevation: 1,
         ),
+        text: directoryObject?.title,
+        textStyle: textStyle,
         icon: mapMarkerMapper?.iconPath.bigIconPath,
         id: poiPinId,
       ),
