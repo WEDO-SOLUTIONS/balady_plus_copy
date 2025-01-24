@@ -8,17 +8,31 @@ part 'service_not_available.g.dart';
 
 @Riverpod(keepAlive: true)
 class ServiceNotAvailable extends _$ServiceNotAvailable {
-  // We need to store it in Remote Config
-  final CityRect rect = const CityRect(
-    northEast: LocationPoint(
-      latitude: 25.178203,
-      longitude: 47.298231,
+  final List<CityRect> _cities = [
+    /// Riyadh border
+    const CityRect(
+      northEast: LocationPoint(
+        latitude: 25.178203,
+        longitude: 47.298231,
+      ),
+      southWest: LocationPoint(
+        latitude: 24.29659,
+        longitude: 46.3237,
+      ),
     ),
-    southWest: LocationPoint(
-      latitude: 24.29659,
-      longitude: 46.3237,
-    ),
-  );
+
+    /// Leap 2025 Conf border
+    const CityRect(
+      northEast: LocationPoint(
+        latitude: 25.270154,
+        longitude: 46.402921,
+      ),
+      southWest: LocationPoint(
+        latitude: 25.236086,
+        longitude: 46.363507,
+      ),
+    )
+  ];
 
   bool isShown = false;
 
@@ -42,9 +56,13 @@ class ServiceNotAvailable extends _$ServiceNotAvailable {
       longitude: location.longitude,
     );
 
-    final containValue = await ref.read(
-      cityContainProvider(rect, locationPoint).future,
-    );
+    bool containValue = false;
+    for (final city in _cities) {
+      containValue = await ref.read(cityContainProvider(city, locationPoint).future);
+      if (containValue) {
+        break;
+      }
+    }
 
     isShown = true;
 
