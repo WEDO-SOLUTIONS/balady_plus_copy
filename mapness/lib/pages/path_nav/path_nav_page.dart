@@ -411,6 +411,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingCompleted);
       _navigationState.value = PathNavState.finished;
       ref.read(layersControlsProvider.notifier).hideParking();
+      ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+
       unawaited(clearNavigationState());
       unawaited(_stopActiveSharing());
     } else if (event == NavigationEvent.disabled) {
