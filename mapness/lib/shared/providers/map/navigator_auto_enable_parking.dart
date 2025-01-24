@@ -1,5 +1,6 @@
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigator_auto_enable_parking.g.dart';
@@ -15,6 +16,7 @@ class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
 
     if (autoEnableParking == true) {
       ref.read(layersControlsProvider.notifier).enableParking();
+      sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
     }
 
     return autoEnableParking;
