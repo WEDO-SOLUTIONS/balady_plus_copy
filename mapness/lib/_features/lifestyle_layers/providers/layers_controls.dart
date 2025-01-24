@@ -172,13 +172,16 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  Future<void> _tapHandler(value) async {
+  Future<void> _tapHandler(LayerType value) async {
     final currentState = state.selectedType;
 
     _cancelToken?.cancel();
     await _viewPortSubscription?.cancel();
-
     await _hideAllSelectedMarkers();
+
+    if (currentState != null && currentState != value) {
+      await _hidePreviousLayers(currentState);
+    }
 
     switch (value) {
       case LayerType.favourites:
@@ -201,6 +204,38 @@ class LayersControls extends _$LayersControls {
         break;
       // case LayerType.joy:
       //   await toggleIwish();
+    }
+  }
+
+  Future<void> _hidePreviousLayers(LayerType layer) async {
+    switch (layer) {
+      case LayerType.favourites:
+        {
+          await _removeAll();
+          await ref.read(favouriteToggleProvider.notifier).disable();
+          break;
+        }
+
+      case LayerType.buildings:
+      case LayerType.invest:
+      case LayerType.fencing:
+        await _removeAll();
+        break;
+      case LayerType.parkingLots:
+        {
+          await ref
+              .read(mapObjectManagerProvider(
+                named: esriMapObjectSettings.name,
+                layerId: esriMapObjectSettings.layerId,
+              ).notifier)
+              .removeAllMarkers();
+          await ref.read(parkingStateProvider.notifier).hideParking();
+          break;
+        }
+
+      case LayerType.metro:
+        await ref.read(metroLayerProvider.notifier).toggleMetro();
+        break;
     }
   }
 
@@ -252,21 +287,21 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (currentState == (LayerType.favourites)) {
-      await ref.read(favouriteToggleProvider.notifier).disable();
-      setSelection();
-    } else {
+    if (currentState != (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
+    } else {
+      await ref.read(favouriteToggleProvider.notifier).disable();
+      setSelection();
     }
   }
 
   void toggleMetro(LayerType? currentState) {
     ref.read(metroLayerProvider.notifier).toggleMetro();
-    if (currentState == (LayerType.metro)) {
-      setSelection();
-    } else {
+    if (currentState != (LayerType.metro)) {
       setSelection(selectedType: LayerType.metro);
+    } else {
+      setSelection();
     }
   }
 

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FavouritesToggle extends ConsumerWidget {
@@ -23,8 +24,7 @@ class FavouritesToggle extends ConsumerWidget {
           onToggle: isEditing
               ? null
               : (_) async {
-                  await ref.read(favouriteToggleProvider.notifier).toggle();
-                  ref.read(layersControlsProvider.notifier).updateLayerInfo();
+                  ref.read(layersControlsProvider.notifier).handleTap(LayerType.favourites);
                 },
           options: ContentRowOptions(
             actionWidget: ContentRowActionOptions(
