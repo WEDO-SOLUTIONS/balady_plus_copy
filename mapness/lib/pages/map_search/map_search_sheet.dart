@@ -35,11 +35,13 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   final bool requestFocus;
   final bool withClustering;
   final double biggestHeight;
+  final Expansion? expansion;
 
   const MapSearchSheet({
     required this.withClustering,
     required this.biggestHeight,
     required this.requestFocus,
+    this.expansion,
     super.key,
   });
 
@@ -140,7 +142,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               key: const Key('MAP SEARCH SHEET KEY'),
               showBarrier: false,
               controller: _dgisSheetController,
-              initialExpansion: _initialExpansion,
+              initialExpansion: widget.expansion ?? _initialExpansion,
               availableExpansions: const {
                 Expansion.hidden,
                 Expansion.middle,
