@@ -16,6 +16,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 import '../../../data/model/driver/transport_request_item_model.dart';
@@ -92,13 +93,28 @@ class AddSuggestedPath extends StatefulWidget {
 
 
                         CustomVerticalSpace(height: 10),
+                        widget.trip.startupInfo?.isEditable()==false?
                         ReadOnlyField(
                           title: "currentTripStationName".tr(),
                           subTitle:widget.trip.startupInfo?.name  ?? "",
                           subTitleColor:AppColor.grey1000.withOpacity(0.5),
                           decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
-                        ),
+                        ):
+                        CustomTextFieldWidget(
+                            enabled: true,
+                            label: "currentTripStationName".tr(),
+                            hintText: "currentTripStationName".tr(),
+                            textFieldHeight: 55,
+                            initialValue:  widget.trip.startupInfo?.name??"",
+                            onChanged: (String? text) {
+                              if (text != null) {
+                                widget.trip.startupInfo?.name = text;
+                              }
+                            },
+                            onValidate: (String? value) {
+                              return null;
+                            }),
 
 
                         CustomVerticalSpace(height: 10),
@@ -129,7 +145,7 @@ class AddSuggestedPath extends StatefulWidget {
                             if(time != null)
                             {
 
-                              DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                              DateTime tempTime = DateFormat("HH:mm").parse(time);
                               String strTime = DateFormat("HH:mm")
                                   .format(tempTime)
                                   .toString();
@@ -199,7 +215,7 @@ class AddSuggestedPath extends StatefulWidget {
 
                         ),
                         CustomVerticalSpace(height: 10),
-                        ReadOnlyField(
+                      ReadOnlyField(
                           title: "nextTripStationType".tr(),
                           subTitle:widget.trip.arrivalInfo?.typeName  ?? "",
                           subTitleColor:AppColor.grey1000.withOpacity(0.5),
@@ -209,13 +225,27 @@ class AddSuggestedPath extends StatefulWidget {
 
 
                         CustomVerticalSpace(height: 10),
-                        ReadOnlyField(
+                        widget.trip.startupInfo?.isEditable()==false?  ReadOnlyField(
                           title: "nextTripStationName".tr(),
                           subTitle:widget.trip.arrivalInfo?.name  ?? "",
                           subTitleColor:AppColor.grey1000.withOpacity(0.5),
                           decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
-                        ),
+                        ):
+                        CustomTextFieldWidget(
+                            enabled: true,
+                            label: "nextTripStationName".tr(),
+                            hintText: "nextTripStationName".tr(),
+                            textFieldHeight: 55,
+                            initialValue:  widget.trip.arrivalInfo?.name??"",
+                            onChanged: (String? text) {
+                              if (text != null) {
+                                widget.trip.arrivalInfo?.name = text;
+                              }
+                            },
+                            onValidate: (String? value) {
+                              return null;
+                            }),
 
 
                         CustomVerticalSpace(height: 10),
@@ -248,7 +278,7 @@ class AddSuggestedPath extends StatefulWidget {
                             if(time != null)
                             {
 
-                              DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                              DateTime tempTime = DateFormat("HH:mm").parse(time);
                               String strTime = DateFormat("HH:mm")
                                   .format(tempTime)
                                   .toString();

@@ -20,6 +20,7 @@ import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 
 import '../../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 import '../../../data/model/driver/transport_request_item_model.dart';
@@ -103,13 +104,30 @@ class AddCustomTripPath extends StatelessWidget {
                               ),
 
                               CustomVerticalSpace(height: 10),
+                              bloc.state.addTripPath?.startupInfo?.isEditable()==false?
                               ReadOnlyField(
                                 title: "currentTripStationName".tr(),
                                 subTitle: bloc.state.addTripPath?.startupInfo?.name  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
-                              ),
+                              ):
+                              CustomTextFieldWidget(
+                                  enabled: true,
+                                  label: "currentTripStationName".tr(),
+                                  hintText: "currentTripStationName".tr(),
+                                  textFieldHeight: 55,
+                                  initialValue:   bloc.state.addTripPath?.startupInfo?.name  ?? "",
+                                  onChanged: (String? text) {
+                                    if (text != null) {
+
+                                      bloc.add(setCustomPathDataEvent(item: TripStations(name: text),isStartupInfo: true));
+
+                                    }
+                                  },
+                                  onValidate: (String? value) {
+                                    return null;
+                                  }),
 
 
                               CustomVerticalSpace(height: 10),
@@ -133,7 +151,7 @@ class AddCustomTripPath extends StatelessWidget {
                                   if(time != null)
                                   {
 
-                                    DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                                    DateTime tempTime = DateFormat("HH:mm").parse(time!);
                                     String strTime = DateFormat("HH:mm")
                                         .format(tempTime)
                                         .toString();
@@ -174,13 +192,30 @@ class AddCustomTripPath extends StatelessWidget {
                               ),
 
                               CustomVerticalSpace(height: 10),
+                              bloc.state.addTripPath?.arrivalInfo?.isEditable()==false?
                               ReadOnlyField(
                                 title: "nextTripStationName".tr(),
                                 subTitle: bloc.state.addTripPath?.arrivalInfo?.name  ?? "",
                                 subTitleColor:AppColor.grey1000.withOpacity(0.5),
                                 decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
 
-                              ),
+                              ):
+                              CustomTextFieldWidget(
+                                  enabled: true,
+                                  label: "currentTripStationName".tr(),
+                                  hintText: "currentTripStationName".tr(),
+                                  textFieldHeight: 55,
+                                  initialValue:  bloc.state.addTripPath?.arrivalInfo?.name  ?? "",
+                                  onChanged: (String? text) {
+                                    if (text != null) {
+
+                                      bloc.add(setCustomPathDataEvent(item: TripStations(name: text),isStartupInfo: false));
+
+                                    }
+                                  },
+                                  onValidate: (String? value) {
+                                    return null;
+                                  }),
 
 
                               CustomVerticalSpace(height: 10),
@@ -206,7 +241,7 @@ class AddCustomTripPath extends StatelessWidget {
                                   if(time != null)
                                   {
 
-                                    DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                                    DateTime tempTime = DateFormat("HH:mm").parse(time);
                                     String strTime = DateFormat("HH:mm")
                                         .format(tempTime)
                                         .toString();

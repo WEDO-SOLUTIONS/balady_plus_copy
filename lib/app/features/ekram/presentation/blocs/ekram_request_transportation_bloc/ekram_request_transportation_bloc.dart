@@ -142,8 +142,8 @@ class EkramRequestTransportationBloc extends Bloc<
             requestDetailsModel: null)) {
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeIsNeedSpecialTransferEvent>(_changeIsNeedSpecialTransferHanlder);
-    on<ChangeIsBurialInsideDeathCityEvent>(
-        _changeIsBurialInsideDeathCityHanlder);
+    // on<ChangeIsBurialInsideDeathCityEvent>(
+    //     _changeIsBurialInsideDeathCityHanlder);
     on<ChangeAgreementEvent>(_changeAgreementHandler);
     on<SelectHospitalEvent>(_selectHospitalHanlder);
     on<SubmitRequestEvent>(_submitRequestEvent);
@@ -306,11 +306,11 @@ class EkramRequestTransportationBloc extends Bloc<
         state.copyWith(errorMessage: "", isSpecialTransferNeeded: e.isNeeded));
   }
 
-  Future<void> _changeIsBurialInsideDeathCityHanlder(
-      ChangeIsBurialInsideDeathCityEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        errorMessage: "", isBurialInsideDeathCity: e.isBurialInsideDeathCity));
-  }
+  // Future<void> _changeIsBurialInsideDeathCityHanlder(
+  //     ChangeIsBurialInsideDeathCityEvent e, Emitter emitter) async {
+  //   emitter(state.copyWith(
+  //       errorMessage: "", isBurialInsideDeathCity: e.isBurialInsideDeathCity));
+  // }
 
   Future<void> _changeNationalIdDobHandler(
       ChangeNationalIdDob e, Emitter emitter) async {
@@ -562,6 +562,7 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
+      getNationalitiesHandler();
       return null;
     }, (success) {
       emit(state.copyWith(
@@ -924,8 +925,9 @@ class EkramRequestTransportationBloc extends Bloc<
       emit(state.copyWith(
           isDeceasedBtnEnabled: true,
           status: BlocStatus.failure,
+          requestId: 4617341852,
           errorMessage: (failure as ServerFailure).errorMessage,
-          isVerified: false));
+          isVerified: true));
       return null;
     }, (success) {
       emit(state.copyWith(
@@ -1133,14 +1135,15 @@ class EkramRequestTransportationBloc extends Bloc<
       setBurialInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(
-        burialInfo: BurialInfo(isBurialInsideDeathCity: true));
+        burialInfo: BurialInfo(isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ?? true));
     BurialInfo info = params.burialInfo!;
     int? cityID;
-    if (e.burialInfo?.isBurialInsideDeathCity != false) {
+    if (e.burialInfo?.isBurialInsideDeathCity == true) {
       cityID = getBurialCityId();
     }
+
     info = info.copyWith(
-        isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ?? true,
+        isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity?? info.isBurialInsideDeathCity??true,
         cityId: e.burialInfo?.isBurialInsideDeathCity == false
             ? e.burialInfo?.cityId
             : cityID ?? -1,
@@ -1154,6 +1157,7 @@ class EkramRequestTransportationBloc extends Bloc<
     emitter(state.copyWith(
         status: BlocStatus.success, requestDetailsModel: params));
   }
+
 
   Future<void> _changeCemtryInfoHandler(
       setCemtryInfoEvent e, Emitter emitter) async {

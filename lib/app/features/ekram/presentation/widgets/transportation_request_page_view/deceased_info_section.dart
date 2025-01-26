@@ -220,6 +220,8 @@ class DeceasedInfoSection extends StatelessWidget {
                                               BorderRadius.circular(8)),
                                     ),
                               const CustomVerticalSpace(height: 16),
+
+
                               CustomLookUpLongDialog(
                                   items: state.nationalities ?? [],
                                   value: state.getNationalityById(state

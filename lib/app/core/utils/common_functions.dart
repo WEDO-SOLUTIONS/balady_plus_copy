@@ -426,7 +426,7 @@ class CommonFunctions {
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-          DateFormat(formate??"hh:mm").parse(biddingEndingTime);
+          DateFormat(formate??"HH:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
           .format(tempTime)
           .toString();
