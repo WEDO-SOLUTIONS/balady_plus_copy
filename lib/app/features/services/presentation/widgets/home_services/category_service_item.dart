@@ -1,10 +1,8 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_route_names.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
-import 'package:balady_plus/app/features/services/presentation/pages/sub_services_screen.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CategoryServiceItem extends StatelessWidget {
@@ -30,9 +28,9 @@ class CategoryServiceItem extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SvgPicture.asset(
-                IconPath.profile,
-                height: 50,
+              ImageIconBasedTypeWidget(
+                icon: servicesCategory.icon,
+                iconSize: 30,
               ),
               const SizedBox(height: 8),
               Text(

@@ -4,33 +4,59 @@ import 'package:flutter_svg/flutter_svg.dart';
 import '../../../../core/utils/utils_exports.dart'
     show StringIconChecker;
 
-class NetworkIconBasedTypeWidget extends StatelessWidget {
-  final Object icon;
+class ImageIconBasedTypeWidget extends StatelessWidget {
+  final String icon;
   final double iconSize;
   final Color? iconColor;
-  const NetworkIconBasedTypeWidget({
+  final BoxFit fit;
+  const ImageIconBasedTypeWidget({
     super.key,
     required this.icon,
     this.iconSize = 18.0,
     this.iconColor,
+    this.fit = BoxFit.contain,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (icon is String && (icon as String).isSvgIcon) {
-      return SvgPicture.network(
-        icon as String,
-        height: iconSize,
-        width: iconSize,
-        color: iconColor,
-      );
+    if(icon.contains("http")) {
+      if ((icon).isSvgIcon) {
+        return SvgPicture.asset(
+          icon,
+          height: iconSize,
+          width: iconSize,
+          color: iconColor,
+          fit: fit,
+        );
+      } else if ((icon).isImgIcon) {
+        return Image.asset(
+          icon,
+          height: iconSize,
+          width: iconSize,
+          color: iconColor,
+          fit: fit,
+        );
+      }
     } else {
-      return Image.network(
-        icon as String,
-        height: iconSize,
-        width: iconSize,
-        color: iconColor,
-      );
+      if ((icon).isSvgIcon) {
+        return SvgPicture.network(
+          icon,
+          height: iconSize,
+          width: iconSize,
+          color: iconColor,
+          fit: fit,
+        );
+      } else {
+        return Image.network(
+          icon,
+          height: iconSize,
+          width: iconSize,
+          color: iconColor,
+          fit: fit,
+        );
+      }
     }
+
+    return const SizedBox();
   }
 }

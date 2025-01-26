@@ -32,11 +32,10 @@ class MostUsedService extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              NetworkIconBasedTypeWidget(
+              ImageIconBasedTypeWidget(
                 // icon: mostUsedService.service.icon,
                 icon: "https://balady.momra.gov.sa/sites/default/files/2025-01/logo_2.svg",
                 iconSize: 50,
-                iconColor: const Color(0xff31C3B9),
               ),
               const SizedBox(width: 16),
               Flexible(

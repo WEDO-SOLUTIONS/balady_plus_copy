@@ -25,7 +25,7 @@ class FeatureServicesList extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         SizedBox(
-          height: MediaQuery.of(context).size.width * 0.28,
+          height: MediaQuery.of(context).size.width * 0.29,
           child: Row(
             children: [
               FeatureServiceItem(

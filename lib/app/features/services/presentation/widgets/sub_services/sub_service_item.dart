@@ -1,7 +1,6 @@
-import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import 'package:balady_plus/app/features/services/core/help_function.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
@@ -13,23 +12,20 @@ class SubServiceItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {
-        checkIfLogin(context, service);
-      },
+      onTap: () => checkIfLogin(context, service),
       child: Card(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(13),
         ),
         margin: const EdgeInsetsDirectional.only(top: 12),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12),
           child: Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              DrawIconBasedTypeWidget(
-                icon: IconPath.serviceIcon(service.icon),
+              ImageIconBasedTypeWidget(
+                icon: service.icon,
                 iconSize: 30,
-                iconColor: const Color(0xff31C3B9),
               ),
               const SizedBox(width: 16),
               Flexible(
