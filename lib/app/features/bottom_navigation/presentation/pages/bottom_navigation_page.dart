@@ -49,9 +49,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           create: (_) => sl<PrayerTimesCubit>(),
         ),
         BlocProvider<HomeServicesCubit>(
-          create: (_) => HomeServicesCubit(
-            homeServicesUseCases: sl(),
-          ),
+          create: (_) => sl<HomeServicesCubit>(),
         ),
         BlocProvider<DelegatorsCubit>(
           create: (_) => sl<DelegatorsCubit>(),

@@ -13,6 +13,7 @@ import 'package:balady_plus/app/features/events/presentation/bloc/events_event.d
     as events;
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
+import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -1520,6 +1521,8 @@ class CommonFunctions {
   }
 
   static void refreshHomePage() async {
+    // Add This Line to When change lang app lade new data with the lang.
+    sl<HomeServicesCubit>().loadServices();
     sl<EventsBloc>().add(const events.GetSearchEvent());
     sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
