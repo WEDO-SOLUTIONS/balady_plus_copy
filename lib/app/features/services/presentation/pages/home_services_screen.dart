@@ -1,9 +1,14 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_route_names.dart';
+import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/home_services/category_service_item.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/home_services/most_used_service.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/home_services/most_used_services_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/utils/constants/dialog_names.dart';
@@ -14,7 +19,6 @@ import '../../../_shared_feature_/shared_feature_exports.dart'
 import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
 import '../../../profile_features/delegators/presentation/widgets/delegator_list.dart';
-import '../../services_exports.dart' show SearchServicesTextField;
 
 class HomeServicesScreen extends StatefulWidget {
   const HomeServicesScreen({super.key});
@@ -31,8 +35,9 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
     // TODO: implement initState
     super.initState();
     // if (CommonProperties.isLoggedIn)
-    // context.read<ServicesCubit>().checkEkramServices();
+    // context.read<HomeServicesCubit>().loadServices();
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -75,7 +80,56 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                     mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SearchServicesTextField(),
+                      TextFormField(
+                        onTap: () {
+                          List<Service> services = [];
+                          for (var element
+                              in state.homeServices.servicesCategories) {
+                            services.addAll(element.listOfServices);
+                          }
+                          NavigationService.navigatorKey.currentState!
+                              .pushNamed(
+                            HomeServicesRouteName.subServicesScreen,
+                            arguments: {
+                              "services": services,
+                            },
+                          );
+                        },
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: "search".tr(),
+                          filled: true,
+                          fillColor: Colors.grey.shade200,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: SvgPicture.asset(IconPath.search),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
                       //////////////////////////////////////////////////////
                       //////////////////////////////////////////////////////
                       //////////////////////////////////////////////////////
@@ -86,49 +140,12 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                       //////////////////////////////////////////////////////
                       //////////////////////////////////////////////////////
                       //////////////////////////////////////////////////////
-
-                      // Dashboard
-                      // if (CommonProperties.isLoggedIn) ...[
-                      //   HeaderWithAll(
-                      //     text: "dashboard".tr(),
-                      //     margin: const EdgeInsets.all(16),
-                      //     onPressAll: () {
-                      //       NavigationService.navigatorKey.currentState!
-                      //           .pushNamed(RouteName.DashbordDataPage,
-                      //               arguments: context.read<DelegatorsCubit>());
-                      //
-                      //       CommonFunctions.sendUXCamEvent(
-                      //           UXCamEvents.DashBoard_Click_View_All_Event);
-                      //     },
-                      //   ),
-                      //   const SizedBox(
-                      //     height: 8
-                      //   ),
-                      //   SingleChildScrollView(
-                      //     scrollDirection: Axis.horizontal,
-                      //     child: IntrinsicHeight(
-                      //       child: Row(
-                      //         crossAxisAlignment: CrossAxisAlignment.stretch,
-                      //         children: dashboardState.cards
-                      //             .map(
-                      //               (e) => DashboardCard(
-                      //                 card: e,
-                      //                 totalCount: dashboardState
-                      //                         .cardsStates[e]?.totalCount ??
-                      //                     0,
-                      //               ),
-                      //             )
-                      //             .toList(),
-                      //       ),
-                      //     ),
-                      //   ),
-                      // ],
                       //////////////////////////////////////////////////////
                       //////////////////////////////////////////////////////
                       //////////////////////////////////////////////////////
                       const SizedBox(height: 16),
                       FeatureServicesList(
-                        mostUsedServices : state.homeServices.mostUsedServices,
+                        mostUsedServices: state.homeServices.mostUsedServices,
                       ),
                       const SizedBox(height: 16),
                       Text(
@@ -211,4 +228,6 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
               }));
     }
   }
+
+
 }

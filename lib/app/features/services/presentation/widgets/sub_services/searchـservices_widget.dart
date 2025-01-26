@@ -6,7 +6,12 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class SearchServicesWidget extends StatelessWidget {
-  const SearchServicesWidget({super.key});
+  final bool autofocus;
+
+  const SearchServicesWidget({
+    super.key,
+    this.autofocus = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +20,8 @@ class SearchServicesWidget extends StatelessWidget {
       child: TextFormField(
         onChanged: (value) {
           context.read<ServiceCardsCubit>().searchServices(value);
-        }, //
+        },
+        autofocus: autofocus,
         decoration: InputDecoration(
           hintText: "search".tr(),
           filled: true,
@@ -28,7 +34,7 @@ class SearchServicesWidget extends StatelessWidget {
             onPressed: () {
               context.read<ServiceCardsCubit>().searchServices("");
             },
-            icon:  Icon(
+            icon: Icon(
               Icons.clear,
               color: Colors.red.shade800,
             ),

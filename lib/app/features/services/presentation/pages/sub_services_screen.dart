@@ -11,9 +11,9 @@ class SubServicesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var data = ModalRoute.of(context)!.settings.arguments;
     List<Service> listOfServices =
-        ModalRoute.of(context)!.settings.arguments as List<Service>;
-
+        data is List<Service> ? data : (data as Map)["services"];
     return BlocProvider<ServiceCardsCubit>(
       create: (context) => ServiceCardsCubit(listOfServices: listOfServices),
       child: Scaffold(
@@ -30,11 +30,11 @@ class SubServicesScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            const SearchServicesWidget(),
+            SearchServicesWidget(autofocus: data is! List<Service>),
             //////////////////////////////////////////////////////
-            const SizedBox(height: 8),//
+            const SizedBox(height: 8), //
             Expanded(
-              child: BlocBuilder<ServiceCardsCubit,SubServiceState>(
+              child: BlocBuilder<ServiceCardsCubit, SubServiceState>(
                 builder: (context, state) {
                   if (state is ErrorSubServiceState) {
                     return Center(

@@ -23,5 +23,4 @@ export 'domain/repositories/repository.dart';
 
 
 /// presentation -> widgets
-export 'presentation/widgets/search_services_text_field.dart';
 export 'presentation/widgets/service_warning_widget.dart';
