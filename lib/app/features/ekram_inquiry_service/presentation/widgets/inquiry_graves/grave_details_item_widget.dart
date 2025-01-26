@@ -57,7 +57,7 @@ class GraveDetailsItemWidget extends StatelessWidget {
                   value: item.cemeteryName ?? "",
                 ),
                 RequestParameter(
-                  title: '',
+                  title: 'cemetry_number',
                   value: graveLvls,
                 ),
               ],
