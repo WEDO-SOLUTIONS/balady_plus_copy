@@ -74,7 +74,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
             builder: (context, state) {
               if (state is ServicesSuccessState) {
                 return Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.all(12.0),
                   child: RefreshIndicator(
                     onRefresh: () {
                       context.read<HomeServicesCubit>().loadServices();
@@ -102,12 +102,14 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                               );
                             },
                             readOnly: true,
+
                             decoration: InputDecoration(
                               hintText: "search".tr(),
                               filled: true,
+                              isDense: true,
                               fillColor: Colors.grey.shade200,
                               prefixIcon: Padding(
-                                padding: const EdgeInsets.all(12.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
                                 child: SvgPicture.asset(IconPath.search),
                               ),
                               border: OutlineInputBorder(
@@ -139,7 +141,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                           //////////////////////////////////////////////////////
                           //////////////////////////////////////////////////////
                           //////////////////////////////////////////////////////
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           MostUsedService(
                             mostUsedService: state.homeServices.mostUsedService,
                           ),
@@ -149,16 +151,16 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                           //////////////////////////////////////////////////////
                           //////////////////////////////////////////////////////
                           //////////////////////////////////////////////////////
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           FeatureServicesList(
                             mostUsedServices: state.homeServices.mostUsedServices,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           Text(
                             "services_categories".tr(),
                             style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          const SizedBox(height: 16),
+                          const SizedBox(height: 12),
                           GridView.builder(
                             physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
@@ -166,7 +168,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                               crossAxisCount: 2,
                               mainAxisSpacing: 10,
                               crossAxisSpacing: 10,
-                              childAspectRatio: 1.1,
+                              childAspectRatio: 1.2,
                             ),
                             itemCount: state.homeServices.servicesCategories.length,
                             itemBuilder: (BuildContext context, int index) {
