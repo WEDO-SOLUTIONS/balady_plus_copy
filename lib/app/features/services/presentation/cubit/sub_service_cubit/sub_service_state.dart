@@ -19,7 +19,7 @@ class LoadedSubServiceState extends SubServiceState {
   final List<Service> listOfServices;
   const LoadedSubServiceState({required this.listOfServices});
   @override
-  List<Object?> get props => [listOfServices];
+  List<Object?> get props => [listOfServices.length];
 }
 
 class ErrorSubServiceState extends SubServiceState {

@@ -22,6 +22,7 @@ class SearchServicesWidget extends StatelessWidget {
           context.read<ServiceCardsCubit>().searchServices(value);
         },
         autofocus: autofocus,
+        controller: context.read<ServiceCardsCubit>().textFormSearchController,
         decoration: InputDecoration(
           hintText: "search".tr(),
           filled: true,
