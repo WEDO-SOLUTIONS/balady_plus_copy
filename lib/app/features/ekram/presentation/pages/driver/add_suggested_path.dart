@@ -145,7 +145,7 @@ class AddSuggestedPath extends StatefulWidget {
                             if(time != null)
                             {
 
-                              DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                              DateTime tempTime = DateFormat("HH:mm").parse(time);
                               String strTime = DateFormat("HH:mm")
                                   .format(tempTime)
                                   .toString();
@@ -278,7 +278,7 @@ class AddSuggestedPath extends StatefulWidget {
                             if(time != null)
                             {
 
-                              DateTime tempTime = DateFormat("h:mm a").parse(time!);
+                              DateTime tempTime = DateFormat("HH:mm").parse(time);
                               String strTime = DateFormat("HH:mm")
                                   .format(tempTime)
                                   .toString();

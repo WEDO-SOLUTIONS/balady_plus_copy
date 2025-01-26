@@ -146,80 +146,6 @@ class TripDateTimeWidget extends StatelessWidget {
   }
   showPickerTime(String? currentDate, BuildContext context) {
 
-      // final range = <DateTime?>[
-      //   DateTime(0, 1, 1, 8, 30),
-      //   DateTime(0, 1, 1, 14, 30)
-      // ];
-      // final p1 =
-      // Picker(
-      //     adapter: DateTimePickerAdapter(
-      //       customColumnType: [6, 7, 4],
-      //       value: range[0],
-      //     ),
-      //     delimiter: [
-      //       PickerDelimiter(
-      //           column: 0,
-      //           child: Container(
-      //             alignment: Alignment.center,
-      //             width: 100,
-      //             padding: EdgeInsets.fromLTRB(12, 0, 8, 0),
-      //             child: Text('Start',
-      //                 style: TextStyle(
-      //                     fontWeight: FontWeight.bold,
-      //                     color: Colors.red,
-      //                     fontSize: 14)),
-      //           )),
-      //     ],
-      //     onSelect: (Picker picker, int index, List<int> selected) {
-      //       range[0] = (picker.adapter as DateTimePickerAdapter).value;
-      //     },
-      //     onConfirmBefore: (picker, selected) async {
-      //       if (range[0] == null) {
-      //        // showMsg("Please select the start time.");
-      //         return false;
-      //       }
-      //       if (range[1] == null) {
-      //        // showMsg("Please select the end time.");
-      //         return false;
-      //       }
-      //       return true;
-      //     },
-      //     onConfirm: (picker, selected) {
-      //      // showMsg("Start: ${range[0].toString()}, End: ${range[1].toString()}, ${picker.adapter}");
-      //     });
-      // final p2 = Picker(
-      //     adapter: DateTimePickerAdapter(
-      //       customColumnType: [6, 7, 4],
-      //       value: range[1],
-      //     ),
-      //     hideHeader: true,
-      //     delimiter: [
-      //       PickerDelimiter(
-      //           column: 0,
-      //           child: Container(
-      //             alignment: Alignment.center,
-      //             padding: EdgeInsets.fromLTRB(12, 0, 8, 0),
-      //             width: 100,
-      //             child: Text('End',
-      //                 style: TextStyle(
-      //                     fontWeight: FontWeight.bold,
-      //                     color: Colors.red,
-      //                     fontSize: 14)),
-      //           )),
-      //     ],
-      //     onSelect: (Picker picker, int index, List<int> selected) {
-      //       range[1] = (picker.adapter as DateTimePickerAdapter).value;
-      //     });
-      // showBottomSheet(
-      //     context: context,
-      //     builder: (BuildContext context) {
-      //       return Column(
-      //         mainAxisSize: MainAxisSize.min,
-      //         children: [p1.makePicker(), p2.makePicker()],
-      //       );
-      //     });
-
-
 
     Picker(
         confirmTextStyle: const TextStyle(
@@ -254,7 +180,7 @@ class TripDateTimeWidget extends StatelessWidget {
           //print((picker.adapter as GorgianPicker.DateTimePickerAdapter).value);
           var date = (picker.adapter as DateTimePickerAdapter).value;
 
-          final DateFormat formatter = DateFormat('hh:mm a');
+          final DateFormat formatter = DateFormat('HH:mm');
           if (date != null && onTimeCallback!= null)
             currentDate = formatter.format(date);
             onTimeCallback!(currentDate);
