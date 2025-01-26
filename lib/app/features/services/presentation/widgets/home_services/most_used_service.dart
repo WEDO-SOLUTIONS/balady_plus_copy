@@ -1,10 +1,8 @@
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/services/core/help_function.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
-import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:smart_advisor/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 
 
 class MostUsedService extends StatelessWidget {
@@ -19,7 +17,13 @@ class MostUsedService extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        checkIfLogin(context, mostUsedService.service);
+        if(mostUsedService.service.actionValue == "smart_advisor") {
+          checkIfLogin(context, mostUsedService.service);
+        } else {
+          checkIfLogin(context, mostUsedService.service.copyWith(
+            actionValue: RouteName.chatbot,
+          ));
+        }
       },
       child: Card(
         color: Color(int.parse("0xff${mostUsedService.color}")),
