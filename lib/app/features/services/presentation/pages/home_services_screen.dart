@@ -75,108 +75,113 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
               if (state is ServicesSuccessState) {
                 return Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextFormField(
-                        onTap: () {
-                          List<Service> services = [];
-                          for (var element
-                              in state.homeServices.servicesCategories) {
-                            services.addAll(element.listOfServices);
-                          }
-                          NavigationService.navigatorKey.currentState!
-                              .pushNamed(
-                            HomeServicesRouteName.subServicesScreen,
-                            arguments: {
-                              "services": services,
+                  child: RefreshIndicator(
+                    onRefresh: () {
+                      context.read<HomeServicesCubit>().loadServices();
+                      return Future.value();
+                    },
+                    child: SingleChildScrollView(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextFormField(
+                            onTap: () {
+                              List<Service> services = [];
+                              for (var element
+                                  in state.homeServices.servicesCategories) {
+                                services.addAll(element.listOfServices);
+                              }
+                              NavigationService.navigatorKey.currentState!
+                                  .pushNamed(
+                                HomeServicesRouteName.subServicesScreen,
+                                arguments: {
+                                  "services": services,
+                                },
+                              );
                             },
-                          );
-                        },
-                        readOnly: true,
-                        decoration: InputDecoration(
-                          hintText: "search".tr(),
-                          filled: true,
-                          fillColor: Colors.grey.shade200,
-                          prefixIcon: Padding(
-                            padding: const EdgeInsets.all(12.0),
-                            child: SvgPicture.asset(IconPath.search),
+                            readOnly: true,
+                            decoration: InputDecoration(
+                              hintText: "search".tr(),
+                              filled: true,
+                              fillColor: Colors.grey.shade200,
+                              prefixIcon: Padding(
+                                padding: const EdgeInsets.all(12.0),
+                                child: SvgPicture.asset(IconPath.search),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none,
+                              ),
+                              errorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none,
+                              ),
+                              disabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none,
+                              ),
+                              focusedErrorBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none,
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(18),
+                                borderSide: BorderSide.none,
+                              ),
+                            ),
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none,
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          const SizedBox(height: 16),
+                          MostUsedService(
+                            mostUsedService: state.homeServices.mostUsedService,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none,
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          const SizedBox(height: 16),
+                          FeatureServicesList(
+                            mostUsedServices: state.homeServices.mostUsedServices,
                           ),
-                          errorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none,
+                          const SizedBox(height: 16),
+                          Text(
+                            "services_categories".tr(),
+                            style: Theme.of(context).textTheme.titleLarge,
                           ),
-                          disabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none,
+                          const SizedBox(height: 16),
+                          GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: 1.1,
+                            ),
+                            itemCount: state.homeServices.servicesCategories.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return CategoryServiceItem(
+                                servicesCategory:
+                                    state.homeServices.servicesCategories[index],
+                              );
+                            },
                           ),
-                          focusedErrorBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none,
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(18),
-                            borderSide: BorderSide.none,
-                          ),
-                        ),
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                          //////////////////////////////////////////////////////
+                        ],
                       ),
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      const SizedBox(height: 16),
-                      MostUsedService(
-                        mostUsedService: state.homeServices.mostUsedService,
-                      ),
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      const SizedBox(height: 16),
-                      FeatureServicesList(
-                        mostUsedServices: state.homeServices.mostUsedServices,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        "services_categories".tr(),
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
-                      const SizedBox(height: 16),
-                      Expanded(
-                        child: GridView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            mainAxisSpacing: 10,
-                            crossAxisSpacing: 10,
-                            childAspectRatio: 1.1,
-                          ),
-                          itemCount:
-                              state.homeServices.servicesCategories.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return CategoryServiceItem(
-                              servicesCategory:
-                                  state.homeServices.servicesCategories[index],
-                            );
-                          },
-                        ),
-                      ),
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                      //////////////////////////////////////////////////////
-                    ],
+                    ),
                   ),
                 );
               }
