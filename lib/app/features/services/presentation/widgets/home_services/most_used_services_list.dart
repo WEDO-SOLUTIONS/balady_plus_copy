@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/app.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/home_services/most_used_service_item.dart';
@@ -34,7 +35,7 @@ class FeatureServicesList extends StatelessWidget {
                   title: 'dashboard'.tr(),
                   icon: '',
                   label: '',
-                  image: '',
+                  image: ImagePath.featureServiceIamge,
                   isNew: false,
                   requireLogin: true,
                   levelLogin: LevelLogin.sso,

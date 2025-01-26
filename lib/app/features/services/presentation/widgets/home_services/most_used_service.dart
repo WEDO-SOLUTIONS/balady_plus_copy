@@ -19,8 +19,6 @@ class MostUsedService extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        // HomeServicesCubit homeServicesCubit = context.read<HomeServicesCubit>();
-        // homeServicesCubit.
         checkIfLogin(context, mostUsedService.service);
       },
       child: Card(
@@ -33,8 +31,7 @@ class MostUsedService extends StatelessWidget {
           child: Row(
             children: [
               ImageIconBasedTypeWidget(
-                // icon: mostUsedService.service.icon,
-                icon: "https://balady.momra.gov.sa/sites/default/files/2025-01/logo_2.svg",
+                icon: mostUsedService.service.icon,
                 iconSize: 50,
               ),
               const SizedBox(width: 16),

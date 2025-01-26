@@ -1,3 +1,6 @@
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
+
 class HomeServices {
   final MostUsedServiceModel mostUsedService;
   final List<Service> mostUsedServices;
@@ -164,8 +167,8 @@ class Service {
       id: json["id"],
       title: json["title"],
       label: json["label"],
-      icon: json["service_icon"],
-      image: json["services_image"],
+      icon: json["service_icon"] ?? IconPath.infoCircle,
+      image: json["services_image"] ?? ImagePath.featureServiceIamge,
       order: json["order"].isNotEmpty ? (int.tryParse(json["order"]) ?? 0) : 0,
       isNew: json["isnew"] == "1",
       requireLogin: json["require_login"] == "1",
@@ -252,31 +255,36 @@ extension LevelLoginMap on LevelLogin {
 
 class ServicesCategory {
   final String title;
+  final String name;
   final String icon;
   final List<Service> listOfServices;
 
   ServicesCategory({
     required this.title,
+    required this.name,
     required this.icon,
     required this.listOfServices,
   });
 
   ServicesCategory copyWith({
     String? title,
+    String? name,
     String? icon,
     List<Service>? subServices,
     List<Service>? listOfServices,
   }) =>
       ServicesCategory(
         title: title ?? this.title,
+        name: name ?? this.name,
         icon: icon ?? this.icon,
         listOfServices: listOfServices ?? this.listOfServices,
       );
 
   factory ServicesCategory.fromJson(Map<String, dynamic> json) {
     return ServicesCategory(
-      title: json["title"],
-      icon: json["category_icon"] ?? json["name"],
+      title: json["title"] ?? "",
+      name: json["name"] ?? "",
+      icon: json["category_icon"] ?? IconPath.infoCircle,
       listOfServices: json["listOfServices"] == null
           ? []
           : List<Service>.from(
@@ -286,6 +294,7 @@ class ServicesCategory {
 
   Map<String, dynamic> toJson() => {
         "title": title,
+        "name": name,
         "icon": icon,
         "listOfServices": listOfServices.map((x) => x?.toJson()).toList(),
       };

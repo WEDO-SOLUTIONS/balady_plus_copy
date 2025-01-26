@@ -19,7 +19,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if(icon.contains("http")) {
+    if(!icon.contains("http")) {
       if ((icon).isSvgIcon) {
         return SvgPicture.asset(
           icon,
