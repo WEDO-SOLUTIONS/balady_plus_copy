@@ -168,7 +168,7 @@ class Service {
       title: json["title"],
       label: json["label"],
       icon: json["service_icon"] ?? IconPath.infoCircle,
-      image: json["services_image"] ?? ImagePath.featureServiceIamge,
+      image: json["services_image"] ?? ImagePath.featureServiceImage,
       order: json["order"].isNotEmpty ? (int.tryParse(json["order"]) ?? 0) : 0,
       isNew: json["isnew"] == "1",
       requireLogin: json["require_login"] == "1",

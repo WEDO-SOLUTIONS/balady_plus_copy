@@ -35,7 +35,7 @@ class FeatureServicesList extends StatelessWidget {
                   title: 'dashboard'.tr(),
                   icon: '',
                   label: '',
-                  image: ImagePath.featureServiceIamge,
+                  image: ImagePath.featureServiceImage,
                   isNew: false,
                   requireLogin: true,
                   levelLogin: LevelLogin.sso,
