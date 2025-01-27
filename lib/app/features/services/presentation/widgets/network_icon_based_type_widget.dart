@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -13,7 +14,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
     super.key,
     required this.icon,
     this.iconSize = 18.0,
-    this.iconColor,
+    this.iconColor = AppColor.primary900Light,
     this.fit = BoxFit.contain,
   });
 
@@ -33,7 +34,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
           icon,
           height: iconSize,
           width: iconSize,
-          color: iconColor,
+          // color: iconColor,
           fit: fit,
         );
       }
@@ -51,7 +52,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
           icon,
           height: iconSize,
           width: iconSize,
-          color: iconColor,
+          // color: iconColor,
           fit: fit,
         );
       }
