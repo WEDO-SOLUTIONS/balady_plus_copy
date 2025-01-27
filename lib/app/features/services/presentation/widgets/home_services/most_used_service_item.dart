@@ -33,10 +33,11 @@ class FeatureServiceItem extends StatelessWidget {
                 fit: BoxFit.fill,
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 8),
                 child: Text(
                   service.title,
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                  maxLines: 2,
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
                       ),
