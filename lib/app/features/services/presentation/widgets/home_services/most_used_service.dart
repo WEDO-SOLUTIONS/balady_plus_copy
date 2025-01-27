@@ -14,57 +14,65 @@ class MostUsedService extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () {
-        if (mostUsedService.service.actionValue == "smart_advisor") {
-          checkIfLogin(
-            context,
-            mostUsedService.service.copyWith(
-              actionValue: RouteName.chatbot,
-            ),
-          );
-        } else {
-          checkIfLogin(context, mostUsedService.service);
-        }
-      },
-      child: Card(
-        color: Color(int.parse("0xff${mostUsedService.color}")),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              ImageIconBasedTypeWidget(
-                icon: mostUsedService.service.icon,
-                iconSize: 50,
+    return mostUsedService.service != null
+        ? InkWell(
+            onTap: () {
+              if (mostUsedService.service!.actionValue == "smart_advisor") {
+                checkIfLogin(
+                  context,
+                  mostUsedService.service!.copyWith(
+                    actionValue: RouteName.chatbot,
+                  ),
+                );
+              } else {
+                checkIfLogin(context, mostUsedService.service!);
+              }
+            },
+            child: Card(
+              color: Color(int.parse("0xff${mostUsedService.color}")),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-              const SizedBox(width: 16),
-              Flexible(
-                fit: FlexFit.tight,
-                child: Column(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
                   children: [
-                    Text(
-                      mostUsedService.title,
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                            color: Colors.white,
-                          ),
+                    ImageIconBasedTypeWidget(
+                      icon: mostUsedService.service!.icon,
+                      iconSize: 50,
                     ),
-                    const SizedBox(height: 12),
-                    Text(
-                      mostUsedService.label,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Colors.white,
+                    const SizedBox(width: 16),
+                    Flexible(
+                      fit: FlexFit.tight,
+                      child: Column(
+                        children: [
+                          Text(
+                            mostUsedService.title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium!
+                                .copyWith(
+                                  color: Colors.white,
+                                ),
                           ),
-                    ),
+                          const SizedBox(height: 12),
+                          Text(
+                            mostUsedService.label,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                  color: Colors.white,
+                                ),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+              ),
+            ),
+          )
+        : const SizedBox();
   }
 }

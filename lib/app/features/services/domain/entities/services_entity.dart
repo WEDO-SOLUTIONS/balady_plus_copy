@@ -52,7 +52,7 @@ class MostUsedServiceModel {
   final String title;
   final String label;
   final String color;
-  final Service service;
+  final Service? service;
 
   MostUsedServiceModel({
     required this.title,
@@ -79,7 +79,7 @@ class MostUsedServiceModel {
       title: json["title"],
       label: json["label"],
       color: json["color"],
-      service: Service.fromJson(json["service"]),
+      service: json["service"] != null ? Service.fromJson(json["service"]) : null,
     );
   }
 
