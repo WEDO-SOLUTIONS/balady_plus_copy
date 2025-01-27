@@ -39,12 +39,15 @@ class MostUsedService extends StatelessWidget {
                   children: [
                     ImageIconBasedTypeWidget(
                       icon: mostUsedService.service!.icon,
-                      iconSize: 50,
+                      iconSize: 60,
+                      fit: BoxFit.cover,
                     ),
                     const SizedBox(width: 16),
                     Flexible(
                       fit: FlexFit.tight,
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
                             mostUsedService.title,
