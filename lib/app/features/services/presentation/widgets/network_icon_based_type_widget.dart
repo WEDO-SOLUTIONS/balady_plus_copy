@@ -14,12 +14,13 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
     super.key,
     required this.icon,
     this.iconSize = 18.0,
-    this.iconColor = AppColor.primary900Light,
+    this.iconColor = const Color(0xff31C3B9),
     this.fit = BoxFit.contain,
   });
 
   @override
   Widget build(BuildContext context) {
+
     if(!icon.contains("http")) {
       if ((icon).isSvgIcon) {
         return SvgPicture.asset(
