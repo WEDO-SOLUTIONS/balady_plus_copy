@@ -166,7 +166,7 @@ class Service {
     return Service(
       id: json["id"],
       title: json["title"],
-      label: json["label"],
+      label: json["label"] ?? "",
       icon: json["service_icon"] ?? IconPath.infoCircle,
       image: json["services_image"] ?? ImagePath.featureServiceImage,
       order: json["order"].isNotEmpty ? (int.tryParse(json["order"]) ?? 0) : 0,
