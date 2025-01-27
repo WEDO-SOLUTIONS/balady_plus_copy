@@ -15,13 +15,13 @@ import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 
 extension DirectoryObjectAddr on DirectoryObjectMessage {
   String makeAddress() {
-    final region = address?.drilldown.firstWhereOrNull((element) => element?.type == 'region');
-    final districtArea = address?.drilldown.firstWhereOrNull((element) => element?.type == 'district_area');
-    final district = address?.drilldown.firstWhereOrNull((element) => element?.type == 'district');
+    final region = address?.drilldown.firstWhereOrNull((element) => element.type == 'region');
+    final districtArea = address?.drilldown.firstWhereOrNull((element) => element.type == 'district_area');
+    final district = address?.drilldown.firstWhereOrNull((element) => element.type == 'district');
     final street =
-        address?.components.firstWhereOrNull((element) => element?.streetAddress != null)?.streetAddress?.street;
+        address?.components.firstWhereOrNull((element) => element.streetAddress != null)?.streetAddress?.street;
 
-    return [street, district?.name, districtArea?.name, region?.name].whereNotNull().join(', ');
+    return [street, district?.name, districtArea?.name, region?.name].nonNulls.join(', ');
   }
 
   FavouriteItem mapToFavourite() => FavouriteItem(
@@ -108,8 +108,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
 
     // Entrances
-    final entrancesCount = entrances.fold(
-        0, (prev, e) => prev + (e?.geometry?.entrancePoints.length ?? 0));
+    final entrancesCount = entrances.fold(0, (prev, e) => prev + (e.geometry?.entrancePoints.length ?? 0));
     final entrances_ = onEntrancesTap != null
         ? PoiContentFullAddressEntrances(
             title: l10n.exits,
@@ -129,13 +128,13 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
 
   /// Generate address from distributed information from [address]
   String _makeAddress() {
-    final region = address?.drilldown.firstWhereOrNull((element) => element?.type == 'region');
-    final districtArea = address?.drilldown.firstWhereOrNull((element) => element?.type == 'district_area');
-    final district = address?.drilldown.firstWhereOrNull((element) => element?.type == 'district');
+    final region = address?.drilldown.firstWhereOrNull((element) => element.type == 'region');
+    final districtArea = address?.drilldown.firstWhereOrNull((element) => element.type == 'district_area');
+    final district = address?.drilldown.firstWhereOrNull((element) => element.type == 'district');
     final street =
-        address?.components.firstWhereOrNull((element) => element?.streetAddress != null)?.streetAddress?.street;
+        address?.components.firstWhereOrNull((element) => element.streetAddress != null)?.streetAddress?.street;
 
-    return [street, district?.name, districtArea?.name, region?.name].whereNotNull().join(', ');
+    return [street, district?.name, districtArea?.name, region?.name].nonNulls.join(', ');
   }
 
   /// Generate about content for POI Card

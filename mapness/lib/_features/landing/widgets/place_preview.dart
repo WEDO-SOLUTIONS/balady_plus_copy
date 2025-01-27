@@ -43,6 +43,8 @@ class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepA
 
             return SliderListView(
               items: places,
+              horizontalPadding: Spacing.$3x,
+              separationWidth: Spacing.$2x,
               viewportWidth: MediaQuery.sizeOf(context).width,
               contentSize: kPlaceCardSize,
               onTap: (item) {

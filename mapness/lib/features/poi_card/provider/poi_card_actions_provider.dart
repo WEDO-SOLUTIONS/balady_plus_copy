@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
@@ -25,7 +24,7 @@ class PoiCardActions extends _$PoiCardActions {
   Future<void> onEntranceTap(DirectoryObjectMessage? objectMessage) async {
     final controller = await ref.read(dgisControllerProvider.future);
     if (objectMessage != null) {
-      final list = objectMessage.entrances.map((e) => e?.id).whereNotNull().toList();
+      final list = objectMessage.entrances.map((e) => e.id).nonNulls.toList();
       await controller.setHighlighted(list);
     }
   }
@@ -111,13 +110,11 @@ class PoiCardActions extends _$PoiCardActions {
     final highlightController = ref.watch(highlightProvider.notifier);
 
     for (final entrance in data.entrances) {
-      if (entrance != null) {
-        await highlightController.addHighlight(entrance.id);
-      }
+      await highlightController.addHighlight(entrance.id);
     }
 
     await _animateToEntrance(
-      data.entrances.map((e) => e?.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
+      data.entrances.map((e) => e.geometry?.entrancePoints ?? []).toList().expand((element) => element).toList(),
       closestPoint,
     );
     callBack.call();

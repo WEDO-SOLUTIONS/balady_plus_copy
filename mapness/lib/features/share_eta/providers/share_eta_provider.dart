@@ -415,7 +415,7 @@ class ShareEta extends _$ShareEta {
         sortingType: SortingTypeMessage.byDistance,
       );
       if (data.firstPage?.items.isNotEmpty == true) {
-        address = data.firstPage!.items.first?.makeAddress();
+        address = data.firstPage?.items.first.makeAddress();
         address ??= '$latitude, $longitude';
       }
     } catch (_) {}

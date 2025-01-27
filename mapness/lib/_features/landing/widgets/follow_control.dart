@@ -7,7 +7,6 @@ import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
@@ -24,7 +23,7 @@ class FollowControl extends ConsumerWidget {
 
     final iconColor = followState.type == LocationFollowType.off
         ? context.colorsV2.foregroundDefault
-        : context.colorsV3.accentDefault;
+        : context.colorsV2.accentDefault;
 
     return MapButton(
       onTap: () async {

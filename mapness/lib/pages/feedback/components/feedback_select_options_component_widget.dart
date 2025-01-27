@@ -25,7 +25,7 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final poiData = ref.watch(poiFeedbackProvider(objectId));
-    final objectType = poiData.valueOrNull?.types[0]?.type;
+    final objectType = poiData.valueOrNull?.types.elementAtOrNull(0)?.type;
     final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
     final categories = ref.watch(provider);
 
