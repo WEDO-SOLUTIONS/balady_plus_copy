@@ -12,8 +12,11 @@ class SubServicesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var data = ModalRoute.of(context)!.settings.arguments;
-    List<Service> listOfServices =
-        data is List<Service> ? data : (data as Map)["services"];
+    List<Service> listOfServices = data is List<Service>
+        ? data
+        : data is Map
+            ? data["services"]
+            : [];
     return BlocProvider<ServiceCardsCubit>(
       create: (context) => ServiceCardsCubit(listOfServices: listOfServices),
       child: Scaffold(

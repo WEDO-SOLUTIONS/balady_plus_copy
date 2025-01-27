@@ -34,7 +34,8 @@ class _NewHealthCertificatePageState extends State<NewHealthCertificatePage> {
 
   @override
   Widget build(BuildContext context) {
-    bool renew = (ModalRoute.of(context)!.settings.arguments as bool?) ?? false;
+    var data = ModalRoute.of(context)!.settings.arguments;
+    bool renew = data is bool ? data : false;
 
     return BlocProvider<NewHealthCertificateBloc>(
       create: (context) => NewHealthCertificateBloc(renew: renew),
