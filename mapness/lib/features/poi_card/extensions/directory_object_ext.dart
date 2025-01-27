@@ -8,10 +8,13 @@ import 'package:mapness/_features/favourites/domain/favourites_state.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/features/poi_card/domain/model/opening_hours_model.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
+import 'package:mapness/features/poi_card/domain/model/work_time_model.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
+import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
 import 'package:mapness/features/poi_card/extensions/opening_hours_message_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 extension DirectoryObjectAddr on DirectoryObjectMessage {
   String makeAddress() {
@@ -227,23 +230,22 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
   }
 
-  PoiContentWorkTime? getOpeningHoursHeader(AppLocalizations l10n) {
+  WorkTimeModel? getOpeningHoursHeader(BuildContext context) {
     if (openingHours == null) {
       return null;
     }
 
-    final model = _getOpeningHoursModel(l10n);
+    final model = _getOpeningHoursModel(context.l10n);
 
     final is24x7 = model.isAlwaysOpen == true;
     final isOpenSameTime = model.isDailySameOpenHours == true;
     final days = _createWorkTimeDays(
       model.openingHours,
-      l10n,
+      context.l10n,
     );
 
     final title = StringBuffer();
-    final todayOpeningInfo = model.getTodayOpeningInfo(l10n);
-    final isWeekend = todayOpeningInfo?.isWeekend ?? false;
+    Color color;
 
     OpenHours? openHours;
 
@@ -255,16 +257,134 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
       return null;
     }
 
-    if (!is24x7 && openHours.openHour != null && openHours.closeHour != null) {
-      title
-        ..write(l10n.openUntil)
-        ..write(' ')
-        ..write(openHours.closeHour);
+    final allDaysClosed = model.openingHours?.every((day) => day.isWeekend);
+
+    if (allDaysClosed == true) {
+      title.write(context.l10n.temporarilyNotWorking);
+      color = Colors.red;
+
+      return WorkTimeModel(
+        color: color,
+        poiContentWorkTime: PoiContentWorkTime(
+          title: title.toString(),
+        ),
+      );
     }
 
-    return PoiContentWorkTime(
-      title: title.toString(),
-      days: !isOpenSameTime ? days : null,
+    if (!is24x7 && openHours.openHour != null && openHours.closeHour != null) {
+      final test = DateTime.now();
+      final now = DateTime(test.year, test.month, test.day, 10);
+      final closeTimeString = openHours.closeHour!;
+      final closeTimeParts = closeTimeString.split(':');
+
+      final closeTime = DateTime(
+        now.year,
+        now.month,
+        now.day,
+        int.parse(closeTimeParts[0]),
+        int.parse(closeTimeParts[1]),
+      );
+
+      if (closeTime.isBefore(now)) {
+        final nextOpenTimeString = model.openingHours?[1].openHour;
+
+        if (openHours.isWeekend == true) {
+          final nextOpenDay = nextOpenTimeString!.split(':');
+
+          final nextOpenDayTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            int.parse(nextOpenDay[0]),
+            int.parse(nextOpenDay[1]),
+          );
+          final nextOpenWeekday = nextOpenDayTime.weekDayName(context.l10n);
+
+          title
+            ..write(context.l10n.closedUntill)
+            ..write(' ')
+            ..write(nextOpenWeekday)
+            ..write(' at ')
+            ..write(nextOpenTimeString);
+        } else {
+          final openHourPartsString = openHours.openHour!;
+          final openHourParts = openHourPartsString.split(':');
+
+          final openTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            int.parse(openHourParts[0]),
+            int.parse(openHourParts[1]),
+          );
+
+          if (openTime.isBefore(closeTime)) {
+            title
+              ..write(context.l10n.openUntil)
+              ..write(' ')
+              ..write(closeTimeString);
+          } else {
+            title
+              ..write(context.l10n.closedUntill)
+              ..write(' ')
+              ..write(nextOpenTimeString);
+          }
+        }
+
+        color = Colors.red;
+      } else {
+        final remainingMinutes = closeTime.difference(now).inMinutes;
+
+        if (remainingMinutes <= 45 && remainingMinutes > 0) {
+          title
+            ..write(context.l10n.closesIn)
+            ..write(' ')
+            ..write(remainingMinutes)
+            ..write(' ')
+            ..write(context.l10n.minutes);
+          color = const Color(0xFF9547E9);
+        } else {
+          final openHourPartsString = openHours.openHour!;
+          final openHourParts = openHourPartsString.split(':');
+
+          final openTime = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            int.parse(openHourParts[0]),
+            int.parse(openHourParts[1]),
+          );
+
+          if (openTime.isBefore(closeTime)) {
+            title
+              ..write(context.l10n.openUntil)
+              ..write(' ')
+              ..write(closeTimeString);
+
+            color = context.colorsV3.accentDefault;
+          } else {
+            final nextOpenTimeString = model.openingHours?[1].openHour;
+
+            title
+              ..write(context.l10n.closedUntill)
+              ..write(' ')
+              ..write(nextOpenTimeString);
+
+            color = Colors.red;
+          }
+
+        }
+      }
+    } else {
+      color = const Color(0xFF9547E9);
+    }
+
+    return WorkTimeModel(
+      color: color,
+      poiContentWorkTime: PoiContentWorkTime(
+        title: title.toString(),
+        days: !isOpenSameTime ? days : null,
+      ),
     );
   }
 
