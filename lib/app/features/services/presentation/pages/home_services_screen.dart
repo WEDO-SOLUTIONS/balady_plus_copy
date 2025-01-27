@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_route_names.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
@@ -158,7 +159,9 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                           const SizedBox(height: 12),
                           Text(
                             "services_categories".tr(),
-                            style: Theme.of(context).textTheme.titleLarge,
+                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                              fontFamily: AppConfig.appFontType,
+                            ),
                           ),
                           const SizedBox(height: 12),
                           GridView.builder(

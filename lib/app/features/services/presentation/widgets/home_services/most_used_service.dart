@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/services/core/help_function.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
@@ -56,7 +57,8 @@ class MostUsedService extends StatelessWidget {
                                 .titleMedium!
                                 .copyWith(
                                   color: Colors.white,
-                                ),
+                              fontFamily: AppConfig.appFontType,
+                            ),
                           ),
                           const SizedBox(height: 4),
                           Text(
@@ -66,7 +68,8 @@ class MostUsedService extends StatelessWidget {
                                 .bodyMedium!
                                 .copyWith(
                                   color: Colors.white,
-                                ),
+                              fontFamily: AppConfig.appFontType,
+                            ),
                           ),
                         ],
                       ),

@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_route_names.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
@@ -37,12 +38,15 @@ class CategoryServiceItem extends StatelessWidget {
                 servicesCategory.title,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
-                    ),
+                  fontFamily: AppConfig.appFontType,
+                ),
               ),
               const SizedBox(height: 8),
               Text(
                 "${servicesCategory.listOfServices.length} ${"servicesDirectoryServicesWord".tr()}",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(),
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                  fontFamily: AppConfig.appFontType,
+                ),
               ),
             ],
           ),

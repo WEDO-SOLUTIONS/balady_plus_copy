@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/app/features/services/core/help_function.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
@@ -37,6 +38,7 @@ class SubServiceItem extends StatelessWidget {
                       service.title.tr(),
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             fontWeight: FontWeight.w500,
+                            fontFamily: AppConfig.appFontType,
                           ),
                     ),
                     const SizedBox(height: 8),
@@ -44,6 +46,7 @@ class SubServiceItem extends StatelessWidget {
                       service.label.tr(),
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: const Color(0xff898989),
+                            fontFamily: AppConfig.appFontType,
                           ),
                     ),
                   ],

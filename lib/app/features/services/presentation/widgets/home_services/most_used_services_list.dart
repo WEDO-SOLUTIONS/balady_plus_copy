@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/app.dart';
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
@@ -22,7 +23,9 @@ class FeatureServicesList extends StatelessWidget {
       children: [
         Text(
           "feature_services".tr(),
-          style: Theme.of(context).textTheme.titleLarge,
+          style: Theme.of(context).textTheme.titleLarge!.copyWith(
+            fontFamily: AppConfig.appFontType,
+          ),
         ),
         const SizedBox(height: 16),
         SizedBox(
@@ -31,7 +34,7 @@ class FeatureServicesList extends StatelessWidget {
             children: [
               FeatureServiceItem(
                 service: Service(
-                  id: 111,
+                  id: "111",
                   title: 'dashboard'.tr(),
                   icon: '',
                   label: '',

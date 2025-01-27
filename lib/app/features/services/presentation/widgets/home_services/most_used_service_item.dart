@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import 'package:balady_plus/app/features/services/core/help_function.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
@@ -33,13 +34,15 @@ class FeatureServiceItem extends StatelessWidget {
                 fit: BoxFit.fill,
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0,vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
                 child: Text(
                   service.title,
                   maxLines: 2,
                   style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
+                        fontFamily: AppConfig.appFontType,
                       ),
                 ),
               ),
