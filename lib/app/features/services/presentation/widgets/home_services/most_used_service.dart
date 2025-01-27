@@ -4,7 +4,6 @@ import 'package:balady_plus/app/features/services/domain/entities/services_entit
 import 'package:balady_plus/app/features/services/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
 
-
 class MostUsedService extends StatelessWidget {
   final MostUsedServiceModel mostUsedService;
 
@@ -17,12 +16,15 @@ class MostUsedService extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        if(mostUsedService.service.actionValue == "smart_advisor") {
-          checkIfLogin(context, mostUsedService.service);
+        if (mostUsedService.service.actionValue == "smart_advisor") {
+          checkIfLogin(
+            context,
+            mostUsedService.service.copyWith(
+              actionValue: RouteName.chatbot,
+            ),
+          );
         } else {
-          checkIfLogin(context, mostUsedService.service.copyWith(
-            actionValue: RouteName.chatbot,
-          ));
+          checkIfLogin(context, mostUsedService.service);
         }
       },
       child: Card(
@@ -65,5 +67,4 @@ class MostUsedService extends StatelessWidget {
       ),
     );
   }
-
 }
