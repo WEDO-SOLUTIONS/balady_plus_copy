@@ -93,8 +93,7 @@ class ServicesCubit extends Cubit<ServicesState> {
     final bool checkForChatpot = await checkForChatBotEnabled();
 
     final islamicServicesList = await islamicServices(NoParams());
-    final businessLicenseServicesList =
-    await businessLicenseServices(NoParams());
+    final businessLicenseServicesList = await businessLicenseServices(NoParams());
     final helpServicesList = await helpServices(NoParams());
     final municpalServicesList = await municipalServices(NoParams());
     final ekramServicesList = await ekramServices(NoParams());
