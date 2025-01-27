@@ -79,7 +79,8 @@ class MostUsedServiceModel {
       title: json["title"],
       label: json["label"],
       color: json["color"],
-      service: json["service"] != null ? Service.fromJson(json["service"]) : null,
+      service:
+          json["service"] != null ? Service.fromJson(json["service"]) : null,
     );
   }
 
@@ -92,7 +93,7 @@ class MostUsedServiceModel {
 }
 
 class Service {
-  final int id;
+  final String id;
   final String title;
   final String label;
   final String icon;
@@ -127,7 +128,7 @@ class Service {
   });
 
   Service copyWith({
-    int? id,
+    String? id,
     String? title,
     String? label,
     String? icon,
@@ -164,7 +165,7 @@ class Service {
 
   factory Service.fromJson(Map<String, dynamic> json) {
     return Service(
-      id: json["id"],
+      id: json["id"].toString(),
       title: json["title"],
       label: json["label"] ?? "",
       icon: json["service_icon"] ?? IconPath.infoCircle,
@@ -175,10 +176,13 @@ class Service {
       levelLogin: LevelLoginMap.fromString(json['level_login']),
       actionType: ActionTypeMap.fromString(json['actiontype']),
       actionValue: json["actionvalue"],
-      subServices: json["sub_services"] == null
+      subServices: json["subServices"] == null
           ? []
           : List<Service>.from(
-              json["sub_services"]!.map((x) => Service.fromJson(x))),
+              json["subServices"]!.map(
+                (x) => Service.fromJson(x),
+              ),
+            ),
       serviceId: int.tryParse(json["serviceId"] ?? ""),
       eventName: json["eventName"],
       requireSelectedDelegator: json["requireSelectedDelegator"] == "1",
