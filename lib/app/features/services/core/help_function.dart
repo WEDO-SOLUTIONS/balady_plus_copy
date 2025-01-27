@@ -35,6 +35,7 @@ void checkIfLogin(BuildContext context, Service service) {
         }
         break;
       case LevelLogin.guest:
+        tackYouAction(context, service);
         break;
     }
   } else {
