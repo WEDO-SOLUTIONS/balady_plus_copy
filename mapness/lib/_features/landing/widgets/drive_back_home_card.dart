@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
@@ -12,6 +13,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
@@ -19,14 +21,22 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:urbi_utils/urbi_utils.dart';
 
-class DriveBackHomeCard extends ConsumerWidget {
-  static const navigatingType = RouteSearchOptionsMessage.car;
-
+class DriveBackHomeCard extends ConsumerStatefulWidget {
   const DriveBackHomeCard({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
+  ConsumerState<DriveBackHomeCard> createState() => _DriveBackHomeCardState();
+}
+
+class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
+  static const navigatingType = RouteSearchOptionsMessage.car;
+
+  final Debouncer debouncer = Debouncer(Durations.extralong4);
+
+  @override
+  Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: GestureDetector(
           onTap: () => openNavigationBackHome(context, ref),
@@ -95,44 +105,49 @@ class DriveBackHomeCard extends ConsumerWidget {
         ),
       );
 
-  void openNavigationBackHome(BuildContext context, WidgetRef ref) {
-    ref.read(authMethodsProvider.notifier).authAndOpen(
-      context,
-      callback: () async {
-        /// We use [Future] to ensure that when we log into the app, the initial state of home will be set for this round of the event loop.
-        final home = await Future(() async => getHome(context, ref));
+  void openNavigationBackHome(BuildContext context, WidgetRef ref) => debouncer.debounce(
+        () async => ref.read(authMethodsProvider.notifier).authAndOpen(
+          context,
+          callback: () async {
+            /// Force update authProvider when the user was not authenticated to get relavant favorites.
+            final isAuth = ref.read(authProvider).value != null;
+            if (!isAuth) {
+              await ref.read(authProvider.notifier).forceUpdate();
+            }
 
-        /// If no home, exit from the function and not openning navigator to driving back home.
-        if (home == null) {
-          return;
-        }
+            final home = await getHome(context, ref);
 
-        /// If no navigation points, exit from the function and not openning navigator to driving back home.
-        final locations = getNavigationPoints(context, ref, home);
-        if (locations == null) {
-          return;
-        }
+            /// If no home, exit from the function and not openning navigator to driving back home.
+            if (home == null) {
+              return;
+            }
 
-        final (startLocation, finishLocation) = locations;
+            /// If no navigation points, exit from the function and not openning navigator to driving back home.
+            final locations = getNavigationPoints(context, ref, home);
+            if (locations == null) {
+              return;
+            }
 
-        ref.listenManual(
-          routesProvider(
-            startPoint: startLocation,
-            finishPoint: finishLocation,
-            navType: navigatingType,
-          ),
-          (_, current) => navigateBackHomeCallback(
-            current,
-            context,
-            ref,
-            startLocation,
-            finishLocation,
-          ),
-          fireImmediately: true,
-        );
-      },
-    );
-  }
+            final (startLocation, finishLocation) = locations;
+
+            ref.listenManual(
+              routesProvider(
+                startPoint: startLocation,
+                finishPoint: finishLocation,
+                navType: navigatingType,
+              ),
+              (_, current) => navigateBackHomeCallback(
+                current,
+                context,
+                ref,
+                startLocation,
+                finishLocation,
+              ),
+              fireImmediately: true,
+            );
+          },
+        ),
+      );
 
   Future<FavouriteItem?> getHome(BuildContext context, WidgetRef ref) async {
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
@@ -146,7 +161,7 @@ class DriveBackHomeCard extends ConsumerWidget {
           markerType: FavouriteItemMarkerType.home,
         ),
       );
-      return ref.read(favouriteCacheProvider).valueOrNull?.home;
+      return ref.refresh(favouriteCacheProvider).valueOrNull?.home;
     }
     return home;
   }
@@ -189,7 +204,7 @@ class DriveBackHomeCard extends ConsumerWidget {
       return;
     }
 
-    await setupMap(ref);
+    unawaited(setupMap(ref));
     await openNavigation(ref, context, startLocation, finishLocation);
   }
 
@@ -198,28 +213,27 @@ class DriveBackHomeCard extends ConsumerWidget {
     BuildContext context,
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
-  ) async {
-    await context.router.push(
-      RoutingRoutesRoute(
-        points: [
-          RouteParamsPointWithLabel(
-            value: startLocation,
-            label: context.l10n.myLocation,
-          ),
-          RouteParamsPointWithLabel(
-            value: RouteParamsPoint(
-              latitude: finishLocation.latitude,
-              longitude: finishLocation.longitude,
-              objectId: finishLocation.objectId,
-              entranceId: finishLocation.entranceId,
-              levelId: finishLocation.levelId,
+  ) async =>
+      context.router.push(
+        RoutingRoutesRoute(
+          points: [
+            RouteParamsPointWithLabel(
+              value: startLocation,
+              label: context.l10n.myLocation,
             ),
-            label: context.l10n.home,
-          ),
-        ],
-      ),
-    );
-  }
+            RouteParamsPointWithLabel(
+              value: RouteParamsPoint(
+                latitude: finishLocation.latitude,
+                longitude: finishLocation.longitude,
+                objectId: finishLocation.objectId,
+                entranceId: finishLocation.entranceId,
+                levelId: finishLocation.levelId,
+              ),
+              label: context.l10n.home,
+            ),
+          ],
+        ),
+      );
 
   Future<void> setupMap(WidgetRef ref) async {
     final mapSetting = MapObjectManagerSettings.search();

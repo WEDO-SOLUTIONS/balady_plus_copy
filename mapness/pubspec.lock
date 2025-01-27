@@ -3213,10 +3213,10 @@ packages:
     dependency: "direct main"
     description:
       name: urbi_utils
-      sha256: "7762c3015180b748dc39c3f6f323ddaed3e037b294caf1dcc4afa3313c2ea31d"
+      sha256: "49b4e755a0bc9830a41d4cd4bf0d386fc4299c2b286859a540acbce56a4dceca"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   url_launcher:
     dependency: "direct main"
     description:
