@@ -278,7 +278,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
   }
 
   /// Builds the dynamic work time model based on the current time and opening hours.
-  WorkTimeModel _buildDynamicWorkTimeModel(
+  WorkTimeModel? _buildDynamicWorkTimeModel(
     BuildContext context,
     OpeningHoursModel model,
     OpenHours openHours,
@@ -323,7 +323,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
   }
 
  /// Builds the model for the next opening time when the current time is outside of working hours.
-  WorkTimeModel _buildNextOpeningTimeModel(
+  WorkTimeModel? _buildNextOpeningTimeModel(
     BuildContext context,
     OpeningHoursModel model,
     List<PoiContentWorkTimeDay>? days,
@@ -334,8 +334,12 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
           orElse: () => model.openingHours!.first,
         );
 
-    final nextOpenTime = nextOpen?.openHour;
-    if (nextOpenTime != null) {
+    if (nextOpen == null) {
+      return null;
+    }
+
+    final nextOpenTime = nextOpen.openHour;
+    if (nextOpen.isWeekend == true) {
       /// Get the next weekday and return the model indicating when the place will open.
       final nextWeekday = DateTime.now().add(const Duration(days: 1)).weekDayName(context.l10n);
       return _buildWorkTimeModel(
@@ -347,7 +351,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
 
     /// If there is no next opening time, return a model indicating the place is temporarily not working.
     return _buildWorkTimeModel(
-      title: context.l10n.temporarilyNotWorking,
+      title: '${context.l10n.closedUntill} $nextOpenTime',
       color: context.colorsV2.errorDefault,
       days: days,
     );
