@@ -1335,7 +1335,16 @@ class LabelTextWithOptional extends StatelessWidget {
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),
             ),
-          if (showOptional == false) const TextSpan(text: " *"),
+          if (showOptional == true) const TextSpan(text: " "),
+          if (showOptional == true)
+            TextSpan(
+              text: ('optional').tr(),
+              style: const TextStyle(
+                  color: Color(0xffbabbbb),
+                  fontSize: 13.0,
+                  fontFamily: GeneralKey.appFontType,
+                  fontWeight: FontWeight.bold),
+            ),
         ],
       ),
     );

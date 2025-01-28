@@ -412,7 +412,7 @@ class ServiceIcon extends StatelessWidget {
           isFullHeight: false,
           dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
           currentRouteName: RouteName.postersStartService,
-          child:  NotAuthorizedIndivisualDialog(),
+          child: const NotAuthorizedIndivisualDialog(),
         );
       }
 

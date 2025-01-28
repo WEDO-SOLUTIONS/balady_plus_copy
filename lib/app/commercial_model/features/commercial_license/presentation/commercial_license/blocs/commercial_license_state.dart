@@ -12,7 +12,6 @@ class CommercialLicenseState extends Equatable {
   final CrCalculateFeesResponse? crCalculateFeesResponse;
   final String? selectedPeriod;
   final bool? isDraft;
-  final bool? isFromIntialApproval;
   final CommercialRequestDetailsResponse? requestData;
   final RecordInfo? recordInfo;
 
@@ -27,7 +26,6 @@ class CommercialLicenseState extends Equatable {
     this.selectedPeriod,
     this.gisResponse,
     this.isDraft,
-    this.isFromIntialApproval,
     this.requestData,
     this.recordInfo,
     this.pagesList = const [
@@ -75,7 +73,6 @@ class CommercialLicenseState extends Equatable {
       String? selectedPeriod,
       GISResponse? gisResponse,
       bool? isDraft,
-        bool? isFromIntialApproval,
       Nullable<CommercialRequestDetailsResponse?>? requestData,
       RecordInfo? recordInfo}) {
     return CommercialLicenseState(
@@ -92,7 +89,6 @@ class CommercialLicenseState extends Equatable {
         locationResponse: locationResponse ?? this.locationResponse,
         gisResponse: gisResponse ?? this.gisResponse,
         isDraft: isDraft ?? this.isDraft,
-        isFromIntialApproval:isFromIntialApproval??this.isFromIntialApproval,
         requestData: requestData == null ? this.requestData : requestData.value,
         recordInfo: recordInfo ?? this.recordInfo);
   }

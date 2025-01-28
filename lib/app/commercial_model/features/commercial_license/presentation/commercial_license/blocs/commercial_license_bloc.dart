@@ -9,7 +9,6 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import '../../../../commercial_license_approvel_export/domain/use_cases/step1_License_export_apply.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/commercial_request_details_response.dart';
 import '../../../data/models/qr/apply_commercial_response_model.dart';
@@ -26,7 +25,6 @@ class CommercialLicenseBloc
     extends Bloc<CommercialLicenseEvent, CommercialLicenseState> {
   PageController controller = PageController();
   GetCommercialRequestData _getCommercialRequestData;
-
 
   CommercialLicenseBloc()
       : _getCommercialRequestData = GetCommercialRequestData(repository: sl()),
@@ -207,12 +205,13 @@ class CommercialLicenseBloc
     });
   }
 
-  void initState({int? requestId,bool? isFromIntialApproval}) {
+  void initState({
+    int? requestId,
+  }) {
     emit(
       state.copyWith(
         status: BlocStatus.initial,
         isDraft: requestId != null ? true : false,
-        isFromIntialApproval: isFromIntialApproval,
         currentPageValue: 0,
         requestId: Nullable(requestId),
         requestData: Nullable(null),
@@ -235,13 +234,8 @@ class CommercialLicenseBloc
     );
 
     if (requestId != null && state.requestData == null) {
-
+      print("getCommercialRequestData");
       getCommercialRequestData();
     }
   }
-
-
-
-
-
 }
