@@ -26,6 +26,11 @@ class HomeServicesCubit extends Cubit<ServicesState> {
   }
 
   Future<void> loadServices() async {
+    ServicesLoadingState(
+      homeServices: HomeServices.fromJson(
+        newServicesConfig[sl<EnvType>().name]["locale".tr()],
+      ),
+    );
     homeServicesUseCases.call(NoParams()).then(
       (value) {
         value.fold(

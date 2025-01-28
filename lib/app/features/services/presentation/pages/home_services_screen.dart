@@ -39,7 +39,6 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
     // context.read<HomeServicesCubit>().loadServices();
   }
 
-
   @override
   Widget build(BuildContext context) {
     Color? color;
@@ -74,120 +73,136 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
           body: BlocBuilder<HomeServicesCubit, ServicesState>(
             builder: (context, state) {
               if (state is ServicesSuccessState) {
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: RefreshIndicator(
-                    onRefresh: () {
-                      context.read<HomeServicesCubit>().loadServices();
-                      return Future.value();
-                    },
-                    child: SingleChildScrollView(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          TextFormField(
-                            onTap: () {
-                              List<Service> services = [];
-                              for (var element
-                                  in state.homeServices.servicesCategories) {
-                                services.addAll(element.listOfServices);
-                              }
-                              NavigationService.navigatorKey.currentState!
-                                  .pushNamed(
-                                HomeServicesRouteName.subServicesScreen,
-                                arguments: {
-                                  "services": services,
+                return Stack(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: RefreshIndicator(
+                        onRefresh: () {
+                          context.read<HomeServicesCubit>().loadServices();
+                          return Future.value();
+                        },
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              TextFormField(
+                                onTap: () {
+                                  List<Service> services = [];
+                                  for (var element in state
+                                      .homeServices.servicesCategories) {
+                                    services.addAll(element.listOfServices);
+                                  }
+                                  NavigationService.navigatorKey.currentState!
+                                      .pushNamed(
+                                    HomeServicesRouteName.subServicesScreen,
+                                    arguments: {
+                                      "services": services,
+                                    },
+                                  );
                                 },
-                              );
-                            },
-                            readOnly: true,
-
-                            decoration: InputDecoration(
-                              hintText: "search".tr(),
-                              filled: true,
-                              isDense: true,
-                              fillColor: Colors.grey.shade200,
-                              prefixIcon: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 10),
-                                child: SvgPicture.asset(IconPath.search),
+                                readOnly: true,
+                                decoration: InputDecoration(
+                                  hintText: "search".tr(),
+                                  filled: true,
+                                  isDense: true,
+                                  fillColor: Colors.grey.shade200,
+                                  prefixIcon: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16.0, vertical: 10),
+                                    child: SvgPicture.asset(IconPath.search),
+                                  ),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  errorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  disabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  focusedErrorBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(18),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                ),
                               ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide.none,
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              const SizedBox(height: 12),
+                              MostUsedService(
+                                mostUsedService:
+                                    state.homeServices.mostUsedService,
                               ),
-                              focusedBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide.none,
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              const SizedBox(height: 12),
+                              FeatureServicesList(
+                                mostUsedServices:
+                                    state.homeServices.mostUsedServices,
                               ),
-                              errorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide.none,
+                              const SizedBox(height: 12),
+                              Text(
+                                "services_categories".tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge!
+                                    .copyWith(
+                                      fontFamily: AppConfig.appFontType,
+                                    ),
                               ),
-                              disabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide.none,
+                              const SizedBox(height: 12),
+                              GridView.builder(
+                                physics: const NeverScrollableScrollPhysics(),
+                                shrinkWrap: true,
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  childAspectRatio: 1.2,
+                                ),
+                                itemCount: state
+                                    .homeServices.servicesCategories.length,
+                                itemBuilder: (BuildContext context, int index) {
+                                  return CategoryServiceItem(
+                                    servicesCategory: state
+                                        .homeServices.servicesCategories[index],
+                                  );
+                                },
                               ),
-                              focusedErrorBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide.none,
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(18),
-                                borderSide: BorderSide.none,
-                              ),
-                            ),
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                              //////////////////////////////////////////////////////
+                            ],
                           ),
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          const SizedBox(height: 12),
-                          MostUsedService(
-                            mostUsedService: state.homeServices.mostUsedService,
-                          ),
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          const SizedBox(height: 12),
-                          FeatureServicesList(
-                            mostUsedServices: state.homeServices.mostUsedServices,
-                          ),
-                          const SizedBox(height: 12),
-                          Text(
-                            "services_categories".tr(),
-                            style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                              fontFamily: AppConfig.appFontType,
-                            ),
-                          ),
-                          const SizedBox(height: 12),
-                          GridView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              childAspectRatio: 1.2,
-                            ),
-                            itemCount: state.homeServices.servicesCategories.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return CategoryServiceItem(
-                                servicesCategory:
-                                    state.homeServices.servicesCategories[index],
-                              );
-                            },
-                          ),
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                          //////////////////////////////////////////////////////
-                        ],
+                        ),
                       ),
                     ),
-                  ),
+                    state is ServicesLoadingState
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : const SizedBox(),
+                  ],
                 );
               }
 
@@ -238,6 +253,4 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
               }));
     }
   }
-
-
 }
