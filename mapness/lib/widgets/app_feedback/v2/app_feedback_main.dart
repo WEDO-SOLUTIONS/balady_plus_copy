@@ -133,6 +133,7 @@ class AppFeedbackMain extends HookConsumerWidget {
               key: const ValueKey('app-feedback-balady-input'),
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   /// change feedback text
                   final result =
@@ -141,17 +142,17 @@ class AppFeedbackMain extends HookConsumerWidget {
                     feedbackTextController.text = result;
                   }
                 },
-                // TODO: Remove this ignore when you will do refacotring
-                // Added to make a hotfix
-                // ignore: deprecated_member_use
-                child: BaladyInput(
-                  readOnly: true,
-                  controller: feedbackTextController,
-                  hintText: context.l10n.appFeedbackHintText,
-                  maxLines: 4,
-                  enabled: false,
-                  isDisposed: false,
-                  onChanged: (_) {},
+                child: IgnorePointer(
+                  child: BaladyTextInput(
+                    inputState: BaladyInputState.readOnly,
+                    controller: feedbackTextController,
+                    config: BaladyInputConfig(
+                      hintText: context.l10n.appFeedbackHintText,
+                      maxLines: 4,
+                      isDisposed: false,
+                      onChanged: (_) {},
+                    ),
+                  ),
                 ),
               ),
             );
