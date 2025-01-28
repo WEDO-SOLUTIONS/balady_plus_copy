@@ -980,7 +980,8 @@ class EkramRequestTransportationBloc extends Bloc<
       (res) {
         if(res.data != null) {
           // need map on the corect data
-          // CommonFunctions.openMap(res.data['lat'], res.data['long']);
+          Map data = res.data as Map;
+          CommonFunctions.openMap(data['x']!, data['y']!);
         }
         emit(
           state.copyWith(
