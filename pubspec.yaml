@@ -233,6 +233,9 @@ dependencies:
 
   syncfusion_localizations:
 
+
+  cached_network_svg_image: any
+
 dependency_overrides:
   # for dio_http_cache
   dio: 5.7.0

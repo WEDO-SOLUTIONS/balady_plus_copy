@@ -1,4 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -23,6 +25,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
 
     if(!icon.contains("http")) {
       if ((icon).isSvgIcon) {
+
         return SvgPicture.asset(
           icon,
           height: iconSize,
@@ -39,8 +42,16 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
           fit: fit,
         );
       }
-    } else {
+    } else {;
       if ((icon).isSvgIcon) {
+        return CachedNetworkSVGImage(
+          icon,
+          placeholder: const CircularProgressIndicator(color: Colors.green),
+          errorWidget: const Icon(Icons.error, color: Colors.red),
+          width: iconSize,
+          height: iconSize,
+          fadeDuration: const Duration(milliseconds: 500),
+        );
         return SvgPicture.network(
           icon,
           height: iconSize,
@@ -49,6 +60,15 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
           fit: fit,
         );
       } else {
+        return CachedNetworkImage(
+          imageUrl: icon,
+          progressIndicatorBuilder: (context, url, downloadProgress) =>
+              CircularProgressIndicator(value: downloadProgress.progress),
+          errorWidget: (context, url, error) => const Icon(Icons.error),
+          width: iconSize,
+          height: iconSize,
+          fit: fit,
+        );
         return Image.network(
           icon,
           height: iconSize,
