@@ -299,10 +299,12 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
         days: days,
       );
     }
+
     /// If the current time is after closing time, return the next opening time model.
     else if (currentDateTime.isAfter(closeTime)) {
       return _buildNextOpeningTimeModel(context, model, days);
     }
+
     /// If the current time is between open and close time, return a model with the remaining time until closing.
     else {
       final remainingMinutes = closeTime.difference(currentDateTime).inMinutes;
@@ -322,7 +324,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
   }
 
- /// Builds the model for the next opening time when the current time is outside of working hours.
+  /// Builds the model for the next opening time when the current time is outside of working hours.
   WorkTimeModel? _buildNextOpeningTimeModel(
     BuildContext context,
     OpeningHoursModel model,
