@@ -166,6 +166,8 @@ class _UsersEkramTransportationDetailsPageState
                     height: 30,
                   ),
 
+                  state.requestDetailsModel?.requestStatusId ==1?
+
                   ElevatedButtonWidget.primaryCustom(
                       height: 40,
                       onPressed: () {
@@ -175,7 +177,7 @@ class _UsersEkramTransportationDetailsPageState
                         arguments: state.requestDetailsModel );
 
                       },
-                      text: "compliance_cancel_request_confirm".tr()),
+                      text: "compliance_cancel_request_confirm".tr()):Container(),
 
                   const SizedBox(
                     height: 30,
