@@ -15,7 +15,7 @@ class DeceasedBirthdateHijri extends StatelessWidget {
       return HijriCalendarDateWidget(
         isDisabled: state.isdeceasedInfoReadOnly,
         currentVlaue: state.deceassedDOBHijri,
-        fieldName: "${Helpers.translatingWord("cemetry_dob_hijri")} *",
+        fieldName: Helpers.translatingWord("cemetry_dob_hijri"),
         isMandatory: true,
         onChanged: (String? date) {
           context

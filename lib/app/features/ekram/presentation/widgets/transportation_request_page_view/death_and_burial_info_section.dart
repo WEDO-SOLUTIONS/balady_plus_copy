@@ -127,12 +127,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                               DeathInfo(countryId: item.id)));
                                 }
                               },
-                              label:
-                                  "${Helpers.translatingWord("ekram_death_country")} *",
+                              label: Helpers.translatingWord(
+                                  "ekram_death_country"),
                               hint: Helpers.translatingWord(
                                   "ekram_death_country"),
                             ),
                             CustomLookUpLongDialog(
+                              showOptional: false,
                               items: state.cities ?? [],
                               value: state.requestDetailsModel?.deathInfo
                                           ?.countryId ==
@@ -179,7 +180,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             state.requestDetailsModel?.deathInfo?.countryId == 1
                                 ? Container()
                                 : CustomTextFieldWidget(
-                                    label: "${"ekram_death_city".tr()}*",
+                                    label: "ekram_death_city".tr(),
                                     initialValue: state.requestDetailsModel
                                         ?.deathInfo?.cityOther,
                                     hintText: "ekram_death_city".tr(),
@@ -363,7 +364,6 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   .requestDetailsModel?.burialInfo?.burialDate,
                               isDeathDatesDisabled: state.isBurialDatesDisabled,
                               onChanged: (String? date) {
-
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(setBurialInfoEvent(
@@ -513,7 +513,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     children: [
                                       CustomTextFieldWidget(
                                           label:
-                                              "${"reasonForSpecialTransfer".tr()}*",
+                                              "reasonForSpecialTransfer".tr(),
                                           initialValue: state
                                               .requestDetailsModel
                                               ?.transportInfo
@@ -687,6 +687,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: ("ekram_laundry").tr(),
                             ),
                             CustomLookUpLongDialog(
+                              showOptional: true,
                               items: state.mosques ?? [],
                               value: state.getMosquesById(state
                                   .requestDetailsModel
