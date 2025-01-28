@@ -7,6 +7,8 @@ import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -48,7 +50,6 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
-import 'package:mapness/shared/ui/palette/balady_temp_palette.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -256,10 +257,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
                   AppColorsThemeExt.palette(colorScheme, isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
+                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
                   AppStaticColorsThemeExt.palette(colorScheme),
-
-                  // Temp palette for new colors disign
-                  BaladyTempPalette.palette(),
                 ],
               ),
               builder: (context, child) => child != null
