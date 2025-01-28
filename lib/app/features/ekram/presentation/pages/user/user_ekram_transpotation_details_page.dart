@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/constants.dart';
@@ -32,6 +33,7 @@ class _UsersEkramTransportationDetailsPageState
   AddTripBloc? bloc;
   ExtraDataBloc? extraDataBloc;
   EkramRequestTransportationBloc? detailsBloc;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -130,24 +132,20 @@ class _UsersEkramTransportationDetailsPageState
                   ),
                   Constants.verticalSpaceSmall,
                   DeceasedInfoWidget_new(
-                      item: state.requestDetailsModel?.deceasedInfo),
-                  const SizedBox(
-                    height: 20,
+                    item: state.requestDetailsModel?.deceasedInfo,
                   ),
+                  const SizedBox(height: 20),
                   ApplicantInfoWidget(
-                      item: state.requestDetailsModel?.mainInfo),
-                  const SizedBox(
-                    height: 20,
+                    item: state.requestDetailsModel?.mainInfo,
                   ),
+                  const SizedBox(height: 20),
                   BurialInfoWidget(
                     deathInfo: state.requestDetailsModel?.deathInfo,
                     burialInfo: state.requestDetailsModel?.burialInfo,
                     cemeteryData: state.requestDetailsModel?.cemeteryData,
                     transportInfo: state.requestDetailsModel?.transportInfo,
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
+                  const SizedBox(height: 20),
                   AttachmentInfoWidget(
                     bloc: extraDataBloc,
                     requestId: params.requestId!,
@@ -155,34 +153,37 @@ class _UsersEkramTransportationDetailsPageState
                     requestStatusId: state.requestDetailsModel?.requestStatusId,
                     detailsBloc: detailsBloc,
                   ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  DriversInfoWidget(
-                    bloc: bloc,
-                  ),
-
-                  const SizedBox(
-                    height: 30,
-                  ),
-
-                  state.requestDetailsModel?.requestStatusId ==1?
-
-                  ElevatedButtonWidget.primaryCustom(
-                      height: 40,
-                      onPressed: () {
-
-                        NavigationService.navigatorKey.currentState!.pushNamed(
-                            RouteName.ekramRequestTransportationScreen,
-                        arguments: state.requestDetailsModel );
-
-                      },
-                      text: "compliance_cancel_request_confirm".tr()):Container(),
-
-                  const SizedBox(
-                    height: 30,
-                  )
-
+                  const SizedBox(height: 20),
+                  DriversInfoWidget(bloc: bloc),
+                  const SizedBox(height: 20),
+                  state.requestDetailsModel?.requestStatusId == 352
+                      ? ElevatedButtonWidget.primaryCustom(
+                          height: 40,
+                          onPressed: () {
+                            detailsBloc?.add(
+                              getCurrentTrackLocationEvent(
+                                requestId: params.requestId!,
+                              ),
+                            );
+                          },
+                          text: "trafficTracking".tr(),
+                        )
+                      : Container(),
+                  const SizedBox(height: 18),
+                  state.requestDetailsModel?.requestStatusId == 1
+                      ? ElevatedButtonWidget.primaryCustom(
+                          height: 40,
+                          onPressed: () {
+                            NavigationService.navigatorKey.currentState!
+                                .pushNamed(
+                              RouteName.ekramRequestTransportationScreen,
+                              arguments: state.requestDetailsModel,
+                            );
+                          },
+                          text: "compliance_cancel_request_confirm".tr(),
+                        )
+                      : Container(),
+                  const SizedBox(height: 30)
                 ],
               ),
             ),
