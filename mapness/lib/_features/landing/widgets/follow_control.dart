@@ -44,9 +44,9 @@ class FollowControl extends ConsumerWidget {
       },
       child: Icon(
         hasGPS
-            ? followState.type == LocationFollowType.followDirection
+            ? (followState.type == LocationFollowType.followDirection
                 ? TransportIcons.locationDirection
-                : TransportIcons.locationFullLTR
+                : TransportIcons.locationFullLTR)
             : TransportIcons.locationQuestionLTR,
         color: iconColor,
         size: 24,

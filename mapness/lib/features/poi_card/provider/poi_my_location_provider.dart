@@ -37,10 +37,8 @@ class PoiMyLocation extends _$PoiMyLocation {
         '$latitude, $longitude',
         sortingType: SortingTypeMessage.byDistance,
       );
-      if (data.firstPage?.items.isNotEmpty == true) {
-        address = data.firstPage?.items.first.makeAddress();
-        address ??= '$latitude, $longitude';
-      }
+      final item = data.firstPage?.items.firstOrNull;
+      address = item?.makeAddress() ?? '$latitude, $longitude';
     } catch (_) {}
 
     final userData = ref.watch(authProvider).requireValue;
