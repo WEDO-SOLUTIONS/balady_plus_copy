@@ -77,7 +77,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                   Spacing.$2x.heightBox,
                   Text(
                     context.l10n.wouldYouLikeTheParkingLayer,
-                    style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3tmp.foregroundSoft),
+                    style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
                   ),
                   Spacing.$4x.heightBox,
                   SizedBox(

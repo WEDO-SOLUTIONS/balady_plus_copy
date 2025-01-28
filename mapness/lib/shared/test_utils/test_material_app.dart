@@ -11,7 +11,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/color_scheme.dart' as provider;
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/ui/palette/balady_temp_palette.dart';
 import 'package:mocktail/mocktail.dart';
 
 // ignore: prefer_mixin
@@ -61,9 +60,6 @@ class TestMaterialApp extends ConsumerWidget {
           AppColorsThemeV2.palette(isDark: false),
           AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
           AppStaticColorsThemeExt.palette(colorScheme),
-
-          // Temp palette for new colors disign
-          BaladyTempPalette.palette(),
         ],
       ),
       home: child,
