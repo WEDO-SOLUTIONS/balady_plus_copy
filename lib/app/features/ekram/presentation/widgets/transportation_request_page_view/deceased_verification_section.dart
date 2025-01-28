@@ -17,7 +17,7 @@ import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 class DeceasedVerificationSection extends StatelessWidget {
   DeceasedVerificationSection({super.key});
 
-  final TextEditingController? decesssedIdentity = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +92,8 @@ class DeceasedVerificationSection extends StatelessWidget {
                                       state.selectedNationalIdType?.id == 10
                                   ? true
                                   : false,
-                              controller: decesssedIdentity,
+                              controller: context
+                                  .read<EkramRequestTransportationBloc>().decesssedIdentity,
                               keyboardType: state.selectedNationalIdType?.id ==
                                           1 ||
                                       state.selectedNationalIdType?.id == 3 ||
@@ -102,7 +103,8 @@ class DeceasedVerificationSection extends StatelessWidget {
                                   : TextInputType.text,
                               onChanged: (String? val) {
                                 if (val != null) {
-                                  decesssedIdentity?.text = val;
+                                  context
+                                      .read<EkramRequestTransportationBloc>().decesssedIdentity?.text = val;
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeIdEvent(deceasedId: val));
@@ -114,7 +116,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                             ),
                             const DeceasedBirthdateHijri(),
                             const DeceasedBirthdateGregorian(),
-                            ElevatedButtonWidget.primaryCustomBorder(
+                            state.isDraft !=true? ElevatedButtonWidget.primaryCustomBorder(
                               //     btnPressed: isBtnDisabled
                               //         ? () {}
                               //         : btnPressed,
@@ -132,7 +134,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                                 }
                               },
                               text: "verify".tr(),
-                            )
+                            ):Container(),
                           ],
                         ),
                       ),

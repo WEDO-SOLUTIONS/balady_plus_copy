@@ -37,8 +37,8 @@ class _EkramRequestTransportationStartServiceState
 
   @override
   Widget build(BuildContext context) {
-    TransportRequestsBloc? ekramRequestsBloc =
-        ModalRoute.of(context)!.settings.arguments as TransportRequestsBloc?;
+    // TransportRequestsBloc? ekramRequestsBloc =
+    //     ModalRoute.of(context)!.settings.arguments as TransportRequestsBloc?;
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
@@ -73,8 +73,7 @@ class _EkramRequestTransportationStartServiceState
               child: ElevatedButtonWidget.startService(
                 onPressed: () async {
                   NavigationService.navigatorKey.currentState!.pushNamed(
-                      RouteName.ekramRequestTransportationScreen,
-                      arguments: ekramRequestsBloc);
+                      RouteName.ekramRequestTransportationScreen,);
                 },
               ),
             )

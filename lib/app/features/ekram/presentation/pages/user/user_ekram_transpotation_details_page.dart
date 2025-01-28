@@ -7,8 +7,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
+import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
+import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/details_header.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -163,16 +165,23 @@ class _UsersEkramTransportationDetailsPageState
 
                   const SizedBox(
                     height: 30,
+                  ),
+
+                  ElevatedButtonWidget.primaryCustom(
+                      height: 40,
+                      onPressed: () {
+
+                        NavigationService.navigatorKey.currentState!.pushNamed(
+                            RouteName.ekramRequestTransportationScreen,
+                        arguments: state.requestDetailsModel );
+
+                      },
+                      text: "compliance_cancel_request_confirm".tr()),
+
+                  const SizedBox(
+                    height: 30,
                   )
-                  // TransferInfo
-                  // DriversInfo
-                  //  DriversInfoWidget(),
-                  // ApplicantInfo
-                  //  ApplicantInfoWidget(),
-                  // DeceasedInfo
-                  //
-                  // BurialInfo
-                  //  ,
+
                 ],
               ),
             ),

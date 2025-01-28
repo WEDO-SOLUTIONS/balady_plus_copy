@@ -67,6 +67,7 @@ part 'ekram_request_transportation_state.dart';
 class EkramRequestTransportationBloc extends Bloc<
     EkramRequestTransportationEvent, EkramRequestTransportationState> {
   final GetEkramIdentityTypes _getEkramIdentityTypes;
+  final TextEditingController? decesssedIdentity = TextEditingController();
 
   PageController controller = PageController();
   // TransportRequestsBloc? ekramRequestsBloc;
@@ -201,7 +202,9 @@ class EkramRequestTransportationBloc extends Bloc<
     on<setBurialInfoEvent>(_changeBurialInfoHandler);
     on<setTransportInfoEvent>(_changeTansportInfoHandler);
     on<setCemtryInfoEvent>(_changeCemtryInfoHandler);
+    on<setInitialDataEvent>(_setInitialDataHandler);
 
+    getEkramNationalIdTypesEventHandler();
     getCountries();
     getPrayers();
     getNationalitiesHandler();
@@ -337,6 +340,7 @@ class EkramRequestTransportationBloc extends Bloc<
     }
     print(gorgian);
     print(hijri);
+
 
     emitter(state.copyWith(
         deceassedDOBGorgian: Nullable(CommonFunctions.padHijriDate(gorgian)),
@@ -590,6 +594,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<List<LookUpItem>?> getEkramNationalIdTypesEventHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
+
 
     final failureOrSuccess = await _getEkramIdentityTypes(NoParams());
     return failureOrSuccess.fold((failure) {
@@ -925,9 +930,8 @@ class EkramRequestTransportationBloc extends Bloc<
       emit(state.copyWith(
           isDeceasedBtnEnabled: true,
           status: BlocStatus.failure,
-          requestId: 4617341852,
           errorMessage: (failure as ServerFailure).errorMessage,
-          isVerified: true));
+          isVerified: false));
       return null;
     }, (success) {
       emit(state.copyWith(
@@ -1307,5 +1311,23 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         isDeceasedBtnEnabled: true,
       ));
+  }
+
+
+
+  Future<void> _setInitialDataHandler(
+      setInitialDataEvent e, Emitter emitter) async {
+
+    decesssedIdentity?.text = e.dataModel?.deceasedInfo?.identityNumber??"";
+
+    add(ChangeNationalIdDob(hijriDate: e.dataModel?.deceasedInfo?.birthDate));
+    emitter(state.copyWith(
+         isVerified: true,
+        deceasedId:e.dataModel?.deceasedInfo?.identityNumber,
+         isDeceasedBtnEnabled: false,
+         isDraft: state.nationalIdTypes != null?true:false,
+         requestId: e.dataModel?.requestId,
+        selectedNationalIdType:state.getNationalIdTypesById(e.dataModel?.deceasedInfo?.identityType),
+        requestDetailsModel: e.dataModel));
   }
 }

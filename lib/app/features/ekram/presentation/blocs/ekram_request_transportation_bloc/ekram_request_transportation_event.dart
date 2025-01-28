@@ -14,6 +14,10 @@ class GoToNextPageEvent extends EkramRequestTransportationEvent {
 class GoToPreviousPageEvent extends EkramRequestTransportationEvent {
   const GoToPreviousPageEvent();
 }
+class setInitialDataEvent extends EkramRequestTransportationEvent {
+  final RequestDetailsResponseModel? dataModel;
+  const setInitialDataEvent({this.dataModel});
+}
 
 class SubmitRequestEvent extends EkramRequestTransportationEvent {
   const SubmitRequestEvent();

@@ -9,6 +9,7 @@ import '../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../vd/presentation/widgets/details_widgets/details_app_bar.dart';
 import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
+import '../../../data/model/request_details_response_model/request_details_response_model.dart';
 
 class EkramRequestTransportationPage extends StatefulWidget {
   const EkramRequestTransportationPage({
@@ -37,6 +38,14 @@ class _EkramRequestTransportationPageState
   @override
   Widget build(BuildContext context) {
 
+
+
+    RequestDetailsResponseModel? params =
+    ModalRoute.of(context)!.settings.arguments as RequestDetailsResponseModel?;
+
+
+
+
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
           getCities: sl(),
@@ -53,7 +62,11 @@ class _EkramRequestTransportationPageState
           }
         },
         builder: (context, state) {
-          print(state.currentPageValue);
+          if(params != null && state.isDraft != true)
+          {
+
+            context.read<EkramRequestTransportationBloc>().add(setInitialDataEvent(dataModel: params));
+          }
           return WillPopScope(
             onWillPop: () {
               context

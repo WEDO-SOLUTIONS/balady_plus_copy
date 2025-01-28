@@ -62,6 +62,7 @@ class EkramRequestTransportationState extends Equatable {
   final RequestDetailsResponseModel? requestDetailsModel;
   final bool? editInfoSection;
   final bool? isDeceasedBtnEnabled;
+  final bool? isDraft;
 
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
@@ -80,6 +81,7 @@ class EkramRequestTransportationState extends Equatable {
       this.isdeceasedInfoReadOnly = false,
       this.isBurialDatesDisabled = false,
       this.isDeathDatesDisabled = false,
+        this.isDraft = false,
       this.errorMsg,
       this.nationalIdTypes,
       this.selectedNationalIdType,
@@ -133,6 +135,7 @@ class EkramRequestTransportationState extends Equatable {
     final bool? isBurialDatesDisabled,
     final bool? isDeathDatesDisabled,
     final bool? isVerified,
+    final bool? isDraft,
     final double? lat,
     final double? long,
     final bool? isSpecialTransferNeeded,
@@ -273,6 +276,7 @@ class EkramRequestTransportationState extends Equatable {
       requestDetailsModel: requestDetailsModel ?? this.requestDetailsModel,
       editInfoSection: editInfoSection ?? this.editInfoSection,
       isDeceasedBtnEnabled: isDeceasedBtnEnabled ?? this.isDeceasedBtnEnabled,
+      isDraft: isDraft ?? this.isDraft,
     );
   }
 
@@ -328,7 +332,9 @@ class EkramRequestTransportationState extends Equatable {
         mosques,
         transportations,
         bodyArrivalCities,
-        nationalities
+        nationalities,
+        nationalIdTypes,
+        isDraft
       ];
 
   LookUpItem? getCityById(int? id) {
@@ -463,6 +469,19 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
+  LookUpItem? getNationalIdTypesById(int? id) {
+
+    if (nationalIdTypes != null && id != null) {
+      for (int index = 0; index < nationalIdTypes!.length; index++) {
+        if (nationalIdTypes![index].id == id) {
+          return nationalIdTypes![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
 
   int? getselectedDeathCity() {
     if (requestDetailsModel?.deathInfo?.cityId != null) {
