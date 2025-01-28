@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:balady_plus/app/core/utils/constants/keys/general_keys.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -1321,10 +1322,9 @@ class LabelTextWithOptional extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RichText(
-      textScaleFactor: 1,
-      textAlign: labelTextAlign,
-      text: TextSpan(
+    return AutoSizeText.rich(
+      TextSpan(
+        text: showOptional ?? false ? "" : "* ",
         children: [
           if (label.isNotEmpty)
             TextSpan(
@@ -1335,18 +1335,10 @@ class LabelTextWithOptional extends StatelessWidget {
                   fontFamily: GeneralKey.appFontType,
                   fontWeight: FontWeight.bold),
             ),
-          if (showOptional == true) const TextSpan(text: " "),
-          if (showOptional == true)
-            TextSpan(
-              text: ('optional').tr(),
-              style: const TextStyle(
-                  color: Color(0xffbabbbb),
-                  fontSize: 13.0,
-                  fontFamily: GeneralKey.appFontType,
-                  fontWeight: FontWeight.bold),
-            ),
         ],
       ),
+      style: const TextStyle(color: AppColor.error, fontSize: 20.0),
+      minFontSize: 10.0,
     );
   }
 }

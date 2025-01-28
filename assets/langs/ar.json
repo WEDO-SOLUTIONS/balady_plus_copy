@@ -4263,5 +4263,8 @@
   "ekram_death_city_validation": "يجب إدخال مدينة الوفاة",
   "ekram_death_hospital_validation": "يجب إدخال المستشفى",
   "ekram_transportation_validation": "يجب إدخال جهة النقل",
-  "tripCompletesucessfully": "تم إكمال رحلة نقل وتجهيز المتوفى بنجاح"
+  "tripCompletesucessfully": "تم إكمال رحلة نقل وتجهيز المتوفى بنجاح",
+  "BurialInOtherCity":"فى مدينة أخرى",
+  "BurialInCorpseArrivalCity":"في مدينة وصول الجثمان",
+  "BurialInDeathCity":"فى مدينة الوفاة"
 }
