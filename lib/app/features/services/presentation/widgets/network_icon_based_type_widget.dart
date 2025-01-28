@@ -47,7 +47,7 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
           placeholder: const SizedBox(
             width: 40,
             height: 40,
-            child: CircularProgressIndicator(color: Colors.green),
+            child: CircularProgressIndicator(),
           ),
           errorWidget: ImageIconBasedTypeWidget(
             icon: IconPath.serviceIcon(icon.split("/").last),
@@ -63,18 +63,22 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
       } else {
         return CachedNetworkImage(
           imageUrl: icon,
-          progressIndicatorBuilder: (context, url, downloadProgress) =>
-              SizedBox(
-            width: 40,
-            height: 40,
-            child: CircularProgressIndicator(value: downloadProgress.progress),
-          ),
-          errorWidget: (context, url, error) => ImageIconBasedTypeWidget(
-            icon: IconPath.serviceIcon(icon.split("/").last),
-            iconSize: iconSize,
-            iconColor: iconColor,
-            fit: fit,
-          ),
+          progressIndicatorBuilder: (context, url, downloadProgress) {
+            return SizedBox(
+              width: 40,
+              height: 40,
+              child:
+                  CircularProgressIndicator(value: downloadProgress.progress),
+            );
+          },
+          errorWidget: (context, url, error) {
+            return ImageIconBasedTypeWidget(
+              icon: IconPath.serviceIcon(icon.split("/").last),
+              iconSize: iconSize,
+              iconColor: iconColor,
+              fit: fit,
+            );
+          },
           width: iconSize,
           height: iconSize,
           fit: fit,
