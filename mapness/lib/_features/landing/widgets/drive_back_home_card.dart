@@ -20,7 +20,6 @@ import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class DriveBackHomeCard extends ConsumerStatefulWidget {
@@ -35,11 +34,13 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
 
   final Debouncer debouncer = Debouncer(Durations.extralong4);
 
+  ProviderSubscription<AsyncValue<List<RouteInfo>>>? subscribtion;
+
   @override
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         child: GestureDetector(
-          onTap: () => openNavigationBackHome(context, ref),
+          onTap: () => tryOpenNavigationBackHome(context, ref),
           child: SizedBox(
             width: double.infinity,
             height: 123,
@@ -61,12 +62,12 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
                     const Positioned(
                       top: 40,
                       left: -60,
-                      child: BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
+                      child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
                     ),
                     const Positioned(
                       top: -110,
                       right: -140,
-                      child: BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
+                      child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
                     ),
                     Align(
                       alignment: AlignmentDirectional.centerEnd,
@@ -105,58 +106,77 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
         ),
       );
 
-  void openNavigationBackHome(BuildContext context, WidgetRef ref) => debouncer.debounce(
-        () async => ref.read(authMethodsProvider.notifier).authAndOpen(
-          context,
-          callback: () async {
-            /// Force update authProvider when the user was not authenticated to get relavant favorites.
-            final isAuth = ref.read(authProvider).value != null;
-            if (!isAuth) {
-              await ref.read(authProvider.notifier).forceUpdate();
-            }
+  void tryOpenNavigationBackHome(BuildContext context, WidgetRef ref) {
+    final locationLabel = context.l10n.myLocation;
+    final homeLabel = context.l10n.home;
+    final router = context.router;
 
-            final home = await getHome(context, ref);
+    debouncer.debounce(
+      () async => ref.read(authMethodsProvider.notifier).authAndOpen(
+            context,
+            callback: () async => authAndOpenNavigator(ref, router, locationLabel, homeLabel),
+          ),
+    );
+  }
 
-            /// If no home, exit from the function and not openning navigator to driving back home.
-            if (home == null) {
-              return;
-            }
+  Future<void> authAndOpenNavigator(
+    WidgetRef ref,
+    StackRouter router,
+    String locationLabel,
+    String homeLabel,
+  ) async {
+    /// If already have a subscription, do nothing
+    if (subscribtion != null) {
+      return;
+    }
 
-            /// If no navigation points, exit from the function and not openning navigator to driving back home.
-            final locations = getNavigationPoints(context, ref, home);
-            if (locations == null) {
-              return;
-            }
+    /// Force update authProvider when the user was not authenticated to get relavant favorites.
+    final isAuth = ref.read(authProvider).value != null;
+    if (!isAuth) {
+      await ref.read(authProvider.notifier).forceUpdate();
+    }
 
-            final (startLocation, finishLocation) = locations;
+    final home = await getHome(router);
 
-            ref.listenManual(
-              routesProvider(
-                startPoint: startLocation,
-                finishPoint: finishLocation,
-                navType: navigatingType,
-              ),
-              (_, current) => navigateBackHomeCallback(
-                current,
-                context,
-                ref,
-                startLocation,
-                finishLocation,
-              ),
-              fireImmediately: true,
-            );
-          },
-        ),
-      );
+    /// If no home, exit from the function and not openning navigator to driving back home.
+    if (home == null) {
+      return;
+    }
 
-  Future<FavouriteItem?> getHome(BuildContext context, WidgetRef ref) async {
+    /// If no navigation points, exit from the function and not openning navigator to driving back home.
+    final locations = getNavigationPoints(home);
+    if (locations == null) {
+      return;
+    }
+
+    final (startLocation, finishLocation) = locations;
+
+    subscribtion ??= ref.listenManual(
+      routesProvider(
+        startPoint: startLocation,
+        finishPoint: finishLocation,
+        navType: navigatingType,
+      ),
+      (_, current) => navigateBackHomeCallback(
+        current,
+        locationLabel,
+        homeLabel,
+        ref,
+        startLocation,
+        finishLocation,
+      ),
+      fireImmediately: true,
+    );
+  }
+
+  Future<FavouriteItem?> getHome(StackRouter router) async {
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
 
     final home = ref.read(favouriteCacheProvider).valueOrNull?.home;
 
     /// If there is no home ask user to add it.
     if (home == null) {
-      await context.router.push(
+      await router.push(
         FavouritesSearchRoute(
           markerType: FavouriteItemMarkerType.home,
         ),
@@ -166,14 +186,9 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
     return home;
   }
 
-  (RouteParamsPoint start, RouteParamsPoint end)? getNavigationPoints(
-    BuildContext context,
-    WidgetRef ref,
-    FavouriteItem home,
-  ) {
+  (RouteParamsPoint start, RouteParamsPoint end)? getNavigationPoints(FavouriteItem home) {
     final location = ref.read(locationProvider);
     if (location == null) {
-      ToastOverlay.of(context).showBaseError(onRetry: () {});
       return null;
     }
 
@@ -193,7 +208,8 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
 
   Future<void> navigateBackHomeCallback(
     AsyncValue<List<RouteInfo>> current,
-    BuildContext context,
+    String locationLabel,
+    String homeLabel,
     WidgetRef ref,
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
@@ -204,13 +220,18 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
       return;
     }
 
-    unawaited(setupMap(ref));
-    await openNavigation(ref, context, startLocation, finishLocation);
+    await setupMap(ref);
+
+    await openNavigation(ref, locationLabel, homeLabel, startLocation, finishLocation);
+
+    subscribtion?.close();
+    subscribtion = null;
   }
 
   Future<void> openNavigation(
     WidgetRef ref,
-    BuildContext context,
+    String locationLabel,
+    String homeLabel,
     RouteParamsPoint startLocation,
     RouteParamsPoint finishLocation,
   ) async =>
@@ -219,7 +240,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
           points: [
             RouteParamsPointWithLabel(
               value: startLocation,
-              label: context.l10n.myLocation,
+              label: locationLabel,
             ),
             RouteParamsPointWithLabel(
               value: RouteParamsPoint(
@@ -229,7 +250,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
                 entranceId: finishLocation.entranceId,
                 levelId: finishLocation.levelId,
               ),
-              label: context.l10n.home,
+              label: homeLabel,
             ),
           ],
         ),
@@ -247,23 +268,22 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
         .removeAllMarkers();
 
     Metrics.logEventAdvanced(
-      MetricsConstants.routesKeys.routeSelectionGoButton,
-      group: MetricsConstants.routesTag,
+      MetricsConstants.exploreKeys.driveBackHome,
+      group: MetricsConstants.exploreTag,
       action: MetricAction.tap.toString(),
     );
   }
 }
 
-class BluredCircle extends StatelessWidget {
+class _BluredCircle extends StatelessWidget {
   final double size;
   final double blur;
   final double opacity;
 
-  const BluredCircle({
+  const _BluredCircle({
     required this.size,
     required this.blur,
     required this.opacity,
-    super.key,
   });
 
   @override
