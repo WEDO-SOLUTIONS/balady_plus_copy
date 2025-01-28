@@ -185,7 +185,7 @@ class Service {
             ),
       serviceId: int.tryParse(json["serviceId"] ?? ""),
       eventName: json["eventName"],
-      requireSelectedDelegator: json["requireSelectedDelegator"] == "1",
+      requireSelectedDelegator: json["requireselecteddelegator"] == "1",
     );
   }
 
@@ -204,7 +204,7 @@ class Service {
         "subServices": subServices.map((x) => x?.toJson()).toList(),
         "serviceId": serviceId,
         "eventName": eventName,
-        "requireSelectedDelegator": requireSelectedDelegator,
+        "requireselecteddelegator": requireSelectedDelegator,
       };
 }
 
