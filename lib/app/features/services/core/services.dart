@@ -1657,7 +1657,7 @@ Map<String, dynamic> newServicesConfig = {
           "level_login": "sso",
           "order": "1",
           "require_login": "1",
-          "requireselecteddelegator": "0",
+          "requireselecteddelegator": "1",
           "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
           "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
           "serviceId": "11010"
@@ -1816,7 +1816,7 @@ Map<String, dynamic> newServicesConfig = {
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
               "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
               "title": "إصدار رخصة تجارية",
-              "requireselecteddelegator": "0",
+              "requireselecteddelegator": "1",
               "eventName": null,
               "serviceId": "11010",
               "subServices": []
@@ -1833,7 +1833,7 @@ Map<String, dynamic> newServicesConfig = {
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/posters_permits.svg",
               "services_image": null,
               "title": "التصاريح المتعددة",
-              "requireselecteddelegator": "0",
+              "requireselecteddelegator": "1",
               "eventName": null,
               "serviceId": null,
               "subServices": []
@@ -2527,7 +2527,7 @@ Map<String, dynamic> newServicesConfig = {
           "level_login": "sso",
           "order": "1",
           "require_login": "1",
-          "requireselecteddelegator": "0",
+          "requireselecteddelegator": "1",
           "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
           "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
           "serviceId": "11010"
@@ -2685,7 +2685,7 @@ Map<String, dynamic> newServicesConfig = {
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
               "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
               "title": "Commercial License",
-              "requireselecteddelegator": "0",
+              "requireselecteddelegator": "1",
               "eventName": null,
               "serviceId": "11010",
               "subServices": []
@@ -2702,7 +2702,7 @@ Map<String, dynamic> newServicesConfig = {
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/posters_permits.svg",
               "services_image": null,
               "title": "Multiple Permits",
-              "requireselecteddelegator": "0",
+              "requireselecteddelegator": "1",
               "eventName": null,
               "serviceId": null,
               "subServices": []
