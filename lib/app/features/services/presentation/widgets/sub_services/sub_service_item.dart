@@ -33,17 +33,22 @@ class SubServiceItem extends StatelessWidget {
                 fit: FlexFit.tight,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       service.title.tr(),
+                      maxLines: 2,
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             fontWeight: FontWeight.w500,
                             fontFamily: AppConfig.appFontType,
                           ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: 6),
                     Text(
-                      service.label.tr(),
+                      service.label.isNotEmpty
+                          ? service.label.tr()
+                          : service.title,
+                      maxLines: 2,
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: const Color(0xff898989),
                             fontFamily: AppConfig.appFontType,
