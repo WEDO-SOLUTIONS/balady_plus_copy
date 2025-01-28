@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class QuickActionButton extends StatelessWidget {
   final String text;
@@ -27,14 +28,14 @@ class QuickActionButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  color: context.colorsV2.backgroundSurface1,
+                  color: context.colorsV3tmp.backgroundSurface1,
                   boxShadow: Shadows.s,
                 ),
                 child: Center(
                   child: Icon(
                     icon,
                     size: Spacing.$6x + Spacing.$1x,
-                    color: context.colorsV2.accentDefault,
+                    color: context.colorsV3tmp.accentDefault,
                   ),
                 ),
               ),

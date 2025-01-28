@@ -142,7 +142,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                       widthFactor: animationValue,
                       child: Container(
                         decoration: BoxDecoration(
-                          color: context.colorsV2.accentActive,
+                          color: context.colorsV3tmp.accentActive,
                           borderRadius: BorderRadius.only(
                             topLeft: isRtl
                                 ? Radius.circular(cornerAnimationValue * RadiusBorder.l)
@@ -171,7 +171,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                         children: [
                           Container(
                             decoration: BoxDecoration(
-                              color: context.colorsV2.backgroundSurface1,
+                              color: context.colorsV3tmp.backgroundSurface1,
                               borderRadius: borderSizeS,
                             ),
                             padding: const EdgeInsets.all(Spacing.$2x),
@@ -181,7 +181,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                           Text(
                             context.l10n.showParkingSuggestions,
                             style: context.textStyleV3.bodyLargeSemiBold
-                                .copyWith(color: context.colorsV2.backgroundSurface1),
+                                .copyWith(color: context.colorsV3tmp.backgroundSurface1),
                           ),
                         ],
                       ),
