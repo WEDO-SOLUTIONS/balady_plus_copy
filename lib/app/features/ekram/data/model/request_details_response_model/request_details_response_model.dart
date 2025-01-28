@@ -66,7 +66,8 @@ class RequestDetailsResponseModel {
     this.done,
   });
 
-  factory RequestDetailsResponseModel.fromJson(Map<String, dynamic> json) => RequestDetailsResponseModel(
+  factory RequestDetailsResponseModel.fromJson(Map<String, dynamic> json) =>
+      RequestDetailsResponseModel(
         requestId: json['requestId'] as int?,
         requestKey: json['requestKey'] as String?,
         currentTabId: json['currentTabId'] as int?,
@@ -146,6 +147,7 @@ class RequestDetailsResponseModel {
         'transferring': transferring,
         'done': done,
       };
+
   RequestDetailsResponseModel copyWith({
     DeceasedInfo? deceasedInfo,
     DeathInfo? deathInfo,
@@ -155,12 +157,11 @@ class RequestDetailsResponseModel {
     CemeteryData? cemeteryData,
   }) {
     return RequestDetailsResponseModel(
-      deceasedInfo: deceasedInfo ?? this.deceasedInfo,
-      mainInfo: mainInfo ?? this.mainInfo,
-      deathInfo: deathInfo ?? this.deathInfo,
-        burialInfo:burialInfo??this.burialInfo,
-        transportInfo:transportInfo??this.transportInfo,
-        cemeteryData:cemeteryData??this.cemeteryData
-    );
+        deceasedInfo: deceasedInfo ?? this.deceasedInfo,
+        mainInfo: mainInfo ?? this.mainInfo,
+        deathInfo: deathInfo ?? this.deathInfo,
+        burialInfo: burialInfo ?? this.burialInfo,
+        transportInfo: transportInfo ?? this.transportInfo,
+        cemeteryData: cemeteryData ?? this.cemeteryData);
   }
 }
