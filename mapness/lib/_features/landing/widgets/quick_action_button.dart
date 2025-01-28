@@ -28,14 +28,14 @@ class QuickActionButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  color: context.colorsV3.backgroundSurface1,
+                  color: context.colorsV3tmp.backgroundSurface1,
                   boxShadow: Shadows.s,
                 ),
                 child: Center(
                   child: Icon(
                     icon,
                     size: Spacing.$6x + Spacing.$1x,
-                    color: context.colorsV3.accentDefault,
+                    color: context.colorsV3tmp.accentDefault,
                   ),
                 ),
               ),

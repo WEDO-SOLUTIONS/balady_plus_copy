@@ -35,8 +35,8 @@ class TagCloud extends HookWidget {
           runSpacing: 10.0,
           children: useTags.map((tag) {
             final isSelected = selectedTagsValue.contains(tag);
-            final textColor = isSelected ? context.colorsV3.onAccent : context.colorsV2.foregroundDefault;
-            final iconColor = isSelected ? context.colorsV3.onAccent : context.colorsV2.accentDefault;
+            final textColor = isSelected ? context.colorsV3tmp.onAccent : context.colorsV2.foregroundDefault;
+            final iconColor = isSelected ? context.colorsV3tmp.onAccent : context.colorsV2.accentDefault;
             final backgroundColor = isSelected ? context.colorsV2.accentDefault : context.colorsV2.backgroundSurface4;
 
             return GestureDetector(

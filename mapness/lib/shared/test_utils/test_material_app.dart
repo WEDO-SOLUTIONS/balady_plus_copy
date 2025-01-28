@@ -2,6 +2,8 @@ import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
 import 'package:flutter/material.dart';
@@ -12,6 +14,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/ui/palette/balady_temp_palette.dart';
 import 'package:mocktail/mocktail.dart';
 
+// ignore: prefer_mixin
 class MockColorSchemeProvider extends Notifier<AppColorScheme> with Mock implements provider.ColorScheme {
   @override
   AppColorScheme build() => AppColorScheme.main;
@@ -56,6 +59,7 @@ class TestMaterialApp extends ConsumerWidget {
           if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
           AppColorsThemeExt.palette(colorScheme, isDark: false),
           AppColorsThemeV2.palette(isDark: false),
+          AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
           AppStaticColorsThemeExt.palette(colorScheme),
 
           // Temp palette for new colors disign

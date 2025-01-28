@@ -7,6 +7,6 @@ extension BuildContextExt on BuildContext {
 
   AppLocalizations get l10n => AppLocalizations.of(this);
 
-  // Temp palette for new design colors => colorsV3
-  BaladyTempPalette get colorsV3 => Theme.of(this).extension<BaladyTempPalette>()!;
+  // Temp palette for new design colors => colorsV3tmp
+  BaladyTempPalette get colorsV3tmp => Theme.of(this).extension<BaladyTempPalette>()!;
 }
