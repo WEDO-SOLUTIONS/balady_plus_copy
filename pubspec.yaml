@@ -265,7 +265,6 @@ flutter:
     - assets/icons/svg/map/
     - assets/icons/svg/prayers/
     - assets/icons/svg/athkar/
-    - assets/icons/svg/services/
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/
