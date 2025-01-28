@@ -259,6 +259,7 @@ flutter:
     - shaders/radar.frag
   assets:
     - assets/
+    - assets/services/
     - assets/icons/svg/
     - assets/icons/svg/jod/
     - assets/icons/svg/map/

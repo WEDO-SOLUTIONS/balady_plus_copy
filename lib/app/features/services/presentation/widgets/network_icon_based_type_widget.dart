@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';
@@ -41,7 +41,6 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
         );
       }
     } else {
-      ;
       if ((icon).isSvgIcon) {
         return CachedNetworkSVGImage(
           icon,
@@ -50,17 +49,16 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
             height: 40,
             child: CircularProgressIndicator(color: Colors.green),
           ),
-          errorWidget: const Icon(Icons.error, color: Colors.red),
+          errorWidget: ImageIconBasedTypeWidget(
+            icon: IconPath.serviceIcon(icon.split("/").last),
+            iconSize: iconSize,
+            iconColor: iconColor,
+            fit: fit,
+          ),
           width: iconSize,
           height: iconSize,
           fadeDuration: const Duration(milliseconds: 500),
-        );
-        return SvgPicture.network(
-          icon,
-          height: iconSize,
-          width: iconSize,
           color: iconColor,
-          fit: fit,
         );
       } else {
         return CachedNetworkImage(
@@ -71,16 +69,14 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
             height: 40,
             child: CircularProgressIndicator(value: downloadProgress.progress),
           ),
-          errorWidget: (context, url, error) => const Icon(Icons.error),
+          errorWidget: (context, url, error) => ImageIconBasedTypeWidget(
+            icon: IconPath.serviceIcon(icon.split("/").last),
+            iconSize: iconSize,
+            iconColor: iconColor,
+            fit: fit,
+          ),
           width: iconSize,
           height: iconSize,
-          fit: fit,
-        );
-        return Image.network(
-          icon,
-          height: iconSize,
-          width: iconSize,
-          // color: iconColor,
           fit: fit,
         );
       }
