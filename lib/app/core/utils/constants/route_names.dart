@@ -378,10 +378,6 @@ class RouteName {
   static const chatHistoryDetailsRoute = 'chat_history_details';
 
 
-  static const CommercialLicenseInitialApprovelScreen = 'Commercial_license_initial_approvel_screen';
-  static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
-
-
 }
 
 class EtmamRoutesNames {
@@ -450,5 +446,8 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
+
 
 }

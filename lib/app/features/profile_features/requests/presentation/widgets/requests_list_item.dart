@@ -100,7 +100,6 @@ class RequestsListItem extends StatelessWidget {
                   request.redirectUrl,
                 );
               } else {
-
                 NavigationService.navigatorKey.currentState!.pushNamed(
                   routeName,
                   arguments: {
