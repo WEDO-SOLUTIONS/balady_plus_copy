@@ -291,6 +291,7 @@ class _CemetryDeceasedInfoSectionState
                           label:
                               "${Helpers.translatingWord("ekram_death_city")} *",
                           hint: Helpers.translatingWord("ekram_death_city"),
+                          
                         ),
                       if (state.selectedCountry?.localCountry == false)
                         CustomTextFieldWidget(

@@ -183,7 +183,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     initialValue: state.requestDetailsModel
                                         ?.deathInfo?.cityOther,
                                     hintText: "ekram_death_city".tr(),
-                                    keyboardType: TextInputType.phone,
+                                    keyboardType: TextInputType.name,
                                     onChanged: (String? text) {
                                       if (text != null) {
                                         context

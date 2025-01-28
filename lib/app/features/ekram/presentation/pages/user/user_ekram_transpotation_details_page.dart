@@ -89,19 +89,18 @@ class _UsersEkramTransportationDetailsPageState
       }, builder: (context, state) {
         return Scaffold(
           backgroundColor: AppColor.white2,
-          appBar: DetailsHeader(
-            titleWidget: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                CustomTextWidget(
-                  "requests_transporting_deceased".tr(),
-                  fontSize: 20,
-                  maxLines: 1,
-                  textOverflow: TextOverflow.ellipsis,
-                  fontWeight: AppFontWeight.bold,
-                  fontColor: AppColor.blackModern700Light,
-                ),
-              ],
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(90.0), // here the desired height
+            child: AppBar(
+              backgroundColor: AppColor.scaffoldBackground,
+              iconTheme: IconThemeData(
+                color: Colors.black, //change your color here
+              ),
+              title: Text(
+                "requests_transporting_deceased".tr(),
+                maxLines: 3,
+                style: TextStyle(fontSize: 15, color: Colors.black),
+              ),
             ),
           ),
           body: Padding(

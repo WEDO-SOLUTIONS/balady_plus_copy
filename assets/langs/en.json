@@ -3686,6 +3686,7 @@
   "cemetry_info": "Cemetery information",
   "cemetry_type": "Cemetery type",
   "cemetry_size": "Cemetery size",
+  "cemetry_number": "Cemetry number",
   "cemetry_name": "Cemetery name",
   "cemetry_booking_request": "Cemetery booking request",
   "is_dead_fetus": "Is the decreased a fetus?",
