@@ -1,17 +1,22 @@
+
+import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
+
 class BurialInfo {
   String? permitNumber;
   String? burialDate;
   String? gregorianBurialDate;
   int? prayId;
+  LookUpItem? pray;
   String? prayName;
+  String? burialTime;
   String? ghuslMethod;
   int? cityId;
   String? cityName;
   String? burialDestination;
   String? burialDestinationName;
-   int? approvalStatusId;
-   String? approvalStatusName;
-   String? approvalDate;
+  int? approvalStatusId;
+  String? approvalStatusName;
+  String? approvalDate;
   bool? isBurialInsideDeathCity;
 
   BurialInfo({
@@ -19,7 +24,9 @@ class BurialInfo {
     this.burialDate,
     this.gregorianBurialDate,
     this.prayId,
+    this.pray,
     this.prayName,
+    this.burialTime,
     this.ghuslMethod,
     this.cityId,
     this.cityName,
@@ -37,6 +44,7 @@ class BurialInfo {
         gregorianBurialDate: json['gregorianBurialDate'] as String?,
         prayId: json['prayId'] as int?,
         prayName: json['prayName'] as String?,
+        burialTime: json['burialTime'] as String?,
         ghuslMethod: json['ghuslMethod'] as String?,
         cityId: json['cityId'] as int?,
         cityName: json['cityName'] as String?,
@@ -52,29 +60,55 @@ class BurialInfo {
         'burialDate': burialDate,
         'gregorianBurialDate': gregorianBurialDate,
         'prayId': prayId,
+        'burialTime': burialTime,
         'prayName': prayName,
         'ghuslMethod': ghuslMethod,
         'cityId': cityId,
         'cityName': cityName,
         'burialDestination': burialDestination,
         'burialDestinationName': burialDestinationName,
+        'approvalStatusId': approvalStatusId,
+        'approvalStatusName': approvalStatusName,
+        'approvalDate': approvalDate,
+        'isBurialInsideDeathCity': isBurialInsideDeathCity,
       };
 
-  BurialInfo copyWith({  String? permitNumber,
+
+  BurialInfo copyWith({
+    String? permitNumber,
     String? burialDate,
     String? gregorianBurialDate,
     int? prayId,
+    LookUpItem? pray,
+    String? prayName,
+    String? burialTime,
     String? ghuslMethod,
-    String? burialDestination,
     int? cityId,
+    String? cityName,
+    String? burialDestination,
+    String? burialDestinationName,
+    int? approvalStatusId,
+    String? approvalStatusName,
+    String? approvalDate,
     bool? isBurialInsideDeathCity,
-  }) => BurialInfo(  permitNumber: permitNumber ?? this.permitNumber,
-    burialDate: burialDate ?? this.burialDate,
-    gregorianBurialDate: gregorianBurialDate ?? this.gregorianBurialDate,
-    prayId: prayId ?? this.prayId,
-    ghuslMethod: ghuslMethod ?? this.ghuslMethod,
-    burialDestination: burialDestination ?? this.burialDestination,
-    cityId: cityId ?? this.cityId,
-    isBurialInsideDeathCity: isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
-  );
+  }) =>
+      BurialInfo(
+        permitNumber: permitNumber ?? this.permitNumber,
+        burialDate: burialDate ?? this.burialDate,
+        gregorianBurialDate: gregorianBurialDate ?? this.gregorianBurialDate,
+        prayId: prayId ?? this.prayId,
+        pray: pray ?? this.pray,
+        prayName: prayName ?? this.prayName,
+        burialTime: burialTime ?? this.burialTime,
+        ghuslMethod: ghuslMethod ?? this.ghuslMethod,
+        cityId: cityId ?? this.cityId,
+        cityName: cityName ?? this.cityName,
+        burialDestination: burialDestination ?? this.burialDestination,
+        burialDestinationName: burialDestinationName ?? this.burialDestinationName,
+        approvalStatusId: approvalStatusId ?? this.approvalStatusId,
+        approvalStatusName: approvalStatusName ?? this.approvalStatusName,
+        approvalDate: approvalDate ?? this.approvalDate,
+        isBurialInsideDeathCity: isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
+      );
+
 }

@@ -5,6 +5,7 @@ class CemetriesParams {
   int? specialTransportReasonId;
   int? prayId;
   String? burialDate;
+  String? burialTime;
   String? deathDate;
   int? graveTypeId;
   dynamic age;
@@ -15,6 +16,7 @@ class CemetriesParams {
    required this.burialCityId,
    required this.specialTransportReasonId,
    required this.prayId,
+   required this.burialTime,
    required this.burialDate,
    required this.deathDate,
    required this.graveTypeId,
@@ -29,6 +31,7 @@ class CemetriesParams {
         'burialCityId': burialCityId,
         'specialTransportReasonId': specialTransportReasonId,
         'prayId': prayId,
+        'prayOther': burialTime,
         'burialDate': burialDate,
         'deathDate': deathDate,
         'graveTypeId': graveTypeId,
