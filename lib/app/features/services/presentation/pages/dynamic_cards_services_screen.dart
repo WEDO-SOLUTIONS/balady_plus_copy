@@ -1,5 +1,10 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:balady_plus/app/core/utils/constants/dialog_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/not_authorized_indivivisual.dart';
+import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_route_names.dart';
 import 'package:balady_plus/app/features/services/domain/entities/services_entity.dart';
 import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
@@ -37,8 +42,21 @@ class DynamicCardsServicesScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
               child: ElevatedButtonWidget.startService(
                 onPressed: () async {
-                  NavigatorState navigator = Navigator.of(context);
-                  navigator.pushNamed(service.actionValue);
+                  if (service.requireSelectedDelegator &&
+                      CommonProperties.selectedDelegator == null) {
+                    await BottomSheetDialog.showDraggableSheet(
+                      context,
+                      isFullHeight: false,
+                      dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
+                      currentRouteName:
+                          HomeServicesRouteName.dynamicCardsServicesScreen,
+                      child: const NotAuthorizedIndivisualDialog(),
+                    );
+                    return;
+                  } else {
+                    NavigatorState navigator = Navigator.of(context);
+                    navigator.pushNamed(service.actionValue);
+                  }
                 },
               ),
             )
