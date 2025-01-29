@@ -7,6 +7,7 @@ import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
@@ -17,6 +18,7 @@ class FollowControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLTR = context.isLTR;
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
     final hasGPS = ref.watch(pathNavMessageProvider)?.state != PathNavMessageState.gpsConnectionLost;
@@ -46,8 +48,8 @@ class FollowControl extends ConsumerWidget {
         hasGPS
             ? (followState.type == LocationFollowType.followDirection
                 ? TransportIcons.locationDirection
-                : TransportIcons.locationFullLTR)
-            : TransportIcons.locationQuestionLTR,
+                : (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL))
+            : (isLTR ? TransportIcons.locationQuestionLTR : TransportIcons.locationQuestionRTL),
         color: iconColor,
         size: 24,
       ),
