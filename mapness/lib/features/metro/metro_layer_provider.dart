@@ -40,9 +40,7 @@ class MetroLayer extends _$MetroLayer {
     final isMetroShown = ref.read(metroLayerVisibleProvider);
 
     if (isMetroShown) {
-      unawaited(
-        showMetro(),
-      );
+      unawaited(showMetro());
     }
 
     ref.listen(cameraPositionProvider, (prev, positon) {
