@@ -19,10 +19,11 @@ class MetroLayer extends _$MetroLayer {
   int _zoomSegment(int? zoom) => switch (zoom) {
         null => 0,
         >= 18 => 1,
-        >= 16 => 2,
-        >= 15 => 3,
-        >= 5 => 4,
-        _ => 5,
+        >= 17 => 2,
+        >= 16 => 3,
+        >= 14 => 4,
+        >= 5 => 5,
+        _ => 6,
       };
 
   @override
@@ -74,7 +75,8 @@ class MetroLayer extends _$MetroLayer {
 
     await mapManager.removeAllPolyLines();
 
-    for (final line in metroLines) {
+    for (int i = 0; i < metroLines.length; i++) {
+      final line = metroLines[i];
       final points = line.points;
       final color = line.color;
 
@@ -90,13 +92,14 @@ class MetroLayer extends _$MetroLayer {
 
       //TODO: remove this when we have real data
       /// We need to move the lines a bit to avoid overlapping
-      final delta = (color != 'purple')
+      final delta = (color != 'yellow')
           ? 0
           : switch (zoom) {
               null => 0,
               >= 18 => 0,
+              >= 17 => -0.00010,
               >= 16 => -0.00055,
-              >= 15 => -0.00155,
+              >= 14 => -0.00080,
               >= 5 => -0.00205,
               _ => 0,
             };
@@ -120,12 +123,13 @@ class MetroLayer extends _$MetroLayer {
 
       await mapManager.addPolyLines([
         Polyline(
-          id: 'metro_line_${line.hashCode}',
+          id: 'metro_line_${i + 1}',
           options: PolylineOptionsMessage(
             points: geoPoints,
             width: 5,
             color: lineColor.value,
             borderWidth: 2,
+            zIndex: color == 'purple' ? 1 : 0,
             borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
           ),
         ),
