@@ -63,7 +63,7 @@ class PoiMyLocation extends _$PoiMyLocation {
     final title = userData?.getLocalizedFirstAndLastName(language);
     return PoiMyLocationState(
       address: address,
-      location: LatLng(latitude: closestPoint.latitude, longitude: closestPoint.longitude),
+      location: closestPoint,
       title: title,
       isAuthorized: CommonProperties.isLoggedIn,
     );
