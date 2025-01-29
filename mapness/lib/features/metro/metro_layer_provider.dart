@@ -90,14 +90,14 @@ class MetroLayer extends _$MetroLayer {
 
       //TODO: remove this when we have real data
       /// We need to move the lines a bit to avoid overlapping
-      final delta = (color == 'yellow')
+      final delta = (color != 'purple')
           ? 0
           : switch (zoom) {
               null => 0,
               >= 18 => 0,
               >= 16 => -0.00055,
               >= 15 => -0.00155,
-              >= 5 => -0.00405,
+              >= 5 => -0.00205,
               _ => 0,
             };
 
@@ -113,7 +113,7 @@ class MetroLayer extends _$MetroLayer {
               return null;
             }
 
-            return GeoPointMessage(latitude: lat + delta, longitude: lon + delta);
+            return GeoPointMessage(latitude: lat, longitude: lon + delta);
           })
           .nonNulls
           .toList();
