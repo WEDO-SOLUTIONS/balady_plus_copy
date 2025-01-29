@@ -13,7 +13,7 @@ extension PolygonGeometryMessageExt on PolygonGeometryMessage {
 
     // We take only first contour because the SDK should return only one contour of the visible area
     // and we are interested in the first one.
-    final firstContour = contours.first;
+    final firstContour = contours.firstOrNull;
     if (firstContour != null && firstContour is List) {
       for (final vertex in firstContour) {
         if (vertex != null && vertex is GeoPointMessage) {

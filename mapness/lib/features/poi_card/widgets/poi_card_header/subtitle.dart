@@ -31,12 +31,14 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
       interpolation: scale,
       child: Row(
         children: [
-          Text(
-            subtitle,
-            style: subTitleTextStyle,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
-            textAlign: TextAlign.start,
+          Expanded(
+            child: Text(
+              subtitle,
+              style: subTitleTextStyle,
+              overflow: TextOverflow.ellipsis,
+              maxLines: 2,
+              textAlign: TextAlign.start,
+            ),
           ),
           if (subtitleIcon != null)
             Padding(

@@ -1,17 +1,19 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
-class PoiCardFooter extends ConsumerWidget {
+class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
   static const double padding = 8;
 
@@ -22,6 +24,7 @@ class PoiCardFooter extends ConsumerWidget {
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final RouteSearchPoint finishPoint;
+  final StatefulBottomSheetController<PoiCardBottomSheetState> bottomSheetController;
 
   PoiCardFooter({
     required this.data,
@@ -30,6 +33,7 @@ class PoiCardFooter extends ConsumerWidget {
     required this.onEntranceTap,
     required this.onTapCar,
     required this.onTapFavorite,
+    required this.bottomSheetController,
     super.key,
   }) : finishPoint = RouteSearchPoint(
           coordinates: data.markerPosition!.toGeoPointMessage(),
@@ -44,6 +48,21 @@ class PoiCardFooter extends ConsumerWidget {
         navType: RouteSearchOptionsMessage.car,
       ),
     );
+    final displayShadow = useState(true);
+
+    useEffect(() {
+      void updateShadow() {
+        final isHidden =
+            bottomSheetController.state == PoiCardBottomSheetState.hidden && bottomSheetController.interpolation == 0.0;
+        if (!isHidden != displayShadow.value) {
+          displayShadow.value = !isHidden;
+        }
+      }
+
+      bottomSheetController.addListener(updateShadow);
+
+      return () => bottomSheetController.removeListener(updateShadow);
+    });
 
     final objectId = data.id?.objectId;
 
@@ -60,6 +79,7 @@ class PoiCardFooter extends ConsumerWidget {
     return ThrottledCallbackWidget(
       callback: share,
       builder: (context, throttledShare) => BottomActionBar(
+        displayShadow: displayShadow.value,
         items: [
           ItemActionBar(
             icon: TransportIcons.car,

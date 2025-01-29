@@ -21,7 +21,7 @@ class PoiLoadingSheet extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => Material(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xl)),
         child: SizedBox(
           height: 148,
           width: double.infinity,

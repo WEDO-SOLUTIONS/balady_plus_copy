@@ -127,6 +127,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : objectId),
           topHeader: PoiPhotosHeader(objectId: objectId),
           footer: PoiCardFooter(
+            bottomSheetController: _bottomSheetController,
             data: data,
             share: () {
               Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
