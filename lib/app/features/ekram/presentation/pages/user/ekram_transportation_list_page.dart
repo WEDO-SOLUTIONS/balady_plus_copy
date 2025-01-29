@@ -86,79 +86,74 @@ class _EkramTransportationListPageState
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: PreferredSize(
-              preferredSize:
-                  const Size.fromHeight(160.0), // here the desired height
-              child: AppBar(
-                titleSpacing: 0,
-                automaticallyImplyLeading: false,
-                backgroundColor: Colors.transparent,
-                iconTheme: const IconThemeData(color: Colors.black),
-                elevation: 0,
-                title: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.arrow_back_ios,
-                          color: AppColor.black),
-                      onPressed: () {
-                        Navigator.of(context).pop(); // Navigate back
-                      },
-                    ),
-                    Expanded(
-                      child: Text(
-                        "ekram_benf_transport".tr(),
-                        maxLines: 2,
-                        style: const TextStyle(
-                          color: AppColor.black,
-                          fontSize: 18.0, // Adjust font size for readability
-                          fontWeight: FontWeight.w600,
-                        ),
-                        textAlign: TextAlign.start, // Center the title
+            appBar: AppBar(
+              titleSpacing: 0,
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              iconTheme: const IconThemeData(color: Colors.black),
+              elevation: 0,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios,
+                        color: AppColor.black),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Navigate back
+                    },
+                  ),
+                  Expanded(
+                    child: Text(
+                      "ekram_benf_transport".tr(),
+                      maxLines: 2,
+                      style: const TextStyle(
+                        color: AppColor.black,
+                        fontSize: 18.0, // Adjust font size for readability
+                        fontWeight: FontWeight.w600,
                       ),
+                      textAlign: TextAlign.start, // Center the title
                     ),
+                  ),
 
-                    InkWell(
-                      onTap: () => NavigationService.navigatorKey.currentState!
-                          .pushNamed(
-                              RouteName.EkramRequestTransportationStartService,
-                              arguments: context.read<TransportRequestsBloc>()),
-                      child: CircleAvatar(
-                        backgroundColor: AppColor.primary50Light,
-                        child: SvgPicture.asset(
-                          IconPath.add,
-                          width: 40,
-                          height: 40,
-                        ),
+                  InkWell(
+                    onTap: () => NavigationService.navigatorKey.currentState!
+                        .pushNamed(
+                            RouteName.EkramRequestTransportationStartService,
+                            arguments: context.read<TransportRequestsBloc>()),
+                    child: CircleAvatar(
+                      backgroundColor: AppColor.primary50Light,
+                      child: SvgPicture.asset(
+                        IconPath.add,
+                        width: 40,
+                        height: 40,
                       ),
                     ),
-                    const SizedBox(width: 8.0), // Add consistent spacing
-
-                    InkWell(
-                      onTap: () async {
-                        context
-                            .read<TransportRequestsBloc>()
-                            .add(ShowFilterEvent());
-                      },
-                      child: CircleAvatar(
-                        backgroundColor: AppColor.primary50Light,
-                        child: SvgPicture.asset(
-                          IconPath.filter,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                bottom: AppBarSeachBar(
-                  onChanged: (value) {
-                    _debouncer.run(() {
-                      context.read<TransportRequestsBloc>().add(
-                          GetDeceasedTransportRequestsEvent(
-                              isDriver: false, text: value));
-                    });
-                  },
-                ),
+                  ),
+                  const SizedBox(width: 8.0), // Add consistent spacing
+                  // InkWell(
+                  //   onTap: () async {
+                  //     context
+                  //         .read<TransportRequestsBloc>()
+                  //         .add(ShowFilterEvent());
+                  //   },
+                  //   child: CircleAvatar(
+                  //     backgroundColor: AppColor.primary50Light,
+                  //     child: SvgPicture.asset(
+                  //       IconPath.filter,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
               ),
+              // bottom: AppBarSeachBar(
+              //   onChanged: (value) {
+              //     _debouncer.run(() {
+              //       context.read<TransportRequestsBloc>().add(
+              //           GetDeceasedTransportRequestsEvent(
+              //               isDriver: false, text: value));
+              //     });
+              //   },
+              // ),
             ),
             body: Stack(
               children: [

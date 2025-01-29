@@ -643,21 +643,18 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
         queryParameters: {
           "page": params.page,
           "size": params.size,
-          "isDriver": params.isDriver ?? false
+          "isDriver": params.isDriver ?? false,
+          // if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
+          // if ((params.text?.isNotEmpty ?? false) &&
+          //     int.tryParse(params.text ?? "") == null)
+          //   "deceasedName": params.text,
+          // if ((params.deceasedTransportRequestStatusId != null))
+          //   "requestStatusId": params.deceasedTransportRequestStatusId,
+          // if ((params.transportLocationStatusId != null))
+          //   "transportLocationStatusId": params.transportLocationStatusId,
+          // if ((params.isMultiCity != null)) "isMultiCity": params.isMultiCity,
         },
       );
-
-      //   if (int.tryParse(params.text ?? "") != null) "requestId": params.text,
-      // if ((params.text?.isNotEmpty ?? false) &&
-      // int.tryParse(params.text ?? "") == null)
-      // "deceasedName": params.text,
-      // if ((params.deceasedTransportRequestStatusId != null))
-      // "requestStatusList": params.deceasedTransportRequestStatusId,
-      // if ((params.transportLocationStatusId != null))
-      // "transportLocationStatusId": params.transportLocationStatusId,
-      // if ((params.isMultiCity != null)) "isMultiCity": params.isMultiCity,
-      //
-
       // String qa = "";
       //
       // qa = await rootBundle.loadString("assets/request.json");
