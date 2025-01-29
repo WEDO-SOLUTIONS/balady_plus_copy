@@ -48,7 +48,7 @@ dependencies:
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.4
+    version: 1.0.5
 
   localize_and_translate:
     git:

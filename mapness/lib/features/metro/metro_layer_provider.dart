@@ -6,6 +6,7 @@ import 'package:mapness/entities/metro/metro_line_model.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,6 +15,17 @@ part 'metro_layer_provider.g.dart';
 @riverpod
 class MetroLayer extends _$MetroLayer {
   final mapOptions = MapObjectManagerSettings.metro();
+
+  // Performances improvements, we don't need to update the map on every zoom change
+  int _zoomSegment(int? zoom) => switch (zoom) {
+        null => 0,
+        >= 18 => 1,
+        >= 17 => 2,
+        >= 16 => 3,
+        >= 14 => 4,
+        >= 5 => 5,
+        _ => 6,
+      };
 
   @override
   Future<List<MetroLineModel>> build() async {
@@ -31,6 +43,16 @@ class MetroLayer extends _$MetroLayer {
       unawaited(showMetro());
     }
 
+    ref.listen(cameraPositionProvider, (prev, positon) {
+      final oldZoomSeg = _zoomSegment(prev?.zoom.ceil());
+      final newZoomSeg = _zoomSegment(positon?.zoom.ceil());
+      if (oldZoomSeg == newZoomSeg) {
+        return;
+      }
+
+      unawaited(showMetro());
+    });
+
     return metroLayerJsonDatasource;
   }
 
@@ -38,6 +60,8 @@ class MetroLayer extends _$MetroLayer {
     if (state.hasValue == false || state.valueOrNull == null || state.valueOrNull?.isEmpty == true) {
       return;
     }
+
+    final zoom = ref.read(cameraPositionProvider)?.zoom.ceil();
 
     final metroLines = state.value!;
 
@@ -50,7 +74,8 @@ class MetroLayer extends _$MetroLayer {
 
     await mapManager.removeAllPolyLines();
 
-    for (final line in metroLines) {
+    for (int i = 0; i < metroLines.length; i++) {
+      final line = metroLines[i];
       final points = line.points;
       final color = line.color;
 
@@ -64,6 +89,20 @@ class MetroLayer extends _$MetroLayer {
         _ => Colors.black,
       };
 
+      //TODO: remove this when we have real data
+      /// We need to move the lines a bit to avoid overlapping
+      final delta = (color != 'yellow')
+          ? 0
+          : switch (zoom) {
+              null => 0,
+              >= 18 => 0,
+              >= 17 => -0.00010,
+              >= 16 => -0.00055,
+              >= 14 => -0.00080,
+              >= 5 => -0.00205,
+              _ => 0,
+            };
+
       if (points == null || points.isEmpty) {
         continue;
       }
@@ -76,19 +115,20 @@ class MetroLayer extends _$MetroLayer {
               return null;
             }
 
-            return GeoPointMessage(latitude: lat, longitude: lon);
+            return GeoPointMessage(latitude: lat, longitude: lon + delta);
           })
           .nonNulls
           .toList();
 
       await mapManager.addPolyLines([
         Polyline(
-          id: 'metro_line_${line.hashCode}',
+          id: 'metro_line_${i + 1}',
           options: PolylineOptionsMessage(
             points: geoPoints,
             width: 5,
             color: lineColor.value,
             borderWidth: 2,
+            zIndex: color == 'purple' ? 1 : 0,
             borderColor: (isDarkMode ? const Color(0xFF262E3B) : Colors.white).value,
           ),
         ),

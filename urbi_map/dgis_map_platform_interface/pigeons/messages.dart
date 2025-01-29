@@ -780,6 +780,7 @@ class PolylineOptionsMessage {
     this.width,
     this.borderWidth,
     this.borderColor,
+    this.zIndex,
   });
 
   final List<GeoPointMessage> points;
@@ -787,6 +788,7 @@ class PolylineOptionsMessage {
   final double? width;
   final double? borderWidth;
   final int? borderColor;
+  final int? zIndex;
 }
 
 class PolylineMessage {
