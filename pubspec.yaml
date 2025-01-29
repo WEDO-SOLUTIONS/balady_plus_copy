@@ -152,6 +152,7 @@ dependencies:
   sms_user_consent:
     git:
       url: https://github.com/ctnataman/sms_user_consent
+      ref: ab6b82c6754ba4103aa019f3f445de4b582c6655
   flutter_google_places:
     git:
       url: https://github.com/MahmoudBaha/flutter_google_places
