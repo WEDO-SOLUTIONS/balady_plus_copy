@@ -51,6 +51,7 @@ class PoiMyLocation extends _$PoiMyLocation {
         '${closestPoint.latitude}, ${closestPoint.longitude}',
         sortingType: SortingTypeMessage.byDistance,
       );
+
       if (data.firstPage?.items.isNotEmpty == true) {
         address = data.firstPage!.items.firstOrNull?.makeAddress();
         address ??= '${closestPoint.latitude}, ${closestPoint.longitude}';
