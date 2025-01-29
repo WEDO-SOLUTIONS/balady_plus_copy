@@ -16,6 +16,7 @@ part 'metro_layer_provider.g.dart';
 class MetroLayer extends _$MetroLayer {
   final mapOptions = MapObjectManagerSettings.metro();
 
+  // Performances improvements, we don't need to update the map on every zoom change
   int _zoomSegment(int? zoom) => switch (zoom) {
         null => 0,
         >= 18 => 1,
