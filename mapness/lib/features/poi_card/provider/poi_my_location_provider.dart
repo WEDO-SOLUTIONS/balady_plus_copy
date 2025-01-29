@@ -71,7 +71,7 @@ class PoiMyLocation extends _$PoiMyLocation {
 
   Future<void> _cameraAnimation(LatLng closestPoint) async {
     final settings = MapObjectManagerSettings.myLocation();
-    final mapObjectManager = ref.watch(
+    final mapObjectManager = ref.read(
       mapObjectManagerProvider(
         named: settings.name,
         layerId: settings.layerId,
@@ -86,8 +86,8 @@ class PoiMyLocation extends _$PoiMyLocation {
       ),
     );
 
-    final read = ref.read(selectedMarkerProvider.notifier);
-    await read.removeAllMarkers();
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    await selectedMarker.removeAllMarkers();
 
     await mapObjectManager.addMarker(marker);
 
