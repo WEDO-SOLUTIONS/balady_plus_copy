@@ -606,7 +606,9 @@ class ObjectTapHandler {
                 colors: [color],
                 colorIndices: Data(Array(repeating: 0, count: polyline.options.points.count))
             ),
-            userData: PolylineId(polyline.id)
+            userData: PolylineId(polyline.id),
+            zIndex: ZIndex(value: UInt32(polyline.options.zIndex ?? 0))
+            
         )
         
         do {
