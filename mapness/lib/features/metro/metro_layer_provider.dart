@@ -6,6 +6,7 @@ import 'package:mapness/entities/metro/metro_line_model.dart';
 import 'package:mapness/features/metro/metro_layer_repository.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -14,6 +15,15 @@ part 'metro_layer_provider.g.dart';
 @riverpod
 class MetroLayer extends _$MetroLayer {
   final mapOptions = MapObjectManagerSettings.metro();
+
+  int _zoomSegment(int? zoom) => switch (zoom) {
+        null => 0,
+        >= 18 => 1,
+        >= 16 => 2,
+        >= 15 => 3,
+        >= 5 => 4,
+        _ => 5,
+      };
 
   @override
   Future<List<MetroLineModel>> build() async {
@@ -28,8 +38,20 @@ class MetroLayer extends _$MetroLayer {
     final isMetroShown = ref.read(metroLayerVisibleProvider);
 
     if (isMetroShown) {
-      unawaited(showMetro());
+      unawaited(
+        showMetro(),
+      );
     }
+
+    ref.listen(cameraPositionProvider, (prev, positon) {
+      final oldZoomSeg = _zoomSegment(prev?.zoom.ceil());
+      final newZoomSeg = _zoomSegment(positon?.zoom.ceil());
+      if (oldZoomSeg == newZoomSeg) {
+        return;
+      }
+
+      unawaited(showMetro());
+    });
 
     return metroLayerJsonDatasource;
   }
@@ -38,6 +60,8 @@ class MetroLayer extends _$MetroLayer {
     if (state.hasValue == false || state.valueOrNull == null || state.valueOrNull?.isEmpty == true) {
       return;
     }
+
+    final zoom = ref.read(cameraPositionProvider)?.zoom.ceil();
 
     final metroLines = state.value!;
 
@@ -64,6 +88,19 @@ class MetroLayer extends _$MetroLayer {
         _ => Colors.black,
       };
 
+      //TODO: remove this when we have real data
+      /// We need to move the lines a bit to avoid overlapping
+      final delta = (color == 'yellow')
+          ? 0
+          : switch (zoom) {
+              null => 0,
+              >= 18 => 0,
+              >= 16 => -0.00055,
+              >= 15 => -0.00155,
+              >= 5 => -0.00405,
+              _ => 0,
+            };
+
       if (points == null || points.isEmpty) {
         continue;
       }
@@ -76,7 +113,7 @@ class MetroLayer extends _$MetroLayer {
               return null;
             }
 
-            return GeoPointMessage(latitude: lat, longitude: lon);
+            return GeoPointMessage(latitude: lat + delta, longitude: lon + delta);
           })
           .nonNulls
           .toList();
