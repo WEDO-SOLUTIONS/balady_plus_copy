@@ -125,21 +125,10 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     // Floor currently is not used
     return PoiContentFullAddress(
       name: address?.buildingName ?? title,
-      address: _makeAddress(),
+      address: makeAddress(),
       distance: briefDistance,
       entrances: entrances_,
     );
-  }
-
-  /// Generate address from distributed information from [address]
-  String _makeAddress() {
-    final region = address?.drilldown.firstWhereOrNull((element) => element.type == 'region');
-    final districtArea = address?.drilldown.firstWhereOrNull((element) => element.type == 'district_area');
-    final district = address?.drilldown.firstWhereOrNull((element) => element.type == 'district');
-    final street =
-        address?.components.firstWhereOrNull((element) => element.streetAddress != null)?.streetAddress?.street;
-
-    return [street, district?.name, districtArea?.name, region?.name].nonNulls.join(', ');
   }
 
   /// Generate about content for POI Card
@@ -247,16 +236,6 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
       return null;
     }
 
-    /// Check if the place is open 24/7 and if the opening hours are the same every day.
-    final is24x7 = model.isAlwaysOpen == true;
-    final isOpenSameTime = model.isDailySameOpenHours == true;
-
-    /// If the opening hours are different for each day, create a list of work days.
-    final days = !isOpenSameTime ? _createWorkTimeDays(model.openingHours, context.l10n) : null;
-
-    /// Get the first opening hour for the day.
-    final openHours = model.openingHours!.first;
-
     /// Check if all days are closed (weekends).
     final allDaysClosed = model.openingHours!.every((day) => day.isWeekend);
 
@@ -267,6 +246,16 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
         color: context.colorsV2.errorDefault,
       );
     }
+
+    /// Check if the place is open 24/7 and if the opening hours are the same every day.
+    final is24x7 = model.isAlwaysOpen == true;
+    final isOpenSameTime = model.isDailySameOpenHours == true;
+
+    /// If the opening hours are different for each day, create a list of work days.
+    final days = !isOpenSameTime ? _createWorkTimeDays(model.openingHours, context.l10n) : null;
+
+    /// Get the first opening hour for the day.
+    final openHours = model.openingHours!.first;
 
     /// If the place is not 24/7, and it has open and close hours, build a dynamic work time model.
     if (!is24x7 && openHours.openHour != null && openHours.closeHour != null) {
@@ -284,7 +273,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     OpenHours openHours,
     List<PoiContentWorkTimeDay>? days,
   ) {
-    /// Get the current date and set the time to 10 PM for comparison.
+    /// Get the current date
     final currentDateTime = DateTime.now();
 
     /// Parse the opening and closing hours into DateTime objects.
@@ -341,7 +330,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     }
 
     final nextOpenTime = nextOpen.openHour;
-    if (nextOpen.isWeekend == true) {
+    if (nextOpen.isWeekend) {
       /// Get the next weekday and return the model indicating when the place will open.
       final nextWeekday = DateTime.now().add(const Duration(days: 1)).weekDayName(context.l10n);
       return _buildWorkTimeModel(
