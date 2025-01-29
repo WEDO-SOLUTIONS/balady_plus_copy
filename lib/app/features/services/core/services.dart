@@ -1649,21 +1649,7 @@ Map<String, dynamic> newServicesConfig = {
     "ar": {
       "mostUsedServices": [
         {
-          "id": 11933,
-          "title": "إصدار رخصة تجارية",
-          "actiontype": "page",
-          "actionvalue": "CommercialLicense_Service_Card_Page",
-          "isnew": "1",
-          "level_login": "sso",
-          "order": "1",
-          "require_login": "1",
-          "requireselecteddelegator": "1",
-          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
-          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
-          "serviceId": "11010"
-        },
-        {
-          "id": 11907,
+          "id": 11954,
           "title": "إصدار شهادة الامتثال",
           "actiontype": "page",
           "actionvalue": "Compliance_Certificate_Service_Card_Page",
@@ -1672,21 +1658,35 @@ Map<String, dynamic> newServicesConfig = {
           "order": "5",
           "require_login": "1",
           "requireselecteddelegator": "0",
-          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance_0.svg",
-          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image.png",
+          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance.svg",
+          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image_0.png",
           "serviceId": "11429"
+        },
+        {
+          "id": 11980,
+          "title": "إصدار رخصة تجارية",
+          "actiontype": "page",
+          "actionvalue": "CommercialLicense_Service_Card_Page",
+          "isnew": "0",
+          "level_login": "sso",
+          "order": "1",
+          "require_login": "1",
+          "requireselecteddelegator": "1",
+          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
+          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image_0.png",
+          "serviceId": "11010"
         }
       ],
       "servicesCategories": [
         {
-          "id": 10215,
+          "id": 10218,
           "title": "خدمات الأعمال",
-          "category_icon": "https://balady.momra.gov.sa/sites/default/files/2025-01/business.svg",
+          "category_icon": "https://balady.momra.gov.sa/sites/default/files/2025-01/business_0.svg",
           "name": "خدمات الأعمال",
           "count": 12,
           "listOfServices": [
             {
-              "id": 11907,
+              "id": 11954,
               "actiontype": "page",
               "actionvalue": "Compliance_Certificate_Service_Card_Page",
               "isnew": "0",
@@ -1694,8 +1694,8 @@ Map<String, dynamic> newServicesConfig = {
               "level_login": "sso",
               "order": "5",
               "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance_0.svg",
-              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image.png",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance.svg",
+              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image_0.png",
               "title": "إصدار شهادة الامتثال",
               "requireselecteddelegator": "0",
               "eventName": null,
@@ -1703,7 +1703,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11909,
+              "id": 11956,
               "actiontype": "page",
               "actionvalue": "Objectable_Transactions_Page",
               "isnew": "0",
@@ -1720,10 +1720,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11912,
+              "id": 11959,
               "actiontype": "page",
               "actionvalue": "/etmamMainPage",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "10",
@@ -1737,7 +1737,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11918,
+              "id": 11972,
               "actiontype": "page",
               "actionvalue": "PremisesAssessment_Main_Page",
               "isnew": "0",
@@ -1754,10 +1754,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11919,
+              "id": 11973,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://balady.momra.gov.sa/ar/products/10470",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "11",
@@ -1771,14 +1771,14 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11921,
+              "id": 11975,
               "actiontype": "page",
               "actionvalue": "classification_certificate_verify_screen",
               "isnew": "1",
               "label": null,
               "level_login": "guest",
               "order": "12",
-              "require_login": "1",
+              "require_login": "0",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/note.svg",
               "services_image": null,
               "title": "التحقق من شهادة التصنيف",
@@ -1788,10 +1788,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11925,
+              "id": 11979,
               "actiontype": "page",
               "actionvalue": "GeneralInquiryTypeScreen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "9",
@@ -1805,16 +1805,16 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11933,
+              "id": 11980,
               "actiontype": "page",
               "actionvalue": "CommercialLicense_Service_Card_Page",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "1",
               "require_login": "1",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
-              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
+              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image_0.png",
               "title": "إصدار رخصة تجارية",
               "requireselecteddelegator": "1",
               "eventName": null,
@@ -1822,10 +1822,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11934,
+              "id": 11981,
               "actiontype": "page",
               "actionvalue": "CommercialPermitsScreen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "2",
@@ -1839,10 +1839,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11935,
+              "id": 11982,
               "actiontype": "page",
               "actionvalue": "/tobaccoServicesList",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "3",
@@ -1856,10 +1856,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11936,
+              "id": 11983,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://stgfees.momra.gov.sa/ewaa",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "4",
@@ -1873,7 +1873,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11937,
+              "id": 11984,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://balady.momra.gov.sa/ar/products/10920",
               "isnew": "0",
@@ -1899,7 +1899,7 @@ Map<String, dynamic> newServicesConfig = {
           "count": 12,
           "listOfServices": [
             {
-              "id": 11908,
+              "id": 11955,
               "actiontype": "page",
               "actionvalue": "VDAllTypesScreen",
               "isnew": "0",
@@ -1916,7 +1916,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11910,
+              "id": 11957,
               "actiontype": "page",
               "actionvalue": "MSRTypeScreen",
               "isnew": "0",
@@ -1933,7 +1933,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11911,
+              "id": 11958,
               "actiontype": "page",
               "actionvalue": "Appointment_Booking_Create_Page",
               "isnew": "0",
@@ -1950,7 +1950,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11913,
+              "id": 11960,
               "actiontype": "page",
               "actionvalue": "/CityServicesEtmamMainPage",
               "isnew": "0",
@@ -1967,7 +1967,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11914,
+              "id": 11961,
               "actiontype": "page",
               "actionvalue": "Report_Write-Off_Vehicle_Camera_Page",
               "isnew": "0",
@@ -1984,7 +1984,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11915,
+              "id": 11962,
               "actiontype": "page",
               "actionvalue": "Retrieve_Impounded_Vehicle_Show_My_Vehicles_Page",
               "isnew": "1",
@@ -2001,7 +2001,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11916,
+              "id": 11963,
               "actiontype": "page",
               "actionvalue": "HealthCertificate_Create_Details_Page",
               "isnew": "0",
@@ -2018,10 +2018,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11917,
+              "id": 11971,
               "actiontype": "page",
               "actionvalue": "subServicesScreen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "11",
@@ -2034,10 +2034,10 @@ Map<String, dynamic> newServicesConfig = {
               "serviceId": null,
               "subServices": [
                 {
-                  "id": 11926,
+                  "id": 11964,
                   "actiontype": "page",
                   "actionvalue": "RequestsTransportingAndPreparingDeceased_List_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "1",
@@ -2051,10 +2051,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11927,
+                  "id": 11965,
                   "actiontype": "page",
                   "actionvalue": "Cemetery_Inquiry_Create_Details_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "2",
@@ -2068,10 +2068,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11928,
+                  "id": 11966,
                   "actiontype": "page",
                   "actionvalue": "Grave_Inquiry_Create_Details_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "3",
@@ -2085,10 +2085,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11929,
+                  "id": 11967,
                   "actiontype": "page",
                   "actionvalue": "Funeral_Service_Inquiry_Create_Details_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "4",
@@ -2102,10 +2102,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11930,
+                  "id": 11968,
                   "actiontype": "page",
                   "actionvalue": "Print_Burial_Certificate_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "5",
@@ -2119,10 +2119,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11931,
+                  "id": 11969,
                   "actiontype": "page",
                   "actionvalue": "SelectAndReserveCemetery_List_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "6",
@@ -2136,10 +2136,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11932,
+                  "id": 11970,
                   "actiontype": "page",
                   "actionvalue": "FuneralDriver_List_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "20",
@@ -2155,10 +2155,10 @@ Map<String, dynamic> newServicesConfig = {
               ]
             },
             {
-              "id": 11920,
+              "id": 11974,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://balady.momra.gov.sa/ar/products/10574",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "14",
@@ -2172,14 +2172,14 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11922,
+              "id": 11976,
               "actiontype": "page",
               "actionvalue": "constructionLicenseInquery_Screen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "guest",
               "order": "16",
-              "require_login": "1",
+              "require_login": "0",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/construction_license_query.svg",
               "services_image": null,
               "title": "الاستعلام عن رخصة إنشائية",
@@ -2189,14 +2189,14 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11923,
+              "id": 11977,
               "actiontype": "page",
               "actionvalue": "SurveyReportInquery_Screen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "guest",
               "order": "17",
-              "require_login": "1",
+              "require_login": "0",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/license_query.svg",
               "services_image": null,
               "title": "الاستعلام عن تقرير مساحي",
@@ -2206,10 +2206,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11924,
+              "id": 11978,
               "actiontype": "page",
               "actionvalue": "QueryCommercialLicense_Screen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "18",
@@ -2232,125 +2232,6 @@ Map<String, dynamic> newServicesConfig = {
           "count": 8,
           "listOfServices": [
             {
-              "id": 11938,
-              "actiontype": "page",
-              "actionvalue": "/baladyCalendarPage",
-              "isnew": "1",
-              "label": null,
-              "level_login": "sso",
-              "order": "2",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/calender.svg",
-              "services_image": null,
-              "title": "تقويم بلدي",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11939,
-              "actiontype": "page",
-              "actionvalue": "ViolationGuide_Main_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "3",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/violation-guide.svg",
-              "services_image": null,
-              "title": "دليل المخالفات",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11940,
-              "actiontype": "page",
-              "actionvalue": "CalculatorFees_Create_Map_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "4",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/fee_calculator.svg",
-              "services_image": null,
-              "title": "حاسبه الرسوم",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11941,
-              "actiontype": "page",
-              "actionvalue": "YourFeedback_Camera_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "5",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/your_opnion_matter.svg",
-              "services_image": null,
-              "title": "رأيك يفرق",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11942,
-              "actiontype": "page",
-              "actionvalue": "RequestFollowup_Create_Details_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "sso",
-              "order": "6",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/transaction_inquery.svg",
-              "services_image": null,
-              "title": "استعلام عن معاملة",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11943,
-              "actiontype": "page",
-              "actionvalue": "DaemTypeScreen",
-              "isnew": "1",
-              "label": null,
-              "level_login": "sso",
-              "order": "7",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/supporter.svg",
-              "services_image": null,
-              "title": "داعم",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11944,
-              "actiontype": "page",
-              "actionvalue": "smart_advisor",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "1",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/smart_advisor.svg",
-              "services_image": null,
-              "title": "المستشار الذكي",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
               "id": 11945,
               "actiontype": "page",
               "actionvalue": "/chatbot",
@@ -2366,6 +2247,125 @@ Map<String, dynamic> newServicesConfig = {
               "eventName": null,
               "serviceId": null,
               "subServices": []
+            },
+            {
+              "id": 11986,
+              "actiontype": "page",
+              "actionvalue": "smart_advisor",
+              "isnew": "0",
+              "label": null,
+              "level_login": "guest",
+              "order": "2",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/smart_advisor.svg",
+              "services_image": null,
+              "title": "المستشار الذكي",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11987,
+              "actiontype": "page",
+              "actionvalue": "/baladyCalendarPage",
+              "isnew": "0",
+              "label": null,
+              "level_login": "sso",
+              "order": "3",
+              "require_login": "1",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/calender.svg",
+              "services_image": null,
+              "title": "تقويم بلدي",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11988,
+              "actiontype": "page",
+              "actionvalue": "ViolationGuide_Main_Page",
+              "isnew": "0",
+              "label": null,
+              "level_login": "guest",
+              "order": "4",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/violation-guide.svg",
+              "services_image": null,
+              "title": "دليل المخالفات",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11989,
+              "actiontype": "page",
+              "actionvalue": "CalculatorFees_Create_Map_Page",
+              "isnew": "0",
+              "label": null,
+              "level_login": "guest",
+              "order": "5",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/fee_calculator.svg",
+              "services_image": null,
+              "title": "حاسبه الرسوم",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11990,
+              "actiontype": "page",
+              "actionvalue": "YourFeedback_Camera_Page",
+              "isnew": "1",
+              "label": null,
+              "level_login": "guest",
+              "order": "6",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/your_opnion_matter.svg",
+              "services_image": null,
+              "title": "رأيك يفرق",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11991,
+              "actiontype": "page",
+              "actionvalue": "RequestFollowup_Create_Details_Page",
+              "isnew": "1",
+              "label": null,
+              "level_login": "sso",
+              "order": "7",
+              "require_login": "1",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/transaction_inquery.svg",
+              "services_image": null,
+              "title": "استعلام عن معاملة",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11992,
+              "actiontype": "page",
+              "actionvalue": "DaemTypeScreen",
+              "isnew": "0",
+              "label": null,
+              "level_login": "sso",
+              "order": "8",
+              "require_login": "1",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/supporter.svg",
+              "services_image": null,
+              "title": "داعم",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
             }
           ]
         },
@@ -2377,7 +2377,7 @@ Map<String, dynamic> newServicesConfig = {
           "count": 7,
           "listOfServices": [
             {
-              "id": 11900,
+              "id": 11947,
               "actiontype": "page",
               "actionvalue": "Quran_Show_All_Surahs_Page",
               "isnew": "0",
@@ -2394,7 +2394,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11901,
+              "id": 11948,
               "actiontype": "page",
               "actionvalue": "Prayer_Times_Page",
               "isnew": "0",
@@ -2411,7 +2411,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11902,
+              "id": 11949,
               "actiontype": "page",
               "actionvalue": "JodDonationPage",
               "isnew": "0",
@@ -2428,7 +2428,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11903,
+              "id": 11950,
               "actiontype": "page",
               "actionvalue": "kingdomCalendar_Page",
               "isnew": "0",
@@ -2445,7 +2445,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11904,
+              "id": 11951,
               "actiontype": "page",
               "actionvalue": "Athkar_Page",
               "isnew": "0",
@@ -2462,7 +2462,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11905,
+              "id": 11952,
               "actiontype": "page",
               "actionvalue": "Events_page",
               "isnew": "0",
@@ -2479,7 +2479,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11906,
+              "id": 11953,
               "actiontype": "page",
               "actionvalue": "ZmZm_Page",
               "isnew": "0",
@@ -2519,21 +2519,7 @@ Map<String, dynamic> newServicesConfig = {
     "en": {
       "mostUsedServices": [
         {
-          "id": 11933,
-          "title": "Commercial License",
-          "actiontype": "page",
-          "actionvalue": "CommercialLicense_Service_Card_Page",
-          "isnew": "1",
-          "level_login": "sso",
-          "order": "1",
-          "require_login": "1",
-          "requireselecteddelegator": "1",
-          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
-          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
-          "serviceId": "11010"
-        },
-        {
-          "id": 11907,
+          "id": 11954,
           "title": "Compliance Certificate",
           "actiontype": "page",
           "actionvalue": "Compliance_Certificate_Service_Card_Page",
@@ -2542,20 +2528,34 @@ Map<String, dynamic> newServicesConfig = {
           "order": "5",
           "require_login": "1",
           "requireselecteddelegator": "0",
-          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance_0.svg",
-          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image.png"
+          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance.svg",
+          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image_0.png"
+        },
+        {
+          "id": 11980,
+          "title": "Commercial License",
+          "actiontype": "page",
+          "actionvalue": "CommercialLicense_Service_Card_Page",
+          "isnew": "0",
+          "level_login": "sso",
+          "order": "1",
+          "require_login": "1",
+          "requireselecteddelegator": "1",
+          "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
+          "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image_0.png",
+          "serviceId": "11010"
         }
       ],
       "servicesCategories": [
         {
-          "id": 10215,
+          "id": 10218,
           "title": "Business services",
-          "category_icon": "https://balady.momra.gov.sa/sites/default/files/2025-01/business.svg",
+          "category_icon": "https://balady.momra.gov.sa/sites/default/files/2025-01/business_0.svg",
           "name": "Business services",
           "count": 12,
           "listOfServices": [
             {
-              "id": 11907,
+              "id": 11954,
               "actiontype": "page",
               "actionvalue": "Compliance_Certificate_Service_Card_Page",
               "isnew": "0",
@@ -2563,8 +2563,8 @@ Map<String, dynamic> newServicesConfig = {
               "level_login": "sso",
               "order": "5",
               "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance_0.svg",
-              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image.png",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/submit_compliance.svg",
+              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/compliance_certificate_image_0.png",
               "title": "Compliance Certificate",
               "requireselecteddelegator": "0",
               "eventName": null,
@@ -2572,7 +2572,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11909,
+              "id": 11956,
               "actiontype": "page",
               "actionvalue": "Objectable_Transactions_Page",
               "isnew": "0",
@@ -2589,10 +2589,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11912,
+              "id": 11959,
               "actiontype": "page",
               "actionvalue": "/etmamMainPage",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "10",
@@ -2606,7 +2606,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11918,
+              "id": 11972,
               "actiontype": "page",
               "actionvalue": "PremisesAssessment_Main_Page",
               "isnew": "0",
@@ -2623,10 +2623,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11919,
+              "id": 11973,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://balady.momra.gov.sa/ar/products/10470",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "11",
@@ -2640,14 +2640,14 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11921,
+              "id": 11975,
               "actiontype": "page",
               "actionvalue": "classification_certificate_verify_screen",
               "isnew": "1",
               "label": null,
               "level_login": "guest",
               "order": "12",
-              "require_login": "1",
+              "require_login": "0",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/note.svg",
               "services_image": null,
               "title": "Classification Certificate Verify",
@@ -2657,10 +2657,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11925,
+              "id": 11979,
               "actiontype": "page",
               "actionvalue": "GeneralInquiryTypeScreen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "9",
@@ -2674,16 +2674,16 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11933,
+              "id": 11980,
               "actiontype": "page",
               "actionvalue": "CommercialLicense_Service_Card_Page",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "1",
               "require_login": "1",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/issue-commercial.svg",
-              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image.png",
+              "services_image": "https://balady.momra.gov.sa/sites/default/files/2025-01/commercial_license_image_0.png",
               "title": "Commercial License",
               "requireselecteddelegator": "1",
               "eventName": null,
@@ -2691,10 +2691,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11934,
+              "id": 11981,
               "actiontype": "page",
               "actionvalue": "CommercialPermitsScreen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "2",
@@ -2708,10 +2708,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11935,
+              "id": 11982,
               "actiontype": "page",
               "actionvalue": "/tobaccoServicesList",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "3",
@@ -2725,10 +2725,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11936,
+              "id": 11983,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://stgfees.momra.gov.sa/ewaa",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "4",
@@ -2742,7 +2742,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11937,
+              "id": 11984,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://balady.momra.gov.sa/ar/products/10920",
               "isnew": "0",
@@ -2768,7 +2768,7 @@ Map<String, dynamic> newServicesConfig = {
           "count": 12,
           "listOfServices": [
             {
-              "id": 11908,
+              "id": 11955,
               "actiontype": "page",
               "actionvalue": "VDAllTypesScreen",
               "isnew": "0",
@@ -2785,7 +2785,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11910,
+              "id": 11957,
               "actiontype": "page",
               "actionvalue": "MSRTypeScreen",
               "isnew": "0",
@@ -2802,7 +2802,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11911,
+              "id": 11958,
               "actiontype": "page",
               "actionvalue": "Appointment_Booking_Create_Page",
               "isnew": "0",
@@ -2819,7 +2819,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11913,
+              "id": 11960,
               "actiontype": "page",
               "actionvalue": "/CityServicesEtmamMainPage",
               "isnew": "0",
@@ -2836,7 +2836,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11914,
+              "id": 11961,
               "actiontype": "page",
               "actionvalue": "Report_Write-Off_Vehicle_Camera_Page",
               "isnew": "0",
@@ -2853,7 +2853,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11915,
+              "id": 11962,
               "actiontype": "page",
               "actionvalue": "Retrieve_Impounded_Vehicle_Show_My_Vehicles_Page",
               "isnew": "1",
@@ -2870,7 +2870,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11916,
+              "id": 11963,
               "actiontype": "page",
               "actionvalue": "HealthCertificate_Create_Details_Page",
               "isnew": "0",
@@ -2887,10 +2887,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11917,
+              "id": 11971,
               "actiontype": "page",
               "actionvalue": "subServicesScreen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "11",
@@ -2903,10 +2903,10 @@ Map<String, dynamic> newServicesConfig = {
               "serviceId": null,
               "subServices": [
                 {
-                  "id": 11926,
+                  "id": 11964,
                   "actiontype": "page",
                   "actionvalue": "RequestsTransportingAndPreparingDeceased_List_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "1",
@@ -2920,10 +2920,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11927,
+                  "id": 11965,
                   "actiontype": "page",
                   "actionvalue": "Cemetery_Inquiry_Create_Details_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "2",
@@ -2937,10 +2937,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11928,
+                  "id": 11966,
                   "actiontype": "page",
                   "actionvalue": "Grave_Inquiry_Create_Details_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "3",
@@ -2954,10 +2954,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11929,
+                  "id": 11967,
                   "actiontype": "page",
                   "actionvalue": "Funeral_Service_Inquiry_Create_Details_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "4",
@@ -2971,10 +2971,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11930,
+                  "id": 11968,
                   "actiontype": "page",
                   "actionvalue": "Print_Burial_Certificate_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "5",
@@ -2988,10 +2988,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11931,
+                  "id": 11969,
                   "actiontype": "page",
                   "actionvalue": "SelectAndReserveCemetery_List_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "6",
@@ -3005,10 +3005,10 @@ Map<String, dynamic> newServicesConfig = {
                   "subServices": []
                 },
                 {
-                  "id": 11932,
+                  "id": 11970,
                   "actiontype": "page",
                   "actionvalue": "FuneralDriver_List_Page",
-                  "isnew": "1",
+                  "isnew": "0",
                   "label": null,
                   "level_login": "sso",
                   "order": "20",
@@ -3024,10 +3024,10 @@ Map<String, dynamic> newServicesConfig = {
               ]
             },
             {
-              "id": 11920,
+              "id": 11974,
               "actiontype": "openBaladyWebView",
               "actionvalue": "https://balady.momra.gov.sa/ar/products/10574",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "14",
@@ -3041,14 +3041,14 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11922,
+              "id": 11976,
               "actiontype": "page",
               "actionvalue": "constructionLicenseInquery_Screen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "guest",
               "order": "16",
-              "require_login": "1",
+              "require_login": "0",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/construction_license_query.svg",
               "services_image": null,
               "title": "Inquiry about  construction license",
@@ -3058,14 +3058,14 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11923,
+              "id": 11977,
               "actiontype": "page",
               "actionvalue": "SurveyReportInquery_Screen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "guest",
               "order": "17",
-              "require_login": "1",
+              "require_login": "0",
               "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/license_query.svg",
               "services_image": null,
               "title": "Inquiry about  Area report",
@@ -3075,10 +3075,10 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11924,
+              "id": 11978,
               "actiontype": "page",
               "actionvalue": "QueryCommercialLicense_Screen",
-              "isnew": "1",
+              "isnew": "0",
               "label": null,
               "level_login": "sso",
               "order": "18",
@@ -3101,125 +3101,6 @@ Map<String, dynamic> newServicesConfig = {
           "count": 8,
           "listOfServices": [
             {
-              "id": 11938,
-              "actiontype": "page",
-              "actionvalue": "/baladyCalendarPage",
-              "isnew": "1",
-              "label": null,
-              "level_login": "sso",
-              "order": "2",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/calender.svg",
-              "services_image": null,
-              "title": "Balady Calendar",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11939,
-              "actiontype": "page",
-              "actionvalue": "ViolationGuide_Main_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "3",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/violation-guide.svg",
-              "services_image": null,
-              "title": "Violations Guide",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11940,
-              "actiontype": "page",
-              "actionvalue": "CalculatorFees_Create_Map_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "4",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/fee_calculator.svg",
-              "services_image": null,
-              "title": "Fees Calculator",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11941,
-              "actiontype": "page",
-              "actionvalue": "YourFeedback_Camera_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "5",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/your_opnion_matter.svg",
-              "services_image": null,
-              "title": "Your Feedback",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11942,
-              "actiontype": "page",
-              "actionvalue": "RequestFollowup_Create_Details_Page",
-              "isnew": "1",
-              "label": null,
-              "level_login": "sso",
-              "order": "6",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/transaction_inquery.svg",
-              "services_image": null,
-              "title": "Request Follow-up",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11943,
-              "actiontype": "page",
-              "actionvalue": "DaemTypeScreen",
-              "isnew": "1",
-              "label": null,
-              "level_login": "sso",
-              "order": "7",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/supporter.svg",
-              "services_image": null,
-              "title": "Daem",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
-              "id": 11944,
-              "actiontype": "page",
-              "actionvalue": "smart_advisor",
-              "isnew": "1",
-              "label": null,
-              "level_login": "guest",
-              "order": "1",
-              "require_login": "1",
-              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/smart_advisor.svg",
-              "services_image": null,
-              "title": "Smart Advisor",
-              "requireselecteddelegator": "0",
-              "eventName": null,
-              "serviceId": null,
-              "subServices": []
-            },
-            {
               "id": 11945,
               "actiontype": "page",
               "actionvalue": "/chatbot",
@@ -3235,6 +3116,125 @@ Map<String, dynamic> newServicesConfig = {
               "eventName": null,
               "serviceId": null,
               "subServices": []
+            },
+            {
+              "id": 11986,
+              "actiontype": "page",
+              "actionvalue": "smart_advisor",
+              "isnew": "0",
+              "label": null,
+              "level_login": "guest",
+              "order": "2",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/smart_advisor.svg",
+              "services_image": null,
+              "title": "Smart Advisor",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11987,
+              "actiontype": "page",
+              "actionvalue": "/baladyCalendarPage",
+              "isnew": "0",
+              "label": null,
+              "level_login": "sso",
+              "order": "3",
+              "require_login": "1",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/calender.svg",
+              "services_image": null,
+              "title": "Balady Calendar",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11988,
+              "actiontype": "page",
+              "actionvalue": "ViolationGuide_Main_Page",
+              "isnew": "0",
+              "label": null,
+              "level_login": "guest",
+              "order": "4",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/violation-guide.svg",
+              "services_image": null,
+              "title": "Violations Guide",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11989,
+              "actiontype": "page",
+              "actionvalue": "CalculatorFees_Create_Map_Page",
+              "isnew": "0",
+              "label": null,
+              "level_login": "guest",
+              "order": "5",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/fee_calculator.svg",
+              "services_image": null,
+              "title": "Fees Calculator",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11990,
+              "actiontype": "page",
+              "actionvalue": "YourFeedback_Camera_Page",
+              "isnew": "1",
+              "label": null,
+              "level_login": "guest",
+              "order": "6",
+              "require_login": "0",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/your_opnion_matter.svg",
+              "services_image": null,
+              "title": "Your Feedback",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11991,
+              "actiontype": "page",
+              "actionvalue": "RequestFollowup_Create_Details_Page",
+              "isnew": "1",
+              "label": null,
+              "level_login": "sso",
+              "order": "7",
+              "require_login": "1",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/transaction_inquery.svg",
+              "services_image": null,
+              "title": "Request Follow-up",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
+            },
+            {
+              "id": 11992,
+              "actiontype": "page",
+              "actionvalue": "DaemTypeScreen",
+              "isnew": "0",
+              "label": null,
+              "level_login": "sso",
+              "order": "8",
+              "require_login": "1",
+              "service_icon": "https://balady.momra.gov.sa/sites/default/files/mobileservices/supporter.svg",
+              "services_image": null,
+              "title": "Daem",
+              "requireselecteddelegator": "0",
+              "eventName": null,
+              "serviceId": null,
+              "subServices": []
             }
           ]
         },
@@ -3246,7 +3246,7 @@ Map<String, dynamic> newServicesConfig = {
           "count": 7,
           "listOfServices": [
             {
-              "id": 11900,
+              "id": 11947,
               "actiontype": "page",
               "actionvalue": "Quran_Show_All_Surahs_Page",
               "isnew": "0",
@@ -3263,7 +3263,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11901,
+              "id": 11948,
               "actiontype": "page",
               "actionvalue": "Prayer_Times_Page",
               "isnew": "0",
@@ -3280,7 +3280,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11902,
+              "id": 11949,
               "actiontype": "page",
               "actionvalue": "JodDonationPage",
               "isnew": "0",
@@ -3297,7 +3297,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11903,
+              "id": 11950,
               "actiontype": "page",
               "actionvalue": "kingdomCalendar_Page",
               "isnew": "0",
@@ -3314,7 +3314,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11904,
+              "id": 11951,
               "actiontype": "page",
               "actionvalue": "Athkar_Page",
               "isnew": "0",
@@ -3331,7 +3331,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11905,
+              "id": 11952,
               "actiontype": "page",
               "actionvalue": "Events_page",
               "isnew": "0",
@@ -3348,7 +3348,7 @@ Map<String, dynamic> newServicesConfig = {
               "subServices": []
             },
             {
-              "id": 11906,
+              "id": 11953,
               "actiontype": "page",
               "actionvalue": "ZmZm_Page",
               "isnew": "0",
