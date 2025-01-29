@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget%20copy.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
@@ -652,6 +653,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("cemeteryName").tr(),
                               hint: ("cemeteryName").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_cemetry_note".tr()]),
                             CustomLookUpLongDialog(
                               items: state.transportations ?? [],
                               value: state.getTransportTypeById(state
@@ -685,6 +687,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("ekram_orgnization_name").tr(),
                               hint: ("ekram_orgnization_name").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_org_note".tr()]),
                             CustomLookUpLongDialog(
                               items: state.laundries ?? [],
                               value: state.getlaundriesById(state
@@ -723,6 +726,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("ekram_laundry").tr(),
                               hint: ("ekram_laundry").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_laundry_note".tr()]),
                             CustomLookUpLongDialog(
                               showOptional: true,
                               items: state.mosques ?? [],
@@ -762,6 +766,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("the_mosque").tr(),
                               hint: ("the_mosque").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_mosque_note".tr()]),
                           ],
                         ),
                       ),

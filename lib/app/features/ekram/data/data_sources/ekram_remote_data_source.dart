@@ -71,8 +71,7 @@ abstract class EkramRemoteDataSource {
   Future<ResponseBodyModel<List<DeceasedIdenticalItem>>> getIdenticalList(
       int params);
 
-  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(
-      int params);
+  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(int params);
 
   Future<ResponseBodyModel> addTrip(int requestId, TripDetailsModel params);
 
@@ -89,8 +88,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<dynamic>> upadateDriverLocation(
       UpdateDriverLocationParams params);
-  Future<ResponseBodyModel<dynamic>> currentTrackLocation(
-      int requestId);
+  Future<ResponseBodyModel<dynamic>> currentTrackLocation(int requestId);
 
   Future<ResponseBodyModel<TripLocationsResponseModel>> getTripsLocation(
       int params);
@@ -937,8 +935,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(
-      int params) async {
+  Future<ResponseBodyModel<List<TripDetailsModel>>> getTrips(int params) async {
     Response response;
 
     try {
@@ -1397,12 +1394,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-    @override
-  Future<ResponseBodyModel> currentTrackLocation(int requestId) async{
+
+  @override
+  Future<ResponseBodyModel> currentTrackLocation(int requestId) async {
     Response response;
 
     try {
-      response = await webService.dio.post(
+      response = await webService.dio.get(
         ApiUrl.currentTrackLocation(requestId),
       );
 
@@ -2644,7 +2642,6 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       response = await webService.dio.post(
         ApiUrl.saveDeathBurialInfo(requestId),
         data: params.toJson(),
-
       );
       final data = response.data;
 
@@ -2688,9 +2685,9 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
     }
   }
 
-
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getSpecialTransportReasonsLookUp() async {
+  Future<ResponseBodyModel<List<LookUpItem>>>
+      getSpecialTransportReasonsLookUp() async {
     Response response;
 
     try {
@@ -2940,8 +2937,7 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       MosqueGhuslPlacesParams params) async {
     Response response;
 
-
-   try {
+    try {
       response = await webService.dio.post(ApiUrl.ekramLaundries(transportId),
           data: jsonEncode(cityIds), queryParameters: params.toJson());
 
@@ -3073,7 +3069,8 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
           : null;
 
       final decodedResponse =
-          ResponseBodyModel<MadinahEmirateApprovalStatusResponseModel>.fromMap(response.data,
+          ResponseBodyModel<MadinahEmirateApprovalStatusResponseModel>.fromMap(
+              response.data,
               parsedResult: parsedResult);
 
       return decodedResponse.toFuture();
@@ -3175,14 +3172,14 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel> ekramTransportValidateSubmit(int requestId , EkramTransportValidateSubmitParams params) async {
+  Future<ResponseBodyModel> ekramTransportValidateSubmit(
+      int requestId, EkramTransportValidateSubmitParams params) async {
     Response? response;
 
     try {
       response = await webService.dio.post(
-        ApiUrl.ekramTransportValidateSubmit(requestId),
-        data: params.toJson()
-      );
+          ApiUrl.ekramTransportValidateSubmit(requestId),
+          data: params.toJson());
       final data = response.data;
 
       return ResponseBodyModel.fromMap(data);
@@ -3224,7 +3221,4 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
       }
     }
   }
-  
-
-
 }

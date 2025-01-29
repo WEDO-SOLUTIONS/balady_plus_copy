@@ -87,14 +87,13 @@ class _EkramTransportationListPageState
         builder: (context, state) {
           return Scaffold(
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(160.0), // here the desired height
+              preferredSize:
+                  const Size.fromHeight(160.0), // here the desired height
               child: AppBar(
                 titleSpacing: 0,
                 automaticallyImplyLeading: false,
                 backgroundColor: Colors.transparent,
-                iconTheme: IconThemeData(
-                  color: Colors.black, //change your color here
-                ),
+                iconTheme: const IconThemeData(color: Colors.black),
                 elevation: 0,
                 title: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,

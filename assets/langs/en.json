@@ -3720,6 +3720,8 @@
   "ekram_condolence_msg": "Momra shares your sorrow over the death of your deceased, and expresses its sincere condolences and sympathy to his honorable family, wishing you patience and solace.",
   "ekram_org_note": "Transportations are shown according to the chosen cemetery and the daily capacity of the transportation",
   "ekram_cemetry_note": "Cemeteries are displayed based on the daily capacity of the cemetery",
+  "ekram_laundry_note": "Display the laundries based on the selected transportation provider and the daily capacity of the laundry.",
+  "ekram_mosque_note":"Display the mosques based on the selected transportation provider and the daily capacity of the mosque.",
   "ekram_retrive_data_success_msg": "You can complete the application information",
   "ekram_retrive_grave_data_success_msg": "There is a previous cemetery reservation for the deceased {}, and you can complete the entry of transportation and processing request for the same deceased",
   "ekram_deceased_id": "Decreased ID number",

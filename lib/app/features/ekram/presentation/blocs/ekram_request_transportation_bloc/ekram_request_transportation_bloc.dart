@@ -978,15 +978,21 @@ class EkramRequestTransportationBloc extends Bloc<
         return null;
       },
       (res) {
-        if(res.data != null) {
-          // need map on the corect data
-          // CommonFunctions.openMap(res.data['lat'], res.data['long']);
+        if (res.data != null && res.data?.result != null) {
+          // Extracting x and y correctly from result
+          String? x = res.data?.result['x'];
+          String? y = res.data?.result['y'];
+
+          if (x != null && y != null) {
+            CommonFunctions.openMap(double.parse(x), double.parse(y));
+          }
         }
+
         emit(
           state.copyWith(
             status: BlocStatus.success,
-            lat: res.data?.result,
-            long: res.data?.result,
+            lat: res.data?.result?['x'],
+            long: res.data?.result?['y'],
             errorMessage: "",
           ),
         );
@@ -1152,7 +1158,8 @@ class EkramRequestTransportationBloc extends Bloc<
                 e.burialInfo?.isBurialInsideDeathCity ?? true));
     BurialInfo info = params.burialInfo!;
     int? cityID;
-    if (e.burialInfo?.isBurialInsideDeathCity == true) {
+    if (e.burialInfo?.isBurialInsideDeathCity == null ||
+        e.burialInfo?.isBurialInsideDeathCity == true) {
       cityID = getBurialCityId();
     }
 

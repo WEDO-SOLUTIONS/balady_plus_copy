@@ -3397,6 +3397,8 @@
   "ekram_condolence_msg": "تشارككم وزارة البلديات والإسكان أحزانكم في وفاة فقيدكم، وتتقدم بخالص التعازي والمواساة لأسرته الكريمة، راجين لكم الصبر والسلوان",
   "ekram_org_note": "تعرض جهات النقل بناء على المقبرة التي تم اختيارها والسعة اليومية للجهة",
   "ekram_cemetry_note": "تعرض المقابر بناء على السعة اليومية للمقبرة",
+  "ekram_laundry_note": "تعرض المغاسل بناء على جهة النقل التي تم اختيارها والسعة اليومية للمغسلة",
+  "ekram_mosque_note": "تعرض المساجد بناء على جهة النقل التي تم اختيارها والسعة اليومية للمسجد",
   "ekram_retrive_data_success_msg": "يمكنكم إكمال بيانات الطلب",
   "ekram_retrive_grave_data_success_msg": "يوجد حجز مقبرة سابق خاص بالمتوفى {} ويمكنكم استكمال إدخال طلب النقل والتجهيز لنفس المتوفى",
   "ekram_deceased_id": "رقم هوية المتوفى",
@@ -4264,7 +4266,7 @@
   "ekram_death_hospital_validation": "يجب إدخال المستشفى",
   "ekram_transportation_validation": "يجب إدخال جهة النقل",
   "tripCompletesucessfully": "تم إكمال رحلة نقل وتجهيز المتوفى بنجاح",
-  "BurialInOtherCity":"فى مدينة أخرى",
-  "BurialInCorpseArrivalCity":"في مدينة وصول الجثمان",
-  "BurialInDeathCity":"فى مدينة الوفاة"
+  "BurialInOtherCity": "فى مدينة أخرى",
+  "BurialInCorpseArrivalCity": "في مدينة وصول الجثمان",
+  "BurialInDeathCity": "فى مدينة الوفاة"
 }
