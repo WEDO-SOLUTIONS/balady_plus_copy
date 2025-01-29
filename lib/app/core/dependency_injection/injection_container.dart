@@ -15,6 +15,7 @@ import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_c
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
     as events;
+import 'package:balady_plus/app/features/services/core/dependency_injection/home_services_injection.dart';
 import 'package:balady_plus/app/features/unknow/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
     show
@@ -60,7 +61,6 @@ import '../dependency_injection/dependency_injection_exports.dart'
         OTPInjection,
         PrayerTimesInjection,
         RequestsInjection,
-        ServicesInjection,
         SignUpInjection,
         VDInjection,
         ViolationsInjection;
@@ -100,8 +100,6 @@ void initialize() {
 
   //? Sign-Up
   SignUpInjection.init();
-  //? Services
-  ServicesInjection.init();
 
   //! Services
   //* Public Services
@@ -260,6 +258,9 @@ void initialize() {
   /////////////// End
   /////////////// get All Classification Certificate Injection Container
   ClassificationCertificateInjectionContainer.init();
+  /////////////// End
+  /////////////// get All Home Services Certificate Injection Container
+  HomeServicesInjectionContainer.init();
   /////////////// End
 
 

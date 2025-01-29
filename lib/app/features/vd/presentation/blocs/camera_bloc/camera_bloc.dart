@@ -52,17 +52,15 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       required this.createVdBloc})
       : _getSplList = getSplList,
         _getGisData = getGisData,
-        super(
-          CameraState(
-            location: (params.lat != null && params.lon != null)
-                ? GISParams(x: params.lon!, y: params.lat!)
-                : null,
-            qrCodeFlow: params.qrCodeFlow,
-            pageType: params.pageType,
-            selectedCattegory: params.selectedCategory!,
-            isFromHome: params.isFromHome,
-          ),
-        ) {
+        super(CameraState(
+          location: (params.lat != null && params.lon != null)
+              ? GISParams(x: params.lon!, y: params.lat!)
+              : null,
+          qrCodeFlow: params.qrCodeFlow,
+          pageType: params.pageType,
+          selectedCattegory: params.selectedCategory!,
+          // isFromHome: params.isFromHome,
+        )) {
     on<InitCameraEvent>((event, emit) async {
       emit(state.copyWith(status: BlocStatus.loading));
       try {
@@ -369,16 +367,20 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   }
 
   bool navigateToCreateVDPage({GISParams? location, GISResponse? gisResponse}) {
-    createVdBloc.add(EditCreateVDPageEvent(
+    createVdBloc.add(
+      EditCreateVDPageEvent(
         params: CreateVDParamsPage(
-            files: state.files,
-            selectedCategory: state.selectedCattegory,
-            splResponse: state.splResponse,
-            location: location,
-            gisResponse: gisResponse,
-            qrCodeFlow: state.qrCodeFlow,
-            pageType: state.pageType,
-            isFromHome: state.isFromHome ?? false)));
+          files: state.files,
+          selectedCategory: state.selectedCattegory,
+          splResponse: state.splResponse,
+          location: location,
+          gisResponse: gisResponse,
+          qrCodeFlow: state.qrCodeFlow,
+          pageType: state.pageType,
+          // isFromHome: state.isFromHome ?? false,
+        ),
+      ),
+    );
     NavigationService.navigatorKey.currentState?.push(SliderUpPage(
       page: BlocProvider<CreateVDBloc>.value(
         value: createVdBloc,

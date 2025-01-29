@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
@@ -51,7 +52,7 @@ class _PermitsLicenseStartServiceState
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 10528,
+            serviceId: RemoteConfig.MunicipalServicesIDs["PermitsLicenseService24H"]["id"],
           ),
         ),
       ],

@@ -109,7 +109,9 @@ class AppWidgetState extends State<AppWidget> {
               fontFamily: AppConfig.appFontType,
               useMaterial3: false,
               appBarTheme: const AppBarTheme(
-                backgroundColor: AppColor.blue,
+                backgroundColor: AppColor.primary900Light,
+                centerTitle: true,
+
               ),
               dropdownMenuTheme: const DropdownMenuThemeData(
                 inputDecorationTheme: InputDecorationTheme(),

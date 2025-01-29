@@ -13,7 +13,9 @@ import 'package:balady_plus/app/features/events/presentation/bloc/events_event.d
     as events;
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
+import 'package:balady_plus/app/features/vd/domain/entities/camera/camera_page_params.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/categories/category_item.dart';
+import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -58,7 +60,6 @@ import '../../features/events/presentation/bloc/events_bloc.dart';
 import '../../features/notifications/manager/notification_manager.dart';
 import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
-import '../../features/vd/domain/entities/camera/camera_page_params.dart';
 import '../../features/vd/domain/entities/gis/gis_params.dart';
 import '../../features/vd/domain/entities/gis/gis_response.dart';
 import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
@@ -910,11 +911,13 @@ class CommonFunctions {
     });
   }
 
-  static showError(String error,[bool? isHtml]) {
+  static showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
       if (error.contains("https")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
-            NavigationService.navigatorKey.currentContext!, error,isHtml??false);
+            NavigationService.navigatorKey.currentContext!,
+            error,
+            isHtml ?? false);
       } else {
         try {
           BotToast.showSimpleNotification(
@@ -1474,31 +1477,22 @@ class CommonFunctions {
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.SnapAndSend_Open_From_Home_Event);
 
-    await BottomSheetDialog.showDraggableSheet(
-        NavigationService.navigatorKey.currentContext!,
-        dialogKeyName: DialogName.vdTypesDialog,
-        currentRouteName: "HomePage",
-        child: BottomSheetWithActions(
-          title: "choose_incident_type".tr(),
-          body: VDAllTypesDialog(),
-        ));
+    NavigationService.navigatorKey.currentState!.pushNamed(
+      RouteName.vDAllTypesScreen,
+    );
   }
 
   static void openCreateCompliance() {
     //أصدر الشهادة
 
-    if (CommonProperties.isLoggedIn){
+    if (CommonProperties.isLoggedIn) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.createCompliancePage);
-    }
-
-    else
-    {
+    } else {
       showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) => NeedLoginDialog(
-              onSuccessLogin:
-                  (bool? isSuccess) async {
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
                   NavigationService.navigatorKey.currentState!
                       .pushNamed(RouteName.createCompliancePage);
@@ -1533,11 +1527,13 @@ class CommonFunctions {
   }
 
   static void refreshHomePage() async {
+    // Add This Line to When change lang app lade new data with the lang.
+    sl<HomeServicesCubit>().loadServices();
     sl<EventsBloc>().add(const events.GetSearchEvent());
     sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
     BlocProvider.of<DashboardBloc>(
-            NavigationService.navigatorKey.currentContext!)
+        NavigationService.navigatorKey.currentContext!)
         .add(DashboardEventInitial());
   }
 
@@ -1629,7 +1625,7 @@ class CommonFunctions {
         arguments: CameraParamsPage(
             selectedCategory:
                 CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey),
-            isFromHome: true));
+            /*isFromHome: true*/));
   }
 
   static bool isFoundationDay() {

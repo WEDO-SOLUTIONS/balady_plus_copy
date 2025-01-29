@@ -2,7 +2,7 @@ part of 'camera_bloc.dart';
 
 class CameraState extends Equatable {
   BlocStatus status;
-  bool? isFromHome;
+  // bool? isFromHome;
   String? errorMessage;
   bool? showCamera;
   bool isFlashOn;
@@ -20,7 +20,7 @@ class CameraState extends Equatable {
 
   CameraState(
       {this.status = BlocStatus.initial,
-      this.isFromHome = false,
+      // this.isFromHome = false,
       this.errorMessage,
       this.showCamera = true,
       this.isFlashOn = false,
@@ -38,7 +38,7 @@ class CameraState extends Equatable {
 
   CameraState copyWith(
       {final BlocStatus? status,
-      final bool? isFromHome,
+      // final bool? isFromHome,
       final String? errorMessage,
       final bool? showCamera,
       final List<AttachmentItem>? files,
@@ -65,7 +65,7 @@ class CameraState extends Equatable {
         scaleFactor: scaleFactor ?? this.scaleFactor,
         zoom: zoom ?? this.zoom,
         isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
-        isFromHome: isFromHome ?? this.isFromHome,
+        // isFromHome: isFromHome ?? this.isFromHome,
         location: location ?? this.location,
         gisResponse: gisResponse ?? this.gisResponse,
         qrCodeFlow: qrCodeFlow ?? this.qrCodeFlow,
@@ -80,7 +80,7 @@ class CameraState extends Equatable {
         zoom,
         scaleFactor,
         isCameraInitialized,
-        isFromHome,
+        // isFromHome,
         gisResponse,
         location,
         qrCodeFlow,

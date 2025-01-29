@@ -235,6 +235,9 @@ dependencies:
   syncfusion_localizations:
   home_widget: ^0.7.0
 
+
+  cached_network_svg_image: any
+
 dependency_overrides:
   # for dio_http_cache
   dio: 5.7.0
@@ -258,12 +261,12 @@ flutter:
     - shaders/radar.frag
   assets:
     - assets/
+    - assets/services/
     - assets/icons/svg/
     - assets/icons/svg/jod/
     - assets/icons/svg/map/
     - assets/icons/svg/prayers/
     - assets/icons/svg/athkar/
-    - assets/icons/svg/services/
     - assets/icons/svg/weather/
     - assets/icons/svg/profile/
     - assets/icons/svg/nearby/

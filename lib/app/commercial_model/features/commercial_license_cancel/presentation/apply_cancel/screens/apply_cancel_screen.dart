@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_cancel/data/models/cancellation_rquest_response.dart';
@@ -50,7 +51,7 @@ class _ApplyCancelScreenState extends State<ApplyCancelScreen> {
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 10492,
+            serviceId: RemoteConfig.MunicipalServicesIDs["CommercialLicenseCancel"]["id"],
           ),
         ),
       ],

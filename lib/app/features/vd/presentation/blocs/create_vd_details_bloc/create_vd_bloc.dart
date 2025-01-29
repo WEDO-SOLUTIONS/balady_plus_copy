@@ -92,7 +92,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           selectedCategory: params?.selectedCategory,
           splResponse: params?.splResponse,
           splItems: params?.splResponse?.items,
-          isFromHome: params?.isFromHome,
+          // isFromHome: params?.isFromHome,
           location: params?.location,
           currentUserlocation: params?.location,
           gisResponse: params?.gisResponse,
@@ -162,7 +162,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         items: e.params.files,
         splResponse: e.params.splResponse,
         splItems: e.params.splResponse?.items,
-        isFromHome: e.params.isFromHome,
+        // isFromHome: e.params.isFromHome,
         location: e.params.location,
         currentUserlocation: e.params.location,
         gisResponse: e.params.gisResponse,
@@ -362,7 +362,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.newVD,
-              fromHomePage: state.isFromHome,
+              // fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
 
       CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Success_Event);
@@ -449,7 +449,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.newVD,
-              fromHomePage: state.isFromHome,
+              // fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
       if (!CommonProperties.isLoggedIn) {
         sharedPrefs.storeGuestInfo(

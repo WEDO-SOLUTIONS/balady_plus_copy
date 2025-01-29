@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
@@ -42,7 +43,7 @@ class _RenewStartServiceState extends State<RenewStartService> {
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 10485,
+            serviceId: RemoteConfig.MunicipalServicesIDs["CommercialLicenseRenew"]["id"],
           ),
         ),
       ],

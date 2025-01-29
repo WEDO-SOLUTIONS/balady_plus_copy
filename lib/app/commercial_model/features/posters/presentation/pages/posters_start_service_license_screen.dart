@@ -1,15 +1,17 @@
 
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/service_cards_dynamic/service_card_desc_widget.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../../features/services/services_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../../features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import '../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../data/models/permit_license_response_model.dart';
 import '../../data/models/service_card.dart';
@@ -45,121 +47,74 @@ class _PostersLicenseStartServiceState
     CommercialLicenceDetails? commercialLicenceDetails =
         ModalRoute.of(context)!.settings.arguments as CommercialLicenceDetails;
 
-    return MultiBlocProvider(
+    return MultiProvider(
       providers: [
-        BlocProvider(
-          create: (context) => ServiceCardsCubit(service),
-        ),
-        BlocProvider(
-          create: (context) => PostersLicenseBloc(
-              groupId: 1042,
-              licenseId: commercialLicenceDetails.licenseInfo?.licenseId,
-              selectedLicense: PermitsLicensesItem(
-                  licenseId: commercialLicenceDetails.licenseInfo?.licenseId,
-                  statusName: commercialLicenceDetails.licenseInfo?.statusDesc,
-                  licenseExpirationDate:
-                      commercialLicenceDetails.licenseInfo?.licenseEndDate,
-                  municipalityName:
-                      commercialLicenceDetails.locationInfo?.municipalityName,
-                  subMunicipalityName: commercialLicenceDetails
-                      .locationInfo?.subMunicipalityName)),
+        ChangeNotifierProvider(
+          create: (BuildContext context) => ServiceDataViewModel(
+            webService: sl(),
+            serviceId: RemoteConfig.MunicipalServicesIDs["PostersLicenseService"]["id"],
+            // serviceId: 11820, // this not corect id
+          ),
         ),
       ],
-      child: BlocConsumer<PostersLicenseBloc, PostersLicenseState>(
-          listener: (context, state) {
-        if (state.status == BlocStatus.failure) {
-          CommonFunctions.showError(state.error ?? "");
-        }
-      }, builder: (context, state) {
-        return Scaffold(
-          appBar: DefaultAppBarWidget(
-            title: service.title.tr(),
-            bottom: ServiceCardsList(
-              cards: service.cards,
-            ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => PostersLicenseBloc(
+                groupId: 1042,
+                licenseId: commercialLicenceDetails.licenseInfo?.licenseId,
+                selectedLicense: PermitsLicensesItem(
+                    licenseId: commercialLicenceDetails.licenseInfo?.licenseId,
+                    statusName: commercialLicenceDetails.licenseInfo?.statusDesc,
+                    licenseExpirationDate:
+                        commercialLicenceDetails.licenseInfo?.licenseEndDate,
+                    municipalityName:
+                        commercialLicenceDetails.locationInfo?.municipalityName,
+                    subMunicipalityName: commercialLicenceDetails
+                        .locationInfo?.subMunicipalityName)),
           ),
-          body: Stack(
-            children: [
-              Column(
-                children: [
-                  const Expanded(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 16),
-                        ServiceCardDescription(),
-                      ],
-                    ),
-                  ),
-                  /*  SafeArea(
-                    top: false,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: ElevatedButtonWidget.startService(
-                        onPressed: () async {
-                         
+        ],
+        child: BlocConsumer<PostersLicenseBloc, PostersLicenseState>(
+            listener: (context, state) {
+          if (state.status == BlocStatus.failure) {
+            CommonFunctions.showError(state.error ?? "");
+          }
+        }, builder: (context, state) {
+          return Scaffold(
+            body: Stack(
+              children: [
+                Column(
+                  children: [
+                    const Expanded(child: ServiceCardDescDynamicWidget()),
+                    SafeArea(
+                      top: false,
+                      child: ServiceWarningWidget(
+                        warning: service.warning?.tr() ?? "",
+                        onPress: () async {
+                            // if (CommonProperties.selectedDelegator != null) {
+                            context.read<PostersLicenseBloc>().add(ApplyLicenseEvent());
+                            /* } else {
+                                await BottomSheetDialog.showDraggableSheet(
+                                  context,
+                                  isFullHeight: false,
+                                  dialogKeyName:
+                                      DialogName.notAuthorizedIndivisualDialog,
+                                  currentRouteName: CommercialRouteName.postersStartService,
+                                  child: NotAuthorizedIndivisualDialog(),
+                                );
+                              }*/
                         },
                       ),
-                    ),
-                  )*/
-                  SafeArea(
-                    top: false,
-                    child: ServiceWarningWidget(
-                      warning: service.warning?.tr() ?? "",
-                      onPress: () async {
-                        if (CommonProperties.isLoggedIn) {
-                          // if (CommonProperties.selectedDelegator != null) {
-                          context
-                              .read<PostersLicenseBloc>()
-                              .add(ApplyLicenseEvent());
-                          /* } else {
-                              await BottomSheetDialog.showDraggableSheet(
-                                context,
-                                isFullHeight: false,
-                                dialogKeyName:
-                                    DialogName.notAuthorizedIndivisualDialog,
-                                currentRouteName: CommercialRouteName.postersStartService,
-                                child: NotAuthorizedIndivisualDialog(),
-                              );
-                            }*/
-                        } else {
-                          showDialog(
-                              context: context,
-                              builder: (ctx) => NeedLoginDialog(
-                                      onSuccessLogin: (bool? isSuccess) async {
-                                    if (isSuccess ?? false) {
-                                      /* if (CommonProperties
-                                                .selectedDelegator !=
-                                            null) {*/
-                                      context
-                                          .read<PostersLicenseBloc>()
-                                          .add(ApplyLicenseEvent());
-                                      /* } else {
-                                          await BottomSheetDialog
-                                              .showDraggableSheet(
-                                            context,
-                                            isFullHeight: false,
-                                            dialogKeyName: DialogName
-                                                .notAuthorizedIndivisualDialog,
-                                            currentRouteName:
-                                                CommercialRouteName.postersStartService,
-                                            child:
-                                                NotAuthorizedIndivisualDialog(),
-                                          );
-                                        }*/
-                                    }
-                                  }));
-                        }
-                      },
-                    ),
-                  )
-                ],
-              ),
-              if (state.status == BlocStatus.loading)
-                CustomCircularLoadingWidget(),
-            ],
-          ),
-        );
-      }),
+                    )
+                  ],
+                ),
+                if (state.status == BlocStatus.loading)
+                  const CustomCircularLoadingWidget(),
+              ],
+            ),
+          );
+        }),
+      ),
     );
   }
 }
