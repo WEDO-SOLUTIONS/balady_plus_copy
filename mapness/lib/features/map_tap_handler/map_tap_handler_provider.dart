@@ -111,7 +111,7 @@ class MapTapHandler extends _$MapTapHandler {
         ),
         closestPoint: event.latLng,
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
     );
   }
 
