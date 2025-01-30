@@ -55,7 +55,7 @@ class AppRouter extends RootStackRouter {
               page: LocationErrorSheetRoute.page,
             ),
             AppRoute(
-              path: 'path_nav',
+              path: 'pathNav',
               page: PathNavRoute.page,
               fullscreenDialog: true,
             ),
@@ -64,7 +64,7 @@ class AppRouter extends RootStackRouter {
               page: SearchRoute.page,
             ),
             AppRoute(
-              path: 'routing_map',
+              path: 'routingMap',
               page: RoutingMapSelectRoute.page,
             ),
             AppRoute(
@@ -76,7 +76,7 @@ class AppRouter extends RootStackRouter {
               page: DeeplinkRoute.page,
             ),
             AppRoute(
-              path: 'routing_routes',
+              path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
             ),
             AppRoute(
@@ -87,7 +87,10 @@ class AppRouter extends RootStackRouter {
               path: 'weather_router',
               page: WeatherRoute.page,
             ),
-            AppRoute(page: RoutingSearchSheetRoute.page),
+            AppRoute(
+              path: 'routingSearch',
+              page: RoutingSearchSheetRoute.page,
+            ),
             CustomRoute(
               path: 'road_panel_sheet',
               page: RoadPanelSheetRoute.page,

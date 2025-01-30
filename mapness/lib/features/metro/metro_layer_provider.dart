@@ -50,7 +50,11 @@ class MetroLayer extends _$MetroLayer {
         return;
       }
 
-      unawaited(showMetro());
+      final isMetroShown = ref.read(metroLayerVisibleProvider);
+
+      if (isMetroShown) {
+        unawaited(showMetro());
+      }
     });
 
     return metroLayerJsonDatasource;
