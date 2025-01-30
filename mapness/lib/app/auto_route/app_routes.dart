@@ -55,7 +55,7 @@ class AppRouter extends RootStackRouter {
               page: LocationErrorSheetRoute.page,
             ),
             AppRoute(
-              path: 'path_nav',
+              path: 'pathNav',
               page: PathNavRoute.page,
               fullscreenDialog: true,
             ),
@@ -76,7 +76,7 @@ class AppRouter extends RootStackRouter {
               page: DeeplinkRoute.page,
             ),
             AppRoute(
-              path: 'routing_routes',
+              path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
             ),
             AppRoute(
