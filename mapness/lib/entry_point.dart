@@ -246,7 +246,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
               routerConfig: ref.read(appRouterProvider).config(
                     navigatorObservers: () => [
                       RoutesObserver(ref: ref),
-                      FlutterUxcamNavigatorObserver(),
                     ],
                   ),
               theme: ThemeData(

@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutesObserver extends AutoRouterObserver {
@@ -17,7 +18,7 @@ class RoutesObserver extends AutoRouterObserver {
       final path = (route.settings as AutoRoutePage).routeData.path;
 
       final currentPath = path.startsWith('/') ? path : '/$path';
-
+      FlutterUxcam.tagScreenName(currentPath);
       analytics.screen(currentPath);
       debugPrint('New route pushed: $currentPath');
     } else {
@@ -38,6 +39,7 @@ class RoutesObserver extends AutoRouterObserver {
     super.didChangeTabRoute(route, previousRoute);
 
     final path = route.path.startsWith('/') ? route.path : '/${route.path}';
+    FlutterUxcam.tagScreenName(path);
     ref.read(urbiAnalyticsProvider).screen(path);
     debugPrint('Tab changed: ${route.name}');
   }
