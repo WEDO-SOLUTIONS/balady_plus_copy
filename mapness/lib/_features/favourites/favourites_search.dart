@@ -73,6 +73,13 @@ class FavouritesSearch extends ConsumerWidget {
         FocusScope.of(context).unfocus();
         context.router.popForced();
       },
+      onChanged: (value) {
+        if (value.isEmpty) {
+          ref.read(suggestQueryProvider.notifier).update('');
+        } else {
+          ref.read(suggestQueryProvider.notifier).update(value);
+        }
+      },
       itemCount: searchResult.length,
       itemBuilder: (_, index) {
         final item = searchResult[index];

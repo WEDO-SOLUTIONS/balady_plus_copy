@@ -58,38 +58,40 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
           ..selection = TextSelection.collapsed(offset: _controller.text.length);
       }
     });
-    return BaladySearchWithBackButton(
-      searchInput: BaladyInput.searchV2(
-        focusNode: _focusNode,
-        onChanged: (query) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.routesKeys.searchSubmit,
-            group: MetricsConstants.routesTag,
-            action: MetricAction.type.toString(),
-            props: {'query': query},
-          );
-
-          ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-        },
-        onSubmitted: (query) {
-          Metrics.logEventAdvanced(
-            MetricsConstants.routesKeys.searchSubmit,
-            group: MetricsConstants.routesTag,
-            action: MetricAction.type.toString(),
-            props: {'query': query},
-          );
-          ref.read(searchProvider(scope.value).notifier).searchByText(query);
-          if (query.isNotEmpty) {
-            ref.read(searchHistoryProvider(scope.value).notifier).put(
-                  SearchHistoryItem.fromQuery(query: query),
-                );
-          }
-        },
+    return BaladySearchWithBackButtonV2(
+      searchInput: BaladyTextInput.search(
         controller: _controller,
-        hintText: widget.placeholder,
-        fillColor: context.colorsV2.neutralContainerDefault,
-        hintColor: context.colorsV2.foregroundSoft,
-        textStyle: context.textStyleV3.bodySmallRegular,
+        config: BaladyInputConfig(
+          focusNode: _focusNode,
+          onChanged: (query) {
+            Metrics.logEventAdvanced(
+              MetricsConstants.routesKeys.searchSubmit,
+              group: MetricsConstants.routesTag,
+              action: MetricAction.type.toString(),
+              props: {'query': query},
+            );
+
+            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
+          },
+          onSubmitted: (query) {
+            Metrics.logEventAdvanced(
+              MetricsConstants.routesKeys.searchSubmit,
+              group: MetricsConstants.routesTag,
+              action: MetricAction.type.toString(),
+              props: {'query': query},
+            );
+            ref.read(searchProvider(scope.value).notifier).searchByText(query);
+            if (query.isNotEmpty) {
+              ref.read(searchHistoryProvider(scope.value).notifier).put(
+                    SearchHistoryItem.fromQuery(query: query),
+                  );
+            }
+          },
+          hintText: widget.placeholder,
+          fillColor: context.colorsV2.neutralContainerDefault,
+          hintColor: context.colorsV2.foregroundSoft,
+          textStyle: context.textStyleV3.bodySmallRegular,
+        ),
       ),
       option: SearchTextBackOption(
         text: context.l10n.cancel,
