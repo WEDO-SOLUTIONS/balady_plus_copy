@@ -1,7 +1,6 @@
 import 'dart:ui';
 
 class FavouriteSearchItem {
-
   FavouriteSearchItem({
     required this.distance,
     required this.name,

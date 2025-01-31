@@ -1,7 +1,6 @@
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 
 class FavouriteItem {
-
   const FavouriteItem({
     required this.coordinates,
     required this.id,
@@ -17,7 +16,6 @@ class FavouriteItem {
 }
 
 class FavouriteItemEntity {
-
   const FavouriteItemEntity({
     required this.sourceType,
     required this.id,

@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/domain/favourites_state.dart';
-import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
-import 'package:mapness/_features/favourites/mappers/add_request_item.dart';
-import 'package:mapness/_features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
-import 'package:mapness/_features/favourites/mappers/favorite_cache_item_mapper.dart';
-import 'package:mapness/_features/favourites/mappers/favourites_response_mapper.dart';
-import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
+import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/favourites/mappers/add_request_item.dart';
+import 'package:mapness/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart';
+import 'package:mapness/features/favourites/mappers/favorite_cache_item_mapper.dart';
+import 'package:mapness/features/favourites/mappers/favourites_response_mapper.dart';
+import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -33,7 +33,7 @@ class _FavouriteCache extends _$FavouriteCache {
 
   static const _tag = MetricsConstants.favoriteTag;
 
-  final _cacheFor = const Duration(minutes: 30);
+  static const _cacheFor = Duration(minutes: 30);
 
   DateTime? _lastUpdate;
 

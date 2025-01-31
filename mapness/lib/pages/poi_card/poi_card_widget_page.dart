@@ -8,13 +8,13 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/poi_card_state_mapper.dart';
 import 'package:mapness/features/poi_card/enums/contacts_info_type.dart';
@@ -48,7 +48,6 @@ import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 part 'poi_card_content.dart';
-
 part 'poi_card_wrapper.dart';
 
 @RoutePage()

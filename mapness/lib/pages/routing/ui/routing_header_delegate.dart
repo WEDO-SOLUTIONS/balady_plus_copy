@@ -4,8 +4,8 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -112,7 +112,8 @@ class RoutingHeader extends ConsumerWidget {
       props: {'id': point.entity?.id, 'destination': '${point.coordinates.latitude},${point.coordinates.longitude}'},
     );
 
-    final index = points.indexWhere((element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject);
+    final index =
+        points.indexWhere((element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject);
     points[index] = RoutePointFavouriteItem(point);
     updatePoints(points);
   }
@@ -131,7 +132,7 @@ class RoutingHeader extends ConsumerWidget {
     updatePoints(points);
   }
 
-  void _onTap(int index, BuildContext context, WidgetRef ref) async {
+  Future<void> _onTap(int index, BuildContext context, WidgetRef ref) async {
     Metrics.logEventAdvanced(MetricsConstants.routesKeys.changeLocation,
         group: MetricsConstants.routesTag,
         action: MetricAction.tap.toString(),
