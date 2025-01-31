@@ -128,17 +128,6 @@ class Condition {
   }
 }
 
-enum Icon {
-  // ignore: constant_identifier_names
-  CDN_WEATHERAPI_COM_WEATHER_64_X64_DAY_113_PNG,
-  // ignore: constant_identifier_names
-  CDN_WEATHERAPI_COM_WEATHER_64_X64_NIGHT_113_PNG,
-  // ignore: constant_identifier_names
-  CDN_WEATHERAPI_COM_WEATHER_64_X64_DAY_116_PNG
-}
-
-enum TextEnum { empty, text, purple }
-
 class Forecast {
   final List<ForecastDay>? forecastday;
 
