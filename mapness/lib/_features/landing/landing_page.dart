@@ -10,21 +10,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
-import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/app/auto_route/poi_card_ext.dart';
-import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/city_contains/service_not_available.dart';
-import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/beta_notification.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
@@ -41,12 +34,11 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController =
       StatefulBottomSheetController(
     initialState: ThreeStateBottomSheet.open,
-    behavior: AspectRatioSnappingBehavior(aspectRatios: [0, if (Platform.isIOS) .3 else .38, .931]),
+    behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
     stateMapper: const LandingStateMapper(),
   );
 
   MediaQueryData? _mediaQuery;
-  StreamSubscription<TapEvent>? _streamSubscription;
 
   @override
   void initState() {
@@ -63,10 +55,9 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   Future<void> _setupTapListener() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription = dgisController.objectTapEvents.listen(_objectTapListener);
-
-    _calculatePadding();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _calculatePadding();
+    });
   }
 
   void _showBetaNotification() {
@@ -79,7 +70,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   void _calculatePadding() {
-    ref.watch(cameraPaddingProvider.notifier).resetPadding(
+    ref.read(cameraPaddingProvider.notifier).resetPadding(
           defaultPadding: CameraSetPaddingMessage(
             leftPadding: _mediaQuery?.padding.left.toInt() ?? 0,
             rightPadding: _mediaQuery?.padding.right.toInt() ?? 0,
@@ -110,12 +101,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   }
 
   @override
-  void deactivate() {
-    _streamSubscription?.cancel();
-    super.deactivate();
-  }
-
-  @override
   Widget build(BuildContext context) {
     if (!ref.read(storiesOpenStateProvider)) {
       Future(_showBetaNotification);
@@ -131,6 +116,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
+    final metro = MapObjectManagerSettings.metro();
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
@@ -146,7 +132,8 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
-      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier);
+      ..watch(mapObjectManagerProvider(named: mappness.name, layerId: mappness.layerId).notifier)
+      ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
@@ -170,7 +157,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
                   );
                 },
               ),
-              MapDashboardControls(_bottomSheetController, key: const ValueKey('MapDashboardControls')),
               Dashboard(bottomSheetController: _bottomSheetController),
             ],
           ),
@@ -182,73 +168,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
   void _hideBottomSheet() {
     if (_bottomSheetController.state != ThreeStateBottomSheet.hidden) {
       _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
-    }
-  }
-
-  void _objectTapListener(TapEvent event) {
-    final objectIgnoreRoute = [RoutingMapSelectRoute.name, SearchRoute.name, RoutingRoutesRoute.name];
-
-    if (objectIgnoreRoute.any(context.router.isRouteActive)) {
-      return;
-    }
-
-    if (event is ObjectTapEvent) {
-      Metrics.logEventAdvanced(MetricsConstants.poiKeys.map,
-          group: MetricsConstants.poiTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'objectId': event.dgisObjectId.objectId,
-          });
-
-      if (context.mounted) {
-        context.router.replaceOrPush(
-          route: PoiCardWidgetRoute(
-            objectId: DgisObjectIdMessage(
-              objectId: event.dgisObjectId.objectId,
-              entranceId: 0,
-            ),
-            closestPoint: event.latLng,
-          ),
-          toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
-        );
-      }
-    } else if (event is RoadEventTapEvent) {
-      Metrics.logEventAdvanced(
-        MetricsConstants.poiKeys.roadEvent,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {'event': event.id.objectId, 'title': event.title},
-      );
-
-      context.router.push(RoadClosureRoute(
-        id: event.id,
-        title: event.title,
-        description: event.description,
-        startTime: event.startTime,
-        finishTime: event.finishTime,
-        latitude: event.latLng.latitude,
-        longitude: event.latLng.longitude,
-      ));
-    } else if (event is MyLocationTapEvent) {
-      if (context.mounted) {
-        Metrics.logEventAdvanced(
-          MetricsConstants.poiKeys.myLocation,
-          group: MetricsConstants.poiTag,
-          action: MetricAction.tap.toString(),
-        );
-
-        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
-
-        final userLocation = ref.read(locationProvider);
-        context.router.push(
-          ShareMyLocationRoute(
-            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-            closestPoint: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                : event.latLng,
-          ),
-        );
-      }
     }
   }
 }

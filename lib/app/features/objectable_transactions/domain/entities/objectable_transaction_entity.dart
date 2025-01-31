@@ -25,6 +25,7 @@ class ObjectableTransactionsEntity extends Equatable {
   final String? applicationName;
   final String? serviceId;
   final String? serviceName;
+  final String? redirectUrl;
   final dynamic actions;
   final String? hashingTransactionNumber;
   final String? originalOwnerIdentityTypeId;
@@ -63,6 +64,7 @@ class ObjectableTransactionsEntity extends Equatable {
       this.applicationName,
       this.serviceId,
       this.serviceName,
+      this.redirectUrl,
       this.actions,
       this.hashingTransactionNumber,
       this.originalOwnerIdentityTypeId,

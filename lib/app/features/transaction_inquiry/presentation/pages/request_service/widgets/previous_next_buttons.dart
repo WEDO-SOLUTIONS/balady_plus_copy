@@ -17,34 +17,48 @@ class PreviousNextButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<MSRBloc, MSRState>(
       builder: (context, state) {
-        NewMSRDetailsViewModel model =
-            Provider.of<NewMSRDetailsViewModel>(context, listen: true);
+        NewMSRDetailsViewModel model = Provider.of<NewMSRDetailsViewModel>(
+          context,
+          listen: true,
+        );
         bool isButtonDisabled = !model.isFormValid;
         bool isLastPage = context.read<MSRBloc>().isLastPage();
-        return Container(
-          color: Colors.transparent,
-          padding: EdgeInsets.only(right: 16, left: 16, top: 5, bottom: 30),
-          child: EnhancedCustomElevatedButtonWidget(
-            btnColor:
-                isButtonDisabled ? AppColor.black200 : AppColor.primary900Light,
-            btnTextColor: isButtonDisabled ? AppColor.black400 : AppColor.white,
-            btnPressed: isButtonDisabled
-                ? () {}
-                : () {
-                    if (!isLastPage) {
-                      context.read<MSRBloc>().add(GoToNextPageEvent());
-                    } else {
-                      model.hideKeyboard();
-                      model.submit();
-                    }
-                  },
-            btnRadius: 8,
-            btnText: isLastPage ? ("submit_order").tr() : ("next").tr(),
-            btnTextSize: 16,
-            btnTextWeight: AppFontWeight.bold,
-            btnHeight: 56,
-          ),
-        );
+        return model.isLoading
+            ? const Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Center(child: CircularProgressIndicator()),
+            )
+            : Container(
+                color: Colors.transparent,
+                padding: const EdgeInsets.only(
+                  right: 16,
+                  left: 16,
+                  top: 5,
+                  bottom: 30,
+                ),
+                child: EnhancedCustomElevatedButtonWidget(
+                  btnColor: isButtonDisabled
+                      ? AppColor.black200
+                      : AppColor.primary900Light,
+                  btnTextColor:
+                      isButtonDisabled ? AppColor.black400 : AppColor.white,
+                  btnPressed: isButtonDisabled
+                      ? () {}
+                      : () {
+                          if (!isLastPage) {
+                            context.read<MSRBloc>().add(GoToNextPageEvent());
+                          } else {
+                            model.hideKeyboard();
+                            model.submit();
+                          }
+                        },
+                  btnRadius: 8,
+                  btnText: isLastPage ? ("submit_order").tr() : ("next").tr(),
+                  btnTextSize: 16,
+                  btnTextWeight: AppFontWeight.bold,
+                  btnHeight: 56,
+                ),
+              );
       },
     );
   }

@@ -19,6 +19,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_ext
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -115,6 +116,7 @@ class LayersControls extends _$LayersControls {
     final controller = await ref.read(dgisControllerProvider.future);
     await selectedPoint.removeAllMarkers();
     await controller.removeAllHighlights();
+    await controller.removeAllPolylines();
   }
 
   @override
@@ -170,27 +172,70 @@ class LayersControls extends _$LayersControls {
     );
   }
 
-  Future<void> _tapHandler(value) async {
+  Future<void> _tapHandler(LayerType value) async {
     final currentState = state.selectedType;
 
     _cancelToken?.cancel();
     await _viewPortSubscription?.cancel();
-
     await _hideAllSelectedMarkers();
+
+    if (currentState != null && currentState != value) {
+      await _hidePreviousLayers(currentState);
+    }
 
     switch (value) {
       case LayerType.favourites:
         await toggleFavourites(currentState);
+        break;
       case LayerType.buildings:
         await toggleComplianceBuildings();
+        break;
       case LayerType.invest:
         await toggleInvestOpportunities();
+        break;
       case LayerType.fencing:
         await toggleWhiteLands();
+        break;
       case LayerType.parkingLots:
         await toggleParking();
+        break;
+      case LayerType.metro:
+        toggleMetro(currentState);
+        break;
       // case LayerType.joy:
       //   await toggleIwish();
+    }
+  }
+
+  Future<void> _hidePreviousLayers(LayerType layer) async {
+    switch (layer) {
+      case LayerType.favourites:
+        {
+          await _removeAll();
+          await ref.read(favouriteToggleProvider.notifier).disable();
+          break;
+        }
+
+      case LayerType.buildings:
+      case LayerType.invest:
+      case LayerType.fencing:
+        await _removeAll();
+        break;
+      case LayerType.parkingLots:
+        {
+          await ref
+              .read(mapObjectManagerProvider(
+                named: esriMapObjectSettings.name,
+                layerId: esriMapObjectSettings.layerId,
+              ).notifier)
+              .removeAllMarkers();
+          await ref.read(parkingStateProvider.notifier).hideParking();
+          break;
+        }
+
+      case LayerType.metro:
+        await ref.read(metroLayerProvider.notifier).toggleMetro();
+        break;
     }
   }
 
@@ -242,12 +287,21 @@ class LayersControls extends _$LayersControls {
     await _removeAll();
     _cancelToken?.cancel();
 
-    if (currentState == (LayerType.favourites)) {
-      await ref.read(favouriteToggleProvider.notifier).disable();
-      setSelection();
-    } else {
+    if (currentState != (LayerType.favourites)) {
       await ref.read(favouriteToggleProvider.notifier).enable();
       setSelection(selectedType: LayerType.favourites);
+    } else {
+      await ref.read(favouriteToggleProvider.notifier).disable();
+      setSelection();
+    }
+  }
+
+  void toggleMetro(LayerType? currentState) {
+    ref.read(metroLayerProvider.notifier).toggleMetro();
+    if (currentState != (LayerType.metro)) {
+      setSelection(selectedType: LayerType.metro);
+    } else {
+      setSelection();
     }
   }
 

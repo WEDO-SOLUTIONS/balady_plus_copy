@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/camera_state.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
@@ -28,14 +29,18 @@ class _NearestObject extends _$NearestObject {
 
   @override
   Future<NearestObject> build() async {
-    ref.listen(cameraStateProvider, (prev, next) {
-      if (next == CameraState.free) {
-        _load().then((value) => state = value);
-      } else {
-        _loadOperation?.cancel();
-        state = const AsyncValue.loading();
-      }
-    });
+    ref
+      ..onDispose(() {
+        ref.read(cameraPaddingProvider.notifier).resetPadding();
+      })
+      ..listen(cameraStateProvider, (prev, next) {
+        if (next == CameraState.free) {
+          _load().then((value) => state = value);
+        } else {
+          _loadOperation?.cancel();
+          state = const AsyncValue.loading();
+        }
+      });
 
     final nearest = await _load();
 
@@ -59,13 +64,16 @@ class _NearestObject extends _$NearestObject {
         )
         .toList();
     final filteredObjects = dgisObjects
-        .where((element) =>
-            element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv,)
+        .where(
+          (element) => element.$2.types.firstOrNull?.type != ObjectTypeMessage.admDiv,
+        )
         .toList();
     if (filteredObjects.isEmpty) {
       if (ref.read(cameraPositionProvider) == null) {
         return AsyncValue.error(
-            'No suitable objects found', StackTrace.current,);
+          'No suitable objects found',
+          StackTrace.current,
+        );
       }
 
       return AsyncValue.data(

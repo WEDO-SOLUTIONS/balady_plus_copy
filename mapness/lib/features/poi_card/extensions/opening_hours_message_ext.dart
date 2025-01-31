@@ -14,20 +14,20 @@ extension OpeningHoursMessageExt on OpeningHoursMessage {
   }) {
     try {
       // [WeekTimeIntervalMessage] list with start and finish time for each weekday
-      final listOfIntervals = values.where((e) => e?.values.isNotEmpty == true).map((e) => e?.values.first).toList();
+      final listOfIntervals =
+          values.where((e) => e.values.isNotEmpty == true).map((e) => e.values.firstOrNull).toList();
 
       final allWeekDayNames = DateTimeExt.getAllWeekDayNames(locale);
 
       final allWeekDays = allWeekDayNames.map((weekDay) {
         // Interval of this current [weekDay] with start and finish time
-        final intlWeekDay = listOfIntervals.firstWhere(
+        final intlWeekDay = listOfIntervals.firstWhereOrNull(
           (interval) {
             if (interval == null) {
               return false;
             }
             return interval.startTime.weekDay.displayName(locale) == weekDay;
           },
-          orElse: () => null,
         );
 
         final openHour = _displayTime(time: intlWeekDay?.startTime.time);

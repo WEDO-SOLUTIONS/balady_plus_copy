@@ -12,16 +12,15 @@ import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
+import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 
 class ParkingBanner extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
   final bool isHomeOrWork;
-  final StatelessBottomSheetController bottomSheetController;
   final RouteSearchOptionsMessage navigatorType;
 
   const ParkingBanner({
     required this.navigationState,
-    required this.bottomSheetController,
     required this.navigatorType,
     this.isHomeOrWork = false,
     super.key,
@@ -190,9 +189,11 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                         size: ButtonSize.small,
                         buttonColorScheme: ButtonColorScheme.primary,
                         primaryIcon: SystemIcons.close,
+                        iconColor: context.colorsV2.staticWhite,
+                        color: Colors.transparent,
                         onTap: () {
                           _animationController.value = 1.0;
-                          widget.bottomSheetController.open();
+                          ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
                         },
                       ),
                     ],

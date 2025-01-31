@@ -20,7 +20,6 @@ class PathNavMapControls extends StatelessWidget {
   final ValueNotifier<PathNavState> navigationState;
   final ValueNotifier<bool> expansionNotifier;
   final RouteSearchOptionsMessage navType;
-  final uikit.StatelessBottomSheetController bottomSheetController;
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -29,7 +28,6 @@ class PathNavMapControls extends StatelessWidget {
     required this.navigationState,
     required this.expansionNotifier,
     required this.navType,
-    required this.bottomSheetController,
     super.key,
   });
 
@@ -72,42 +70,41 @@ class PathNavMapControls extends StatelessWidget {
                         final isPedestrian = navType == RouteSearchOptionsMessage.pedestrian;
                         final info = ref.watch(pathNavSpeedInfoProvider);
 
-                          // This made to remove yellow lines under the text
-                          return Material(
-                            type: MaterialType.transparency,
-                            color: Colors.transparent,
-                            child: uikit.BaladyManeuverAndLimit(
-                              isPedestrian: isPedestrian,
-                              speedInfo: uikit.LimitsModel(
-                                speed: info.speed,
-                                speedExceed: info.speedExceed,
-                                speedLimit: info.speedLimit,
-                              ),
-                              maneuver: maneuver != null
-                                  ? uikit.BaladyManeuverModel(
-                                      distance: maneuver.distance,
-                                      instruction: maneuver.instruction?.toUIKit(),
-                                      roadName: maneuver.roadName,
-                                      unit: maneuver.unit,
-                                    )
-                                  : null,
-                              message: message != null
-                                  ? uikit.ManeuverMessageModel(
-                                      comment: message.state.toMessage(context.l10n),
-                                      state: message.state.toUIKit(),
-                                    )
-                                  : null,
+                        // This made to remove yellow lines under the text
+                        return Material(
+                          type: MaterialType.transparency,
+                          color: Colors.transparent,
+                          child: uikit.BaladyManeuverAndLimit(
+                            isPedestrian: isPedestrian,
+                            speedInfo: uikit.LimitsModel(
+                              speed: info.speed,
+                              speedExceed: info.speedExceed,
+                              speedLimit: info.speedLimit,
                             ),
-                          );
-                        },
-                      ),
+                            maneuver: maneuver != null
+                                ? uikit.BaladyManeuverModel(
+                                    distance: maneuver.distance,
+                                    instruction: maneuver.instruction?.toUIKit(),
+                                    roadName: maneuver.roadName,
+                                    unit: maneuver.unit,
+                                  )
+                                : null,
+                            message: message != null
+                                ? uikit.ManeuverMessageModel(
+                                    comment: message.state.toMessage(context.l10n),
+                                    state: message.state.toUIKit(),
+                                  )
+                                : null,
+                          ),
+                        );
+                      },
                     ),
                   ),
-                Padding(
+                ),
+                const Padding(
                   padding: padding,
                   child: TrafficParkingControl(
                     trafficVisible: false,
-                    bottomSheetController: bottomSheetController,
                   ),
                 ),
                 const Spacer(),

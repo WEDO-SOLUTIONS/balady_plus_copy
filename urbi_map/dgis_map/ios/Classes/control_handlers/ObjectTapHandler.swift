@@ -224,7 +224,12 @@ class ObjectTapHandler {
 
         let image: Image
         if isSvg {
-            image = imageFactory.make(svgData: data, size: .zero)
+            // That it was possible to process lottie animation, it was easier to implement a new model and stretch it
+            if path.contains(".json") {
+                image = imageFactory.make(lottieData: data, size: size)
+            } else {
+                image = imageFactory.make(svgData: data, size: size)
+            }
         } else {
             image = imageFactory.make(pngData: data, size: size)
         }
@@ -584,6 +589,10 @@ class ObjectTapHandler {
     // MARK: Polyline
     
     private func mapPolyline(_ polyline: PolylineMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Polyline? {
+        let color = polyline.options.color.map {
+            Color(argb: UInt32($0))
+        } ?? Color()
+        
         let options = PolylineOptions(
             points: polyline.options.points.map {
                 GeoPoint(
@@ -594,10 +603,15 @@ class ObjectTapHandler {
             width: polyline.options.width.map {
                 LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 1),
-            color: polyline.options.color.map {
-                Color(argb: UInt32($0))
-            } ?? Color(),
-            userData: PolylineId(polyline.id)
+            gradientPolylineOptions: GradientPolylineOptions(
+                borderWidth: polyline.options.borderWidth.map { LogicalPixel(value: Float($0)) } ?? LogicalPixel(value: 0), 
+                borderColor: polyline.options.borderColor.map { Color(argb: UInt32($0)) } ?? Color(),
+                colors: [color],
+                colorIndices: Data(Array(repeating: 0, count: polyline.options.points.count))
+            ),
+            userData: PolylineId(polyline.id),
+            zIndex: ZIndex(value: UInt32(polyline.options.zIndex ?? 0))
+            
         )
         
         do {

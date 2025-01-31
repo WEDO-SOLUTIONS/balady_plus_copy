@@ -1,3 +1,4 @@
+import 'package:balady_plus/etmam_app/core/errors/failures.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show ApigeeResponse, ProviderResponse;
 import 'package:balady_plus/etmam_app/features/dynamic_form/data/models/form_data_response_model.dart';
@@ -17,6 +18,9 @@ import '../../../../../app/features/_shared_feature_/data/entities/drop_down_ite
 import '../../../../core/errors/errors_exports.dart'
     show Failure, ServerException, ServerFailure;
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
+import 'package:balady_plus/app/core/errors/errors_exports.dart' as balday;
 
 class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
   final DynamicFormRemoteDataSource remoteDataSource;
@@ -57,6 +61,8 @@ class DynamicFormsRepositoryImpl implements DynamicFormsRepository {
       );
       return Left(
           ServerFailure(error.errorMessage, statusCode: error.statusCode));
+    } on balday.NoInternetConnectionException  catch (error, stackTrace) {
+      return Left(NoInternetConnectionFailure());
     }
   }
 

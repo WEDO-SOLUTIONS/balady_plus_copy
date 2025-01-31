@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/data/entities/file_data_item.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -26,7 +27,6 @@ import '../../models/upload_file_result.dart';
 import '../../services/customer_voice_repository.dart';
 import 'new_msr_details_view_model.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
 
 class NewMSRViewModel extends BaseViewModel {
   final _repositry = locator<CustomerVoiceRepository>();
@@ -129,7 +129,7 @@ class NewMSRViewModel extends BaseViewModel {
     }
   }
 
-  Future createRequest() async {
+  Future createRequest(FileDataItem? file) async {
     ///MMM
     if (createRequestresponse != null) return true;
     Tuple3<bool?, String?, CreateIncidentResult?> response;
@@ -235,7 +235,7 @@ class NewMSRViewModel extends BaseViewModel {
               onSelect: (bool value) {
                 if (value) {
                   continueIncidentCreation = "Yes";
-                  submitRequest();
+                  submitRequest(file);
                 } else {
                   continueIncidentCreation = null;
                 }
@@ -310,27 +310,41 @@ class NewMSRViewModel extends BaseViewModel {
     }
   }
 
-  void submitRequest() async {
-    showLoading();
-    final response = await createRequest();
+
+  Future<void> submitRequest(FileDataItem? file) async {
+    final response = await createRequest(file);
 
     if (response) {
       final caseID = createRequestresponse!.pzInsKey;
+
+      if (file != null) {
+        bool isUploaded = await uploadFile(
+          caseID: caseID,
+          fileName: file.fileName,
+          fileBase64: file.fileBase64,
+          categoery: "Initial",
+          fileMemo: "",
+          pyDescription: "",
+        );
+        print(isUploaded);
+      }
+
       final responses = await Future.wait(attachments.map(
         (value) async {
           if (value.filePath != null &&
-              value.base64 != null &&
+              value.base64 != null && //
               value.isUploaded == false) {
             // final fileBytes = await File(value.filePath!).readAsBytes();
             // String base64File = base64Encode(fileBytes);
 
             bool isUploaded = await uploadFile(
-                caseID: caseID,
-                fileName: value.fileName,
-                fileBase64: value.base64,
-                fileMemo: value.memo,
-                categoery: "CustomerImage",
-                pyDescription: value.id);
+              caseID: caseID,
+              fileName: value.fileName,
+              fileBase64: value.base64,
+              fileMemo: value.memo,
+              categoery: "CustomerImage",
+              pyDescription: value.id,
+            );
 
             int index =
                 attachments.indexWhere((element) => element.id == value.id);

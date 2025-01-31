@@ -7,6 +7,7 @@ import 'package:mapness/l10n/generated/app_localizations.dart';
 extension LayerTypeExt on LayerType {
   GISMapLayers? getGISLayerType() => switch (this) {
         LayerType.favourites => null,
+        LayerType.metro => null,
         LayerType.invest => GISMapLayers.Opportunities,
         LayerType.buildings => GISMapLayers.BSAimtithalBuildingsCertificateL,
         LayerType.fencing => GISMapLayers.BSWhiteParcelS,
@@ -16,6 +17,7 @@ extension LayerTypeExt on LayerType {
 
   IconData iconData() => switch (this) {
         LayerType.favourites => SystemIcons.bookmark,
+        LayerType.metro => TransportIcons.metroStation,
         LayerType.invest => GeneralIcons.invest,
         LayerType.buildings => GeneralIcons.buildings,
         LayerType.fencing => GeneralIcons.fence,
@@ -25,6 +27,7 @@ extension LayerTypeExt on LayerType {
 
   String titleLocale(AppLocalizations l10n) => switch (this) {
         LayerType.favourites => l10n.favourites,
+        LayerType.metro => l10n.mapLayerMetro,
         LayerType.invest => l10n.investmentOpportunities,
         LayerType.buildings => l10n.compilanceBuildings,
         LayerType.fencing => l10n.fencingVacantLands,

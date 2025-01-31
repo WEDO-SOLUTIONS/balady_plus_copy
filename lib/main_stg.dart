@@ -15,18 +15,11 @@ import 'package:flutter/material.dart';
 import 'app/events_logs/balady_logs.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
-  final status = await AppTrackingTransparency.requestTrackingAuthorization();
-
+  AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
   unhandledExceptionBaladyLogs(() async {
-    AdvancedMetrics.instance.startMeasureStartup(LoadType.cold);
-
     await runMapnessApp(() async {
       await AppEnv.setupEnv(EnvType.stg);
-
       await setupMapness(EnvType.stg);
-
       await SentryFlutter.init(
         (options) {
           options.dsn =
@@ -43,9 +36,9 @@ void main() async {
           options.environment = sl<EnvType>().name;
         },
         appRunner: () => runApp(
-          MapnessProviderScope(
+          const MapnessProviderScope(
             child: LocalizedApp(
-              child: App(status: status),
+              child: App(),
             ),
           ),
         ),
