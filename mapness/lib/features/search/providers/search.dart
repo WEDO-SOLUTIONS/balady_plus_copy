@@ -116,6 +116,7 @@ class Search extends _$Search {
       state = SearchStateError(searchText: query);
       rethrow;
     }
+    _searchInThisAreaMetric();
   }
 
   Future<void> quickSearch(QuickFilter quickSearch, {List<GeoPointMessage>? spatialRestriction}) async {
@@ -176,6 +177,7 @@ class Search extends _$Search {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
     }
+    _searchInThisAreaMetric();
   }
 
   Future<void> searchByText(String query) async {
@@ -228,6 +230,7 @@ class Search extends _$Search {
       state = SearchStateError(searchText: query);
       rethrow;
     }
+    _searchInThisAreaMetric();
   }
 
   Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
@@ -280,10 +283,26 @@ class Search extends _$Search {
       state = SearchStateError(searchText: text);
       rethrow;
     }
+    _searchInThisAreaMetric();
   }
 
+  /// Flag that indicates that search was started from searchInThisArea button
+  bool _isSearchInThisArea = false;
+
+  /// Keys to detect properties in analytics
+  static const searchInThisAreaStarted = 'search_started';
+  static const searchInThisAreaSuccess = 'finished_with_success';
+  static const searchInThisAreaError = 'finished_with_error';
+
+  /// Method that starts search in the visible area
   void searchInThisArea() {
-    ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsSearchInThisAreaPressed);
+    _isSearchInThisArea = true;
+    ref.read(urbiAnalyticsProvider).track(
+      MapnessConstants.analyticsSearchInThisAreaPressed,
+      properties: {
+        'status': searchInThisAreaStarted,
+      },
+    );
 
     ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
     switch (_previousType) {
@@ -303,6 +322,24 @@ class Search extends _$Search {
         // TODO(Sergei): workaround for fast search from searchInThisArea, remove spatialRestriction param when search performance is improved
         quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect());
         break;
+    }
+  }
+
+  /// Here we send additional metrics because we want to know
+  /// a) How many requests finished with success
+  /// b) How many request finished with error
+  /// c) How many requests was made and didn't finished ((finished_with_success + finished_with_error) / search_started)
+  void _searchInThisAreaMetric() {
+    if (_isSearchInThisArea) {
+      _isSearchInThisArea = false;
+      final isSuccess = state is! SearchStateError;
+      final status = isSuccess ? searchInThisAreaSuccess : searchInThisAreaError;
+      ref.read(urbiAnalyticsProvider).track(
+        MapnessConstants.analyticsSearchInThisAreaPressed,
+        properties: {
+          'status': status,
+        },
+      );
     }
   }
 
