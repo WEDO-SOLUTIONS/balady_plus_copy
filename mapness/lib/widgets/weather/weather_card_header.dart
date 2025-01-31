@@ -15,7 +15,6 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-final borderRadius = BorderRadius.circular(16);
 const weatherHeaderSize = 300.0;
 
 class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {

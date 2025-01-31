@@ -3,7 +3,7 @@
 // ignore_for_file: not_assigned_potentially_non_nullable_local_variable
 import 'dart:convert';
 
-import 'package:mapness/entities/wheather/weather_info.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
 
 class AllWeatherInfoModel extends AllWeatherInfoEntity {
   AllWeatherInfoModel({

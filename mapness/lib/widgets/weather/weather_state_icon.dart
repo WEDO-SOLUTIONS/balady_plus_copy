@@ -2,7 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/entities/wheather/weather_enum.dart';
+import 'package:mapness/entities/weather/weather_enum.dart';
 import 'package:mapness/features/weather/helpers/widget_ref_weather_extension.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';

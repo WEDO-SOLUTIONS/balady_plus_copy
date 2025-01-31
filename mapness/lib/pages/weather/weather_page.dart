@@ -10,8 +10,8 @@ import 'package:mapness/features/weather/helpers/widget_ref_weather_extension.da
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
-import 'package:mapness/widgets/wheather/weather_controls.dart';
-import 'package:mapness/widgets/wheather/weather_dashboard.dart';
+import 'package:mapness/widgets/weather/weather_controls.dart';
+import 'package:mapness/widgets/weather/weather_dashboard.dart';
 
 @RoutePage()
 class WeatherPage extends ConsumerStatefulWidget {

@@ -3,7 +3,7 @@ import 'dart:developer';
 
 import 'package:balady_plus/app/core/utils/constants/apis/api_headers.dart';
 import 'package:dio/dio.dart';
-import 'package:mapness/entities/wheather/weather_params.dart';
+import 'package:mapness/entities/weather/weather_params.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/weather/data/datasources/web_service_weather.dart';
 

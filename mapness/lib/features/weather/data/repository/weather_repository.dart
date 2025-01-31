@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/entities/wheather/weather_params.dart';
+import 'package:mapness/entities/weather/weather_params.dart';
 import 'package:mapness/features/weather/data/datasources/weather_remote_datasource.dart';
 import 'package:mapness/features/weather/data/datasources/web_service_weather.dart';
 import 'package:mapness/features/weather/data/models/weather_model.dart';

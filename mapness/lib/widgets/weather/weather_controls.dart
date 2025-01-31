@@ -7,10 +7,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/widgets/compass_control.dart';
 import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/entities/wheather/weather_enum.dart';
+import 'package:mapness/entities/weather/weather_enum.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/features/weather/provider/weather_map_controls.dart';
-import 'package:mapness/widgets/wheather/weather_state_icon.dart';
+import 'package:mapness/widgets/weather/weather_state_icon.dart';
 
 class WeatherControls extends ConsumerWidget {
   final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;

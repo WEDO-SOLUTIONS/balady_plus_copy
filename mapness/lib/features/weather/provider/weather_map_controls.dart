@@ -1,4 +1,4 @@
-import 'package:mapness/widgets/wheather/weather_card_header.dart';
+import 'package:mapness/widgets/weather/weather_card_header.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'weather_map_controls.g.dart';

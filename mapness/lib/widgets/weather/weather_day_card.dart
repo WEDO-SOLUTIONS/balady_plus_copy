@@ -6,12 +6,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:mapness/entities/wheather/weather_info.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/helpers/weather_date.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/widgets/wheather/custom_svg_icon_widget.dart';
-import 'package:mapness/widgets/wheather/expansion_tile.dart';
+import 'package:mapness/widgets/weather/custom_svg_icon_widget.dart';
+import 'package:mapness/widgets/weather/expansion_tile.dart';
 
 class WeatherDayCard extends ConsumerWidget {
   final ForecastDay? forecastDay;

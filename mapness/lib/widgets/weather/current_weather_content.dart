@@ -2,9 +2,9 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
-import 'package:mapness/widgets/wheather/custom_svg_icon_widget.dart';
-import 'package:mapness/widgets/wheather/sunset_or_sunrise.dart';
-import 'package:mapness/widgets/wheather/wind_and_vision_card.dart';
+import 'package:mapness/widgets/weather/custom_svg_icon_widget.dart';
+import 'package:mapness/widgets/weather/sunset_or_sunrise.dart';
+import 'package:mapness/widgets/weather/wind_and_vision_card.dart';
 
 class CurrentWeatherContent extends ConsumerWidget {
   const CurrentWeatherContent({super.key});
