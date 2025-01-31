@@ -9,7 +9,7 @@ import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/weather/weather_enum.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
-import 'package:mapness/features/weather/provider/weather_map_controls.dart';
+import 'package:mapness/widgets/weather/weather_card_header.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
 
 class WeatherControls extends ConsumerWidget {
@@ -21,57 +21,47 @@ class WeatherControls extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final mapControls = ref.watch(weatherMapControlsProvider);
-
-    return SafeArea(
-      bottom: false,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.$3x,
-                vertical: Spacing.$3x,
-              ).copyWith(bottom: Spacing.$4x),
-              child: Row(
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Spacer(),
-                      AnimatedOpacity(
-                        opacity: mapControls.controlsVisible ? 1 : 0,
-                        duration: Durations.short3,
-                        child: const Legend(),
-                      ),
-                      SizedBox(
-                        height: mapControls.extent,
-                      ),
-                    ],
-                  ),
-                  const Spacer(),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const WeatherStateIcon(),
-                      const Spacer(),
-                      const ZoomControl(),
-                      const Spacer(),
-                      const CompassControl(),
-                      Spacing.$2x.heightBox,
-                      const FollowControl(),
-                    ],
-                  ),
-                ],
+  Widget build(BuildContext context, WidgetRef ref) => SafeArea(
+        bottom: false,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: Spacing.$3x,
+                  vertical: Spacing.$3x,
+                ).copyWith(bottom: Spacing.$4x),
+                child: Row(
+                  children: [
+                    const Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Spacer(),
+                        Legend(),
+                        SizedBox(height: weatherHeaderSize),
+                      ],
+                    ),
+                    const Spacer(),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const WeatherStateIcon(),
+                        const Spacer(),
+                        const ZoomControl(),
+                        const Spacer(),
+                        const CompassControl(),
+                        Spacing.$2x.heightBox,
+                        const FollowControl(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 class Legend extends ConsumerWidget {
