@@ -1,33 +1,35 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/suggest.dart';
 
-final _focusNode = FocusNode();
+//final _focusNode = FocusNode();
 
-class SearchScreen extends ConsumerWidget {
+class SearchScreen extends HookWidget {
   final VoidCallback onClose;
   final int itemCount;
   final String? hintText;
   final Widget Function(BuildContext context, int index) itemBuilder;
   final void Function(SearchHistoryItem? item)? onHistoryItemTap;
+  final void Function(String)? onChanged;
 
   const SearchScreen({
     required this.itemBuilder,
     required this.itemCount,
     required this.onClose,
+    this.onChanged,
     this.hintText,
     super.key,
     this.onHistoryItemTap,
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final contentColor = context.colorsV2.backgroundSurface4;
+    final focusNode = useFocusNode();
 
     return GestureDetector(
       onTap: () => FocusScope.of(context).unfocus(),
@@ -51,16 +53,10 @@ class SearchScreen extends ConsumerWidget {
                       ),
                       searchInput: BaladyTextInput.search(
                         config: BaladyInputConfig(
-                          focusNode: _focusNode,
+                          focusNode: focusNode,
                           autofocus: true,
                           hintText: hintText ?? context.l10n.search,
-                          onChanged: (value) {
-                            if (value.isEmpty) {
-                              ref.read(suggestQueryProvider.notifier).update('');
-                            } else {
-                              ref.read(suggestQueryProvider.notifier).update(value);
-                            }
-                          },
+                          onChanged: onChanged,
                           fillColor: context.colorsV2.neutralContainerDefault,
                           hintColor: context.colorsV2.foregroundSoft,
                           textStyle: context.textStyleV3.bodySmallRegular,
