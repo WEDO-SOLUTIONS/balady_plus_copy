@@ -6,8 +6,6 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/ui/search_history.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-//final _focusNode = FocusNode();
-
 class SearchScreen extends HookWidget {
   final VoidCallback onClose;
   final int itemCount;
