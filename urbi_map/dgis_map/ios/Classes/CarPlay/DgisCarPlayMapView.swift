@@ -180,8 +180,7 @@ extension UIView {
 
 extension Map {
     func loadStyle(styleFactory: DGis.IStyleFactory) -> DGis.Cancellable? {
-        // TODO(Sergei): load style from flutter lib map_styles
-        let stylePath = "Frameworks/App.framework/flutter_assets/assets/maps/styles/styles.2gis"
+        let stylePath = FlutterDartProject.lookupKey(forAsset: "packages/map_styles/src/styles.2gis")
         guard let assetPath = Bundle.main.path(forResource: stylePath, ofType: nil) else { return nil }
         return styleFactory.loadFile(path: assetPath).sink(
             receiveValue: { style in
