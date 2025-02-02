@@ -336,8 +336,8 @@ class ApiUrl {
   // Ekram
   static const ekramRules =
       '/v1/iam-services/user-configuration/أنظمة بلدي/نظام إكرام الموتى';
-  static const deathCities = 'v2/ekram-mobile-services/cities/1';
-  static const burialCities = 'v2/ekram-mobile-services/cities/2';
+  static const deathCities = 'v1/superapp-ekram-services/lookup/DEATH_CITY/transport-cities';
+  static const burialCities = 'v1/superapp-ekram-services/lookup/BURIAL_CITY/transport-cities';
   static const ekramOrgnizations =
       'v2/ekram-mobile-services/organizations-info';
 

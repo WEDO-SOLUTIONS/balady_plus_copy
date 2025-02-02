@@ -1,18 +1,17 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_license/commercial_license_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget%20copy.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/ekram/data/model/cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
-import 'package:balady_plus/app/features/ekram/domain/entities/get_cemetries_params.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/gorgian_date_widget.dart';
-import 'package:balady_plus/app/features/ekram/presentation/widgets/ekram_book_cemetry/hijri_date_widget.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/burial_date_gregorian.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/burial_date_hijri.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/transportation_request_widgets/death_date_gregorian.dart';
@@ -28,7 +27,6 @@ import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 import '../../../data/model/request_details_response_model/burial_info.dart';
 import '../../../data/model/request_details_response_model/cemetery_data.dart';
 import '../../../data/model/request_details_response_model/death_info.dart';
-import '../../../data/model/request_details_response_model/deceased_info.dart';
 import '../../../data/model/request_details_response_model/transport_info.dart';
 
 class DeathAndBurialInfoSection extends StatelessWidget {
@@ -127,12 +125,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                               DeathInfo(countryId: item.id!)));
                                 }
                               },
-                              label:
-                                  "${Helpers.translatingWord("ekram_death_country")} *",
+                              label: Helpers.translatingWord(
+                                  "ekram_death_country"),
                               hint: Helpers.translatingWord(
                                   "ekram_death_country"),
                             ),
                             CustomLookUpLongDialog(
+                              showOptional: false,
                               items: state.cities ?? [],
                               value: state.requestDetailsModel?.deathInfo?.countryId == 1
                                   ? state.getCityById(state
@@ -177,7 +176,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             state.requestDetailsModel?.deathInfo?.countryId == 1
                                 ? Container()
                                 : CustomTextFieldWidget(
-                                    label: "${"ekram_death_city".tr()}*",
+                                    label: "ekram_death_city".tr(),
                                     initialValue: state.requestDetailsModel
                                         ?.deathInfo?.cityOther,
                                     hintText: "ekram_death_city".tr(),
@@ -281,10 +280,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       context
                                           .read<
                                               EkramRequestTransportationBloc>()
-                                          .add(setBurialInfoEvent(
+                                          .add(
+                                            setBurialInfoEvent(
                                               burialInfo: BurialInfo(
-                                                  isBurialInsideDeathCity:
-                                                      true)));
+                                                isBurialInsideDeathCity: true,
+                                              ),
+                                            ),
+                                          );
                                     },
                                     endRadio: false,
                                     unSelectedBackgroundColor:
@@ -361,7 +363,6 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   .requestDetailsModel?.burialInfo?.burialDate,
                               isDeathDatesDisabled: state.isBurialDatesDisabled,
                               onChanged: (String? date) {
-
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(setBurialInfoEvent(
@@ -380,13 +381,18 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
-                                    .add(setBurialInfoEvent(
+                                    .add(
+                                      setBurialInfoEvent(
                                         burialInfo: BurialInfo(
-                                            gregorianBurialDate:
-                                                CommonFunctions.padHijriDate(
-                                                    date!),
-                                            burialDate: CommonFunctions
-                                                .gregorianToHijri(date))));
+                                          gregorianBurialDate:
+                                              CommonFunctions.padHijriDate(
+                                                  date!),
+                                          burialDate:
+                                              CommonFunctions.gregorianToHijri(
+                                                  date),
+                                        ),
+                                      ),
+                                    );
                               },
                             ),
                             CustomLookUpLongDialog(
@@ -402,9 +408,14 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 if (item != null) {
                                   context
                                       .read<EkramRequestTransportationBloc>()
-                                      .add(setBurialInfoEvent(
-                                          burialInfo:
-                                              BurialInfo(prayId: item.id)));
+                                      .add(
+                                        setBurialInfoEvent(
+                                          burialInfo: BurialInfo(
+                                            pray: item,
+                                            prayId: item.id,
+                                          ),
+                                        ),
+                                      );
                                 }
                               },
                               label: Helpers.translatingWord(
@@ -412,6 +423,31 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: Helpers.translatingWord(
                                   "cemetry_deceassed_burial_time"),
                             ),
+                            state.requestDetailsModel?.burialInfo?.pray
+                                        ?.isOther ??
+                                    false
+                                ? ClockTimeWidget(
+                                    title: "cemetry_deceassed_burial_time".tr(),
+                                    currentTime: state.requestDetailsModel
+                                            ?.burialInfo?.burialTime ??
+                                        "",
+                                    onSelectedTime: (TimeOfDay? time) {
+                                      if (time != null) {
+                                        context
+                                            .read<
+                                                EkramRequestTransportationBloc>()
+                                            .add(
+                                              setBurialInfoEvent(
+                                                burialInfo: BurialInfo(
+                                                  burialTime:
+                                                      "${time.hour}:${time.minute}",
+                                                ),
+                                              ),
+                                            );
+                                      }
+                                    },
+                                  )
+                                : const SizedBox(),
                             Row(
                               children: [
                                 SvgPicture.asset(IconPath.editIcon),
@@ -511,7 +547,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     children: [
                                       CustomTextFieldWidget(
                                           label:
-                                              "${"reasonForSpecialTransfer".tr()}*",
+                                              "reasonForSpecialTransfer".tr(),
                                           initialValue: state
                                               .requestDetailsModel
                                               ?.transportInfo
@@ -570,36 +606,38 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
-                                    .add(GetCemetriesEvent(
+                                    .add(
+                                      GetCemetriesEvent(
                                         params: CemetriesParams(
-                                            deathCountryId: state
-                                                .requestDetailsModel
-                                                ?.deathInfo
-                                                ?.countryId,
-                                            deathCityId:
-                                                state.getselectedDeathCity(),
-                                            burialCityId: state
-                                                .requestDetailsModel
-                                                ?.burialInfo
-                                                ?.cityId,
-                                            specialTransportReasonId: state
-                                                .requestDetailsModel
-                                                ?.transportInfo
-                                                ?.specialTransportReasonId,
-                                            prayId: state.requestDetailsModel
-                                                ?.burialInfo?.prayId,
-                                            burialDate: state
-                                                .requestDetailsModel
-                                                ?.burialInfo
-                                                ?.burialDate,
-                                            deathDate: state.requestDetailsModel
-                                                ?.deathInfo?.deathDate,
-                                            graveTypeId: state
-                                                .requestDetailsModel
-                                                ?.cemeteryData
-                                                ?.graveTypeId,
-                                            age: null),
-                                        requestId: state.requestId!));
+                                          deathCountryId: state
+                                              .requestDetailsModel
+                                              ?.deathInfo
+                                              ?.countryId,
+                                          deathCityId:
+                                              state.getselectedDeathCity(),
+                                          burialCityId: state
+                                              .requestDetailsModel
+                                              ?.burialInfo
+                                              ?.cityId,
+                                          specialTransportReasonId: state
+                                              .requestDetailsModel
+                                              ?.transportInfo
+                                              ?.specialTransportReasonId,
+                                          prayId: state.requestDetailsModel
+                                              ?.burialInfo?.prayId,
+                                          burialTime: state.requestDetailsModel
+                                              ?.burialInfo?.burialTime,
+                                          burialDate: state.requestDetailsModel
+                                              ?.burialInfo?.burialDate,
+                                          deathDate: state.requestDetailsModel
+                                              ?.deathInfo?.deathDate,
+                                          graveTypeId: state.requestDetailsModel
+                                              ?.cemeteryData?.graveTypeId,
+                                          age: null,
+                                        ),
+                                        requestId: state.requestId!,
+                                      ),
+                                    );
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
@@ -613,6 +651,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("cemeteryName").tr(),
                               hint: ("cemeteryName").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_cemetry_note".tr()]),
                             CustomLookUpLongDialog(
                               items: state.transportations ?? [],
                               value: state.getTransportTypeById(state
@@ -646,6 +685,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("ekram_orgnization_name").tr(),
                               hint: ("ekram_orgnization_name").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_org_note".tr()]),
                             CustomLookUpLongDialog(
                               items: state.laundries ?? [],
                               value: state.getlaundriesById(state
@@ -684,7 +724,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("ekram_laundry").tr(),
                               hint: ("ekram_laundry").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_laundry_note".tr()]),
                             CustomLookUpLongDialog(
+                              showOptional: true,
                               items: state.mosques ?? [],
                               value: state.getMosquesById(state
                                   .requestDetailsModel
@@ -722,6 +764,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("the_mosque").tr(),
                               hint: ("the_mosque").tr(),
                             ),
+                            NotesWidget(notes: ["ekram_mosque_note".tr()]),
                           ],
                         ),
                       ),

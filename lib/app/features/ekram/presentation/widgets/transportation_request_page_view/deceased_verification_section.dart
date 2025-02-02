@@ -63,7 +63,6 @@ class DeceasedVerificationSection extends StatelessWidget {
                                 )
                               ],
                             ),
-
                             CustomLookUpLongDialog(
                               items: state.nationalIdTypes ?? [],
                               value: state.selectedNationalIdType,
@@ -84,6 +83,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                               hint: ("ekram_identity_type").tr(),
                             ),
                             CustomTextFieldWidget(
+                              isRequired: true,
                               label: "ekram_decesssed_identity".tr(),
                               isDigitsOnly: state.selectedNationalIdType?.id ==
                                           1 ||

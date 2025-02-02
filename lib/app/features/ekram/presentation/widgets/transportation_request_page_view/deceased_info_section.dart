@@ -40,11 +40,11 @@ class DeceasedInfoSection extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+                  margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Container(
@@ -71,11 +71,12 @@ class DeceasedInfoSection extends StatelessWidget {
                                   )
                                 ],
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 15,
                               ),
                               state.editInfoSection == true
                                   ? CustomTextFieldWidget(
+                                      isRequired: true,
                                       enabled: true,
                                       label: "ekram_first_name".tr(),
                                       hintText: "ekram_first_name".tr(),
@@ -186,6 +187,7 @@ class DeceasedInfoSection extends StatelessWidget {
                               const CustomVerticalSpace(height: 16),
                               state.editInfoSection == true
                                   ? CustomTextFieldWidget(
+                                      isRequired: true,
                                       label: "ekram_fourth_name".tr(),
                                       initialValue: state.requestDetailsModel
                                               ?.deceasedInfo?.fourthName ??
@@ -220,8 +222,6 @@ class DeceasedInfoSection extends StatelessWidget {
                                               BorderRadius.circular(8)),
                                     ),
                               const CustomVerticalSpace(height: 16),
-
-
                               CustomLookUpLongDialog(
                                   items: state.nationalities ?? [],
                                   value: state.getNationalityById(state
@@ -287,7 +287,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                           : false,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   Expanded(
@@ -354,7 +354,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                           : false,
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   Expanded(
@@ -397,7 +397,7 @@ class DeceasedInfoSection extends StatelessWidget {
                 if (state.validateDeceasedInfoSection(true) == true) {
                   context
                       .read<EkramRequestTransportationBloc>()
-                      .add(GoToNextPageEvent());
+                      .add(const GoToNextPageEvent());
                 }
               },
             )

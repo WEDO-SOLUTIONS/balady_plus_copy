@@ -348,7 +348,6 @@ class EkramRequestTransportationBloc extends Bloc<
     print(gorgian);
     print(hijri);
 
-
     emitter(state.copyWith(
         deceassedDOBGorgian: Nullable(CommonFunctions.padHijriDate(gorgian)),
         status: BlocStatus.success,
@@ -601,7 +600,6 @@ class EkramRequestTransportationBloc extends Bloc<
 
   Future<List<LookUpItem>?> getEkramNationalIdTypesEventHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
-
 
     final failureOrSuccess = await _getEkramIdentityTypes(NoParams());
     return failureOrSuccess.fold((failure) {
@@ -972,25 +970,41 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
     });
   }
+
   Future<void> _getCurrentTrackLocationHandler(
       getCurrentTrackLocationEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _getCurrentTrackLocation(e.requestId);
-    return failureOrSuccess.fold((failure) {
-      emit(state.copyWith(
-          status: BlocStatus.failure,
-          errorMessage: (failure as ServerFailure).errorMessage,
-          isVerified: false));
-      return null;
-    }, (res) {
-      emit(state.copyWith(
-        status: BlocStatus.success,
-    lat:res.data?.result,
-    long:res.data?.result,
-        errorMessage: "",
-      ));
-    });
+    return failureOrSuccess.fold(
+      (failure) {
+        emit(state.copyWith(
+            status: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+            isVerified: false));
+        return null;
+      },
+      (res) {
+        if (res.data != null && res.data?.result != null) {
+          // Extracting x and y correctly from result
+          String? x = res.data?.result['x'];
+          String? y = res.data?.result['y'];
+
+          if (x != null && y != null) {
+            CommonFunctions.openMap(double.parse(x), double.parse(y));
+          }
+        }
+
+        emit(
+          state.copyWith(
+            status: BlocStatus.success,
+            lat: res.data?.result?['x'],
+            long: res.data?.result?['y'],
+            errorMessage: "",
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _saveDeceasedInfoHandler(
@@ -1146,15 +1160,20 @@ class EkramRequestTransportationBloc extends Bloc<
       setBurialInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
     params ??= RequestDetailsResponseModel(
-        burialInfo: BurialInfo(isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ?? true));
+        burialInfo: BurialInfo(
+            isBurialInsideDeathCity:
+                e.burialInfo?.isBurialInsideDeathCity ?? true));
     BurialInfo info = params.burialInfo!;
     int? cityID;
-    if (e.burialInfo?.isBurialInsideDeathCity == true) {
+    if (e.burialInfo?.isBurialInsideDeathCity == null ||
+        e.burialInfo?.isBurialInsideDeathCity == true) {
       cityID = getBurialCityId();
     }
 
     info = info.copyWith(
-        isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity?? info.isBurialInsideDeathCity??true,
+        isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ??
+            info.isBurialInsideDeathCity ??
+            true,
         cityId: e.burialInfo?.isBurialInsideDeathCity == false
             ? e.burialInfo?.cityId
             : cityID ?? -1,
@@ -1168,7 +1187,6 @@ class EkramRequestTransportationBloc extends Bloc<
     emitter(state.copyWith(
         status: BlocStatus.success, requestDetailsModel: params));
   }
-
 
   Future<void> _changeCemtryInfoHandler(
       setCemtryInfoEvent e, Emitter emitter) async {
@@ -1320,21 +1338,19 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
   }
 
-
-
   Future<void> _setInitialDataHandler(
       setInitialDataEvent e, Emitter emitter) async {
-
-    decesssedIdentity?.text = e.dataModel?.deceasedInfo?.identityNumber??"";
+    decesssedIdentity?.text = e.dataModel?.deceasedInfo?.identityNumber ?? "";
 
     add(ChangeNationalIdDob(hijriDate: e.dataModel?.deceasedInfo?.birthDate));
     emitter(state.copyWith(
-         isVerified: true,
-        deceasedId:e.dataModel?.deceasedInfo?.identityNumber,
-         isDeceasedBtnEnabled: false,
-         isDraft: state.nationalIdTypes != null?true:false,
-         requestId: e.dataModel?.requestId,
-        selectedNationalIdType:state.getNationalIdTypesById(e.dataModel?.deceasedInfo?.identityType),
+        isVerified: true,
+        deceasedId: e.dataModel?.deceasedInfo?.identityNumber,
+        isDeceasedBtnEnabled: false,
+        isDraft: state.nationalIdTypes != null ? true : false,
+        requestId: e.dataModel?.requestId,
+        selectedNationalIdType: state
+            .getNationalIdTypesById(e.dataModel?.deceasedInfo?.identityType),
         requestDetailsModel: e.dataModel));
   }
 }

@@ -14,7 +14,7 @@ class DeceasedBirthdateGregorian extends StatelessWidget {
       return GorgianCalendarDateWidget(
         isDisabled: state.isdeceasedInfoReadOnly,
         currentVlaue: state.deceassedDOBGorgian,
-        fieldName: "${Helpers.translatingWord("cemetry_dob_gorgian")} *",
+        fieldName: Helpers.translatingWord("cemetry_dob_gorgian"),
         isMandatory: true,
         onChanged: (String? date) {
           context
