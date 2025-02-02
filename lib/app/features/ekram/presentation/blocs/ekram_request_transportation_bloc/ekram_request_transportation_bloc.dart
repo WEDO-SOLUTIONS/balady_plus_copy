@@ -140,7 +140,8 @@ class EkramRequestTransportationBloc extends Bloc<
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"),
-            requestDetailsModel: null)) {
+            requestDetailsModel:null
+      )) {
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeIsNeedSpecialTransferEvent>(_changeIsNeedSpecialTransferHanlder);
     // on<ChangeIsBurialInsideDeathCityEvent>(
@@ -210,6 +211,12 @@ class EkramRequestTransportationBloc extends Bloc<
     getNationalitiesHandler();
     getCitiesHandler();
     getCemetryTypeItemsHandler();
+
+
+    // RequestDetailsResponseModel? params = state.requestDetailsModel;
+    // params ??= RequestDetailsResponseModel(
+    //   deathInfo: DeathInfo(countryId: 1),
+    // );
   }
 
   Future<void> _changeAgreementHandler(

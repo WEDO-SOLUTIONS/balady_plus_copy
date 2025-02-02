@@ -124,7 +124,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeDeathInfoEvent(
                                           deathInfo:
-                                              DeathInfo(countryId: item.id)));
+                                              DeathInfo(countryId: item.id!)));
                                 }
                               },
                               label:
@@ -134,9 +134,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.cities ?? [],
-                              value: state.requestDetailsModel?.deathInfo
-                                          ?.countryId ==
-                                      1
+                              value: state.requestDetailsModel?.deathInfo?.countryId == 1
                                   ? state.getCityById(state
                                       .requestDetailsModel?.deathInfo?.cityId)
                                   : state.getCityById(state.requestDetailsModel
