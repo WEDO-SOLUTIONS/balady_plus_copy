@@ -12,7 +12,6 @@ import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiInBuildingSliver extends ConsumerStatefulWidget {
   final PoiCardState? state;
@@ -66,12 +65,9 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-
-      SliverPadding(
+  Widget build(BuildContext context) => SliverPadding(
         padding: const EdgeInsets.all(Spacing.$4x),
         sliver: PagedSliverList<int, OrganizationItem>.separated(
-
           shrinkWrapFirstPageIndicators: true,
           pagingController: pagingController,
           builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
@@ -83,7 +79,6 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
                 if (id == null) {
                   return;
                 }
-
                 context.router.replace(
                   PoiCardWidgetRoute(
                     objectId: DgisObjectIdMessage(
