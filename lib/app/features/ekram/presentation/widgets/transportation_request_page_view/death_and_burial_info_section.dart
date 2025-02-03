@@ -132,18 +132,20 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               showOptional: false,
-                              items: state.cities ?? [],
+                              items: state.deathCities ?? [],
                               value: state.requestDetailsModel?.deathInfo
                                           ?.countryId ==
                                       1
-                                  ? state.getCityById(state
+                                  ? state.getDeathCityById(state
                                       .requestDetailsModel?.deathInfo?.cityId)
-                                  : state.getCityById(state.requestDetailsModel
-                                      ?.deathInfo?.corpseArrivalCityId),
+                                  : state.getDeathCityById(state
+                                      .requestDetailsModel
+                                      ?.deathInfo
+                                      ?.corpseArrivalCityId),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
-                                    .getCitiesHandler();
+                                    .getDeathCitiesHandler();
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
@@ -178,6 +180,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             state.requestDetailsModel?.deathInfo?.countryId == 1
                                 ? Container()
                                 : CustomTextFieldWidget(
+                                    isRequired: true,
                                     label: "ekram_death_city".tr(),
                                     initialValue: state.requestDetailsModel
                                         ?.deathInfo?.cityOther,
@@ -332,8 +335,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                         ?.isBurialInsideDeathCity ==
                                     false
                                 ? CustomLookUpLongDialog(
-                                    items: state.cities ?? [],
-                                    value: state.getCityById(state
+                                    items: state.burialCities ?? [],
+                                    value: state.getBurialCityById(state
                                         .requestDetailsModel
                                         ?.burialInfo
                                         ?.cityId),
@@ -342,7 +345,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       return context
                                           .read<
                                               EkramRequestTransportationBloc>()
-                                          .getCitiesHandler();
+                                          .getBurialCitiesHandler();
                                     },
                                     onChangeType: (LookUpItem? item) {
                                       if (item != null) {

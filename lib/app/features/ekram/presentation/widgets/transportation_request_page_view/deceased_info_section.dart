@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget%20copy.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
@@ -248,13 +249,12 @@ class DeceasedInfoSection extends StatelessWidget {
                                   isDisbaled: state.editInfoSection != null
                                       ? !state.editInfoSection!
                                       : false),
-                              const CustomVerticalSpace(height: 20),
-                              CustomTextWidget(
-                                ("sex").tr(),
-                                fontColor: AppColor.blackModern700Light,
-                                fontSize: 17.0,
-                                textAlign: TextAlign.start,
-                                fontWeight: AppFontWeight.bold,
+                              LabelTextWithOptional(
+                                label: 'sex'.tr(),
+                                labelColor: AppColor.blackModern700Light,
+                                labelSize: 17.0,
+                                labelTextAlign: TextAlign.start,
+                                showOptional: false,
                               ),
                               Row(
                                 children: [
@@ -263,13 +263,10 @@ class DeceasedInfoSection extends StatelessWidget {
                                       title: ("male").tr(),
                                       value: true,
                                       currentSelected: (state
-                                                  .requestDetailsModel
-                                                  ?.deceasedInfo
-                                                  ?.gender ==
-                                              null ||
-                                          state.requestDetailsModel
-                                                  ?.deceasedInfo?.gender ==
-                                              "MALE"),
+                                              .requestDetailsModel
+                                              ?.deceasedInfo
+                                              ?.gender ==
+                                          "MALE"),
                                       onChange: (bool item) {
                                         context
                                             .read<
@@ -316,12 +313,12 @@ class DeceasedInfoSection extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              CustomTextWidget(
-                                ("ekramReligion").tr(),
-                                fontColor: AppColor.blackModern700Light,
-                                fontSize: 17.0,
-                                textAlign: TextAlign.start,
-                                fontWeight: AppFontWeight.bold,
+                              LabelTextWithOptional(
+                                label: 'ekramReligion'.tr(),
+                                labelColor: AppColor.blackModern700Light,
+                                labelSize: 17.0,
+                                labelTextAlign: TextAlign.start,
+                                showOptional: false,
                               ),
                               Row(
                                 children: [

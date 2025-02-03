@@ -24,7 +24,8 @@ class EkramRequestTransportationState extends Equatable {
   final int currentPageValue;
   final double? lat;
   final double? long;
-  final List<LookUpItem>? cities;
+  final List<LookUpItem>? deathCities;
+  final List<LookUpItem>? burialCities;
   final List<LookUpItem>? bodyArrivalCities;
   final List<LookUpItem>? hospitals;
   final List<LookUpItem>? nationalities;
@@ -81,7 +82,7 @@ class EkramRequestTransportationState extends Equatable {
       this.isdeceasedInfoReadOnly = false,
       this.isBurialDatesDisabled = false,
       this.isDeathDatesDisabled = false,
-        this.isDraft = false,
+      this.isDraft = false,
       this.errorMsg,
       this.nationalIdTypes,
       this.selectedNationalIdType,
@@ -91,9 +92,10 @@ class EkramRequestTransportationState extends Equatable {
       this.status = BlocStatus.initial,
       this.errorMessage,
       this.currentPageValue = 0,
-      this.lat ,
-      this.long ,
-      this.cities,
+      this.lat,
+      this.long,
+      this.deathCities,
+      this.burialCities,
       this.bodyArrivalCities,
       this.hospitals,
       this.countries,
@@ -152,7 +154,8 @@ class EkramRequestTransportationState extends Equatable {
     final bool? agreementChecked,
     final String? relation,
     final String? deathLocation,
-    final List<LookUpItem>? cities,
+    final List<LookUpItem>? deathCities,
+    final List<LookUpItem>? burialCities,
     final List<LookUpItem>? bodyArrivalCities,
     final List<LookUpItem>? hospitals,
     final List<LookUpItem>? countries,
@@ -216,7 +219,8 @@ class EkramRequestTransportationState extends Equatable {
       agreementChecked: agreementChecked ?? this.agreementChecked,
       relation: relation ?? this.relation,
       deathLocation: deathLocation ?? this.deathLocation,
-      cities: cities ?? this.cities,
+      deathCities: deathCities ?? this.deathCities,
+      burialCities: burialCities ?? this.burialCities,
       bodyArrivalCities: bodyArrivalCities ?? this.bodyArrivalCities,
       hospitals: hospitals ?? this.hospitals,
       countries: countries ?? this.countries,
@@ -283,7 +287,8 @@ class EkramRequestTransportationState extends Equatable {
   @override
   List<Object?> get props => [
         isDeceasedBtnEnabled,
-        cities,
+        deathCities,
+        burialCities,
         countries,
         cemetries,
         prayers,
@@ -337,11 +342,23 @@ class EkramRequestTransportationState extends Equatable {
         isDraft
       ];
 
-  LookUpItem? getCityById(int? id) {
-    if (cities != null && id != null) {
-      for (int index = 0; index < cities!.length; index++) {
-        if (cities![index].id == id) {
-          return cities![index];
+  LookUpItem? getDeathCityById(int? id) {
+    if (deathCities != null && id != null) {
+      for (int index = 0; index < deathCities!.length; index++) {
+        if (deathCities![index].id == id) {
+          return deathCities![index];
+        }
+      }
+    }
+
+    return null;
+  }
+
+  LookUpItem? getBurialCityById(int? id) {
+    if (burialCities != null && id != null) {
+      for (int index = 0; index < burialCities!.length; index++) {
+        if (burialCities![index].id == id) {
+          return burialCities![index];
         }
       }
     }
@@ -469,8 +486,8 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
-  LookUpItem? getNationalIdTypesById(int? id) {
 
+  LookUpItem? getNationalIdTypesById(int? id) {
     if (nationalIdTypes != null && id != null) {
       for (int index = 0; index < nationalIdTypes!.length; index++) {
         if (nationalIdTypes![index].id == id) {
@@ -481,7 +498,6 @@ class EkramRequestTransportationState extends Equatable {
 
     return null;
   }
-
 
   int? getselectedDeathCity() {
     if (requestDetailsModel?.deathInfo?.cityId != null) {
@@ -508,6 +524,10 @@ class EkramRequestTransportationState extends Equatable {
       } else if (requestDetailsModel?.deceasedInfo?.nationalityId == null) {
         if (ShowErrorMessage == true)
           CommonFunctions.showError("enternationilaty".tr());
+        return false;
+      } else if (requestDetailsModel?.deceasedInfo?.gender == null) {
+        if (ShowErrorMessage == true)
+          CommonFunctions.showError("enter_gender".tr());
         return false;
       }
 
