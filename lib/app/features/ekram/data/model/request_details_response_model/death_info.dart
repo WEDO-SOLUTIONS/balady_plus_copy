@@ -44,7 +44,6 @@ class DeathInfo {
         deathDate: json['deathDate'] as String?,
         gregorianDeathDate: json['gregorianDeathDate'] as String?,
         countryId:  json['countryId'] == null? 1: json['countryId'] as int,
-
         countryName: json['countryName'] as String?,
         localCountry: json['localCountry'] as bool?,
         regionId: json['regionId'] as int?,
@@ -77,7 +76,6 @@ class DeathInfo {
         'cityName': cityName,
         'cityOther': cityOther,
         'hospitalOther': hospitalOther,
-
         'hospitalId': hospitalId,
         'hospitalName': hospitalName,
         'showHospitalOther': showHospitalOther,

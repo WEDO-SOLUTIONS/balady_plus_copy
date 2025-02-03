@@ -349,16 +349,32 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-  LookUpItem? getHosptialById(int? id) {
-    if (hospitals != null && id != null) {
-      for (int index = 0; index < hospitals!.length; index++) {
-        if (hospitals![index].id == id) {
-          return hospitals![index];
+  LookUpItem? getHosptialById(int? id,String? name) {
+    if ( id != null) {
+      if(hospitals != null) {
+        for (int index = 0; index < hospitals!.length; index++) {
+          if (hospitals![index].id == id) {
+            return hospitals![index];
+          }
         }
       }
+      else if(name != null && name.isNotEmpty)
+        {
+
+          return LookUpItem(id: id,name: name);
+        }
     }
 
     return null;
+  }
+
+  bool isHosptialDisabled(int? id) {
+    if ( id != null && requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA") {
+
+      return true;
+    }
+
+    return false;
   }
 
   LookUpItem? getCountryById(int? id) {
