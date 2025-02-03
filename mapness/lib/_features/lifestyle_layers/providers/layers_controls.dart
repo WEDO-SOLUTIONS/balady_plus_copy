@@ -172,6 +172,14 @@ class LayersControls extends _$LayersControls {
     );
   }
 
+  Future<void> hideActiveLayer() async {
+    final currentState = state.selectedType;
+
+    if (currentState != null) {
+      await _hidePreviousLayers(currentState);
+    }
+  }
+
   Future<void> _tapHandler(LayerType value) async {
     final currentState = state.selectedType;
 
