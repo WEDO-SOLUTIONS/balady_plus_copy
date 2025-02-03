@@ -321,7 +321,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         EasyLoading.dismiss();
       }
       sl<DelegatorsCubit>().clearDelegators();
-      sharedPrefs.setSSOToken(null);
+      await _clearAuth(NoParams());
       clearSSOInfo();
       if (CommonProperties.fcmToken != null &&
           CommonProperties.fcmToken!.isNotEmpty) {
@@ -349,9 +349,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       print("object");
     }
 
-    sharedPrefs.setSSOToken(null);
+    await _clearAuth(NoParams());
     sl<DelegatorsCubit>().clearDelegators();
-    sharedPrefs.setSSOUserProfile(null);
     clearSSOInfo();
     try {
       await _logout(NoParams());
@@ -400,15 +399,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   void clearSSOInfo() async {
-    //MM sharedPrefs.storeINCReportsNumbers(null);
-    sharedPrefs.setAppCookie(null);
-    sharedPrefs.setLicenseClientImage(null);
-    sharedPrefs.storeGuestInfo(null, null, null);
-    sharedPrefs.setIsUserCOAuthorized(null);
+    // sharedPrefs.setAppCookie(null);
+    // sharedPrefs.setLicenseClientImage(null);
+    // sharedPrefs.setIsUserCOAuthorized(null);
 
-//MM    locator<MyAppointmentsViewModel>().reset();
-    //MM  locator<VisitMainViewModel>().reset();
-    //MM  locator<CustomerSoundViewModel>().reset();
+    sharedPrefs.storeGuestInfo(null, null, null);
     await CookieManager.instance().deleteAllCookies();
     sl<DelegatorsCubit>().clearDelegators();
   }

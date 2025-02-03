@@ -72,7 +72,7 @@ class EntryPointRepositoryImpl implements EntryPointRepository {
   @override
   Future<Either<Failure, EndSessionResponse>> clearAuth() async {
     try {
-      // final data = await localDataSource.clearAuth();
+      await localDataSource.clearAuth();
       final data = await remoteDataSource.endSession();
       return Right(data);
     } on ServerException catch (error, stackTrace) {
