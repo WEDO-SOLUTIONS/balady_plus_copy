@@ -52,7 +52,7 @@ extension ChagneMarkerIconMessage on MarkerIconMessage {
     String? pngPath,
     double? width,
     double? iconOpacity,
-    MarkerAzimuthMessage? iconMapDirection,
+    MapDirectionMessage? iconMapDirection,
   }) =>
       MarkerIconMessage(
         width: width ?? this.width,
