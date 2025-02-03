@@ -3,7 +3,7 @@ import 'age.dart';
 class DeathInfo {
   String? deathDate;
   String? gregorianDeathDate;
-  int? countryId;
+  int countryId;
   String? countryName;
   bool? localCountry;
   int? regionId;
@@ -22,7 +22,7 @@ class DeathInfo {
   DeathInfo({
     this.deathDate,
     this.gregorianDeathDate,
-    this.countryId,
+    this.countryId = 1,
     this.countryName,
     this.localCountry,
     this.regionId,
@@ -43,7 +43,7 @@ class DeathInfo {
   factory DeathInfo.fromJson(Map<String, dynamic> json) => DeathInfo(
         deathDate: json['deathDate'] as String?,
         gregorianDeathDate: json['gregorianDeathDate'] as String?,
-        countryId: json['countryId'] as int?,
+        countryId:  json['countryId'] == null? 1: json['countryId'] as int,
         countryName: json['countryName'] as String?,
         localCountry: json['localCountry'] as bool?,
         regionId: json['regionId'] as int?,
@@ -76,7 +76,6 @@ class DeathInfo {
         'cityName': cityName,
         'cityOther': cityOther,
         'hospitalOther': hospitalOther,
-
         'hospitalId': hospitalId,
         'hospitalName': hospitalName,
         'showHospitalOther': showHospitalOther,
@@ -87,7 +86,7 @@ class DeathInfo {
 
   DeathInfo copyWith({  String? deathDate,
     String? gregorianDeathDate,
-    int? countryId,
+    int ?countryId,
     String? countryName,
     bool? localCountry,
     int? regionId,

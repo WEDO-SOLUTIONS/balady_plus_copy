@@ -122,7 +122,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeDeathInfoEvent(
                                           deathInfo:
-                                              DeathInfo(countryId: item.id)));
+                                              DeathInfo(countryId: item.id!)));
                                 }
                               },
                               label: Helpers.translatingWord(
@@ -200,9 +200,12 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       return null;
                                     }),
                             CustomLookUpLongDialog(
+                              isDisbaled: state.isHosptialDisabled(state
+                                  .requestDetailsModel?.deathInfo?.hospitalId),
                               items: state.hospitals ?? [],
                               value: state.getHosptialById(state
-                                  .requestDetailsModel?.deathInfo?.hospitalId),
+                                  .requestDetailsModel?.deathInfo?.hospitalId,state
+                                  .requestDetailsModel?.deathInfo?.hospitalName),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
