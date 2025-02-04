@@ -24,6 +24,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -215,6 +216,10 @@ class CommonFunctions {
 
     final entryPointBridge = sl<EntryPointBridge>();
     entryPointBridge(params);
+  }
+
+  static Future<bool> isHawaiiDevice() async {
+    return await FlutterHmsGmsAvailability.isHmsAvailable;
   }
 
   static String fileMimeType(String extension) {

@@ -57,7 +57,7 @@ fi
 # set up fvm version
 echo
 print_style '' 'yellow' '> setup flutter fvm env...'
-{ yes || :; } | fvm use 3.22.2
+{ yes || :; } | fvm use 3.24.3
 print_style '' 'yellow' '< fvm env ready!'
 
 # configure lefthook

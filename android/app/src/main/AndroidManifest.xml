@@ -1,5 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"  xmlns:tools="http://schemas.android.com/tools"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="momra.balady.android">
+
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
@@ -36,26 +38,25 @@
     </queries>
 
     <queries>
-    <intent>
-        <action android:name="android.intent.action.INSERT" />
-        <data android:mimeType="vnd.android.cursor.item/event" />
-    </intent>
+        <intent>
+            <action android:name="android.intent.action.INSERT" />
+            <data android:mimeType="vnd.android.cursor.item/event" />
+        </intent>
     </queries>
 
 
-
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
 
 
     <uses-permission android:name="android.permission.CAMERA" />
-   <!-- <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" /> -->
+    <!-- <uses-permission android:name="com.google.android.gms.permission.AD_ID" tools:node="remove" /> -->
 
-  <!-- Always include this permission -->
-  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-   <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+    <!-- Always include this permission -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
 
     <queries>
         <intent>
@@ -71,128 +72,136 @@
     </queries>
 
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-<uses-permission android:name="android.permission.WRITE_CALENDAR" />
-<uses-permission android:name="android.permission.READ_CALENDAR" />
-   <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" tools:node="remove" />
+    <uses-permission android:name="android.permission.WRITE_CALENDAR" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission
+        android:name="android.permission.REQUEST_INSTALL_PACKAGES"
+        tools:node="remove" />
 
-    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES"/>
-    <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES"/>
-    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION"/>
+    <uses-permission android:name="androidx.car.app.MAP_TEMPLATES" />
+    <uses-permission android:name="androidx.car.app.NAVIGATION_TEMPLATES" />
+    <uses-permission android:name="androidx.car.app.ACCESS_SURFACE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
 
-   <application
-       android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher"
+    <application
         android:extractNativeLibs="true"
-        >
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name">
 
-       <meta-data android:name="com.google.android.geo.API_KEY"
-           android:value="AIzaSyDdgRBhfpKDzNrxcO8HURQ-A3Bh-DN8Dp8"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDdgRBhfpKDzNrxcO8HURQ-A3Bh-DN8Dp8" />
 
-        <meta-data android:name="asset_statements" android:resource="@string/asset_statements" />
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
 
-       <meta-data
-           android:name="androidx.car.app.minCarApiLevel"
-           android:value="7" />
+        <meta-data
+            android:name="androidx.car.app.minCarApiLevel"
+            android:value="7" />
 
-       <meta-data
-           android:name="com.google.android.gms.car.application"
-           android:resource="@xml/automotive_app_desc" />
+        <meta-data
+            android:name="com.google.android.gms.car.application"
+            android:resource="@xml/automotive_app_desc" />
 
-       <meta-data
-           android:name="androidx.car.app.theme"
-           android:resource="@style/CarAppTheme"
-           tools:ignore="MetadataTagInsideApplicationTag" />
+        <meta-data
+            android:name="androidx.car.app.theme"
+            android:resource="@style/CarAppTheme"
+            tools:ignore="MetadataTagInsideApplicationTag" />
 
-       <service
-           android:name="com.dgis.map.android_auto.NavigationCarAppService"
-           android:foregroundServiceType="location"
-           android:exported="true">
+        <service
+            android:name="com.dgis.map.android_auto.NavigationCarAppService"
+            android:exported="true"
+            android:foregroundServiceType="location">
 
-           <intent-filter>
-               <action android:name="androidx.car.app.CarAppService" />
-               <category android:name="androidx.car.app.category.NAVIGATION"/>
-               <category android:name="androidx.car.app.category.FEATURE_CLUSTER"/>
-           </intent-filter>
-           <intent-filter>
-               <action android:name="androidx.car.app.action.NAVIGATE" />
-               <category android:name="android.intent.category.DEFAULT"/>
-               <data android:scheme="geo" />
-           </intent-filter>
-       </service>
+            <intent-filter>
+                <action android:name="androidx.car.app.CarAppService" />
 
-       <activity
+                <category android:name="androidx.car.app.category.NAVIGATION" />
+                <category android:name="androidx.car.app.category.FEATURE_CLUSTER" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="androidx.car.app.action.NAVIGATE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="geo" />
+            </intent-filter>
+        </service>
+
+        <activity
             android:name=".MainActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:exported="true"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTask"
             android:theme="@style/LaunchTheme"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:exported="true"
             android:windowSoftInputMode="adjustResize">
             <!-- Specifies an Android theme to apply to this Activity as soon as
                  the Android process has started. This theme is visible to the user
                  while the Flutter UI initializes. After that, this theme continues
                  to determine the Window background behind the Flutter UI. -->
             <meta-data
-              android:name="io.flutter.embedding.android.NormalTheme"
-              android:resource="@style/NormalTheme"
-              />
+                android:name="io.flutter.embedding.android.NormalTheme"
+                android:resource="@style/NormalTheme" />
             <!-- Displays an Android View that continues showing the launch screen
                  Drawable until Flutter paints its first frame, then this splash
                  screen fades out. A splash screen is useful to avoid any visual
                  gap between the end of Android's launch screen and the painting of
                  Flutter's first frame. -->
             <meta-data
-              android:name="io.flutter.embedding.android.SplashScreenDrawable"
-              android:resource="@drawable/launch_background"
-              />
+                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+                android:resource="@drawable/launch_background" />
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
-    <!-- Deep linking -->
-           <!-- <meta-data android:name="flutter_deeplinking_enabled" android:value="true" /> -->
+            <!-- Deep linking -->
+            <!-- <meta-data android:name="flutter_deeplinking_enabled" android:value="true" /> -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="https"/>
-                <data android:host="balady.gov.sa"/>
-                <data android:host="apps.balady.gov.sa"/>
+
+                <data android:scheme="https" />
+                <data android:host="balady.gov.sa" />
+                <data android:host="apps.balady.gov.sa" />
             </intent-filter>
 
 
-            <intent-filter >
-               <action android:name="android.intent.action.VIEW"/>
-               <category android:name="android.intent.category.DEFAULT"/>
-               <category android:name="android.intent.category.BROWSABLE"/>
-               <data android:scheme="geo"/>
-           </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="geo" />
+            </intent-filter>
 
         </activity>
 
         <activity
-        android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
             android:exported="true"
-        tools:node="replace">
+            tools:node="replace">
 
-    <intent-filter>
-        <action android:name="android.intent.action.VIEW"/>
-        <category android:name="android.intent.category.DEFAULT"/>
-        <category android:name="android.intent.category.BROWSABLE"/>
-                  <data android:scheme="com.momra.balady"/>
-                <data android:scheme="com.balady"/>
-                 <data android:scheme="com.momra.balady"/>
-    </intent-filter>
-</activity>
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data android:scheme="com.momra.balady" />
+                <data android:scheme="com.balady" />
+                <data android:scheme="com.momra.balady" />
+            </intent-filter>
+        </activity>
 
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
@@ -200,4 +209,9 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+    <queries>
+        <intent>
+            <action android:name="com.huawei.hms.core.aidlservice" />
+        </intent>
+    </queries>
 </manifest>

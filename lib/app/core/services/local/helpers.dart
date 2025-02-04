@@ -3,32 +3,29 @@ import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:geolocator/geolocator.dart' as geoLocator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
 import 'package:open_file_plus/open_file_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
 import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../dependency_injection/injection_container.dart';
-import '../../utils/constants/constants.dart';
 import '../../utils/constants/remote_config.dart';
 
 // use it insead of print() or debugPrint()
@@ -111,15 +108,33 @@ class Helpers {
 */
 
   static Future<LatLng?> getMapLocation() async {
-    try {
-      //  EasyLoading.show();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: geoLocator.LocationAccuracy.medium,
-              timeLimit: const Duration(seconds: 5));
-      //    EasyLoading.dismiss();
+    return await getCurrentLocation(
+        accuracy: geoLocator.LocationAccuracy.medium,
+        duration: const Duration(seconds: 5));
+  }
 
-      return LatLng(position.latitude, position.longitude);
+  static Future<LatLng?> handelLocationCatch(
+      bool isHuawei, error, stackTrace) async {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+    try {
+      if (isHuawei) {
+        final position = await locationService.getLastLocation();
+        if (position.latitude != null && position.longitude != null) {
+          return LatLng(position.latitude!, position.longitude!);
+        }
+      } else {
+        geoLocator.Position? position;
+        position = await geoLocator.Geolocator.getLastKnownPosition();
+        if (position?.latitude != null && position?.longitude != null) {
+          return LatLng(position!.latitude, position.longitude);
+        }
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -128,59 +143,84 @@ class Helpers {
           stackTrace: stackTrace.toString(),
         ),
       );
-      //    EasyLoading.dismiss();
-      geoLocator.Position? position;
-      try {
-        position = await geoLocator.Geolocator.getLastKnownPosition();
-        if (position?.latitude != null && position?.longitude != null)
-          return LatLng(position!.latitude, position.longitude);
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-      }
     }
     return null;
   }
 
+
+
   static Future<LatLng?> getCurrentLocation(
       {geoLocator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
+      bool isHuawei = await CommonFunctions.isHawaiiDevice();
+      if (isHuawei) {
+        final latLng = await getCurrentLocationHuawei();
+        debugPrint(
+            'amr from getCurrentLocation with huawei location ${latLng?.latitude}, ${latLng?.longitude}');
+        return latLng;
+      }
+      debugPrint('amr from  getCurrentLocation but with geo locator');
       //  EasyLoading.show();
       geoLocator.Position position =
           await geoLocator.Geolocator.getCurrentPosition(
               desiredAccuracy: accuracy ?? geoLocator.LocationAccuracy.high,
-              timeLimit: duration ?? Duration(seconds: 13));
+              timeLimit: duration ?? const Duration(seconds: 13));
       //    EasyLoading.dismiss();
-
       return LatLng(position.latitude, position.longitude);
     } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
+      return handelLocationCatch(false, error, stackTrace);
+    }
+  }
+
+  static final locationService = hms.FusedLocationProviderClient();
+
+  static Future<Position?> getLastLocationHuawei() async {
+    final location = await locationService.getLastLocation();
+    if (location.latitude != null && location.longitude != null) {
+      return Position(
+        longitude: location.longitude!,
+        latitude: location.latitude!,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: location.altitude ?? 0,
+        altitudeAccuracy: 0,
+        heading: location.bearing ?? 0,
+        headingAccuracy: location.bearingAccuracyDegrees ?? 0,
+        speed: location.speed ?? 0,
+        speedAccuracy: location.speedAccuracyMetersPerSecond ?? 0,
       );
-      //    EasyLoading.dismiss();
-      geoLocator.Position? position;
+    }
+
+    return null;
+  }
+
+  static Future<LatLng?> getCurrentLocationHuawei() async {
+    try {
+      await locationService.initFusedLocationService();
+      final request = hms.LocationRequest();
+      request.priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY;
+      request.interval = 13000;
+
+      final settings = hms.LocationSettingsRequest(
+          requests: [request], needBle: true, alwaysShow: true);
       try {
-        position = await geoLocator.Geolocator.getLastKnownPosition();
-        if (position?.latitude != null && position?.longitude != null)
-          return LatLng(position!.latitude, position.longitude);
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
+        final states = await locationService.checkLocationSettings(settings);
+      } catch (e) {
+        debugPrint('amr catch ${e.toString()}');
       }
+
+      final location = await locationService.getLastLocation();
+
+      if (location.latitude != null && location.longitude != null) {
+        debugPrint(
+            'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
+        return LatLng(location.latitude!, location.longitude!);
+      } else {
+        final requestCode =
+            await locationService.requestLocationUpdates(request);
+      }
+    } catch (error, stackTrace) {
+      return handelLocationCatch(true, error, stackTrace);
     }
     return null;
   }
