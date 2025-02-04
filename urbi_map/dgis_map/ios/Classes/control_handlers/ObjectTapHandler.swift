@@ -38,6 +38,14 @@ class ObjectTapHandler {
         let id: String
     }
     
+    private struct CircleId {
+        init(_ id: String) {
+            self.id = id
+        }
+
+        let id: String
+    }
+    
     private struct PolylineId {
         init(_ id: String) {
             self.id = id
@@ -69,6 +77,7 @@ class ObjectTapHandler {
     private var markers: Dictionary<String, (Marker, String?)> = [:]
     private var managers: Dictionary<String, MapObjectManager> = [:]
     private var polygons: Dictionary<String, (Polygon, String?)> = [:]
+    private var circles: Dictionary<String, (Circle, String?)> = [:]
     private var polylines: Dictionary<String, (Polyline, String?)> = [:]
     private var clusters: Dictionary<String, SimpleClusterObject> = [:]
     private var panoramasMarkers: Array<Marker> = []
@@ -581,6 +590,84 @@ class ObjectTapHandler {
     
     func removeAllPolygons(from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
         removeAllObjects(managerId, &self.polygons, completion: completion)
+    }
+    
+    // MARK: Circle
+    
+    private func mapCircle(_ circle: CircleMessage, completion: @escaping (Result<Void, any Error>) -> Void) -> Circle? {
+        let options = CircleOptions(
+            // TODO : fix force unwrap
+            position: circle.options.position.geoPoint,
+            radius: Meter(value: Float(circle.options.radius)),
+            color: circle.options.color.map {
+                Color(argb: UInt32($0))
+            } ?? Color(),
+            strokeWidth: circle.options.strokeWidth.map {
+                LogicalPixel(value: Float($0))
+            } ?? LogicalPixel(value: 0),
+            strokeColor: circle.options.strokeColor.map {
+                Color(argb: UInt32($0))
+            } ?? Color(),
+            userData: PolygonId(circle.id)
+        )
+        
+        do {
+            return try Circle(options: options)
+        } catch {
+            completion(
+                Result.failure(
+                FlutterError(
+                    code: "Error creating circle \(error.localizedDescription)",
+                    message: nil,
+                    details: nil
+                ))
+            )
+        }
+        
+        return nil
+    }
+    
+    func addCircle(_ circle: CircleMessage, to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let circleObject = mapCircle(circle, completion: completion) else {
+            return
+        }
+        
+        self.objectsQueue.async {
+            self.circles[circle.id] = (circleObject, managerId)
+            self.getManager(managerId).addObject(item: circleObject)
+            completion(Result.success(()))
+        }
+    }
+    
+    func addCircles(_ circles: [CircleMessage], to managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        var circleObjects = [String:Circle]()
+        for circle in circles {
+            guard let circleObject = mapCircle(circle, completion: completion) else {
+                return
+            }
+            circleObjects[circle.id] = circleObject
+        }
+        
+        self.objectsQueue.async {
+            circleObjects.forEach { id, object in
+                self.circles[id] = (object, managerId)
+            }
+            self.getManager(managerId).addObjects(objects: Array(circleObjects.values))
+            completion(Result.success(()))
+        }
+    }
+    
+    func removeCircle(_ id: String, from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectsQueue.async {
+            if let circleObject = self.circles.removeValue(forKey: id) {
+                self.getManager(managerId).removeObject(item: circleObject.0)
+                completion(Result.success(()))
+            }
+        }
+    }
+    
+    func removeAllCircles(from managerId: String?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        removeAllObjects(managerId, &self.circles, completion: completion)
     }
     
     // MARK: Polyline

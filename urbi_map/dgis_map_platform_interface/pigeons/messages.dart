@@ -1505,11 +1505,11 @@ abstract class MapApi {
   );
 
   @async
-  void addCircle(CircleMessage polygon, MapObjectManagerMessage? manager);
+  void addCircle(CircleMessage circle, MapObjectManagerMessage? manager);
 
   @async
   void addCircles(
-    List<CircleMessage> polygons,
+    List<CircleMessage> circles,
     MapObjectManagerMessage? manager,
   );
 
