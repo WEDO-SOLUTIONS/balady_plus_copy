@@ -5,6 +5,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/photo_viewer/custom_scroll_physics.dart';
+import 'package:mapness/shared/ui/photo_viewer/photo_view_pager.dart';
 
 @RoutePage()
 class PhotoViewerPage extends StatefulWidget {
@@ -77,10 +79,17 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
           decoration: const BoxDecoration(color: backgroundColor),
           child: Stack(
             children: [
-              EasyImageViewPager(
+              PhotoViewPager(
+                scrollPhysics: const CustomScrollPhysics(
+                    velocityThreshold: 5, // Уменьшенный порог скорости
+                    spring: SpringDescription(
+                      mass: .5, // Уменьшенная масса для быстрого отклика
+                      stiffness: 200, // Увеличенная жесткость
+                      damping: 25, // Оптимизированное демпфирование
+                    )),
+                doubleTapZoomable: true,
                 easyImageProvider: multiImageProvider,
                 pageController: pageController,
-                doubleTapZoomable: true,
                 onScaleChanged: (zoom) {
                   if (zoom > 1) {
                     isAppBarVisible.value = false;
@@ -138,17 +147,17 @@ class _PhotoAppBar extends StatelessWidget implements PreferredSizeWidget {
               textStyle: context.textStyle.callout.copyWith(color: Colors.white),
               title: value,
 
-            /// TODO(ui_kit): Fix leading in UIKIT
-            leading: Container(
-              padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-              alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
-              child: const Icon(
-                SystemIcons.arrowCornerLeftSmall,
-                color: Colors.white,
-                size: 24,
+              /// TODO(ui_kit): Fix leading in UIKIT
+              leading: Container(
+                padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                alignment: context.isLTR ? Alignment.centerLeft : Alignment.centerRight,
+                child: const Icon(
+                  SystemIcons.arrowCornerLeftSmall,
+                  color: Colors.white,
+                  size: 24,
+                ),
               ),
-            ),
-            onLeadingPressed: () => context.router.popForced(),
+              onLeadingPressed: () => context.router.popForced(),
             ),
           ),
         ],
