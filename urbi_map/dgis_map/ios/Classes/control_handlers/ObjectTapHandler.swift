@@ -19,6 +19,7 @@ class ObjectTapHandler {
         static let onRoadEventTap = "onRoadEventTap"
         static let onMarkerTap = "onMarkerTap"
         static let onPolygonTap = "onPolygonTap"
+        static let onCircleTap = "onCircleTap"
         static let onPolylineTap = "onPolylineTap"
         static let onClusterTap = "onClusterTap"
         static let onMyLocationTap = "onMyLocationTap"
@@ -128,6 +129,14 @@ class ObjectTapHandler {
             if let id = polygon.userData as? PolygonId {
                 eventChannel.success([
                     "event": Events.onPolygonTap,
+                    "id": id.id,
+                ] as [String : Any])
+                return
+            }
+        case let circle as Circle:
+            if let id = circle.userData as? CircleId {
+                eventChannel.success([
+                    "event": Events.onCircleTap,
                     "id": id.id,
                 ] as [String : Any])
                 return
