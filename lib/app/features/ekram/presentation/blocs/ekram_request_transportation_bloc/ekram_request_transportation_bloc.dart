@@ -5,6 +5,7 @@ import 'package:balady_plus/app/features/ekram/data/model/ekram_transport_valida
 import 'package:balady_plus/app/features/ekram/data/model/mosque_ghusl_places_params.dart';
 import 'package:balady_plus/app/features/ekram/data/model/transportation_companies_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_burial_cities.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetery_types_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries_lookup.dart';
 import 'package:balady_plus/app/features/ekram/domain/use_cases/get_countries.dart';
@@ -91,6 +92,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final GetNationalities _getNationalities;
   final ApplyDeceasedTransport _applyDeceasedTransport;
   final GetDeathCities _deathCities;
+  final GetBurialCities _burialCities;
   final VerifyDeceased _verifyDeceased;
   final GetRequestDetails _getRequestDetails;
   final GetCurrentTrackLocation _getCurrentTrackLocation;
@@ -129,6 +131,7 @@ class EkramRequestTransportationBloc extends Bloc<
         _getCurrentTrackLocation = GetCurrentTrackLocation(repository: sl()),
         _saveDeceasedInfo = SaveDeceasedInfo(repository: sl()),
         _deathCities = GetDeathCities(repository: sl()),
+        _burialCities = GetBurialCities(repository: sl()),
         _getMadinahEmirateApprovalStatus =
             GetMadinahEmirateApprovalStatus(repository: sl()),
         _verifyDeceased = VerifyDeceased(repository: sl()),
@@ -209,7 +212,8 @@ class EkramRequestTransportationBloc extends Bloc<
     getCountries();
     getPrayers();
     getNationalitiesHandler();
-    getCitiesHandler();
+    getDeathCitiesHandler();
+    getBurialCitiesHandler();
     getCemetryTypeItemsHandler();
 
 
@@ -472,7 +476,7 @@ class EkramRequestTransportationBloc extends Bloc<
         burialDateHijri: Nullable(CommonFunctions.padHijriDate(hijri))));
   }
 
-  Future<List<LookUpItem>?> getCitiesHandler() async {
+  Future<List<LookUpItem>?> getDeathCitiesHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
     final failureOrSuccess = await _deathCities(NoParams());
@@ -485,7 +489,26 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
       emit(state.copyWith(
         status: BlocStatus.success,
-        cities: success.data?.result,
+        deathCities: success.data?.result,
+        errorMessage: "",
+      ));
+      return success.data?.result;
+    });
+  }
+
+  Future<List<LookUpItem>?> getBurialCitiesHandler() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+    final failureOrSuccess = await _burialCities(NoParams());
+    return failureOrSuccess.fold((failure) {
+      emit(state.copyWith(
+        status: BlocStatus.failure,
+        errorMessage: (failure as ServerFailure).errorMessage,
+      ));
+      return null;
+    }, (success) {
+      emit(state.copyWith(
+        status: BlocStatus.success,
+        burialCities: success.data?.result,
         errorMessage: "",
       ));
       return success.data?.result;
@@ -852,7 +875,8 @@ class EkramRequestTransportationBloc extends Bloc<
       if (nextPage == 4) {
         state
                     .getCemtryById(
-                        state.requestDetailsModel?.burialInfo?.cityId)
+                      state.requestDetailsModel?.burialInfo?.cityId,
+                    )
                     ?.needApproval ??
                 false
             ? null

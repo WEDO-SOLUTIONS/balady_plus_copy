@@ -4478,5 +4478,8 @@
   "tripCompletesucessfully": "Trip Completed Successfully",
   "BurialInOtherCity": "Burial in other city",
   "BurialInCorpseArrivalCity": "Burial in corpse arrival city",
-  "BurialInDeathCity": "Burial in death city"
+  "BurialInDeathCity": "Burial in death city",
+  "enter_ekram_fourth_name":"Please enter fourth name",
+  "enternationilaty": "Please choose nationality",
+  "enter_gender":"Please choose gender"
 }
