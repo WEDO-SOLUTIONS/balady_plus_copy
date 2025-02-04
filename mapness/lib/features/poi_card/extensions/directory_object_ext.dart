@@ -242,7 +242,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     /// If all days are closed, return a model indicating that the place is temporarily not working.
     if (allDaysClosed) {
       return _buildWorkTimeModel(
-        title: context.l10n.temporarilyNotWorking,
+        title: context.l10n.temporarilyClosed,
         color: context.colorsV2.errorDefault,
       );
     }
@@ -273,12 +273,17 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     OpenHours openHours,
     List<PoiContentWorkTimeDay>? days,
   ) {
-    /// Get the current date
+    /// Get the current date and time
     final currentDateTime = DateTime.now();
 
     /// Parse the opening and closing hours into DateTime objects.
     final openTime = _parseTime(currentDateTime, openHours.openHour!);
-    final closeTime = _parseTime(currentDateTime, openHours.closeHour!);
+    var closeTime = _parseTime(currentDateTime, openHours.closeHour!);
+
+    /// Handle case when closing time is after midnight (next day)
+    if (closeTime.isBefore(openTime)) {
+      closeTime = closeTime.add(const Duration(days: 1));
+    }
 
     /// If the current time is before opening time, return a model indicating the place is closed until opening.
     if (currentDateTime.isBefore(openTime)) {
