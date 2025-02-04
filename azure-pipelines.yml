@@ -11,5 +11,7 @@ stages:
       - job: BuildFlutterApp
         displayName: 'Build Flutter App'
         steps:
-          - script: echo "API URL: $(apigeeURL)"
-          - script: echo "Environment: $(hmCode)"
+          - script:
+              echo "API URL: $(apigeeURL)"
+          - script:
+              echo "Environment: $(hmCode)"
