@@ -147,6 +147,8 @@ class Helpers {
     return null;
   }
 
+
+
   static Future<LatLng?> getCurrentLocation(
       {geoLocator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
@@ -173,7 +175,6 @@ class Helpers {
   static final locationService = hms.FusedLocationProviderClient();
 
   static Future<Position?> getLastLocationHuawei() async {
-    await locationService.initFusedLocationService();
     final location = await locationService.getLastLocation();
     if (location.latitude != null && location.longitude != null) {
       return Position(
