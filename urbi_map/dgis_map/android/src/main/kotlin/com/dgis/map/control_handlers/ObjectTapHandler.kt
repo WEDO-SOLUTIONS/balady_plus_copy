@@ -22,6 +22,7 @@ import java.util.concurrent.Executors
 import ru.dgis.sdk.Context
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.LevelId
+import ru.dgis.sdk.Meter
 import ru.dgis.sdk.ScreenSize
 import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
@@ -61,8 +62,11 @@ class ObjectTapHandler(
 
     private data class PolylineId(val id: String)
 
+    private data class CircleId(val id: String)
+
     private val markers = mutableMapOf<String, Pair<Marker, String?>>()
     private val polygons = mutableMapOf<String, Pair<Polygon, String?>>()
+    private val circles = mutableMapOf<String, Pair<Circle, String?>>()
     private val polylines = mutableMapOf<String, Pair<Polyline, String?>>()
     private val clusters = mutableMapOf<String, SimpleClusterObject>()
     private val ioLayerMarkers = mutableListOf<Marker>()
@@ -94,6 +98,14 @@ class ObjectTapHandler(
 
                 if (userData is PolygonId) {
                     onPolygonTap(userData.id)
+                    return
+                }
+            }
+            is Circle -> {
+                val userData = tappedObject.userData
+
+                if (userData is CircleId) {
+                    onCircleTap(userData.id)
                     return
                 }
             }
@@ -503,9 +515,9 @@ class ObjectTapHandler(
     }
 
     fun addPolygons(
-            polygons: List<PolygonMessage>,
-            managerId: String?,
-            callback: (Result<Unit>) -> Unit
+        polygons: List<PolygonMessage>,
+        managerId: String?,
+        callback: (Result<Unit>) -> Unit
     ) {
         val polygonObjects = mutableMapOf<String, Pair<Polygon, String?>>()
         for (polygon in polygons) {
@@ -529,6 +541,63 @@ class ObjectTapHandler(
 
     fun removeAllPolygons(managerId: String?, callback: (Result<Unit>) -> Unit) {
         removeAllObjects(managerId, polygons, callback)
+    }
+
+    /// --- CIRCLE ---
+    private fun mapCircle(circle: CircleMessage): Circle {
+        val options =
+            CircleOptions(
+                position = circle.options.position.toGeoPoint(),
+                radius = Meter(circle.options.radius.toFloat()),
+                color = circle.options.color?.let { Color(argb = it.toInt()) } ?: Color(),
+                strokeWidth =
+                circle.options.strokeWidth?.let { LogicalPixel(it.toFloat()) }
+                    ?: LogicalPixel(0f),
+                strokeColor = circle.options.strokeColor?.let { Color(argb = it.toInt()) }
+                    ?: Color(),
+                userData = CircleId(circle.id)
+            )
+
+        return Circle(options)
+    }
+
+    fun addCircle(circle: CircleMessage, manager: String?, callback: (Result<Unit>) -> Unit) {
+        val circleObject = mapCircle(circle)
+
+        mapObjectsExecutorService.submit {
+            circles[circle.id] = Pair(circleObject, manager)
+            getManager(manager).addObject(circleObject)
+            callback(Result.success(Unit))
+        }
+    }
+
+    fun addCircles(
+        circles: List<CircleMessage>,
+        managerId: String?,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        val circleObjects = mutableMapOf<String, Pair<Circle, String?>>()
+        for (circle in circles) {
+            val polygonObject = mapCircle(circle) ?: return
+            circleObjects[circle.id] = Pair(polygonObject, managerId)
+        }
+
+        mapObjectsExecutorService.submit {
+            this.circles.putAll(circleObjects)
+            getManager(managerId).addObjects(getObjectsFromPair(circleObjects))
+            callback(Result.success(Unit))
+        }
+    }
+
+    fun removeCircle(id: String, managerId: String?, callback: (Result<Unit>) -> Unit) {
+        mapObjectsExecutorService.submit {
+            circles.remove(id)?.also { getManager(managerId).removeObject(it.first) }
+            callback(Result.success(Unit))
+        }
+    }
+
+    fun removeAllCircles(managerId: String?, callback: (Result<Unit>) -> Unit) {
+        removeAllObjects(managerId, circles, callback)
     }
 
     /// --- POLYLINE ---
@@ -885,6 +954,10 @@ class ObjectTapHandler(
         eventSink.success(mapOf("event" to Events.onPolygonTap.name, "id" to id))
     }
 
+    private fun onCircleTap(id: String) {
+        eventSink.success(mapOf("event" to Events.onCircleTap.name, "id" to id))
+    }
+
     private fun onPolylineTap(id: String) {
         eventSink.success(mapOf("event" to Events.onPolylineTap.name, "id" to id))
     }
@@ -1026,6 +1099,7 @@ private enum class Events {
     onRoadEventTap,
     onMarkerTap,
     onPolygonTap,
+    onCircleTap,
     onPolylineTap,
     onClusterTap,
     onMyLocationTap,

@@ -392,7 +392,22 @@ class DgisMapController {
     await _instance.removeAllMarkers(fromManager);
     await _instance.removeAllPolygons(fromManager);
     await _instance.removeAllPolylines(fromManager);
+    await _instance.removeAllCircles(fromManager);
   }
+
+  /// Add circle to map
+  Future<void> addCircle(Circle circle, {MapObjectManagerMessage? toManager}) => _instance.addCircle(circle, toManager);
+
+  /// Add several circles to map.
+  Future<void> addCircles(List<Circle> circles, {MapObjectManagerMessage? toManager}) =>
+      _instance.addCircles(circles, toManager);
+
+  /// Remove circle by id.
+  Future<void> removeCircle(String id, {MapObjectManagerMessage? fromManager}) =>
+      _instance.removeCircle(id, fromManager);
+
+  /// Remove all circles added with [addCircle].
+  Future<void> removeAllCircles({MapObjectManagerMessage? fromManager}) => _instance.removeAllCircles(fromManager);
 
   /// Add polygon to map.
   Future<void> addPolygon(Polygon polygon, {MapObjectManagerMessage? toManager}) =>
