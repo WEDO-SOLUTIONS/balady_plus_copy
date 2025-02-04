@@ -143,8 +143,7 @@ class EkramRequestTransportationBloc extends Bloc<
             fullName: CommonProperties.userInfo?.arName ?? "",
             mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
             requestType: trans("ekram_request_type"),
-            requestDetailsModel:null
-      )) {
+            requestDetailsModel: null)) {
     on<EkramRequestTransportationEvent>((event, emit) {});
     on<ChangeIsNeedSpecialTransferEvent>(_changeIsNeedSpecialTransferHanlder);
     // on<ChangeIsBurialInsideDeathCityEvent>(
@@ -215,7 +214,6 @@ class EkramRequestTransportationBloc extends Bloc<
     getDeathCitiesHandler();
     getBurialCitiesHandler();
     getCemetryTypeItemsHandler();
-
 
     // RequestDetailsResponseModel? params = state.requestDetailsModel;
     // params ??= RequestDetailsResponseModel(
@@ -899,6 +897,18 @@ class EkramRequestTransportationBloc extends Bloc<
     } else {
       if (state.status == BlocStatus.performing) return;
       int prvoiusPage = state.currentPageValue - 1;
+      if (state.requestDetailsModel?.burialInfo?.cityId != null) {
+        if (prvoiusPage == 4) {
+          state
+                      .getCemtryById(
+                        state.requestDetailsModel?.burialInfo?.cityId,
+                      )
+                      ?.needApproval ??
+                  false
+              ? null
+              : prvoiusPage--;
+        }
+      }
       emitter(state.copyWith(
         status: BlocStatus.performing,
       ));
@@ -1269,7 +1279,7 @@ class EkramRequestTransportationBloc extends Bloc<
     int? burialCityId;
 
     DeathInfo? deathInfo = state.requestDetailsModel?.deathInfo;
-    if (deathInfo != null && deathInfo.countryId != null) {
+    if (deathInfo != null) {
       if (deathInfo.countryId == 1 && deathInfo.cityId != null) {
         burialCityId = deathInfo.cityId;
       } else if (deathInfo.countryId != 1 &&
