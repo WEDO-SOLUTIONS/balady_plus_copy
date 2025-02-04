@@ -739,7 +739,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 context
                                     .read<EkramRequestTransportationBloc>()
                                     .add(GetMosquesEvent(
-                                        params: MosqueGhuslPlacesParams(
+                                        ghuslplace: MosqueGhuslPlacesParams(
                                             burialDate: state
                                                 .requestDetailsModel
                                                 ?.burialInfo

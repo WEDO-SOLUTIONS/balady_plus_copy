@@ -67,6 +67,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
+                        showOptional:true,
                         items: state.nationalIdTypes ?? [],
                         value: state.selectedNationalIdType,
                         onEmptyList: () async {
@@ -94,6 +95,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
+                        showOptional:true,
                         items: state.cities ?? [],
                         value: state.selectedCity,
                         onEmptyList: () async {
@@ -113,6 +115,8 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                         hint: ("burial_city").tr(),
                       ),
                       CustomLookUpLongDialog(
+
+                        showOptional:true,
                         items: state.nationalities ?? [],
                         value: state.selectedNationality,
                         onEmptyList: () {
