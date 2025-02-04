@@ -750,9 +750,13 @@ class EkramRequestTransportationBloc extends Bloc<
   }
 
   Future<void> _getMosquesHandler(GetMosquesEvent e, Emitter emitter) async {
+
+    if(e.cityIds == null || e.transportId == null)
+
+      return;
     emitter(state.copyWith(status: BlocStatus.loading));
     final failureOrSuccess =
-        await _getMosques([e.transportId, e.cityIds, e.params]);
+        await _getMosques([e.transportId, e.cityIds, e.ghuslplace]);
     failureOrSuccess.fold((failure) {
       print("failure $failure");
       emitter(state.copyWith(
@@ -1199,18 +1203,20 @@ class EkramRequestTransportationBloc extends Bloc<
                 e.burialInfo?.isBurialInsideDeathCity ?? true));
     BurialInfo info = params.burialInfo!;
     int? cityID;
-    if (e.burialInfo?.isBurialInsideDeathCity == null ||
-        e.burialInfo?.isBurialInsideDeathCity == true) {
+    if ((info.isBurialInsideDeathCity == null || info.isBurialInsideDeathCity == true )||
+        ( e.burialInfo?.isBurialInsideDeathCity == true)) {
       cityID = getBurialCityId();
     }
+    else
+      {
+        cityID = e.burialInfo?.cityId;
+      }
 
     info = info.copyWith(
         isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ??
             info.isBurialInsideDeathCity ??
             true,
-        cityId: e.burialInfo?.isBurialInsideDeathCity == false
-            ? e.burialInfo?.cityId
-            : cityID ?? -1,
+        cityId:cityID,
         burialDate: e.burialInfo?.burialDate,
         gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
         prayId: e.burialInfo?.prayId,

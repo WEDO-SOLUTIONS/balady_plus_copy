@@ -84,9 +84,8 @@ class EkramTransporationCardWidget extends StatelessWidget {
                   ),
                   RequestParameter(
                     title: 'ekramReligion'.tr(),
-                    value: ekramTransportationItem.isMuslim ?? false
-                        ? 'muslim'.tr()
-                        : 'non_muslim'.tr(),
+                    value: ekramTransportationItem.isMuslim == true ? 'muslim'.tr()
+                        :ekramTransportationItem.isMuslim == false? 'non_muslim'.tr():"",
                   ),
                   RequestParameter(
                     title: 'ekramHospital'.tr(),

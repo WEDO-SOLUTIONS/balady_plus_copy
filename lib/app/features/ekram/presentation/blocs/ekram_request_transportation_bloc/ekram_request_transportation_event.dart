@@ -154,10 +154,10 @@ class GetLandriesEvent extends EkramRequestTransportationEvent {
 }
 
 class GetMosquesEvent extends EkramRequestTransportationEvent {
-  final MosqueGhuslPlacesParams params;
+  final MosqueGhuslPlacesParams ghuslplace;
   final int? transportId;
   final List<int?>? cityIds;
-    const GetMosquesEvent({required this.params, required this.transportId , required this.cityIds});
+    const GetMosquesEvent({required this.ghuslplace, required this.transportId , required this.cityIds});
 }
 
 class LoadInitialListsEvent extends EkramRequestTransportationEvent {
