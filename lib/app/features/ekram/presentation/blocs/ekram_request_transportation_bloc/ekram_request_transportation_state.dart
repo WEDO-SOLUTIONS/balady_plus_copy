@@ -64,6 +64,7 @@ class EkramRequestTransportationState extends Equatable {
   final bool? editInfoSection;
   final bool? isDeceasedBtnEnabled;
   final bool? isDraft;
+  final bool? maghsalaExist;
 
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
@@ -124,11 +125,11 @@ class EkramRequestTransportationState extends Equatable {
       this.selectedHospital,
       this.otherHospitalName,
       this.selectedNationality,
-      // this.deceasedInfoDto,
       this.requestDetailsModel,
       this.letter,
       this.editInfoSection,
-      this.isDeceasedBtnEnabled});
+      this.isDeceasedBtnEnabled,
+      this.maghsalaExist});
 
   EkramRequestTransportationState copyWith({
     final Nullable<String?>? deceassedDOBHijri,
@@ -192,6 +193,8 @@ class EkramRequestTransportationState extends Equatable {
     final RequestDetailsResponseModel? requestDetailsModel,
     final bool? editInfoSection,
     final bool? isDeceasedBtnEnabled,
+    final bool? maghsalaExist,
+
   }) {
     return EkramRequestTransportationState(
       isdeceasedInfoReadOnly:
@@ -281,6 +284,7 @@ class EkramRequestTransportationState extends Equatable {
       editInfoSection: editInfoSection ?? this.editInfoSection,
       isDeceasedBtnEnabled: isDeceasedBtnEnabled ?? this.isDeceasedBtnEnabled,
       isDraft: isDraft ?? this.isDraft,
+        maghsalaExist:maghsalaExist??this.maghsalaExist
     );
   }
 

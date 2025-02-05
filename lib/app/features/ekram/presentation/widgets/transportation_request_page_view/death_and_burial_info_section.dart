@@ -687,7 +687,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setTransportInfoEvent(
                                           transportInfo: TransportInfo(
-                                              charityId: item.id)));
+                                              charityId: item.id),maghsalaExist: item.maghsalaExist));
                                 }
                               },
                               label: ("ekram_orgnization_name").tr(),
@@ -695,6 +695,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             NotesWidget(notes: ["ekram_org_note".tr()]),
                             CustomLookUpLongDialog(
+                              showOptional:state.maghsalaExist == true?true:false,
                               items: state.laundries ?? [],
                               value: state.getlaundriesById(state
                                   .requestDetailsModel

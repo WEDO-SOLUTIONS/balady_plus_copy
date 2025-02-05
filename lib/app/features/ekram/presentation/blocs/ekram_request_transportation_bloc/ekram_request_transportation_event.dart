@@ -243,7 +243,8 @@ class setBurialInfoEvent extends EkramRequestTransportationEvent {
 }
 class setTransportInfoEvent extends EkramRequestTransportationEvent {
   final TransportInfo? transportInfo;
-  setTransportInfoEvent({this.transportInfo});
+  bool?maghsalaExist;
+  setTransportInfoEvent({this.transportInfo,this.maghsalaExist});
 }
 class setCemtryInfoEvent extends EkramRequestTransportationEvent {
   final CemeteryData? cemeteryData;
