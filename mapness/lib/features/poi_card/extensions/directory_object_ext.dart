@@ -242,7 +242,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
     /// If all days are closed, return a model indicating that the place is temporarily not working.
     if (allDaysClosed) {
       return _buildWorkTimeModel(
-        title: context.l10n.temporarilyNotWorking,
+        title: context.l10n.temporarilyClosed,
         color: context.colorsV2.errorDefault,
       );
     }
