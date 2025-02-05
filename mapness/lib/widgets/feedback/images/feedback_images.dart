@@ -22,7 +22,6 @@ import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
 import 'package:mapness/widgets/feedback/images/feedback_images_action_error_sheet.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-const _imageSize = 62.0;
 const _maxImageResolution = 5000;
 
 class FeedbackImages extends StatelessWidget {
@@ -54,9 +53,7 @@ class FeedbackImages extends StatelessWidget {
             name: field.id,
             valueTransformer: (value) => value
                 ?.map(
-                  (fileUpload) => fileUpload is FileUploadSuccess
-                      ? fileUpload.serverUrl
-                      : null,
+                  (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
                 )
                 .nonNulls
                 .toList(),
@@ -74,27 +71,36 @@ class FeedbackImages extends StatelessWidget {
             },
             builder: (fieldState) {
               final value = fieldState.value ?? const IList.empty();
-              return Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  if (value.length < field.maxImages)
-                    _AddImageButton(
-                      onTap: () => _handlePickImage(context, fieldState),
-                    ),
-                  ...value.indexed.map(
-                    (indexedUpload) => FeedbackImageWidget(
-                      key: ValueKey(indexedUpload),
-                      imagePath: indexedUpload.$2.srcPath,
-                      onRemove: () => fieldState.didChange(
-                        value.removeAt(indexedUpload.$1),
+
+              return LayoutBuilder(
+                builder: (context, constraints) {
+                  final imagesInRow = ((constraints.maxWidth + 8) / 128).floor();
+                  final size = (constraints.maxWidth + 8) / imagesInRow - 8;
+
+                  return Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      if (value.length < field.maxImages)
+                        _AddImageButton(
+                          onTap: () => _handlePickImage(context, fieldState),
+                          size: size,
+                        ),
+                      ...value.indexed.map(
+                        (indexedUpload) => FeedbackImageWidget(
+                          key: ValueKey(indexedUpload),
+                          imagePath: indexedUpload.$2.srcPath,
+                          onRemove: () => fieldState.didChange(
+                            value.removeAt(indexedUpload.$1),
+                          ),
+                          onUploadStatusChange: (status) =>
+                              fieldState.didChange(value.replace(indexedUpload.$1, status)),
+                          imageSize: size,
+                        ),
                       ),
-                      onUploadStatusChange: (status) => fieldState
-                          .didChange(value.replace(indexedUpload.$1, status)),
-                      imageSize: _imageSize,
-                    ),
-                  ),
-                ],
+                    ],
+                  );
+                },
               );
             },
           ),
@@ -114,34 +120,42 @@ class FeedbackImages extends StatelessWidget {
         ],
       );
 
-  Future<void> _handlePickImage(BuildContext context,
-      FormFieldState<IList<FileUpload>> fieldState) async {
+  Future<void> _handlePickImage(BuildContext context, FormFieldState<IList<FileUpload>> fieldState) async {
     if (await _isGalleryPermissionDenied()) {
       await showPermissionDeniedDialog(context);
       return;
     }
 
-    final image = await _pickedImage();
-    if (image == null) {
+    final images = await _pickedImage();
+    if (images.isEmpty) {
       return;
     }
 
-    final pickError = await isImageSupported(
-      context,
-      image: image,
-    );
-
-    if (pickError != null) {
-      unawaited(_showImageActionErrorSheet(
+    for (final image in images) {
+      final pickError = await isImageSupported(
         context,
-        error: pickError,
-        onRetry: () => _handlePickImage(context, fieldState),
-      ));
-      return;
+        image: image,
+      );
+
+      if (pickError != null) {
+        unawaited(_showImageActionErrorSheet(
+          context,
+          error: pickError,
+          onRetry: () => _handlePickImage(context, fieldState),
+        ));
+        return;
+      }
     }
+
     final value = fieldState.value ?? const IList.empty();
 
-    fieldState.didChange(value.add(FileUpload.init(srcPath: image.path)));
+    fieldState.didChange(
+      value.addAll(
+        images.map(
+          (image) => FileUpload.init(srcPath: image.path),
+        ),
+      ),
+    );
   }
 
   Future<FeedbackImagePickError?> isImageSupported(
@@ -156,19 +170,18 @@ class FeedbackImages extends StatelessWidget {
       error = FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }
     final fileType = image.path.split('.').last.toLowerCase();
-    final imageFormatAccepted = field.acceptedFormats.isNotEmpty &&
-        field.acceptedFormats.contains(fileType);
+    final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
 
     if (!imageFormatAccepted) {
-      error = FeedbackImageWrongFormatError(
-          supportedFormats: field.acceptedFormats);
+      error = FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
     }
     return error;
   }
 
-  Future<XFile?> _pickedImage() async {
-    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-    return image;
+  Future<List<XFile>> _pickedImage() async {
+    final images = await ImagePicker().pickMultiImage();
+
+    return images;
   }
 
   Future<void> _showImageActionErrorSheet(
@@ -217,8 +230,11 @@ class FeedbackImages extends StatelessWidget {
 
 class _AddImageButton extends StatelessWidget {
   final void Function() onTap;
+  final double size;
+
   const _AddImageButton({
     required this.onTap,
+    required this.size,
   });
 
   @override
@@ -228,15 +244,15 @@ class _AddImageButton extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(RadiusBorder.l),
           child: SizedBox(
-            height: _imageSize,
-            width: _imageSize,
+            height: size,
+            width: size,
             child: ColoredBox(
               color: context.colorsV2.backgroundSurface1,
               child: Center(
                 child: Icon(
                   GeneralIcons.plusCircle,
                   color: context.colorsV2.accentDefault,
-                  size: 24,
+                  size: size * .4,
                 ),
               ),
             ),
