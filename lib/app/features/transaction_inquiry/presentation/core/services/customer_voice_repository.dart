@@ -26,52 +26,52 @@ class CustomerVoiceRepository {
   final pegawebServices = locator<PegaWebService>();
   final webServices = sl<WebService>();
 
-  Future<GisLocationResult?> getGisLocation(LatLng location) async {
-    String query =
-        "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
-
-    final body = await pegawebServices.getRequest(
-        RemoteConfig.gis + ApiConstants.GisGetLocation,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-
-    try {
-      GisLocationResult response =
-          GisLocationResult.fromJson(json.decode(data));
-      if (response != null) {
-        return response;
-      } else {
-        CommonFunctions.showError(error);
-      }
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      CommonFunctions.showError(error.toString());
-      try {
-        Helpers.sendLog(
-            url: RemoteConfig.gis + ApiConstants.GisGetLocation,
-            data: data,
-            qeuryParms: query,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-      }
-      return null;
-    }
-  }
+  // Future<GisLocationResult?> getGisLocation(LatLng location) async {
+  //   String query =
+  //       "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
+  //
+  //   final body = await pegawebServices.getRequest(
+  //       RemoteConfig.gis + ApiConstants.GisGetLocation,
+  //       relativePath: query);
+  //   bool state = body['state'];
+  //   dynamic data = body['data'];
+  //   String error = body['error'] ?? ("errors_server_error_1").tr();
+  //
+  //   try {
+  //     GisLocationResult response =
+  //         GisLocationResult.fromJson(json.decode(data));
+  //     if (response != null) {
+  //       return response;
+  //     } else {
+  //       CommonFunctions.showError(error);
+  //     }
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     CommonFunctions.showError(error.toString());
+  //     try {
+  //       Helpers.sendLog(
+  //           url: RemoteConfig.gis + ApiConstants.GisGetLocation,
+  //           data: data,
+  //           qeuryParms: query,
+  //           errorMsg: error.toString());
+  //     } catch (error, stackTrace) {
+  //       LogsViewModel().sendEventFromModel(
+  //         event: ErrorExceptionModel(
+  //           nameEvent: EventsName.handledException,
+  //           message: error.toString(),
+  //           stackTrace: stackTrace.toString(),
+  //         ),
+  //       );
+  //     }
+  //     return null;
+  //   }
+  // }
 
   Future<GisLocationResult?> getApigeeGisLocation(LatLng location) async {
     String query =

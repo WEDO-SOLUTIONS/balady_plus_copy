@@ -855,8 +855,6 @@ class ServiceCalculatorRepository {
     return webServices.dio
         .get(
       _subActivitiesUrl + procedureId.toString(),
-      // headers: baladyHeaders,
-// apiName: calculatorAPI,
     )
         .then((respons) {
       List<SubActivity>? regions;
@@ -889,12 +887,7 @@ class ServiceCalculatorRepository {
 
   Future<CalculateCostResponse> calculteCost(CalculateCost request) {
     return webServices.dio
-        .post(
-      _calculateCostUrl,
-      // apiName: calculatorAPI,
-      // headers: baladyHeaders,
-      data: request.toJson(),
-    )
+        .post(_calculateCostUrl, data: request.toJson())
         .then((respons) {
       CalculateCostResponse? regions;
 
@@ -924,8 +917,6 @@ class ServiceCalculatorRepository {
     return webServices.dio
         .get(
       _cityIdUrl + subMunicipalityId.toString(),
-      // headers: baladyHeaders,
-// apiName: calculatorAPI,
     )
         .then((respons) {
       if (respons.statusCode == 200) {
@@ -933,8 +924,8 @@ class ServiceCalculatorRepository {
           var data = respons.data;
           final jsonResult = data['data']['result'];
           return jsonResult["resultItem"] != null
-              ? new Future.value(jsonResult["resultItem"])
-              : new Future.value(0);
+              ? Future.value(jsonResult["resultItem"])
+              : Future.value(0);
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
