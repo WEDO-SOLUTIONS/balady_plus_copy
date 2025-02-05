@@ -744,6 +744,12 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+
+      List<LookUpItem>? laundries = [];
+      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      laundries.add(choose);
+      laundries.addAll(success.data?.result as List<LookUpItem>);
+
       emitter(state.copyWith(
         status: BlocStatus.success,
         laundries: laundries,
@@ -769,10 +775,10 @@ class EkramRequestTransportationBloc extends Bloc<
     }, (success) {
 
 
-      List<LookUpItem>? laundries = [];
+      List<LookUpItem>? mosques = [];
       LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
-      laundries.add(choose);
-      laundries.addAll(success.data?.result as List<LookUpItem>);
+      mosques.add(choose);
+      mosques.addAll(success.data?.result as List<LookUpItem>);
       emitter(state.copyWith(
         status: BlocStatus.success,
         mosques: mosques,
@@ -1255,7 +1261,7 @@ class EkramRequestTransportationBloc extends Bloc<
     params = params.copyWith(cemeteryData: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success, requestDetailsModel: params));
+        status: BlocStatus.success, requestDetailsModel: params,maghsalaExist:e.maghsalaExist));
   }
 
   Future<void> _changeTansportInfoHandler(
@@ -1278,7 +1284,7 @@ class EkramRequestTransportationBloc extends Bloc<
     params = params.copyWith(transportInfo: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success, requestDetailsModel: params,maghsalaExist:e.maghsalaExist));
+        status: BlocStatus.success, requestDetailsModel: params));
   }
 
   bool isScreenEditable(RequestDetailsResponseModel? res) {

@@ -653,7 +653,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setCemtryInfoEvent(
                                           cemeteryData: CemeteryData(
-                                              cemeteryId: item.id)));
+                                              cemeteryId: item.id),maghsalaExist: item.maghsalaExist));
                                 }
                               },
                               label: ("cemeteryName").tr(),
@@ -687,7 +687,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setTransportInfoEvent(
                                           transportInfo: TransportInfo(
-                                              charityId: item.id),maghsalaExist: item.maghsalaExist));
+                                              charityId: item.id)));
                                 }
                               },
                               label: ("ekram_orgnization_name").tr(),
@@ -700,7 +700,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               value: state.getlaundriesById(state
                                   .requestDetailsModel
                                   ?.transportInfo
-                                  ?.ghuslPlaceId),
+                                  ?.ghuslPlaceId ),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
