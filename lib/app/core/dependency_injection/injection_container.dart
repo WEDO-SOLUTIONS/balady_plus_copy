@@ -82,15 +82,12 @@ import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
 
-
 import 'package:balady_authorization/src/utils/injection/injection_container.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
 
 void initialize() {
-
-
   OLDInjection.init();
   //! Features
   //? Entry Point
@@ -128,7 +125,6 @@ void initialize() {
   //? Violation Guide
   ViolationGuideInjection.init();
 
-
 //? Objections
   ObjectionsInjection.init();
 //? Objectable Transactions
@@ -155,7 +151,7 @@ void initialize() {
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
-  sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
+  // sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
   sl.registerLazySingleton(
       () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
 
@@ -218,7 +214,9 @@ void initialize() {
 
   sl.registerLazySingleton<RequestsRemoteDataSource>(
     () => RequestsRemoteDataSourceImplementation(
-        webService: sl(), crmWebService: sl()),
+      webService: sl(),
+      // crmWebService: sl(),
+    ),
   );
 
   sl.registerLazySingleton(() => ForceUpdateViewModel());
@@ -243,8 +241,8 @@ void initialize() {
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
 
-  sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(() => QuestionRemoteDataSourceImplementation(webService: sl()));
-
+  sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(
+      () => QuestionRemoteDataSourceImplementation(webService: sl()));
 
   /////////////// End
 
@@ -262,6 +260,4 @@ void initialize() {
   /////////////// get All Home Services Certificate Injection Container
   HomeServicesInjectionContainer.init();
   /////////////// End
-
-
 }

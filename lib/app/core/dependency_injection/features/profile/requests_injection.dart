@@ -33,7 +33,9 @@ class RequestsInjection {
     //! Data Sources
     sl.registerLazySingleton<RequestsRemoteDataSource>(
       () => RequestsRemoteDataSourceImplementation(
-          webService: sl(), crmWebService: sl()),
+        webService: sl(),
+        // crmWebService: sl(),
+      ),
     );
 
     //! Bloc
