@@ -2,14 +2,11 @@ import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../utils_exports.dart' show EnvType;
 
 class RemoteConfig {
-
   //////  Not Used
   // static String get baladyToken => _RemoteConfig.baladyToken[env]!;
   // static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
   // static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
   // static String get publicLicenseShareURL => _RemoteConfig.publicLicenseShareURL[env]!;
-
-
 
   ////   Not Used with API  used with downlod quran and image and open webView
   static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
@@ -18,60 +15,64 @@ class RemoteConfig {
   // static String get pegaURL => _RemoteConfig.pegaURL[env]!;
   // static String get gis => _RemoteConfig.gis[env]!;
   static String get apigeeUsername => _RemoteConfig.apigeeUsername[env]!;
-  static String get apigeePassword => _RemoteConfig.apigeePassword[env]!;
 
+  static String get apigeePassword => _RemoteConfig.apigeePassword[env]!;
 
   ////   just used in one place in the app
   static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
+
   static String get baladyCommercialUrl =>
       _RemoteConfig.baladyCommercialUrl[env]!;
+
   static String get publicAppointmentShareURL =>
       _RemoteConfig.publicAppointmentShareURL[env]!;
+
   static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
+
   static String get regaClass => _RemoteConfig.regaClass[env]!;
+
   static List<String> get MSRAllowedMuncipalites =>
       _RemoteConfig.MSRAllowedMuncipalites[env]!;
 
-
   //! First
   static String get apigeeURL => _RemoteConfig.apigeeURL[env]!;
+
   static String get hmCode => _RemoteConfig.hmCode[env]!;
 
-
-
-
   static String get ssoUrl => _RemoteConfig.ssoUrl[env]!;
+
   static String get ssoLoginUrl => _RemoteConfig.ssoLoginUrl[env]!;
+
   static String get ssoLogOutUrl => _RemoteConfig.ssoLogOutUrl[env]!;
+
   static String get ssoSecret => _RemoteConfig.ssoSecret[env]!;
+
   static String get momraDomain => _RemoteConfig.momraDomain[env]!;
+
   static String get ssoMomraDomain => _RemoteConfig.ssoMomraDomain[env]!;
+
   static String get cookieURL => _RemoteConfig.cookieURL[env]!;
+
   static String get ssoClient => _RemoteConfig.ssoClient[env]!;
-
-
 
   static double get mapRadius => _RemoteConfig.mapRadius[env]!;
 
   static String get specialConditionOldId =>
       _RemoteConfig.specialConditionOldId[env]!;
+
   static String get specialConditionId =>
       _RemoteConfig.specialConditionId[env]!;
 
   // List<String> get munciplities => _RemoteConfig.munciplities[env]!;
 
-
-
   static String get webCookieHeader => _RemoteConfig.webCookieHeader[env]!;
+
   static List<String> get marketClass => _RemoteConfig.marketClass[env]!;
 
   static EnvType get env => sl<EnvType>();
 
-
-
   static Map<String, dynamic> get MunicipalServicesIDs =>
       _RemoteConfig.municipal_services_IDS[env]!;
-
 
   static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
 
@@ -81,46 +82,50 @@ class RemoteConfig {
 
 //! First solution
 class _RemoteConfig {
-
-  static final uxCamKey = _initValues<String>(
-    devVal: "",
-    stgVal: "",
-    preVal: "__PRE-UX-CAM-KEY__",
-    prodVal: "__PROD-UX-CAM-KEY__",
-    urbiPreVal: "",
+  static final apigeeURL = _initValues<String>(
+    devVal: "__DEV-APIGEE-URL__",
+    stgVal: "__STG-APIGEE-URL__",
+    preVal: "__PRE-APIGEE-URL__",
+    prodVal: "__PROD-APIGEE-URL",
+    urbiPreVal: "__STG-APIGEE-URL__",
   );
   static final hmCode = _initValues<String>(
     devVal: "__DEV-HM-CODE__",
-    stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
+    stgVal: "__STG-HM-CODE__",
     preVal: "__PRE-HM-CODE__",
     prodVal: "__PROD-HM-CODE__",
-    urbiPreVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
+    urbiPreVal: "__STG-HM-CODE__",
   );
-
-  static final apigeeURL = _initValues<String>(
-    devVal: "__DEV-APIGEE-URL__",
-    stgVal: "https://apiservicesstg.balady.gov.sa",
-    preVal: "__PRE-APIGEE-URL__",
-    prodVal: "__PROD-APIGEE-URL",
-    urbiPreVal: "https://apiservicespp.balady.gov.sa",
-  );
-
   static final apigeeUsername = _initValues<String>(
     devVal: "__DEV-APIGEE-USERNAME__",
-    stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
+    stgVal: "__STG-APIGEE-USERNAME__",
     preVal: "__PRE-APIGEE-USERNAME__",
     prodVal: "__PROD-APIGEE-USERNAME__",
-    urbiPreVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
+    urbiPreVal: "__STG-APIGEE-USERNAME__",
   );
-
   static final apigeePassword = _initValues<String>(
     devVal: "__DEV-APIGEE-PASSWORD__",
-    stgVal: "ak3JXde3KdBB1xbM",
+    stgVal: "__STG-APIGEE-PASSWORD__",
     preVal: "__PRE-APIGEE-PASSWORD__",
     prodVal: "__PROD-APIGEE-PASSWORD__",
-    urbiPreVal: "ak3JXde3KdBB1xbM",
+    urbiPreVal: "__STG-APIGEE-PASSWORD__",
+  );
+  static final ssoClient = _initValues<String>(
+    devVal: "__DEV-SSO-CLINT__",//balady_mobile_app
+    stgVal: "__STG-SSO-CLINT__",
+    preVal: "__PRE-SSO-CLINT__",
+    prodVal: "__PROD-SSO-CLINT__",
+    urbiPreVal: "__STG-SSO-CLINT__",
+  );
+  static final ssoSecret = _initValues<String>(
+    devVal: "__DEV-SSO-SECRET__",
+    stgVal: "__STG-SSO-SECRET__",
+    preVal: "__PRE-SSO-SECRET__",
+    prodVal: "__PROD-SSO-SECRET__",
+    urbiPreVal: "__STG-SSO-SECRET__",
   );
 
+  /////////////////////////
   static final ssoUrl = _initValues<String>(
     devVal: "https://sa1.ops.2gis.dev",
     stgVal: "https://ssoappdev.momra.gov.sa",
@@ -128,20 +133,12 @@ class _RemoteConfig {
     prodVal: "https://ssoapp.balady.gov.sa",
     urbiPreVal: "https://sa1.ops.2gis.dev",
   );
-
   static final ssoLoginUrl = _initValues<String>(
     devVal: "com.momra.balady://callback",
     stgVal: "com.momra.balady://callback",
     preVal: "com.momra.balady://callback",
     prodVal: "com.balady://callback",
     urbiPreVal: "com.momra.balady://callback",
-  );
-  static final ssoSecret = _initValues<String>(
-    devVal: "secret",
-    stgVal: "secret",
-    preVal: "1afa033f369849a2ac6d0d42e713eb82",
-    prodVal: "d19e0d31729144d3bff32d5cebbaef63",
-    urbiPreVal: "secret",
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
@@ -164,6 +161,8 @@ class _RemoteConfig {
     prodVal: ".ssoapp.balady.gov.sa",
     urbiPreVal: ".ssoappstg.momra.gov.sa",
   );
+
+  /////////////////////////
   static final cookieURL = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa/",
     stgVal: "https://baladyapps.momra.gov.sa/",
@@ -172,12 +171,14 @@ class _RemoteConfig {
     urbiPreVal: "https://prebaladyapps.momra.gov.sa/",
   );
 
-  static final ssoClient = _initValues<String>(
-    devVal: "balady_mobile_app",
-    stgVal: "balady_mobile_app",
-    preVal: "balady_mobile_app",
-    prodVal: "balady_mobile_app",
-    urbiPreVal: "balady_mobile_app",
+  /////////////////////////
+
+  static final uxCamKey = _initValues<String>(
+    devVal: "",
+    stgVal: "",
+    preVal: "3i45abbyrbljp32",
+    prodVal: "2w1otnta9bvvhzo",
+    urbiPreVal: "",
   );
 
   static final mapRadius = _initValues<double>(
@@ -250,7 +251,6 @@ class _RemoteConfig {
     prodVal: "https://commercial.balady.gov.sa",
     urbiPreVal: "https://commercial.balady.gov.sa",
   );
-
 
   static final publicAppointmentShareURL = _initValues<String>(
     devVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
