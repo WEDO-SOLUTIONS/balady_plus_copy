@@ -26,6 +26,7 @@ class MapSearchResults extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final language = ref.watch(appLanguageProvider);
     final myLocation = ref.watch(locationProvider);
+
     return SearchResults(
       results: results,
       scrollController: scrollController,
@@ -42,34 +43,36 @@ class MapSearchResults extends ConsumerWidget {
         language: language,
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-        onTap: () {
-          if (item.id == null) {
-            return;
-          }
-
-          Metrics.logEventAdvanced(
-            MetricsConstants.searchKeys.searchResult,
-            group: MetricsConstants.searchTag,
-            action: MetricAction.tap.toString(),
-            props: {
-              'object': item.id!.objectId,
-            },
-          );
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.router.replaceOrPush(
-              route: PoiCardWidgetRoute(
-                objectId: DgisObjectIdMessage(
-                  objectId: item.id!.objectId,
-                  entranceId: 0,
-                ),
-                cameraConfig: const PoiCameraConfig(zoom: 18),
-              ),
-              toCompareRoutes: [PoiCardWidgetRoute.page],
-            );
-          });
-        },
+        onTap: () => _onResultTap(context, item),
       ),
     );
+  }
+
+  void _onResultTap(BuildContext context, DirectoryObjectMessage item) {
+    if (item.id == null) {
+      return;
+    }
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.searchKeys.searchResult,
+      group: MetricsConstants.searchTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'object': item.id!.objectId,
+      },
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.router.replaceOrPush(
+        route: PoiCardWidgetRoute(
+          objectId: DgisObjectIdMessage(
+            objectId: item.id!.objectId,
+            entranceId: 0,
+          ),
+          cameraConfig: const PoiCameraConfig(zoom: 18),
+        ),
+        toCompareRoutes: [PoiCardWidgetRoute.page],
+      );
+    });
   }
 }
