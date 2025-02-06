@@ -1034,6 +1034,7 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
+
   Future<void> _getCurrentTrackLocationHandler(
       getCurrentTrackLocationEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
@@ -1054,7 +1055,7 @@ class EkramRequestTransportationBloc extends Bloc<
           String? y = res.data?.result['y'];
 
           if (x != null && y != null) {
-            CommonFunctions.openMap(double.parse(x), double.parse(y));
+            CommonFunctions.openMap(double.parse(y), double.parse(x));
           }
         }
 

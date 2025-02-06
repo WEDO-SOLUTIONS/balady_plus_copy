@@ -166,8 +166,8 @@ class AddSuggestedPath extends StatefulWidget {
                           onTap: () {
                             if (widget.trip.startupInfo?.location?.x != null &&widget.trip.startupInfo?.location?.y != null ) {
                               CommonFunctions.openMap(
-                                  double.parse(widget.trip.startupInfo!.location!.x!),
-                                  double.parse(widget.trip.startupInfo!.location!.y!));
+                                  double.parse(widget.trip.startupInfo!.location!.y!),
+                                  double.parse(widget.trip.startupInfo!.location!.x!));
                             }
                             else
                             {
@@ -297,8 +297,8 @@ class AddSuggestedPath extends StatefulWidget {
                           onTap: () {
                             if (widget.trip.arrivalInfo?.location?.x != null &&widget.trip.arrivalInfo?.location?.y != null ) {
                               CommonFunctions.openMap(
-                                  double.parse(widget.trip.arrivalInfo!.location!.x!),
-                                  double.parse(widget.trip.arrivalInfo!.location!.y!));
+                                  double.parse(widget.trip.arrivalInfo!.location!.y!),
+                                  double.parse(widget.trip.arrivalInfo!.location!.x!));
                             }
                             else
                             {
