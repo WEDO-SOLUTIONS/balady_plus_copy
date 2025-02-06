@@ -12,6 +12,7 @@ import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/landing/map_hidden_state_controls.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
+import 'package:mapness/_features/landing/widgets/add_company.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_feedback_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_title.dart';
@@ -123,9 +124,12 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           floating: true,
         ),
         content: [
+          const SizedBox(height: uikit.Spacing.$3x),
+          const AddCompanyBanner(),
+          const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
             titleWidget: Padding(
-              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+              padding: const EdgeInsets.only(bottom: uikit.Spacing.$3x),
               child: DashboardTitle(context.l10n.whatIsNewInBalady),
             ),
           ),
