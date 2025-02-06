@@ -21,6 +21,7 @@ class EkramRequestTransportationState extends Equatable {
   final List<LookUpItem>? specialTransportReasons;
   final BlocStatus status;
   final String? errorMessage;
+  final bool? valid;
   final int currentPageValue;
   final double? lat;
   final double? long;
@@ -91,6 +92,7 @@ class EkramRequestTransportationState extends Equatable {
       this.selectedMosque,
       this.status = BlocStatus.initial,
       this.errorMessage,
+      this.valid,
       this.currentPageValue = 0,
       this.lat,
       this.long,
@@ -150,6 +152,7 @@ class EkramRequestTransportationState extends Equatable {
     final LookUpItem? selectedMosque,
     final List<LookUpItem>? nationalIdTypes,
     final String? errorMessage,
+    final bool? valid,
     final int? currentPageValue,
     final bool? agreementChecked,
     final String? relation,
@@ -213,6 +216,7 @@ class EkramRequestTransportationState extends Equatable {
       nationalIdTypes: nationalIdTypes ?? this.nationalIdTypes,
       status: status ?? this.status,
       errorMessage: errorMessage ?? this.errorMessage,
+      valid: valid ?? this.valid,
       currentPageValue: currentPageValue ?? this.currentPageValue,
       lat: lat ?? this.lat,
       long: long ?? this.long,
@@ -366,28 +370,25 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-  LookUpItem? getHosptialById(int? id,String? name) {
-    if ( id != null) {
-      if(hospitals != null) {
+  LookUpItem? getHosptialById(int? id, String? name) {
+    if (id != null) {
+      if (hospitals != null) {
         for (int index = 0; index < hospitals!.length; index++) {
           if (hospitals![index].id == id) {
             return hospitals![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-      else if(name != null && name.isNotEmpty)
-        {
-
-          return LookUpItem(id: id,name: name);
-        }
     }
 
     return null;
   }
 
   bool isHosptialDisabled(int? id) {
-    if ( id != null && requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA") {
-
+    if (id != null &&
+        requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA") {
       return true;
     }
 
@@ -525,6 +526,13 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
+  bool validateEmirateApprovalInfoSection() {
+    if (madinahEmirateApprovalStatus != null) {
+      return true;
+    }
+    return false;
+  }
+
   bool validateDeceasedInfoSection(bool ShowErrorMessage) {
     if (requestDetailsModel != null) {
       if (requestDetailsModel?.deceasedInfo?.firstName == null ||
@@ -592,6 +600,8 @@ class EkramRequestTransportationState extends Equatable {
       return true;
     } else if (currentPageValue == 3) {
       return validateDeathAndBurialInfoSection(false);
+    } else if (currentPageValue == 4) {
+      return validateEmirateApprovalInfoSection();
     }
 
     return true;

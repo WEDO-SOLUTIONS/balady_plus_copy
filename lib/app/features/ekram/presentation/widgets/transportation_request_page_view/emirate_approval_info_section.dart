@@ -55,8 +55,7 @@ class EmirateApprovalInfoSection extends StatelessWidget {
                                 )
                               ],
                             ),
-                            state.madinahEmirateApprovalStatus != null &&
-                                    state.madinahEmirateApprovalDate != null
+                            state.valid ?? false
                                 ? Column(
                                     children: [
                                       CustomTextFieldWidget(
@@ -98,9 +97,11 @@ class EmirateApprovalInfoSection extends StatelessWidget {
             ),
             EkramPreviousNextButtons(
               btnPressed: () {
-                context
-                    .read<EkramRequestTransportationBloc>()
-                    .add(GoToNextPageEvent());
+                if (state.validateEmirateApprovalInfoSection()) {
+                  context
+                      .read<EkramRequestTransportationBloc>()
+                      .add(const GoToNextPageEvent());
+                }
               },
             )
           ],

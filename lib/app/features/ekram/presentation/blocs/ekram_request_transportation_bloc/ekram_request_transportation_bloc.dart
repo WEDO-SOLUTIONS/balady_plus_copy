@@ -750,10 +750,7 @@ class EkramRequestTransportationBloc extends Bloc<
   }
 
   Future<void> _getMosquesHandler(GetMosquesEvent e, Emitter emitter) async {
-
-    if(e.cityIds == null || e.transportId == null)
-
-      return;
+    if (e.cityIds == null || e.transportId == null) return;
     emitter(state.copyWith(status: BlocStatus.loading));
     final failureOrSuccess =
         await _getMosques([e.transportId, e.cityIds, e.ghuslplace]);
@@ -869,12 +866,11 @@ class EkramRequestTransportationBloc extends Bloc<
       GoToNextPageEvent e, Emitter emitter) async {
     if (state.status == BlocStatus.performing) return;
     int nextPage = state.currentPageValue + 1;
-    if (state.requestDetailsModel?.burialInfo?.cityId != null) {
+    if (state.requestDetailsModel?.cemeteryData?.cemeteryId != null) {
       if (nextPage == 4) {
         state
                     .getCemtryById(
-                      state.requestDetailsModel?.burialInfo?.cityId,
-                    )
+                        state.requestDetailsModel?.cemeteryData?.cemeteryId)
                     ?.needApproval ??
                 false
             ? null
@@ -1203,20 +1199,19 @@ class EkramRequestTransportationBloc extends Bloc<
                 e.burialInfo?.isBurialInsideDeathCity ?? true));
     BurialInfo info = params.burialInfo!;
     int? cityID;
-    if ((info.isBurialInsideDeathCity == null || info.isBurialInsideDeathCity == true )||
-        ( e.burialInfo?.isBurialInsideDeathCity == true)) {
+    if ((info.isBurialInsideDeathCity == null ||
+            info.isBurialInsideDeathCity == true) ||
+        (e.burialInfo?.isBurialInsideDeathCity == true)) {
       cityID = getBurialCityId();
+    } else {
+      cityID = e.burialInfo?.cityId;
     }
-    else
-      {
-        cityID = e.burialInfo?.cityId;
-      }
 
     info = info.copyWith(
         isBurialInsideDeathCity: e.burialInfo?.isBurialInsideDeathCity ??
             info.isBurialInsideDeathCity ??
             true,
-        cityId:cityID,
+        cityId: cityID,
         burialDate: e.burialInfo?.burialDate,
         gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
         prayId: e.burialInfo?.prayId,
@@ -1320,6 +1315,7 @@ class EkramRequestTransportationBloc extends Bloc<
         madinahEmirateApprovalStatus: success.data?.result?.approvalStatusName,
         madinahEmirateApprovalDate: success.data?.result?.approvalDate,
         errorMessage: success.data?.result?.message,
+        valid: success.data?.result?.valid
       ));
     });
   }
