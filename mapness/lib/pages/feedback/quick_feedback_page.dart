@@ -45,7 +45,7 @@ class _QuickFeedbackScreen extends ConsumerWidget {
   final QuickFeedbackType type;
   final FeedbackBaseRouteParams params;
 
-  const _QuickFeedbackScreen({required this.type, required this.params, super.key});
+  const _QuickFeedbackScreen({required this.type, required this.params});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

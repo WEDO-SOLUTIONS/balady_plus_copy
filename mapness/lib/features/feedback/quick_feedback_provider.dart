@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
@@ -14,7 +13,7 @@ part 'quick_feedback_provider.g.dart';
 class QuickFeedback extends _$QuickFeedback {
   @override
   Future<List<FeedbackCategoryEntity>> build(final QuickFeedbackType type, final FeedbackBaseRouteParams params) async {
-    final feedbackObjectType = await _feedbackToType(type, params, ref);
+    final feedbackObjectType = await _feedbackToType(type, params);
     final categories = await ref.watch(feedbackCategoriesProvider(feedbackObjectType).future);
 
     if (categories.isEmpty) {
@@ -34,7 +33,7 @@ class QuickFeedback extends _$QuickFeedback {
     return categories;
   }
 
-  Future<FeedbackObjectType> _feedbackToType(QuickFeedbackType type, FeedbackBaseRouteParams params, Ref ref) async {
+  Future<FeedbackObjectType> _feedbackToType(QuickFeedbackType type, FeedbackBaseRouteParams params) async {
     final id = switch (params) {
       FeedbackObjectIdParams(objectId: final id) => id,
       _ => null,
@@ -46,11 +45,11 @@ class QuickFeedback extends _$QuickFeedback {
 
     return switch (type) {
       QuickFeedbackType.newCompany || QuickFeedbackType.addPhoto => FeedbackObjectType.building,
-      _ => await _getObjectTypeFromId(id, ref),
+      _ => await _getObjectTypeFromId(id),
     };
   }
 
-  Future<FeedbackObjectType> _getObjectTypeFromId(int id, Ref ref) async {
+  Future<FeedbackObjectType> _getObjectTypeFromId(int id) async {
     final poiData = await ref.read(poiFeedbackProvider(id).future);
     return FeedbackObjectType.fromMessage(poiData?.types.firstOrNull?.type);
   }

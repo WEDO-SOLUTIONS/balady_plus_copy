@@ -66,7 +66,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     );
   }
 
-  void _collectForm({int? objectId, required String categoryId}) {
+  void _collectForm({required String categoryId, int? objectId}) {
     final formState = _formKey.currentState;
     if (formState == null) {
       return;
