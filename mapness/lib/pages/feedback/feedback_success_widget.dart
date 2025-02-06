@@ -76,9 +76,9 @@ class FeedbackSuccessWidget extends StatelessWidget {
                       buttonColorScheme: ButtonColorScheme.primary,
                       primaryLabel: context.l10n.complete,
                       onTap: () {
-                        context.router.popUntil(
-                          (route) => route.settings.name == PoiCardWidgetRoute.name,
-                        );
+                        context.router.popUntil((route) =>
+                            route.settings.name == PoiCardWidgetRoute.name ||
+                            route.settings.name == BottomMenuRoute.name);
                       },
                     ),
                   ),
