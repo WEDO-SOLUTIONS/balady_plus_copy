@@ -20,6 +20,7 @@ import 'package:balady_plus/app/features/new_appointment/presentation/core/model
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
@@ -406,7 +407,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             CustomLookUpLongDialog(
                               items: state.prayers ?? [],
                               value: state.getParyerById(state
-                                  .requestDetailsModel?.burialInfo?.prayId),
+                                  .requestDetailsModel?.burialInfo?.prayId,state
+                                  .requestDetailsModel?.burialInfo?.prayName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -587,7 +589,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               value: state.getCemtryTypeById(state
                                   .requestDetailsModel
                                   ?.cemeteryData
-                                  ?.graveTypeId),
+                                  ?.graveTypeId,state
+                                  .requestDetailsModel
+                                  ?.cemeteryData
+                                  ?.graveTypeName),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
@@ -610,7 +615,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               value: state.getCemtryById(state
                                   .requestDetailsModel
                                   ?.cemeteryData
-                                  ?.cemeteryId),
+                                  ?.cemeteryId,state
+                                  .requestDetailsModel
+                                  ?.cemeteryData
+                                  ?.cemeteryName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -665,7 +673,12 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               value: state.getTransportTypeById(state
                                   .requestDetailsModel
                                   ?.transportInfo
-                                  ?.charityId),
+                                  ?.charityId,
+
+                                  state
+                                      .requestDetailsModel
+                                      ?.transportInfo
+                                      ?.charityName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -700,7 +713,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               value: state.getlaundriesById(state
                                   .requestDetailsModel
                                   ?.transportInfo
-                                  ?.ghuslPlaceId ),
+                                  ?.ghuslPlaceId,state
+                                  .requestDetailsModel
+                                  ?.transportInfo
+                                  ?.ghuslPlaceName ),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -740,7 +756,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               value: state.getMosquesById(state
                                   .requestDetailsModel
                                   ?.transportInfo
-                                  ?.mosqueId),
+                                  ?.mosqueId,
+                                  state
+                                      .requestDetailsModel
+                                      ?.transportInfo
+                                      ?.mosqueName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()

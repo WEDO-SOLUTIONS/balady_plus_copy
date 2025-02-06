@@ -412,49 +412,74 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-  LookUpItem? getNationalityById(int? id) {
-    if (nationalities != null && id != null) {
-      for (int index = 0; index < nationalities!.length; index++) {
-        if (nationalities![index].id == id) {
-          return nationalities![index];
+  LookUpItem? getNationalityById(int? id,String? name) {
+    if (  id != null) {
+      if(nationalities != null) {
+        for (int index = 0; index < nationalities!.length; index++) {
+          if (nationalities![index].id == id) {
+            return nationalities![index];
+          }
         }
+      }
+      else if(name != null&& name.isNotEmpty)
+      {
+        return LookUpItem(id: id,name:name);
       }
     }
 
     return null;
   }
 
-  LookUpItem? getParyerById(int? id) {
-    if (prayers != null && id != null) {
-      for (int index = 0; index < prayers!.length; index++) {
-        if (prayers![index].id == id) {
-          return prayers![index];
+  LookUpItem? getParyerById(int? id,String? name) {
+    if (id != null) {
+      if(prayers != null) {
+        for (int index = 0; index < prayers!.length; index++) {
+          if (prayers![index].id == id) {
+            return prayers![index];
+          }
         }
       }
+    else if(name != null&& name.isNotEmpty)
+    {
+      return LookUpItem(id: id,name:name);
+    }
+    }
+
+
+    return null;
+  }
+
+  LookUpItem? getCemtryById(int? id,String? name) {
+    if ( id != null) {
+      if(cemetries != null ) {
+        for (int index = 0; index < cemetries!.length; index++) {
+          if (cemetries![index].id == id) {
+            return cemetries![index];
+          }
+        }
+      }
+      else if(name != null&& name.isNotEmpty)
+        {
+          return LookUpItem(id: id,name:name);
+        }
     }
 
     return null;
   }
 
-  LookUpItem? getCemtryById(int? id) {
-    if (cemetries != null && id != null) {
-      for (int index = 0; index < cemetries!.length; index++) {
-        if (cemetries![index].id == id) {
-          return cemetries![index];
+  LookUpItem? getCemtryTypeById(int? id,String? name) {
+    if ( id != null) {
+      if(cemetryTypeItems != null) {
+        for (int index = 0; index < cemetryTypeItems!.length; index++) {
+          if (cemetryTypeItems![index].id == id) {
+            return cemetryTypeItems![index];
+          }
         }
       }
-    }
-
-    return null;
-  }
-
-  LookUpItem? getCemtryTypeById(int? id) {
-    if (cemetryTypeItems != null && id != null) {
-      for (int index = 0; index < cemetryTypeItems!.length; index++) {
-        if (cemetryTypeItems![index].id == id) {
-          return cemetryTypeItems![index];
+      else if(name != null && name.isNotEmpty)
+        {
+          return LookUpItem(id: id,name: name);
         }
-      }
     }
 
     return null;
@@ -467,54 +492,79 @@ class EkramRequestTransportationState extends Equatable {
           return specialTransportReasons![index];
         }
       }
+
     }
 
     return null;
   }
 
-  LookUpItem? getTransportTypeById(int? id) {
-    if (transportations != null && id != null) {
-      for (int index = 0; index < transportations!.length; index++) {
-        if (transportations![index].id == id) {
-          return transportations![index];
+  LookUpItem? getTransportTypeById(int? id,String? name) {
+    if ( id != null) {
+      if(transportations != null) {
+        for (int index = 0; index < transportations!.length; index++) {
+          if (transportations![index].id == id) {
+            return transportations![index];
+          }
         }
       }
+    else if(name != null && name.isNotEmpty)
+    {
+      return LookUpItem(id: id,name: name);
+    }
     }
 
     return null;
   }
 
-  LookUpItem? getlaundriesById(int? id) {
-    if (laundries != null && id != null) {
-      for (int index = 0; index < laundries!.length; index++) {
-        if (laundries![index].id == id) {
-          return laundries![index];
+  LookUpItem? getlaundriesById(int? id,String? name) {
+    if (  id != null) {
+      if(laundries != null) {
+        for (int index = 0; index < laundries!.length; index++) {
+          if (laundries![index].id == id) {
+            return laundries![index];
+          }
         }
       }
+      else if(name != null && name.isNotEmpty)
+        {
+          return LookUpItem(id: id,name: name);
+        }
     }
 
     return null;
   }
 
-  LookUpItem? getMosquesById(int? id) {
-    if (mosques != null && id != null) {
-      for (int index = 0; index < mosques!.length; index++) {
-        if (mosques![index].id == id) {
-          return mosques![index];
+  LookUpItem? getMosquesById(int? id,String? name) {
+    if (id != null) {
+      if(mosques != null ) {
+        for (int index = 0; index < mosques!.length; index++) {
+          if (mosques![index].id == id) {
+            return mosques![index];
+          }
         }
       }
+      else if(name != null && name.isNotEmpty)
+        {
+          return LookUpItem(id: id,name: name);
+        }
     }
 
     return null;
   }
 
-  LookUpItem? getNationalIdTypesById(int? id) {
-    if (nationalIdTypes != null && id != null) {
-      for (int index = 0; index < nationalIdTypes!.length; index++) {
-        if (nationalIdTypes![index].id == id) {
-          return nationalIdTypes![index];
+  LookUpItem? getNationalIdTypesById(int? id,String? name) {
+    if (  id != null) {
+      if(nationalIdTypes != null) {
+        for (int index = 0; index < nationalIdTypes!.length; index++) {
+          if (nationalIdTypes![index].id == id) {
+            return nationalIdTypes![index];
+          }
         }
       }
+      else if(name != null && name.isNotEmpty)
+        {
+          return LookUpItem(id: id,name: name);
+        }
     }
 
     return null;

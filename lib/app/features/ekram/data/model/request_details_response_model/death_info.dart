@@ -93,10 +93,8 @@ class DeathInfo {
     String? regionName,
     int? cityId,
     int? corpseArrivalCityId,
-
     String? cityOther,
     String? hospitalOther,
-
     String? cityName,
     int? hospitalId,
     String? hospitalName,
@@ -104,7 +102,8 @@ class DeathInfo {
     bool? caseContagious,
     bool? deathByQasas,
     Age? age,
-  }) => DeathInfo(  deathDate: deathDate ?? this.deathDate,
+  }) => DeathInfo(
+    deathDate: deathDate ?? this.deathDate,
     gregorianDeathDate: gregorianDeathDate ?? this.gregorianDeathDate,
     countryId: countryId ?? this.countryId,
     countryName: countryName ?? this.countryName,

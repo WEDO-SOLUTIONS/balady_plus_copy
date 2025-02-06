@@ -228,7 +228,10 @@ class DeceasedInfoSection extends StatelessWidget {
                                   value: state.getNationalityById(state
                                       .requestDetailsModel
                                       ?.deceasedInfo
-                                      ?.nationalityId),
+                                      ?.nationalityId,state
+                                      .requestDetailsModel
+                                      ?.deceasedInfo
+                                      ?.nationalityName),
                                   onEmptyList: () async {
                                     return context
                                         .read<EkramRequestTransportationBloc>()
