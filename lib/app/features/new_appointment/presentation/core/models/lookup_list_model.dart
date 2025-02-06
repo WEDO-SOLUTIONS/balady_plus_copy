@@ -71,7 +71,8 @@ class LookUpItem {
       this.isOther,
       this.fillInfo,
       this.localCountry,
-      this.isDisblaed});
+      this.isDisblaed,
+      this.maghsalaExist});
 
   int? id;
   String? name;
@@ -80,6 +81,7 @@ class LookUpItem {
   bool? fillInfo;
   bool? localCountry;
   bool? isDisblaed;
+  bool? maghsalaExist;
 
   factory LookUpItem.fromJson(Map<String, dynamic> json) => LookUpItem(
       id: json["id"] == null ? null : json["id"],
@@ -87,6 +89,7 @@ class LookUpItem {
       fillInfo: json["fillInfo"],
       isOther: json["other"],
       needApproval: json["needApproval"],
+      maghsalaExist: json["maghsalaExist"],
       localCountry: json["localCountry"]);
 
   Map<String, dynamic> toJson() => {

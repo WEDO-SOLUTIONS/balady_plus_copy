@@ -731,6 +731,9 @@ class EkramRequestTransportationBloc extends Bloc<
   }
 
   Future<void> _getLaundriesHandler(GetLandriesEvent e, Emitter emitter) async {
+
+    if(e.cityIds == null ||e.transportId == null)
+      return;
     emitter(state.copyWith(status: BlocStatus.loading));
     final failureOrSuccess =
         await _getLaundires([e.transportId, e.cityIds, e.params]);
@@ -741,9 +744,15 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+
+      List<LookUpItem>? laundries = [];
+      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      laundries.add(choose);
+      laundries.addAll(success.data?.result as List<LookUpItem>);
+
       emitter(state.copyWith(
         status: BlocStatus.success,
-        laundries: success.data?.result,
+        laundries: laundries,
         errorMessage: "",
       ));
     });
@@ -761,9 +770,15 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+
+
+      List<LookUpItem>? mosques = [];
+      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      mosques.add(choose);
+      mosques.addAll(success.data?.result as List<LookUpItem>);
       emitter(state.copyWith(
         status: BlocStatus.success,
-        mosques: success.data?.result,
+        mosques: mosques,
         errorMessage: "",
       ));
     });
@@ -1241,7 +1256,7 @@ class EkramRequestTransportationBloc extends Bloc<
     params = params.copyWith(cemeteryData: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success, requestDetailsModel: params));
+        status: BlocStatus.success, requestDetailsModel: params,maghsalaExist:e.maghsalaExist));
   }
 
   Future<void> _changeTansportInfoHandler(
@@ -1310,6 +1325,12 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
+
+
+      List<LookUpItem>? mosques = [];
+      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      mosques.add(choose);
+      mosques.addAll(success.data?.result as List<LookUpItem>);
       emitter(state.copyWith(
         status: BlocStatus.success,
         madinahEmirateApprovalStatus: success.data?.result?.approvalStatusName,
