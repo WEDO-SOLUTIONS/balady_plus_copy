@@ -17,7 +17,7 @@ class NavigationHandler {
     private let context: Context
     private let eventChannel: DgisStreamHandler
     
-    public static var navigationManager: NavigationManager?
+    public var navigationManager: NavigationManager
     
     private let voiceManager: VoiceManager
     
@@ -39,49 +39,44 @@ class NavigationHandler {
         self.map = map
 
         self.eventChannel = eventChannel
-        NavigationHandler.navigationManager = try! NavigationManager(platformContext: context)
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.alternativeRoutesEnabled = false
-        NavigationHandler.navigationManager!.routeSourceSettings.calloutVisualizationMode = .multipleRoutes
-        NavigationHandler.navigationManager!.routeMapSettings.onRouteDisplayFlags.insert(.immersiveRouteParts)
+        self.navigationManager = DgisMapInitializer.shared.getNavigationManager()
         
         self.voiceManager = getVoiceManager(context: context)
 
         self.speedControlModel = SpeedControlModel(
-            model: NavigationHandler.navigationManager!.uiModel,
+            model: self.navigationManager.uiModel,
             eventChannel: eventChannel
         )
 
         self.dashboardControlModel = DashboardControlModel(
-            model: NavigationHandler.navigationManager!.uiModel,
+            model: self.navigationManager.uiModel,
             eventChannel: self.eventChannel,
-            navigationManager: NavigationHandler.navigationManager!
+            navigationManager: self.navigationManager
         )
 
         self.messageControlModel = MessageControlModel(
-            model: NavigationHandler.navigationManager!.uiModel,
+            model: self.navigationManager.uiModel,
             eventChannel: eventChannel
         )
 
         self.maneuverControlModel = ManeuverControlModel(
-            model: NavigationHandler.navigationManager!.uiModel,
+            model: self.navigationManager.uiModel,
             eventChannel: self.eventChannel
         )
 
         self.cancelable.append(
-            NavigationHandler.navigationManager!.uiModel.stateChannel.sink(receiveValue: stateChannelListener)
+            self.navigationManager.uiModel.stateChannel.sink(receiveValue: stateChannelListener)
         )
 
         self.cancelable.append(
-            NavigationHandler.navigationManager!.uiModel.routeChannel.sink(receiveValue: routeInfoListener)
+            self.navigationManager.uiModel.routeChannel.sink(receiveValue: routeInfoListener)
         )
         
         self.cancelable.append(
-            NavigationHandler.navigationManager!.uiModel.betterRouteChannel.sink(receiveValue: betterRouteListener)
+            self.navigationManager.uiModel.betterRouteChannel.sink(receiveValue: betterRouteListener)
         )
         
-        if let carMapView = FlutterCarPlaySceneDelegate.mapView {
-            carMapView.addSpeedControl()
-        }
+        navigationManager.mapManager.addMap(map: map)
     }
     
     private func stateChannelListener(_ state: State) {
@@ -109,7 +104,7 @@ class NavigationHandler {
     func onRouteTap(_ route: RouteMapObject) {
         let trafficRoute = route.route
         if !route.isActive {
-            NavigationHandler.navigationManager!.alternativeRouteSelector.selectAlternativeRoute(trafficRoute: trafficRoute)
+            self.navigationManager.alternativeRouteSelector.selectAlternativeRoute(trafficRoute: trafficRoute)
             betterRouteResponse(response: .accept)
         }
     }
@@ -122,7 +117,7 @@ class NavigationHandler {
     }
     
     private func betterRouteListener(_ routeInfo: BetterRouteInfo?) {
-        let activeRouteDuration = NavigationHandler.navigationManager!.uiModel.duration
+        let activeRouteDuration = self.navigationManager.uiModel.duration
         var betterRouteDuration: TimeInterval? = nil
         let durationProfit: Int
         if let first = routeInfo?.trafficRoute.route.geometry.first {
@@ -143,16 +138,16 @@ class NavigationHandler {
     func betterRouteResponse(response: BetterRouteResponseMessage) {
         switch response {
         case .accept:
-            NavigationHandler.navigationManager!.uiModel.betterRouteResponse(response: .accept)
+            self.navigationManager.uiModel.betterRouteResponse(response: .accept)
         case .reject:
-            NavigationHandler.navigationManager!.uiModel.betterRouteResponse(response: .reject)
+            self.navigationManager.uiModel.betterRouteResponse(response: .reject)
         case .timeout:
-            NavigationHandler.navigationManager!.uiModel.betterRouteResponse(response: .timeout)
+            self.navigationManager.uiModel.betterRouteResponse(response: .timeout)
         }
     }
     
     func getBetterRouteSettings(completion: @escaping (Result<BetterRouteSettingsMessage, any Error>) -> Void) {
-        let settings = NavigationHandler.navigationManager!.alternativeRoutesProviderSettings
+        let settings = self.navigationManager.alternativeRoutesProviderSettings
         completion(
             Result.success(
             BetterRouteSettingsMessage(
@@ -165,13 +160,13 @@ class NavigationHandler {
     }
     
     func setBetterRouteSettings(settings: BetterRouteSettingsMessage) {
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.routeSearchDelay = TimeInterval(settings.routeSearchDelay)
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = TimeInterval(settings.betterRouteTimeCostThreshold)
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: Int64(settings.betterRouteLengthThreshold))
+        self.navigationManager.alternativeRoutesProviderSettings.routeSearchDelay = TimeInterval(settings.routeSearchDelay)
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteTimeCostThreshold = TimeInterval(settings.betterRouteTimeCostThreshold)
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteLengthThreshold = RouteDistance(millimeters: Int64(settings.betterRouteLengthThreshold))
     }
     
     func setBetterRouteEnabled(enabled: Bool) {
-        NavigationHandler.navigationManager!.alternativeRoutesProviderSettings.betterRouteEnabled = enabled
+        self.navigationManager.alternativeRoutesProviderSettings.betterRouteEnabled = enabled
     }
 
     func cancel() {
@@ -200,11 +195,11 @@ class NavigationHandler {
         
         self.prevCameraBehaviour = map.camera.behaviour.newBehaviour
         map.camera.setBehaviour(
-            behaviour: NavigationHandler.navigationManager!.mapFollowController.cameraBehaviour
+            behaviour: self.navigationManager.mapFollowController.cameraBehaviour
         )
         
-        NavigationHandler.navigationManager!.mapFollowController.setFollow(follow: true)
-        NavigationHandler.navigationManager!.zoomFollowSettings.speedRangeToStyleZoomSequence = [
+        self.navigationManager.mapFollowController.setFollow(follow: true)
+        self.navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: Double(truncating: speedRangeZoom.minSpeedRange as NSNumber), maxSpeed: speedRangeZoom.maxSpeedRange),
                 minDistanceToManeuver: RouteDistance(millimeters: Int64(speedRangeZoom.routeDistanceMillimeters)),
@@ -231,9 +226,9 @@ class NavigationHandler {
     
     func followNavigation() {
         self.map.camera.setBehaviour(
-            behaviour: NavigationHandler.navigationManager!.mapFollowController.cameraBehaviour
+            behaviour: self.navigationManager.mapFollowController.cameraBehaviour
         )
-        NavigationHandler.navigationManager!.mapFollowController.setFollow(follow: true)
+        self.navigationManager.mapFollowController.setFollow(follow: true)
     }
     
     func startNavigation(
@@ -257,14 +252,17 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             
-            NavigationHandler.navigationManager!.mapManager.addMap(map: self.map)
+            self.navigationManager.mapManager.addMap(map: self.map)
+            if let carPlayDashboardMap = FlutterCarPlayDashboardSceneDelegate.map {
+                self.navigationManager.mapManager.addMap(map: carPlayDashboardMap)
+            }
             if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-                NavigationHandler.navigationManager!.mapManager.addMap(map: carPlayMap)
+                self.navigationManager.mapManager.addMap(map: carPlayMap)
                 FlutterCarPlaySceneDelegate.startNavigation()
             }
             
             // TODO: return back
-            try NavigationHandler.navigationManager!.start(
+            try self.navigationManager.start(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
                     routeSearchOptions: options
@@ -286,12 +284,12 @@ class NavigationHandler {
     }
     
     func setNavigatorVoice(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
-        NavigationHandler.navigationManager!.voiceSelector.voice = voiceManager.voices.first { $0.id == id }?.navigationVoice
+        self.navigationManager.voiceSelector.voice = voiceManager.voices.first { $0.id == id }?.navigationVoice
         completion(Result.success(()))
     }
     
     func simulationSpeed(speed: Double) {
-        NavigationHandler.navigationManager!.simulationSettings.speedMode = SimulationSpeedMode.speed(SimulationConstantSpeed(speed: speed))
+        self.navigationManager.simulationSettings.speedMode = SimulationSpeedMode.speed(SimulationConstantSpeed(speed: speed))
     }
     
     func startSimulation(
@@ -314,14 +312,8 @@ class NavigationHandler {
         
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            
-            NavigationHandler.navigationManager!.mapManager.addMap(map: self.map)
-            if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-                NavigationHandler.navigationManager!.mapManager.addMap(map: carPlayMap)
-                FlutterCarPlaySceneDelegate.startNavigation()
-            }
 
-            try NavigationHandler.navigationManager!.startSimulation(
+            try self.navigationManager.startSimulation(
                 routeBuildOptions: RouteBuildOptions(
                     finishPoint: finishPoint,
                     routeSearchOptions: options
@@ -342,11 +334,14 @@ class NavigationHandler {
     }
     
     func stopNavigation() {
-        NavigationHandler.navigationManager!.stop()
+        self.navigationManager.stop()
         
-        NavigationHandler.navigationManager!.mapManager.removeMap(map: self.map)
+        self.navigationManager.mapManager.removeMap(map: self.map)
+        if let carPlayDashboardMap = FlutterCarPlayDashboardSceneDelegate.map {
+            self.navigationManager.mapManager.removeMap(map: carPlayDashboardMap)
+        }
         if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-            NavigationHandler.navigationManager!.mapManager.removeMap(map: carPlayMap)
+            self.navigationManager.mapManager.removeMap(map: carPlayMap)
         }
         
         if FlutterCarPlaySceneDelegate.map != nil {
@@ -357,7 +352,7 @@ class NavigationHandler {
     }
     
     func saveNavigationState(completion: @escaping (Result<FlutterStandardTypedData, any Error>) -> Void) {
-        let state = PackedNavigationState.fromModel(model: NavigationHandler.navigationManager!.uiModel)
+        let state = PackedNavigationState.fromModel(model: self.navigationManager.uiModel)
         completion(
             Result.success(
             .init(bytes: state.toBytes())
@@ -394,13 +389,13 @@ class NavigationHandler {
     func getCurrentNavigationState(
         completion: @escaping (Result<NavigationStateMessage, any Error>) -> Void
     ) {
-        let state = switch NavigationHandler.navigationManager!.uiModel.state {
+        let state = switch self.navigationManager.uiModel.state {
         case .navigation, .routeSearch:  NavigationState.navigation
         case   .finished: NavigationState.finish
         case  .disabled: NavigationState.disabled
         default: NavigationState.disabled
         }
-        let options = NavigationHandler.navigationManager!.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
+        let options = self.navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
         completion(
             Result.success(NavigationStateMessage(state: state, routeSearchOptions: options))
         
@@ -410,7 +405,7 @@ class NavigationHandler {
     func startFreeRoam(speedRangeZoom: SpeedRangeZoom, completion: (Result<Void, any Error>) -> Void) {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
-            try NavigationHandler.navigationManager!.start()
+            try self.navigationManager.start()
         } catch {
             completion(
                 Result.failure(
@@ -426,7 +421,7 @@ class NavigationHandler {
     }
 
     func stopFreeRoam() {
-        NavigationHandler.navigationManager!.stop()
+        self.navigationManager.stop()
         resetCamera()
     }
 
@@ -443,7 +438,7 @@ class NavigationHandler {
     }
     
     func calcPositionForRoute(options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
-        let geometries = NavigationHandler.navigationManager!.uiModel.route.route.geometry.entries.map { entry in
+        let geometries = self.navigationManager.uiModel.route.route.geometry.entries.map { entry in
             PointGeometry(point: entry.value)
         }
         let geometry = ComplexGeometry(geometries: geometries)

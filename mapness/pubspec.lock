@@ -209,10 +209,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "6e3d953fa856f1a16622981f9d148080564e7107d11d1fee2086fd857ddcb547"
+      sha256: "6b6f22c8070f12a5eda51a823c5e6b0bd539dbeaf4a86cc9c5e5e2af4657f0de"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.1"
+    version: "3.2.2"
   battery_plus:
     dependency: transitive
     description:
@@ -2119,10 +2119,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "34c96f90321b3a0c56d3f8959f031052707d573083731cf04f351862e194b3c7"
+      sha256: ebde3d008e49abaee25385f5aa1549d713e199dab72b280fd1a5ef9b61b58d3d
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.12"
+    version: "1.0.13"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -3213,10 +3213,10 @@ packages:
     dependency: "direct main"
     description:
       name: urbi_utils
-      sha256: "7762c3015180b748dc39c3f6f323ddaed3e037b294caf1dcc4afa3313c2ea31d"
+      sha256: "49b4e755a0bc9830a41d4cd4bf0d386fc4299c2b286859a540acbce56a4dceca"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.4"
+    version: "1.0.5"
   url_launcher:
     dependency: "direct main"
     description:

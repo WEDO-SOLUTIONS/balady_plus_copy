@@ -136,11 +136,14 @@ class AppFeedbackMain extends HookConsumerWidget {
                 onTap: () async {
                   /// change feedback text
                   final result =
-                      await context.router.push(AppFeedbackInputSheet(initalText: feedbackTextController.text));
+                      await context.router.push(AppFeedbackInputSheet(initialText: feedbackTextController.text));
                   if (result != null && result is String) {
                     feedbackTextController.text = result;
                   }
                 },
+                // TODO: Remove this ignore when you will do refacotring
+                // Added to make a hotfix
+                // ignore: deprecated_member_use
                 child: BaladyInput(
                   readOnly: true,
                   controller: feedbackTextController,

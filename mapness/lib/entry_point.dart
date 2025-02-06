@@ -7,6 +7,8 @@ import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
+import 'package:balady_uikit/core/colorsV2/app_theme.dart';
+import 'package:balady_uikit/core/colorsV2/themes.dart';
 import 'package:dgis_map/library.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
@@ -48,7 +50,6 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
-import 'package:mapness/shared/ui/palette/balady_temp_palette.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/scopes/global_scopes.dart';
 import 'package:mixpanel_flutter/mixpanel_flutter.dart';
@@ -234,48 +235,48 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
     });
 
-    return Directionality(
-      textDirection: direction,
-      child: Consumer(
-        builder: (context, ref, child) {
-          final colorScheme = ref.watch(colorSchemeProvider);
-
-          return MaterialApp.router(
-            routerConfig: ref.read(appRouterProvider).config(
-                  navigatorObservers: () => [
-                    RoutesObserver(ref: ref),
-                  ],
-                ),
-            theme: ThemeData(
-              scaffoldBackgroundColor: Colors.transparent,
-              dividerColor: Colors.grey[400],
-              useMaterial3: false,
-              extensions: <ThemeExtension<dynamic>>[
-                if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
-                if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                AppColorsThemeExt.palette(colorScheme, isDark: false),
-                AppColorsThemeV2.palette(isDark: false),
-                AppStaticColorsThemeExt.palette(colorScheme),
-
-                // Temp palette for new colors disign
-                BaladyTempPalette.palette(),
-              ],
-            ),
-            builder: (context, child) => child != null
-                ? LoadingOverlay(
-                    child: ToastOverlay(
-                      child: GlobalScopes(
-                        child: child,
+    return DefaultTextHeightBehavior(
+      textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
+      child: Directionality(
+        textDirection: direction,
+        child: Consumer(
+          builder: (context, ref, child) {
+            final colorScheme = ref.watch(colorSchemeProvider);
+            return MaterialApp.router(
+              routerConfig: ref.read(appRouterProvider).config(
+                    navigatorObservers: () => [
+                      RoutesObserver(ref: ref),
+                    ],
+                  ),
+              theme: ThemeData(
+                scaffoldBackgroundColor: Colors.transparent,
+                dividerColor: Colors.grey[400],
+                useMaterial3: false,
+                extensions: <ThemeExtension<dynamic>>[
+                  if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
+                  if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
+                  AppColorsThemeExt.palette(colorScheme, isDark: false),
+                  AppColorsThemeV2.palette(isDark: false),
+                  AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
+                  AppStaticColorsThemeExt.palette(colorScheme),
+                ],
+              ),
+              builder: (context, child) => child != null
+                  ? LoadingOverlay(
+                      child: ToastOverlay(
+                        child: GlobalScopes(
+                          child: child,
+                        ),
                       ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            locale: language.locale,
-            localizationsDelegates: AppLocalizations.localizationsDelegates,
-            supportedLocales: AppLocalizations.supportedLocales,
-            debugShowCheckedModeBanner: false,
-          );
-        },
+                    )
+                  : const SizedBox.shrink(),
+              locale: language.locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              debugShowCheckedModeBanner: false,
+            );
+          },
+        ),
       ),
     );
   }
@@ -346,7 +347,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
-  Future<void> openAppLink(uri, {isFirstRun = false}) async {
+  Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
     final parse = Uri.parse(decodeFull);
@@ -418,7 +419,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
       CommonFunctions.openMovingViolations(uri);
     } else if (url.toString().isNotEmpty) {
-      print('url.toString() ${url.toString()}');
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }

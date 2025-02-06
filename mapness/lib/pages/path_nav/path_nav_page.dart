@@ -26,6 +26,7 @@ import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
@@ -318,6 +319,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
+
+    final mapSettings = MapObjectManagerSettings.search();
+    final mapObjectProvider = ref.read(mapObjectManagerProvider(
+      named: mapSettings.name,
+      layerId: mapSettings.layerId,
+    ).notifier);
+
+    await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
   }
 
   // Show the route page after the trip is finished
@@ -411,6 +420,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingCompleted);
       _navigationState.value = PathNavState.finished;
       ref.read(layersControlsProvider.notifier).hideParking();
+      ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+
       unawaited(clearNavigationState());
       unawaited(_stopActiveSharing());
     } else if (event == NavigationEvent.disabled) {
@@ -449,9 +460,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final pixelSize = MediaQuery.of(context).devicePixelRatio;
     ref.read(cameraPaddingProvider.notifier).setPadding(
           CameraSetPaddingMessage(
-            leftPadding: 0,
-            topPadding: 0,
-            rightPadding: 0,
             bottomPadding: (pixelSize * padding).floor(),
           ),
         );

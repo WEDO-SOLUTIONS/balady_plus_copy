@@ -145,7 +145,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                 QuickActionButton(
                   text: context.l10n.qibla,
                   icon: General32Icons.qiblaAction,
-                  onTap: () => _openQible(context),
+                  onTap: () => _openQibla(context),
                 ),
                 QuickActionButton(
                   text: context.l10n.locationAction,
@@ -180,7 +180,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     ref.read(layersControlsProvider.notifier).enableParking();
   }
 
-  Future<void> _openQible(BuildContext context) async {
+  Future<void> _openQibla(BuildContext context) async {
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.qibla,
       action: MetricAction.tap.name,

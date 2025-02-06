@@ -18,9 +18,7 @@ class SearchHandler: NSObject {
     private var queries: [String:SearchQuery] = [:]
     
     private let jsonDecoder = JSONDecoder()
-    
-    private let vendorConfig: VendorConfig?
-    
+        
     private static let saRestrictions = [
         GeoPoint(latitude: 32.568765, longitude: 56.694472),
         GeoPoint(latitude: 32.568765, longitude: 32.61185),
@@ -31,13 +29,11 @@ class SearchHandler: NSObject {
     init(
         searchManager: SearchManager,
         map: Map,
-        sdkContext: Container,
-        vendorConfig: VendorConfig?
+        sdkContext: Container
     ) {
         self.searchManager = searchManager
         self.map = map
         self.sdkContext = sdkContext
-        self.vendorConfig = vendorConfig
     }
 
     func cancel() {

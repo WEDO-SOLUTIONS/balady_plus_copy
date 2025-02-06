@@ -49,16 +49,8 @@ class PoiHeader extends ConsumerWidget {
     final subtitleIcon = _getParkingIcon(data);
     final title = address?.buildingName ?? data.title;
 
-    return DecoratedBox(
-      decoration: ShapeDecoration(
-        color: context.colorsV2.backgroundScreen,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(RadiusBorder.xl),
-            topRight: Radius.circular(RadiusBorder.xl),
-          ),
-        ),
-      ),
+    return ColoredBox(
+      color: context.colorsV2.backgroundScreen,
       child: Padding(
         padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
         child: Column(
@@ -92,8 +84,7 @@ class PoiHeader extends ConsumerWidget {
   /// This is temporary solution. We need to show text for parking info
   /// If parking is not presented for this POI we return null
   /// Should work for all poi because only parking lots have parking info
-  String? _getParkingSubtitle(
-      DirectoryObjectMessage data, AppLocalizations l10n) {
+  String? _getParkingSubtitle(DirectoryObjectMessage data, AppLocalizations l10n) {
     final parkingInfo = data.parkingInfo;
     if (parkingInfo == null) {
       return null;
@@ -111,8 +102,6 @@ class PoiHeader extends ConsumerWidget {
     if (parkingInfo == null) {
       return null;
     }
-    return parkingInfo.isPaid
-        ? GeneralIcons.money
-        : GeneralIcons.checkmarkCircle;
+    return parkingInfo.isPaid ? GeneralIcons.money : GeneralIcons.checkmarkCircle;
   }
 }

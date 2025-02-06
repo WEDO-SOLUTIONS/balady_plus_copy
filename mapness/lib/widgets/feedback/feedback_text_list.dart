@@ -158,8 +158,9 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                 ],
                 SizedBox(
                   width: double.infinity,
-                  child: AppButton(
-                    buttonColorScheme: ButtonColorScheme.secondary,
+                  child: BaladyAppButton(
+                    buttonType: BaladyButtonType.secondary,
+                    buttonColorScheme: BaladyButtonColorScheme.accent,
                     primaryLabel: isPhoneField ? context.l10n.addPhoneNumber : context.l10n.add,
                     primaryIcon: isPhoneField ? null : GeneralIcons.plusCircle,
                     onTap: () {

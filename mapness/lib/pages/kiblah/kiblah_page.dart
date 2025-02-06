@@ -65,10 +65,11 @@ class KiblahPage extends ConsumerWidget {
                   top: Spacing.$4x,
                   bottom: Spacing.$5x,
                 ),
-                child: AppButton(
+                child: BaladyAppButton(
                   primaryIcon: GeneralIcons.mosq,
+                  size: BaladyButtonSize.large,
                   primaryLabel: context.l10n.mosquesNearYou,
-                  buttonColorScheme: ButtonColorScheme.primary,
+                  buttonColorScheme: BaladyButtonColorScheme.accent,
                   onTap: () => _onMosquesNearTap(context, ref),
                 ),
               ),

@@ -15,9 +15,7 @@ class DgisMapViewFactory: NSObject, FlutterPlatformViewFactory {
         viewIdentifier viewId: Int64,
         arguments args: Any?
     ) -> FlutterPlatformView {
-        guard let sdk = SwiftDgisMapPlugin.sdkContext else {
-            fatalError("Plugin has not been initialized")
-        }
+        let sdk = DgisMapInitializer.shared.getSdkContainer()
 
         return DgisMapView(
             dgisSdk: sdk,
