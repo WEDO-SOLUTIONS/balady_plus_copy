@@ -37,7 +37,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     fontSize: 13,
     textOffset: 4,
     strokeColor: 0xD3FFFFFF,
-    strokeWidth: 3,
+    strokeWidth: 1,
     fontName: fontName,
     textPlacement: MarkerTextPlacementMessage(
       placement: TextPlacementMessage.rightCenter,
