@@ -727,6 +727,24 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeAllPolygons(from: manager?.id, completion: completion)
     }
     
+    // MARK: Circle
+    
+    func addCircle(circle: CircleMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addCircle(circle, to: manager?.id, completion: completion)
+    }
+    
+    func addCircles(circles: [CircleMessage], manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addCircles(circles, to: manager?.id, completion: completion)
+    }
+    
+    func removeCircle(id: String, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeCircle(id, from: manager?.id, completion: completion)
+    }
+    
+    func removeAllCircles(manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeAllCircles(from: manager?.id, completion: completion)
+    }
+    
     // MARK: Polyline
     
     func addPolyline( polyline: PolylineMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {

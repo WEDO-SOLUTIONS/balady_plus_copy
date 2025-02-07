@@ -67,8 +67,19 @@
 -keep class io.flutter.** { *; }
 -keep class io.flutter.plugins.** { *; }
 
-
 -keepattributes *Annotation*
 
 -dontskipnonpubliclibraryclasses
 -dontskipnonpubliclibraryclassmembers
+
+-keep class com.huawei.hms.** { *; }
+-keep class com.huawei.libcore.** { *; }
+-keep class com.huawei.libcore.io.** { *; }
+-keepattributes EnclosingMethod
+
+-dontwarn android.telephony.**
+-dontwarn androidx.window.extensions.**
+-dontwarn androidx.window.sidecar.**
+-dontwarn com.huawei.android.os.**
+-dontwarn com.huawei.hms.**
+-dontwarn com.huawei.libcore.io.**

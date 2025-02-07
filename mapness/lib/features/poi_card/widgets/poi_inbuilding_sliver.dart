@@ -71,6 +71,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
           shrinkWrapFirstPageIndicators: true,
           pagingController: pagingController,
           builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+            newPageProgressIndicatorBuilder: (context) => Center(child: Loading.medium()),
             itemBuilder: (context, item, index) => OrganizationWidget(
               item: item,
               onTap: (id) {
@@ -78,7 +79,6 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiInBuildingSliver> {
                 if (id == null) {
                   return;
                 }
-
                 context.router.replace(
                   PoiCardWidgetRoute(
                     objectId: DgisObjectIdMessage(

@@ -15,6 +15,7 @@ import androidx.car.app.SessionInfo
 import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
+import io.flutter.FlutterInjector
 import ru.dgis.sdk.androidauto.AndroidAutoMapSession
 import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MapOptions
@@ -27,7 +28,10 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
 
     private var customRenderer = CustomRenderer()
     private val sharedPrefs = SharedPrefs(context)
-    private val carMapController = CarMapController(sharedPrefs)
+    val flutterLoader = FlutterInjector.instance().flutterLoader().apply {
+        startInitialization(context)
+    }
+    private val carMapController = CarMapController(sharedPrefs, flutterLoader)
     private var navigationScreen: NavigationScreen? = null
 
     init {

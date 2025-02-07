@@ -146,6 +146,25 @@ class Polygon {
 }
 
 /// Model corresponds render object on map
+class Circle {
+  /// Base class constructor
+  const Circle({
+    required this.id,
+    required this.options,
+    this.onTap,
+  });
+
+  /// Map render object's id
+  final String id;
+
+  /// Map render object's options (such as position, color, anchor and etc)
+  final CircleOptionsMessage options;
+
+  /// Map render object's onTap handler
+  final void Function()? onTap;
+}
+
+/// Model corresponds render object on map
 class Polyline {
   /// Base class constructor
   const Polyline({

@@ -17,6 +17,8 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         ),
         routeChoices: []
     )
+    private static var currentManeuver: CarPlayManeuver?
+    private static var currentEstimates: CarPlayEstimates?
     
     static private(set) var map: Map?
     
@@ -58,6 +60,17 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     
     func viewDidLoad(with map: DGis.Map) {
         FlutterCarPlaySceneDelegate.map = map
+        
+        let navigationState = DgisMapInitializer.shared.getNavigationManager().uiModel.state
+        if navigationState == .navigation || navigationState == .routeSearch {
+            Self.startNavigation()
+            if let maneuver = Self.currentManeuver {
+                Self.updateManeuver(maneuver)
+            }
+            if let estimates = Self.currentEstimates {
+                Self.updateEstimates(estimates)
+            }
+        }
     }
     
     func templateApplicationScene(
@@ -160,35 +173,49 @@ extension FlutterCarPlaySceneDelegate {
 
 extension FlutterCarPlaySceneDelegate {
     static func startNavigation() {
+        guard let map else {
+            return
+        }
+        
         if let navigationSession = self.navigationSession {
             navigationSession.cancelTrip()
             self.navigationSession = nil
         }
-
+        
         self.navigationSession = self.mapTemplate?.startNavigationSession(
             for: self.trip
         )
     }
     
-    static func updateEstimates(distanceRemaining distance: Measurement<UnitLength>, timeRemaining time: TimeInterval) {
+    static func updateEstimates(_ estimates: CarPlayEstimates) {
+        currentEstimates = estimates
+        guard let map else {
+            return
+        }
+        
         self.mapTemplate?.updateEstimates(
             CPTravelEstimates(
-                distanceRemaining: distance.humanReadable,
-                timeRemaining: time
+                distanceRemaining: estimates.distanceRemaining.humanReadable,
+                timeRemaining: estimates.timeRemaining
             ),
             for: self.trip
         )
     }
     
-    static func updateManeuver(
-        roadName: String,
-        instruction: DGis.InstructionRouteEntry,
-        distanceRemaining distance: Measurement<UnitLength>,
-        timeRemaining time: TimeInterval
-    ) {
+    static func updateManeuver(_ maneuver: CarPlayManeuver) {
+        currentManeuver = maneuver
+        guard let map else {
+            return
+        }
+
         guard let navigationSession else {
             return
         }
+        
+        let roadName = maneuver.roadName
+        let instruction = maneuver.instruction
+        let distance = maneuver.distanceRemaining
+        let time = maneuver.timeRemaining
         
         let instructionType = getInstructionManeuver(extraInstructionInfo: instruction.value.extraInstructionInfo)
         
@@ -272,7 +299,9 @@ extension FlutterCarPlaySceneDelegate {
         }
     }
     
-    static func stopNaviagtion() {
+    static func stopNavigation() {
+        Self.currentManeuver = nil
+        Self.currentEstimates = nil
         self.navigationSession?.finishTrip()
         self.navigationSession = nil
     }
