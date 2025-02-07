@@ -22,14 +22,7 @@ class AddCompanyBanner extends StatelessWidget {
     const imagePath = 'packages/mapness/assets/images/add_company.png';
 
     return GestureDetector(
-      onTap: () {
-        context.router.push(
-          FeedbackRoute(
-            poiId: 0,
-            categoryId: 'add_company',
-          ),
-        );
-      },
+      onTap: () => context.router.push(QuickFeedbackRoute()),
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
         decoration: BoxDecoration(
