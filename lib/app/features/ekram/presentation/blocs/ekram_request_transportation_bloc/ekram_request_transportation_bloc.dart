@@ -53,6 +53,7 @@ import '../../../data/model/request_details_response_model/main_info.dart';
 import '../../../data/model/request_details_response_model/submitter_info.dart';
 import '../../../data/model/request_details_response_model/request_details_response_model.dart';
 import '../../../data/model/request_details_response_model/transport_info.dart';
+import '../../../data/model/reset_action_enum.dart';
 import '../../../data/model/save_death_burial_info_params/save_death_burial_info_params.dart';
 import '../../../domain/use_cases/get_death_cities.dart';
 import '../../../../../core/utils/nullable.dart';
@@ -206,6 +207,8 @@ class EkramRequestTransportationBloc extends Bloc<
     on<setTransportInfoEvent>(_changeTansportInfoHandler);
     on<setCemtryInfoEvent>(_changeCemtryInfoHandler);
     on<setInitialDataEvent>(_setInitialDataHandler);
+    on<ResetActionEvent>(_resetActionEventHandler);
+
 
     getEkramNationalIdTypesEventHandler();
     getCountries();
@@ -1237,6 +1240,48 @@ class EkramRequestTransportationBloc extends Bloc<
         requestDetailsModel: params));
   }
 
+
+
+
+
+  Future<void> _resetActionEventHandler(ResetActionEvent e, Emitter emitter) async {
+switch(e.action){
+  case ResetActionEnum.Country:
+    {
+      emitter(state.copyWith(
+        burialCities: [],
+        deathCities: [],
+        bodyArrivalCities: [],
+        hospitals: [],
+        cemetries: [],
+        transportations: [],
+        laundries: [],
+        mosques:[],
+        status: BlocStatus.success,
+      ));
+    }
+    break;
+  case ResetActionEnum.City:
+    {
+      emitter(state.copyWith(
+          hospitals: [],
+          cemetries: [],
+          transportations: [],
+          laundries: [],
+          mosques:[],
+          status: BlocStatus.success,
+          ));
+    }
+    break;
+  case ResetActionEnum.Hospital:
+    {
+
+    }
+    break;
+}
+  }
+
+
   Future<void> _changeBurialInfoHandler(
       setBurialInfoEvent e, Emitter emitter) async {
     RequestDetailsResponseModel? params = state.requestDetailsModel;
@@ -1359,10 +1404,6 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-      List<LookUpItem>? mosques = [];
-      LookUpItem choose = LookUpItem(id: -1, name: "choose".tr());
-      mosques.add(choose);
-      mosques.addAll(success.data?.result as List<LookUpItem>);
       emitter(state.copyWith(
           status: BlocStatus.success,
           madinahEmirateApprovalStatus:

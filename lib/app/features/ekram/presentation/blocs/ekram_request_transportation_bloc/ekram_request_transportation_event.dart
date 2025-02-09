@@ -52,6 +52,12 @@ class ChangeDeathInfoEvent extends EkramRequestTransportationEvent {
   const ChangeDeathInfoEvent({required this.deathInfo});
 }
 
+class ResetActionEvent extends EkramRequestTransportationEvent {
+  final ResetActionEnum action ;
+
+  const ResetActionEvent({required this.action});
+}
+
 class ChangeDeathCityEvent extends EkramRequestTransportationEvent {
   final LookUpItem item;
   const ChangeDeathCityEvent({required this.item});
