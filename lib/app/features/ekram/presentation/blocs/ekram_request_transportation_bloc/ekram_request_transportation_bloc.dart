@@ -879,10 +879,10 @@ class EkramRequestTransportationBloc extends Bloc<
     int nextPage = state.currentPageValue + 1;
     if (state.requestDetailsModel?.cemeteryData?.cemeteryId != null) {
       if (nextPage == 4) {
-        state.getCemtryById(state.requestDetailsModel?.cemeteryData?.cemeteryId,state
-            .requestDetailsModel
-            ?.cemeteryData
-            ?.cemeteryName)
+        state
+                    .getCemtryById(
+                        state.requestDetailsModel?.cemeteryData?.cemeteryId,
+                        state.requestDetailsModel?.cemeteryData?.cemeteryName)
                     ?.needApproval ??
                 false
             ? null
@@ -911,10 +911,10 @@ class EkramRequestTransportationBloc extends Bloc<
       int prvoiusPage = state.currentPageValue - 1;
       if (state.requestDetailsModel?.cemeteryData?.cemeteryId != null) {
         if (prvoiusPage == 4) {
-          state.getCemtryById(state.requestDetailsModel?.cemeteryData?.cemeteryId,state
-              .requestDetailsModel
-              ?.cemeteryData
-              ?.cemeteryName)
+          state
+                      .getCemtryById(
+                          state.requestDetailsModel?.cemeteryData?.cemeteryId,
+                          state.requestDetailsModel?.cemeteryData?.cemeteryName)
                       ?.needApproval ??
                   false
               ? null
@@ -1010,18 +1010,17 @@ class EkramRequestTransportationBloc extends Bloc<
           isVerified: false));
       return null;
     }, (res) {
+      RequestDetailsResponseModel? model = res.data?.result;
+      if (model != null && model.deceasedInfo?.deceasedDataSource == "BALADY") {
+        DeathInfo? deathInfo = model.deathInfo;
+        deathInfo = deathInfo?.copyWith(
+            deathDate: CommonFunctions.gregorianToHijri(
+                DateFormat('yyyy/MM/dd').format(DateTime.now())),
+            gregorianDeathDate:
+                DateFormat('yyyy/MM/dd').format(DateTime.now()));
 
-
-      RequestDetailsResponseModel? model=  res.data?.result;
-      if(model !=  null && model.deceasedInfo?.deceasedDataSource=="BALADY")
-        {
-          DeathInfo? deathInfo = model.deathInfo;
-          deathInfo= deathInfo?.copyWith(deathDate: CommonFunctions.gregorianToHijri(DateFormat('yyyy/MM/dd').format(DateTime.now()))
-              ,gregorianDeathDate:DateFormat('yyyy/MM/dd').format(DateTime.now()));
-
-          model=model.copyWith(deathInfo: deathInfo);
-
-        }
+        model = model.copyWith(deathInfo: deathInfo);
+      }
 
       emit(state.copyWith(
         status: BlocStatus.success,
@@ -1032,7 +1031,6 @@ class EkramRequestTransportationBloc extends Bloc<
       ));
     });
   }
-
 
   Future<void> _getCurrentTrackLocationHandler(
       getCurrentTrackLocationEvent e, Emitter emitter) async {
@@ -1211,6 +1209,26 @@ class EkramRequestTransportationBloc extends Bloc<
     }
     emitter(state.copyWith(
         hospitals: isCityChanged(newCityId) == true
+            ? []
+            : isCountryChanged(e.deathInfo?.countryId) == true
+                ? []
+                : null,
+        cemetries: isCityChanged(newCityId) == true
+            ? []
+            : isCountryChanged(e.deathInfo?.countryId) == true
+                ? []
+                : null,
+        transportations: isCityChanged(newCityId) == true
+            ? []
+            : isCountryChanged(e.deathInfo?.countryId) == true
+                ? []
+                : null,
+        laundries: isCityChanged(newCityId) == true
+            ? []
+            : isCountryChanged(e.deathInfo?.countryId) == true
+                ? []
+                : null,
+        mosques: isCityChanged(newCityId) == true
             ? []
             : isCountryChanged(e.deathInfo?.countryId) == true
                 ? []
@@ -1420,8 +1438,9 @@ class EkramRequestTransportationBloc extends Bloc<
         isDeceasedBtnEnabled: false,
         isDraft: state.nationalIdTypes != null ? true : false,
         requestId: e.dataModel?.requestId,
-        selectedNationalIdType: state
-            .getNationalIdTypesById(e.dataModel?.deceasedInfo?.identityType,e.dataModel?.deceasedInfo?.identityTypeName),
+        selectedNationalIdType: state.getNationalIdTypesById(
+            e.dataModel?.deceasedInfo?.identityType,
+            e.dataModel?.deceasedInfo?.identityTypeName),
         requestDetailsModel: e.dataModel));
   }
 }
