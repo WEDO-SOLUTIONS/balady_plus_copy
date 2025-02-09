@@ -314,6 +314,9 @@ flutter:
     - assets/icons/services/
     - .env.stg
     - .env.pre
+    - .env.prod
+    - .env.dev
+    - .env.urbiPre
 
   fonts:
     - family: Cairo
