@@ -16,7 +16,6 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:hijri/hijri_calendar.dart' show HijriCalendar;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show LocalizationDefaultType, translator;
-import 'package:path_provider/path_provider.dart';
 
 import './app/core/dependency_injection/dependency_injection_exports.dart' as di
     show initialize;
@@ -24,18 +23,24 @@ import './app/core/dependency_injection/dependency_injection_exports.dart'
     show sl;
 import './app/core/services/services_exports.dart'
     show HiveManager, NotificationService;
-import './app/core/utils/utils_exports.dart'
-    show AppConfig, CommonFunctions, EnvType;
+import './app/core/utils/utils_exports.dart' show AppConfig, EnvType;
 import 'app/core/services/local/initializer.dart';
+
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class AppEnv {
   static Future<void> setupEnv(EnvType type) async {
     ///  await _deleteAppDir();
     // await _deleteCacheDir();
+
     WidgetsFlutterBinding.ensureInitialized();
     final status = await AppTrackingTransparency.requestTrackingAuthorization();
-    AdjustConfig config =
-        AdjustConfig('tung4x27vt34',(type == EnvType.prod) ? AdjustEnvironment.production:AdjustEnvironment.sandbox);
+    AdjustConfig config = AdjustConfig(
+      'tung4x27vt34',
+      (type == EnvType.prod)
+          ? AdjustEnvironment.production
+          : AdjustEnvironment.sandbox,
+    );
     config.fbAppId = "1668346683733303";
     if (Platform.isIOS) {
       if (status == TrackingStatus.authorized) {
@@ -65,6 +70,13 @@ abstract class AppEnv {
     //! Please assign environment firstly
     sl.registerLazySingleton<EnvType>(() => type);
 
+    String testName = ".env.${type.name}";
+    // Load the local files by the type.name (stg) send from main
+    try {
+      await dotenv.load(fileName: testName); // Load .env for local development
+    } catch (_) {
+      // if cant load the files get the variables from pipelines
+    }
     // Get available cameras
     //final cameras = await CommonFunctions.getAvailableCameras();
 
@@ -106,37 +118,37 @@ abstract class AppEnv {
       ..dismissOnTap = false;
   }
 
-  // static Future<void> _deleteCacheDir() async {
-  //   try {
-  //     final cacheDir = await getTemporaryDirectory();
-  //     if (cacheDir.existsSync()) {
-  //       cacheDir.deleteSync(recursive: true);
-  //     }
-  //   } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  // }
-  //
-  // static Future<void> _deleteAppDir() async {
-  //   try {
-  //     final appDir = await getApplicationSupportDirectory();
-  //     if (appDir.existsSync()) {
-  //       appDir.deleteSync(recursive: true);
-  //     }
-  //   } catch (error, stackTrace) {
-  //   LogsViewModel().sendEventFromModel(
-  //     event: ErrorExceptionModel(
-  //       nameEvent: EventsName.handledException,
-  //       message: error.toString(),
-  //       stackTrace: stackTrace.toString(),
-  //     ),
-  //   );
-  // }
-  // }
+// static Future<void> _deleteCacheDir() async {
+//   try {
+//     final cacheDir = await getTemporaryDirectory();
+//     if (cacheDir.existsSync()) {
+//       cacheDir.deleteSync(recursive: true);
+//     }
+//   } catch (error, stackTrace) {
+//   LogsViewModel().sendEventFromModel(
+//     event: ErrorExceptionModel(
+//       nameEvent: EventsName.handledException,
+//       message: error.toString(),
+//       stackTrace: stackTrace.toString(),
+//     ),
+//   );
+// }
+// }
+//
+// static Future<void> _deleteAppDir() async {
+//   try {
+//     final appDir = await getApplicationSupportDirectory();
+//     if (appDir.existsSync()) {
+//       appDir.deleteSync(recursive: true);
+//     }
+//   } catch (error, stackTrace) {
+//   LogsViewModel().sendEventFromModel(
+//     event: ErrorExceptionModel(
+//       nameEvent: EventsName.handledException,
+//       message: error.toString(),
+//       stackTrace: stackTrace.toString(),
+//     ),
+//   );
+// }
+// }
 }

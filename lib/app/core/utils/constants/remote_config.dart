@@ -1,6 +1,8 @@
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../utils_exports.dart' show EnvType;
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class RemoteConfig {
   //////  Not Used
   // static String get baladyToken => _RemoteConfig.baladyToken[env]!;
@@ -14,9 +16,25 @@ class RemoteConfig {
   ////   Need Stop Using it
   // static String get pegaURL => _RemoteConfig.pegaURL[env]!;
   // static String get gis => _RemoteConfig.gis[env]!;
-  static String get apigeeUsername => _RemoteConfig.apigeeUsername[env]!;
+  // static String get apigeeUsername => "__APIGEE-USERNAME__";
+  static String get apigeeUsername {
+    String apigeeUserName = const String.fromEnvironment(
+      '__APIGEE_USERNAME__',
+    ); // Get from pipeline
+    return apigeeUserName.isNotEmpty
+        ? apigeeUserName
+        : dotenv.env['APIGEE_USERNAME'] ?? "default_url"; // Get from .env
+  }
 
-  static String get apigeePassword => _RemoteConfig.apigeePassword[env]!;
+  // static String get apigeePassword => "__APIGEE-PASSWORD__";
+  static String get apigeePassword {
+    String apigeePassword = const String.fromEnvironment(
+      '__APIGEE_PASSWORD__',
+    ); // Get from pipeline
+    return apigeePassword.isNotEmpty
+        ? apigeePassword
+        : dotenv.env['APIGEE_PASSWORD'] ?? "default_url"; // Get from .env
+  }
 
   ////   just used in one place in the app
   static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
@@ -34,26 +52,60 @@ class RemoteConfig {
   static List<String> get MSRAllowedMuncipalites =>
       _RemoteConfig.MSRAllowedMuncipalites[env]!;
 
-  //! First
-  static String get apigeeURL => _RemoteConfig.apigeeURL[env]!;
+//////////////////////////////////////////////////////
+//   static String get apigeeURL => "__APIGEE-URL__";
+  static String get apigeeURL {
+    String apigeeURL = const String.fromEnvironment(
+      '__APIGEE_URL__',
+    ); // Get from pipeline
+    return apigeeURL.isNotEmpty
+        ? apigeeURL
+        : dotenv.env['APIGEE_URL'] ?? "default_url"; // Get from .env
+  }
 
-  static String get hmCode => _RemoteConfig.hmCode[env]!;
+  // static String get hmCode => "__HM-CODE__";
+  static String get hmCode {
+    String hmCode = const String.fromEnvironment(
+      '__HM_CODE__',
+    ); // Get from pipeline
+    return hmCode.isNotEmpty
+        ? hmCode
+        : dotenv.env['HM_CODE'] ?? "default_url"; // Get from .env
+  }
 
+  //////////////////////////////////////////////////////
   static String get ssoUrl => _RemoteConfig.ssoUrl[env]!;
 
   static String get ssoLoginUrl => _RemoteConfig.ssoLoginUrl[env]!;
 
   static String get ssoLogOutUrl => _RemoteConfig.ssoLogOutUrl[env]!;
 
-  static String get ssoSecret => _RemoteConfig.ssoSecret[env]!;
-
-  static String get momraDomain => _RemoteConfig.momraDomain[env]!;
-
   static String get ssoMomraDomain => _RemoteConfig.ssoMomraDomain[env]!;
 
-  static String get cookieURL => _RemoteConfig.cookieURL[env]!;
+  // static String get ssoSecret => "__SSO-SECRET__";
+  static String get ssoSecret {
+    String ssoSecret = const String.fromEnvironment(
+      '__SSO_SECRET__',
+    ); // Get from pipeline
+    return ssoSecret.isNotEmpty
+        ? ssoSecret
+        : dotenv.env['SSO_SECRET'] ?? "default_url"; // Get from .env
+  }
 
-  static String get ssoClient => _RemoteConfig.ssoClient[env]!;
+  // static String get ssoClient => "__SSO-CLINT__";
+  static String get ssoClient {
+    String ssoClient = const String.fromEnvironment(
+      '__SSO_CLINT__',
+    ); // Get from pipeline
+    return ssoClient.isNotEmpty
+        ? ssoClient
+        : dotenv.env['SSO_CLINT'] ?? "default_url"; // Get from .env
+  }
+
+  //////////////////////////////////////////////////////
+  static String get momraDomain => _RemoteConfig.momraDomain[env]!;
+
+  static String get cookieURL => _RemoteConfig.cookieURL[env]!;
 
   static double get mapRadius => _RemoteConfig.mapRadius[env]!;
 
@@ -82,48 +134,48 @@ class RemoteConfig {
 
 //! First solution
 class _RemoteConfig {
-  static final apigeeURL = _initValues<String>(
-    devVal: "__DEV-APIGEE-URL__",
-    stgVal: "__STG-APIGEE-URL__",
-    preVal: "__PRE-APIGEE-URL__",
-    prodVal: "__PROD-APIGEE-URL",
-    urbiPreVal: "__STG-APIGEE-URL__",
-  );
-  static final hmCode = _initValues<String>(
-    devVal: "__DEV-HM-CODE__",
-    stgVal: "__STG-HM-CODE__",
-    preVal: "__PRE-HM-CODE__",
-    prodVal: "__PROD-HM-CODE__",
-    urbiPreVal: "__STG-HM-CODE__",
-  );
-  static final apigeeUsername = _initValues<String>(
-    devVal: "__DEV-APIGEE-USERNAME__",
-    stgVal: "__STG-APIGEE-USERNAME__",
-    preVal: "__PRE-APIGEE-USERNAME__",
-    prodVal: "__PROD-APIGEE-USERNAME__",
-    urbiPreVal: "__STG-APIGEE-USERNAME__",
-  );
-  static final apigeePassword = _initValues<String>(
-    devVal: "__DEV-APIGEE-PASSWORD__",
-    stgVal: "__STG-APIGEE-PASSWORD__",
-    preVal: "__PRE-APIGEE-PASSWORD__",
-    prodVal: "__PROD-APIGEE-PASSWORD__",
-    urbiPreVal: "__STG-APIGEE-PASSWORD__",
-  );
-  static final ssoClient = _initValues<String>(
-    devVal: "__DEV-SSO-CLINT__",//balady_mobile_app
-    stgVal: "__STG-SSO-CLINT__",
-    preVal: "__PRE-SSO-CLINT__",
-    prodVal: "__PROD-SSO-CLINT__",
-    urbiPreVal: "__STG-SSO-CLINT__",
-  );
-  static final ssoSecret = _initValues<String>(
-    devVal: "__DEV-SSO-SECRET__",
-    stgVal: "__STG-SSO-SECRET__",
-    preVal: "__PRE-SSO-SECRET__",
-    prodVal: "__PROD-SSO-SECRET__",
-    urbiPreVal: "__STG-SSO-SECRET__",
-  );
+  // static final apigeeURL = _initValues<String>(
+  //   devVal: "__DEV-APIGEE-URL__",
+  //   stgVal: "__STG-APIGEE-URL__",
+  //   preVal: "__PRE-APIGEE-URL__",
+  //   prodVal: "__PROD-APIGEE-URL",
+  //   urbiPreVal: "__STG-APIGEE-URL__",
+  // );
+  // static final hmCode = _initValues<String>(
+  //   devVal: "__DEV-HM-CODE__",
+  //   stgVal: "__STG-HM-CODE__",
+  //   preVal: "__PRE-HM-CODE__",
+  //   prodVal: "__PROD-HM-CODE__",
+  //   urbiPreVal: "__STG-HM-CODE__",
+  // );
+  // static final apigeeUsername = _initValues<String>(
+  //   devVal: "__DEV-APIGEE-USERNAME__",
+  //   stgVal: "__STG-APIGEE-USERNAME__",
+  //   preVal: "__PRE-APIGEE-USERNAME__",
+  //   prodVal: "__PROD-APIGEE-USERNAME__",
+  //   urbiPreVal: "__STG-APIGEE-USERNAME__",
+  // );
+  // static final apigeePassword = _initValues<String>(
+  //   devVal: "__DEV-APIGEE-PASSWORD__",
+  //   stgVal: "__STG-APIGEE-PASSWORD__",
+  //   preVal: "__PRE-APIGEE-PASSWORD__",
+  //   prodVal: "__PROD-APIGEE-PASSWORD__",
+  //   urbiPreVal: "__STG-APIGEE-PASSWORD__",
+  // );
+  // static final ssoClient = _initValues<String>(
+  //   devVal: "__DEV-SSO-CLINT__",//balady_mobile_app
+  //   stgVal: "__STG-SSO-CLINT__",
+  //   preVal: "__PRE-SSO-CLINT__",
+  //   prodVal: "__PROD-SSO-CLINT__",
+  //   urbiPreVal: "__STG-SSO-CLINT__",
+  // );
+  // static final ssoSecret = _initValues<String>(
+  //   devVal: "__DEV-SSO-SECRET__",
+  //   stgVal: "__STG-SSO-SECRET__",
+  //   preVal: "__PRE-SSO-SECRET__",
+  //   prodVal: "__PROD-SSO-SECRET__",
+  //   urbiPreVal: "__STG-SSO-SECRET__",
+  // );
 
   /////////////////////////
   static final ssoUrl = _initValues<String>(

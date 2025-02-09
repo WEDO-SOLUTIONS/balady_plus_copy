@@ -238,6 +238,9 @@ dependencies:
 
   cached_network_svg_image: any
 
+#  For Load the variable from local file  .env
+  flutter_dotenv: ^5.2.1
+
 dependency_overrides:
   # for dio_http_cache
   dio: 5.7.0
@@ -309,6 +312,8 @@ flutter:
     - assets/athkar/
     - assets/athkar_en/
     - assets/icons/services/
+    - .env.stg
+    - .env.pre
 
   fonts:
     - family: Cairo
