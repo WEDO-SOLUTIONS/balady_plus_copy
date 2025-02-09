@@ -879,9 +879,10 @@ class EkramRequestTransportationBloc extends Bloc<
     int nextPage = state.currentPageValue + 1;
     if (state.requestDetailsModel?.cemeteryData?.cemeteryId != null) {
       if (nextPage == 4) {
-        state
-                    .getCemtryById(
-                        state.requestDetailsModel?.cemeteryData?.cemeteryId)
+        state.getCemtryById(state.requestDetailsModel?.cemeteryData?.cemeteryId,state
+            .requestDetailsModel
+            ?.cemeteryData
+            ?.cemeteryName)
                     ?.needApproval ??
                 false
             ? null
@@ -908,12 +909,12 @@ class EkramRequestTransportationBloc extends Bloc<
     } else {
       if (state.status == BlocStatus.performing) return;
       int prvoiusPage = state.currentPageValue - 1;
-      if (state.requestDetailsModel?.burialInfo?.cityId != null) {
+      if (state.requestDetailsModel?.cemeteryData?.cemeteryId != null) {
         if (prvoiusPage == 4) {
-          state
-                      .getCemtryById(
-                        state.requestDetailsModel?.burialInfo?.cityId,
-                      )
+          state.getCemtryById(state.requestDetailsModel?.cemeteryData?.cemeteryId,state
+              .requestDetailsModel
+              ?.cemeteryData
+              ?.cemeteryName)
                       ?.needApproval ??
                   false
               ? null
@@ -1009,15 +1010,29 @@ class EkramRequestTransportationBloc extends Bloc<
           isVerified: false));
       return null;
     }, (res) {
+
+
+      RequestDetailsResponseModel? model=  res.data?.result;
+      if(model !=  null && model.deceasedInfo?.deceasedDataSource=="BALADY")
+        {
+          DeathInfo? deathInfo = model.deathInfo;
+          deathInfo= deathInfo?.copyWith(deathDate: CommonFunctions.gregorianToHijri(DateFormat('yyyy/MM/dd').format(DateTime.now()))
+              ,gregorianDeathDate:DateFormat('yyyy/MM/dd').format(DateTime.now()));
+
+          model=model.copyWith(deathInfo: deathInfo);
+
+        }
+
       emit(state.copyWith(
         status: BlocStatus.success,
         isVerified: true,
-        requestDetailsModel: res.data?.result,
+        requestDetailsModel: model,
         editInfoSection: isScreenEditable(res.data?.result),
         errorMessage: "",
       ));
     });
   }
+
 
   Future<void> _getCurrentTrackLocationHandler(
       getCurrentTrackLocationEvent e, Emitter emitter) async {
@@ -1039,7 +1054,7 @@ class EkramRequestTransportationBloc extends Bloc<
           String? y = res.data?.result['y'];
 
           if (x != null && y != null) {
-            CommonFunctions.openMap(double.parse(x), double.parse(y));
+            CommonFunctions.openMap(double.parse(y), double.parse(x));
           }
         }
 
@@ -1406,7 +1421,7 @@ class EkramRequestTransportationBloc extends Bloc<
         isDraft: state.nationalIdTypes != null ? true : false,
         requestId: e.dataModel?.requestId,
         selectedNationalIdType: state
-            .getNationalIdTypesById(e.dataModel?.deceasedInfo?.identityType),
+            .getNationalIdTypesById(e.dataModel?.deceasedInfo?.identityType,e.dataModel?.deceasedInfo?.identityTypeName),
         requestDetailsModel: e.dataModel));
   }
 }

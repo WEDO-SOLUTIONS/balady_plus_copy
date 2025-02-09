@@ -203,8 +203,8 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
             onTap: () {
               if (widget.model?.startupInfo?.location?.x != null && widget.model?.startupInfo?.location?.y != null ) {
                 CommonFunctions.openMap(
-                  double.parse(widget.model!.startupInfo!.location!.x!),
-                  double.parse(widget.model!.startupInfo!.location!.y!));
+                  double.parse(widget.model!.startupInfo!.location!.y!),
+                  double.parse(widget.model!.startupInfo!.location!.x!));
               }
               else
                 {
@@ -338,8 +338,8 @@ class _TripBodyWidgetState extends State<TripBodyWidget> {
             onTap: () {
               if (widget.model?.arrivalInfo?.location?.x != null && widget.model?.arrivalInfo?.location?.y != null ) {
                 CommonFunctions.openMap(
-                  double.parse(widget.model!.arrivalInfo!.location!.x!),
-                  double.parse(widget.model!.arrivalInfo!.location!.y!));
+                  double.parse(widget.model!.arrivalInfo!.location!.y!),
+                  double.parse(widget.model!.arrivalInfo!.location!.x!));
               }
               else
               {

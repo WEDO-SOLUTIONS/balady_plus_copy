@@ -132,8 +132,8 @@ class DriversInfoWidget extends StatelessWidget {
             onTap: () {
               if (model.startupInfo?.location?.x != null && model.startupInfo?.location?.y != null ) {
                 CommonFunctions.openMap(
-                    double.parse(model.startupInfo!.location!.x!),
-                    double.parse(model.startupInfo!.location!.y!));
+                    double.parse(model.startupInfo!.location!.y!),
+                    double.parse(model.startupInfo!.location!.x!));
               }
               else
               {
@@ -200,8 +200,8 @@ class DriversInfoWidget extends StatelessWidget {
             onTap: () {
               if (model.arrivalInfo?.location?.x != null && model.arrivalInfo?.location?.y != null ) {
                 CommonFunctions.openMap(
-                    double.parse(model.arrivalInfo!.location!.x!),
-                    double.parse(model.arrivalInfo!.location!.y!));
+                    double.parse(model.arrivalInfo!.location!.y!),
+                    double.parse(model.arrivalInfo!.location!.x!));
               }
               else
               {
