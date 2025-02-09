@@ -209,7 +209,6 @@ class EkramRequestTransportationBloc extends Bloc<
     on<setInitialDataEvent>(_setInitialDataHandler);
     on<ResetActionEvent>(_resetActionEventHandler);
 
-
     getEkramNationalIdTypesEventHandler();
     getCountries();
     getPrayers();
@@ -931,10 +930,9 @@ class EkramRequestTransportationBloc extends Bloc<
       sendStepPage(prvoiusPage);
 
       emitter(state.copyWith(
-          status: BlocStatus.success,
-          currentPageValue: prvoiusPage,
-          isVerified: false,
-          isDeceasedBtnEnabled: true));
+        status: BlocStatus.success,
+        currentPageValue: prvoiusPage,
+      ));
     }
     hideKeyboard();
   }
@@ -1190,7 +1188,7 @@ class EkramRequestTransportationBloc extends Bloc<
     info = info.copyWith(
         deathDate: e.deathInfo?.deathDate,
         gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
-        countryId: e.deathInfo?.countryId ?? (info.countryId ?? 1),
+        countryId: e.deathInfo?.countryId ?? (info.countryId),
         cityId: isCountryChanged(e.deathInfo?.countryId) == false
             ? e.deathInfo?.cityId
             : -1,
@@ -1240,47 +1238,41 @@ class EkramRequestTransportationBloc extends Bloc<
         requestDetailsModel: params));
   }
 
-
-
-
-
-  Future<void> _resetActionEventHandler(ResetActionEvent e, Emitter emitter) async {
-switch(e.action){
-  case ResetActionEnum.Country:
-    {
-      emitter(state.copyWith(
-        burialCities: [],
-        deathCities: [],
-        bodyArrivalCities: [],
-        hospitals: [],
-        cemetries: [],
-        transportations: [],
-        laundries: [],
-        mosques:[],
-        status: BlocStatus.success,
-      ));
-    }
-    break;
-  case ResetActionEnum.City:
-    {
-      emitter(state.copyWith(
-          hospitals: [],
-          cemetries: [],
-          transportations: [],
-          laundries: [],
-          mosques:[],
-          status: BlocStatus.success,
+  Future<void> _resetActionEventHandler(
+      ResetActionEvent e, Emitter emitter) async {
+    switch (e.action) {
+      case ResetActionEnum.Country:
+        {
+          emitter(state.copyWith(
+            burialCities: [],
+            deathCities: [],
+            bodyArrivalCities: [],
+            hospitals: [],
+            cemetries: [],
+            transportations: [],
+            laundries: [],
+            mosques: [],
+            status: BlocStatus.success,
           ));
+        }
+        break;
+      case ResetActionEnum.City:
+        {
+          emitter(state.copyWith(
+            hospitals: [],
+            cemetries: [],
+            transportations: [],
+            laundries: [],
+            mosques: [],
+            status: BlocStatus.success,
+          ));
+        }
+        break;
+      case ResetActionEnum.Hospital:
+        {}
+        break;
     }
-    break;
-  case ResetActionEnum.Hospital:
-    {
-
-    }
-    break;
-}
   }
-
 
   Future<void> _changeBurialInfoHandler(
       setBurialInfoEvent e, Emitter emitter) async {

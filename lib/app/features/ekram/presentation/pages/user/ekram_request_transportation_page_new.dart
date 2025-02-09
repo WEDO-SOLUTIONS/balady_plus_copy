@@ -37,23 +37,19 @@ class _EkramRequestTransportationPageState
 
   @override
   Widget build(BuildContext context) {
-
-
-
-    RequestDetailsResponseModel? params =
-    ModalRoute.of(context)!.settings.arguments as RequestDetailsResponseModel?;
-
-
-
+    RequestDetailsResponseModel? params = ModalRoute.of(context)!
+        .settings
+        .arguments as RequestDetailsResponseModel?;
 
     return BlocProvider(
       create: (context) => EkramRequestTransportationBloc(
-          getCities: sl(),
-          getRequestDetails: sl(),
-          getHospitals: sl(),
-          getNationalities: sl(),
-          applyDeceasedTransport: sl(),
-          getCemeteryTypesLookUp: sl(),),
+        getCities: sl(),
+        getRequestDetails: sl(),
+        getHospitals: sl(),
+        getNationalities: sl(),
+        applyDeceasedTransport: sl(),
+        getCemeteryTypesLookUp: sl(),
+      ),
       child: BlocConsumer<EkramRequestTransportationBloc,
           EkramRequestTransportationState>(
         listener: (context, state) {
@@ -62,16 +58,16 @@ class _EkramRequestTransportationPageState
           }
         },
         builder: (context, state) {
-          if(params != null && state.isDraft != true)
-          {
-
-            context.read<EkramRequestTransportationBloc>().add(setInitialDataEvent(dataModel: params));
+          if (params != null && state.isDraft != true) {
+            context
+                .read<EkramRequestTransportationBloc>()
+                .add(setInitialDataEvent(dataModel: params));
           }
           return WillPopScope(
             onWillPop: () {
               context
                   .read<EkramRequestTransportationBloc>()
-                  .add(GoToPreviousPageEvent());
+                  .add(const GoToPreviousPageEvent());
               return Future<bool>.value(false);
             },
             child: GestureDetector(
@@ -80,6 +76,7 @@ class _EkramRequestTransportationPageState
               },
               child: Scaffold(
                 appBar: DetailsAppBarTwo(
+                  hideBtnBack: state.currentPageValue == 1 ? true : false,
                   currentStep: state.currentPageValue + 1,
                   pageLength: context
                       .read<EkramRequestTransportationBloc>()
@@ -87,11 +84,11 @@ class _EkramRequestTransportationPageState
                       .length,
                   backOnPress: () => context
                       .read<EkramRequestTransportationBloc>()
-                      .add(GoToPreviousPageEvent()),
+                      .add(const GoToPreviousPageEvent()),
                   onTapCloseAction: () {
                     FocusManager.instance.primaryFocus?.unfocus();
                     bool Function(Route<dynamic>) predicate =
-                        ModalRoute.withName(RouteName.bottomNavigation);
+                        ModalRoute.withName(RouteName.SpecificServicePage);
                     Navigator.of(context).popUntil((predicate));
                   },
                 ),
@@ -103,14 +100,14 @@ class _EkramRequestTransportationPageState
                             .pagesList
                             .length,
                         scrollDirection: Axis.vertical,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         controller: context
                             .read<EkramRequestTransportationBloc>()
                             .controller,
                         itemBuilder: (context, position) {
                           return AnimatedContainer(
                             curve: Curves.easeIn,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             child: context
                                 .read<EkramRequestTransportationBloc>()
                                 .pagesList[position],
@@ -118,7 +115,7 @@ class _EkramRequestTransportationPageState
                         }),
                     if (state.status == BlocStatus.loading &&
                         state.currentPageValue != 1)
-                      CustomCircularLoadingWidget(),
+                      const CustomCircularLoadingWidget(),
                   ],
                 ),
               ),

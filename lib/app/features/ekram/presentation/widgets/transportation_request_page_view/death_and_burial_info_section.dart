@@ -165,6 +165,19 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             deathInfo: DeathInfo(
                                                 corpseArrivalCityId: item.id)));
                                   }
+                                  context
+                                      .read<EkramRequestTransportationBloc>()
+                                      .add(
+                                        setBurialInfoEvent(
+                                          burialInfo: BurialInfo(
+                                            isBurialInsideDeathCity: state
+                                                    .requestDetailsModel
+                                                    ?.burialInfo
+                                                    ?.isBurialInsideDeathCity ??
+                                                true,
+                                          ),
+                                        ),
+                                      );
                                 }
                               },
                               label: state.requestDetailsModel?.deathInfo
@@ -204,9 +217,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               isDisbaled: state.isHosptialDisabled(state
                                   .requestDetailsModel?.deathInfo?.hospitalId),
                               items: state.hospitals ?? [],
-                              value: state.getHosptialById(state
-                                  .requestDetailsModel?.deathInfo?.hospitalId,state
-                                  .requestDetailsModel?.deathInfo?.hospitalName),
+                              value: state.getHosptialById(
+                                  state.requestDetailsModel?.deathInfo
+                                      ?.hospitalId,
+                                  state.requestDetailsModel?.deathInfo
+                                      ?.hospitalName),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
@@ -406,9 +421,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.prayers ?? [],
-                              value: state.getParyerById(state
-                                  .requestDetailsModel?.burialInfo?.prayId,state
-                                  .requestDetailsModel?.burialInfo?.prayName),
+                              value: state.getParyerById(
+                                  state.requestDetailsModel?.burialInfo?.prayId,
+                                  state.requestDetailsModel?.burialInfo
+                                      ?.prayName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -586,13 +602,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 : Container(),
                             CustomLookUpLongDialog(
                               items: state.cemetryTypeItems ?? [],
-                              value: state.getCemtryTypeById(state
-                                  .requestDetailsModel
-                                  ?.cemeteryData
-                                  ?.graveTypeId,state
-                                  .requestDetailsModel
-                                  ?.cemeteryData
-                                  ?.graveTypeName),
+                              value: state.getCemtryTypeById(
+                                  state.requestDetailsModel?.cemeteryData
+                                      ?.graveTypeId,
+                                  state.requestDetailsModel?.cemeteryData
+                                      ?.graveTypeName),
                               onEmptyList: () async {
                                 return context
                                     .read<EkramRequestTransportationBloc>()
@@ -612,13 +626,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.cemetries ?? [],
-                              value: state.getCemtryById(state
-                                  .requestDetailsModel
-                                  ?.cemeteryData
-                                  ?.cemeteryId,state
-                                  .requestDetailsModel
-                                  ?.cemeteryData
-                                  ?.cemeteryName),
+                              value: state.getCemtryById(
+                                  state.requestDetailsModel?.cemeteryData
+                                      ?.cemeteryId,
+                                  state.requestDetailsModel?.cemeteryData
+                                      ?.cemeteryName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -660,8 +672,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setCemtryInfoEvent(
-                                          cemeteryData: CemeteryData(
-                                              cemeteryId: item.id),maghsalaExist: item.maghsalaExist));
+                                          cemeteryData:
+                                              CemeteryData(cemeteryId: item.id),
+                                          maghsalaExist: item.maghsalaExist));
                                 }
                               },
                               label: ("cemeteryName").tr(),
@@ -670,14 +683,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             NotesWidget(notes: ["ekram_cemetry_note".tr()]),
                             CustomLookUpLongDialog(
                               items: state.transportations ?? [],
-                              value: state.getTransportTypeById(state
-                                  .requestDetailsModel
-                                  ?.transportInfo
-                                  ?.charityId,
-
-                                  state
-                                      .requestDetailsModel
-                                      ?.transportInfo
+                              value: state.getTransportTypeById(
+                                  state.requestDetailsModel?.transportInfo
+                                      ?.charityId,
+                                  state.requestDetailsModel?.transportInfo
                                       ?.charityName),
                               onEmptyList: () async {
                                 context
@@ -708,15 +717,14 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             NotesWidget(notes: ["ekram_org_note".tr()]),
                             CustomLookUpLongDialog(
-                              showOptional:state.maghsalaExist == true?true:false,
+                              showOptional:
+                                  state.maghsalaExist == true ? true : false,
                               items: state.laundries ?? [],
-                              value: state.getlaundriesById(state
-                                  .requestDetailsModel
-                                  ?.transportInfo
-                                  ?.ghuslPlaceId,state
-                                  .requestDetailsModel
-                                  ?.transportInfo
-                                  ?.ghuslPlaceName ),
+                              value: state.getlaundriesById(
+                                  state.requestDetailsModel?.transportInfo
+                                      ?.ghuslPlaceId,
+                                  state.requestDetailsModel?.transportInfo
+                                      ?.ghuslPlaceName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -753,13 +761,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             CustomLookUpLongDialog(
                               showOptional: true,
                               items: state.mosques ?? [],
-                              value: state.getMosquesById(state
-                                  .requestDetailsModel
-                                  ?.transportInfo
-                                  ?.mosqueId,
-                                  state
-                                      .requestDetailsModel
-                                      ?.transportInfo
+                              value: state.getMosquesById(
+                                  state.requestDetailsModel?.transportInfo
+                                      ?.mosqueId,
+                                  state.requestDetailsModel?.transportInfo
                                       ?.mosqueName),
                               onEmptyList: () async {
                                 context
