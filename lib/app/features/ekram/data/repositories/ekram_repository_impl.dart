@@ -115,9 +115,9 @@ class EkramRepositoryImpl implements EkramRepository {
 
   @override
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getNationalities() async {
+      getNationalities(int? identityTypeId) async {
     try {
-      final data = await remoteDataSource.getNationalities();
+      final data = await remoteDataSource.getNationalities(identityTypeId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

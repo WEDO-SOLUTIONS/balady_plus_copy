@@ -55,7 +55,7 @@ abstract class EkramRemoteDataSource {
 
   Future<ResponseBodyModel<List<LookUpItem>>> getHospitals(int cityId);
 
-  Future<ResponseBodyModel<List<LookUpItem>>> getNationalities();
+  Future<ResponseBodyModel<List<LookUpItem>>> getNationalities(int? identityTypeId);
 
   Future<ResponseBodyModel<List<LookUpItem>>> getLookup(int params);
 
@@ -230,12 +230,13 @@ class EkramRemoteDataSourceImpl extends EkramRemoteDataSource {
   }
 
   @override
-  Future<ResponseBodyModel<List<LookUpItem>>> getNationalities() async {
+  Future<ResponseBodyModel<List<LookUpItem>>> getNationalities(int? identityTypeId) async {
     Response response;
 
     try {
       response = await webService.dio.get(
         ApiUrl.ekramNationalities,
+        queryParameters: identityTypeId != null ? {'identityTypeId':identityTypeId} : null
       );
 
       var data = response.data["data"]?["result"];

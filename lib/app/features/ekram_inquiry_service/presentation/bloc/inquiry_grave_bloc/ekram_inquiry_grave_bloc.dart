@@ -129,7 +129,7 @@ class EkramInquiryGraveBloc
   Future<List<LookUpItem>?> getEkramNationalitiesEventHandler() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getNationalities(NoParams());
+    final failureOrSuccess = await _getNationalities(null);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,

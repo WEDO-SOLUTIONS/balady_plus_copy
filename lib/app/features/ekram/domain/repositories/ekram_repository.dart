@@ -51,7 +51,7 @@ abstract class EkramRepository {
       getBurialCities();
 
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>>
-      getNationalities();
+      getNationalities(int? identityTypeId);
   Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> getHospitals(
       int cityId);
 

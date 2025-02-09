@@ -210,7 +210,7 @@ class EkramRequestTransportationBloc extends Bloc<
     getEkramNationalIdTypesEventHandler();
     getCountries();
     getPrayers();
-    getNationalitiesHandler();
+    getNationalitiesHandler(null);
     getDeathCitiesHandler();
     getBurialCitiesHandler();
     getCemetryTypeItemsHandler();
@@ -583,17 +583,17 @@ class EkramRequestTransportationBloc extends Bloc<
     //         baqieApproval: Nullable(null))));
   }
 
-  Future<List<LookUpItem>?> getNationalitiesHandler() async {
+  Future<List<LookUpItem>?> getNationalitiesHandler(int? identityTypeId) async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getNationalities(NoParams());
+    final failureOrSuccess = await _getNationalities(identityTypeId);
 
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
-      getNationalitiesHandler();
+      getNationalitiesHandler(identityTypeId);
       return null;
     }, (success) {
       emit(state.copyWith(
@@ -616,6 +616,7 @@ class EkramRequestTransportationBloc extends Bloc<
       selectedNationalIdType: e.item,
       errorMsg: "",
     ));
+    getNationalitiesHandler(e.item.id);
     deceasedVerificationSectionValidator(emitter);
   }
 
@@ -731,9 +732,7 @@ class EkramRequestTransportationBloc extends Bloc<
   }
 
   Future<void> _getLaundriesHandler(GetLandriesEvent e, Emitter emitter) async {
-
-    if(e.cityIds == null ||e.transportId == null)
-      return;
+    if (e.cityIds == null || e.transportId == null) return;
     emitter(state.copyWith(status: BlocStatus.loading));
     final failureOrSuccess =
         await _getLaundires([e.transportId, e.cityIds, e.params]);
@@ -744,9 +743,8 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-
       List<LookUpItem>? laundries = [];
-      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      LookUpItem choose = LookUpItem(id: -1, name: "choose".tr());
       laundries.add(choose);
       laundries.addAll(success.data?.result as List<LookUpItem>);
 
@@ -770,10 +768,8 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-
-
       List<LookUpItem>? mosques = [];
-      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      LookUpItem choose = LookUpItem(id: -1, name: "choose".tr());
       mosques.add(choose);
       mosques.addAll(success.data?.result as List<LookUpItem>);
       emitter(state.copyWith(
@@ -931,7 +927,10 @@ class EkramRequestTransportationBloc extends Bloc<
       sendStepPage(prvoiusPage);
 
       emitter(state.copyWith(
-          status: BlocStatus.success, currentPageValue: prvoiusPage));
+          status: BlocStatus.success,
+          currentPageValue: prvoiusPage,
+          isVerified: false,
+          isDeceasedBtnEnabled: true));
     }
     hideKeyboard();
   }
@@ -1256,7 +1255,9 @@ class EkramRequestTransportationBloc extends Bloc<
     params = params.copyWith(cemeteryData: info);
 
     emitter(state.copyWith(
-        status: BlocStatus.success, requestDetailsModel: params,maghsalaExist:e.maghsalaExist));
+        status: BlocStatus.success,
+        requestDetailsModel: params,
+        maghsalaExist: e.maghsalaExist));
   }
 
   Future<void> _changeTansportInfoHandler(
@@ -1325,19 +1326,17 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) {
-
-
       List<LookUpItem>? mosques = [];
-      LookUpItem choose= LookUpItem(id: -1,name: "choose".tr());
+      LookUpItem choose = LookUpItem(id: -1, name: "choose".tr());
       mosques.add(choose);
       mosques.addAll(success.data?.result as List<LookUpItem>);
       emitter(state.copyWith(
-        status: BlocStatus.success,
-        madinahEmirateApprovalStatus: success.data?.result?.approvalStatusName,
-        madinahEmirateApprovalDate: success.data?.result?.approvalDate,
-        errorMessage: success.data?.result?.message,
-        valid: success.data?.result?.valid
-      ));
+          status: BlocStatus.success,
+          madinahEmirateApprovalStatus:
+              success.data?.result?.approvalStatusName,
+          madinahEmirateApprovalDate: success.data?.result?.approvalDate,
+          errorMessage: success.data?.result?.message,
+          valid: success.data?.result?.valid));
     });
   }
 

@@ -305,7 +305,7 @@ class EkramAddDeceasedBloc
       errorMessage: "",
     ));
 
-    final failureOrSuccess = await _getNationalities(NoParams());
+    final failureOrSuccess = await _getNationalities(null);
 
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(

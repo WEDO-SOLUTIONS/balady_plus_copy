@@ -7,13 +7,12 @@ import '../../../new_appointment/presentation/core/models/lookup_list_model.dart
 import '../repositories/ekram_repository.dart';
 
 class GetNationalities
-    extends UseCase<ResponseBodyModel<List<LookUpItem>>, NoParams> {
+    extends UseCase<ResponseBodyModel<List<LookUpItem>>, int?> {
   final EkramRepository repository;
 
   GetNationalities({required this.repository});
   @override
-  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> call(
-      NoParams params) async {
-    return await repository.getNationalities();
+  Future<Either<Failure, ResponseBodyModel<List<LookUpItem>>>> call(int? identityTypeId) async {
+    return await repository.getNationalities(identityTypeId);
   }
 }

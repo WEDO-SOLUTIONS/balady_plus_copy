@@ -232,7 +232,8 @@ class DeceasedInfoSection extends StatelessWidget {
                                   onEmptyList: () async {
                                     return context
                                         .read<EkramRequestTransportationBloc>()
-                                        .getNationalitiesHandler();
+                                        .getNationalitiesHandler(
+                                            state.selectedNationalIdType?.id);
                                   },
                                   onChangeType: (LookUpItem? item) {
                                     if (item != null) {
