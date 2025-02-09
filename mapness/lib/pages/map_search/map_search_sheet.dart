@@ -11,6 +11,7 @@ import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -24,7 +25,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/map/dgis_controller.dart';
+
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -34,11 +35,13 @@ class MapSearchSheet extends ConsumerStatefulWidget {
   final bool requestFocus;
   final bool withClustering;
   final double biggestHeight;
+  final Expansion? expansion;
 
   const MapSearchSheet({
     required this.withClustering,
     required this.biggestHeight,
     required this.requestFocus,
+    this.expansion,
     super.key,
   });
 
@@ -139,7 +142,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               key: const Key('MAP SEARCH SHEET KEY'),
               showBarrier: false,
               controller: _dgisSheetController,
-              initialExpansion: _initialExpansion,
+              initialExpansion: widget.expansion ?? _initialExpansion,
               availableExpansions: const {
                 Expansion.hidden,
                 Expansion.middle,
@@ -301,9 +304,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     context.router.popForced();
   }
 
-  Future<void> _setupTapListener() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    _streamSubscription = dgisController.objectTapEvents.listen((_) {
+  void _setupTapListener() {
+    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
       if (context.router.isRouteActive(SearchRoute.name)) {
         _unfocusSearchField();
         _collapseBottomSheet();

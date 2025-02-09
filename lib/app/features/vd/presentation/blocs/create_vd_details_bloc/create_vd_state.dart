@@ -20,7 +20,7 @@ class CreateVDState extends Equatable {
   final String? lastName;
   final String? mobileNumber;
   final bool? agreement;
-  final bool? isFromHome;
+  // final bool? isFromHome;
   final bool? isSearchShown;
   final bool? isCrValid;
   final String? crNumber;
@@ -29,7 +29,7 @@ class CreateVDState extends Equatable {
   //final String? splSearchedText;
   CreateVDState({
     this.status = BlocStatus.initial,
-    this.isFromHome,
+    // this.isFromHome,
     this.errorMessage,
     this.currentPageValue = 0,
     required this.items,
@@ -175,7 +175,7 @@ class CreateVDState extends Equatable {
       String? lastName,
       String? mobileNumber,
       bool? agreement,
-      bool? isFromHome,
+      // bool? isFromHome,
       bool? isSearchShown,
       String? splSearchedText,
       bool? isCrValid,
@@ -204,7 +204,7 @@ class CreateVDState extends Equatable {
         lastName: lastName ?? this.lastName,
         mobileNumber: mobileNumber ?? this.mobileNumber,
         agreement: agreement ?? this.agreement,
-        isFromHome: isFromHome ?? this.isFromHome,
+        // isFromHome: isFromHome ?? this.isFromHome,
         isSearchShown: isSearchShown ?? this.isSearchShown,
         splItems: clearSPLResponse == true ? null : splItems ?? this.splItems,
         isCrValid: isCrValid ?? this.isCrValid,

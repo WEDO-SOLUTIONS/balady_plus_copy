@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/vd/domain/entities/categories/category_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,16 +33,21 @@ class _DCCameraPageState extends State<DCCameraPage>
 
   @override
   Widget build(BuildContext context) {
-    CameraParamsPage params =
-        ModalRoute.of(context)!.settings.arguments as CameraParamsPage;
+    CameraParamsPage params = CameraParamsPage(
+      selectedCategory: CategoryItem(categoryId: "CG-14"),
+    );
 
     return MultiBlocProvider(
       providers: [
         BlocProvider<CreateDCBloc>(
-            create: (BuildContext context) => CreateDCBloc()),
+          create: (BuildContext context) => CreateDCBloc(),
+        ),
         BlocProvider<DCCameraBloc>(
-            create: (BuildContext context) => DCCameraBloc(
-                params: params, createDCBloc: context.read<CreateDCBloc>())),
+          create: (BuildContext context) => DCCameraBloc(
+            params: params,
+            createDCBloc: context.read<CreateDCBloc>(),
+          ),
+        ),
       ],
       child: BlocConsumer<DCCameraBloc, DCCameraState>(
         listener: (context, state) {
@@ -51,13 +57,6 @@ class _DCCameraPageState extends State<DCCameraPage>
         },
         builder: (context, state) {
           return Scaffold(
-            /*appBar: CameraAppBar(
-              flashOnPress: () {
-                context.read<CameraBloc>().add(ToggleCameraFlashEvent());
-              },
-              isFlashOn: state.isFlashOn,
-              showFlashIcon: state.showCamera ?? false,
-            ),*/
             body: cameraViewWidgetNew(),
           );
         },

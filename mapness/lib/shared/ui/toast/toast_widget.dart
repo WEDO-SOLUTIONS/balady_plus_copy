@@ -1,6 +1,6 @@
 part of 'toast_overlay.dart';
 
-class _ToastWidget extends StatelessWidget {
+class _ToastWidget extends ConsumerWidget {
   final String title;
   final TextStyle? titleStyle;
   final String? actionText;
@@ -25,7 +25,7 @@ class _ToastWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasAction = actionText != null;
     final children = [
       if (onCloseTap != null) ...[
@@ -49,7 +49,7 @@ class _ToastWidget extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    title,
+                    _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
                     style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
                   ),
                   if (hasAction)
@@ -113,4 +113,13 @@ class _ToastWidget extends StatelessWidget {
       ),
     );
   }
+
+  String _getTitle({
+    required AppLocalizations l10n,
+    required String title,
+  }) =>
+      switch (title) {
+        'beta_notification' => l10n.firstToTryNavigation,
+        _ => title,
+      };
 }

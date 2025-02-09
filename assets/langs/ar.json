@@ -2164,8 +2164,8 @@
   "visit_violator_check_hint": "الرجاء التحقق من بيانات المخالف لاستكمال طلب تقديم الزيارة",
   "visit_check": "تحقق",
   "visit_next": "التالي",
-  "compliance": "ممتثل",
-  "nonـcompliance": "غير ممتثل",
+  "compliance": "نعم",
+  "nonـcompliance": "لا",
   "not_applicable": "لا ينطبق",
   "visit_holes": "حفر الشوارع",
   "visit_general_clean": "النظافة العامة",
@@ -4195,5 +4195,8 @@
   "biometrics_failed":"فشل المصادقة الحيوية! .فضلا المحاولة مرة أخرى أو يمكنك تسجيل الدخول عن طريق الرمز السريع أو إسم المستخدم و كلمة المرور",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
-  "complianceFAQ":"الإسئلة الشائعة"
+  "complianceFAQ":"الإسئلة الشائعة",
+
+  "feature_services":"الخدمات الاكثر استخداما",
+  "services_categories":"فئات الخدمات"
 }

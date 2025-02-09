@@ -32,11 +32,6 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
     super.initState();
     _bottomPadding = ValueNotifier(widget.scrollController.sheetHeight);
     widget.scrollController.addListener(update);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // TODO(Ayat): There are problems that the bottom shield does not have time to draw and this is a temporary fix for now temporary fix
-      setState(() {});
-    });
   }
 
   @override
@@ -50,20 +45,6 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
     _bottomPadding.value = widget.scrollController.sheetHeight;
   }
 
-  bool _shouldHideControls(double screenHeight) {
-    final freeRoamState = ref.watch(freeRoamStarterProvider);
-    final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
-
-    final isSheetCoversHalfOfTheScreen =
-        widget.scrollController.viewportHeight < _bottomPadding.value + screenHeight / 2;
-    final isSheetStateOpen = widget.scrollController.state == uikit.ThreeStateBottomSheet.open;
-    final isSheetScrolledForHalfOfTheState = widget.scrollController.interpolation > 0.5;
-
-    return isGoToNavigatorShown ||
-        (!widget.scrollController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-        isSheetCoversHalfOfTheScreen;
-  }
-
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<double>(
         valueListenable: _bottomPadding,
@@ -71,83 +52,64 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
           final freeRoamState = ref.watch(freeRoamStarterProvider);
           final showLaunchingFreeRoam = freeRoamState.canStart && freeRoamState.isAutorun;
           final controlsHeight = 56 + (showLaunchingFreeRoam ? 8 : 0);
-          final screenHeight = MediaQuery.of(context).size.height;
 
-          final bool areControlsVisible =
-              !_shouldHideControls(screenHeight) && widget.scrollController.viewportHeight > bottomPadding + 200;
-
-          return SizedBox(
-            height: screenHeight,
-            child: Visibility(
-              visible: areControlsVisible,
-              child: SafeArea(
-                bottom: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Directionality(
-                      textDirection: TextDirection.ltr,
-                      child: Expanded(
-                        child: OverflowBox(
-                          child: Padding(
-                            padding: EdgeInsets.only(
-                              left: uikit.Spacing.$3x,
-                              top: uikit.Spacing.$3x,
-                              right: uikit.Spacing.$3x,
-                              bottom: bottomPadding == 0 ? widget.scrollController.sheetHeight : bottomPadding,
-                            ),
-                            child: Row(
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Spacer(),
-                                    if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
-                                      const IndoorControl(),
-                                    const Spacer(),
-                                    const EtaSharingControl(),
-                                    uikit.Spacing.$4x.heightBox,
-                                    SizedBox(
-                                      height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                          ? controlsHeight * (1 - widget.scrollController.interpolation)
-                                          : 0,
-                                    )
-                                  ],
-                                ),
-                                const Spacer(),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    const LayersControl(),
-                                    const SizedBox(height: uikit.Spacing.$2x),
-                                    const TrafficControl(),
-                                    const Spacer(),
-                                    const ZoomControl(),
-                                    const Spacer(),
-                                    const CompassControl(),
-                                    const SizedBox(height: uikit.Spacing.$2x),
-                                    ComplianceBuildingLegend(),
-                                    const SizedBox(height: uikit.Spacing.$2x),
-                                    const FollowControl(),
-                                    uikit.Spacing.$4x.heightBox,
-                                    SizedBox(
-                                      height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                          ? controlsHeight * (1 - widget.scrollController.interpolation)
-                                          : 0,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Directionality(
+                textDirection: TextDirection.ltr,
+                child: Expanded(
+                  child: OverflowBox(
+                    child: Padding(
+                      padding: const EdgeInsets.only(
+                        left: uikit.Spacing.$3x,
+                        top: uikit.Spacing.$3x,
+                        right: uikit.Spacing.$3x,
+                      ),
+                      child: Row(
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Spacer(),
+                              if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
+                                const IndoorControl(),
+                              const Spacer(),
+                              const EtaSharingControl(),
+                              uikit.Spacing.$4x.heightBox,
+                              SizedBox(
+                                height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                                    ? controlsHeight * (1 - widget.scrollController.interpolation)
+                                    : 0,
+                              )
+                            ],
                           ),
-                        ),
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              const LayersControl(),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              const TrafficControl(),
+                              const Spacer(),
+                              const ZoomControl(),
+                              const Spacer(),
+                              const CompassControl(),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              ComplianceBuildingLegend(),
+                              const SizedBox(height: uikit.Spacing.$2x),
+                              const FollowControl(),
+                              uikit.Spacing.$4x.heightBox,
+                            ],
+                          ),
+                        ],
                       ),
                     ),
-                  ],
+                  ),
                 ),
               ),
-            ),
+            ],
           );
         },
       );

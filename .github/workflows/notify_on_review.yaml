@@ -8,7 +8,7 @@ on:
 jobs:
   notify-on-approvals:
     name: Notify when PR has 2 approvals
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     permissions:
       contents: write
       pull-requests: write
@@ -51,7 +51,7 @@ jobs:
 
   notify-pr-author:
     name: Notify author of PR about new review
-    runs-on: [self-hosted, Linux]
+    runs-on: [misc]
     steps:
       - name: Check out code
         uses: actions/checkout@v4

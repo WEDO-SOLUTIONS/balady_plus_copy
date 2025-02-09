@@ -77,7 +77,7 @@ class ObjectTapEventHandler {
         fontName: textStyle["fontName"],
       ),
       cluster["iconWidth"],
-      cluster["iconMapDirection"] != null ? MarkerAzimuthMessage(degree: cluster["iconMapDirection"]) : null,
+      cluster["iconMapDirection"] != null ? MapDirectionMessage(degree: cluster["iconMapDirection"]) : null,
       cluster["text"],
     );
     await clusterHandlers[id]?.call(clusterObject);

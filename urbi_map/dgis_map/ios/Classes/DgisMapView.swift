@@ -127,8 +127,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.searchHandler = SearchHandler(
             searchManager: try! SearchManager.createOnlineManager(context: try! sdk.context),
             map: map,
-            sdkContext: self.sdk,
-            vendorConfig: SwiftDgisMapPlugin.vendorConfig
+            sdkContext: self.sdk
         )
         
         self.compassControlHandler = CompassControlHandler(
@@ -803,7 +802,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeAllMarkers(from: nil, completion: completion)
     }
     
-    func setPanoramaMarkerAzimuth( message: MarkerAzimuthMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
+    func setPanoramaMarkerAzimuth( message: MapDirectionMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectTapHandler?.setPanoramasAzimuth(degrees: message.degree)
          completion(Result.success(()))
     }

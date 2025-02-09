@@ -16,7 +16,7 @@ class LayersSheetPage extends ConsumerStatefulWidget {
 }
 
 class LayersSheetPageState extends ConsumerState<LayersSheetPage> with SingleTickerProviderStateMixin {
-  static const _layersPanelMaxHeight = .3;
+  static const _layersPanelMaxHeight = .35;
   static const _parkingPanelMaxHeight = .35;
   static const _duration = Duration(milliseconds: 250);
   static const _showHideDuration = Duration(milliseconds: 150);

@@ -1,11 +1,13 @@
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/transport_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_message_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/follow_state.dart';
@@ -16,9 +18,14 @@ class FollowControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isLTR = context.isLTR;
     final followState = ref.watch(followStateProvider);
     final followNotifier = ref.watch(followStateProvider.notifier);
-    final iconColor = followState.type == LocationFollowType.off ? NonThemeColor.color30 : AppColor.black;
+    final hasGPS = ref.watch(pathNavMessageProvider)?.state != PathNavMessageState.gpsConnectionLost;
+
+    final iconColor = followState.type == LocationFollowType.off
+        ? context.colorsV2.foregroundDefault
+        : context.colorsV3.accentDefault;
 
     return MapButton(
       onTap: () async {
@@ -38,9 +45,11 @@ class FollowControl extends ConsumerWidget {
         }
       },
       child: Icon(
-        followState.type == LocationFollowType.followDirection
-            ? TransportIcons.locationDirectionNavigator
-            : TransportIcons.locationLTR,
+        hasGPS
+            ? (followState.type == LocationFollowType.followDirection
+                ? TransportIcons.locationDirection
+                : (isLTR ? TransportIcons.locationFullLTR : TransportIcons.locationFullRTL))
+            : (isLTR ? TransportIcons.locationQuestionLTR : TransportIcons.locationQuestionRTL),
         color: iconColor,
         size: 24,
       ),

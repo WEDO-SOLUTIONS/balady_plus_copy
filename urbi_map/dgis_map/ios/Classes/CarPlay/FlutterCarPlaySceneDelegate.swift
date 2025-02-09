@@ -3,15 +3,20 @@ import CarPlay
 import DGis
 import AVFoundation
 
-final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, DgisCarPlayMapViewDelegate, SwiftDgisMapPluginDelegate {
+final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, DgisCarPlayMapViewDelegate {
     static var mapView: DgisCarPlayMapView?
-    
-    private var carWindow: CPWindow?
-    private var interfaceController: CPInterfaceController?
-    
+
     static private var mapTemplate: CPMapTemplate?
     static private var navigationSession: CPNavigationSession?
-    static private var trip: CPTrip?
+    static private let trip = CPTrip(
+        origin: MKMapItem(
+            placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
+        ),
+        destination: MKMapItem(
+            placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 1, longitude: 1))
+        ),
+        routeChoices: []
+    )
     
     static private(set) var map: Map?
     
@@ -20,21 +25,9 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {        
-        self.carWindow = window
-        self.interfaceController = interfaceController
-        
-        if SwiftDgisMapPlugin.initialized {
-            initMapView()
-        } else {
-            SwiftDgisMapPlugin.delegate = self
-        }
-    }
-    
-    func pluginInitialized() {
-        initMapView()
-    }
-    
-    func initMapView() {
+        // TODO(Sergei): load config from Firebase remote config
+        DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
+
         let mapTemplate = CPMapTemplate()
         mapTemplate.hidesButtonsWithNavigationBar = false
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
@@ -44,23 +37,23 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         FlutterCarPlaySceneDelegate.mapView = mapView
         
         mapTemplate.mapDelegate = mapView
-        self.carWindow?.rootViewController = mapView
+        window.rootViewController = mapView
         
-        self.carWindow?.isUserInteractionEnabled = true
-        self.carWindow?.isMultipleTouchEnabled = true
+        window.isUserInteractionEnabled = true
+        window.isMultipleTouchEnabled = true
         
         mapTemplate.mapButtons = [
-            makeTrafficButton(),
             makeZoomInButton(),
             makeZoomOutButton(),
             makeMyLocationButton()
         ]
         
         mapTemplate.trailingNavigationBarButtons = [
-            makePanHeaderButton()
+            makePanHeaderButton(),
+            makeTrafficButton(),
         ]
 
-        self.interfaceController?.setRootTemplate(mapTemplate, animated: true, completion: nil)
+        interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
     }
     
     func viewDidLoad(with map: DGis.Map) {
@@ -72,22 +65,18 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
-        self.interfaceController = nil
-        self.carWindow = nil
         FlutterCarPlaySceneDelegate.map = nil
     }
 }
 
 extension FlutterCarPlaySceneDelegate {
-    func makeTrafficButton() -> CPMapButton {
-        let button = CPMapButton { _ in
+    func makeTrafficButton() -> CPBarButton {
+        let image = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(.alwaysOriginal)
+        let button = CPBarButton(image: image) { _ in
             FlutterCarPlaySceneDelegate.mapView?.trafficClicked()
         }
         FlutterCarPlaySceneDelegate.mapView?.trafficButton = button
-        button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "TrafficOff")!.withRenderingMode(.alwaysOriginal)
         
         return button
     }
@@ -132,7 +121,8 @@ extension FlutterCarPlaySceneDelegate {
         let button = CPBarButton(title: "Accept") { _ in
             FlutterCarPlaySceneDelegate.mapTemplate?.dismissPanningInterface(animated: true)
             FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
-                self.makePanHeaderButton()
+                self.makePanHeaderButton(),
+                self.makeTrafficButton()
             ]
             FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = []
         }
@@ -174,18 +164,9 @@ extension FlutterCarPlaySceneDelegate {
             navigationSession.cancelTrip()
             self.navigationSession = nil
         }
-        
-        self.trip = CPTrip(
-            origin: MKMapItem(
-                placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 0, longitude: 0))
-            ),
-            destination: MKMapItem(
-                placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: 1, longitude: 1))
-            ),
-            routeChoices: []
-        )
+
         self.navigationSession = self.mapTemplate?.startNavigationSession(
-            for: self.trip!
+            for: self.trip
         )
     }
     
@@ -195,7 +176,7 @@ extension FlutterCarPlaySceneDelegate {
                 distanceRemaining: distance.humanReadable,
                 timeRemaining: time
             ),
-            for: self.trip!
+            for: self.trip
         )
     }
     
@@ -259,6 +240,8 @@ extension FlutterCarPlaySceneDelegate {
         case .uTurn, .crossroadUTurn:
             "Turn_over_right_hand"
         case .roadCrossing:
+            nil
+        @unknown default:
             nil
         }
         

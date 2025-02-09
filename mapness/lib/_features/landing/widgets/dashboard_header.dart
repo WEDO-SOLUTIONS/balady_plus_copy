@@ -16,13 +16,15 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart';
 
 class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final TickerProvider _vsync;
 
-  static const headerHeight = 64.0;
+  static const headerHeight = 24.0;
 
   DashboardHeaderDelegate({required TickerProvider vsync}) : _vsync = vsync;
 
@@ -45,10 +47,10 @@ class DashboardHeaderDelegate extends SliverPersistentHeaderDelegate {
   }
 
   @override
-  double get maxExtent => headerHeight;
+  double get maxExtent => headerHeight + QuickFilters.defaultHeight;
 
   @override
-  double get minExtent => headerHeight - Spacing.$4x - QuickFilters.defaultHeight - Spacing.$2x;
+  double get minExtent => headerHeight - Spacing.$4x - Spacing.$2x;
 
   @override
   FloatingHeaderSnapConfiguration? get snapConfiguration => FloatingHeaderSnapConfiguration();
@@ -68,11 +70,8 @@ class _DashboardMenu extends ConsumerWidget {
     final remainingSpaceForQuickFilters = max(0.0, heightOfQuickFilters - shrinkOffset);
     final quickFilterSizeProportion = remainingSpaceForQuickFilters / heightOfQuickFilters;
 
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        boxShadow: [Elevation.s],
-      ),
+    return ColoredBox(
+      color: context.colorsV2.backgroundSurface2,
       child: ClipRect(
         clipBehavior: Clip.antiAlias,
         child: Opacity(
@@ -82,17 +81,17 @@ class _DashboardMenu extends ConsumerWidget {
               double.infinity,
               remainingSpaceForQuickFilters,
             ),
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$2x),
+            child: SizedBox(
+              height: QuickFilters.defaultHeight,
               child: MapQuickFilters(
                 id: QuickFilterScreen.dashboard,
-                isDashboard: true,
                 customFilters: [
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     title: context.l10n.go,
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
                     onTap: () {
+                      ref.read(locationProvider.notifier).checkLocationPermission();
                       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
                       context.router.push(const FreeRoamRoute());
                     },
@@ -108,19 +107,12 @@ class _DashboardMenu extends ConsumerWidget {
 }
 
 class DashboardHeader extends ConsumerWidget {
-  final StatefulBottomSheetController bottomSheetController;
-
-  const DashboardHeader({
-    required this.bottomSheetController,
-    super.key,
-  });
+  const DashboardHeader({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Container(
         width: double.infinity,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-        ),
+        decoration: BoxDecoration(color: context.colorsV2.backgroundSurface2),
         child: Padding(
           padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$2x),
           child: GestureDetector(
@@ -137,7 +129,7 @@ class DashboardHeader extends ConsumerWidget {
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
-              context.router.push(SearchRoute());
+              context.router.push(SearchRoute(expansion: Expansion.expanded));
             },
             child: AbsorbPointer(
               child: BaladyInput.searchV2(

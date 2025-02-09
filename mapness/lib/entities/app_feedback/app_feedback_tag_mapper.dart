@@ -41,6 +41,7 @@ class AppFeedbackTagMapper {
         4 => {
             Tag.easyToUse,
             Tag.helpfulDirections,
+            Tag.parking,
             Tag.niceDesign,
             Tag.goodNavigation,
           },

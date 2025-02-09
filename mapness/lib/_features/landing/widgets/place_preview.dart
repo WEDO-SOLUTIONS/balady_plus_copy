@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -6,7 +7,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ErrorWidget;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/providers/interesting_places.dart';
-import 'package:mapness/_features/landing/widgets/slider_list_view.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
@@ -15,61 +15,79 @@ import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/shared/ui/error_widget/error_widget.dart';
-import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
-class PlacePreview extends ConsumerWidget {
+const kPlaceCardSize = 300.0;
+
+class PlacePreview extends ConsumerStatefulWidget {
   const PlacePreview({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => ref.watch(interestingPlacesProvider).when(
-        data: (items) {
-          final places = items
-              .where(
-                (e) =>
-                    e.tags.contains(
-                      proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
-                    ) &&
-                    e.preview.image.url.isNotEmpty,
-              )
-              .toList();
+  ConsumerState<PlacePreview> createState() => _PlacePreviewState();
+}
 
-          return SliderListView(
-            items: places,
-            contentHeight: 347,
-            onTap: (item) {
-              final objectId = int.tryParse(item.entity.id) ?? 0;
-              Metrics.logEventAdvanced(
-                MetricsConstants.exploreKeys.placesToVisitBanner,
-                action: MetricAction.tap.name,
-                group: MetricsConstants.exploreTag,
-                props: {
-                  'id': objectId,
-                  'title': item.titleOrFallback(
-                    locale: AppLocalizationsEn(),
-                  ),
-                },
-              );
+class _PlacePreviewState extends ConsumerState<PlacePreview> with AutomaticKeepAliveClientMixin {
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return ref.watch(interestingPlacesProvider).when(
+          data: (items) {
+            final places = items
+                .where(
+                  (e) =>
+                      e.tags.contains(
+                        proto.InterestingPlaceTag.INTERESTING_PLACE_CATEGORY_IMMERSIVE_MODEL,
+                      ) &&
+                      e.preview.image.url.isNotEmpty,
+                )
+                .toList();
 
-              context.router.replaceOrPush(
-                route: PoiCardWidgetRoute(
-                  objectId: DgisObjectIdMessage(
-                    objectId: objectId,
-                    entranceId: 0,
+            return SliderListView(
+              items: places,
+              horizontalPadding: Spacing.$3x,
+              separationWidth: Spacing.$2x,
+              viewportWidth: MediaQuery.sizeOf(context).width,
+              contentSize: kPlaceCardSize,
+              onTap: (item) {
+                final objectId = int.tryParse(item.entity.id) ?? 0;
+                Metrics.logEventAdvanced(
+                  MetricsConstants.exploreKeys.placesToVisitBanner,
+                  action: MetricAction.tap.name,
+                  group: MetricsConstants.exploreTag,
+                  props: {
+                    'id': objectId,
+                    'title': item.titleOrFallback(
+                      locale: AppLocalizationsEn(),
+                    ),
+                  },
+                );
+
+                context.router.replaceOrPush(
+                  route: PoiCardWidgetRoute(
+                    objectId: DgisObjectIdMessage(
+                      objectId: objectId,
+                      entranceId: 0,
+                    ),
+                    cameraConfig: const PoiCameraConfig(zoom: 17),
                   ),
-                  cameraConfig: const PoiCameraConfig(zoom: 17),
-                ),
-                toCompareRoutes: [PoiCardWidgetRoute.page],
-              );
-            },
-            itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
-          );
-        },
-        error: (error, trace) => ErrorWidget(
-          onRetry: () => ref.invalidate(interestingPlacesProvider),
-        ),
-        loading: () => const LoadingSheet(),
-      );
+                  toCompareRoutes: [PoiCardWidgetRoute.page],
+                );
+              },
+              itemBuilder: (item) => _PlaceCard(item, key: ValueKey(item?.id)),
+            );
+          },
+          error: (error, trace) => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: _PlaceCard(null),
+          ),
+          loading: () => const Padding(
+            padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: _PlaceCard(null),
+          ),
+        );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _PlaceCard extends StatelessWidget {
@@ -83,7 +101,8 @@ class _PlaceCard extends StatelessWidget {
         child: Stack(
           children: [
             CachedNetworkImage(
-              height: 347,
+              height: kPlaceCardSize,
+              width: double.infinity,
               imageUrl: item?.preview.image.url ?? '',
               fit: BoxFit.cover,
               imageBuilder: (context, imageProvider) => Stack(
@@ -133,17 +152,5 @@ class _ImagePlaceholder extends StatelessWidget {
   const _ImagePlaceholder({this.progress});
 
   @override
-  Widget build(BuildContext context) => ColoredBox(
-        color: context.colorsV2.backgroundSurface5,
-        child: Center(
-          child: SizedBox(
-            child: CircularProgressIndicator(
-              value: progress,
-              color: context.colorsV2.borderDefault,
-              backgroundColor: context.colorsV2.borderMuted,
-              strokeCap: StrokeCap.round,
-            ),
-          ),
-        ),
-      );
+  Widget build(BuildContext context) => const ShimmerEffectWidget();
 }

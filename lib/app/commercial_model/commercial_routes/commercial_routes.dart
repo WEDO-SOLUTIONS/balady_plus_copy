@@ -5,7 +5,6 @@ import '../features/comercial_license_renew/presentation/commercial_license/scre
 import '../features/comercial_license_renew/presentation/commercial_license/screens/renew_start_service_screen.dart';
 import '../features/comercial_license_renew/presentation/commercial_license/screens/submit_application_successfully_renew.dart';
 import '../features/commercial_license/presentation/commercial_license/screens/commercial_license_screen.dart';
-import '../features/commercial_license/presentation/issue_start_service_screen.dart';
 import '../features/commercial_license/presentation/step3/page/cr_map_page.dart';
 import '../features/commercial_license/presentation/step6/page/commercial_otp_screen.dart';
 import '../features/commercial_license/presentation/submit_application_successfully_new.dart';
@@ -14,7 +13,6 @@ import '../features/commercial_license_cancel/presentation/commercial_license_ca
 import '../features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_application_successfully_cancel.dart';
 import '../features/commercial_license_cancel/presentation/submit_application_successfully_cancel/screens/submit_rating_cancel_screen.dart';
 import '../features/commercial_license_details/presentation/pages/commercial_license_details_page.dart';
-import '../features/commercial_license_inquery/persentation/commercial_license_overview/commercial_license_overview_screen.dart';
 import '../features/commercial_license_inquery/persentation/commercial_license_query/commercial_license_query_screen.dart';
 import '../features/commercial_license_inquery/persentation/commercial_license_query_Details/commercial_license_query_details.dart';
 import '../features/commercial_license_ownership_transfer/old_owner_transfer/persentation/commercail_license_tranfer_overview/commercial_license_transfer_overview_screen.dart';
@@ -55,8 +53,6 @@ class CommercialRoutes {
     CommercialRouteName.homeSequence: (context) =>
         const RequestSequenceHomeScreen(),
 
-    CommercialRouteName.commercialLicenseOverView: (context) =>
-        const CommercialLicenseOverviewScreen(),
     CommercialRouteName.commercialLicenseQuery: (context) =>
         const CommercialLicenseQueryScreen(),
     CommercialRouteName.commercialLicenseQueryDetails: (context) =>
@@ -64,8 +60,6 @@ class CommercialRoutes {
 
     CommercialRouteName.commercialLicensePage: (context) =>
         const CommercialLicenseScreen(),
-    CommercialRouteName.commercialLicenseServicePage: (context) =>
-        const IssueStartService(),
 // -------  Commercial License Cancel ---------
     CommercialRouteName.commercialLicenseApplyCancel: (context) =>
         const ApplyCancelScreen(),

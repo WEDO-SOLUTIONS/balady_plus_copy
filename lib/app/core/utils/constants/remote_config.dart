@@ -56,6 +56,9 @@ class RemoteConfig {
   static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
 
   static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
+
+  static String get movingVeichleCategoryKey =>
+      _RemoteConfig.movingVeichleCategoryKey[env]!;
 }
 
 //! First solution
@@ -373,6 +376,31 @@ class _RemoteConfig {
 
   static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
     devVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
@@ -391,6 +419,31 @@ class _RemoteConfig {
       },
     },
     stgVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
@@ -409,6 +462,31 @@ class _RemoteConfig {
       },
     },
     preVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "classification_certificate": {
         "id": 11380,
         "Key_name": "classification_certificate",
@@ -427,6 +505,31 @@ class _RemoteConfig {
       },
     },
     prodVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "classification_certificate": {
         "id": 11380,
         "Key_name": "classification_certificate",
@@ -445,6 +548,31 @@ class _RemoteConfig {
       },
     },
     urbiPreVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
@@ -471,6 +599,15 @@ class _RemoteConfig {
     prodVal: "https://fees.balady.gov.sa/ewaa",
     urbiPreVal: "https://fees.balady.gov.sa/ewaa",
   );
+
+  static final movingVeichleCategoryKey = _initValues<String>(
+    devVal: "CG-53",
+    stgVal: "CG-53",
+    preVal: "CG-53",
+    prodVal: "CG-53",
+    urbiPreVal: "CG-53",
+  );
+
   static Map<EnvType, T> _initValues<T>({
     dynamic devVal,
     dynamic stgVal,

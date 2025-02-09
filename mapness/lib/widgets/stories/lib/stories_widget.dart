@@ -11,13 +11,18 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/widgets/stories/lib/stories_row.dart';
 
 class StoriesWidget extends ConsumerStatefulWidget {
-  const StoriesWidget({super.key});
+  final Widget? titleWidget;
+
+  const StoriesWidget({
+    this.titleWidget,
+    super.key,
+  });
 
   @override
   ConsumerState<StoriesWidget> createState() => _StoriesWidgetState();
 }
 
-class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
+class _StoriesWidgetState extends ConsumerState<StoriesWidget> with AutomaticKeepAliveClientMixin {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -62,6 +67,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     ref.listen(networkStatusProvider, (wasAvailable, available) {
       // [wasAvailable] is nullable value. So we have to handle this value
       // If the network was available we use this value. Else we set default value `true`
@@ -83,6 +89,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
         data: (data) => StoriesRow(
           onThumbnailPressed: (id) => _openStory(context, id),
           stories: data,
+          titleWidget: widget.titleWidget,
         ),
         orElse: () => const SizedBox.shrink(),
         error: (_, __) => const SizedBox.shrink(),
@@ -90,4 +97,7 @@ class _StoriesWidgetState extends ConsumerState<StoriesWidget> {
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

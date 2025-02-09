@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dartz/dartz.dart' hide Tuple3;
+import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
@@ -60,14 +61,14 @@ class CustomerVoiceRepository {
             qeuryParms: query,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
       return null;
     }
   }
@@ -149,6 +150,7 @@ class CustomerVoiceRepository {
       return null;
     }*/
   }
+
   ////////////// comment
   // Future<Tuple3<bool?, String?, SpecializedClassification?>> getSPlList(
   //     String municipality,
@@ -218,13 +220,14 @@ class CustomerVoiceRepository {
       String municipality,
       {String? category}) async {
     Map<String, dynamic> queryParms = {};
+    String? errorMessage ;
     if (CommonProperties.userInfo?.idNo != null) {
       queryParms = {
         if (CommonProperties.userInfo!.idNo!.startsWith("1"))
           "NationalID": "${CommonProperties.userInfo!.idNo}"
         else
           "IqamaID": "${CommonProperties.userInfo!.idNo}",
-        "ID": municipality,
+        "ID": "municipality",
         "Action": "SplClsList",
         if (category != null) "Category": category
       };
@@ -232,23 +235,36 @@ class CustomerVoiceRepository {
 
     String url = ApiUrl.MSRRetrieveMSRData;
 
-    final res = await webServices.dio.get(url, queryParameters: queryParms);
-    bool state = false;
-
-
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
-    }
-    dynamic data = res.data["data"]["result"];
-    String error = res.statusMessage ?? ("errors_server_error_1").tr();
-    SpecializedClassification? result;
     try {
+      final res = await webServices.dio.get(url, queryParameters: queryParms);
+      bool state = false;
+      // if(res.statusCode == HttpStatus.ok ) {
+      //   state = true ;
+      // }
+      //
+      dynamic data = res.data["data"]["result"];
+      errorMessage = res.statusMessage ?? ("errors_server_error_1").tr();
+      SpecializedClassification? result;
       SpecializedClassification response =
           SpecializedClassification.fromMap(data);
       result = response;
       if (response.splClassificationList?.isEmpty ?? false) {
-        error = ("no_spl_classification_error").tr();
+        errorMessage = ("no_spl_classification_error").tr();
       }
+      return Tuple3<bool?, String?, SpecializedClassification?>(
+        state,
+        errorMessage,
+        result,
+      );
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      errorMessage = error.response?.data["data"]["responseMessage"];
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -257,27 +273,16 @@ class CustomerVoiceRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        String queryString = "?" + Uri(queryParameters: queryParms).query;
 
-        Helpers.sendLog(
-            url: url,
-            data: data,
-            qeuryParms: queryString,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      errorMessage = "error_please_try_again_later".tr();
     }
     return Tuple3<bool?, String?, SpecializedClassification?>(
-        state, error, result);
+      false,
+      errorMessage,
+      null,
+    );
   }
+
   //////////////  comment by fawzi not used in app
   // Future<SubMainClassification?> getSPlDetails(String splId,
   //     {String? category}) async {
@@ -355,10 +360,8 @@ class CustomerVoiceRepository {
 
     dynamic data = res.data["data"]["result"];
 
-
     try {
-      SubMainClassification response =
-          SubMainClassification.fromMap(data);
+      SubMainClassification response = SubMainClassification.fromMap(data);
       return response;
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -378,14 +381,14 @@ class CustomerVoiceRepository {
             qeuryParms: queryString,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
       return null;
     }
   }
@@ -432,7 +435,7 @@ class CustomerVoiceRepository {
         "CaseID": caseID,
         "Category": catrogry,
         "pxAttachName": fileName,
-        "pyMemo": memo,//
+        "pyMemo": memo, //
         "AttachStream": fileBase64,
         if (pyDescription != null) "pyDescription": pyDescription,
       };
@@ -442,15 +445,13 @@ class CustomerVoiceRepository {
 
     bool state = false;
 
-
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
+    if (res.statusCode == HttpStatus.ok) {
+      state = true;
     }
     dynamic data = res.data["data"]["result"];
     String error = res.statusMessage ?? ("errors_server_error_1").tr();
 
-
-    UploadFileResult? response;//
+    UploadFileResult? response; //
     try {
       response = UploadFileResult.fromJson(data);
       if (response != null &&
@@ -472,14 +473,14 @@ class CustomerVoiceRepository {
             body: json.encode(body),
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
   }
@@ -530,12 +531,11 @@ class CustomerVoiceRepository {
 
     final res = await webServices.dio.post(url, data: body);
     bool state = false;
-    if(res.statusCode == HttpStatus.ok ) {
-      state = true ;
+    if (res.statusCode == HttpStatus.ok) {
+      state = true;
     }
     dynamic data = res.data["data"]["result"];
     String error = res.statusMessage ?? ("errors_server_error_1").tr();
-
 
     CreateIncidentResult? response;
     try {
@@ -553,14 +553,14 @@ class CustomerVoiceRepository {
         Helpers.sendLog(
             url: url, data: data, body: body, errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, CreateIncidentResult?>(
         state, error, response);

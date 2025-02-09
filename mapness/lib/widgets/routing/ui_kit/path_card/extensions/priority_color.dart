@@ -4,14 +4,14 @@ import 'package:mapness/widgets/routing/ui_kit/path_card/models/path_card_status
 
 extension PathBadgeColor on PathCardStatusPriority {
   Color iconColor(BuildContext context) => switch (this) {
-        PathCardStatusPriority.critical => context.staticColor.surfaceStatusNegative,
-        PathCardStatusPriority.warning => context.staticColor.surfaceStatusAttention,
-        PathCardStatusPriority.info => context.color.textAndIconsBaseSecondary,
+        PathCardStatusPriority.critical => context.colorsV2.errorDefault,
+        PathCardStatusPriority.warning => context.colorsV2.extra01Default,
+        PathCardStatusPriority.info => context.colorsV2.warningDefault,
       };
 
   Color textColor(BuildContext context) => switch (this) {
-        PathCardStatusPriority.critical => context.color.textAndIconsStatusNegative,
-        PathCardStatusPriority.warning => context.color.textAndIconsStatusAttention,
-        PathCardStatusPriority.info => context.color.textAndIconsBaseSecondary,
+        PathCardStatusPriority.critical => context.colorsV2.errorDefault,
+        PathCardStatusPriority.warning => context.colorsV2.extra01Default,
+        PathCardStatusPriority.info => context.colorsV2.warningDefault,
       };
 }

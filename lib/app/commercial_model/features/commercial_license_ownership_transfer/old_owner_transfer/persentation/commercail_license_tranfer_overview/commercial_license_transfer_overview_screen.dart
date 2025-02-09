@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_route_names.dart';
+import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/services/presentation/mvvm/service_data_view_model.dart';
@@ -44,7 +45,7 @@ class _CommercialLicenseTransferOverviewScreenState
         ChangeNotifierProvider(
           create: (BuildContext context) => ServiceDataViewModel(
             webService: sl(),
-            serviceId: 10502,
+            serviceId: RemoteConfig.MunicipalServicesIDs["CommercialLicenseTransfer"]["id"],
           ),
         ),
       ],

@@ -5,6 +5,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/poi_card/domain/model/work_time_model.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
@@ -33,7 +34,7 @@ class HeaderInfoComponent extends ConsumerWidget {
       ),
     );
 
-    final worktime = data.getOpeningHours(context.l10n)?.title;
+    final worktime = data.getOpeningHoursHeader(context);
 
     final fullAddress = data.getFullAddress(briefInfo, context.l10n);
     return _HeaderInfoWidget(
@@ -45,7 +46,8 @@ class HeaderInfoComponent extends ConsumerWidget {
 
 class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
   final PoiContentFullAddress fullAddress;
-  final String? worktime;
+  final WorkTimeModel? worktime;
+
   const _HeaderInfoWidget({
     required this.fullAddress,
     required this.worktime,
@@ -87,11 +89,11 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
                 crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
-            if (worktime != null)
+            if (worktime?.poiContentWorkTime != null)
               Text(
-                worktime!,
+                worktime!.poiContentWorkTime.title,
                 style: context.textStyle.footNoteBold.copyWith(
-                  color: context.colorsV3.accentDefault,
+                  color: worktime!.color,
                 ),
               )
             else

@@ -40,7 +40,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.1.2
+    version: 3.2.2
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -48,7 +48,7 @@ dependencies:
 
   urbi_utils:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.3
+    version: 1.0.5
 
   localize_and_translate:
     git:
@@ -140,7 +140,7 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.10
+    version: 1.0.13
 
 dependency_overrides:
   # for dio_http_cache
@@ -172,6 +172,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/icons/lottie/
     - assets/icons/svg/social/
     - assets/icons/svg/quick_filters/
     - assets/icons/svg/weather/
