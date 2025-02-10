@@ -21,7 +21,8 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     private static var currentEstimates: CarPlayEstimates?
     
     static private(set) var map: Map?
-    
+    static var delegate: CarPlayConnectionSceneDelegate?
+
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
@@ -56,6 +57,8 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         ]
 
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
+        
+        Self.delegate?.onConnectionStateChanged(connected: true)
     }
     
     func viewDidLoad(with map: DGis.Map) {
@@ -79,6 +82,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         from window: CPWindow
     ) {
         FlutterCarPlaySceneDelegate.map = nil
+        Self.delegate?.onConnectionStateChanged(connected: false)
     }
 }
 
@@ -305,6 +309,10 @@ extension FlutterCarPlaySceneDelegate {
         self.navigationSession?.finishTrip()
         self.navigationSession = nil
     }
+}
+
+public protocol CarPlayConnectionSceneDelegate {
+    func onConnectionStateChanged(connected: Bool)
 }
 
 extension Measurement<UnitLength> {
