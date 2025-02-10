@@ -59,10 +59,9 @@ class FavouritesSearch extends ConsumerWidget {
 
     return SearchScreen(
       hintText: switch (markerType) {
-        FavouriteItemMarkerType.unknown => '',
+        FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => '',
         FavouriteItemMarkerType.home => context.l10n.home_address,
         FavouriteItemMarkerType.work => context.l10n.work_address,
-        FavouriteItemMarkerType.place => '',
       },
       onHistoryItemTap: (item) async {
         final dgisController = await ref.read(dgisControllerProvider.future);
