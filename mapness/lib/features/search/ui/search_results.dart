@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
+import 'package:mapness/features/search/ui/add_place_item.dart';
 
 class SearchResults extends ConsumerStatefulWidget {
   const SearchResults({
@@ -58,6 +59,8 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   @override
   Widget build(BuildContext context) {
     final results = ref.watch(searchPaginationProvider(widget.results));
+    final hasAddPlaceAtEnd = results.isNotEmpty && results.length < 10;
+    final totalCount = results.length + (results.length ~/ 10) + (hasAddPlaceAtEnd ? 1 : 0);
 
     return ListView.separated(
       shrinkWrap: true,
@@ -68,13 +71,25 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        if (index == results.length) {
+        /// every 10th item should be an AddPlaceItem
+        if (_hasNext && index == totalCount) {
           return widget.loaderBuilder(context);
         }
 
-        return widget.itemBuilder(context, results[index]);
+        final addPlaceItemsBeforeIndex = index ~/ 10;
+        final actualResultIndex = index - addPlaceItemsBeforeIndex;
+
+        // Check if this position should be an AddPlaceItem
+        final isAddPlacePosition =
+            (index + 1) % 10 == 0 || (hasAddPlaceAtEnd && actualResultIndex == results.length - 1);
+
+        if (isAddPlacePosition) {
+          return const AddPlaceItem();
+        }
+
+        return widget.itemBuilder(context, results[actualResultIndex]);
       },
-      itemCount: results.length + (_hasNext ? 1 : 0),
+      itemCount: totalCount + (_hasNext ? 1 : 0),
       separatorBuilder: (context, index) => const SizedBox(height: 12),
     );
   }
