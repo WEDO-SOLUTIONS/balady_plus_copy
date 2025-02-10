@@ -79,18 +79,22 @@ class FeedbackInput extends StatelessWidget {
                         buttonColorScheme: BaladyButtonColorScheme.accent,
                         primaryLabel: context.l10n.setOnTheMap,
                         primaryIcon: GeneralIcons.pin,
-                        onTap: () async {
-                          final result = await context.router.push(const RoutingMapSelectRoute());
-
-                          if (result != null && result is RoutePoint) {
-                            final location = result.label ?? 'lat:${result.latitude}, lon:${result.longitude}';
-                            controller.text = location;
-                          }
-                        },
+                        onTap: () => _selectRoute(context, controller),
                       ),
                     ),
                   ),
               ],
             ));
+  }
+
+  Future<void> _selectRoute(BuildContext context, TextEditingController controller) async {
+    final result = await context.router.push(const RoutingMapSelectRoute());
+
+    if (result == null || result is! RoutePoint) {
+      return;
+    }
+
+    final location = result.label ?? 'lat:${result.latitude}, lon:${result.longitude}';
+    controller.text = location;
   }
 }

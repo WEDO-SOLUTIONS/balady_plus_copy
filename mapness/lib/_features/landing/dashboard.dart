@@ -12,7 +12,6 @@ import 'package:mapness/_features/landing/map_dashboard_controls.dart';
 import 'package:mapness/_features/landing/map_hidden_state_controls.dart';
 import 'package:mapness/_features/landing/providers/map_controls.dart';
 import 'package:mapness/_features/landing/providers/search_by_rubrics.dart';
-import 'package:mapness/_features/landing/widgets/add_company.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_feedback_card.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_header.dart';
 import 'package:mapness/_features/landing/widgets/dashboard_title.dart';
@@ -28,6 +27,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/ui/feedback_banner_card.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
@@ -125,7 +125,17 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         ),
         content: [
           const SizedBox(height: uikit.Spacing.$3x),
-          const AddCompanyBanner(),
+          FeedbackBannerCard(
+            imageAssetName: 'add_company.png',
+            onTap: () => context.router.push(QuickFeedbackRoute()),
+            gradientColors: const [
+              /// It's normal that some components are not from the design and color system too
+              Color(0xFF9F6AD7),
+              Color(0xFF7035AF),
+            ],
+            title: context.l10n.addPlace,
+            subtitle: context.l10n.addInformationAboutCompany,
+          ),
           const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
             titleWidget: Padding(
