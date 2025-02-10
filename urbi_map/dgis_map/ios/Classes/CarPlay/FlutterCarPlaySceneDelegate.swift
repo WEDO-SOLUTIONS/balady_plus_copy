@@ -5,7 +5,7 @@ import AVFoundation
 
 final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, DgisCarPlayMapViewDelegate {
     static var mapView: DgisCarPlayMapView?
-
+    
     static private var mapTemplate: CPMapTemplate?
     static private var navigationSession: CPNavigationSession?
     static private let trip = CPTrip(
@@ -26,10 +26,10 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
-    ) {        
+    ) {
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
-
+        
         let mapTemplate = CPMapTemplate()
         mapTemplate.hidesButtonsWithNavigationBar = false
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
@@ -54,7 +54,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             makePanHeaderButton(),
             makeTrafficButton(),
         ]
-
+        
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
     }
     
@@ -207,7 +207,7 @@ extension FlutterCarPlaySceneDelegate {
         guard let map else {
             return
         }
-
+        
         guard let navigationSession else {
             return
         }
@@ -304,6 +304,14 @@ extension FlutterCarPlaySceneDelegate {
         Self.currentEstimates = nil
         self.navigationSession?.finishTrip()
         self.navigationSession = nil
+        
+        if mapView != nil || FlutterCarPlayDashboardSceneDelegate.mapView != nil {
+            // await for following to be disabled in SDK when navigation is stopped
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                mapView?.myLocation()
+                FlutterCarPlayDashboardSceneDelegate.mapView?.myLocation()
+            }
+        }
     }
 }
 
