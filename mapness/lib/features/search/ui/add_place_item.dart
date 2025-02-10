@@ -1,7 +1,9 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AddPlaceItem extends StatelessWidget {
@@ -33,9 +35,7 @@ class AddPlaceItem extends StatelessWidget {
             primaryIcon: uikit.GeneralIcons.plusCircle,
             // for the first iteration all buttons have same label. Will be changed later
             primaryLabel: context.l10n.searchAddCompany,
-            onTap: () {
-              // TODO(Demezy): add company route push when ready
-            },
+            onTap: () => context.router.push(QuickFeedbackRoute()),
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),

@@ -93,9 +93,7 @@ class MapSuggestList extends ConsumerWidget {
               buttonColorScheme: uikit.ButtonColorScheme.secondary,
               primaryIcon: uikit.GeneralIcons.plusCircle,
               primaryLabel: context.l10n.searchAddCompany,
-              onTap: () {
-                // TODO(Demezy): add company route push when ready
-              },
+              onTap: () => context.router.push(QuickFeedbackRoute()),
             ),
           )
         ],
