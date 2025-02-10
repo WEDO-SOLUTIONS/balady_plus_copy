@@ -23,6 +23,8 @@ import 'package:mapness/widgets/feedback/images/feedback_images_action_error_she
 import 'package:permission_handler/permission_handler.dart';
 
 const _maxImageResolution = 5000;
+const _minPhotoWidth = 100;
+const _photoPadding = 8.0;
 
 class FeedbackImages extends StatelessWidget {
   final FeedbackImageInputEntity field;
@@ -74,12 +76,13 @@ class FeedbackImages extends StatelessWidget {
 
               return LayoutBuilder(
                 builder: (context, constraints) {
-                  final imagesInRow = ((constraints.maxWidth + 8) / 128).floor();
-                  final size = (constraints.maxWidth + 8) / imagesInRow - 8;
+                  final imagesInRow =
+                      ((constraints.maxWidth + _photoPadding) / (_minPhotoWidth + _photoPadding)).floor();
+                  final size = (constraints.maxWidth + _photoPadding) / imagesInRow - _photoPadding;
 
                   return Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
+                    spacing: _photoPadding,
+                    runSpacing: _photoPadding,
                     children: [
                       if (value.length < field.maxImages)
                         _AddImageButton(
