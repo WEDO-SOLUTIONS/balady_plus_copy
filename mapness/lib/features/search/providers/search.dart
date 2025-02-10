@@ -24,6 +24,11 @@ enum SearchType {
 
 @riverpod
 class Search extends _$Search {
+  /// Keys to detect properties in analytics
+  static const _searchInThisAreaStarted = 'search_started';
+  static const _searchInThisAreaSuccess = 'finished_with_success';
+  static const _searchInThisAreaError = 'finished_with_error';
+
   /// Search area limit
   static final _saRestrictions = [
     GeoPointMessage(latitude: 32.568765, longitude: 56.694472),
@@ -289,18 +294,13 @@ class Search extends _$Search {
   /// Flag that indicates that search was started from searchInThisArea button
   bool _isSearchInThisArea = false;
 
-  /// Keys to detect properties in analytics
-  static const searchInThisAreaStarted = 'search_started';
-  static const searchInThisAreaSuccess = 'finished_with_success';
-  static const searchInThisAreaError = 'finished_with_error';
-
   /// Method that starts search in the visible area
   void searchInThisArea() {
     _isSearchInThisArea = true;
     ref.read(urbiAnalyticsProvider).track(
       MapnessConstants.analyticsSearchInThisAreaPressed,
       properties: {
-        'status': searchInThisAreaStarted,
+        'status': _searchInThisAreaStarted,
       },
     );
 
@@ -330,17 +330,19 @@ class Search extends _$Search {
   /// b) How many request finished with error
   /// c) How many requests was made and didn't finished ((finished_with_success + finished_with_error) / search_started)
   void _searchInThisAreaMetric() {
-    if (_isSearchInThisArea) {
-      _isSearchInThisArea = false;
-      final isSuccess = state is! SearchStateError;
-      final status = isSuccess ? searchInThisAreaSuccess : searchInThisAreaError;
-      ref.read(urbiAnalyticsProvider).track(
-        MapnessConstants.analyticsSearchInThisAreaPressed,
-        properties: {
-          'status': status,
-        },
-      );
+    if (!_isSearchInThisArea) {
+      return;
     }
+
+    _isSearchInThisArea = false;
+    final isSuccess = state is! SearchStateError;
+    final status = isSuccess ? _searchInThisAreaSuccess : _searchInThisAreaError;
+    ref.read(urbiAnalyticsProvider).track(
+      MapnessConstants.analyticsSearchInThisAreaPressed,
+      properties: {
+        'status': status,
+      },
+    );
   }
 
   void _updateSearchText(String searchText) {
