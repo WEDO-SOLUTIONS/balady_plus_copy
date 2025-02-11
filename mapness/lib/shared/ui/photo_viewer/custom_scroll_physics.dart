@@ -18,6 +18,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   /// The spring simulation used for page transition animations.
   ///
   /// Adjust the mass, stiffness, and damping to customize the animation feel.
+  @override
   final SpringDescription spring;
 
   /// Creates a [CustomScrollPhysics] for use in a [PageView].
@@ -37,17 +38,17 @@ class CustomScrollPhysics extends ScrollPhysics {
 
   @override
   CustomScrollPhysics applyTo(ScrollPhysics? ancestor) => CustomScrollPhysics(
-    parent: buildParent(ancestor),
-    velocityThreshold: velocityThreshold,
-    spring: spring,
-  );
+        parent: buildParent(ancestor),
+        velocityThreshold: velocityThreshold,
+        spring: spring,
+      );
 
   /// Calculates the current page based on the scroll position.
   ///
   /// - [position]: The current scroll metrics.
   /// - Returns: The current page as a double.
   double _getPage(ScrollMetrics position) {
-    if (position is _PagePosition) {
+    if (position is _Position) {
       return position.page!;
     }
     return position.pixels / position.viewportDimension;
@@ -59,7 +60,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   /// - [page]: The target page number.
   /// - Returns: The pixel offset corresponding to the page.
   double _getPixels(ScrollMetrics position, double page) {
-    if (position is _PagePosition) {
+    if (position is _Position) {
       return position.getPixelsFromPage(page);
     }
     return page * position.viewportDimension;
@@ -98,10 +99,10 @@ class CustomScrollPhysics extends ScrollPhysics {
   }
 
   @override
-  Tolerance toleranceFor(ScrollMetrics position) => const Tolerance(
-    velocity: 25,
-    distance: 10,
-  );
+  Tolerance toleranceFor(ScrollMetrics metrics) => const Tolerance(
+        velocity: 25,
+        distance: 10,
+      );
 
   @override
   bool get allowImplicitScrolling => false;
@@ -111,7 +112,7 @@ class CustomScrollPhysics extends ScrollPhysics {
 ///
 /// This class handles the logic for converting between page numbers and pixel
 /// offsets, and ensures that pages snap correctly to their positions.
-class _PagePosition extends ScrollPositionWithSingleContext implements PageMetrics {
+class _Position extends ScrollPositionWithSingleContext implements PageMetrics {
   /// Creates a [_PagePosition] for use in a [PageView].
   ///
   /// - [physics]: The scroll physics to use.
@@ -120,20 +121,19 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
   /// - [keepPage]: Whether to save and restore the current page.
   /// - [viewportFraction]: The fraction of the viewport each page occupies.
   /// - [oldPosition]: The previous scroll position, if any.
-  _PagePosition({
+  _Position({
     required super.physics,
     required super.context,
     this.initialPage = 0,
     bool keepPage = true,
     double viewportFraction = 1.0,
-    super.oldPosition,
-  })  : assert(viewportFraction > 0.0),
+  })  : assert(viewportFraction > 0.0, 'must be greater then zero'),
         _viewportFraction = viewportFraction,
         _pageToUseOnStartup = initialPage.toDouble(),
         super(
-        initialPixels: null,
-        keepScrollOffset: keepPage,
-      );
+          initialPixels: null,
+          keepScrollOffset: keepPage,
+        );
 
   /// The initial page to display when the view is first created.
   final int initialPage;
@@ -144,27 +144,26 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
   /// The cached page value, used when the viewport size is zero.
   double? _cachedPage;
 
+  /// Since the _PagePosition is intended to cover the available space within
+  /// its viewport, stop trying to move the target render object to the center
+  /// - otherwise, could end up changing which page is visible and moving the
+  /// targetRenderObject out of the viewport.
   @override
   Future<void> ensureVisible(
-      RenderObject object, {
-        double alignment = 0.0,
-        Duration duration = Duration.zero,
-        Curve curve = Curves.ease,
-        ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.explicit,
-        RenderObject? targetRenderObject,
-      }) {
-    // Since the _PagePosition is intended to cover the available space within
-    // its viewport, stop trying to move the target render object to the center
-    // - otherwise, could end up changing which page is visible and moving the
-    // targetRenderObject out of the viewport.
-    return super.ensureVisible(
-      object,
-      alignment: alignment,
-      duration: duration,
-      curve: curve,
-      alignmentPolicy: alignmentPolicy,
-    );
-  }
+    RenderObject object, {
+    double alignment = 0.0,
+    Duration duration = Duration.zero,
+    Curve curve = Curves.ease,
+    ScrollPositionAlignmentPolicy alignmentPolicy = ScrollPositionAlignmentPolicy.explicit,
+    RenderObject? targetRenderObject,
+  }) =>
+      super.ensureVisible(
+        object,
+        alignment: alignment,
+        duration: duration,
+        curve: curve,
+        alignmentPolicy: alignmentPolicy,
+      );
 
   @override
   double get viewportFraction => _viewportFraction;
@@ -193,7 +192,7 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
   /// - [viewportDimension]: The size of the viewport.
   /// - Returns: The corresponding page number.
   double getPageFromPixels(double pixels, double viewportDimension) {
-    assert(viewportDimension > 0.0);
+    assert(viewportDimension > 0.0, 'must be more then zero');
     final double actual = math.max(0.0, pixels - _initialPageOffset) / (viewportDimension * viewportFraction);
     final double round = actual.roundToDouble();
     if ((actual - round).abs() < precisionErrorTolerance) {
@@ -211,8 +210,8 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
   @override
   double? get page {
     assert(
-    !hasPixels || hasContentDimensions,
-    'Page value is only available after content dimensions are established.',
+      !hasPixels || hasContentDimensions,
+      'Page value is only available after content dimensions are established.',
     );
     return !hasPixels || !hasContentDimensions
         ? null
@@ -221,7 +220,8 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
 
   @override
   void saveScrollOffset() {
-    PageStorage.maybeOf(context.storageContext)?.writeState(context.storageContext, _cachedPage ?? getPageFromPixels(pixels, viewportDimension));
+    PageStorage.maybeOf(context.storageContext)
+        ?.writeState(context.storageContext, _cachedPage ?? getPageFromPixels(pixels, viewportDimension));
   }
 
   @override
@@ -281,9 +281,8 @@ class _PagePosition extends ScrollPositionWithSingleContext implements PageMetri
   @override
   void absorb(ScrollPosition other) {
     super.absorb(other);
-    assert(_cachedPage == null);
-
-    if (other is! _PagePosition) {
+    assert(_cachedPage == null, 'must be null');
+    if (other is! _Position) {
       return;
     }
 

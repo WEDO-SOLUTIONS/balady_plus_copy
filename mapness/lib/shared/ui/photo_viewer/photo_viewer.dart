@@ -81,12 +81,13 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
             children: [
               PhotoViewPager(
                 scrollPhysics: const CustomScrollPhysics(
-                    velocityThreshold: 5, // Уменьшенный порог скорости
-                    spring: SpringDescription(
-                      mass: .5, // Уменьшенная масса для быстрого отклика
-                      stiffness: 200, // Увеличенная жесткость
-                      damping: 25, // Оптимизированное демпфирование
-                    )),
+                  velocityThreshold: 5,
+                  spring: SpringDescription(
+                    mass: .5,
+                    stiffness: 200,
+                    damping: 25,
+                  ),
+                ),
                 doubleTapZoomable: true,
                 easyImageProvider: multiImageProvider,
                 pageController: pageController,
