@@ -31,6 +31,9 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
 
         let mapTemplate = CPMapTemplate()
+        if let maneuverColor = UIColor(named: "CarPlayManueverBackgroung") {
+            mapTemplate.guidanceBackgroundColor = maneuverColor
+        }
         mapTemplate.hidesButtonsWithNavigationBar = false
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
         
@@ -100,8 +103,8 @@ extension FlutterCarPlaySceneDelegate {
         }
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "ZoomIn")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "ZoomIn")!.withRenderingMode(.alwaysOriginal)
+        button.image = UIImage(named: "ZoomIn")!
+        button.focusedImage = UIImage(named: "ZoomIn")!
         
         return button
     }
@@ -112,8 +115,8 @@ extension FlutterCarPlaySceneDelegate {
         }
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "ZoomOut")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "ZoomOut")!.withRenderingMode(.alwaysOriginal)
+        button.image = UIImage(named: "ZoomOut")!
+        button.focusedImage = UIImage(named: "ZoomOut")!
         
         return button
     }
@@ -124,8 +127,8 @@ extension FlutterCarPlaySceneDelegate {
         }
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "FollowOn")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "FollowOn")!.withRenderingMode(.alwaysOriginal)
+        button.image = UIImage(named: "FollowOn")!
+        button.focusedImage = UIImage(named: "FollowOn")!
         
         return button
     }
