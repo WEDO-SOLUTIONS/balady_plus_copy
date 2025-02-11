@@ -133,9 +133,8 @@ class MapObjectManager extends _$MapObjectManager {
         );
   }
 
-  Future<void> setMarkerOptions(String markerId, ChangeMarkerOptionsMessage options) async {
-    await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
-  }
+  Future<void> setMarkerOptions(String markerId, ChangeMarkerOptionsMessage options) async =>
+      await ref.read(dgisControllerProvider).value?.setMarkerOptions(markerId, options);
 
   Future<void> removeMarkerById(String markerId) async {
     _markers.removeWhere((element) => element.id == markerId);

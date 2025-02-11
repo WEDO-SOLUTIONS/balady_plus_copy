@@ -67,11 +67,22 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
+    final existingPositions = <GeoPointWithElevationMessage>{};
+
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+      final position = markerInfo.geoPoint;
+
+      if (existingPositions.contains(position)) {
+        continue;
+      }
+
+      existingPositions.add(position);
+
       final objectId = markerInfo.objectId?.objectId;
       final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
       final rubrics = Set<int>.from(cleanupRubrics);
       final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
+
       markers.add(
         Marker(
           id: objectId?.toString() ?? _invalidMarkerId,
@@ -105,7 +116,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
             ),
-            position: markerInfo.geoPoint,
+            position: position,
             isVisible: true,
             icon: icon?.copyWith(iconOpacity: 1) ??
                 LayersSvgPaths.basicMarker.markerIcon(size: 16).copyWith(iconOpacity: 1),
