@@ -243,6 +243,8 @@ class DgisMapPlugin extends FlutterMapApi {
             return _objectTapEventHandler.polygonTapEvent(map);
           case PolylineTapEvent.name:
             return _objectTapEventHandler.polylineTapEvent(map);
+          case CircleTapEvent.name:
+            return _objectTapEventHandler.circleTapEvent(map);
           case VisibleRectEvent.name:
             return _visibleRectEventHandler.visibleRectEvent(map);
           case "cameraPositionChanged":
@@ -679,6 +681,65 @@ class DgisMapPlugin extends FlutterMapApi {
   Future<void> removeAllPolygons(MapObjectManagerMessage? manager) {
     _objectTapEventHandler.removeAllPolygonHandlers();
     return _api.removeAllPolygons(manager);
+  }
+
+  /// --- CIRCLE ---
+
+  /// Add circle on the map related to the [manager].
+  Future<void> addCircle(
+    Circle circle,
+    MapObjectManagerMessage? manager,
+  ) {
+    if (circle.onTap != null) {
+      _objectTapEventHandler.addCircleHandler(
+        circle.id,
+        circle.onTap!,
+        manager?.id,
+      );
+    }
+    return _api.addCircle(
+      CircleMessage(id: circle.id, options: circle.options),
+      manager,
+    );
+  }
+
+  /// Add circles on the map related to the [manager].
+  Future<void> addCircles(
+    List<Circle> circles,
+    MapObjectManagerMessage? manager,
+  ) {
+    for (var circle in circles) {
+      if (circle.onTap != null) {
+        _objectTapEventHandler.addCircleHandler(
+          circle.id,
+          circle.onTap!,
+          manager?.id,
+        );
+      }
+    }
+    return _api.addCircles(
+      circles
+          .map(
+            (circle) => CircleMessage(id: circle.id, options: circle.options),
+          )
+          .toList(),
+      manager,
+    );
+  }
+
+  /// Remove circle from the map by id related to the [manager].
+  Future<void> removeCircle(
+    String id,
+    MapObjectManagerMessage? manager,
+  ) {
+    _objectTapEventHandler.removeCircleHandler(id);
+    return _api.removeCircle(id, manager);
+  }
+
+  /// Remove all circles from the map related to the [manager].
+  Future<void> removeAllCircles(MapObjectManagerMessage? manager) {
+    _objectTapEventHandler.removeAllCircleHandlers();
+    return _api.removeAllCircles(manager);
   }
 
   /// --- POLYLINE ---

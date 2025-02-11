@@ -659,6 +659,38 @@ class DgisMapView(
         objectTapHandler?.removeAllPolygons(manager?.id, callback)
     }
 
+    // --- POLYGON ---
+    override fun addCircle(
+        circle: CircleMessage,
+        manager: MapObjectManagerMessage?,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.addCircle(circle, manager?.id, callback)
+    }
+
+    override fun addCircles(
+        circles: List<CircleMessage>,
+        manager: MapObjectManagerMessage?,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.addCircles(circles, manager?.id, callback)
+    }
+
+    override fun removeCircle(
+        id: String,
+        manager: MapObjectManagerMessage?,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.removeCircle(id, manager?.id, callback)
+    }
+
+    override fun removeAllCircles(
+        manager: MapObjectManagerMessage?,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.removeAllCircles(manager?.id, callback)
+    }
+
     // --- POLYLINE ---
     override fun addPolyline(
         polyline: PolylineMessage,

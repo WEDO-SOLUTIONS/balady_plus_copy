@@ -14,12 +14,9 @@ import 'package:mapness/features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart';
-import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
 
 part 'poi_deeplink_location_action.dart';
@@ -39,12 +36,11 @@ class DeeplinkPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final language = ref.watch(appLanguageProvider);
-    _cameraAnimation(ref);
 
     final data = ref.watch(
       poiMyLocationProvider(
-        latitude: closestPoint!.latitude,
-        longitude: closestPoint!.longitude,
+        closestPoint: closestPoint,
+        cameraConfig: cameraConfig,
       ),
     );
     final sheetSizes = _calculateSheetSize(context, data);
@@ -114,40 +110,6 @@ class DeeplinkPage extends ConsumerWidget {
     await read.removeAllMarkers();
   }
 
-  Future<void> _cameraAnimation(WidgetRef ref) async {
-    if (closestPoint != null) {
-      final settings = MapObjectManagerSettings.myLocation();
-      final mapObjectManager = ref.watch(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-        ).notifier,
-      );
-      await mapObjectManager.removeAllMarkers();
-      final marker = Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: closestPoint!.latitude,
-          longitude: closestPoint!.longitude,
-          elevation: 1,
-        ),
-      );
-
-      final read = ref.read(selectedMarkerProvider.notifier);
-      await read.removeAllMarkers();
-
-      await mapObjectManager.addMarker(marker);
-
-      await ref.read(cameraPositionProvider.notifier).animateTo(
-        CameraPositionMessage(
-          point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
-          zoom: cameraConfig?.zoom ?? 16,
-          tilt: cameraConfig?.tilt ?? 0,
-          bearing: cameraConfig?.bearing ?? 0,
-        ),
-      );
-    }
-  }
-
   PoiSheetSizes _calculateSheetSize(BuildContext context, AsyncValue<PoiMyLocationState?> data) {
     bool twoLineAddress = false;
     bool twoLineTitle = false;
@@ -188,7 +150,7 @@ class DeeplinkPage extends ConsumerWidget {
 
   Size _textSize(String text, TextStyle style) {
     final TextPainter textPainter =
-    TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
+        TextPainter(text: TextSpan(text: text, style: style), maxLines: 1, textDirection: TextDirection.ltr)..layout();
     return textPainter.size;
   }
 }

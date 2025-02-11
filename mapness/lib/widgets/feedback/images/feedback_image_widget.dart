@@ -10,7 +10,9 @@ import 'package:mapness/features/feedback/feedback_upload_image.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 
 part 'feedback_error_image_item.dart';
+
 part 'feedback_image_action_button.dart';
+
 part 'feedback_image_item.dart';
 
 class FeedbackImageWidget extends ConsumerStatefulWidget {
@@ -28,12 +30,10 @@ class FeedbackImageWidget extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<FeedbackImageWidget> createState() =>
-      _FeedbackImageWidgetState();
+  ConsumerState<FeedbackImageWidget> createState() => _FeedbackImageWidgetState();
 }
 
-class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
-    with SingleTickerProviderStateMixin {
+class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget> with SingleTickerProviderStateMixin {
   late final AnimationController _controller;
   late final Animation<double> _opacityAnimation;
 
@@ -45,8 +45,7 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
       vsync: this,
     );
 
-    _opacityAnimation =
-        Tween<double>(begin: 1.0, end: 0.0).animate(_controller);
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(_controller);
   }
 
   @override
@@ -61,8 +60,7 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
     final upload = ref.watch(uploadProvider);
 
     /// notify form about uploading (lock submit until finish)
-    ref.listen(
-        uploadProvider, (_, newState) => widget.onUploadStatusChange(newState));
+    ref.listen(uploadProvider, (_, newState) => widget.onUploadStatusChange(newState));
 
     final isLoading = upload.maybeWhen<bool>(
       init: (_) => true,
@@ -106,10 +104,11 @@ class _FeedbackImageWidgetState extends ConsumerState<FeedbackImageWidget>
                   right: 3,
                   top: 3,
                   child: _ImageActionButton(
+                      size: widget.imageSize * .3,
+                      iconSize: widget.imageSize * .2,
                       icon: SystemIcons.closeSmall,
                       onTap: () async {
-                        unawaited(
-                            ref.read(uploadProvider.notifier).cancelUpload());
+                        unawaited(ref.read(uploadProvider.notifier).cancelUpload());
                         await _controller.forward();
                         widget.onRemove();
                       }),

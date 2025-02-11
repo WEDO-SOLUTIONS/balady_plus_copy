@@ -18,11 +18,8 @@ import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharin
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart';
 import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
-import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/loading/loading_overlay.dart';
-import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/shared/ui/share_eta/poi_my_location_action.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
@@ -48,8 +45,8 @@ class ShareMyLocationPage extends HookConsumerWidget {
 
     final data = ref.watch(
       poiMyLocationProvider(
-        latitude: closestPoint!.latitude,
-        longitude: closestPoint!.longitude,
+        closestPoint: closestPoint,
+        cameraConfig: cameraConfig,
       ),
     );
 
@@ -90,8 +87,6 @@ class ShareMyLocationPage extends HookConsumerWidget {
           ..setLongitude(closestPoint!.longitude);
       }
     });
-
-    _cameraAnimation(ref);
 
     return Stack(
       alignment: Alignment.bottomCenter,
@@ -171,40 +166,6 @@ class ShareMyLocationPage extends HookConsumerWidget {
     context.router.popForced();
     final read = ref.read(selectedMarkerProvider.notifier);
     await read.removeAllMarkers();
-  }
-
-  Future<void> _cameraAnimation(WidgetRef ref) async {
-    if (closestPoint != null) {
-      final settings = MapObjectManagerSettings.myLocation();
-      final mapObjectManager = ref.watch(
-        mapObjectManagerProvider(
-          named: settings.name,
-          layerId: settings.layerId,
-        ).notifier,
-      );
-      await mapObjectManager.removeAllMarkers();
-      final marker = Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: closestPoint!.latitude,
-          longitude: closestPoint!.longitude,
-          elevation: 1,
-        ),
-      );
-
-      final read = ref.read(selectedMarkerProvider.notifier);
-      await read.removeAllMarkers();
-
-      await mapObjectManager.addMarker(marker);
-
-      await ref.read(cameraPositionProvider.notifier).animateTo(
-            CameraPositionMessage(
-              point: GeoPointMessage(latitude: closestPoint!.latitude, longitude: closestPoint!.longitude),
-              zoom: cameraConfig?.zoom ?? 16,
-              tilt: cameraConfig?.tilt ?? 0,
-              bearing: cameraConfig?.bearing ?? 0,
-            ),
-          );
-    }
   }
 
   void _showEtaControlSheet(BuildContext context, WidgetRef ref) {

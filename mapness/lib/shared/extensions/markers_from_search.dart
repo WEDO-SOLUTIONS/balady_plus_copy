@@ -212,13 +212,15 @@ extension BigIconPath on String {
   ];
 
   String? get bigIconPath {
-    final iconName = split('/').last;
-    if (_markersList.contains(iconName)) {
-      final path = '$_pathPrefix$iconName';
-
-      return path;
-    } else {
-      return Markers.defaultPin;
-    }
+    ///todo: do not remove commented code
+    // final iconName = split('/').last;
+    // if (_markersList.contains(iconName)) {
+    //   final path = '$_pathPrefix$iconName';
+    //
+    //   return path;
+    // } else {
+      // return Markers.defaultPin;
+      return Markers.defaultPinNew;
+    // }
   }
 }
