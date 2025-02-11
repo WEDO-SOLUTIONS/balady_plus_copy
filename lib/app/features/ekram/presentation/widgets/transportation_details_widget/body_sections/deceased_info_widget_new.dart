@@ -162,7 +162,7 @@ class DeceasedInfoWidget_new extends StatelessWidget {
           ),
           EkramHeaderAndDescWidget_With_Background(
             title: ('ekramReligion').tr(),
-            details: item?.isMuslim == true ? "muslim".tr() : "non_muslim".tr(),
+            details: item?.isMuslim == true ? "muslim".tr() : item?.isMuslim== false?"non_muslim".tr():"",
           )
         ],
       ),
