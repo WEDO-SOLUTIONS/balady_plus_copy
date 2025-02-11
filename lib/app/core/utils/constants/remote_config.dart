@@ -18,22 +18,24 @@ class RemoteConfig {
   // static String get gis => _RemoteConfig.gis[env]!;
   // static String get apigeeUsername => "__APIGEE-USERNAME__";
   static String get apigeeUsername {
-    String apigeeUserName = const String.fromEnvironment(
-      '__APIGEE_USERNAME__',
-    ); // Get from pipeline
-    return apigeeUserName.isNotEmpty
+    String apigeeUserName = '__APIGEE_USERNAME__';
+    // String apigeeUserName = const String.fromEnvironment(
+    //   'APIGEE_USERNAME',
+    // );
+    return apigeeUserName != "__APIGEE_USERNAME__"
         ? apigeeUserName
-        : dotenv.env['APIGEE_USERNAME'] ?? "default_url"; // Get from .env
+        : dotenv.env['APIGEE_USERNAME'] ?? "default"; // Get from .env
   }
 
   // static String get apigeePassword => "__APIGEE-PASSWORD__";
   static String get apigeePassword {
-    String apigeePassword = const String.fromEnvironment(
-      '__APIGEE_PASSWORD__',
-    ); // Get from pipeline
-    return apigeePassword.isNotEmpty
+    String apigeePassword = '__APIGEE_PASSWORD__';
+    // String apigeePassword = const String.fromEnvironment(
+    //   'APIGEE_PASSWORD',
+    // );
+    return apigeePassword != "__APIGEE_PASSWORD__"
         ? apigeePassword
-        : dotenv.env['APIGEE_PASSWORD'] ?? "default_url"; // Get from .env
+        : dotenv.env['APIGEE_PASSWORD'] ?? "default"; // Get from .env
   }
 
   ////   just used in one place in the app
@@ -55,22 +57,29 @@ class RemoteConfig {
 //////////////////////////////////////////////////////
 //   static String get apigeeURL => "__APIGEE-URL__";
   static String get apigeeURL {
-    String apigeeURL = const String.fromEnvironment(
-      '__APIGEE_URL__',
-    ); // Get from pipeline
-    return apigeeURL.isNotEmpty
+    String apigeeURL = '__APIGEE_URL__';
+    // String apigeeURL = const String.fromEnvironment(
+    //   'APIGEE_URL',
+    // );
+    return apigeeURL != "__APIGEE_URL__"
         ? apigeeURL
-        : dotenv.env['APIGEE_URL'] ?? "default_url"; // Get from .env
+        : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
   }
 
   // static String get hmCode => "__HM-CODE__";
   static String get hmCode {
-    String hmCode = const String.fromEnvironment(
-      '__HM_CODE__',
-    ); // Get from pipeline
-    return hmCode.isNotEmpty
+    String hmCode = '__HM_CODE__';
+    // String hmCode = const String.fromEnvironment(
+    //   'HM_CODE',
+    // );
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    return hmCode != "__HM_CODE__"
         ? hmCode
-        : dotenv.env['HM_CODE'] ?? "default_url"; // Get from .env
+        : dotenv.env['HM_CODE'] ?? "default"; // Get from .env
   }
 
   //////////////////////////////////////////////////////
@@ -84,22 +93,24 @@ class RemoteConfig {
 
   // static String get ssoSecret => "__SSO-SECRET__";
   static String get ssoSecret {
-    String ssoSecret = const String.fromEnvironment(
-      '__SSO_SECRET__',
-    ); // Get from pipeline
-    return ssoSecret.isNotEmpty
+    String ssoSecret = '__SSO_SECRET__';
+    // String ssoSecret = const String.fromEnvironment(
+    //   'SSO_SECRET',
+    // );
+    return ssoSecret != "__SSO_SECRET__"
         ? ssoSecret
-        : dotenv.env['SSO_SECRET'] ?? "default_url"; // Get from .env
+        : dotenv.env['SSO_SECRET'] ?? "default"; // Get from .env
   }
 
   // static String get ssoClient => "__SSO-CLINT__";
   static String get ssoClient {
-    String ssoClient = const String.fromEnvironment(
-      '__SSO_CLINT__',
-    ); // Get from pipeline
-    return ssoClient.isNotEmpty
+    String ssoClient = '__SSO_CLINT__';
+    // String ssoClient = const String.fromEnvironment(
+    //   'SSO_CLINT'
+    // );
+    return ssoClient != "__SSO_CLINT__"
         ? ssoClient
-        : dotenv.env['SSO_CLINT'] ?? "default_url"; // Get from .env
+        : dotenv.env['SSO_CLINT'] ?? "default"; // Get from .env
   }
 
   //////////////////////////////////////////////////////
