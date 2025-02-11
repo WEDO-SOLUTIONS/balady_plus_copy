@@ -67,16 +67,17 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
-    final existingPositions = <GeoPointWithElevationMessage>{};
+    final existingPositions = <LatLng>{};
 
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
       final position = markerInfo.geoPoint;
+      final latLng = LatLng(latitude: position.latitude, longitude: position.longitude);
 
-      if (existingPositions.contains(position)) {
+      if (existingPositions.contains(latLng)) {
         continue;
       }
 
-      existingPositions.add(position);
+      existingPositions.add(latLng);
 
       final objectId = markerInfo.objectId?.objectId;
       final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
@@ -219,8 +220,8 @@ extension BigIconPath on String {
     //
     //   return path;
     // } else {
-      // return Markers.defaultPin;
-      return Markers.defaultPinNew;
+    // return Markers.defaultPin;
+    return Markers.defaultPinNew;
     // }
   }
 }
