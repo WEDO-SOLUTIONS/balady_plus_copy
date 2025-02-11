@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AddPlaceItem extends StatelessWidget {
-  const AddPlaceItem({Key? key}) : super(key: key);
+  const AddPlaceItem({super.key});
 
   @override
   // ignore: prefer_expression_function_bodies

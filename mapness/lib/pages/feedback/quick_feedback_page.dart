@@ -22,12 +22,13 @@ class QuickFeedbackPage extends StatelessWidget {
   final int? objectId;
   final String? feedbackType;
 
-  const QuickFeedbackPage(
-      {this.type = QuickFeedbackType.newCompany,
-      @QueryParam('type') this.feedbackType,
-      @QueryParam('id') this.objectId,
-      this.params = const FeedbackNoParams(),
-      super.key});
+  const QuickFeedbackPage({
+    this.type = QuickFeedbackType.newCompany,
+    @QueryParam('type') this.feedbackType,
+    @QueryParam('id') this.objectId,
+    this.params = const FeedbackNoParams(),
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => Scaffold(
