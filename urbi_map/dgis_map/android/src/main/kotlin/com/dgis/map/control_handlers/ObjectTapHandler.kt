@@ -29,6 +29,8 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.road_events.RoadEventType
+import ru.dgis.sdk.geometry.ComplexGeometry
+import ru.dgis.sdk.geometry.PointGeometry
 
 class ObjectTapHandler(
         private val map: ru.dgis.sdk.map.Map,
