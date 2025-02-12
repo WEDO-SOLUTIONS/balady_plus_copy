@@ -12,6 +12,11 @@ class CurrentWeatherContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final allWeatherInfo = ref.watch(forecastWeatherProvider);
+    final currentTempC = allWeatherInfo?.current?.tempC?.floor() ?? 0;
+    final currentConditionText = allWeatherInfo?.current?.condition?.text ?? '';
+    final currentConditionIconPath = allWeatherInfo?.current?.condition?.iconPath ?? '';
+    final sunriseTime = allWeatherInfo?.forecast?.forecastday?[0].astro?.sunrise?.replaceAll('AM', '') ?? '';
+    final sunsetTime = allWeatherInfo?.forecast?.forecastday?[0].astro?.sunset?.replaceAll('PM', '') ?? '';
 
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -28,7 +33,7 @@ class CurrentWeatherContent extends ConsumerWidget {
               height: MediaQuery.of(context).padding.top,
             ),
             CustomSvgIconWidget(
-              allWeatherInfo?.current?.condition?.iconPath ?? '',
+              currentConditionIconPath,
               iconSize: 56,
               iconColor: Colors.white,
             ),
@@ -38,39 +43,22 @@ class CurrentWeatherContent extends ConsumerWidget {
               children: [
                 const Padding(
                   padding: EdgeInsets.only(bottom: 6),
-                  child: Text(
-                    'C',
-                    // fontSize: 18,
-                    // fontWeight: FontWeight.normal,
-                  ),
+                  child: Text('C'),
                 ),
                 const SizedBox(width: 1),
                 const Padding(
                   padding: EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    '°',
-                    // fontSize: 20,
-                    // fontWeight: FontWeight.normal,
-                  ),
+                  child: Text('°'),
                 ),
                 Text(
-                  allWeatherInfo?.current?.tempC.toString().substring(0, 2) ?? '',
-                  // fontSize: 20,
-                  // fontWeight: FontWeight.normal,
+                  currentTempC.toString(),
                 ),
                 const SizedBox(width: 8),
                 Text(
-                  allWeatherInfo?.current?.condition?.text ?? '',
-                  // fontSize: 14,
-                  // fontWeight: FontWeight.bold,
+                  currentConditionText,
                 ),
               ],
             ),
-            // UnKownWeatherLocation(
-            //   onTap: () {
-            //     // context.read<WeatherBloc>().add(GetWeatherForLocation());
-            //   },
-            // ),
             const Divider(
               color: Colors.white,
             ),
@@ -83,9 +71,7 @@ class CurrentWeatherContent extends ConsumerWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    SunriseOrSunsetTime.sunrise(
-                      time: allWeatherInfo?.forecast?.forecastday?[0].astro?.sunrise?.replaceAll('AM', '') ?? '',
-                    ),
+                    SunriseOrSunsetTime.sunrise(time: sunriseTime),
                     const Padding(
                       padding: EdgeInsets.symmetric(vertical: 8, horizontal: 36),
                       child: VerticalDivider(
@@ -93,9 +79,7 @@ class CurrentWeatherContent extends ConsumerWidget {
                         color: Colors.white,
                       ),
                     ),
-                    SunriseOrSunsetTime.sunset(
-                      time: allWeatherInfo?.forecast?.forecastday?[0].astro?.sunset?.replaceAll('PM', '') ?? '',
-                    ),
+                    SunriseOrSunsetTime.sunset(time: sunsetTime),
                   ],
                 ),
               ),

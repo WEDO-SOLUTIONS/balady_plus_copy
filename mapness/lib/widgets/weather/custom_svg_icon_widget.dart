@@ -2,6 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart' show SvgPicture;
 
 class CustomSvgIconWidget extends StatelessWidget {
+  final String iconPath;
+  final double? iconSize;
+  final double? iconWidth;
+  final double? iconHeight;
+  final Color? iconColor;
+  final AlignmentGeometry? iconAlignment;
+  final BoxFit? iconFit;
+
   const CustomSvgIconWidget(
     this.iconPath, {
     super.key,
@@ -12,14 +20,6 @@ class CustomSvgIconWidget extends StatelessWidget {
     this.iconAlignment,
     this.iconFit,
   });
-
-  final String iconPath;
-  final double? iconSize;
-  final double? iconWidth;
-  final double? iconHeight;
-  final Color? iconColor;
-  final AlignmentGeometry? iconAlignment;
-  final BoxFit? iconFit;
 
   @override
   Widget build(BuildContext context) => SvgPicture.asset(
@@ -38,6 +38,17 @@ class CustomSvgIconWidget extends StatelessWidget {
 }
 
 class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
+  final String iconPath;
+  final double iconWidth;
+  final double iconHeight;
+  final Color? iconColor;
+  final Alignment iconAlignment;
+  final BoxFit iconFit;
+  final double width;
+  final double height;
+  final Color? backgroundColor;
+  final BoxShape backgroundShape;
+
   const CustomSvgIconWithBackgroundWidget(
     this.iconPath, {
     super.key,
@@ -51,17 +62,6 @@ class CustomSvgIconWithBackgroundWidget extends StatelessWidget {
     this.height = 60.0,
     this.backgroundShape = BoxShape.circle,
   });
-
-  final String iconPath;
-  final double iconWidth;
-  final double iconHeight;
-  final Color? iconColor;
-  final Alignment iconAlignment;
-  final BoxFit iconFit;
-  final double width;
-  final double height;
-  final Color? backgroundColor;
-  final BoxShape backgroundShape;
 
   @override
   Widget build(BuildContext context) => Container(

@@ -21,20 +21,6 @@ class WeatherParams {
     this.alert = 'yes',
   });
 
-  WeatherParams copyWith({
-    double? longitude,
-    double? latitude,
-    int? numberOfDays,
-  }) =>
-      WeatherParams(
-        longitude: longitude ?? this.longitude,
-        latitude: latitude ?? this.latitude,
-        numberOfDays: numberOfDays ?? this.numberOfDays,
-        alert: alert,
-        languageCode: languageCode,
-        domain: domain,
-      );
-
   String? getVerifyingKey() {
     const weatherServices = 'v1/weather-services/forecast?';
     final params = toMap();
