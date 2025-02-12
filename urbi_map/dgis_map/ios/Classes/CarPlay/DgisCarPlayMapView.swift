@@ -66,6 +66,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
                 zoom: Zoom(value: 17)
             )
         }
+        myLocation()
         
         self.map = map
         mapView.translatesAutoresizingMaskIntoConstraints = false
