@@ -14,19 +14,20 @@ class Markers {
     double? height,
     String? text,
     MarkerTextStyleMessage? textStyle,
-  }) => Marker(
-      id: id ?? 'PIN-MARKER',
-      options: MarkerOptionsMessage(
-        position: position,
-        icon: SvgMarkerIcon(
-          svgPath: icon ?? defaultPinNew,
-          width: width ?? defaultWidth,
+  }) =>
+      Marker(
+        id: id ?? 'PIN-MARKER',
+        options: MarkerOptionsMessage(
+          position: position,
+          icon: SvgMarkerIcon(
+            svgPath: icon ?? defaultPinNew,
+            width: width ?? defaultWidth,
+          ),
+          text: text,
+          textStyle: textStyle,
+          anchor: MarkerAnchorMessage(x: 0.5, y: 1),
+          animatedAppearance: true,
+          zIndex: 50,
         ),
-        text: text,
-        textStyle: textStyle,
-        anchor: MarkerAnchorMessage(x: 0.5, y: 1),
-        animatedAppearance: true,
-        zIndex: 50,
-      ),
-    );
+      );
 }
