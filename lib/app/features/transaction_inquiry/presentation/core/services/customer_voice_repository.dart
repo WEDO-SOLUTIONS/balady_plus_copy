@@ -227,7 +227,7 @@ class CustomerVoiceRepository {
           "NationalID": "${CommonProperties.userInfo!.idNo}"
         else
           "IqamaID": "${CommonProperties.userInfo!.idNo}",
-        "ID": "municipality",
+        "ID": municipality,
         "Action": "SplClsList",
         if (category != null) "Category": category
       };
