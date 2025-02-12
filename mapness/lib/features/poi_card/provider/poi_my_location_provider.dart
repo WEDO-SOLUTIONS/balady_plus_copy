@@ -9,6 +9,7 @@ import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
@@ -87,8 +88,10 @@ class PoiMyLocation extends _$PoiMyLocation {
       ),
     );
 
+    /// For those cases when we switch from an area (building) to MyLocation
     final selectedMarker = ref.read(selectedMarkerProvider.notifier);
     await selectedMarker.removeAllMarkers();
+    await ref.read(highlightProvider.notifier).removeAll();
 
     await mapObjectManager.addMarker(marker);
 
@@ -100,5 +103,9 @@ class PoiMyLocation extends _$PoiMyLocation {
             bearing: cameraConfig?.bearing ?? 0,
           ),
         );
+
+    ref.onDispose(() async {
+      await mapObjectManager.removeAllMarkers();
+    });
   }
 }
