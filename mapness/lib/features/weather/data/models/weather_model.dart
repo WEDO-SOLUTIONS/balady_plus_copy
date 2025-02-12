@@ -151,14 +151,14 @@ class AstroModel {
     this.sunset,
   });
 
-  factory AstroModel.fromMap(Map<String, dynamic> json) => _$AstroModelFromJson(json);
+  factory AstroModel.fromJson(Map<String, dynamic> json) => _$AstroModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$AstroModelToJson(this);
 
   Astro toDomain() => Astro(sunrise: sunrise, sunset: sunrise);
 }
 
-@JsonSerializable()
+@JsonSerializable(fieldRename: FieldRename.snake)
 class DayModel {
   final double? maxtempC;
   final double? maxtempF;
@@ -178,17 +178,17 @@ class DayModel {
     this.condition,
   });
 
-  factory DayModel.json(Map<String, dynamic> json) => _$DayModelFromJson(json);
+  factory DayModel.fromJson(Map<String, dynamic> json) => _$DayModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$DayModelToJson(this);
 
   Day toDomain() => Day(
-      maxtempC: maxtempC,
-      maxtempF: maxtempF,
-      mintempC: mintempC,
-      mintempF: mintempF,
-      avgtempC: avgtempC,
-      avgtempF: avgtempF,
+      maxTempC: maxtempC,
+      maxTempF: maxtempF,
+      minTempC: mintempC,
+      minTempF: mintempF,
+      avgTempC: avgtempC,
+      avgTempF: avgtempF,
       condition: condition?.toDomain());
 }
 
@@ -250,6 +250,8 @@ class LocationModel {
 
   factory LocationModel.fromJson(Map<String, dynamic> json) => _$LocationModelFromJson(json);
 
+  Map<String, dynamic> toJson() => _$LocationModelToJson(this);
+
   Location toDomain() => Location(
         name: name,
         region: region,
@@ -265,6 +267,7 @@ class LocationModel {
 AllWeatherInfoModel mapper(Map<String, dynamic>? json) {
   try {
     final data = json?['data'];
+
     if (data == null || data is! Map<String, dynamic>) {
       return AllWeatherInfoModel();
     }

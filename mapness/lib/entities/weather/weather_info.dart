@@ -98,21 +98,21 @@ class Astro {
 }
 
 class Day {
-  final double? maxtempC;
-  final double? maxtempF;
-  final double? mintempC;
-  final double? mintempF;
-  final double? avgtempC;
-  final double? avgtempF;
+  final double? maxTempC;
+  final double? maxTempF;
+  final double? minTempC;
+  final double? minTempF;
+  final double? avgTempC;
+  final double? avgTempF;
   final Condition? condition;
 
   const Day({
-    this.maxtempC,
-    this.maxtempF,
-    this.mintempC,
-    this.mintempF,
-    this.avgtempC,
-    this.avgtempF,
+    this.maxTempC,
+    this.maxTempF,
+    this.minTempC,
+    this.minTempF,
+    this.avgTempC,
+    this.avgTempF,
     this.condition,
   });
 }

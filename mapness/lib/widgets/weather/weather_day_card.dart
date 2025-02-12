@@ -41,9 +41,9 @@ class WeatherDayCard extends ConsumerWidget {
     final conditionIconPath = forecastDay?.day?.condition?.iconPath ?? '';
     final conditionText = forecastDay?.day?.condition?.text ?? '';
 
-    final maxTemp = '${forecastDay?.day?.maxtempC}º';
+    final maxTemp = '${forecastDay?.day?.maxTempC}º';
 
-    final minTemp = '${forecastDay?.day?.mintempC}º';
+    final minTemp = '${forecastDay?.day?.minTempC}º';
 
     return CustomExpansionTile(
       collapsedBackgroundColor: context.color.surfaceBaseSecondary,
