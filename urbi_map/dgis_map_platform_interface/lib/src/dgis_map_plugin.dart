@@ -261,7 +261,7 @@ class DgisMapPlugin extends FlutterMapApi {
             return _routesEventHandler.betterRouteInfoEvent(map);
           case NavigationEvent.name:
             return _navigationEventHandler.handleNavigationEvent(map);
-          case AndroidAutoConnectionEvent.name:
+          case CarConnectionEvent.name:
             return _androidAutoHandler.handleAndroidAutoConnectionEvent(map);
           case IoTapEvent.name:
             return _objectTapEventHandler.onIoTap(map);
@@ -944,9 +944,9 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.stopFreeRoam();
   }
 
-  /// Get Android Auto connection state.
-  Future<bool> getAndroidAutoConnectionState() {
-    return _api.getAndroidAutoConnectionState();
+  /// Get Android Auto/CarPlay connection state.
+  Future<bool> getCarConnectionState() {
+    return _api.getCarConnectionState();
   }
 
   /// The [toggleVoiceInstruction] is responsible for switching the sound.
