@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 
 class Markers {
-  static const double defaultWidth = 48;
+  static const double defaultWidth = 60;
   static const double defaultHeight = 58;
   static const defaultPin = 'packages/mapness/assets/icons/lottie/pin_logo_animated.json';
   static const defaultPinNew = 'packages/mapness/assets/icons/svg/ic_pin_new.svg';
@@ -14,20 +14,19 @@ class Markers {
     double? height,
     String? text,
     MarkerTextStyleMessage? textStyle,
-  }) =>
-      Marker(
-        id: id ?? 'PIN-MARKER',
-        options: MarkerOptionsMessage(
-          position: position,
-          icon: SvgMarkerIcon(
-            svgPath: icon ?? defaultPinNew,
-            width: width ?? defaultWidth,
-          ),
-          text: text,
-          textStyle: textStyle,
-          anchor: MarkerAnchorMessage(x: 0.5, y: 1),
-          animatedAppearance: true,
-          zIndex: 50,
+  }) => Marker(
+      id: id ?? 'PIN-MARKER',
+      options: MarkerOptionsMessage(
+        position: position,
+        icon: SvgMarkerIcon(
+          svgPath: icon ?? defaultPinNew,
+          width: width ?? defaultWidth,
         ),
-      );
+        text: text,
+        textStyle: textStyle,
+        anchor: MarkerAnchorMessage(x: 0.5, y: 1),
+        animatedAppearance: true,
+        zIndex: 50,
+      ),
+    );
 }
