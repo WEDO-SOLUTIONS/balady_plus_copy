@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/weather/data/models/weather_model.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -37,7 +37,7 @@ class WeatherControl extends ConsumerWidget {
   MapButton buildContent({
     required BuildContext context,
     required VoidCallback onTap,
-    AllWeatherInfoModel? data,
+    AllWeatherInfoEntity? data,
   }) {
     final tempC2 = data?.current?.tempC;
     final temp = tempC2 == null ? '30°' : '${tempC2.toInt()}°';

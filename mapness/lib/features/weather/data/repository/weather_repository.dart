@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/entities/weather/weather_params.dart';
 import 'package:mapness/features/weather/data/datasources/weather_remote_datasource.dart';
 import 'package:mapness/features/weather/data/datasources/web_service_weather.dart';
@@ -13,7 +14,7 @@ part 'weather_repository.g.dart';
 class WeatherRepository extends _$WeatherRepository {
   late final WeatherRemoteDataSource weatherDataSource;
 
-  Future<AllWeatherInfoModel?> getForecastWeather(
+  Future<AllWeatherInfoEntity?> getForecastWeather(
     double latitude,
     double longitude,
     int numberOfDays,
@@ -35,7 +36,8 @@ class WeatherRepository extends _$WeatherRepository {
       cancelToken: cancelToken,
     );
     final result = mapper(data);
-    return result;
+
+    return result.toDomain();
   }
 
   @override

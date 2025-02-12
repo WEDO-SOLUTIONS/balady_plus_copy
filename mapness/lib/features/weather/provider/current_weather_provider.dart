@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/features/weather/data/models/weather_model.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/data/repository/weather_repository.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -10,7 +10,7 @@ part 'current_weather_provider.g.dart';
 @riverpod
 class _CurrentWeather extends _$CurrentWeather {
   @override
-  AllWeatherInfoModel? build() {
+  AllWeatherInfoEntity? build() {
     final controller = ref.watch(dgisControllerProvider).value;
     final repository = ref.watch(weatherRepository.notifier);
 

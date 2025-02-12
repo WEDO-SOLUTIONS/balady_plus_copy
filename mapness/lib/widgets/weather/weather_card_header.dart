@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:mapness/features/weather/data/models/weather_model.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/helpers/widget_ref_weather_extension.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -90,7 +90,7 @@ class DashboardHeader extends ConsumerWidget {
 }
 
 class Data extends ConsumerWidget {
-  final AllWeatherInfoModel? allWeatherInfo;
+  final AllWeatherInfoEntity? allWeatherInfo;
   final Locale locale;
   final Function()? onTap;
 
