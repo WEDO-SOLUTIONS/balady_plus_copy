@@ -224,43 +224,45 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     : context.colorsV2.backgroundSurface4,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
               ),
-              sliver: SliverAnimatedSwitcher(
-                duration: Durations.medium2,
-                child: switch (tabType) {
-                  PoiTabsType.info => SliverList(
-                      delegate: SliverChildListDelegate(
-                        [
-                          FeedbackBannerCard(
-                            imageAssetName: 'city_expert.png',
-                            title: context.l10n.cityExpert,
-                            subtitle: context.l10n.cityExpertDescription,
-                            gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
-                            onTap: () {
-                              context.router.push(QuickFeedbackRoute(
-                                type: QuickFeedbackType.editCompany,
-                                params: FeedbackObjectIdParams(objectId),
-                              ));
-                            },
-                          ),
-                          InfoWidget(
-                            objectInfo: poiCardState?.gisObjectIdMessage,
-                            qrTradeLicense: poiCardState?.qrTradeLicense,
-                            onEntrancesTap: () => poiActions.toggleEntrances(
-                              data,
-                              () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                              widget.closestPoint,
+              sliver: SliverFillAfter(
+                sliver: SliverAnimatedSwitcher(
+                  duration: Durations.medium2,
+                  child: switch (tabType) {
+                    PoiTabsType.info => SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            FeedbackBannerCard(
+                              imageAssetName: 'city_expert.png',
+                              title: context.l10n.cityExpert,
+                              subtitle: context.l10n.cityExpertDescription,
+                              gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+                              onTap: () {
+                                context.router.push(QuickFeedbackRoute(
+                                  type: QuickFeedbackType.editCompany,
+                                  params: FeedbackObjectIdParams(objectId),
+                                ));
+                              },
                             ),
-                          ),
-                        ],
+                            InfoWidget(
+                              objectInfo: poiCardState?.gisObjectIdMessage,
+                              qrTradeLicense: poiCardState?.qrTradeLicense,
+                              onEntrancesTap: () => poiActions.toggleEntrances(
+                                data,
+                                () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                                widget.closestPoint,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
-                  PoiTabsType.organizations => PoiOrganizationsSliver(
-                      state: poiCardState,
-                      objectId: data.id!,
-                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
-                    ),
-                },
+                    PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
+                    PoiTabsType.organizations => PoiOrganizationsSliver(
+                        state: poiCardState,
+                        objectId: data.id!,
+                        bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                      ),
+                  },
+                ),
               ),
             ),
           ),
