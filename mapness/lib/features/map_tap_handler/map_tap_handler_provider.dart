@@ -146,13 +146,15 @@ class MapTapHandler extends _$MapTapHandler {
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
-    ref.read(appRouterProvider).push(
-          ShareMyLocationRoute(
-            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-            closestPoint: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                : event.latLng,
-          ),
-        );
+
+    ref.read(appRouterProvider).replaceOrPush(
+      route: ShareMyLocationRoute(
+        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+        closestPoint: userLocation != null
+            ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+            : event.latLng,
+      ),
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
+    );
   }
 }
