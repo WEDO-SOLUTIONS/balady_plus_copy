@@ -9,6 +9,7 @@ import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/indoor_control.dart';
 import 'package:mapness/_features/landing/widgets/layers_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/_features/weather/widgets/weather_control.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
@@ -72,6 +73,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
+                              const WeatherControl(),
                               const Spacer(),
                               if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
                                 const IndoorControl(),

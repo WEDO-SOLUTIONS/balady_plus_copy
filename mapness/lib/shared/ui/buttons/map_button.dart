@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 
 class MapButton extends StatefulWidget {
   static const double defaultSize = 48;
+  final double height;
 
   MapButton({
     required this.child,
     this.onTap,
     this.onTapUp,
     this.onTapDown,
+    this.height = defaultSize,
     bool? disabled,
     BorderRadius? borderRadius,
     super.key,
@@ -28,7 +30,7 @@ class _MapButtonState extends State<MapButton> {
   @override
   Widget build(BuildContext context) => Container(
         constraints: const BoxConstraints(minWidth: MapButton.defaultSize),
-        height: MapButton.defaultSize,
+        height: widget.height,
         decoration: BoxDecoration(
           borderRadius: widget.borderRadius,
           boxShadow: [
