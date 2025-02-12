@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart' show Spacing;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -53,7 +54,7 @@ class WeatherControl extends ConsumerWidget {
             height: 16,
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 1),
+            padding: const EdgeInsets.only(left: Spacing.px),
             child: Text(
               temp,
               textDirection: TextDirection.ltr,
