@@ -208,11 +208,12 @@ packages:
   balady_uikit:
     dependency: "direct main"
     description:
-      name: balady_uikit
-      sha256: "0ea62faa99efa13e8652fb0fedd281f9bf6b6c0029698ab1cb89df8c68ff51d5"
-      url: "https://baladyapp-unpub.urbi.ae"
-    source: hosted
-    version: "3.2.3"
+      path: "."
+      ref: "bugfix/BSA-1722/poi-restyle"
+      resolved-ref: beebb3f22cd25c4cacce696bfcbe5ddadd61beff
+      url: "https://github.com/urbi-ae/balady_uikit.git"
+    source: git
+    version: "3.2.4"
   battery_plus:
     dependency: transitive
     description:

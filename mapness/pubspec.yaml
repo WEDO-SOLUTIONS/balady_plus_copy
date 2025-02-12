@@ -39,8 +39,9 @@ dependencies:
     path: ..
 
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.2.3
+    git: 
+      url: https://github.com/urbi-ae/balady_uikit.git
+      ref: bugfix/BSA-1722/poi-restyle
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/

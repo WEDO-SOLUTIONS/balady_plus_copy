@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
@@ -25,7 +27,7 @@ class FeedbackBannerCard extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$2x),
           child: SizedBox(
-            height: 84,
+            height: 96,
             child: DecoratedBox(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
@@ -39,11 +41,10 @@ class FeedbackBannerCard extends StatelessWidget {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: const EdgeInsets.only(
+                      padding: const EdgeInsetsDirectional.only(
                         top: Spacing.$3x,
                         bottom: Spacing.$4x,
-                        left: Spacing.$4x,
-                        right: Spacing.$4x,
+                        start: Spacing.$4x,
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,9 +63,13 @@ class FeedbackBannerCard extends StatelessWidget {
                   ),
                   Stack(
                     children: [
-                      Image.asset(
-                        'packages/mapness/assets/images/$imageAssetName',
-                        fit: BoxFit.cover,
+                      Transform(
+                        alignment: Alignment.center,
+                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                        child: Image.asset(
+                          'packages/mapness/assets/images/$imageAssetName',
+                          fit: BoxFit.cover,
+                        ),
                       ),
                       Positioned.directional(
                         textDirection: Directionality.of(context),

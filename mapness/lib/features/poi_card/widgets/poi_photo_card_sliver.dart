@@ -4,10 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/pages/feedback/quick_feedback_page.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/feedback_banner_card.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiPhotoCardSliver extends ConsumerWidget {
   const PoiPhotoCardSliver({required this.objectId, super.key});
@@ -114,8 +119,10 @@ class PoiPhotoCardSliver extends ConsumerWidget {
       );
     }
 
+    late final Widget sliverContent;
+
     if (photos.isLoading) {
-      return SliverToBoxAdapter(
+      sliverContent = SliverToBoxAdapter(
         child: Shimmer.fromColors(
           baseColor: Colors.grey[200]!,
           highlightColor: Colors.grey[100]!,
@@ -130,32 +137,53 @@ class PoiPhotoCardSliver extends ConsumerWidget {
           ),
         ),
       );
-    }
+    } else {
+      final photoItems = photos.requireValue.items;
+      final photosUrls = photoItems.map((e) => e.url).toList();
 
-    final photoItems = photos.requireValue.items;
-    final photosUrls = photoItems.map((e) => e.url).toList();
-
-    return SliverPadding(
-      padding: const EdgeInsets.only(bottom: 64),
-      sliver: SliverGrid(
-        delegate: SliverChildBuilderDelegate(
-          childCount: photoItems.length,
-          (context, index) => ClipRRect(
-            borderRadius: BorderRadius.circular(RadiusBorder.xs),
-            child: LoadingShimmerImage(
-              imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
-              fit: BoxFit.cover,
-              onImageTap: (name, {isAsset}) => context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
+      sliverContent = SliverPadding(
+        padding: const EdgeInsets.only(bottom: 64),
+        sliver: SliverGrid(
+          delegate: SliverChildBuilderDelegate(
+            childCount: photoItems.length,
+            (context, index) => ClipRRect(
+              borderRadius: BorderRadius.circular(RadiusBorder.xs),
+              child: LoadingShimmerImage(
+                imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
+                fit: BoxFit.cover,
+                onImageTap: (name, {isAsset}) =>
+                    context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),
+              ),
             ),
           ),
+          gridDelegate: SliverQuiltedGridDelegate(
+            crossAxisCount: 6,
+            mainAxisSpacing: 4,
+            crossAxisSpacing: 4,
+            pattern: _calcPattern(photoItems.length),
+          ),
         ),
-        gridDelegate: SliverQuiltedGridDelegate(
-          crossAxisCount: 6,
-          mainAxisSpacing: 4,
-          crossAxisSpacing: 4,
-          pattern: _calcPattern(photoItems.length),
-        ),
-      ),
+      );
+    }
+    return MultiSliver(
+      children: [
+        if (photos.hasValue && photos.requireValue.items.isEmpty)
+          SliverToBoxAdapter(
+            child: FeedbackBannerCard(
+              imageAssetName: 'add_photo.png',
+              title: context.l10n.addPhoto,
+              subtitle: context.l10n.addPhotosDescription,
+              gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
+              onTap: () => context.router.push(
+                QuickFeedbackRoute(
+                  type: QuickFeedbackType.addPhoto,
+                  params: FeedbackObjectIdParams(objectId),
+                ),
+              ),
+            ),
+          ),
+        sliverContent,
+      ],
     );
   }
 }

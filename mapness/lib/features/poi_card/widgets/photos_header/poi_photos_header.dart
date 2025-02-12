@@ -18,9 +18,11 @@ class PoiPhotosHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final photos = ref.watch(poiPhotoProvider(objectId));
     final isPhotosNotEmpty = !photos.hasValue || photos.requireValue.items.isEmpty;
+    final isPhotosLoading = photos.isLoading;
 
     return HeaderComponent(
       isPhotosNotEmpty: isPhotosNotEmpty,
+      isPhotosLoading: isPhotosLoading,
       objectId: objectId,
     );
   }

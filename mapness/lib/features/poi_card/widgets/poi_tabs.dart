@@ -43,7 +43,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
 
     final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
-    final inBuildingCount = widget.poiCardState?.organizations?.total ?? 0;
+    final organizationsCount = widget.poiCardState?.organizations?.total ?? 0;
 
     return TabBar(
       padding: EdgeInsets.zero,
@@ -70,36 +70,30 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
         ),
         Tab(
           iconMargin: EdgeInsets.zero,
-          child: photoCount > 0
-              ? _PoiTabItem(
-                  title: context.l10n.photos,
-                  count: photoCount,
-                  onTap: () {
-                    if (photoCount == 0) {
-                      widget.tabController.index = widget.tabController.previousIndex;
-                      return;
-                    }
-                    Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
-                        group: MetricsConstants.poiTag,
-                        action: MetricAction.tap.toString(),
-                        props: {
-                          'tab': context.l10n.photos,
-                        });
+          child: _PoiTabItem(
+            title: context.l10n.photos,
+            count: photoCount,
+            onTap: () {
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'tab': context.l10n.photos,
+                  });
 
-                    widget.tabController.animateTo(1);
-                  },
-                  isActive: widget.tabController.index == 1,
-                )
-              : const SizedBox.shrink(),
+              widget.tabController.animateTo(1);
+            },
+            isActive: widget.tabController.index == 1,
+          ),
         ),
         Tab(
           iconMargin: EdgeInsets.zero,
-          child: inBuildingCount > 0
+          child: organizationsCount > 0
               ? _PoiTabItem(
-                  title: context.l10n.inTheBuilding,
-                  count: inBuildingCount,
+                  title: context.l10n.organizations,
+                  count: organizationsCount,
                   onTap: () {
-                    if (inBuildingCount == 0) {
+                    if (organizationsCount == 0) {
                       widget.tabController.index = widget.tabController.previousIndex;
                       return;
                     }
@@ -166,7 +160,7 @@ class _PoiTabItem extends StatelessWidget {
                             : context.color.textAndIconsBasePrimary.withOpacity(0.5),
                       ),
                     ),
-                    if (count != null)
+                    if (count != null && count != 0)
                       Padding(
                         padding: const EdgeInsetsDirectional.only(
                           start: 6,

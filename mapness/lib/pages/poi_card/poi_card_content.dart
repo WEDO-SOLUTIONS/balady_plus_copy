@@ -31,12 +31,13 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     behavior: MultiSnappingBehavior(
       models: [
         AspectRatioSnappingModel({0.0, 1.0}),
+        OffsetSnappingModel({photosMaxHeight + Spacing.$2x}),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
             b: const SnapComponent.size(component: Components.footer),
             merge: (a, b) => a + b,
-          )
+          ),
         ])
       ],
     ),
@@ -72,7 +73,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               _tabType.value = PoiTabsType.photos;
               _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
             case 2:
-              _tabType.value = PoiTabsType.inBuilding;
+              _tabType.value = PoiTabsType.organizations;
               _bottomSheetController.setState(PoiCardBottomSheetState.expanded);
           }
         }
@@ -113,13 +114,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     }
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
+
+    final photos = ref.watch(poiPhotoProvider(objectId));
+    final isPhotosNotEmpty = (!photos.hasValue || photos.requireValue.items.isEmpty) && !photos.isLoading;
+
     return Directionality(
       textDirection: Directionality.of(context),
       child: SafeArea(
         child: StatefulBottomSheet(
           scrollController: _bottomSheetController,
-          safeAreaColor: context.colorsV2.backgroundScreen,
-          backgroundColor: context.colorsV2.backgroundSurface4,
+          offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
+          safeAreaColor: context.colorsV2.backgroundSurface2,
+          draggerColor: context.colorsV2.backgroundSurface2,
+          backgroundColor: context.colorsV2.backgroundSurface2,
           backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
           outside: PoiCardMapControlsWrapper(
               bottomSheetController: _bottomSheetController,
@@ -176,16 +183,23 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
               _openRoutingRoutes(
                 context,
-                data,
-                RouteSearchPoint(
-                  coordinates: data.markerPosition!.toGeoPointMessage(),
-                  dgisObjectId: data.id!,
+                data.id!.objectId,
+                data.title,
+                RouteParamsPoint(
+                  latitude: data.markerPosition!.latitude,
+                  longitude: data.markerPosition!.longitude,
+                  objectId: data.id?.objectId,
+                  entranceId: data.id?.entranceId,
+                  levelId: data.levelId,
                 ),
               );
             },
             onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
           ),
           header: PoiHeader(
+            title: data.address?.buildingName ?? data.title,
+            subTitle: _getParkingSubtitle(data.parkingInfo, context.l10n) ?? data.subtitle,
+            parkingInfo: data.parkingInfo,
             poiCardState: poiCardState,
             tabController: _tabController,
             data: data,
@@ -203,27 +217,51 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           ),
           sliverBeforeContent: ValueListenableBuilder(
             valueListenable: _tabType,
-            builder: (context, tabType, _) => SliverAnimatedSwitcher(
-              duration: Durations.medium2,
-              child: switch (tabType) {
-                PoiTabsType.info => SliverToBoxAdapter(
-                    child: InfoWidget(
-                      objectInfo: poiCardState?.gisObjectIdMessage,
-                      qrTradeLicense: poiCardState?.qrTradeLicense,
-                      onEntrancesTap: () => poiActions.toggleEntrances(
-                        data,
-                        () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                        widget.closestPoint,
+            builder: (context, tabType, _) => DecoratedSliver(
+              decoration: BoxDecoration(
+                color: tabType == PoiTabsType.photos
+                    ? context.colorsV2.backgroundSurface1
+                    : context.colorsV2.backgroundSurface4,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
+              ),
+              sliver: SliverAnimatedSwitcher(
+                duration: Durations.medium2,
+                child: switch (tabType) {
+                  PoiTabsType.info => SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          FeedbackBannerCard(
+                            imageAssetName: 'city_expert.png',
+                            title: context.l10n.cityExpert,
+                            subtitle: context.l10n.cityExpertDescription,
+                            gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+                            onTap: () {
+                              context.router.push(QuickFeedbackRoute(
+                                type: QuickFeedbackType.editCompany,
+                                params: FeedbackObjectIdParams(objectId),
+                              ));
+                            },
+                          ),
+                          InfoWidget(
+                            objectInfo: poiCardState?.gisObjectIdMessage,
+                            qrTradeLicense: poiCardState?.qrTradeLicense,
+                            onEntrancesTap: () => poiActions.toggleEntrances(
+                              data,
+                              () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                              widget.closestPoint,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
-                PoiTabsType.inBuilding => PoiInBuildingSliver(
-                    state: poiCardState,
-                    objectId: data.id!,
-                    bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
-                  ),
-              },
+                  PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
+                  PoiTabsType.organizations => PoiOrganizationsSliver(
+                      state: poiCardState,
+                      objectId: data.id!,
+                      bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                    ),
+                },
+              ),
             ),
           ),
         ),
@@ -231,97 +269,18 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     );
   }
 
-  void _openRoutingRoutes(
-    BuildContext context,
-    DirectoryObjectMessage objectMessage,
-    RouteSearchPoint finishPoint,
-  ) {
-    Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
-        group: MetricsConstants.poiTag,
-        action: MetricAction.tap.toString(),
-        props: {
-          'object_id': objectMessage.id?.objectId,
-          'finish_point': '${finishPoint.coordinates.latitude},${finishPoint.coordinates.longitude}'
-        });
-
-    context.router.push(
-      RoutingRoutesRoute(
-        points: [
-          RouteParamsPointWithLabel(
-            value: null,
-            label: context.l10n.myLocation,
-          ),
-          RouteParamsPointWithLabel(
-            value: RouteParamsPoint(
-              latitude: objectMessage.markerPosition!.latitude,
-              longitude: objectMessage.markerPosition!.longitude,
-              objectId: objectMessage.id?.objectId,
-              entranceId: objectMessage.id?.entranceId,
-              levelId: objectMessage.levelId,
-            ),
-            label: objectMessage.title,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Future<void> _onFavoriteTap({
-    required BuildContext context,
-    required WidgetRef ref,
-    required DirectoryObjectMessage data,
-    FavouriteItem? favouriteItem,
-  }) async {
-    await ref.read(authMethodsProvider.notifier).authOrOpen(
-      context,
-      callback: () {
-        Metrics.logEventAdvanced(
-          MetricsConstants.poiKeys.addToFavorite,
-          group: MetricsConstants.poiTag,
-          action: MetricAction.tap.toString(),
-          props: {
-            'objectId': data.id?.objectId,
-          },
-        );
-
-        final favState = ref.read(favouriteCacheProvider).valueOrNull;
-        final favRepo = ref.read(favouriteCacheProvider.notifier);
-
-        /// if already in favourites - remove
-        if (favouriteItem != null) {
-          favRepo.deleteItem(favouriteItem);
-          return;
-        }
-
-        FavouriteItem? favItem = favouriteItem;
-        if (favItem == null && data.markerPosition != null && data.id != null) {
-          favItem = FavouriteItem(
-            coordinates: Coordinates(
-              latitude: data.markerPosition!.latitude,
-              longitude: data.markerPosition!.longitude,
-            ),
-            id: 'overriden',
-            subtitle: data.subtitle,
-            title: data.title,
-            entity: FavouriteItemEntity(
-              sourceType: EntitySourceType.urbi,
-              id: data.id!.objectId.toString(),
-            ),
-          );
-        }
-
-        if (favItem == null) {
-          return;
-        }
-
-        /// do not show dialog if home and work are set
-        if (favState?.home != null && favState?.work != null) {
-          favRepo.addItem(data.mapToFavourite());
-        } else {
-          /// show dialog to choose home, work or regular
-          context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
-        }
-      },
-    );
+  /// This is temporary solution. We need to show text for parking info
+  /// If parking is not presented for this POI we return null
+  /// Should work for all poi because only parking lots have parking info
+  String? _getParkingSubtitle(ParkingInfoMessage? parkingInfo, AppLocalizations l10n) {
+    if (parkingInfo == null) {
+      return null;
+    }
+    final total = parkingInfo.capacity?.total;
+    final freeText = parkingInfo.isPaid ? l10n.paid : l10n.free;
+    if (total == null) {
+      return freeText;
+    }
+    return '$total ${l10n.lots} • $freeText';
   }
 }
