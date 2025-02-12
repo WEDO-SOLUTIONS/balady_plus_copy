@@ -78,6 +78,7 @@ class MapTapHandler extends _$MapTapHandler {
       RoutingMapSelectRoute.name,
       SearchRoute.name,
       RoutingRoutesRoute.name,
+      PoiCardWidgetRoute.name,
     ];
 
     if (objectIgnoreRoute.any(appRouter.isRouteActive)) {
