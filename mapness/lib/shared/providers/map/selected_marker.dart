@@ -19,6 +19,22 @@ class SelectedMarker extends _$SelectedMarker {
   Marker? build() => null;
 
   Future<void> showMarker(Marker marker) async {
+    final mapObjectManager = ref.read(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
+
+    if (_hiddenMarker != null) {
+      final options = _hiddenMarker!.options.copyWith(
+        isVisible: true,
+      );
+
+      unawaited(mapObjectManager.setMarkerOptions(_hiddenMarker!.id, options));
+      _hiddenMarker = null;
+    }
+
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
         named: searchSettings.name,
@@ -43,13 +59,6 @@ class SelectedMarker extends _$SelectedMarker {
 
       unawaited(searchObjectManager.setMarkerOptions(currentSearchMarker.id, options));
     }
-
-    final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
 
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.addMarker(marker);
