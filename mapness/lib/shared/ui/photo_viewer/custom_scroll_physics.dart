@@ -48,7 +48,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   /// - [position]: The current scroll metrics.
   /// - Returns: The current page as a double.
   double _getPage(ScrollMetrics position) {
-    if (position is _Position) {
+    if (position is Position) {
       return position.page!;
     }
     return position.pixels / position.viewportDimension;
@@ -60,7 +60,7 @@ class CustomScrollPhysics extends ScrollPhysics {
   /// - [page]: The target page number.
   /// - Returns: The pixel offset corresponding to the page.
   double _getPixels(ScrollMetrics position, double page) {
-    if (position is _Position) {
+    if (position is Position) {
       return position.getPixelsFromPage(page);
     }
     return page * position.viewportDimension;
@@ -112,7 +112,7 @@ class CustomScrollPhysics extends ScrollPhysics {
 ///
 /// This class handles the logic for converting between page numbers and pixel
 /// offsets, and ensures that pages snap correctly to their positions.
-class _Position extends ScrollPositionWithSingleContext implements PageMetrics {
+class Position extends ScrollPositionWithSingleContext implements PageMetrics {
   /// Creates a [_PagePosition] for use in a [PageView].
   ///
   /// - [physics]: The scroll physics to use.
@@ -121,7 +121,7 @@ class _Position extends ScrollPositionWithSingleContext implements PageMetrics {
   /// - [keepPage]: Whether to save and restore the current page.
   /// - [viewportFraction]: The fraction of the viewport each page occupies.
   /// - [oldPosition]: The previous scroll position, if any.
-  _Position({
+  Position({
     required super.physics,
     required super.context,
     this.initialPage = 0,
@@ -282,7 +282,7 @@ class _Position extends ScrollPositionWithSingleContext implements PageMetrics {
   void absorb(ScrollPosition other) {
     super.absorb(other);
     assert(_cachedPage == null, 'must be null');
-    if (other is! _Position) {
+    if (other is! Position) {
       return;
     }
 
