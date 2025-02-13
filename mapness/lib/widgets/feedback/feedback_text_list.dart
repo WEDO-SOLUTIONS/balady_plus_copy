@@ -112,7 +112,15 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
         if (values == null) {
           return <String>[];
         }
-        return values.where((v) => v.trim().isNotEmpty).toList();
+        return values.where((v) => v.trim().isNotEmpty).map(
+          (v) {
+            if (widget.field.type == FeedbackTextType.phone) {
+              return PhoneNumberFormatter.formatPure(v);
+            } else {
+              return v.trim();
+            }
+          },
+        ).toList();
       },
       validator: (values) {
         if (_isRequired && (values == null || values.isEmpty)) {
