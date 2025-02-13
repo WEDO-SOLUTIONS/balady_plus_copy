@@ -13,7 +13,7 @@ extension SizeExtention on num {
     int currentMetric = 0;
 
     while (size >= currentDivider && currentMetric < metrics.length - 1) {
-      previousDivider += currentDivider;
+      previousDivider = currentDivider;
       currentDivider *= divider;
       currentMetric++;
     }

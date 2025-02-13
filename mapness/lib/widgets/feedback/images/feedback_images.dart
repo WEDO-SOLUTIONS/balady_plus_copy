@@ -129,25 +129,26 @@ class FeedbackImages extends StatelessWidget {
       return;
     }
 
+    final xFiles = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
     final images = await _pickedImage();
     if (images.isEmpty) {
       return;
     }
 
-    for (final image in images) {
-      final pickError = await isImageSupported(
-        context,
-        image: image,
-      );
+    final pickError = await isImageSupported(
+      context,
+      images: images + xFiles,
+    );
 
-      if (pickError != null) {
-        unawaited(_showImageActionErrorSheet(
+    if (pickError != null) {
+      unawaited(
+        _showImageActionErrorSheet(
           context,
           error: pickError,
           onRetry: () => _handlePickImage(context, fieldState),
-        ));
-        return;
-      }
+        ),
+      );
+      return;
     }
 
     final value = fieldState.value ?? const IList.empty();
@@ -163,21 +164,27 @@ class FeedbackImages extends StatelessWidget {
 
   Future<FeedbackImagePickError?> isImageSupported(
     BuildContext context, {
-    required XFile image,
+    required List<XFile> images,
   }) async {
-    final imageSize = await image.length();
+    final totalSize = await Future.wait(images.map((image) async => image.length()))
+        .then((sizes) => sizes.reduce((value, element) => value + element));
 
     FeedbackImagePickError? error;
 
-    if (imageSize > field.maxSize) {
+    if (totalSize > field.maxSize) {
       error = FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }
-    final fileType = image.path.split('.').last.toLowerCase();
-    final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
 
-    if (!imageFormatAccepted) {
-      error = FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
+    for (final image in images) {
+      final fileType = image.path.split('.').last.toLowerCase();
+      final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
+
+      if (!imageFormatAccepted) {
+        error = FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
+        break;
+      }
     }
+
     return error;
   }
 
