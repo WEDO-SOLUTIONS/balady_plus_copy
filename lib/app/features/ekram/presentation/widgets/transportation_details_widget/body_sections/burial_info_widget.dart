@@ -69,12 +69,12 @@ class BurialInfoWidget extends StatelessWidget {
             details: deathInfo?.gregorianDeathDate ?? "",
           ),
 
-          EkramHeaderAndDescWidget_With_Background(
-            title: ('raflyAge').tr(),
-            details: deathInfo?.age?.year != null
-                ? "${deathInfo?.age?.year} ${"ageYear".tr()}"
-                : "",
-          ),
+          // EkramHeaderAndDescWidget_With_Background(
+          //   title: ('raflyAge').tr(),
+          //   details: deathInfo?.age?.year != null
+          //       ? "${deathInfo?.age?.year} ${"ageYear".tr()}"
+          //       : "",
+          // ),
           EkramHeaderAndDescWidget_With_Background(
             title: ('ekram_death_country').tr(),
             details: deathInfo?.countryName ?? "",

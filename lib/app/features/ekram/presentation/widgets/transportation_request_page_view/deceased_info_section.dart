@@ -350,6 +350,9 @@ class DeceasedInfoSection extends StatelessWidget {
                                       unSelectedBackgroundColor:
                                           Colors.transparent,
                                       textSize: 16,
+                                      isDisabled: state.editInfoSection != null
+                                          ? !state.editInfoSection!
+                                          : false,
                                     ),
                                   ),
                                   const SizedBox(
@@ -376,6 +379,9 @@ class DeceasedInfoSection extends StatelessWidget {
                                       unSelectedBackgroundColor:
                                           Colors.transparent,
                                       textSize: 16,
+                                      isDisabled: state.editInfoSection != null
+                                          ? !state.editInfoSection!
+                                          : false,
                                     ),
                                   ),
                                 ],

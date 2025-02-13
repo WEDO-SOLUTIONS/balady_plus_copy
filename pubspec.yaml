@@ -200,7 +200,7 @@ dependencies:
   provider: ^6.0.5
   flutter_compass: ^0.8.0
   sentry_flutter: 8.9.0
-
+  app_links: ^6.3.3
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
   mixpanel_flutter: ^2.2.0
