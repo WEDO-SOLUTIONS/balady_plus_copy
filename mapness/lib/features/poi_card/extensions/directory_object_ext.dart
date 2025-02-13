@@ -129,7 +129,7 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
       address: makeAddress(),
       distance: briefDistance,
       entrances: entrances_,
-      floor: floors != null ? PoiContentFullAddressFloor(title: title, floor: floors, onTap: () {}) : null,
+      floor: floors != null ? PoiContentFullAddressFloor(title: title, floor: floors) : null,
     );
   }
 

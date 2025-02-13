@@ -185,10 +185,9 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    git: 
-      url: https://github.com/urbi-ae/balady_uikit.git
-      ref: bugfix/BSA-1722/poi-restyle
-      
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 3.2.4
+
   mapness:
     path: mapness
 
