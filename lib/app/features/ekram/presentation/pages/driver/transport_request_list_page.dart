@@ -108,22 +108,16 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
           return Scaffold(
             appBar: DefaultAppBarWidget(
               title: 'requests_transporting_deceased'.tr(),
-              bottom: AppBarSeachBar(
-                onChanged: (value) {
-                  _debouncer.run(() {
-                    context.read<TransportRequestsBloc>().add(
-                        GetDeceasedTransportRequestsEvent(
-                            isDriver: true, text: value));
-                  });
-                },
-              ),
-              actions: [
-                FilterIcon(
-                  onTap: () async {
-                    context.read<TransportRequestsBloc>().add(ShowFilterEvent());
-                  },
-                ),
-              ],
+              // bottom: AppBarSeachBar(
+              //   onChanged: (value) {
+              //     _debouncer.run(() {
+              //       context.read<TransportRequestsBloc>().add(
+              //           GetDeceasedTransportRequestsEvent(
+              //               isDriver: true, text: value));
+              //     });
+              //   },
+              // ),
+
             ),
             body: Stack(
               children: [
@@ -189,7 +183,7 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
                 if (state.status == BlocStatus.success &&
                     (state.deceasedRequestItems?.isEmpty ?? false))
                   EmptyListWidget(
-                    title: trans("lbl_no_orders"),
+                    title: trans("noTransportRequest"),
                   ),
                 if (state.status == BlocStatus.loading)
                   CustomCircularLoadingWidget(),

@@ -4481,5 +4481,6 @@
   "BurialInDeathCity": "Burial in death city",
   "enter_ekram_fourth_name":"Please enter fourth name",
   "enternationilaty": "Please choose nationality",
-  "enter_gender":"Please choose gender"
+  "enter_gender":"Please choose gender",
+  "noTransportRequest": "There are no death transfer requests assigned to you"
 }

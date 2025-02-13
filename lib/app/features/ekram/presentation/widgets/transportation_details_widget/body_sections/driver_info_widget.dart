@@ -53,6 +53,7 @@ class DriversInfoWidget extends StatelessWidget {
                         itemCount:
                         state.data?.length ?? 0,
                         shrinkWrap: true,
+                        reverse: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (ctx, index) {
 
