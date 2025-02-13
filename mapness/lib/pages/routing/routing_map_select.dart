@@ -11,13 +11,13 @@ import 'package:mapness/_features/landing/widgets/follow_control.dart';
 import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/landing/ui/traffic_control.dart';
 
@@ -71,12 +71,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
                       padding: EdgeInsets.only(
                         bottom: additionPadding,
                       ),
-                      child: SvgPicture.asset(
-                        'assets/icons/svg/ic_pin.svg',
-                        height: 48,
-                        width: 38,
-                        package: PackageConfig.packageName,
-                      ),
+                      child: SvgPicture.asset(Markers.defaultPinNew),
                     ),
                   ),
                 ],
