@@ -143,7 +143,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                               //////////////////////////////////////////////////////
                               //////////////////////////////////////////////////////
                               //////////////////////////////////////////////////////
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               MostUsedService(
                                 mostUsedService:
                                     state.homeServices.mostUsedService,
@@ -154,12 +154,12 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                               //////////////////////////////////////////////////////
                               //////////////////////////////////////////////////////
                               //////////////////////////////////////////////////////
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               FeatureServicesList(
                                 mostUsedServices:
                                     state.homeServices.mostUsedServices,
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               Text(
                                 "services_categories".tr(),
                                 style: Theme.of(context)
@@ -169,7 +169,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                                       fontFamily: AppConfig.appFontType,
                                     ),
                               ),
-                              const SizedBox(height: 12),
+                              const SizedBox(height: 10),
                               GridView.builder(
                                 physics: const NeverScrollableScrollPhysics(),
                                 shrinkWrap: true,
@@ -178,7 +178,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                                   crossAxisCount: 2,
                                   mainAxisSpacing: 10,
                                   crossAxisSpacing: 10,
-                                  childAspectRatio: 1.2,
+                                  childAspectRatio: 1,
                                 ),
                                 itemCount: state
                                     .homeServices.servicesCategories.length,
