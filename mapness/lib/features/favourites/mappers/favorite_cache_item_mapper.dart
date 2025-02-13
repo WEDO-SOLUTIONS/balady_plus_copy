@@ -1,8 +1,7 @@
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/entity/models/favorite_cache_item.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
-
-import '../domain/favourites_state.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/entities/favourites/favourites_state.dart';
+import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 
 extension FavoriteCacheItemMapper on FavouriteItem {
   FavoriteCacheItem toHive() => FavoriteCacheItem(

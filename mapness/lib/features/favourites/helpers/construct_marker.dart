@@ -1,8 +1,8 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 
 Marker constructMarker(FavouriteItem item, MarkerIconMessage icon, AppRouter router) {
   final position = GeoPointWithElevationMessage(

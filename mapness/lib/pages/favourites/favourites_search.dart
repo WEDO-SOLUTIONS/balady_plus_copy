@@ -6,14 +6,15 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/extensions/extensions.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/favourites/widgets/screen/search_screen.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
+import 'package:mapness/widgets/favourites/screen/search_screen.dart';
 
 @RoutePage()
 class FavouritesSearchPage extends StatelessWidget {
@@ -57,7 +58,11 @@ class FavouritesSearch extends ConsumerWidget {
         .toList();
 
     return SearchScreen(
-      hintText: markerType.getHintText(context),
+      hintText: switch (markerType) {
+        FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => '',
+        FavouriteItemMarkerType.home => context.l10n.home_address,
+        FavouriteItemMarkerType.work => context.l10n.work_address,
+      },
       onHistoryItemTap: (item) async {
         final dgisController = await ref.read(dgisControllerProvider.future);
 
