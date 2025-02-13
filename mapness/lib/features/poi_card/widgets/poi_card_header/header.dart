@@ -9,23 +9,28 @@ import 'package:mapness/features/poi_card/widgets/poi_card_header/header_info_co
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/tab.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/title.dart';
-import 'package:mapness/l10n/generated/app_localizations.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 
 const poiHeaderHeight = 210.0;
 
 class PoiHeader extends ConsumerWidget {
+  final String title;
+  final String subTitle;
   final PoiCardState? poiCardState;
-  final TabController tabController;
-  final DirectoryObjectMessage data;
+  final TabController? tabController;
+  final ParkingInfoMessage? parkingInfo;
+  final DirectoryObjectMessage? data;
+
   final Function()? onTapClose;
 
   const PoiHeader({
-    required this.data,
+    required this.title,
+    required this.subTitle,
     required this.onTapClose,
-    required this.tabController,
+    this.tabController,
+    this.parkingInfo,
+    this.data,
     super.key,
     this.poiCardState,
   });
@@ -33,24 +38,23 @@ class PoiHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final direction = ref.watch(uiDirectionProvider);
-
-    final address = data.address;
-
-    String subTitle = _getParkingSubtitle(data, context.l10n) ?? data.subtitle;
+    late final String _subTitle;
 
     // TODO(Ayat) API, returns English text for Arabic. Is temporary solution
     if (prefixMapping.containsKey(subTitle.toLowerCase())) {
-      subTitle = switch (direction) {
+      _subTitle = switch (direction) {
         TextDirection.ltr => subTitle,
         TextDirection.rtl => prefixMapping[subTitle.toLowerCase()]!,
       };
+    } else {
+      _subTitle = subTitle;
     }
 
-    final subtitleIcon = _getParkingIcon(data);
-    final title = address?.buildingName ?? data.title;
-
+    final subtitleIcon = _getParkingIcon(parkingInfo);
+    final _tabController = tabController;
+    final _data = data;
     return ColoredBox(
-      color: context.colorsV2.backgroundScreen,
+      color: context.colorsV2.backgroundSurface2,
       child: Padding(
         padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
         child: Column(
@@ -62,43 +66,28 @@ class PoiHeader extends ConsumerWidget {
               onTapClose: onTapClose,
               subTitle: CardHeaderWidget(
                 child: SubtitleComponent(
-                  subtitle: subTitle,
+                  subtitle: _subTitle,
                   subtitleIcon: subtitleIcon,
                 ),
               ),
             ),
-            HeaderInfoComponent(
-              data: data,
-            ),
-            TabComponent(
-              tabController: tabController,
-              objectId: data.id?.objectId ?? 0,
-              poiCardState: poiCardState,
-            ),
+            if (_data != null)
+              HeaderInfoComponent(
+                data: _data,
+              ),
+            if (_tabController != null)
+              TabComponent(
+                tabController: _tabController,
+                objectId: _data?.id?.objectId ?? 0,
+                poiCardState: poiCardState,
+              ),
           ],
         ),
       ),
     );
   }
 
-  /// This is temporary solution. We need to show text for parking info
-  /// If parking is not presented for this POI we return null
-  /// Should work for all poi because only parking lots have parking info
-  String? _getParkingSubtitle(DirectoryObjectMessage data, AppLocalizations l10n) {
-    final parkingInfo = data.parkingInfo;
-    if (parkingInfo == null) {
-      return null;
-    }
-    final total = parkingInfo.capacity?.total;
-    final freeText = parkingInfo.isPaid ? l10n.paid : l10n.free;
-    if (total == null) {
-      return freeText;
-    }
-    return '$total ${l10n.lots} • $freeText';
-  }
-
-  IconData? _getParkingIcon(DirectoryObjectMessage data) {
-    final parkingInfo = data.parkingInfo;
+  IconData? _getParkingIcon(ParkingInfoMessage? parkingInfo) {
     if (parkingInfo == null) {
       return null;
     }

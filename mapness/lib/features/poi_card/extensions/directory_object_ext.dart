@@ -122,12 +122,14 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
           )
         : null;
 
-    // Floor currently is not used
+    final floors = buildingLevels?.levels.length;
+
     return PoiContentFullAddress(
       name: address?.buildingName ?? title,
       address: makeAddress(),
       distance: briefDistance,
       entrances: entrances_,
+      floor: floors != null ? PoiContentFullAddressFloor(title: title, floor: floors) : null,
     );
   }
 
