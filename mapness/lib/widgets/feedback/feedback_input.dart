@@ -146,6 +146,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
             inputState: inputState,
             controller: _controller,
             config: BaladyInputConfig(
+              isDisposed: false,
               textAlign: textAlign,
               stateKey: _globalKey,
               focusNode: _focusNode,

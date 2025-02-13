@@ -18,8 +18,6 @@ import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
 import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
-final _formKey = GlobalKey<FormBuilderState>();
-
 @RoutePage()
 class FeedbackPage extends ConsumerStatefulWidget {
   final int? objectId;
@@ -36,6 +34,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
 }
 
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
+  final _formKey = GlobalKey<FormBuilderState>();
   final _isFormValidNotifier = ValueNotifier<bool>(false);
 
   @override
