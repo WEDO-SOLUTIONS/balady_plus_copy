@@ -4458,5 +4458,8 @@
 
 
   "feature_services":"Feature Services",
-  "services_categories":"Services Categories"
+  "services_categories":"Services Categories",
+
+  "service_lase_teen": "Services"
+
 }
