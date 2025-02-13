@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
 import 'package:mapness/features/search/ui/add_place_item.dart';
+import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 
 class SearchResults extends ConsumerStatefulWidget {
   const SearchResults({
@@ -59,6 +60,9 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   @override
   Widget build(BuildContext context) {
     final results = ref.watch(searchPaginationProvider(widget.results));
+    if (results.isEmpty) {
+      return const MapSearchEmpty();
+    }
     final hasAddPlaceAtEnd = results.isNotEmpty && results.length < 10;
     final totalCount = results.length + (results.length ~/ 10) + (hasAddPlaceAtEnd ? 1 : 0);
 
