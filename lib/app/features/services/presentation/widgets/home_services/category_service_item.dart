@@ -8,7 +8,8 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CategoryServiceItem extends StatelessWidget {
   final ServicesCategory servicesCategory;
-  const CategoryServiceItem({super.key, required  this.servicesCategory});
+
+  const CategoryServiceItem({super.key, required this.servicesCategory});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +25,7 @@ class CategoryServiceItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(13),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 14),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -38,15 +39,15 @@ class CategoryServiceItem extends StatelessWidget {
                 servicesCategory.title,
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontWeight: FontWeight.bold,
-                  fontFamily: AppConfig.appFontType,
-                ),
+                      fontFamily: AppConfig.appFontType,
+                    ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 2),
               Text(
-                "${servicesCategory.listOfServices.length} ${"servicesDirectoryServicesWord".tr()}",
+                "${servicesCategory.listOfServices.length} ${(servicesCategory.listOfServices.length > 10 ? "service_lase_teen" : "servicesDirectoryServicesWord").tr()}",
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                  fontFamily: AppConfig.appFontType,
-                ),
+                      fontFamily: AppConfig.appFontType,
+                    ),
               ),
             ],
           ),
