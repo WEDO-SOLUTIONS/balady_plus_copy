@@ -166,8 +166,8 @@ class FeedbackImages extends StatelessWidget {
     BuildContext context, {
     required List<XFile> images,
   }) async {
-    final totalSize = await Future.wait(images.map((image) async => image.length()))
-        .then((sizes) => sizes.reduce((value, element) => value + element));
+    final sizes = await Future.wait(images.map((e) => e.length()));
+    final totalSize = sizes.reduce((value, element) => value + element);
 
     FeedbackImagePickError? error;
 
