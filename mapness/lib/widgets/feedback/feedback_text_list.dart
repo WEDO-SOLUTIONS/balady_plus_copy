@@ -21,41 +21,52 @@ class FeedbackTextListField extends StatefulWidget {
   State<FeedbackTextListField> createState() => _FeedbackTextListFieldState();
 }
 
-class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
-  late final _inputs = List<String>.of(widget.field.oldValues);
-  late final _inputKeys = List<UniqueKey>.generate(_inputs.length, (i) => UniqueKey());
+class _InputItem {
+  final TextEditingController controller;
+  final Key key;
+  _InputItem({required this.controller, required this.key});
+}
 
-  late final _isRequired = widget.field.isRequired;
+class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
+  late List<_InputItem> _inputItems;
+  late final bool _isRequired = widget.field.isRequired;
 
   @override
   void initState() {
     super.initState();
-    if (_inputs.isEmpty) {
+
+    _inputItems = widget.field.oldValues
+        .map((value) => _InputItem(
+              controller: TextEditingController(text: value),
+              key: UniqueKey(),
+            ))
+        .toList();
+
+    if (_inputItems.isEmpty) {
       _addInput();
     }
   }
 
+  @override
+  void dispose() {
+    for (final item in _inputItems) {
+      item.controller.dispose();
+    }
+    super.dispose();
+  }
+
   void _addInput() {
     setState(() {
-      _inputs.add('');
-      _inputKeys.add(UniqueKey());
+      _inputItems.add(
+        _InputItem(controller: TextEditingController(), key: UniqueKey()),
+      );
     });
   }
 
-  void _removeInput(int i) {
+  void _removeInput(int index) {
     setState(() {
-      _inputs.removeAt(i);
-      _inputKeys.removeAt(i);
-    });
-  }
-
-  void _updateInput(int i, String text) {
-    var formattedValue = text;
-    if (widget.field.type == FeedbackTextType.phone) {
-      formattedValue = PhoneNumberFormatter.formatPure(text);
-    }
-    setState(() {
-      _inputs[i] = formattedValue;
+      _inputItems[index].controller.dispose();
+      _inputItems.removeAt(index);
     });
   }
 
@@ -73,8 +84,12 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
       _ when _isRequired => FormBuilderValidators.required(),
       _ => (_) => null,
     };
+
     return validator(value) == null;
   }
+
+  /// Собираем текущие значения из контроллеров
+  List<String> get _currentValues => _inputItems.map((item) => item.controller.text).toList();
 
   @override
   Widget build(BuildContext context) {
@@ -91,85 +106,77 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
     };
 
     return FormBuilderField<List<String>>(
-        name: widget.field.id,
-        valueTransformer: (values) {
-          if (values == null) {
-            return List<String>.empty();
+      name: widget.field.id,
+      initialValue: _currentValues,
+      valueTransformer: (values) {
+        if (values == null) {
+          return <String>[];
+        }
+        return values.where((v) => v.trim().isNotEmpty).toList();
+      },
+      validator: (values) {
+        if (_isRequired && (values == null || values.isEmpty)) {
+          return FormBuilderValidators.required()(values);
+        }
+        for (final value in values ?? []) {
+          if (!_isValid(value)) {
+            return 'Wrong field';
           }
-
-          return values
-              .where(
-                (value) => value.trim().isNotEmpty,
-              )
-              .toList();
-        },
-        validator: (values) {
-          if (_isRequired && values == null) {
-            return FormBuilderValidators.required()(values);
-          }
-
-          for (final value in values ?? []) {
-            if (!_isValid(value)) {
-              return 'Wrong field';
-            }
-          }
-
-          return null;
-        },
-        builder: (fieldState) => Column(
+        }
+        return null;
+      },
+      builder: (fieldState) => Column(
+        children: [
+          for (int i = 0; i < _inputItems.length; i++) ...[
+            Row(
+              key: _inputItems[i].key,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (var i = 0; i < _inputs.length; i++) ...[
-                  Row(
-                    key: _inputKeys[i],
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: FeedbackTextInput(
-                          labelText: i == 0 ? widget.field.label : null,
-                          hintText: widget.field.hint,
-                          onValidate: (v) => _isValid(v) ? null : context.l10n.feedbackTextFieldWrongFormat,
-                          allowedInputPattern: allowedInputPattern,
-                          isRequired: widget.field.isRequired,
-                          maxLength: widget.field.maxLength,
-                          keyboardType: keyboardType,
-                          onChanged: (value) {
-                            _updateInput(i, value);
-                            fieldState.didChange(_inputs);
-                          },
-                          type: widget.field.type,
-                        ),
-                      ),
-                      if (i != 0)
-                        Padding(
-                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
-                          child: AppButton.close(
-                            onTap: () {
-                              _removeInput(i);
-                              fieldState.didChange(_inputs);
-                            },
-                            buttonColorScheme: ButtonColorScheme.onColor,
-                            padding: EdgeInsets.zero,
-                            size: ButtonSize.medium,
-                          ),
-                        ),
-                    ],
-                  ),
-                  Spacing.$2x.heightBox,
-                ],
-                SizedBox(
-                  width: double.infinity,
-                  child: BaladyAppButton(
-                    buttonType: BaladyButtonType.secondary,
-                    buttonColorScheme: BaladyButtonColorScheme.accent,
-                    primaryLabel: isPhoneField ? context.l10n.addPhoneNumber : context.l10n.add,
-                    primaryIcon: isPhoneField ? null : GeneralIcons.plusCircle,
-                    onTap: () {
-                      _addInput();
-                      fieldState.didChange(_inputs);
-                    },
+                Expanded(
+                  child: FeedbackTextInput(
+                    controller: _inputItems[i].controller,
+                    labelText: i == 0 ? widget.field.label : null,
+                    hintText: widget.field.hint,
+                    onValidate: (v) => _isValid(v) ? null : context.l10n.feedbackTextFieldWrongFormat,
+                    allowedInputPattern: allowedInputPattern,
+                    isRequired: widget.field.isRequired,
+                    maxLength: widget.field.maxLength,
+                    keyboardType: keyboardType,
+                    type: widget.field.type,
                   ),
                 ),
+                if (i != 0)
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                    child: AppButton.close(
+                      onTap: () {
+                        _removeInput(i);
+                        fieldState.didChange(_currentValues);
+                      },
+                      buttonColorScheme: ButtonColorScheme.onColor,
+                      padding: EdgeInsets.zero,
+                      size: ButtonSize.medium,
+                    ),
+                  ),
               ],
-            ));
+            ),
+            Spacing.$2x.heightBox,
+          ],
+          SizedBox(
+            width: double.infinity,
+            child: BaladyAppButton(
+              buttonType: BaladyButtonType.secondary,
+              buttonColorScheme: BaladyButtonColorScheme.accent,
+              primaryLabel: isPhoneField ? context.l10n.addPhoneNumber : context.l10n.add,
+              primaryIcon: isPhoneField ? null : GeneralIcons.plusCircle,
+              onTap: () {
+                _addInput();
+                fieldState.didChange(_currentValues);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
