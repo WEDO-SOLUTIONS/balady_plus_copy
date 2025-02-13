@@ -88,7 +88,6 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
     return validator(value) == null;
   }
 
-  /// Собираем текущие значения из контроллеров
   List<String> get _currentValues => _inputItems.map((item) => item.controller.text).toList();
 
   @override
