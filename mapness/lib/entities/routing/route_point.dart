@@ -1,7 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }

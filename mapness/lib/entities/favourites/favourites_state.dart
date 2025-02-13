@@ -1,4 +1,4 @@
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 
 class FavouritesState {
   final List<FavouriteItem> items;

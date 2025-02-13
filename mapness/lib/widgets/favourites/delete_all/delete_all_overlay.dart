@@ -7,10 +7,12 @@ class DeleteAllOverlay {
     if (_overlayEntry != null) {
       _overlayEntry?.remove();
     }
-    _overlayEntry = OverlayEntry(builder: (context) => Material(
+    _overlayEntry = OverlayEntry(
+      builder: (context) => Material(
         color: Colors.transparent,
         child: child,
-      ),);
+      ),
+    );
     Overlay.of(context).insert(_overlayEntry!);
   }
 

@@ -5,10 +5,10 @@ import 'package:balady_uikit/core/icons/system_icons.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/_features/favourites/widgets/empty_result_widget.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/widgets/favourites/empty_result_widget.dart';
 import 'package:mapness/widgets/favourites/favourite_item_widget.dart';
 
 @RoutePage()
