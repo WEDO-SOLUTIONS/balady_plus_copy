@@ -472,7 +472,13 @@ class LayersControls extends _$LayersControls {
 
     await _removeMapObjects();
 
-    if (state.selectedType != LayerType.parkingLots) {
+    final currentState = state.selectedType;
+
+    if (currentState != null && currentState != LayerType.parkingLots) {
+      await _hidePreviousLayers(currentState);
+    }
+
+    if (currentState != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
     }
