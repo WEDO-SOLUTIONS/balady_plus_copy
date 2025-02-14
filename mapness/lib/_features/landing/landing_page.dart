@@ -10,8 +10,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/landing/dashboard.dart';
 import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/city_contains/service_not_available.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -122,15 +120,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     ref
       ..watch(layersControlsProvider)
       ..watch(favouriteMarkersProvider.select((value) => null))
-      ..listen(serviceNotAvailableProvider, (prev, isAvailible) {
-        final isPrevIsAvailible = prev?.valueOrNull ?? true;
-        final isAvailibleValue = isAvailible.valueOrNull;
-
-        // Show only if service is not available
-        if (isPrevIsAvailible == true && isAvailibleValue == false) {
-          context.router.push(const ServiceNotAvailableSheetRoute());
-        }
-      })
 
       /// keep iwish markers alive when page is opened  (DO NOT DELETE UNTIL REFACOR OF LAYER CONTROLS!)
       ..watch(mapObjectManagerProvider(named: esri.name, layerId: esri.layerId).notifier)
