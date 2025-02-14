@@ -129,7 +129,7 @@ class FeedbackImages extends StatelessWidget {
       return;
     }
 
-    final xFiles = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
+    final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
     final images = await _pickedImage();
     if (images.isEmpty) {
       return;
@@ -137,7 +137,7 @@ class FeedbackImages extends StatelessWidget {
 
     final pickError = await isImageSupported(
       context,
-      images: images + xFiles,
+      images: images + selectedImages,
     );
 
     if (pickError != null) {
