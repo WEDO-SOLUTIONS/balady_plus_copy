@@ -5,9 +5,8 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_guard_mixin.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
-import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -19,7 +18,7 @@ part 'map_tap_handler_provider.g.dart';
 typedef OnMapTapHandler = void Function(TapEvent event);
 
 @riverpod
-class MapTapHandler extends _$MapTapHandler {
+class MapTapHandler extends _$MapTapHandler with MapTapGuardMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
 
   OnMapTapHandler? _priorityMapTapHandler;
@@ -75,20 +74,10 @@ class MapTapHandler extends _$MapTapHandler {
   /// Processes map tap events if no priority handler is set,
   /// including navigation and metrics logging.
   void _defaultOnMapClickListener(TapEvent event) {
-    final appRouter = ref.read(appRouterProvider);
-
-    // We don't want to handle tap events when the search is running (for now it is quick search)
-    final isQuickSearchRunning = ref.read(searchProvider(SearchScopeEnum.map.value).notifier).isQuickSearchRunning;
-    final objectIgnoreRoute = [
-      RoutingMapSelectRoute.name,
-      SearchRoute.name,
-      RoutingRoutesRoute.name,
-    ];
-    if (isQuickSearchRunning) {
-      objectIgnoreRoute.add(PoiCardWidgetRoute.name);
+    if (guardOnSearch(ref)) {
+      return;
     }
-
-    if (objectIgnoreRoute.any(appRouter.isRouteActive)) {
+    if (guardOnRoute(ref)) {
       return;
     }
 
