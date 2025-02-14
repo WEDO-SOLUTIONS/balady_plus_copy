@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
 import 'package:mapness/features/search/ui/add_place_item.dart';
+import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 
 class SearchResults extends ConsumerStatefulWidget {
   const SearchResults({
@@ -24,12 +25,15 @@ class SearchResults extends ConsumerStatefulWidget {
 }
 
 class _SearchResultsState extends ConsumerState<SearchResults> {
-  bool _hasNext = false;
+  bool _hasNext = true;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    // Check if the first page has more than 5 items to determine if there is more data to fetch
+    // We need it to show loader at the end of the list
+    _hasNext = (widget.results.firstPage?.items.length ?? 0) > 5;
     widget.scrollController.addListener(_scrollListener);
   }
 
@@ -59,8 +63,11 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   @override
   Widget build(BuildContext context) {
     final results = ref.watch(searchPaginationProvider(widget.results));
-    final hasAddPlaceAtEnd = results.isNotEmpty && results.length < 10;
-    final totalCount = results.length + (results.length ~/ 10) + (hasAddPlaceAtEnd ? 1 : 0);
+    if (results.isEmpty) {
+      return const MapSearchEmpty();
+    }
+    // If the result list is not empty add AddPlaceItem at the end of the list
+    final totalCount = results.length + 1;
 
     return ListView.separated(
       shrinkWrap: true,
@@ -71,25 +78,16 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        /// every 10th item should be an AddPlaceItem
-        if (_hasNext && index == totalCount) {
-          return widget.loaderBuilder(context);
-        }
-
-        final addPlaceItemsBeforeIndex = index ~/ 10;
-        final actualResultIndex = index - addPlaceItemsBeforeIndex;
-
-        // Check if this position should be an AddPlaceItem
-        final isAddPlacePosition =
-            (index + 1) % 10 == 0 || (hasAddPlaceAtEnd && actualResultIndex == results.length - 1);
-
-        if (isAddPlacePosition) {
+        if (index == results.length) {
+          if (_hasNext) {
+            return widget.loaderBuilder(context);
+          }
           return const AddPlaceItem();
         }
 
-        return widget.itemBuilder(context, results[actualResultIndex]);
+        return widget.itemBuilder(context, results[index]);
       },
-      itemCount: totalCount + (_hasNext ? 1 : 0),
+      itemCount: totalCount,
       separatorBuilder: (context, index) => const SizedBox(height: 12),
     );
   }
