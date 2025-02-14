@@ -9,7 +9,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
@@ -378,6 +380,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
+    await _parkingCheck();
+
     await _endTrip();
 
     if (!ctx.mounted) {
@@ -390,6 +394,21 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
     context.router.popUntilRouteWithName(BottomMenuRoute.name);
+  }
+
+  /// If I enable parking during [FreeRoam], after the check is completed they are hidden if hidden from [Layers].
+  /// If it is enabled in [Layers], then if I disable it in [FreeRoam], then after completion they are also disabled
+  Future<void> _parkingCheck() async {
+    final sharedPrefs = ref.read(sharedPrefsProvider);
+    final isParkingEnabledByFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+
+    if (isParkingEnabledByFreeRoam) {
+      final layersControls = ref.read(layersControlsProvider.notifier);
+      if (ref.read(activeLayerProvider) == LayerType.parkingLots) {
+        await layersControls.hideActiveLayer();
+      }
+      await sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, false);
+    }
   }
 
   // Show the pause state

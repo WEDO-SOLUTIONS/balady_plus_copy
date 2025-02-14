@@ -1,13 +1,18 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
+import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 import 'package:mapness/widgets/feedback/feedback_input.dart';
 
-class FeedbackInput extends StatelessWidget {
+class FeedbackInput extends HookWidget {
   final FeedbackTextEntity field;
 
   const FeedbackInput({
@@ -32,35 +37,66 @@ class FeedbackInput extends StatelessWidget {
 
     final isRequired = field.isRequired;
 
+    final controller = useTextEditingController();
+
     return FormBuilderField<String>(
-      name: field.id,
-      validator: FormBuilderValidators.compose([
-        switch (field.type) {
-          FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
-          FeedbackTextType.phone => FormBuilderValidators.compose([
-              FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
-              FormBuilderValidators.minLength(
-                PhoneNumberFormatter.arabicPhoneNumberMinLength,
-                checkNullOrEmpty: isRequired,
-              ),
-            ]),
-          FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
-          _ when isRequired => FormBuilderValidators.required(),
-          _ => (_) => null,
-        },
-      ]),
-      builder: (fieldState) => FeedbackTextInput(
-        labelText: field.label,
-        hintText: field.hint,
-        onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
-        allowedInputPattern: allowedInputPattern,
-        isRequired: field.isRequired,
-        maxLength: field.maxLength,
-        keyboardType: keyboardType,
-        maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
-        onChanged: fieldState.didChange,
-        type: field.type,
-      ),
-    );
+        name: field.id,
+        validator: FormBuilderValidators.compose([
+          switch (field.type) {
+            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
+            FeedbackTextType.phone => FormBuilderValidators.compose([
+                FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+                FormBuilderValidators.minLength(
+                  PhoneNumberFormatter.arabicPhoneNumberMinLength,
+                  checkNullOrEmpty: isRequired,
+                ),
+              ]),
+            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
+            _ when isRequired => FormBuilderValidators.required(),
+            _ => (_) => null,
+          },
+        ]),
+        builder: (fieldState) => Column(
+              children: [
+                FeedbackTextInput(
+                  labelText: field.label,
+                  hintText: field.hint,
+                  controller: controller,
+                  onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
+                  allowedInputPattern: allowedInputPattern,
+                  isRequired: field.isRequired,
+                  maxLength: field.maxLength,
+                  keyboardType: keyboardType,
+                  maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+                  onChanged: fieldState.didChange,
+                  type: field.type,
+                ),
+                if (field.setOnMap)
+                  SizedBox(
+                    width: double.infinity,
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: Spacing.$3x),
+                      child: BaladyAppButton(
+                        buttonType: BaladyButtonType.secondary,
+                        buttonColorScheme: BaladyButtonColorScheme.accent,
+                        primaryLabel: context.l10n.setOnTheMap,
+                        primaryIcon: GeneralIcons.pin,
+                        onTap: () => _selectRoute(context, controller),
+                      ),
+                    ),
+                  ),
+              ],
+            ));
+  }
+
+  Future<void> _selectRoute(BuildContext context, TextEditingController controller) async {
+    final result = await context.router.push(const RoutingMapSelectRoute());
+
+    if (result == null || result is! RoutePoint) {
+      return;
+    }
+
+    final location = result.label ?? 'lat:${result.latitude}, lon:${result.longitude}';
+    controller.text = location;
   }
 }

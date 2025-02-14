@@ -50,7 +50,6 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
             ),
           Consumer(
             builder: (context, ref, child) {
-              final autoEnableParking = ref.watch(navigatorAutoEnableParkingProvider);
               final parkingState = ref.watch(parkingStateProvider);
 
               final layersNotifier = ref.watch(layersControlsProvider.notifier);
@@ -61,6 +60,8 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
                 isEnabled: isParkingEnabled,
                 isNoTopBorderRadius: isTrafficVisable,
                 onParkingTap: () {
+                  final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
+
                   if (autoEnableParking == null) {
                     ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
                     return;

@@ -209,10 +209,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "0ea62faa99efa13e8652fb0fedd281f9bf6b6c0029698ab1cb89df8c68ff51d5"
+      sha256: ebf8587d32dfd2faabc140396d3cec9a03b218eba200bcac57e79592997f1ca5
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.3"
+    version: "3.2.4"
   battery_plus:
     dependency: transitive
     description:

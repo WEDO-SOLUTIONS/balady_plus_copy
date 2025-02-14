@@ -5,9 +5,9 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/domain/favourites_state.dart';
 import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/entities/favourites/favourites_state.dart';
 import 'package:mapness/features/poi_card/domain/model/opening_hours_model.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/domain/model/work_time_model.dart';
@@ -122,12 +122,14 @@ extension DirectoryObjectExt on DirectoryObjectMessage {
           )
         : null;
 
-    // Floor currently is not used
+    final floors = buildingLevels?.levels.length;
+
     return PoiContentFullAddress(
       name: address?.buildingName ?? title,
       address: makeAddress(),
       distance: briefDistance,
       entrances: entrances_,
+      floor: floors != null ? PoiContentFullAddressFloor(title: title, floor: floors) : null,
     );
   }
 

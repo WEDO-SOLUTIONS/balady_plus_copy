@@ -1137,7 +1137,7 @@ class DgisMapView(
     }
 
 
-    override fun getAndroidAutoConnectionState(callback: (Result<Boolean>) -> Unit) {
+    override fun getCarConnectionState(callback: (Result<Boolean>) -> Unit) {
         val connected = androidAutoHandler.getConnectionState()
         callback(Result.success(connected))
     }

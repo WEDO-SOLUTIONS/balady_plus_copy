@@ -6,6 +6,8 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -74,11 +76,17 @@ class MapTapHandler extends _$MapTapHandler {
   /// including navigation and metrics logging.
   void _defaultOnMapClickListener(TapEvent event) {
     final appRouter = ref.read(appRouterProvider);
+
+    // We don't want to handle tap events when the search is running (for now it is quick search)
+    final isQuickSearchRunning = ref.read(searchProvider(SearchScopeEnum.map.value).notifier).isQuickSearchRunning;
     final objectIgnoreRoute = [
       RoutingMapSelectRoute.name,
       SearchRoute.name,
       RoutingRoutesRoute.name,
     ];
+    if (isQuickSearchRunning) {
+      objectIgnoreRoute.add(PoiCardWidgetRoute.name);
+    }
 
     if (objectIgnoreRoute.any(appRouter.isRouteActive)) {
       return;
@@ -111,7 +119,7 @@ class MapTapHandler extends _$MapTapHandler {
         ),
         closestPoint: event.latLng,
       ),
-      toCompareRoutes: [PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
     );
   }
 
@@ -146,13 +154,15 @@ class MapTapHandler extends _$MapTapHandler {
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
-    ref.read(appRouterProvider).push(
-          ShareMyLocationRoute(
-            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-            closestPoint: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                : event.latLng,
-          ),
-        );
+
+    ref.read(appRouterProvider).replaceOrPush(
+      route: ShareMyLocationRoute(
+        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+        closestPoint: userLocation != null
+            ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+            : event.latLng,
+      ),
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
+    );
   }
 }

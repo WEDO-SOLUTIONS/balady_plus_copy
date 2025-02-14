@@ -129,8 +129,8 @@ dependencies:
   adjust_sdk: 5.0.2
   flutter_appauth: ^7.0.1
 
-  webview_flutter: ^4.2.2
-  flutter_inappwebview: ^6.1.4
+  webview_flutter: ^4.10.0
+  flutter_inappwebview: ^6.1.5
 
   version: ^2.0.0
   google_maps_flutter: ^2.5.3
@@ -186,7 +186,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.2.3
+    version: 3.2.4
 
   mapness:
     path: mapness

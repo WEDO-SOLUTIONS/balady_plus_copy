@@ -1,7 +1,6 @@
 package com.dgis.map.control_handlers
 
 import android.content.Context
-import android.util.Log
 import androidx.car.app.connection.CarConnection
 import io.flutter.plugin.common.EventChannel
 
@@ -28,7 +27,7 @@ class AndroidAutoHandler(
 
         eventSink.success(
             mapOf(
-                "event" to Event.androidAutoConnectionEvent.name,
+                "event" to Event.carConnectionEvent.name,
                 "connected" to connected,
             )
         )
@@ -39,7 +38,7 @@ class AndroidAutoHandler(
     }
 
     private enum class Event {
-        androidAutoConnectionEvent;
+        carConnectionEvent;
     }
 }
 

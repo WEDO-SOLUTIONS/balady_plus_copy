@@ -1724,7 +1724,7 @@ abstract class MapApi {
   void setBetterRouteEnabled(bool enabled);
 
   @async
-  bool getAndroidAutoConnectionState();
+  bool getCarConnectionState();
 }
 
 @FlutterApi()
