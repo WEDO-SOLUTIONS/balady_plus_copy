@@ -14,12 +14,12 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
-  final bool isPhotosNotEmpty;
+  final bool isPhotosEmpty;
   final bool isPhotosLoading;
   final int objectId;
 
   const HeaderComponent({
-    required this.isPhotosNotEmpty,
+    required this.isPhotosEmpty,
     required this.isPhotosLoading,
     required this.objectId,
     super.key,
@@ -29,36 +29,39 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final transformPhotoSize = _transformPhotoSize(state, interpolation);
     final hideTransform = min(1.0, transformPhotoSize / photosMinHeight);
-    final isNoPhotos = isPhotosNotEmpty && !isPhotosLoading;
+    final isNoPhotos = isPhotosEmpty && !isPhotosLoading;
 
-    return Opacity(
-      opacity: _resolveOpacity(state, interpolation),
-      child: Align(
-        heightFactor: hideTransform,
-        alignment: isPhotosNotEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
-        child: Padding(
-          padding: EdgeInsetsDirectional.only(bottom: Spacing.$2x, start: isNoPhotos ? Spacing.$3x : 0.0),
-          child: isNoPhotos
-              ? AppButton(
-                  buttonColorScheme: ButtonColorScheme.onColor,
-                  onTap: () => context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.addPhoto,
-                      params: FeedbackObjectIdParams(objectId),
+    return Directionality(
+      textDirection: isPhotosEmpty ? TextDirection.ltr : Directionality.of(context),
+      child: Opacity(
+        opacity: _resolveOpacity(state, interpolation),
+        child: Align(
+          heightFactor: hideTransform,
+          alignment: isPhotosEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
+          child: Padding(
+            padding: EdgeInsetsDirectional.only(bottom: Spacing.$2x, start: isNoPhotos ? Spacing.$3x : 0.0),
+            child: isNoPhotos
+                ? AppButton(
+                    buttonColorScheme: ButtonColorScheme.onColor,
+                    onTap: () => context.router.push(
+                      QuickFeedbackRoute(
+                        type: QuickFeedbackType.addPhoto,
+                        params: FeedbackObjectIdParams(objectId),
+                      ),
+                    ),
+                    size: ButtonSize.small,
+                    primaryIcon: GeneralIcons.plusCircleFilled,
+                    primaryLabel: context.l10n.addPhoto,
+                    textColor: context.colorsV3.accentDefault,
+                    iconColor: context.colorsV3.accentDefault,
+                  )
+                : SizedBox(
+                    height: transformPhotoSize,
+                    child: PoiPhotosRow(
+                      objectId: objectId,
                     ),
                   ),
-                  size: ButtonSize.small,
-                  primaryIcon: GeneralIcons.plusCircleFilled,
-                  primaryLabel: context.l10n.addPhoto,
-                  textColor: context.colorsV3.accentDefault,
-                  iconColor: context.colorsV3.accentDefault,
-                )
-              : SizedBox(
-                  height: transformPhotoSize,
-                  child: PoiPhotosRow(
-                    objectId: objectId,
-                  ),
-                ),
+          ),
         ),
       ),
     );
@@ -79,7 +82,7 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
       return photosMinHeight * interpolation;
     }
 
-    final isNoPhotos = isPhotosNotEmpty && !isPhotosLoading;
+    final isNoPhotos = isPhotosEmpty && !isPhotosLoading;
     if (isNoPhotos && state == PoiCardBottomSheetState.halfOpen) {
       return photosMinHeight * (1 - interpolation);
     }
