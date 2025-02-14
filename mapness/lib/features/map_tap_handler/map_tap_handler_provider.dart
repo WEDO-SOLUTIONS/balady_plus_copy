@@ -5,8 +5,9 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_guard_mixin.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -14,11 +15,12 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'map_tap_handler_provider.g.dart';
+part 'map_tap_mixin.dart';
 
 typedef OnMapTapHandler = void Function(TapEvent event);
 
 @riverpod
-class MapTapHandler extends _$MapTapHandler with MapTapGuardMixin {
+class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
 
   OnMapTapHandler? _priorityMapTapHandler;
@@ -74,10 +76,7 @@ class MapTapHandler extends _$MapTapHandler with MapTapGuardMixin {
   /// Processes map tap events if no priority handler is set,
   /// including navigation and metrics logging.
   void _defaultOnMapClickListener(TapEvent event) {
-    if (guardOnSearch(ref)) {
-      return;
-    }
-    if (guardOnRoute(ref)) {
+    if (super._guardOfDefaultTap()) {
       return;
     }
 
