@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -306,8 +307,7 @@ class Search extends _$Search {
     );
     // We need it to track request in logs and look on it.
     // Why do we use print for this: see `Future<void> runMapnessApp`
-    // ignore: avoid_print
-    print(
+    debugPrint(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
     ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
@@ -351,8 +351,7 @@ class Search extends _$Search {
     );
     // We need it to track request in logs and look on it.
     // Why do we use print for this: see `Future<void> runMapnessApp`
-    // ignore: avoid_print
-    print(
+    debugPrint(
       '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $status',
     );
   }
