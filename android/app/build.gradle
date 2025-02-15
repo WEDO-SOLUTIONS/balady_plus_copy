@@ -127,8 +127,8 @@ flutter {
 }
 
 dependencies {
-//    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.3'
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.6.4"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
@@ -141,4 +141,4 @@ dependencies {
 
 }
 apply plugin: 'com.google.gms.google-services'
-apply plugin: 'com.huawei.agconnect'
+//apply plugin: 'com.huawei.agconnect'
