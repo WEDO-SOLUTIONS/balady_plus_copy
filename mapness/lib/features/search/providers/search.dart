@@ -1,10 +1,12 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/search/models/search_state.dart';
+import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -304,6 +306,10 @@ class Search extends _$Search {
         'status': _searchInThisAreaStarted,
       },
     );
+    // We need it to track request in logs and look on it.
+    // Why do we use print for this: see `Future<void> runMapnessApp`
+    debugPrint(
+        '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
     ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
     switch (_previousType) {
@@ -343,6 +349,11 @@ class Search extends _$Search {
       properties: {
         'status': status,
       },
+    );
+    // We need it to track request in logs and look on it.
+    // Why do we use print for this: see `Future<void> runMapnessApp`
+    debugPrint(
+      '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $status',
     );
   }
 
