@@ -65,9 +65,7 @@ import '../errors/exceptions.dart';
 import './utils_exports.dart'
     show
         AppColor,
-        AppConfig,
         AppLanguage,
-        BlocStatus,
         EnvType,
         GeneralKey,
         MimeType,
@@ -93,14 +91,6 @@ import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
     show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../services/services_exports.dart'
-    show
-        AppInterceptors,
-        EntryPointBridge,
-        NavigationService,
-        NoParams,
-        WebService;
-import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
@@ -372,8 +362,6 @@ class CommonFunctions {
   }
 
   static String getDateNoDash(String? dateStr) {
-    String formattedDate = "";
-
     String year = dateStr?.substring(0, 4) ?? "";
     String month = dateStr?.substring(4, 6) ?? "";
     String day = dateStr?.substring(6, 8) ?? "";
@@ -656,12 +644,13 @@ class CommonFunctions {
       String v5UUID =
           CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
 
-      if (v5UUID.isNotEmpty)
+      if (v5UUID.isNotEmpty) {
         return v5UUID.replaceAll("-", "");
-      else if (v1UUID.isNotEmpty)
+      } else if (v1UUID.isNotEmpty) {
         return v1UUID.replaceAll("-", "");
-      else
+      } else {
         return DateTime.now().millisecondsSinceEpoch.toString();
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -1226,7 +1215,7 @@ class CommonFunctions {
   }
 
   static sendEvent(
-      {DioError? dioError,
+      {DioException? dioError,
       Response? response,
       Exception? ex,
       String? errorMessage}) {
@@ -1458,7 +1447,7 @@ class CommonFunctions {
         r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
 
     String dir = (await getTemporaryDirectory()).path;
-    File file = new File('$dir/$fileName.$extension');
+    File file = File('$dir/$fileName.$extension');
 
     await file.writeAsBytes(r.data);
     return file;
@@ -1645,7 +1634,7 @@ class CommonProperties {
   static String? fcmToken;
   static bool showEkramDriver = false;
 
-  static Uuid uuidInstance = Uuid();
+  static Uuid uuidInstance = const Uuid();
   static List<String> allowedSHAFingerprints = [
     "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
   ];
