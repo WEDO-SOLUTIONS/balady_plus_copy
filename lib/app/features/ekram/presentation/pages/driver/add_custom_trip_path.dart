@@ -79,6 +79,7 @@ class AddCustomTripPath extends StatelessWidget {
                               CustomVerticalSpace(height: 20),
 
                               CustomDropDownDialog(
+                                isDisbaled:true,
                                 items: bloc.state.lstTripStation ?? [],
                                 selectedValue: bloc.state.addTripPath?.startupInfo?.typeName,
                                 onChangeType: (var item) {

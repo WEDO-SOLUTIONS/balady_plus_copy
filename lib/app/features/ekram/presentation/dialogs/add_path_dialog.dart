@@ -12,6 +12,7 @@ import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dar
 import '../../../_shared_feature_/presentation/widgets/radio_buttons/custom_radio_button_widget copy.dart';
 import '../../data/model/driver/transport_request_item_model.dart';
 import '../../data/model/driver/trip_details_model.dart';
+import '../../data/model/driver/trip_stations.dart';
 import '../blocs/driver_add_trip/add_trip_bloc.dart';
 import '../pages/driver/add_custom_trip_path.dart';
 import '../pages/driver/add_suggested_path.dart';
@@ -42,6 +43,7 @@ class _AddNewTripPathDailog extends State<AddNewTripPathDailog> {
   //List<SpecializedClassificationItem> items = [];
   final ScrollController _scrollController = ScrollController();
   bool isButtonDisabled = true;
+  TripDetailsModel? lastTripPath=null;
 
   @override
   void initState() {
@@ -54,6 +56,9 @@ class _AddNewTripPathDailog extends State<AddNewTripPathDailog> {
         {
           items.add(widget.bloc.state.data![index]);
         }
+      else {
+        lastTripPath = widget.bloc.state.data![index];
+      }
     }
     items.add(TripDetailsModel(id: -1));
 
@@ -112,6 +117,24 @@ class _AddNewTripPathDailog extends State<AddNewTripPathDailog> {
 
                 if(currentSelected?.arrivalInfo==null)
                   {
+
+                    if(lastTripPath != null) {
+                      TripStations startUp = TripStations(
+
+                          typeName: lastTripPath!.arrivalInfo?.typeName,
+                          typeId: lastTripPath!.arrivalInfo?.typeId,
+                          cityName: lastTripPath!.arrivalInfo?.cityName,
+                          name: lastTripPath!.arrivalInfo?.name,
+                          date: null,
+                          time: null
+
+
+                      );
+
+
+                      widget.bloc.add(setCustomPathDataEvent(
+                          item: startUp, isStartupInfo: true));
+                    }
                     await CustomPopUpsWidgets.showBottomSheet(
                       NavigationService.navigatorKey.currentContext!,
                       child: AddCustomTripPath(bloc: widget.bloc,),
