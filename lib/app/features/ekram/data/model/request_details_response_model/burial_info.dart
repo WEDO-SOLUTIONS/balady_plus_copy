@@ -6,7 +6,7 @@ class BurialInfo {
   String? burialDate;
   String? gregorianBurialDate;
   int? prayId;
-  LookUpItem? pray;
+ // LookUpItem? pray;
   String? prayName;
   String? burialTime;
   String? ghuslMethod;
@@ -24,7 +24,7 @@ class BurialInfo {
     this.burialDate,
     this.gregorianBurialDate,
     this.prayId,
-    this.pray,
+   // this.pray,
     this.prayName,
     this.burialTime,
     this.ghuslMethod,
@@ -97,7 +97,7 @@ class BurialInfo {
         burialDate: burialDate ?? this.burialDate,
         gregorianBurialDate: gregorianBurialDate ?? this.gregorianBurialDate,
         prayId: prayId ?? this.prayId,
-        pray: pray ?? this.pray,
+      //  pray: pray ?? this.pray,
         prayName: prayName ?? this.prayName,
         burialTime: burialTime ?? this.burialTime,
         ghuslMethod: ghuslMethod ?? this.ghuslMethod,

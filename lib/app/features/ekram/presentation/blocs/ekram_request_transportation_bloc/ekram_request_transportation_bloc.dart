@@ -1346,6 +1346,7 @@ class EkramRequestTransportationBloc extends Bloc<
         burialDate: e.burialInfo?.burialDate,
         gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
         prayId: e.burialInfo?.prayId,
+        burialTime: e.burialInfo?.burialTime,
         burialDestination: e.burialInfo?.burialDestination);
 
     params = params.copyWith(burialInfo: info);

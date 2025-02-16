@@ -570,6 +570,24 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
+  LookUpItem? getPrayerById(int? id,String? name) {
+    if (  id != null) {
+      if(prayers != null) {
+        for (int index = 0; index < prayers!.length; index++) {
+          if (prayers![index].id == id) {
+            return prayers![index];
+          }
+        }
+      }
+      else if(name != null && name.isNotEmpty)
+      {
+        return LookUpItem(id: id,name: name);
+      }
+    }
+
+    return null;
+  }
+
   int? getselectedDeathCity() {
     if (requestDetailsModel?.deathInfo?.cityId != null) {
       return requestDetailsModel?.deathInfo?.cityId!;

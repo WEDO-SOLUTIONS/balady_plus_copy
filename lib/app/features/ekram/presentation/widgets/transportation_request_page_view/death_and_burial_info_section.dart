@@ -30,6 +30,7 @@ import '../../../data/model/request_details_response_model/cemetery_data.dart';
 import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/transport_info.dart';
 import '../../../data/model/reset_action_enum.dart';
+import '../driver/trip_datetime_widget.dart';
 
 class DeathAndBurialInfoSection extends StatelessWidget {
   const DeathAndBurialInfoSection({super.key});
@@ -456,12 +457,12 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+                                 // fffffff
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(
                                         setBurialInfoEvent(
                                           burialInfo: BurialInfo(
-                                            pray: item,
                                             prayId: item.id,
                                           ),
                                         ),
@@ -473,30 +474,62 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: Helpers.translatingWord(
                                   "cemetry_deceassed_burial_time"),
                             ),
-                            state.requestDetailsModel?.burialInfo?.pray
+                            state.getPrayerById(state.requestDetailsModel?.burialInfo?.prayId, state.requestDetailsModel?.burialInfo?.prayName)
                                         ?.isOther ??
                                     false
-                                ? ClockTimeWidget(
-                                    title: "cemetry_deceassed_burial_time".tr(),
-                                    currentTime: state.requestDetailsModel
-                                            ?.burialInfo?.burialTime ??
-                                        "",
-                                    onSelectedTime: (TimeOfDay? time) {
-                                      if (time != null) {
-                                        context
-                                            .read<
-                                                EkramRequestTransportationBloc>()
-                                            .add(
-                                              setBurialInfoEvent(
-                                                burialInfo: BurialInfo(
-                                                  burialTime:
-                                                      "${time.hour}:${time.minute}",
-                                                ),
-                                              ),
-                                            );
-                                      }
-                                    },
-                                  )
+                                 ?
+
+        TripDateTimeWidget(
+        title: "cemetry_deceassed_burial_time".tr(),
+        isEditable:  true ,
+       showDate: false,
+       time:state.requestDetailsModel?.burialInfo?.burialTime != null? CommonFunctions.getFormattedTimeEkram(state.requestDetailsModel?.burialInfo?.burialTime) :null,
+        onTimeCallback: (String? time){
+
+        if(time != null)
+        {
+
+        DateTime tempTime = DateFormat("HH:mm").parse(time!);
+        String strTime = DateFormat("HH:mm")
+            .format(tempTime)
+            .toString();
+                context
+                    .read<
+                        EkramRequestTransportationBloc>()
+                    .add(
+                      setBurialInfoEvent(
+                        burialInfo: BurialInfo(
+                          burialTime:strTime,
+                        ),
+                      ),
+                    );
+        }
+        },
+
+        )
+
+                            //
+                            // ClockTimeWidget(
+                                //     title: "cemetry_deceassed_burial_time".tr(),
+                                //     currentTime: state.requestDetailsModel
+                                //             ?.burialInfo?.burialTime ??
+                                //         "",
+                                //     onSelectedTime: (TimeOfDay? time) {
+                                //       if (time != null) {
+                                //         context
+                                //             .read<
+                                //                 EkramRequestTransportationBloc>()
+                                //             .add(
+                                //               setBurialInfoEvent(
+                                //                 burialInfo: BurialInfo(
+                                //                   burialTime:
+                                //                       "${time.hour}:${time.minute}",
+                                //                 ),
+                                //               ),
+                                //             );
+                                //       }
+                                //     },
+                                //   )
                                 : const SizedBox(),
                             Row(
                               children: [
