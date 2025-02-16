@@ -11,7 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:huawei_location/huawei_location.dart' as hms;
-import 'package:geolocator/geolocator.dart' as geoLocator;
+import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
@@ -109,7 +109,7 @@ class Helpers {
 
   static Future<LatLng?> getMapLocation() async {
     return await getCurrentLocation(
-        accuracy: geoLocator.LocationAccuracy.medium,
+        accuracy: geo_locator.LocationAccuracy.medium,
         duration: const Duration(seconds: 5));
   }
 
@@ -129,8 +129,8 @@ class Helpers {
           return LatLng(position.latitude!, position.longitude!);
         }
       } else {
-        geoLocator.Position? position;
-        position = await geoLocator.Geolocator.getLastKnownPosition();
+        geo_locator.Position? position;
+        position = await geo_locator.Geolocator.getLastKnownPosition();
         if (position?.latitude != null && position?.longitude != null) {
           return LatLng(position!.latitude, position.longitude);
         }
@@ -148,7 +148,7 @@ class Helpers {
   }
 
   static Future<LatLng?> getCurrentLocation(
-      {geoLocator.LocationAccuracy? accuracy, Duration? duration}) async {
+      {geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
       bool isHuawei = await CommonFunctions.isHawaiiDevice();
       if (isHuawei) {
@@ -159,10 +159,12 @@ class Helpers {
       }
       debugPrint('amr from  getCurrentLocation but with geo locator');
       //  EasyLoading.show();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: accuracy ?? geoLocator.LocationAccuracy.high,
-              timeLimit: duration ?? const Duration(seconds: 13));
+      geo_locator.Position position =
+          await geo_locator.Geolocator.getCurrentPosition(
+        locationSettings: LocationSettings(
+            accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
+            timeLimit: duration ?? const Duration(seconds: 13)),
+      );
       //    EasyLoading.dismiss();
       return LatLng(position.latitude, position.longitude);
     } catch (error, stackTrace) {
@@ -203,7 +205,7 @@ class Helpers {
       final settings = hms.LocationSettingsRequest(
           requests: [request], needBle: true, alwaysShow: true);
       try {
-        final states = await locationService.checkLocationSettings(settings);
+        await locationService.checkLocationSettings(settings);
       } catch (e) {
         debugPrint('amr catch ${e.toString()}');
       }
@@ -215,8 +217,7 @@ class Helpers {
             'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
         return LatLng(location.latitude!, location.longitude!);
       } else {
-        final requestCode =
-            await locationService.requestLocationUpdates(request);
+        await locationService.requestLocationUpdates(request);
       }
     } catch (error, stackTrace) {
       return handelLocationCatch(true, error, stackTrace);
