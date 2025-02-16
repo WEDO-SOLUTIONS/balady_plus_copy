@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
@@ -33,7 +34,11 @@ class DeceasedInfoSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(
-      listener: (context, state) {},
+      listener: (context, state) {
+        CommonFunctions.showError(state.cemeteryReservationMsg != null
+            ? state.cemeteryReservationMsg!
+            : '');
+      },
       builder: (context, state) {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -225,13 +230,11 @@ class DeceasedInfoSection extends StatelessWidget {
                               const CustomVerticalSpace(height: 16),
                               CustomLookUpLongDialog(
                                   items: state.nationalities ?? [],
-                                  value: state.getNationalityById(state
-                                      .requestDetailsModel
-                                      ?.deceasedInfo
-                                      ?.nationalityId,state
-                                      .requestDetailsModel
-                                      ?.deceasedInfo
-                                      ?.nationalityName),
+                                  value: state.getNationalityById(
+                                      state.requestDetailsModel?.deceasedInfo
+                                          ?.nationalityId,
+                                      state.requestDetailsModel?.deceasedInfo
+                                          ?.nationalityName),
                                   onEmptyList: () async {
                                     return context
                                         .read<EkramRequestTransportationBloc>()

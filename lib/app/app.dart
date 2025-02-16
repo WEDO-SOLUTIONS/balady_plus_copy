@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:io';
 
+import 'package:app_links/app_links.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
@@ -85,6 +87,25 @@ class AppWidget extends StatefulWidget {
 }
 
 class AppWidgetState extends State<AppWidget> {
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
+
+  @override
+  void initState() {
+    super.initState();
+initDeepLinks();
+  }
+  
+  Future<void> initDeepLinks() async {
+    _appLinks = AppLinks();
+    final appLink = await _appLinks.getInitialLink();
+
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
+      if (kDebugMode) {
+        print('_linkSubscription $uri');
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return GestureDetector(

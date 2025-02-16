@@ -66,6 +66,7 @@ class EkramRequestTransportationState extends Equatable {
   final bool? isDeceasedBtnEnabled;
   final bool? isDraft;
   final bool? maghsalaExist;
+  final String? cemeteryReservationMsg;
 
   const EkramRequestTransportationState(
       {this.deceassedDOBGorgian,
@@ -131,165 +132,166 @@ class EkramRequestTransportationState extends Equatable {
       this.letter,
       this.editInfoSection,
       this.isDeceasedBtnEnabled,
-      this.maghsalaExist});
+      this.maghsalaExist,
+      this.cemeteryReservationMsg});
 
-  EkramRequestTransportationState copyWith({
-    final Nullable<String?>? deceassedDOBHijri,
-    final Nullable<String?>? burialDateHijri,
-    final bool? isdeceasedInfoReadOnly,
-    final bool? isBurialDatesDisabled,
-    final bool? isDeathDatesDisabled,
-    final bool? isVerified,
-    final bool? isDraft,
-    final double? lat,
-    final double? long,
-    final bool? isSpecialTransferNeeded,
-    final bool? isBurialInsideDeathCity,
-    final BlocStatus? status,
-    final String? errorMsg,
-    final LookUpItem? selectedNationalIdType,
-    final LookUpItem? selectedCemetryType,
-    final LookUpItem? selectedlaundry,
-    final LookUpItem? selectedMosque,
-    final List<LookUpItem>? nationalIdTypes,
-    final String? errorMessage,
-    final bool? valid,
-    final int? currentPageValue,
-    final bool? agreementChecked,
-    final String? relation,
-    final String? deathLocation,
-    final List<LookUpItem>? deathCities,
-    final List<LookUpItem>? burialCities,
-    final List<LookUpItem>? bodyArrivalCities,
-    final List<LookUpItem>? hospitals,
-    final List<LookUpItem>? countries,
-    final List<LookUpItem>? cemetries,
-    final List<LookUpItem>? prayers,
-    final List<LookUpItem>? specialTransportReasons,
-    final List<LookUpItem>? nationalities,
-    final List<LookUpItem>? cemetryTypeItems,
-    final List<LookUpItem>? laundries,
-    final List<LookUpItem>? mosques,
-    final List<LookUpItem>? transportations,
-    final LookUpItem? selectedDeathCity,
-    final LookUpItem? selectedtransportation,
-    final LookUpItem? selectedCemetry,
-    final LookUpItem? selectedPrayer,
-    final LookUpItem? selectedSpecialTransportReason,
-    final LookUpItem? selectedBurialCity,
-    final LookUpItem? selectedBodyArrivalCity,
-    final LookUpItem? selectedDeathCountry,
-    final LookUpItem? selectedHospital,
-    final String? otherHospitalName,
-    final LookUpItem? selectedNationality,
-    // final List<DeceasedInfoDto>? deceasedInfoDto,
-    final bool? clearHospital,
-    final FileDataItem? letter,
-    final Nullable<String?>? deceassedDOBGorgian,
-    final Nullable<String?>? burialDateGregorian,
-    final String? madinahEmirateApprovalStatus,
-    final String? madinahEmirateApprovalDate,
-    final Nullable<String?>? deathDateGregorian,
-    final Nullable<String?>? deathDateHijri,
-    final int? requestId,
-    final String? deceasedId,
-    final RequestDetailsResponseModel? requestDetailsModel,
-    final bool? editInfoSection,
-    final bool? isDeceasedBtnEnabled,
-    final bool? maghsalaExist,
-
-  }) {
+  EkramRequestTransportationState copyWith(
+      {final Nullable<String?>? deceassedDOBHijri,
+      final Nullable<String?>? burialDateHijri,
+      final bool? isdeceasedInfoReadOnly,
+      final bool? isBurialDatesDisabled,
+      final bool? isDeathDatesDisabled,
+      final bool? isVerified,
+      final bool? isDraft,
+      final double? lat,
+      final double? long,
+      final bool? isSpecialTransferNeeded,
+      final bool? isBurialInsideDeathCity,
+      final BlocStatus? status,
+      final String? errorMsg,
+      final LookUpItem? selectedNationalIdType,
+      final LookUpItem? selectedCemetryType,
+      final LookUpItem? selectedlaundry,
+      final LookUpItem? selectedMosque,
+      final List<LookUpItem>? nationalIdTypes,
+      final String? errorMessage,
+      final bool? valid,
+      final int? currentPageValue,
+      final bool? agreementChecked,
+      final String? relation,
+      final String? deathLocation,
+      final List<LookUpItem>? deathCities,
+      final List<LookUpItem>? burialCities,
+      final List<LookUpItem>? bodyArrivalCities,
+      final List<LookUpItem>? hospitals,
+      final List<LookUpItem>? countries,
+      final List<LookUpItem>? cemetries,
+      final List<LookUpItem>? prayers,
+      final List<LookUpItem>? specialTransportReasons,
+      final List<LookUpItem>? nationalities,
+      final List<LookUpItem>? cemetryTypeItems,
+      final List<LookUpItem>? laundries,
+      final List<LookUpItem>? mosques,
+      final List<LookUpItem>? transportations,
+      final LookUpItem? selectedDeathCity,
+      final LookUpItem? selectedtransportation,
+      final LookUpItem? selectedCemetry,
+      final LookUpItem? selectedPrayer,
+      final LookUpItem? selectedSpecialTransportReason,
+      final LookUpItem? selectedBurialCity,
+      final LookUpItem? selectedBodyArrivalCity,
+      final LookUpItem? selectedDeathCountry,
+      final LookUpItem? selectedHospital,
+      final String? otherHospitalName,
+      final LookUpItem? selectedNationality,
+      // final List<DeceasedInfoDto>? deceasedInfoDto,
+      final bool? clearHospital,
+      final FileDataItem? letter,
+      final Nullable<String?>? deceassedDOBGorgian,
+      final Nullable<String?>? burialDateGregorian,
+      final String? madinahEmirateApprovalStatus,
+      final String? madinahEmirateApprovalDate,
+      final Nullable<String?>? deathDateGregorian,
+      final Nullable<String?>? deathDateHijri,
+      final int? requestId,
+      final String? deceasedId,
+      final RequestDetailsResponseModel? requestDetailsModel,
+      final bool? editInfoSection,
+      final bool? isDeceasedBtnEnabled,
+      final bool? maghsalaExist,
+      final String? cemeteryReservationMsg}) {
     return EkramRequestTransportationState(
-      isdeceasedInfoReadOnly:
-          isdeceasedInfoReadOnly ?? this.isdeceasedInfoReadOnly,
-      isBurialDatesDisabled:
-          isBurialDatesDisabled ?? this.isBurialDatesDisabled,
-      isDeathDatesDisabled: isDeathDatesDisabled ?? this.isDeathDatesDisabled,
-      isVerified: isVerified ?? this.isVerified,
-      isSpecialTransferNeeded:
-          isSpecialTransferNeeded ?? this.isSpecialTransferNeeded,
-      isBurialInsideDeathCity:
-          isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
-      errorMsg: errorMsg ?? this.errorMsg,
-      selectedNationalIdType:
-          selectedNationalIdType ?? this.selectedNationalIdType,
-      selectedCemetryType: selectedCemetryType ?? this.selectedCemetryType,
-      selectedlaundry: selectedlaundry ?? this.selectedlaundry,
-      selectedMosque: selectedMosque ?? this.selectedMosque,
-      nationalIdTypes: nationalIdTypes ?? this.nationalIdTypes,
-      status: status ?? this.status,
-      errorMessage: errorMessage ?? this.errorMessage,
-      valid: valid ?? this.valid,
-      currentPageValue: currentPageValue ?? this.currentPageValue,
-      lat: lat ?? this.lat,
-      long: long ?? this.long,
-      agreementChecked: agreementChecked ?? this.agreementChecked,
-      relation: relation ?? this.relation,
-      deathLocation: deathLocation ?? this.deathLocation,
-      deathCities: deathCities ?? this.deathCities,
-      burialCities: burialCities ?? this.burialCities,
-      bodyArrivalCities: bodyArrivalCities ?? this.bodyArrivalCities,
-      hospitals: hospitals ?? this.hospitals,
-      countries: countries ?? this.countries,
-      cemetries: cemetries ?? this.cemetries,
-      prayers: prayers ?? this.prayers,
-      specialTransportReasons:
-          specialTransportReasons ?? this.specialTransportReasons,
-      nationalities: nationalities ?? this.nationalities,
-      cemetryTypeItems: cemetryTypeItems ?? this.cemetryTypeItems,
-      laundries: laundries ?? this.laundries,
-      mosques: mosques ?? this.mosques,
-      transportations: transportations ?? this.transportations,
-      selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
-      selectedtransportation:
-          selectedtransportation ?? this.selectedtransportation,
-      selectedCemetry: selectedCemetry ?? this.selectedCemetry,
-      selectedPrayer: selectedPrayer ?? this.selectedPrayer,
-      selectedSpecialTransportReason:
-          selectedSpecialTransportReason ?? this.selectedSpecialTransportReason,
-      selectedBurialCity: selectedBurialCity ?? this.selectedBurialCity,
-      selectedBodyArrivalCity:
-          selectedBodyArrivalCity ?? this.selectedBodyArrivalCity,
-      selectedDeathCountry: selectedDeathCountry ?? this.selectedDeathCountry,
-      selectedHospital: clearHospital == true
-          ? null
-          : selectedHospital ?? this.selectedHospital,
-      selectedNationality: selectedNationality ?? this.selectedNationality,
-      // deceasedInfoDto: deceasedInfoDto ?? this.deceasedInfoDto,
-      letter: letter ?? this.letter,
-      otherHospitalName: otherHospitalName ?? this.otherHospitalName,
-      fullName: fullName ?? fullName,
-      mobileNumber: mobileNumber ?? mobileNumber,
-      requestType: requestType,
-      requestId: requestId ?? this.requestId,
-      deceasedId: deceasedId ?? this.deceasedId,
-      deceassedDOBGorgian: deceassedDOBGorgian == null
-          ? this.deceassedDOBGorgian
-          : deceassedDOBGorgian.value,
-      burialDateGregorian: burialDateGregorian == null
-          ? this.burialDateGregorian
-          : burialDateGregorian.value,
-      madinahEmirateApprovalStatus:
-          madinahEmirateApprovalStatus ?? this.madinahEmirateApprovalStatus,
-      madinahEmirateApprovalDate:
-          madinahEmirateApprovalDate ?? this.madinahEmirateApprovalDate,
-      deathDateGregorian: deathDateGregorian == null
-          ? this.deathDateGregorian
-          : deathDateGregorian.value,
-      deathDateHijri:
-          deathDateHijri == null ? this.deathDateHijri : deathDateHijri.value,
-      deceassedDOBHijri: deceassedDOBHijri == null
-          ? this.deceassedDOBHijri
-          : deceassedDOBHijri.value,
-      burialDateHijri: burialDateHijri == null
-          ? this.burialDateHijri
-          : burialDateHijri.value,
-      requestDetailsModel: requestDetailsModel ?? this.requestDetailsModel,
-      editInfoSection: editInfoSection ?? this.editInfoSection,
-      isDeceasedBtnEnabled: isDeceasedBtnEnabled ?? this.isDeceasedBtnEnabled,
-      isDraft: isDraft ?? this.isDraft,
-        maghsalaExist:maghsalaExist??this.maghsalaExist
-    );
+        isdeceasedInfoReadOnly:
+            isdeceasedInfoReadOnly ?? this.isdeceasedInfoReadOnly,
+        isBurialDatesDisabled:
+            isBurialDatesDisabled ?? this.isBurialDatesDisabled,
+        isDeathDatesDisabled: isDeathDatesDisabled ?? this.isDeathDatesDisabled,
+        isVerified: isVerified ?? this.isVerified,
+        isSpecialTransferNeeded:
+            isSpecialTransferNeeded ?? this.isSpecialTransferNeeded,
+        isBurialInsideDeathCity:
+            isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
+        errorMsg: errorMsg ?? this.errorMsg,
+        selectedNationalIdType:
+            selectedNationalIdType ?? this.selectedNationalIdType,
+        selectedCemetryType: selectedCemetryType ?? this.selectedCemetryType,
+        selectedlaundry: selectedlaundry ?? this.selectedlaundry,
+        selectedMosque: selectedMosque ?? this.selectedMosque,
+        nationalIdTypes: nationalIdTypes ?? this.nationalIdTypes,
+        status: status ?? this.status,
+        errorMessage: errorMessage ?? this.errorMessage,
+        valid: valid ?? this.valid,
+        currentPageValue: currentPageValue ?? this.currentPageValue,
+        lat: lat ?? this.lat,
+        long: long ?? this.long,
+        agreementChecked: agreementChecked ?? this.agreementChecked,
+        relation: relation ?? this.relation,
+        deathLocation: deathLocation ?? this.deathLocation,
+        deathCities: deathCities ?? this.deathCities,
+        burialCities: burialCities ?? this.burialCities,
+        bodyArrivalCities: bodyArrivalCities ?? this.bodyArrivalCities,
+        hospitals: hospitals ?? this.hospitals,
+        countries: countries ?? this.countries,
+        cemetries: cemetries ?? this.cemetries,
+        prayers: prayers ?? this.prayers,
+        specialTransportReasons:
+            specialTransportReasons ?? this.specialTransportReasons,
+        nationalities: nationalities ?? this.nationalities,
+        cemetryTypeItems: cemetryTypeItems ?? this.cemetryTypeItems,
+        laundries: laundries ?? this.laundries,
+        mosques: mosques ?? this.mosques,
+        transportations: transportations ?? this.transportations,
+        selectedDeathCity: selectedDeathCity ?? this.selectedDeathCity,
+        selectedtransportation:
+            selectedtransportation ?? this.selectedtransportation,
+        selectedCemetry: selectedCemetry ?? this.selectedCemetry,
+        selectedPrayer: selectedPrayer ?? this.selectedPrayer,
+        selectedSpecialTransportReason: selectedSpecialTransportReason ??
+            this.selectedSpecialTransportReason,
+        selectedBurialCity: selectedBurialCity ?? this.selectedBurialCity,
+        selectedBodyArrivalCity:
+            selectedBodyArrivalCity ?? this.selectedBodyArrivalCity,
+        selectedDeathCountry: selectedDeathCountry ?? this.selectedDeathCountry,
+        selectedHospital: clearHospital == true
+            ? null
+            : selectedHospital ?? this.selectedHospital,
+        selectedNationality: selectedNationality ?? this.selectedNationality,
+        // deceasedInfoDto: deceasedInfoDto ?? this.deceasedInfoDto,
+        letter: letter ?? this.letter,
+        otherHospitalName: otherHospitalName ?? this.otherHospitalName,
+        fullName: fullName ?? fullName,
+        mobileNumber: mobileNumber ?? mobileNumber,
+        requestType: requestType,
+        requestId: requestId ?? this.requestId,
+        deceasedId: deceasedId ?? this.deceasedId,
+        deceassedDOBGorgian: deceassedDOBGorgian == null
+            ? this.deceassedDOBGorgian
+            : deceassedDOBGorgian.value,
+        burialDateGregorian: burialDateGregorian == null
+            ? this.burialDateGregorian
+            : burialDateGregorian.value,
+        madinahEmirateApprovalStatus:
+            madinahEmirateApprovalStatus ?? this.madinahEmirateApprovalStatus,
+        madinahEmirateApprovalDate:
+            madinahEmirateApprovalDate ?? this.madinahEmirateApprovalDate,
+        deathDateGregorian: deathDateGregorian == null
+            ? this.deathDateGregorian
+            : deathDateGregorian.value,
+        deathDateHijri:
+            deathDateHijri == null ? this.deathDateHijri : deathDateHijri.value,
+        deceassedDOBHijri: deceassedDOBHijri == null
+            ? this.deceassedDOBHijri
+            : deceassedDOBHijri.value,
+        burialDateHijri: burialDateHijri == null
+            ? this.burialDateHijri
+            : burialDateHijri.value,
+        requestDetailsModel: requestDetailsModel ?? this.requestDetailsModel,
+        editInfoSection: editInfoSection ?? this.editInfoSection,
+        isDeceasedBtnEnabled: isDeceasedBtnEnabled ?? this.isDeceasedBtnEnabled,
+        isDraft: isDraft ?? this.isDraft,
+        maghsalaExist: maghsalaExist ?? this.maghsalaExist,
+        cemeteryReservationMsg:
+            cemeteryReservationMsg ?? this.cemeteryReservationMsg);
   }
 
   @override
@@ -412,74 +414,65 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-  LookUpItem? getNationalityById(int? id,String? name) {
-    if (  id != null) {
-      if(nationalities != null) {
+  LookUpItem? getNationalityById(int? id, String? name) {
+    if (id != null) {
+      if (nationalities != null) {
         for (int index = 0; index < nationalities!.length; index++) {
           if (nationalities![index].id == id) {
             return nationalities![index];
           }
         }
-      }
-      else if(name != null&& name.isNotEmpty)
-      {
-        return LookUpItem(id: id,name:name);
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
     }
 
     return null;
   }
 
-  LookUpItem? getParyerById(int? id,String? name) {
+  LookUpItem? getParyerById(int? id, String? name) {
     if (id != null) {
-      if(prayers != null) {
+      if (prayers != null) {
         for (int index = 0; index < prayers!.length; index++) {
           if (prayers![index].id == id) {
             return prayers![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-    else if(name != null&& name.isNotEmpty)
-    {
-      return LookUpItem(id: id,name:name);
     }
-    }
-
 
     return null;
   }
 
-  LookUpItem? getCemtryById(int? id,String? name) {
-    if ( id != null) {
-      if(cemetries != null ) {
+  LookUpItem? getCemtryById(int? id, String? name) {
+    if (id != null) {
+      if (cemetries != null) {
         for (int index = 0; index < cemetries!.length; index++) {
           if (cemetries![index].id == id) {
             return cemetries![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-      else if(name != null&& name.isNotEmpty)
-        {
-          return LookUpItem(id: id,name:name);
-        }
     }
 
     return null;
   }
 
-  LookUpItem? getCemtryTypeById(int? id,String? name) {
-    if ( id != null) {
-      if(cemetryTypeItems != null) {
+  LookUpItem? getCemtryTypeById(int? id, String? name) {
+    if (id != null) {
+      if (cemetryTypeItems != null) {
         for (int index = 0; index < cemetryTypeItems!.length; index++) {
           if (cemetryTypeItems![index].id == id) {
             return cemetryTypeItems![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-      else if(name != null && name.isNotEmpty)
-        {
-          return LookUpItem(id: id,name: name);
-        }
     }
 
     return null;
@@ -492,79 +485,70 @@ class EkramRequestTransportationState extends Equatable {
           return specialTransportReasons![index];
         }
       }
-
     }
 
     return null;
   }
 
-  LookUpItem? getTransportTypeById(int? id,String? name) {
-    if ( id != null) {
-      if(transportations != null) {
+  LookUpItem? getTransportTypeById(int? id, String? name) {
+    if (id != null) {
+      if (transportations != null) {
         for (int index = 0; index < transportations!.length; index++) {
           if (transportations![index].id == id) {
             return transportations![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-    else if(name != null && name.isNotEmpty)
-    {
-      return LookUpItem(id: id,name: name);
-    }
     }
 
     return null;
   }
 
-  LookUpItem? getlaundriesById(int? id,String? name) {
-    if (  id != null) {
-      if(laundries != null) {
+  LookUpItem? getlaundriesById(int? id, String? name) {
+    if (id != null) {
+      if (laundries != null) {
         for (int index = 0; index < laundries!.length; index++) {
           if (laundries![index].id == id) {
             return laundries![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-      else if(name != null && name.isNotEmpty)
-        {
-          return LookUpItem(id: id,name: name);
-        }
     }
 
     return null;
   }
 
-  LookUpItem? getMosquesById(int? id,String? name) {
+  LookUpItem? getMosquesById(int? id, String? name) {
     if (id != null) {
-      if(mosques != null ) {
+      if (mosques != null) {
         for (int index = 0; index < mosques!.length; index++) {
           if (mosques![index].id == id) {
             return mosques![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-      else if(name != null && name.isNotEmpty)
-        {
-          return LookUpItem(id: id,name: name);
-        }
     }
 
     return null;
   }
 
-  LookUpItem? getNationalIdTypesById(int? id,String? name) {
-    if (  id != null) {
-      if(nationalIdTypes != null) {
+  LookUpItem? getNationalIdTypesById(int? id, String? name) {
+    if (id != null) {
+      if (nationalIdTypes != null) {
         for (int index = 0; index < nationalIdTypes!.length; index++) {
           if (nationalIdTypes![index].id == id) {
             return nationalIdTypes![index];
           }
         }
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
-      else if(name != null && name.isNotEmpty)
-        {
-          return LookUpItem(id: id,name: name);
-        }
     }
 
     return null;
@@ -581,7 +565,7 @@ class EkramRequestTransportationState extends Equatable {
   }
 
   bool validateEmirateApprovalInfoSection() {
-    if (madinahEmirateApprovalStatus != null) {
+    if (valid == true) {
       return true;
     }
     return false;

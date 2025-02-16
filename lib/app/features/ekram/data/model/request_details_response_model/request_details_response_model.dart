@@ -35,36 +35,37 @@ class RequestDetailsResponseModel {
   bool? tripable;
   bool? transferring;
   bool? done;
+  String? cemeteryReservationMsg;
 
-  RequestDetailsResponseModel({
-    this.requestId,
-    this.requestKey,
-    this.currentTabId,
-    this.requestDate,
-    this.submitDate,
-    this.lastUpdateDate,
-    this.requestTypeId,
-    this.requestTypeName,
-    this.requestStatusId,
-    this.requestStatusName,
-    this.entryMode,
-    this.municipality,
-    this.deceasedInfo,
-    this.deathInfo,
-    this.burialInfo,
-    this.cemeteryData,
-    this.mainInfo,
-    this.transportInfo,
-    this.locationInfo,
-    this.draft,
-    this.editable,
-    this.deletable,
-    this.cancelable,
-    this.assignable,
-    this.tripable,
-    this.transferring,
-    this.done,
-  });
+  RequestDetailsResponseModel(
+      {this.requestId,
+      this.requestKey,
+      this.currentTabId,
+      this.requestDate,
+      this.submitDate,
+      this.lastUpdateDate,
+      this.requestTypeId,
+      this.requestTypeName,
+      this.requestStatusId,
+      this.requestStatusName,
+      this.entryMode,
+      this.municipality,
+      this.deceasedInfo,
+      this.deathInfo,
+      this.burialInfo,
+      this.cemeteryData,
+      this.mainInfo,
+      this.transportInfo,
+      this.locationInfo,
+      this.draft,
+      this.editable,
+      this.deletable,
+      this.cancelable,
+      this.assignable,
+      this.tripable,
+      this.transferring,
+      this.done,
+      this.cemeteryReservationMsg});
 
   factory RequestDetailsResponseModel.fromJson(Map<String, dynamic> json) =>
       RequestDetailsResponseModel(
@@ -116,6 +117,7 @@ class RequestDetailsResponseModel {
         tripable: json['tripable'] as bool?,
         transferring: json['transferring'] as bool?,
         done: json['done'] as bool?,
+        cemeteryReservationMsg: json['cemeteryReservationMsg'] as String?,
       );
 
   Map<String, dynamic> toJson() => {
@@ -146,6 +148,7 @@ class RequestDetailsResponseModel {
         'tripable': tripable,
         'transferring': transferring,
         'done': done,
+        'cemeteryReservationMsg': cemeteryReservationMsg
       };
 
   RequestDetailsResponseModel copyWith({
@@ -176,36 +179,38 @@ class RequestDetailsResponseModel {
     bool? tripable,
     bool? transferring,
     bool? done,
-
-
+    String? cemeteryReservationMsg,
   }) {
     return RequestDetailsResponseModel(
-        requestId:requestId?? this.requestId,
-        requestKey:requestKey??this.requestKey,
-        currentTabId:currentTabId?? this.currentTabId,
-        requestDate:requestDate?? this.requestDate,
-        submitDate:submitDate?? this.submitDate,
-        lastUpdateDate:lastUpdateDate?? this.lastUpdateDate,
-        requestTypeId:requestTypeId?? this.requestTypeId,
-        requestTypeName:requestTypeName?? this.requestTypeName,
-        requestStatusId:requestStatusId?? this.requestStatusId,
-        requestStatusName:requestStatusName?? this.requestStatusName,
-        entryMode:entryMode?? this.entryMode,
-        municipality:municipality??  this.municipality,
-        locationInfo:locationInfo?? this.locationInfo,
-        draft:draft??this.draft,
-        editable:editable??this.editable,
-        deletable:deletable??this.deletable,
-        cancelable:cancelable?? this.cancelable,
-        assignable:assignable??this.assignable,
-        tripable:tripable?? this.tripable,
-        transferring:transferring??this.transferring,
-        done:done?? this.done,
-        deceasedInfo: deceasedInfo ?? this.deceasedInfo,
-        mainInfo: mainInfo ?? this.mainInfo,
-        deathInfo: deathInfo ?? this.deathInfo,
-        burialInfo: burialInfo ?? this.burialInfo,
-        transportInfo: transportInfo ?? this.transportInfo,
-        cemeteryData: cemeteryData ?? this.cemeteryData);
+      requestId: requestId ?? this.requestId,
+      requestKey: requestKey ?? this.requestKey,
+      currentTabId: currentTabId ?? this.currentTabId,
+      requestDate: requestDate ?? this.requestDate,
+      submitDate: submitDate ?? this.submitDate,
+      lastUpdateDate: lastUpdateDate ?? this.lastUpdateDate,
+      requestTypeId: requestTypeId ?? this.requestTypeId,
+      requestTypeName: requestTypeName ?? this.requestTypeName,
+      requestStatusId: requestStatusId ?? this.requestStatusId,
+      requestStatusName: requestStatusName ?? this.requestStatusName,
+      entryMode: entryMode ?? this.entryMode,
+      municipality: municipality ?? this.municipality,
+      locationInfo: locationInfo ?? this.locationInfo,
+      draft: draft ?? this.draft,
+      editable: editable ?? this.editable,
+      deletable: deletable ?? this.deletable,
+      cancelable: cancelable ?? this.cancelable,
+      assignable: assignable ?? this.assignable,
+      tripable: tripable ?? this.tripable,
+      transferring: transferring ?? this.transferring,
+      done: done ?? this.done,
+      deceasedInfo: deceasedInfo ?? this.deceasedInfo,
+      mainInfo: mainInfo ?? this.mainInfo,
+      deathInfo: deathInfo ?? this.deathInfo,
+      burialInfo: burialInfo ?? this.burialInfo,
+      transportInfo: transportInfo ?? this.transportInfo,
+      cemeteryData: cemeteryData ?? this.cemeteryData,
+      cemeteryReservationMsg:
+          cemeteryReservationMsg ?? this.cemeteryReservationMsg,
+    );
   }
 }

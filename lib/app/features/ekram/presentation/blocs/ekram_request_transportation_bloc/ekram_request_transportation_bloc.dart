@@ -1027,6 +1027,7 @@ class EkramRequestTransportationBloc extends Bloc<
         status: BlocStatus.success,
         isVerified: true,
         requestDetailsModel: model,
+        cemeteryReservationMsg: res.data?.result?.cemeteryReservationMsg,
         editInfoSection: isScreenEditable(res.data?.result),
         errorMessage: "",
       ));
