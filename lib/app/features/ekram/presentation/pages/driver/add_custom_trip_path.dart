@@ -177,9 +177,7 @@ class AddCustomTripPath extends StatelessWidget {
                                   bloc.add(setCustomPathDataEvent(item: item,isStartupInfo: false));
                                 },
                                 onEmptyList: () async {
-                                  // return context
-                                  //     .read<AddTripBloc>()
-                                  //     .getLanuduriesLookUp();
+                                  bloc.add(GetTripsStationEvent());
                                 },
                                 label: "nextTripStationType".tr(),
                                 hint: "nextTripStationType".tr(),
