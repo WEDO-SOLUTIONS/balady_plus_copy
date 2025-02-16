@@ -131,7 +131,6 @@ class _AddNewTripPathDailog extends State<AddNewTripPathDailog> {
 
                       );
 
-
                       widget.bloc.add(setCustomPathDataEvent(
                           item: startUp, isStartupInfo: true));
                     }
