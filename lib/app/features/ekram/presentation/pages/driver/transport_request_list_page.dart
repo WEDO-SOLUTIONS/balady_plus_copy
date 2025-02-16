@@ -70,7 +70,7 @@ class _TransportRequestListPageState extends State<TransportRequestListPage> wit
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-     sl<EkramLocationService>().stop();
+    // sl<EkramLocationService>().stop();
 
     _controller.addListener(() {
       setState(() {

@@ -51,7 +51,7 @@ class _IdenticalListPageState
   void dispose() {
     // TODO: implement dispose
     super.dispose();
-    sl<EkramLocationService>().stop();
+   // sl<EkramLocationService>().stop();
 
 
   }
