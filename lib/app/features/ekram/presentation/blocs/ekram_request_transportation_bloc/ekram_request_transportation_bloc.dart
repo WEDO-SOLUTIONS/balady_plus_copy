@@ -72,6 +72,7 @@ class EkramRequestTransportationBloc extends Bloc<
   final TextEditingController? decesssedIdentity = TextEditingController();
 
   PageController controller = PageController();
+
   // TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     DeceasedVerificationSection(),
@@ -975,12 +976,17 @@ class EkramRequestTransportationBloc extends Bloc<
     emit(state.copyWith(
         status: BlocStatus.loading, isDeceasedBtnEnabled: false));
 
-    final failureOrSuccess = await _verifyDeceased(VerifyDeceasedParams(
-        identityNumber: state.deceasedId!,
-        identityType: state.selectedNationalIdType!.id!,
-        birthDate: state.deceassedDOBHijri!,
-        submitterBirthDate: CommonProperties.userInfo!.getHijriBirthDate(),
-        submitterMobile: CommonProperties.userInfo!.getPhone()));
+    final failureOrSuccess = await _verifyDeceased(
+      e.params == null
+          ? VerifyDeceasedParams(
+              identityNumber: state.deceasedId!,
+              identityType: state.selectedNationalIdType!.id!,
+              birthDate: state.deceassedDOBHijri!,
+              submitterBirthDate:
+                  CommonProperties.userInfo!.getHijriBirthDate(),
+              submitterMobile: CommonProperties.userInfo!.getPhone())
+          : e.params!,
+    );
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
           isDeceasedBtnEnabled: true,
@@ -1095,29 +1101,23 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      if(e.isDarft==true)
-        {
-          _ShowDraftMessage();
-
-        }
-      else {
+      if (e.isDarft == true) {
+        _ShowDraftMessage();
+      } else {
         add(const GoToNextPageEvent());
       }
     });
   }
 
-  void _ShowDraftMessage()
-  {
-
+  void _ShowDraftMessage() {
     FocusManager.instance.primaryFocus?.unfocus();
     bool Function(Route<dynamic>) predicate =
-    ModalRoute.withName(RouteName.SpecificServicePage);
+        ModalRoute.withName(RouteName.SpecificServicePage);
     NavigationService.navigatorKey.currentState!.popUntil((predicate));
 
     CommonFunctions.showSuccess("cancellation_license_message".tr());
-
-
   }
+
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
@@ -1144,11 +1144,9 @@ class EkramRequestTransportationBloc extends Bloc<
         errorMessage: "",
       ));
 
-      if(e.isDarft== true)
-        {
-          _ShowDraftMessage();
-        }
-      else {
+      if (e.isDarft == true) {
+        _ShowDraftMessage();
+      } else {
         add(const GoToNextPageEvent());
       }
     });
@@ -1216,10 +1214,14 @@ class EkramRequestTransportationBloc extends Bloc<
         deathDate: e.deathInfo?.deathDate,
         gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
         countryId: e.deathInfo?.countryId ?? (info.countryId),
-        cityId: state.requestDetailsModel?.deathInfo?.isCountryChanged(e.deathInfo?.countryId) == false
+        cityId: state.requestDetailsModel?.deathInfo
+                    ?.isCountryChanged(e.deathInfo?.countryId) ==
+                false
             ? e.deathInfo?.cityId
             : -1,
-        corpseArrivalCityId: state.requestDetailsModel?.deathInfo?.isCountryChanged(e.deathInfo?.countryId) == false
+        corpseArrivalCityId: state.requestDetailsModel?.deathInfo
+                    ?.isCountryChanged(e.deathInfo?.countryId) ==
+                false
             ? e.deathInfo?.corpseArrivalCityId
             : -1,
         cityOther: e.deathInfo?.cityOther,
@@ -1236,8 +1238,7 @@ class EkramRequestTransportationBloc extends Bloc<
       newCityId = e.deathInfo!.corpseArrivalCityId;
     }
     emitter(state.copyWith(
-        status: BlocStatus.success,
-        requestDetailsModel: params));
+        status: BlocStatus.success, requestDetailsModel: params));
   }
 
   Future<void> _resetActionEventHandler(
@@ -1260,35 +1261,31 @@ class EkramRequestTransportationBloc extends Bloc<
         break;
       case ResetActionEnum.City:
         {
-
-        // hospitals: isCityChanged(newCityId) == true
-        // ? []
-        //     : isCountryChanged(e.deathInfo?.countryId) == true
-        // ? []
-        //     : null,
-        // cemetries: isCityChanged(newCityId) == true
-        // ? []
-        //     : isCountryChanged(e.deathInfo?.countryId) == true
-        // ? []
-        //     : null,
-        // transportations: isCityChanged(newCityId) == true
-        // ? []
-        //     : isCountryChanged(e.deathInfo?.countryId) == true
-        // ? []
-        //     : null,
-        // laundries: isCityChanged(newCityId) == true
-        // ? []
-        //     : isCountryChanged(e.deathInfo?.countryId) == true
-        // ? []
-        //     : null,
-        // mosques: isCityChanged(newCityId) == true
-        // ? []
-        //     : isCountryChanged(e.deathInfo?.countryId) == true
-        // ? []
-        //     : null,
-
-
-
+          // hospitals: isCityChanged(newCityId) == true
+          // ? []
+          //     : isCountryChanged(e.deathInfo?.countryId) == true
+          // ? []
+          //     : null,
+          // cemetries: isCityChanged(newCityId) == true
+          // ? []
+          //     : isCountryChanged(e.deathInfo?.countryId) == true
+          // ? []
+          //     : null,
+          // transportations: isCityChanged(newCityId) == true
+          // ? []
+          //     : isCountryChanged(e.deathInfo?.countryId) == true
+          // ? []
+          //     : null,
+          // laundries: isCityChanged(newCityId) == true
+          // ? []
+          //     : isCountryChanged(e.deathInfo?.countryId) == true
+          // ? []
+          //     : null,
+          // mosques: isCityChanged(newCityId) == true
+          // ? []
+          //     : isCountryChanged(e.deathInfo?.countryId) == true
+          // ? []
+          //     : null,
 
           emitter(state.copyWith(
             hospitals: [],
@@ -1302,12 +1299,10 @@ class EkramRequestTransportationBloc extends Bloc<
         break;
       case ResetActionEnum.Hospital:
         {
-
           emitter(state.copyWith(
             //cemetries: [],
             status: BlocStatus.success,
           ));
-
         }
         break;
 
@@ -1454,11 +1449,6 @@ class EkramRequestTransportationBloc extends Bloc<
           valid: success.data?.result?.valid));
     });
   }
-
-
-
-
-
 
   void deceasedVerificationSectionValidator(Emitter emitter) {
     if (state.selectedNationalIdType == null) {

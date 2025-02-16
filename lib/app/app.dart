@@ -4,7 +4,11 @@ import 'dart:io';
 import 'package:app_links/app_links.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_authorization/auth_package.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/verify_deceased.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_request_transportation_bloc/ekram_request_transportation_bloc.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
@@ -39,8 +43,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
           enableAdvancedGestureRecognition: true,
@@ -93,19 +95,46 @@ class AppWidgetState extends State<AppWidget> {
   @override
   void initState() {
     super.initState();
-initDeepLinks();
+    initDeepLinks();
   }
-  
+
   Future<void> initDeepLinks() async {
     _appLinks = AppLinks();
     final appLink = await _appLinks.getInitialLink();
 
-    _linkSubscription = _appLinks.uriLinkStream.listen((uri) {
-      if (kDebugMode) {
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
+      try {
+        if(uri.path.contains("ekram/mobile/transport")) {
+          if(CommonProperties.userInfo != null) {
+            Map data = uri.queryParameters;
+            VerifyDeceased useCase = VerifyDeceased(repository: sl());
+            final failureOrSuccess = await  useCase(
+              VerifyDeceasedParams(
+                identityNumber: data['identityNumber'] ?? '',
+                identityType: int.tryParse(data['identityType']) ?? 0 ,
+                birthDate: data['birthDate'] ?? '',
+                submitterBirthDate: CommonProperties.userInfo!.getHijriBirthDate(),
+                submitterMobile: CommonProperties.userInfo!.getPhone(),
+              ),
+            );
+            failureOrSuccess.fold(
+                  (failure) {
+                print(failure);
+              },
+                  (response) {
+                print(response);
+              },
+            );
+          }
+        }
+
         print('_linkSubscription $uri');
+      } catch (e) {
+        print(e);
       }
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
