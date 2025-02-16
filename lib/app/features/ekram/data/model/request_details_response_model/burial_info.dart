@@ -6,7 +6,7 @@ class BurialInfo {
   String? burialDate;
   String? gregorianBurialDate;
   int? prayId;
-  LookUpItem? pray;
+ // LookUpItem? pray;
   String? prayName;
   String? burialTime;
   String? ghuslMethod;
@@ -24,7 +24,7 @@ class BurialInfo {
     this.burialDate,
     this.gregorianBurialDate,
     this.prayId,
-    this.pray,
+   // this.pray,
     this.prayName,
     this.burialTime,
     this.ghuslMethod,
@@ -44,7 +44,7 @@ class BurialInfo {
         gregorianBurialDate: json['gregorianBurialDate'] as String?,
         prayId: json['prayId'] as int?,
         prayName: json['prayName'] as String?,
-        burialTime: json['burialTime'] as String?,
+        burialTime: json['prayOther'] as String?,
         ghuslMethod: json['ghuslMethod'] as String?,
         cityId: json['cityId'] as int?,
         cityName: json['cityName'] as String?,
@@ -60,7 +60,7 @@ class BurialInfo {
         'burialDate': burialDate,
         'gregorianBurialDate': gregorianBurialDate,
         'prayId': prayId,
-        'burialTime': burialTime,
+        'prayOther': burialTime,
         'prayName': prayName,
         'ghuslMethod': ghuslMethod,
         'cityId': cityId,
@@ -97,7 +97,7 @@ class BurialInfo {
         burialDate: burialDate ?? this.burialDate,
         gregorianBurialDate: gregorianBurialDate ?? this.gregorianBurialDate,
         prayId: prayId ?? this.prayId,
-        pray: pray ?? this.pray,
+      //  pray: pray ?? this.pray,
         prayName: prayName ?? this.prayName,
         burialTime: burialTime ?? this.burialTime,
         ghuslMethod: ghuslMethod ?? this.ghuslMethod,

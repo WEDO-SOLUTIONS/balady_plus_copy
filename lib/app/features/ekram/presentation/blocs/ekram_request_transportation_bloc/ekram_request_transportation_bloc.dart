@@ -1095,10 +1095,29 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      add(const GoToNextPageEvent());
+      if(e.isDarft==true)
+        {
+          _ShowDraftMessage();
+
+        }
+      else {
+        add(const GoToNextPageEvent());
+      }
     });
   }
 
+  void _ShowDraftMessage()
+  {
+
+    FocusManager.instance.primaryFocus?.unfocus();
+    bool Function(Route<dynamic>) predicate =
+    ModalRoute.withName(RouteName.SpecificServicePage);
+    NavigationService.navigatorKey.currentState!.popUntil((predicate));
+
+    CommonFunctions.showSuccess("cancellation_license_message".tr());
+
+
+  }
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
@@ -1124,7 +1143,14 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      add(const GoToNextPageEvent());
+
+      if(e.isDarft== true)
+        {
+          _ShowDraftMessage();
+        }
+      else {
+        add(const GoToNextPageEvent());
+      }
     });
   }
 
@@ -1190,10 +1216,10 @@ class EkramRequestTransportationBloc extends Bloc<
         deathDate: e.deathInfo?.deathDate,
         gregorianDeathDate: e.deathInfo?.gregorianDeathDate,
         countryId: e.deathInfo?.countryId ?? (info.countryId),
-        cityId: isCountryChanged(e.deathInfo?.countryId) == false
+        cityId: state.requestDetailsModel?.deathInfo?.isCountryChanged(e.deathInfo?.countryId) == false
             ? e.deathInfo?.cityId
             : -1,
-        corpseArrivalCityId: isCountryChanged(e.deathInfo?.countryId) == false
+        corpseArrivalCityId: state.requestDetailsModel?.deathInfo?.isCountryChanged(e.deathInfo?.countryId) == false
             ? e.deathInfo?.corpseArrivalCityId
             : -1,
         cityOther: e.deathInfo?.cityOther,
@@ -1210,31 +1236,6 @@ class EkramRequestTransportationBloc extends Bloc<
       newCityId = e.deathInfo!.corpseArrivalCityId;
     }
     emitter(state.copyWith(
-        hospitals: isCityChanged(newCityId) == true
-            ? []
-            : isCountryChanged(e.deathInfo?.countryId) == true
-                ? []
-                : null,
-        cemetries: isCityChanged(newCityId) == true
-            ? []
-            : isCountryChanged(e.deathInfo?.countryId) == true
-                ? []
-                : null,
-        transportations: isCityChanged(newCityId) == true
-            ? []
-            : isCountryChanged(e.deathInfo?.countryId) == true
-                ? []
-                : null,
-        laundries: isCityChanged(newCityId) == true
-            ? []
-            : isCountryChanged(e.deathInfo?.countryId) == true
-                ? []
-                : null,
-        mosques: isCityChanged(newCityId) == true
-            ? []
-            : isCountryChanged(e.deathInfo?.countryId) == true
-                ? []
-                : null,
         status: BlocStatus.success,
         requestDetailsModel: params));
   }
@@ -1259,6 +1260,36 @@ class EkramRequestTransportationBloc extends Bloc<
         break;
       case ResetActionEnum.City:
         {
+
+        // hospitals: isCityChanged(newCityId) == true
+        // ? []
+        //     : isCountryChanged(e.deathInfo?.countryId) == true
+        // ? []
+        //     : null,
+        // cemetries: isCityChanged(newCityId) == true
+        // ? []
+        //     : isCountryChanged(e.deathInfo?.countryId) == true
+        // ? []
+        //     : null,
+        // transportations: isCityChanged(newCityId) == true
+        // ? []
+        //     : isCountryChanged(e.deathInfo?.countryId) == true
+        // ? []
+        //     : null,
+        // laundries: isCityChanged(newCityId) == true
+        // ? []
+        //     : isCountryChanged(e.deathInfo?.countryId) == true
+        // ? []
+        //     : null,
+        // mosques: isCityChanged(newCityId) == true
+        // ? []
+        //     : isCountryChanged(e.deathInfo?.countryId) == true
+        // ? []
+        //     : null,
+
+
+
+
           emitter(state.copyWith(
             hospitals: [],
             cemetries: [],
@@ -1270,7 +1301,23 @@ class EkramRequestTransportationBloc extends Bloc<
         }
         break;
       case ResetActionEnum.Hospital:
-        {}
+        {
+
+          emitter(state.copyWith(
+            //cemetries: [],
+            status: BlocStatus.success,
+          ));
+
+        }
+        break;
+
+      case ResetActionEnum.GraveType:
+        {
+          emitter(state.copyWith(
+            cemetries: [],
+            status: BlocStatus.success,
+          ));
+        }
         break;
     }
   }
@@ -1300,6 +1347,7 @@ class EkramRequestTransportationBloc extends Bloc<
         burialDate: e.burialInfo?.burialDate,
         gregorianBurialDate: e.burialInfo?.gregorianBurialDate,
         prayId: e.burialInfo?.prayId,
+        burialTime: e.burialInfo?.burialTime,
         burialDestination: e.burialInfo?.burialDestination);
 
     params = params.copyWith(burialInfo: info);
@@ -1407,30 +1455,10 @@ class EkramRequestTransportationBloc extends Bloc<
     });
   }
 
-  bool isCityChanged(int? newCityId) {
-    if (newCityId != null) {
-      if (state.requestDetailsModel?.deathInfo?.countryId == 1) {
-        if (state.requestDetailsModel?.deathInfo?.cityId != newCityId) {
-          return true;
-        }
-      } else {
-        if (state.requestDetailsModel?.deathInfo?.corpseArrivalCityId !=
-            newCityId) {
-          return true;
-        }
-      }
-    }
-    return false;
-  }
 
-  bool isCountryChanged(int? newCountryId) {
-    if (newCountryId != null) {
-      if (state.requestDetailsModel?.deathInfo?.countryId != newCountryId) {
-        return true;
-      }
-    }
-    return false;
-  }
+
+
+
 
   void deceasedVerificationSectionValidator(Emitter emitter) {
     if (state.selectedNationalIdType == null) {

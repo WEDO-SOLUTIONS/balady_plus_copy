@@ -35,7 +35,7 @@ class RequestCardWidget extends StatelessWidget {
 
   @override
   void dispose() {
-    sl<EkramLocationService>().stop();
+  //  sl<EkramLocationService>().stop();
 
   }
 

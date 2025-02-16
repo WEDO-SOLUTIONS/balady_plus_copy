@@ -9,7 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class ApplicantInfoSection extends StatelessWidget {
@@ -127,6 +129,35 @@ class ApplicantInfoSection extends StatelessWidget {
                       ),
                     ],
                   ),
+                ),
+              ),
+            ),
+
+            InkWell(
+              onTap: () async {
+
+                context
+                    .read<EkramRequestTransportationBloc>()
+                    .add(const saveDeceasedInfoEvent(isDarft: true));
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                margin:const EdgeInsets.all(16) ,
+                decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.borderBlck, width: 1), borderRadius: BorderRadius.circular(6)),
+                //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    CustomTextWidget(
+                      "SaveAsDraft".tr(),
+                      fontSize: 14,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.borderBlck,
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
                 ),
               ),
             ),

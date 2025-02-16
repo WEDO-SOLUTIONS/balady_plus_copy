@@ -18,8 +18,9 @@ class TripDateTimeWidget extends StatelessWidget {
   final bool? isEditable;
   final Function(String?)? onDateCallback;
   final Function(String?)? onTimeCallback;
+  final bool? showDate;
 
-  TripDateTimeWidget({Key? key,required this.title, required this.date, required this.time,this.isEditable,this.onDateCallback,this.onTimeCallback})
+  TripDateTimeWidget({Key? key,required this.title,  this.date, required this.time,this.isEditable,this.onDateCallback,this.onTimeCallback,this.showDate})
       : super(key: key);
 
   @override
@@ -37,7 +38,9 @@ class TripDateTimeWidget extends StatelessWidget {
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Expanded(
+           showDate==false?
+             Container() :
+           Expanded(
               child: InkWell(
                 onTap: () {
                   if(isEditable == true) {
@@ -62,8 +65,6 @@ class TripDateTimeWidget extends StatelessWidget {
                     )),
               ),
             ),
-
-
             CustomHorizontalSpace(width: 15),
             Expanded(
               child: InkWell(
@@ -147,7 +148,7 @@ class TripDateTimeWidget extends StatelessWidget {
   showPickerTime(String? currentDate, BuildContext context) {
 
 
-    Picker(
+   Picker(
         confirmTextStyle: const TextStyle(
           fontFamily: Constants.appFontType,
           fontSize: 15,
@@ -159,17 +160,17 @@ class TripDateTimeWidget extends StatelessWidget {
         height: 270,
         confirmText: 'done'.tr(),
         hideHeader: false,
+
         adapter: DateTimePickerAdapter(
-            customColumnType: Helpers.getCurrentLanguageCode() == "ar"
-                ? [7, 4 , 6]
-                : [6, 4, 7],
+
+            customColumnType:  [3, 4 ]
 
         ),
         selectedTextStyle: const TextStyle(color: AppColor.baladyDarkGreen2),
         onCancel: () {
           //print("Cancell");
         },
-        cancelText: Helpers.translatingWord('choose_date'),
+        cancelText: Helpers.translatingWord('choose_time_desc'),
         cancelTextStyle: const TextStyle(
           color: AppColor.black,
           fontWeight: FontWeight.w700,

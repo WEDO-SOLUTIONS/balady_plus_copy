@@ -79,6 +79,7 @@ class AddCustomTripPath extends StatelessWidget {
                               CustomVerticalSpace(height: 20),
 
                               CustomDropDownDialog(
+                                isDisbaled:true,
                                 items: bloc.state.lstTripStation ?? [],
                                 selectedValue: bloc.state.addTripPath?.startupInfo?.typeName,
                                 onChangeType: (var item) {
@@ -168,15 +169,15 @@ class AddCustomTripPath extends StatelessWidget {
 
 
                               CustomDropDownDialog(
-                                items: bloc.state.addTripPath?.startupInfo != null ? bloc.state.lstTripStation!:[],
+                                items:  bloc.state.lstTripStation??[],
+
+                               // items: bloc.state.addTripPath?.startupInfo != null ? bloc.state.lstTripStation:[],
                                 selectedValue: bloc.state.addTripPath?.arrivalInfo?.typeName,
                                 onChangeType: (var item) {
                                   bloc.add(setCustomPathDataEvent(item: item,isStartupInfo: false));
                                 },
                                 onEmptyList: () async {
-                                  // return context
-                                  //     .read<AddTripBloc>()
-                                  //     .getLanuduriesLookUp();
+                                  bloc.add(GetTripsStationEvent());
                                 },
                                 label: "nextTripStationType".tr(),
                                 hint: "nextTripStationType".tr(),

@@ -35,18 +35,6 @@ class EkramPreviousNextButtons extends StatelessWidget {
             btnPressed: isBtnDisabled
                 ? () {}
                 : btnPressed,
-
-                // () {
-                //     if (!isLastPage) {
-                //       context
-                //           .read<EkramRequestTransportationBloc>()
-                //           .add(GoToNextPageEvent());
-                //     } else {
-                //       context
-                //           .read<EkramRequestTransportationBloc>()
-                //           .add(SubmitRequestEvent());
-                //     }
-                //   },
             btnRadius: 8,
             btnText: isLastPage ? "ekramSubmitOrder".tr() : ("next").tr(),
             btnTextSize: 16,

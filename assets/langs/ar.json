@@ -4269,5 +4269,7 @@
   "tripCompletesucessfully": "تم إكمال رحلة نقل وتجهيز المتوفى بنجاح",
   "BurialInOtherCity": "فى مدينة أخرى",
   "BurialInCorpseArrivalCity": "في مدينة وصول الجثمان",
-  "BurialInDeathCity": "فى مدينة الوفاة"
+  "BurialInDeathCity": "فى مدينة الوفاة",
+  "noTransportRequest": "لا توجد طلبات نقل موتي تم تعيينها لك",
+  "SaveAsDraft": "حفظ مسودة"
 }
