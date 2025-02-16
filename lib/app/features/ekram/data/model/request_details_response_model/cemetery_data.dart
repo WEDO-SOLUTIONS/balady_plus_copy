@@ -59,4 +59,15 @@ class CemeteryData {
   }
 
 
+  bool isGraveTypeChanged(int? newGraveTypeId) {
+    if (newGraveTypeId != null) {
+      if (graveTypeId != newGraveTypeId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+
 }

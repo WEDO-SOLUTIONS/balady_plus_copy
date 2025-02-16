@@ -1,5 +1,6 @@
 enum ResetActionEnum {
   Country ,
   City,
-  Hospital
+  Hospital,
+  GraveType
 }

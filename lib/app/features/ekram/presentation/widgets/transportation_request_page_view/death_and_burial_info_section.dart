@@ -29,6 +29,7 @@ import '../../../data/model/request_details_response_model/burial_info.dart';
 import '../../../data/model/request_details_response_model/cemetery_data.dart';
 import '../../../data/model/request_details_response_model/death_info.dart';
 import '../../../data/model/request_details_response_model/transport_info.dart';
+import '../../../data/model/reset_action_enum.dart';
 
 class DeathAndBurialInfoSection extends StatelessWidget {
   const DeathAndBurialInfoSection({super.key});
@@ -119,6 +120,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+                                  if(item.id != null&& state.requestDetailsModel?.deathInfo?.isCountryChanged(item.id!)==true)
+                                  {
+                                    context
+                                        .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.Country));
+                                  }
+
+
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeDeathInfoEvent(
@@ -150,6 +158,14 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+
+
+                                  if(item.id != null&& state.requestDetailsModel?.deathInfo?.isCityChanged(item.id!)==true)
+                                  {
+                                    context
+                                        .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.City));
+                                  }
+
                                   if (state.requestDetailsModel?.deathInfo
                                           ?.countryId ==
                                       1) {
@@ -238,6 +254,14 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+
+                                  // if(item.id != null&& state.requestDetailsModel?.deathInfo?.isHostpitalChanged(item.id!)==true)
+                                  // {
+                                  //   context
+                                  //       .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.Hospital));
+                                  // }
+
+
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(ChangeDeathInfoEvent(
@@ -614,11 +638,21 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+
+                                  if(item.id != null&& state.requestDetailsModel?.cemeteryData?.isGraveTypeChanged(item.id!)==true)
+                                    {
+                                      context
+                                          .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.GraveType));
+                                    }
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setCemtryInfoEvent(
                                           cemeteryData: CemeteryData(
                                               graveTypeId: item.id)));
+
+
+
+
                                 }
                               },
                               label: ("cemetry_type").tr(),

@@ -122,4 +122,38 @@ class DeathInfo {
     deathByQasas: deathByQasas ?? this.deathByQasas,
     age: age ?? this.age,
   );
+
+
+
+  bool isCityChanged(int? newCityId) {
+    if (newCityId != null) {
+      if (countryId == 1) {
+        if (cityId != newCityId) {
+          return true;
+        }
+      } else {
+        if (corpseArrivalCityId != newCityId) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+  bool isCountryChanged(int? newCountryId) {
+    if (newCountryId != null) {
+      if (countryId != newCountryId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  bool isHostpitalChanged(int? newId) {
+    if (newId != null) {
+      if (hospitalId != newId) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
