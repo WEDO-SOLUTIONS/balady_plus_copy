@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
 import 'package:geolocator/geolocator.dart';
@@ -77,7 +76,7 @@ class _Location extends _$Location {
           Position? userLocation;
 
           if (isHuawei) {
-            userLocation = await Helpers.getLastLocationHuawei();
+            userLocation = await CommonFunctions.getLastLocationHuawei();
           } else {
             userLocation = await Geolocator.getLastKnownPosition();
           }

@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:huawei_location/huawei_location.dart' as hms;
+import 'package:geolocator/geolocator.dart' as geo_locator;
 
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
@@ -210,6 +212,93 @@ class CommonFunctions {
 
   static Future<bool> isHawaiiDevice() async {
     return await FlutterHmsGmsAvailability.isHmsAvailable;
+  }
+
+  static final locationService = hms.FusedLocationProviderClient();
+
+  static Future<geo_locator.Position?> getLastLocationHuawei() async {
+    await locationService.initFusedLocationService();
+    final location = await locationService.getLastLocation();
+    if (location.latitude != null && location.longitude != null) {
+      return geo_locator.Position(
+        longitude: location.longitude!,
+        latitude: location.latitude!,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: location.altitude ?? 0,
+        altitudeAccuracy: 0,
+        heading: location.bearing ?? 0,
+        headingAccuracy: location.bearingAccuracyDegrees ?? 0,
+        speed: location.speed ?? 0,
+        speedAccuracy: location.speedAccuracyMetersPerSecond ?? 0,
+      );
+    }
+
+    return null;
+  }
+
+  static Future<LatLng?> getCurrentLocationHuawei() async {
+    try {
+      await locationService.initFusedLocationService();
+      final request = hms.LocationRequest();
+      request.priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY;
+      request.interval = 13000;
+
+      final settings = hms.LocationSettingsRequest(
+          requests: [request], needBle: true, alwaysShow: true);
+      try {
+        await locationService.checkLocationSettings(settings);
+      } catch (e) {
+        debugPrint('amr catch ${e.toString()}');
+      }
+
+      final location = await locationService.getLastLocation();
+
+      if (location.latitude != null && location.longitude != null) {
+        debugPrint(
+            'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
+        return LatLng(location.latitude!, location.longitude!);
+      } else {
+        await locationService.requestLocationUpdates(request);
+      }
+    } catch (error, stackTrace) {
+      return handelLocationCatch(true, error, stackTrace);
+    }
+    return null;
+  }
+
+  static Future<LatLng?> handelLocationCatch(
+      bool isHuawei, error, stackTrace) async {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+    try {
+      if (isHuawei) {
+        final position = await locationService.getLastLocation();
+        if (position.latitude != null && position.longitude != null) {
+          return LatLng(position.latitude!, position.longitude!);
+        }
+      } else {
+        geo_locator.Position? position;
+        position = await geo_locator.Geolocator.getLastKnownPosition();
+        if (position?.latitude != null && position?.longitude != null) {
+          return LatLng(position!.latitude, position.longitude);
+        }
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    return null;
   }
 
   static String fileMimeType(String extension) {
