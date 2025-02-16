@@ -169,7 +169,9 @@ class AddCustomTripPath extends StatelessWidget {
 
 
                               CustomDropDownDialog(
-                                items: bloc.state.addTripPath?.startupInfo != null ? bloc.state.lstTripStation!:[],
+                                items:  bloc.state.lstTripStation??[],
+
+                               // items: bloc.state.addTripPath?.startupInfo != null ? bloc.state.lstTripStation:[],
                                 selectedValue: bloc.state.addTripPath?.arrivalInfo?.typeName,
                                 onChangeType: (var item) {
                                   bloc.add(setCustomPathDataEvent(item: item,isStartupInfo: false));

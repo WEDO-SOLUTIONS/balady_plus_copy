@@ -118,6 +118,7 @@ class _AddNewTripPathDailog extends State<AddNewTripPathDailog> {
                 if(currentSelected?.arrivalInfo==null)
                   {
 
+
                     if(lastTripPath != null) {
                       TripStations startUp = TripStations(
 
