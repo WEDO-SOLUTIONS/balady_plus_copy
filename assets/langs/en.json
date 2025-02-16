@@ -4447,6 +4447,19 @@
   "passcode_success": "Passcode has been registered successfully",
   "deactivate":"Deactivate",
   "error_pin":"There is a mismatch between the registered quick PIN and the confirmation of the quick PIN",
+
+
+
+  "message_login_life_style": "Unlock the full potential of maps and navigation",
+  "by_continuing_agree": "By continuing, you agree to our ",
+  "privacy_policy": "Privacy Policy",
+  "continue": "Continue",
+
+  "enter_code_from_sms": "Enter the code from the SMS",
+  "to_confirm_number": "To confirm your number",
+  "get_code_again": "Get the code again",
+  "in" : "in",
+  "phone_number_not_valid": "The phone number is not valid",
   "auth_pacakge_end": "end",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
   "complianceFAQ": "Frequently asked questions",
@@ -4460,6 +4473,8 @@
   "feature_services":"Feature Services",
   "services_categories":"Services Categories",
 
-  "service_lase_teen": "Services"
+  "service_lase_teen": "Services",
+
+
 
 }
