@@ -841,6 +841,36 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                 ),
               ),
             ),
+
+
+            InkWell(
+              onTap: () async {
+
+                context
+                    .read<EkramRequestTransportationBloc>()
+                    .add(const saveBurianDeathInfoEvent(isDarft: true));
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                margin:const EdgeInsets.all(16) ,
+                decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.borderBlck, width: 1), borderRadius: BorderRadius.circular(6)),
+                //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    CustomTextWidget(
+                      "SaveAsDraft".tr(),
+                      fontSize: 14,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.borderBlck,
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ),
+            ),
             EkramPreviousNextButtons(
               btnPressed: () {
                 if (state.validateDeathAndBurialInfoSection(true) == true) {

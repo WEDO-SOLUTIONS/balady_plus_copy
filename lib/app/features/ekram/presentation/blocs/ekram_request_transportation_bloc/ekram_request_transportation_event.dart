@@ -293,11 +293,14 @@ class getCurrentTrackLocationEvent extends EkramRequestTransportationEvent {
 }
 
 class saveDeceasedInfoEvent extends EkramRequestTransportationEvent {
-  const saveDeceasedInfoEvent();
+  final bool? isDarft;
+
+  const saveDeceasedInfoEvent({this.isDarft});
 }
 
 class saveBurianDeathInfoEvent extends EkramRequestTransportationEvent {
-  const saveBurianDeathInfoEvent();
+  final bool? isDarft;
+  const saveBurianDeathInfoEvent({this.isDarft});
 }
 
 

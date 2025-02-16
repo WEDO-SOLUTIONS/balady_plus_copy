@@ -1094,10 +1094,29 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      add(const GoToNextPageEvent());
+      if(e.isDarft==true)
+        {
+          _ShowDraftMessage();
+
+        }
+      else {
+        add(const GoToNextPageEvent());
+      }
     });
   }
 
+  void _ShowDraftMessage()
+  {
+
+    FocusManager.instance.primaryFocus?.unfocus();
+    bool Function(Route<dynamic>) predicate =
+    ModalRoute.withName(RouteName.SpecificServicePage);
+    NavigationService.navigatorKey.currentState!.popUntil((predicate));
+
+    CommonFunctions.showSuccess("cancellation_license_message".tr());
+
+
+  }
   Future<void> _saveDeceasedBurialInfoHandler(
       saveBurianDeathInfoEvent e, Emitter emitter) async {
     emit(state.copyWith(status: BlocStatus.loading));
@@ -1123,7 +1142,14 @@ class EkramRequestTransportationBloc extends Bloc<
         isVerified: true,
         errorMessage: "",
       ));
-      add(const GoToNextPageEvent());
+
+      if(e.isDarft== true)
+        {
+          _ShowDraftMessage();
+        }
+      else {
+        add(const GoToNextPageEvent());
+      }
     });
   }
 
