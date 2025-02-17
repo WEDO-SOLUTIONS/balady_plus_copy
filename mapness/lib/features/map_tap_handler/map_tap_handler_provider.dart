@@ -24,7 +24,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
 
   OnMapTapHandler? _priorityMapTapHandler;
-  bool _isDisabledTapHandler = false;
 
   late final StreamController<TapEvent> _currentMapHandlers = StreamController.broadcast();
 
@@ -44,12 +43,6 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   // ignore: avoid_setters_without_getters
   set priorityMapTapHandler(OnMapTapHandler handler) => _priorityMapTapHandler = handler;
 
-  /// Disables the default tap handler, preventing it from being called.
-  // ignore: avoid_setters_without_getters
-  set disableTapOnMap(bool value) => _isDisabledTapHandler = value;
-
-  bool get isDisabledTapHandler => _isDisabledTapHandler;
-
   /// Resets the previously set priority map tap handler, reverting to default behavior.
   void resetPriorityMapTapHandler() {
     _priorityMapTapHandler = null;
@@ -68,18 +61,17 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     if (_priorityMapTapHandler != null) {
       _priorityMapTapHandler!(event);
     } else {
-      _defaultOnMapClickListener(event);
+      _guardDefaultTap(() => _defaultOnMapClickListener(event));
     }
     _currentMapHandlers.sink.add(event);
   }
 
   /// Processes map tap events if no priority handler is set,
   /// including navigation and metrics logging.
+  ///
+  /// Default tap handler just manages the tap events and navigates to the corresponding screens.
+  /// The logic of protection of unnecessary taps is implemented in the mixin.
   void _defaultOnMapClickListener(TapEvent event) {
-    if (super._guardOfDefaultTap()) {
-      return;
-    }
-
     if (event is ObjectTapEvent) {
       _handleObjectTapEvent(event);
     } else if (event is RoadEventTapEvent) {
