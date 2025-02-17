@@ -467,7 +467,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     context
                                         .read<EkramRequestTransportationBloc>()
                                         .add(const ResetActionEvent(
-                                            action: ResetActionEnum.Country));
+                                            action: ResetActionEnum.prayer));
                                   }
                                   context
                                       .read<EkramRequestTransportationBloc>()
