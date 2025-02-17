@@ -109,6 +109,10 @@ import 'enums/enums.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+
+
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
 var carPlateLettersList = [
@@ -678,7 +682,7 @@ class CommonFunctions {
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
-  static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+  static Future<bool> onLogin({bool isMunicipality = false}) async => await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -1697,7 +1701,7 @@ class CommonProperties {
     return null;
   }
 
-  static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+  static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
 
