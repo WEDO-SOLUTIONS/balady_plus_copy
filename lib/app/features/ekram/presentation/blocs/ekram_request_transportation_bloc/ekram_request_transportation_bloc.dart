@@ -1272,12 +1272,15 @@ class EkramRequestTransportationBloc extends Bloc<
     emitter(state.copyWith(
         status: BlocStatus.success, requestDetailsModel: params));
   }
-
   Future<void> _resetActionEventHandler(
       ResetActionEvent e, Emitter emitter) async {
+    RequestDetailsResponseModel? params =  _resetDataDependcyHandler(e.action);
+
     switch (e.action) {
       case ResetActionEnum.Country:
         {
+
+
           emitter(state.copyWith(
             burialCities: [],
             deathCities: [],
@@ -1287,46 +1290,24 @@ class EkramRequestTransportationBloc extends Bloc<
             transportations: [],
             laundries: [],
             mosques: [],
+            requestDetailsModel: params,
             status: BlocStatus.success,
           ));
+
         }
         break;
       case ResetActionEnum.DeathCity:
         {
-          // hospitals: isCityChanged(newCityId) == true
-          // ? []
-          //     : isCountryChanged(e.deathInfo?.countryId) == true
-          // ? []
-          //     : null,
-          // cemetries: isCityChanged(newCityId) == true
-          // ? []
-          //     : isCountryChanged(e.deathInfo?.countryId) == true
-          // ? []
-          //     : null,
-          // transportations: isCityChanged(newCityId) == true
-          // ? []
-          //     : isCountryChanged(e.deathInfo?.countryId) == true
-          // ? []
-          //     : null,
-          // laundries: isCityChanged(newCityId) == true
-          // ? []
-          //     : isCountryChanged(e.deathInfo?.countryId) == true
-          // ? []
-          //     : null,
-          // mosques: isCityChanged(newCityId) == true
-          // ? []
-          //     : isCountryChanged(e.deathInfo?.countryId) == true
-          // ? []
-          //     : null,
-
           emitter(state.copyWith(
             cemetries: [],
             transportations: [],
             laundries: [],
             mosques: [],
             hospitals: [],
+            requestDetailsModel: params,
             status: BlocStatus.success,
           ));
+
         }
         break;
       case ResetActionEnum.Hospital:
@@ -1334,6 +1315,7 @@ class EkramRequestTransportationBloc extends Bloc<
           emitter(state.copyWith(
             //cemetries: [],
             status: BlocStatus.success,
+
           ));
         }
         break;
@@ -1342,28 +1324,172 @@ class EkramRequestTransportationBloc extends Bloc<
         {
           emitter(state.copyWith(
             cemetries: [],
+            transportations: [],
+            laundries: [],
+            requestDetailsModel: params,
             status: BlocStatus.success,
           ));
+
         }
         break;
       case ResetActionEnum.prayer:
         {
           emitter(state.copyWith(
             cemetries: [],
+            transportations: [],
+            laundries: [],
+            requestDetailsModel: params,
             status: BlocStatus.success,
           ));
+
         }
         break;
       case ResetActionEnum.burialCity:
         {
           emitter(state.copyWith(
             cemetries: [],
+            transportations: [],
+            laundries: [],
+            requestDetailsModel: params,
             status: BlocStatus.success,
           ));
+
+        }
+        break;
+      case ResetActionEnum.Cemetry:
+        {
+          emitter(state.copyWith(
+            transportations: [],
+            laundries: [],
+            requestDetailsModel: params,
+            status: BlocStatus.success,
+          ));
+
+        }
+        break;
+      case ResetActionEnum.Transport:
+        {
+          emitter(state.copyWith(
+            laundries: [],
+            requestDetailsModel: params,
+            status: BlocStatus.success,
+          ));
+
         }
         break;
     }
   }
+
+  RequestDetailsResponseModel? _resetDataDependcyHandler(ResetActionEnum action)  {
+
+
+    RequestDetailsResponseModel? params = state.requestDetailsModel;
+    params ??= RequestDetailsResponseModel(
+        deathInfo: DeathInfo(countryId: 1),
+        burialInfo: BurialInfo(isBurialInsideDeathCity: true),
+        cemeteryData: CemeteryData(),
+        transportInfo: TransportInfo());
+
+    DeathInfo? deathInfo = state.requestDetailsModel?.deathInfo;
+    BurialInfo? burialInfo = params.burialInfo;
+    CemeteryData? cemeteryData = params.cemeteryData;
+    TransportInfo? transportInfo = params.transportInfo;
+
+
+    switch (action) {
+      case ResetActionEnum.Country:
+        {
+          deathInfo = deathInfo?.copyWith(cityId:-1, corpseArrivalCityId: -1, hospitalId: -1);
+          burialInfo = burialInfo?.copyWith(cityId: -1, prayId: -1);
+          cemeteryData = cemeteryData?.copyWith(cemeteryId: -1, graveTypeId: -1,);
+          transportInfo = transportInfo?.copyWith(charityId: -1, ghuslPlaceId: -1, mosqueId: -1,);
+
+          params = params.copyWith(deathInfo: deathInfo,burialInfo: burialInfo,cemeteryData: cemeteryData,transportInfo: transportInfo);
+
+          return params;
+        }
+
+      case ResetActionEnum.DeathCity:
+        {
+
+          deathInfo = deathInfo?.copyWith(hospitalId: -1);
+          burialInfo = burialInfo?.copyWith(cityId: -1, prayId: -1);
+          cemeteryData = cemeteryData?.copyWith(cemeteryId: -1, graveTypeId: -1,);
+          transportInfo = transportInfo?.copyWith(charityId: -1, ghuslPlaceId: -1, mosqueId: -1,);
+
+          params = params.copyWith(deathInfo: deathInfo,burialInfo: burialInfo,cemeteryData: cemeteryData,transportInfo: transportInfo);
+
+          return params;
+
+
+        }
+
+      case ResetActionEnum.Hospital:
+        {
+
+          return null;
+        }
+
+
+      case ResetActionEnum.GraveType:
+        {
+
+          cemeteryData = cemeteryData?.copyWith(cemeteryId: -1);
+
+          transportInfo = transportInfo?.copyWith(charityId: -1, ghuslPlaceId: -1);
+
+          params = params.copyWith(cemeteryData: cemeteryData,transportInfo: transportInfo);
+
+          return params;
+
+
+        }
+
+      case ResetActionEnum.prayer:
+        {
+          cemeteryData = cemeteryData?.copyWith(cemeteryId: -1);
+
+          transportInfo = transportInfo?.copyWith(charityId: -1, ghuslPlaceId: -1);
+
+          params = params.copyWith(cemeteryData: cemeteryData,transportInfo: transportInfo);
+
+          return params;
+        }
+      case ResetActionEnum.burialCity:
+        {
+          cemeteryData = cemeteryData?.copyWith(cemeteryId: -1);
+          transportInfo = transportInfo?.copyWith(charityId: -1, ghuslPlaceId: -1);
+          params = params.copyWith(cemeteryData: cemeteryData,transportInfo: transportInfo);
+
+          return params;
+        }
+
+
+      case ResetActionEnum.Cemetry:
+        {
+
+          transportInfo = transportInfo?.copyWith(charityId: -1, ghuslPlaceId: -1);
+
+          params = params.copyWith(transportInfo: transportInfo);
+
+          return params;
+
+
+        }
+
+      case ResetActionEnum.Transport:
+        {
+          transportInfo = transportInfo?.copyWith( ghuslPlaceId: -1);
+
+          params = params.copyWith(transportInfo: transportInfo);
+
+          return params;
+
+
+        }
+    }
+  }
+
 
   Future<void> _changeBurialInfoHandler(
       setBurialInfoEvent e, Emitter emitter) async {

@@ -67,7 +67,14 @@ class CemeteryData {
     }
     return false;
   }
-
+  bool isCemtryChanged(int? newId) {
+    if (newId != null) {
+      if (cemeteryId != newId) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 
 }

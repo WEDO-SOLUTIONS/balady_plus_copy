@@ -719,6 +719,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               label: ("cemetry_type").tr(),
                               hint: ("cemetry_type").tr(),
                             ),
+
+
                             CustomLookUpLongDialog(
                               items: state.cemetries ?? [],
                               value: state.getCemtryById(
@@ -764,6 +766,17 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+
+                                  if (item.id != null &&
+                                      state.requestDetailsModel?.cemeteryData
+                                          ?.isCemtryChanged(item.id!) ==
+                                          true) {
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(const ResetActionEvent(
+                                        action: ResetActionEnum.Cemetry));
+                                  }
+
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setCemtryInfoEvent(
@@ -800,6 +813,16 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
+                                  if (item.id != null &&
+                                      state.requestDetailsModel?.transportInfo
+                                          ?.isCharityChanged(item.id!) ==
+                                          true) {
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(const ResetActionEvent(
+                                        action: ResetActionEnum.Transport));
+                                  }
+
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setTransportInfoEvent(

@@ -628,15 +628,15 @@ class EkramRequestTransportationState extends Equatable {
         if (ShowErrorMessage == true)
           CommonFunctions.showError("ekram_death_country_validation".tr());
         return false;
-      } else if (requestDetailsModel?.deathInfo?.cityId == null) {
+      } else if (requestDetailsModel?.deathInfo?.cityId == null || requestDetailsModel?.deathInfo?.cityId ==-1) {
         if (ShowErrorMessage == true)
           CommonFunctions.showError("ekram_death_city_validation".tr());
         return false;
-      } else if (requestDetailsModel?.deathInfo?.hospitalId == null) {
+      } else if (requestDetailsModel?.deathInfo?.hospitalId == null || requestDetailsModel?.deathInfo?.hospitalId == -1) {
         if (ShowErrorMessage == true)
           CommonFunctions.showError("ekram_death_hospital_validation".tr());
         return false;
-      } else if (requestDetailsModel?.transportInfo?.charityId == null) {
+      } else if (requestDetailsModel?.transportInfo?.charityId == null || requestDetailsModel?.transportInfo?.charityId == -1) {
         if (ShowErrorMessage == true)
           CommonFunctions.showError("ekram_transportation_validation".tr());
         return false;

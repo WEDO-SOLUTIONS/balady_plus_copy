@@ -4,5 +4,7 @@ enum ResetActionEnum {
   Hospital,
   GraveType,
   prayer,
-  burialCity
+  burialCity,
+  Cemetry,
+  Transport
 }

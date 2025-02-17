@@ -130,4 +130,12 @@ class TransportInfo {
     return map;
   }
 
+  bool isCharityChanged(int? newId) {
+    if (newId != null) {
+      if (charityId != newId) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
