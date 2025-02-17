@@ -33,24 +33,33 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
   Widget build(BuildContext context) {
     final textDirection = Directionality.of(context);
     final actionIcon = SystemIcons.arrowCornerRightLarge.icon(
-      color: context.color.textAndIconsBaseSecondary,
+      color: context.colorsV3.foregroundMuted,
     );
+    final trailing = ContentRowTextTrailingOptions(
+      icon: SystemIcons.arrowCornerRightLarge,
+      iconColor: context.colorsV3.foregroundMuted,
+    );
+    final Widget Function(IconData icon) leadingIconBuilder = (icon) => Icon(
+          icon,
+          color: context.colorsV3.accentDefault,
+          size: 24,
+        );
     final userData = ref.watch(authProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
+      value: SystemUiOverlayStyle.light,
       child: Material(
-        color: Colors.white,
+        color: context.colorsV3.staticDarkblue,
         child: SafeArea(
+          bottom: false,
           child: Directionality(
             textDirection: textDirection,
             child: Stack(
               children: [
                 CustomScrollView(
+                  physics: const ClampingScrollPhysics(),
                   slivers: [
                     const SliverToBoxAdapter(
-                      child: SizedBox(
-                        height: 20,
-                      ),
+                      child: SizedBox(height: 20),
                     ),
                     SliverToBoxAdapter(
                       child: Padding(
@@ -58,11 +67,11 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           horizontal: Spacing.$4x,
                         ),
                         child: userData.maybeWhen(
-                          orElse: () => UnautorizedProfile(
+                          orElse: () => UnauthorizedProfile(
                             onConnect: ref.read(authProvider.notifier).doAuth,
                           ),
                           data: (userData) => userData == null
-                              ? UnautorizedProfile(
+                              ? UnauthorizedProfile(
                                   onConnect: ref.read(authProvider.notifier).doAuth,
                                 )
                               : AuthorizedWidget(
@@ -71,8 +80,16 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                         ),
                       ),
                     ),
-                    SliverToBoxAdapter(
-                      child: Padding(
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: context.colorsV3.backgroundSurface4,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(RadiusBorder.xxl),
+                            topRight: Radius.circular(RadiusBorder.xxl),
+                          ),
+                        ),
                         padding: const EdgeInsets.symmetric(
                           horizontal: Spacing.$4x,
                         ),
@@ -80,123 +97,104 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: Spacing.$4x),
-                            ContentWrapper(
-                              color: context.color.surfaceBaseSecondary,
-                              children: [
-                                userData.maybeWhen(
-                                  orElse: () => const SizedBox.shrink(),
-                                  data: (data) => data == null
-                                      ? const SizedBox.shrink()
-                                      : ContentRow(
-                                          options: ContentRowOptions(
-                                            actionWidget: ContentRowActionOptions(
-                                              actionIcon: actionIcon,
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(RadiusBorder.l),
+                              child: ContentWrapper(
+                                color: context.colorsV3.backgroundSurface1,
+                                children: [
+                                  userData.maybeWhen(
+                                    orElse: () => const SizedBox.shrink(),
+                                    data: (data) => data == null
+                                        ? const SizedBox.shrink()
+                                        : ContentRowV2(
+                                            onTap: () => context.router.push(const ProfileInfoRoute()),
+                                            trailing: trailing,
+                                            leading: leadingIconBuilder(GeneralIcons.user),
+                                            text: ContentRowTextOptions(
+                                              title: context.l10n.personalData,
                                             ),
-                                            leadingIcon: Icon(
-                                              GeneralIcons.user,
-                                              color: context.color.textAndIconsStatusAccent,
-                                            ),
-                                            title: context.l10n.personalData,
                                           ),
-                                          onTap: () => context.router.push(const ProfileInfoRoute()),
-                                        ),
-                                ),
-                                ContentRow(
-                                  options: ContentRowOptions(
-                                    actionWidget: ContentRowActionOptions(
-                                      actionIcon: actionIcon,
-                                    ),
-                                    leadingIcon: Icon(
-                                      SystemIcons.settings,
-                                      color: context.color.textAndIconsStatusAccent,
-                                    ),
-                                    title: context.l10n.settings,
                                   ),
-                                  onTap: () => context.router.push(const SettingsRoute()),
-                                ),
-                                userData.maybeWhen(
-                                  orElse: () => const SizedBox.shrink(),
-                                  data: (data) => data == null
-                                      ? const SizedBox.shrink()
-                                      : NotificationsSettingsRow(actionIcon: actionIcon),
-                                ),
-                              ],
+                                  ContentRowV2(
+                                    onTap: () => context.router.push(const SettingsRoute()),
+                                    trailing: trailing,
+                                    leading: leadingIconBuilder(SystemIcons.settings),
+                                    text: ContentRowTextOptions(
+                                      title: context.l10n.settings,
+                                    ),
+                                  ),
+                                  userData.maybeWhen(
+                                    orElse: () => const SizedBox.shrink(),
+                                    data: (data) => data == null
+                                        ? const SizedBox.shrink()
+                                        : NotificationsSettingsRow(actionIcon: actionIcon),
+                                  ),
+                                ],
+                              ),
                             ),
-                            const SizedBox(
-                              height: Spacing.$4x,
-                            ),
+                            const SizedBox(height: Spacing.$4x),
                             ContentWrapper(
-                              color: context.color.surfaceBaseSecondary,
+                              color: context.colorsV3.backgroundSurface1,
                               children: [
-                                ContentRow(
-                                  options: ContentRowOptions(
-                                    actionWidget: ContentRowActionOptions(
-                                      actionIcon: actionIcon,
-                                    ),
-                                    leadingIcon: Icon(
-                                      GeneralIcons.questionCircle,
-                                      color: context.color.textAndIconsStatusAccent,
-                                    ),
+                                ContentRowV2(
+                                  isDividerEnabled: true,
+                                  onTap: () => context.router.push(const HelpCenterRoute()),
+                                  trailing: trailing,
+                                  leading: leadingIconBuilder(GeneralIcons.questionCircle),
+                                  text: ContentRowTextOptions(
                                     title: context.l10n.helpCenter,
                                   ),
-                                  onTap: () => context.router.push(const HelpCenterRoute()),
                                 ),
-                                ContentRow(
-                                  options: ContentRowOptions(
-                                    actionWidget: ContentRowActionOptions(
-                                      actionIcon: actionIcon,
-                                    ),
-                                    leadingIcon: Icon(
-                                      GeneralIcons.infoCircle,
-                                      color: context.color.textAndIconsStatusAccent,
-                                    ),
-                                    title: context.l10n.aboutApp,
-                                  ),
+                                ContentRowV2(
+                                  isDividerEnabled: true,
                                   onTap: () {
                                     context.router.push(const AboutBaladyRoute());
                                   },
-                                ),
-                                ContentRow(
-                                  options: ContentRowOptions(
-                                    actionWidget: ContentRowActionOptions(
-                                      actionIcon: actionIcon,
-                                    ),
-                                    leadingIcon: Icon(
-                                      GeneralIcons.star,
-                                      color: context.color.textAndIconsStatusAccent,
-                                    ),
-                                    title: context.l10n.rateBaladyApp,
+                                  trailing: trailing,
+                                  leading: leadingIconBuilder(GeneralIcons.infoCircle),
+                                  text: ContentRowTextOptions(
+                                    title: context.l10n.aboutApp,
                                   ),
+                                ),
+                                ContentRowV2(
                                   onTap: () {
                                     inAppReview.openStoreListing(
                                       appStoreId: MapnessConstants.appStoreId,
                                     );
                                   },
+                                  trailing: trailing,
+                                  leading: leadingIconBuilder(GeneralIcons.star),
+                                  text: ContentRowTextOptions(
+                                    title: context.l10n.rateBaladyApp,
+                                  ),
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: Spacing.$4x,
-                            ),
+                            const SizedBox(height: Spacing.$4x),
                             userData.maybeWhen(
                               orElse: () => const SizedBox.shrink(),
                               data: (data) => data == null
                                   ? const SizedBox.shrink()
                                   : ContentWrapper(
-                                      color: context.color.surfaceBaseSecondary,
+                                      color: context.colorsV3.backgroundSurface1,
                                       children: [
-                                        ContentRow(
+                                        ContentRowV2(
                                           onTap: () => _logOut(context, ref),
-                                          options: ContentRowOptions(
-                                            titleStyle: context.textStyle.text
-                                                .copyWith(color: context.color.textAndIconsStatusNegative),
+                                          text: ContentRowTextOptions(
                                             title: context.l10n.logOut,
-                                            leadingIcon: SvgPicture.asset(
-                                              'assets/icons/svg/ic_profile_logout.svg',
-                                              height: 24,
-                                              width: 24,
-                                              matchTextDirection: true,
-                                              package: PackageConfig.packageName,
+                                            titleOptions: ContentRowTextOption(
+                                              baseColor: context.colorsV3.errorDefault,
+                                            ),
+                                          ),
+                                          leading: SvgPicture.asset(
+                                            'assets/icons/svg/ic_profile_logout.svg',
+                                            height: 24,
+                                            width: 24,
+                                            matchTextDirection: true,
+                                            package: PackageConfig.packageName,
+                                            colorFilter: ColorFilter.mode(
+                                              context.colorsV3.errorDefault,
+                                              BlendMode.srcIn,
                                             ),
                                           ),
                                         ),
@@ -212,7 +210,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                 if (loading)
                   Center(
                     child: CircularProgressIndicator(
-                      color: context.color.textAndIconsStatusAccent,
+                      color: context.colorsV3.accentDefault,
                     ),
                   ),
               ],
