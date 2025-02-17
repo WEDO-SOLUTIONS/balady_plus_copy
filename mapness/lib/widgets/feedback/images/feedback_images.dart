@@ -169,8 +169,6 @@ class FeedbackImages extends StatelessWidget {
     final sizes = await Future.wait(images.map((e) => e.length()));
     final totalSize = sizes.reduce((value, element) => value + element);
 
-    FeedbackImagePickError? error;
-
     if (totalSize > field.maxSize) {
       return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }
@@ -184,7 +182,7 @@ class FeedbackImages extends StatelessWidget {
       }
     }
 
-    return error;
+    return null;
   }
 
   Future<List<XFile>> _pickedImage() async {
