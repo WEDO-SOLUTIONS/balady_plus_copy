@@ -180,8 +180,7 @@ class FeedbackImages extends StatelessWidget {
       final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
 
       if (!imageFormatAccepted) {
-        error = FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
-        break;
+        return FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
       }
     }
 
