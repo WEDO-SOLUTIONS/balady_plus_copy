@@ -1001,7 +1001,8 @@ class EkramRequestTransportationBloc extends Bloc<
             status: BlocStatus.failure,
             errorMessage: (failure as ServerFailure).errorMessage,
             isVerified: false,
-            selectedNationalIdType:  state.getNationalIdTypesById(e.params!.identityType,null),
+            selectedNationalIdType:
+                state.getNationalIdTypesById(e.params!.identityType, null),
             deceasedId: e.params!.identityNumber,
           ),
         );
@@ -1319,11 +1320,11 @@ class EkramRequestTransportationBloc extends Bloc<
           //     : null,
 
           emitter(state.copyWith(
-            hospitals: [],
             cemetries: [],
             transportations: [],
             laundries: [],
             mosques: [],
+            hospitals: [],
             status: BlocStatus.success,
           ));
         }
@@ -1360,7 +1361,8 @@ class EkramRequestTransportationBloc extends Bloc<
             status: BlocStatus.success,
           ));
         }
-        break;    }
+        break;
+    }
   }
 
   Future<void> _changeBurialInfoHandler(

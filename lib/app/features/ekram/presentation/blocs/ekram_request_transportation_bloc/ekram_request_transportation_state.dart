@@ -296,6 +296,7 @@ class EkramRequestTransportationState extends Equatable {
 
   @override
   List<Object?> get props => [
+        hospitals,
         isDeceasedBtnEnabled,
         deathCities,
         burialCities,
@@ -554,18 +555,16 @@ class EkramRequestTransportationState extends Equatable {
     return null;
   }
 
-  LookUpItem? getPrayerById(int? id,String? name) {
-    if (  id != null) {
-      if(prayers != null) {
+  LookUpItem? getPrayerById(int? id, String? name) {
+    if (id != null) {
+      if (prayers != null) {
         for (int index = 0; index < prayers!.length; index++) {
           if (prayers![index].id == id) {
             return prayers![index];
           }
         }
-      }
-      else if(name != null && name.isNotEmpty)
-      {
-        return LookUpItem(id: id,name: name);
+      } else if (name != null && name.isNotEmpty) {
+        return LookUpItem(id: id, name: name);
       }
     }
 
