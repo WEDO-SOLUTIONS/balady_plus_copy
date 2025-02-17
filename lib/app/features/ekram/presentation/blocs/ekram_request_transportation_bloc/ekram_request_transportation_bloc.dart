@@ -1259,7 +1259,7 @@ class EkramRequestTransportationBloc extends Bloc<
           ));
         }
         break;
-      case ResetActionEnum.City:
+      case ResetActionEnum.DeathCity:
         {
           // hospitals: isCityChanged(newCityId) == true
           // ? []
@@ -1315,14 +1315,21 @@ class EkramRequestTransportationBloc extends Bloc<
         }
         break;
       case ResetActionEnum.prayer:
-{
-           emitter(state.copyWith(
+        {
+          emitter(state.copyWith(
             cemetries: [],
             status: BlocStatus.success,
           ));
-}
+        }
         break;
-    }
+      case ResetActionEnum.burialCity:
+        {
+          emitter(state.copyWith(
+            cemetries: [],
+            status: BlocStatus.success,
+          ));
+        }
+        break;    }
   }
 
   Future<void> _changeBurialInfoHandler(

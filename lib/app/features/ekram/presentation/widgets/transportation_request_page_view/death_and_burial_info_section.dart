@@ -169,7 +169,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     context
                                         .read<EkramRequestTransportationBloc>()
                                         .add(const ResetActionEvent(
-                                            action: ResetActionEnum.City));
+                                            action: ResetActionEnum.DeathCity));
                                   }
 
                                   if (state.requestDetailsModel?.deathInfo
@@ -396,6 +396,18 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     },
                                     onChangeType: (LookUpItem? item) {
                                       if (item != null) {
+                                        if (item.id != null &&
+                                            state.requestDetailsModel
+                                                    ?.burialInfo
+                                                    ?.isCityChanged(item.id!) ==
+                                                true) {
+                                          context
+                                              .read<
+                                                  EkramRequestTransportationBloc>()
+                                              .add(const ResetActionEvent(
+                                                  action: ResetActionEnum
+                                                      .burialCity));
+                                        }
                                         context
                                             .read<
                                                 EkramRequestTransportationBloc>()

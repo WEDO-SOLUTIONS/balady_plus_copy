@@ -119,5 +119,13 @@ class BurialInfo {
     }
     return false;
   }
+        bool isCityChanged(int? newId) {
+    if (newId != null) {
+      if (cityId != newId) {
+        return true;
+      }
+    }
+    return false;
+  }
 
 }
