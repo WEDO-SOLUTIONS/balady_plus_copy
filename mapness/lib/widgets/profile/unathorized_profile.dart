@@ -15,6 +15,7 @@ class UnauthorizedProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Column(
         children: [
           Spacing.$8x.heightBox,
+          // TODO: Change size of BaladyLogo
           const BaladyLogo(
             height: 48,
             width: 127,
@@ -23,6 +24,7 @@ class UnauthorizedProfile extends ConsumerWidget {
           SizedBox(
             width: 280,
             child: Text(
+              // TODO: Change text in Localizy
               context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodySmallRegular.copyWith(
