@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
@@ -24,51 +25,59 @@ class FeedbackBannerCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$2x),
-          child: SizedBox(
-            height: 96,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-                gradient: LinearGradient(
-                  colors: gradientColors,
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsetsDirectional.only(
-                        top: Spacing.$3x,
-                        bottom: Spacing.$4x,
-                        start: Spacing.$4x,
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: context.textStyleV3.h4SemiBold.copyWith(color: context.colorsV3.staticWhite),
-                          ),
-                          Text(
-                            subtitle ?? '',
-                            style: context.textStyleV3.captionSmallMedium.copyWith(color: context.colorsV3.staticWhite),
-                          ),
-                        ],
-                      ),
+        child: Container(
+          margin: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$2x),
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+            gradient: LinearGradient(
+              colors: gradientColors,
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  flex: 3,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(
+                      top: Spacing.$3x,
+                      bottom: Spacing.$4x,
+                      start: Spacing.$4x,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: context.textStyleV3.h4SemiBold.copyWith(color: context.colorsV3.staticWhite),
+                        ),
+                        const SizedBox(height: Spacing.$1x),
+                        Text(
+                          subtitle ?? '',
+                          style: context.textStyleV3.captionSmallMedium.copyWith(color: context.colorsV3.staticWhite),
+                        ),
+                      ],
                     ),
                   ),
-                  Stack(
+                ),
+                Expanded(
+                  flex: 2,
+                  child: Stack(
                     children: [
-                      Transform(
-                        alignment: Alignment.center,
-                        transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
-                        child: Image.asset(
-                          'packages/mapness/assets/images/$imageAssetName',
-                          fit: BoxFit.cover,
+                      Positioned(
+                        top: 0,
+                        bottom: 0,
+                        child: Transform(
+                          alignment: Alignment.center,
+                          transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
+                          child: Image.asset(
+                            'packages/mapness/assets/images/$imageAssetName',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                       Positioned.directional(
@@ -98,8 +107,8 @@ class FeedbackBannerCard extends StatelessWidget {
                       )
                     ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
