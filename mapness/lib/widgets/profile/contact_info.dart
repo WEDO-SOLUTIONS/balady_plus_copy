@@ -8,7 +8,7 @@ import 'package:mapness/shared/lib/common_functions.dart';
 
 const momrahEmail = 'infoCS@momah.gov.sa';
 const momrahPoneNumber = '199040';
-const momrahTwitter = r'Balady_CS';
+const momrahTwitter = r'Balady_saudi';
 
 class ContactInfo extends StatefulWidget {
   final Color colorBegin;
@@ -82,7 +82,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                 title: context.isLTR ? '@$momrahTwitter' : '$momrahTwitter@',
                 subtitle: context.l10n.twitterAccount,
               ),
-              onTap: () => CommonFunctions.launch('https://twitter.com/Balady_CS'),
+              onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
             ),
             ContentRow(
               options: ContentRowOptions(
