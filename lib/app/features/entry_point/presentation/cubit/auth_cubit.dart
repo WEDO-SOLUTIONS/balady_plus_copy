@@ -123,8 +123,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   ////////////////////////////////////////////////////////////////////////
   Future<bool> onLogin({
     bool isFromEtmam = false,
+    // When Use This Function and you want to login with municipality send isMunicipality = true
+    required bool isMunicipality,
   }) async {
     try {
+      /// TODO : need send the isMunicipality to the Authentication package
+      /// to map if open the municipality login or the life style login screen
       slAuthentication<AuthenticationBloc>().add(GoLoginScreenAuthentication());
     } catch (e) {
       print("object");

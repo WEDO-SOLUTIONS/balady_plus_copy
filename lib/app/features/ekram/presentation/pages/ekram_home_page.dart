@@ -131,7 +131,9 @@ class _EkramHomePageState extends State<EkramHomePage> {
                             .pushNamed(RouteName.ekramOrdersScreen);
                       }
                     } else {
-                      sl<EntryPointCubit>().onLogin();
+                      sl<EntryPointCubit>().onLogin(
+                        isMunicipality: true,
+                      );
                     }
                   },
                   text: trans('ekramStartService'),

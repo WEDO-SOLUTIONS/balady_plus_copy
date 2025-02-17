@@ -682,6 +682,8 @@ class CommonFunctions {
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
+  // add isMunicipality to check if the user is access municipality services
+  // or life style services, make teh default value is false for life style services
   static Future<bool> onLogin({bool isMunicipality = false}) async => await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
 
   static bool doesContainsLettrs(String str) {
