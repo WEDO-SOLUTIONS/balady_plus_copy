@@ -172,7 +172,7 @@ class FeedbackImages extends StatelessWidget {
     FeedbackImagePickError? error;
 
     if (totalSize > field.maxSize) {
-      error = FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
+      return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }
 
     for (final image in images) {
