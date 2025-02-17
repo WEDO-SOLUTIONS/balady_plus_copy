@@ -11,14 +11,19 @@ class ClosureCard extends StatelessWidget {
     super.key,
     this.workDuration,
   });
+
   final String title;
   final String description;
 
   final String? workDuration;
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-        top: false,
+  Widget build(BuildContext context) {
+    final textStyle = context.textStyle;
+    return SafeArea(
+      top: false,
+      child: Material(
+        color: Colors.transparent,
         child: Container(
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
@@ -43,13 +48,13 @@ class ClosureCard extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: context.textStyle.heading1.copyWith(
+                            style: textStyle.heading1.copyWith(
                               color: context.color.textAndIconsBasePrimary,
                             ),
                           ),
                           Text(
                             description,
-                            style: context.textStyle.footNote.copyWith(
+                            style: textStyle.footNote.copyWith(
                               color: context.color.textAndIconsBasePrimary.withOpacity(0.64),
                             ),
                           ),
@@ -66,7 +71,7 @@ class ClosureCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 12),
                     child: Text(
                       workDuration!,
-                      style: context.textStyle.caption.copyWith(
+                      style: textStyle.caption.copyWith(
                         color: context.color.textAndIconsBasePrimary.withOpacity(0.64),
                       ),
                     ),
@@ -75,5 +80,7 @@ class ClosureCard extends StatelessWidget {
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }
