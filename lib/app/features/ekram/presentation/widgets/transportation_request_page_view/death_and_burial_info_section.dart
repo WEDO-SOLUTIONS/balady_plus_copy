@@ -121,12 +121,15 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
-                                  if(item.id != null&& state.requestDetailsModel?.deathInfo?.isCountryChanged(item.id!)==true)
-                                  {
+                                  if (item.id != null &&
+                                      state.requestDetailsModel?.deathInfo
+                                              ?.isCountryChanged(item.id!) ==
+                                          true) {
                                     context
-                                        .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.Country));
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(const ResetActionEvent(
+                                            action: ResetActionEnum.Country));
                                   }
-
 
                                   context
                                       .read<EkramRequestTransportationBloc>()
@@ -159,12 +162,14 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
-
-
-                                  if(item.id != null&& state.requestDetailsModel?.deathInfo?.isCityChanged(item.id!)==true)
-                                  {
+                                  if (item.id != null &&
+                                      state.requestDetailsModel?.deathInfo
+                                              ?.isCityChanged(item.id!) ==
+                                          true) {
                                     context
-                                        .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.City));
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(const ResetActionEvent(
+                                            action: ResetActionEnum.City));
                                   }
 
                                   if (state.requestDetailsModel?.deathInfo
@@ -255,13 +260,11 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
-
                                   // if(item.id != null&& state.requestDetailsModel?.deathInfo?.isHostpitalChanged(item.id!)==true)
                                   // {
                                   //   context
                                   //       .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.Hospital));
                                   // }
-
 
                                   context
                                       .read<EkramRequestTransportationBloc>()
@@ -457,7 +460,15 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
-                                 // fffffff
+                                  if (item.id != null &&
+                                      state.requestDetailsModel?.burialInfo
+                                              ?.isPrayerChanged(item.id!) ==
+                                          true) {
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(const ResetActionEvent(
+                                            action: ResetActionEnum.Country));
+                                  }
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(
@@ -474,42 +485,48 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               hint: Helpers.translatingWord(
                                   "cemetry_deceassed_burial_time"),
                             ),
-                            state.getPrayerById(state.requestDetailsModel?.burialInfo?.prayId, state.requestDetailsModel?.burialInfo?.prayName)
+                            state
+                                        .getPrayerById(
+                                            state.requestDetailsModel
+                                                ?.burialInfo?.prayId,
+                                            state.requestDetailsModel
+                                                ?.burialInfo?.prayName)
                                         ?.isOther ??
                                     false
-                                 ?
+                                ? TripDateTimeWidget(
+                                    title: "cemetry_deceassed_burial_time".tr(),
+                                    isEditable: true,
+                                    showDate: false,
+                                    time: state.requestDetailsModel?.burialInfo
+                                                ?.burialTime !=
+                                            null
+                                        ? CommonFunctions.getFormattedTimeEkram(
+                                            state.requestDetailsModel
+                                                ?.burialInfo?.burialTime)
+                                        : null,
+                                    onTimeCallback: (String? time) {
+                                      if (time != null) {
+                                        DateTime tempTime =
+                                            DateFormat("HH:mm").parse(time);
+                                        String strTime = DateFormat("HH:mm")
+                                            .format(tempTime)
+                                            .toString();
+                                        context
+                                            .read<
+                                                EkramRequestTransportationBloc>()
+                                            .add(
+                                              setBurialInfoEvent(
+                                                burialInfo: BurialInfo(
+                                                  burialTime: strTime,
+                                                ),
+                                              ),
+                                            );
+                                      }
+                                    },
+                                  )
 
-        TripDateTimeWidget(
-        title: "cemetry_deceassed_burial_time".tr(),
-        isEditable:  true ,
-       showDate: false,
-       time:state.requestDetailsModel?.burialInfo?.burialTime != null? CommonFunctions.getFormattedTimeEkram(state.requestDetailsModel?.burialInfo?.burialTime) :null,
-        onTimeCallback: (String? time){
-
-        if(time != null)
-        {
-
-        DateTime tempTime = DateFormat("HH:mm").parse(time!);
-        String strTime = DateFormat("HH:mm")
-            .format(tempTime)
-            .toString();
-                context
-                    .read<
-                        EkramRequestTransportationBloc>()
-                    .add(
-                      setBurialInfoEvent(
-                        burialInfo: BurialInfo(
-                          burialTime:strTime,
-                        ),
-                      ),
-                    );
-        }
-        },
-
-        )
-
-                            //
-                            // ClockTimeWidget(
+                                //
+                                // ClockTimeWidget(
                                 //     title: "cemetry_deceassed_burial_time".tr(),
                                 //     currentTime: state.requestDetailsModel
                                 //             ?.burialInfo?.burialTime ??
@@ -671,21 +688,20 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               },
                               onChangeType: (LookUpItem? item) {
                                 if (item != null) {
-
-                                  if(item.id != null&& state.requestDetailsModel?.cemeteryData?.isGraveTypeChanged(item.id!)==true)
-                                    {
-                                      context
-                                          .read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.GraveType));
-                                    }
+                                  if (item.id != null &&
+                                      state.requestDetailsModel?.cemeteryData
+                                              ?.isGraveTypeChanged(item.id!) ==
+                                          true) {
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(const ResetActionEvent(
+                                            action: ResetActionEnum.GraveType));
+                                  }
                                   context
                                       .read<EkramRequestTransportationBloc>()
                                       .add(setCemtryInfoEvent(
                                           cemeteryData: CemeteryData(
                                               graveTypeId: item.id)));
-
-
-
-
                                 }
                               },
                               label: ("cemetry_type").tr(),
@@ -874,11 +890,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                 ),
               ),
             ),
-
-
             InkWell(
               onTap: () async {
-
                 context
                     .read<EkramRequestTransportationBloc>()
                     .add(const saveBurianDeathInfoEvent(isDarft: true));
@@ -886,13 +899,15 @@ class DeathAndBurialInfoSection extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.all(16),
                 width: double.infinity,
-                margin:const EdgeInsets.all(16) ,
-                decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.borderBlck, width: 1), borderRadius: BorderRadius.circular(6)),
+                margin: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                    color: Colors.transparent,
+                    border: Border.all(color: AppColor.borderBlck, width: 1),
+                    borderRadius: BorderRadius.circular(6)),
                 //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-
                     CustomTextWidget(
                       "SaveAsDraft".tr(),
                       fontSize: 14,
