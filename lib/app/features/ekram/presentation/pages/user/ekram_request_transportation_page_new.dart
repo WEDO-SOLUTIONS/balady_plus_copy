@@ -37,19 +37,23 @@ class _EkramRequestTransportationPageState
 
   @override
   Widget build(BuildContext context) {
-    RequestDetailsResponseModel? params = ModalRoute.of(context)!
-        .settings
-        .arguments as RequestDetailsResponseModel?;
-
+    var arguments = ModalRoute.of(context)!.settings.arguments;
+    EkramRequestTransportationBloc? bloc;
+    RequestDetailsResponseModel? params;
+    if (arguments is RequestDetailsResponseModel) {
+      params = arguments;
+    } else if(arguments is EkramRequestTransportationBloc) {
+      bloc = arguments;
+    }
     return BlocProvider(
-      create: (context) => EkramRequestTransportationBloc(
-        getCities: sl(),
-        getRequestDetails: sl(),
-        getHospitals: sl(),
-        getNationalities: sl(),
-        applyDeceasedTransport: sl(),
-        getCemeteryTypesLookUp: sl(),
-      ),
+      create: (context) => bloc ?? EkramRequestTransportationBloc(
+              getCities: sl(),
+              getRequestDetails: sl(),
+              getHospitals: sl(),
+              getNationalities: sl(),
+              applyDeceasedTransport: sl(),
+              getCemeteryTypesLookUp: sl(),
+            ),
       child: BlocConsumer<EkramRequestTransportationBloc,
           EkramRequestTransportationState>(
         listener: (context, state) {
@@ -86,10 +90,9 @@ class _EkramRequestTransportationPageState
                       .read<EkramRequestTransportationBloc>()
                       .add(const GoToPreviousPageEvent()),
                   onTapCloseAction: () {
+
                     FocusManager.instance.primaryFocus?.unfocus();
-                    bool Function(Route<dynamic>) predicate =
-                        ModalRoute.withName(RouteName.SpecificServicePage);
-                    Navigator.of(context).popUntil((predicate));
+                    Navigator.of(context).pop();
                   },
                 ),
                 body: Stack(

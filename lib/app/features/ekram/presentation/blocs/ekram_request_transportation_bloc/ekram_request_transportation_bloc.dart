@@ -975,7 +975,6 @@ class EkramRequestTransportationBloc extends Bloc<
       VerifyDeceasedEvent e, Emitter emitter) async {
     emit(state.copyWith(
         status: BlocStatus.loading, isDeceasedBtnEnabled: false));
-
     final failureOrSuccess = await _verifyDeceased(
       e.params == null
           ? VerifyDeceasedParams(
@@ -984,24 +983,58 @@ class EkramRequestTransportationBloc extends Bloc<
               birthDate: state.deceassedDOBHijri!,
               submitterBirthDate:
                   CommonProperties.userInfo!.getHijriBirthDate(),
-              submitterMobile: CommonProperties.userInfo!.getPhone())
+              submitterMobile: CommonProperties.userInfo!.getPhone(),
+            )
           : e.params!,
     );
     return failureOrSuccess.fold((failure) {
-      emit(state.copyWith(
+      if (e.fromDeepLink) {
+        NavigationService.pushNamed(
+          routeName: RouteName.ekramRequestTransportationScreen,
+          args: this,
+        );
+        add(ChangeNationalIdDob(hijriDate: e.params!.birthDate));
+        decesssedIdentity?.text = e.params!.identityNumber;
+        emit(
+          state.copyWith(
+            isDeceasedBtnEnabled: true,
+            status: BlocStatus.failure,
+            errorMessage: (failure as ServerFailure).errorMessage,
+            isVerified: false,
+            selectedNationalIdType:  state.getNationalIdTypesById(e.params!.identityType,null),
+            deceasedId: e.params!.identityNumber,
+          ),
+        );
+      }
+
+      emit(
+        state.copyWith(
           isDeceasedBtnEnabled: true,
           status: BlocStatus.failure,
           errorMessage: (failure as ServerFailure).errorMessage,
-          isVerified: false));
+          isVerified: false,
+        ),
+      );
       return null;
     }, (success) {
-      emit(state.copyWith(
-        isDeceasedBtnEnabled: false,
-        status: BlocStatus.success,
-        isVerified: true,
-        requestId: success.data?.result,
-        errorMessage: "",
-      ));
+      if (e.fromDeepLink) {
+        NavigationService.pushNamed(
+          routeName: RouteName.ekramRequestTransportationScreen,
+          args: this,
+        );
+        Future.delayed(const Duration(seconds: 1)).then((e) {
+          add(const GoToNextPageEvent());
+        });
+      }
+      emit(
+        state.copyWith(
+          isDeceasedBtnEnabled: false,
+          status: BlocStatus.success,
+          isVerified: true,
+          requestId: success.data?.result,
+          errorMessage: "",
+        ),
+      );
     });
   }
 
@@ -1111,9 +1144,7 @@ class EkramRequestTransportationBloc extends Bloc<
 
   void _ShowDraftMessage() {
     FocusManager.instance.primaryFocus?.unfocus();
-    bool Function(Route<dynamic>) predicate =
-        ModalRoute.withName(RouteName.SpecificServicePage);
-    NavigationService.navigatorKey.currentState!.popUntil((predicate));
+    NavigationService.navigatorKey.currentState!.pop();
 
     CommonFunctions.showSuccess("cancellation_license_message".tr());
   }

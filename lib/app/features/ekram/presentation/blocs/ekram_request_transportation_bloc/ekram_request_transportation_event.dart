@@ -194,7 +194,12 @@ class AddFileEvent extends EkramRequestTransportationEvent {
 
 class VerifyDeceasedEvent extends EkramRequestTransportationEvent {
   final VerifyDeceasedParams? params;
-  const VerifyDeceasedEvent({this.params});
+  final bool fromDeepLink;
+
+  const VerifyDeceasedEvent({
+    this.params,
+    this.fromDeepLink = false,
+  });
 }
 
 class ChangeIdEvent extends EkramRequestTransportationEvent {
