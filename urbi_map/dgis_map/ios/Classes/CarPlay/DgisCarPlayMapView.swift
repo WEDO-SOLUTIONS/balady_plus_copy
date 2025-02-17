@@ -10,6 +10,7 @@ protocol DgisCarPlayMapViewDelegate {
 class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     static let defaultCameraPositionPoint = CameraPositionPoint(x: 0.5, y: 0.8)
     static let defaultCameraPosition = GeoPoint(latitude: 24.712301, longitude: 46.674175)
+    static let defaultCameraZoom = Zoom(value: 17)
     
     var delegate: DgisCarPlayMapViewDelegate?
     
@@ -54,21 +55,21 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
             ),
             markerType: .model
         ))
+        self.map = map
         
         if let location = try? sdk.locationService.lastLocation?.coordinates {
             try? map.camera.setPosition(
                 point: location.value,
-                zoom: Zoom(value: 17)
+                zoom: Self.defaultCameraZoom
             )
         } else {
             try? map.camera.setPosition(
                 point: Self.defaultCameraPosition,
-                zoom: Zoom(value: 17)
+                zoom: Self.defaultCameraZoom
             )
         }
         myLocation()
         
-        self.map = map
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         self.view.addSubview(mapView)
@@ -170,8 +171,47 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     }
     
     func myLocation() {
-        guard let myLocationControlModel else { return }
+        guard let camera = map?.camera, let myLocationControlModel,
+        let myLocation = try? DgisMapInitializer.shared.getSdkContainer().locationService.lastLocation?.coordinates else {
+            return
+        }
         
+        let position = camera.position
+        if position.zoom.value > Self.defaultCameraZoom.value - 1 {
+            myLocationControlModel.onClicked()
+            return
+        }
+        
+        let navigationManager = DgisMapInitializer.shared.getNavigationManager()
+        let navigationState = navigationManager.uiModel.state
+        if navigationState == .navigation || navigationState == .routeSearch {
+            cancellables.insert(
+                camera.move(
+                    point: myLocation.value,
+                    zoom: Self.defaultCameraZoom,
+                    tilt: position.tilt,
+                    bearing: position.bearing
+                ).sink(
+                    receiveValue: { _ in
+                        navigationManager.mapFollowController.setFollow(follow: true)
+                    },
+                    failure: { _ in }
+                )
+            )
+            return
+        }
+        
+        cancellables.insert(
+            camera.move(
+                point: myLocation.value,
+                zoom: Self.defaultCameraZoom,
+                tilt: position.tilt,
+                bearing: position.bearing
+            ).sink(
+                receiveValue: { _ in },
+                failure: { _ in }
+            )
+        )
         myLocationControlModel.onClicked()
     }
 }
