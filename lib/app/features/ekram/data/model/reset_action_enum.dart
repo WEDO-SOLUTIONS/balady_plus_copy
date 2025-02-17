@@ -2,5 +2,6 @@ enum ResetActionEnum {
   Country ,
   City,
   Hospital,
-  GraveType
+  GraveType,
+  prayer
 }

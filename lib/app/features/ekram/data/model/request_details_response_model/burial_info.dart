@@ -111,4 +111,13 @@ class BurialInfo {
         isBurialInsideDeathCity: isBurialInsideDeathCity ?? this.isBurialInsideDeathCity,
       );
 
+        bool isPrayerChanged(int? newId) {
+    if (newId != null) {
+      if (prayId != newId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
 }

@@ -1345,6 +1345,14 @@ class EkramRequestTransportationBloc extends Bloc<
           ));
         }
         break;
+      case ResetActionEnum.prayer:
+{
+           emitter(state.copyWith(
+            cemetries: [],
+            status: BlocStatus.success,
+          ));
+}
+        break;
     }
   }
 
