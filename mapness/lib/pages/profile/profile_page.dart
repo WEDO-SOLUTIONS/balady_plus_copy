@@ -4,32 +4,27 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/profile/widgets/log_out_sheet.dart';
 import 'package:mapness/features/profile/widgets/profile_header.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/profile/logout_dialog.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
 @RoutePage()
-class ProfilePage extends ConsumerStatefulWidget {
+class ProfilePage extends HookConsumerWidget {
   const ProfilePage({super.key});
 
   @override
-  ConsumerState<ProfilePage> createState() => _ProfilePageState();
-}
-
-class _ProfilePageState extends ConsumerState<ProfilePage> {
-  bool loading = false;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final isLoading = useState(false);
     final textDirection = Directionality.of(context);
     final actionIcon = SystemIcons.arrowCornerRightLarge.icon(
       color: context.colorsV3.foregroundMuted,
@@ -171,7 +166,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                                         color: context.colorsV3.backgroundSurface1,
                                         children: [
                                           ContentRowV2(
-                                            onTap: () => _logOut(context, ref),
+                                            onTap: () => _logOut(context, ref, isLoading),
                                             text: ContentRowTextOptions(
                                               title: context.l10n.logOut,
                                               titleOptions: ContentRowTextOption(
@@ -200,7 +195,7 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     ),
                   ],
                 ),
-                if (loading)
+                if (isLoading.value)
                   Center(
                     child: CircularProgressIndicator(
                       color: context.colorsV3.accentDefault,
@@ -214,29 +209,22 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
     );
   }
 
-  Future<void> _logOut(BuildContext context, WidgetRef ref) async {
+  Future<void> _logOut(BuildContext context, WidgetRef ref, ValueNotifier isLoading) async {
     await showDialog(
       context: context,
-      builder: (ctx) => LogoutDialog(
-        onCancel: () => Navigator.of(ctx).pop(),
+      builder: (ctx) => LogoutSheet(
         onLogout: () async {
           if (!context.mounted) {
             return;
           }
-          setState(() {
-            loading = true;
-          });
+          isLoading.value = true;
+
           Navigator.of(ctx).pop();
           await ref.read(authProvider.notifier).logOut();
-          setState(() {
-            loading = false;
-          });
+          isLoading.value = false;
           // TODO(Scroollocker): Fix close browser window after logout after new flutter_appauth version upgraded
           Navigator.of(ctx).pop();
         },
-        title: context.l10n.areYouSureYouWantToLogOutOfYourAccount,
-        logOutText: context.l10n.logOut,
-        cancelText: context.l10n.cancel,
       ),
     );
   }
