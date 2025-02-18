@@ -171,7 +171,31 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       });
     }
 
-    _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+    if ( data?.deviceIdToken != null && (data?.deviceIdToken!.isNotEmpty ?? false)) {
+      _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+    } else {
+      emit(
+        state.copyWith(
+          status: AuthStatus.authenticated,
+          token: token,
+          userInfo: const SsoUserInfo(),
+          errorMessage: "",
+        ),
+      );
+      try {
+        BlocProvider.of<DashboardBloc>(
+          NavigationService.navigatorKey.currentContext!,
+        ).add(DashboardEventInitial());
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+    }
 
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
@@ -179,7 +203,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
 
     EasyLoading.dismiss();
-    return CommonProperties.isLoggedIn;
+    return CommonProperties.isMunicipalityLoggedIn;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -308,7 +332,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth() async {
     try {
-      if(state.status == AuthStatus.notAuthenticated) {
+      if (state.status == AuthStatus.notAuthenticated) {
         return;
       }
       sl<AuthenticationBloc>().add(LogoutAuthentication());
@@ -339,7 +363,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    if(state.status == AuthStatus.notAuthenticated) {
+    if (state.status == AuthStatus.notAuthenticated) {
       return;
     }
     try {
@@ -517,25 +541,35 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required SSOToken token,
     required bool isFromEtmam,
   }) async {
+    print(" ");
+    print(" ");
+    print(" ");
+    print(" ");
     final failureOrSuccess = await _saveAuth(token);
-    if (failureOrSuccess.isRight()) {
-      emit(state.copyWith(
-        status: AuthStatus.loading,
-        token: token,
-        errorMessage: "",
-      ));
+    failureOrSuccess.fold((failure) {
+      print("object");
+    }, (success) async {
+      emit(
+        state.copyWith(
+          status: AuthStatus.loading,
+          token: token,
+          errorMessage: "",
+        ),
+      );
 
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
       SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
       final failureOrSuccess =
           await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
       if (failureOrSuccess.isRight()) {
-        emit(state.copyWith(
-          status: AuthStatus.authenticated,
-          token: token,
-          userInfo: user,
-          errorMessage: "",
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.authenticated,
+            token: token,
+            userInfo: user,
+            errorMessage: "",
+          ),
+        );
         FlutterUxcam.setUserIdentity(user.idNo);
         FlutterUxcam.setUserProperty("name", user.arName ?? "");
       }
@@ -565,7 +599,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           emit(state.copyWith(token: token));
         }
       });
+
       EasyLoading.dismiss();
+
       if (isFromEtmam) {
         sl<EtmamEntryPointCubit>().onLogin();
       }
@@ -575,10 +611,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         return;
       }
       getEkramPermissions();
+
       try {
         BlocProvider.of<DashboardBloc>(
-                NavigationService.navigatorKey.currentContext!)
-            .add(DashboardEventInitial());
+          NavigationService.navigatorKey.currentContext!,
+        ).add(DashboardEventInitial());
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -588,6 +625,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           ),
         );
       }
-    }
+    });
   }
 }
