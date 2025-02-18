@@ -1,14 +1,24 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/profile/widgets/slide_to_log_out.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 
 class LogoutSheet extends HookWidget {
+  final String title;
+  final String description;
+  final String buttonText;
   final VoidCallback onLogout;
 
-  const LogoutSheet({required this.onLogout, super.key});
+  const LogoutSheet({
+    required this.onLogout,
+    required this.title,
+    required this.description,
+    required this.buttonText,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +32,12 @@ class LogoutSheet extends HookWidget {
           text: ContentRowTextOptions(
             titleOptions: ContentRowTextOption(
                 builder: (_) => Text(
-                      'Sign out',
+                      title,
                       style: context.textStyleV3.h4SemiBold.copyWith(
                         color: context.colorsV2.foregroundDefault,
                       ),
                     )),
-            subtitle: 'Are you sure you want to log out of your\naccount?',
+            subtitle: description,
             subtitleOptions: const ContentRowTextOption(
               maxLines: 2,
             ),
@@ -39,9 +49,7 @@ class LogoutSheet extends HookWidget {
         ),
       ),
       content: [
-        const SizedBox(
-          height: Spacing.$3x,
-        ),
+        Spacing.$3x.heightBox,
         SafeArea(
           top: false,
           left: false,
@@ -50,9 +58,7 @@ class LogoutSheet extends HookWidget {
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(
               bottom: Spacing.$4x,
             ),
-            child: SlideToLogout(
-              onLogout: onLogout,
-            ),
+            child: SlideToLogout(onLogout: onLogout, buttonText: buttonText),
           ),
         ),
       ],

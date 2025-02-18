@@ -3,9 +3,14 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 class SlideToLogout extends StatefulWidget {
+  final String buttonText;
   final VoidCallback onLogout;
 
-  const SlideToLogout({required this.onLogout, super.key});
+  const SlideToLogout({
+    required this.onLogout,
+    required this.buttonText,
+    super.key,
+  });
 
   @override
   State<SlideToLogout> createState() => _SlideToLogoutState();
@@ -36,7 +41,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(start: slideSize + Spacing.$6x),
                   child: Text(
-                    'Slide to Logout',
+                    widget.buttonText,
                     style: context.textStyleV3.buttonL.copyWith(
                       color: context.colorsV2.errorDefault,
                     ),

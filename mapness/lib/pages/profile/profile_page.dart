@@ -211,6 +211,9 @@ class ProfilePage extends HookConsumerWidget {
     await showDialog(
       context: context,
       builder: (ctx) => LogoutSheet(
+        title: context.l10n.signOut,
+        description: context.l10n.signOutDescription,
+        buttonText: context.l10n.signOutSwipe,
         onLogout: () async {
           if (!context.mounted) {
             return;
