@@ -26,7 +26,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
-import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
 
 part 'auth_state.dart';
 
@@ -127,9 +127,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required bool isMunicipality,
   }) async {
     try {
-      /// TODO : need send the isMunicipality to the Authentication package
-      /// to map if open the municipality login or the life style login screen
-      slAuthentication<AuthenticationBloc>().add(GoLoginScreenAuthentication());
+      sl<ActionLoginCubit>().openLoginScreen(
+        state: sl<AuthenticationBloc>().state,
+        isMunicipality: isMunicipality,
+      );
     } catch (e) {
       print("object");
     }
