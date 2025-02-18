@@ -329,6 +329,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             ?.isBurialInsideDeathCity ??
                                         true,
                                     onChange: (bool item) {
+
+                                      context.read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.burialCity));
+
                                       context
                                           .read<
                                               EkramRequestTransportationBloc>()
@@ -359,6 +362,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                             ?.isBurialInsideDeathCity ==
                                         false,
                                     onChange: (bool item) {
+                                      context.read<EkramRequestTransportationBloc>().add(const ResetActionEvent(action:  ResetActionEnum.burialCity));
+
                                       context
                                           .read<
                                               EkramRequestTransportationBloc>()
