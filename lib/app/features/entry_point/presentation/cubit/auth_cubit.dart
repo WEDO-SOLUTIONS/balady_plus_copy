@@ -171,8 +171,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         );
       });
     }
-
-    if ( data?.deviceIdToken != null && (data?.deviceIdToken!.isNotEmpty ?? false)) {
+    AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
+    if (authState is AuthenticatedMunicipalityState) {
       _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
     } else {
       emit(
