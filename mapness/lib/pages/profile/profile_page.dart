@@ -94,6 +94,7 @@ class ProfilePage extends HookConsumerWidget {
                                       data: (data) => data == null
                                           ? const SizedBox.shrink()
                                           : ContentRowV2(
+                                              isDividerEnabled: true,
                                               onTap: () => context.router.push(const ProfileInfoRoute()),
                                               trailing: trailing,
                                               leading: leadingIconBuilder(GeneralIcons.user),
@@ -109,6 +110,7 @@ class ProfilePage extends HookConsumerWidget {
                                       text: ContentRowTextOptions(
                                         title: context.l10n.settings,
                                       ),
+                                      isDividerEnabled: userData.valueOrNull != null,
                                     ),
                                     userData.maybeWhen(
                                       orElse: () => const SizedBox.shrink(),
