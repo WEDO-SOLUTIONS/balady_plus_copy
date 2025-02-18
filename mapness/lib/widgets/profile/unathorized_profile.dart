@@ -15,16 +15,15 @@ class UnauthorizedProfile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Column(
         children: [
           Spacing.$8x.heightBox,
-          // TODO: Change size of BaladyLogo
-          const BaladyLogo(
+          BaladyLogo(
             height: 48,
             width: 127,
+            color: context.colorsV3.accentOnAccent,
           ),
           Spacing.$4x.heightBox,
           SizedBox(
             width: 280,
             child: Text(
-              // TODO: Change text in Localizy
               context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodySmallRegular.copyWith(
@@ -33,21 +32,17 @@ class UnauthorizedProfile extends ConsumerWidget {
             ),
           ),
           Spacing.$4x.heightBox,
-          Row(
-            children: [
-              Expanded(
-                child: BaladyAppButton(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  primaryLabel: context.l10n.connectToMomrah,
-                  buttonColorScheme: BaladyButtonColorScheme.accent,
-                  onTap: onConnect,
-                  textColor: context.colorsV3.accentOnAccent,
-                  size: BaladyButtonSize.large,
-                ),
-              ),
-            ],
+          SizedBox(
+            width: double.infinity,
+            child: BaladyAppButton(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              primaryLabel: context.l10n.connectToMomrah,
+              size: BaladyButtonSize.large,
+              buttonColorScheme: BaladyButtonColorScheme.accent,
+              onTap: onConnect,
+            ),
           ),
-          Spacing.$8x.heightBox,
+          Spacing.$4x.heightBox,
         ],
       );
 }
