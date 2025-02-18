@@ -8,13 +8,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/profile/widgets/profile_header.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/profile/authorized_widget.dart';
 import 'package:mapness/widgets/profile/logout_dialog.dart';
-import 'package:mapness/widgets/profile/unathorized_profile.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -45,11 +44,14 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
           size: 24,
         );
     final userData = ref.watch(authProvider);
+    final backgroundColor =
+        userData.valueOrNull != null ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.light,
-      child: Material(
-        color: context.colorsV3.staticDarkblue,
-        child: SafeArea(
+      value: userData.valueOrNull != null ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+      child: Scaffold(
+        backgroundColor: backgroundColor,
+        body: SafeArea(
           bottom: false,
           child: Directionality(
             textDirection: textDirection,
@@ -61,147 +63,138 @@ class _ProfilePageState extends ConsumerState<ProfilePage> {
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 20),
                     ),
-                    SliverToBoxAdapter(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.$4x,
-                        ),
-                        child: userData.maybeWhen(
-                          orElse: () => UnauthorizedProfile(
-                            onConnect: ref.read(authProvider.notifier).doAuth,
-                          ),
-                          data: (userData) => userData == null
-                              ? UnauthorizedProfile(
-                                  onConnect: ref.read(authProvider.notifier).doAuth,
-                                )
-                              : AuthorizedWidget(
-                                  userData: userData,
-                                ),
-                        ),
+                    const SliverToBoxAdapter(
+                      child: SafeArea(
+                        bottom: false,
+                        right: false,
+                        left: false,
+                        child: ProfileHeader(),
                       ),
                     ),
                     SliverFillRemaining(
-                      hasScrollBody: false,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: context.colorsV3.backgroundSurface4,
-                          borderRadius: const BorderRadius.only(
-                            topLeft: Radius.circular(RadiusBorder.xxl),
-                            topRight: Radius.circular(RadiusBorder.xxl),
+                      child: ColoredBox(
+                        color: backgroundColor,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: context.colorsV3.backgroundSurface4,
+                            borderRadius: const BorderRadius.only(
+                              topLeft: Radius.circular(RadiusBorder.xxl),
+                              topRight: Radius.circular(RadiusBorder.xxl),
+                            ),
                           ),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: Spacing.$4x,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: Spacing.$4x),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(RadiusBorder.l),
-                              child: ContentWrapper(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: Spacing.$4x,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: Spacing.$4x),
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(RadiusBorder.l),
+                                child: ContentWrapper(
+                                  color: context.colorsV3.backgroundSurface1,
+                                  children: [
+                                    userData.maybeWhen(
+                                      orElse: () => const SizedBox.shrink(),
+                                      data: (data) => data == null
+                                          ? const SizedBox.shrink()
+                                          : ContentRowV2(
+                                              onTap: () => context.router.push(const ProfileInfoRoute()),
+                                              trailing: trailing,
+                                              leading: leadingIconBuilder(GeneralIcons.user),
+                                              text: ContentRowTextOptions(
+                                                title: context.l10n.personalData,
+                                              ),
+                                            ),
+                                    ),
+                                    ContentRowV2(
+                                      onTap: () => context.router.push(const SettingsRoute()),
+                                      trailing: trailing,
+                                      leading: leadingIconBuilder(SystemIcons.settings),
+                                      text: ContentRowTextOptions(
+                                        title: context.l10n.settings,
+                                      ),
+                                    ),
+                                    userData.maybeWhen(
+                                      orElse: () => const SizedBox.shrink(),
+                                      data: (data) => data == null
+                                          ? const SizedBox.shrink()
+                                          : NotificationsSettingsRow(actionIcon: actionIcon),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: Spacing.$4x),
+                              ContentWrapper(
                                 color: context.colorsV3.backgroundSurface1,
                                 children: [
-                                  userData.maybeWhen(
-                                    orElse: () => const SizedBox.shrink(),
-                                    data: (data) => data == null
-                                        ? const SizedBox.shrink()
-                                        : ContentRowV2(
-                                            onTap: () => context.router.push(const ProfileInfoRoute()),
-                                            trailing: trailing,
-                                            leading: leadingIconBuilder(GeneralIcons.user),
-                                            text: ContentRowTextOptions(
-                                              title: context.l10n.personalData,
-                                            ),
-                                          ),
-                                  ),
                                   ContentRowV2(
-                                    onTap: () => context.router.push(const SettingsRoute()),
+                                    isDividerEnabled: true,
+                                    onTap: () => context.router.push(const HelpCenterRoute()),
                                     trailing: trailing,
-                                    leading: leadingIconBuilder(SystemIcons.settings),
+                                    leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                     text: ContentRowTextOptions(
-                                      title: context.l10n.settings,
+                                      title: context.l10n.helpCenter,
                                     ),
                                   ),
-                                  userData.maybeWhen(
-                                    orElse: () => const SizedBox.shrink(),
-                                    data: (data) => data == null
-                                        ? const SizedBox.shrink()
-                                        : NotificationsSettingsRow(actionIcon: actionIcon),
+                                  ContentRowV2(
+                                    isDividerEnabled: true,
+                                    onTap: () {
+                                      context.router.push(const AboutBaladyRoute());
+                                    },
+                                    trailing: trailing,
+                                    leading: leadingIconBuilder(GeneralIcons.infoCircle),
+                                    text: ContentRowTextOptions(
+                                      title: context.l10n.aboutApp,
+                                    ),
+                                  ),
+                                  ContentRowV2(
+                                    onTap: () {
+                                      inAppReview.openStoreListing(
+                                        appStoreId: MapnessConstants.appStoreId,
+                                      );
+                                    },
+                                    trailing: trailing,
+                                    leading: leadingIconBuilder(GeneralIcons.star),
+                                    text: ContentRowTextOptions(
+                                      title: context.l10n.rateBaladyApp,
+                                    ),
                                   ),
                                 ],
                               ),
-                            ),
-                            const SizedBox(height: Spacing.$4x),
-                            ContentWrapper(
-                              color: context.colorsV3.backgroundSurface1,
-                              children: [
-                                ContentRowV2(
-                                  isDividerEnabled: true,
-                                  onTap: () => context.router.push(const HelpCenterRoute()),
-                                  trailing: trailing,
-                                  leading: leadingIconBuilder(GeneralIcons.questionCircle),
-                                  text: ContentRowTextOptions(
-                                    title: context.l10n.helpCenter,
-                                  ),
-                                ),
-                                ContentRowV2(
-                                  isDividerEnabled: true,
-                                  onTap: () {
-                                    context.router.push(const AboutBaladyRoute());
-                                  },
-                                  trailing: trailing,
-                                  leading: leadingIconBuilder(GeneralIcons.infoCircle),
-                                  text: ContentRowTextOptions(
-                                    title: context.l10n.aboutApp,
-                                  ),
-                                ),
-                                ContentRowV2(
-                                  onTap: () {
-                                    inAppReview.openStoreListing(
-                                      appStoreId: MapnessConstants.appStoreId,
-                                    );
-                                  },
-                                  trailing: trailing,
-                                  leading: leadingIconBuilder(GeneralIcons.star),
-                                  text: ContentRowTextOptions(
-                                    title: context.l10n.rateBaladyApp,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: Spacing.$4x),
-                            userData.maybeWhen(
-                              orElse: () => const SizedBox.shrink(),
-                              data: (data) => data == null
-                                  ? const SizedBox.shrink()
-                                  : ContentWrapper(
-                                      color: context.colorsV3.backgroundSurface1,
-                                      children: [
-                                        ContentRowV2(
-                                          onTap: () => _logOut(context, ref),
-                                          text: ContentRowTextOptions(
-                                            title: context.l10n.logOut,
-                                            titleOptions: ContentRowTextOption(
-                                              baseColor: context.colorsV3.errorDefault,
+                              const SizedBox(height: Spacing.$4x),
+                              userData.maybeWhen(
+                                orElse: () => const SizedBox.shrink(),
+                                data: (data) => data == null
+                                    ? const SizedBox.shrink()
+                                    : ContentWrapper(
+                                        color: context.colorsV3.backgroundSurface1,
+                                        children: [
+                                          ContentRowV2(
+                                            onTap: () => _logOut(context, ref),
+                                            text: ContentRowTextOptions(
+                                              title: context.l10n.logOut,
+                                              titleOptions: ContentRowTextOption(
+                                                baseColor: context.colorsV3.errorDefault,
+                                              ),
+                                            ),
+                                            leading: SvgPicture.asset(
+                                              'assets/icons/svg/ic_profile_logout.svg',
+                                              height: 24,
+                                              width: 24,
+                                              matchTextDirection: true,
+                                              package: PackageConfig.packageName,
+                                              colorFilter: ColorFilter.mode(
+                                                context.colorsV3.errorDefault,
+                                                BlendMode.srcIn,
+                                              ),
                                             ),
                                           ),
-                                          leading: SvgPicture.asset(
-                                            'assets/icons/svg/ic_profile_logout.svg',
-                                            height: 24,
-                                            width: 24,
-                                            matchTextDirection: true,
-                                            package: PackageConfig.packageName,
-                                            colorFilter: ColorFilter.mode(
-                                              context.colorsV3.errorDefault,
-                                              BlendMode.srcIn,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                          ],
+                                        ],
+                                      ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
