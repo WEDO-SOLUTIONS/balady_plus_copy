@@ -292,7 +292,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                           ),
                         ),
                         size: ButtonSize.small,
-                        primaryIcon: GeneralIcons.photo,
+                        primaryIcon: General16Icons.photoSolid,
                         primaryLabel: context.l10n.addPhoto,
                         textColor: context.colorsV3.accentDefault,
                         iconColor: context.colorsV3.accentDefault,
