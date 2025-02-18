@@ -14,6 +14,10 @@ class AuthorizedWidget extends ConsumerWidget {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context, WidgetRef ref) {
+    var name = userData.getFirstAndLastName().trim();
+    if (name.isEmpty) {
+      name = userData.getPhone().trim();
+    }
     return Padding(
       padding: const EdgeInsets.only(
         top: Spacing.$4x,
@@ -26,7 +30,7 @@ class AuthorizedWidget extends ConsumerWidget {
             child: Padding(
               padding: const EdgeInsetsDirectional.only(end: Spacing.$4x),
               child: Text(
-                userData.getFirstAndLastName(),
+                name,
                 maxLines: 3,
                 textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
