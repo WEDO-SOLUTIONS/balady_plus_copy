@@ -36,6 +36,9 @@ class RequestDetailsResponseModel {
   bool? transferring;
   bool? done;
   String? cemeteryReservationMsg;
+  String? cancelReason;
+  String? notes;
+
 
   RequestDetailsResponseModel(
       {this.requestId,
@@ -65,7 +68,9 @@ class RequestDetailsResponseModel {
       this.tripable,
       this.transferring,
       this.done,
-      this.cemeteryReservationMsg});
+      this.cemeteryReservationMsg,
+      this.cancelReason,
+      this.notes});
 
   factory RequestDetailsResponseModel.fromJson(Map<String, dynamic> json) =>
       RequestDetailsResponseModel(
@@ -118,6 +123,10 @@ class RequestDetailsResponseModel {
         transferring: json['transferring'] as bool?,
         done: json['done'] as bool?,
         cemeteryReservationMsg: json['cemeteryReservationMsg'] as String?,
+        cancelReason: json['cancelReason'] as String?,
+        notes: json['notes'] as String?,
+
+
       );
 
   Map<String, dynamic> toJson() => {
@@ -148,7 +157,10 @@ class RequestDetailsResponseModel {
         'tripable': tripable,
         'transferring': transferring,
         'done': done,
-        'cemeteryReservationMsg': cemeteryReservationMsg
+        'cemeteryReservationMsg': cemeteryReservationMsg,
+        'cancelReason': cancelReason,
+        'notes': notes
+
       };
 
   RequestDetailsResponseModel copyWith({
@@ -180,6 +192,8 @@ class RequestDetailsResponseModel {
     bool? transferring,
     bool? done,
     String? cemeteryReservationMsg,
+    String? cancelReason,
+    String? notes,
   }) {
     return RequestDetailsResponseModel(
       requestId: requestId ?? this.requestId,
@@ -210,7 +224,10 @@ class RequestDetailsResponseModel {
       transportInfo: transportInfo ?? this.transportInfo,
       cemeteryData: cemeteryData ?? this.cemeteryData,
       cemeteryReservationMsg:
-          cemeteryReservationMsg ?? this.cemeteryReservationMsg,
+      cemeteryReservationMsg ?? this.cemeteryReservationMsg,
+      cancelReason:  cancelReason ?? this.cancelReason,
+      notes: notes ?? this.notes,
+
     );
   }
 }

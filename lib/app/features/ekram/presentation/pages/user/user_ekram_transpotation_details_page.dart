@@ -89,6 +89,8 @@ class _UsersEkramTransportationDetailsPageState
           CommonFunctions.showError(state.errorMessage ?? "");
         }
       }, builder: (context, state) {
+
+
         return Scaffold(
           backgroundColor: AppColor.white2,
           appBar: PreferredSize(
@@ -124,12 +126,51 @@ class _UsersEkramTransportationDetailsPageState
                         ],
                       ),
                       HomeTag(
-                        title:
-                            state.requestDetailsModel?.requestStatusName ?? "",
+                        title: state.requestDetailsModel?.requestStatusName??"",
                         backgroundColor: AppColor.secondary100Light,
-                      )
+                      ),
+
+
                     ],
                   ),
+
+                  Constants.verticalSpaceSmall,
+                  Row(
+
+                    mainAxisAlignment: MainAxisAlignment.end,
+
+                    children: [
+                      Expanded(
+                        child: CustomTextWidget(
+                         state.requestDetailsModel?.requestStatusId == 6 ? state.requestDetailsModel?.cancelReason??"":"",
+                          fontColor: AppColor.error,
+                          fontSize: 12,
+                          fontWeight: AppFontWeight.bold,
+                          textDirection:TextDirection.ltr ,
+                          maxLines: 3,
+
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  state.requestDetailsModel?.notes != null && state.requestDetailsModel?.notes?.isNotEmpty==true?
+                  Column(
+                    children: [
+                      Constants.verticalSpaceMedium,
+                      Row(
+                        children: [
+                          CustomTextWidget(
+                            state.requestDetailsModel?.notes??"" ,
+                            fontColor: AppColor.blueSkyLight800,
+                            fontSize: 12,
+                            fontWeight: AppFontWeight.bold,
+                            textDirection:TextDirection.ltr ,
+                          ),
+                        ],
+                      ),
+                    ],
+                  ):Container(),
                   Constants.verticalSpaceSmall,
                   DeceasedInfoWidget_new(
                     item: state.requestDetailsModel?.deceasedInfo,
