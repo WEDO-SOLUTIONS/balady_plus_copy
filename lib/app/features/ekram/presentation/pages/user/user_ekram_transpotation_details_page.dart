@@ -135,42 +135,32 @@ class _UsersEkramTransportationDetailsPageState
                   ),
 
                   Constants.verticalSpaceSmall,
-                  Row(
+                  state.requestDetailsModel?.notes != null|| state.requestDetailsModel?.cancelReason != null? Container(
+                    width: MediaQuery.of(context).size.width - 30,
+                    decoration: new BoxDecoration(
+                        color: AppColor.yellowStarRating.withOpacity(0.4), borderRadius: BorderRadius.circular(16)),
+                    child: Column(children: [
+                      state.requestDetailsModel?.cancelReason != null && state.requestDetailsModel?.cancelReason?.isNotEmpty==true?
+                      EkramHeaderAndDescWidget_With_Background(
+                        title: ('reason_cancellation').tr(),
+                        details:  state.requestDetailsModel?.requestStatusId == 6 ? state.requestDetailsModel?.cancelReason??"":"",
 
-                    mainAxisAlignment: MainAxisAlignment.end,
+                      ):Container(),
+                      Constants.verticalSpaceSmall,
 
-                    children: [
-                      Expanded(
-                        child: CustomTextWidget(
-                         state.requestDetailsModel?.requestStatusId == 6 ? state.requestDetailsModel?.cancelReason??"":"",
-                          fontColor: AppColor.error,
-                          fontSize: 12,
-                          fontWeight: AppFontWeight.bold,
-                          textDirection:TextDirection.ltr ,
-                          maxLines: 3,
+                      state.requestDetailsModel?.notes != null && state.requestDetailsModel?.notes?.isNotEmpty==true?
+                      EkramHeaderAndDescWidget_With_Background(
+                        title: ('note').tr(),
+                        details: state.requestDetailsModel?.notes??"",
 
-                        ),
-                      ),
-                    ],
-                  ),
+                      ):Container(),
 
-                  state.requestDetailsModel?.notes != null && state.requestDetailsModel?.notes?.isNotEmpty==true?
-                  Column(
-                    children: [
-                      Constants.verticalSpaceMedium,
-                      Row(
-                        children: [
-                          CustomTextWidget(
-                            state.requestDetailsModel?.notes??"" ,
-                            fontColor: AppColor.blueSkyLight800,
-                            fontSize: 12,
-                            fontWeight: AppFontWeight.bold,
-                            textDirection:TextDirection.ltr ,
-                          ),
-                        ],
-                      ),
-                    ],
+                    ],),
+
                   ):Container(),
+
+
+
                   Constants.verticalSpaceSmall,
                   DeceasedInfoWidget_new(
                     item: state.requestDetailsModel?.deceasedInfo,

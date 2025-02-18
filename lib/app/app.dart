@@ -104,9 +104,14 @@ class AppWidgetState extends State<AppWidget> {
         /// TODO: Need Move this lojec after the aap get the profile data
         /// TODO: need chick if the user not login in make this action
         Future.delayed(const Duration(seconds: 2)).then((test){
-          if(uri.path.contains("ekram/mobile/transport")) {
+         // String url = uri.toString();
+          final decodeFull = Uri.decodeFull(uri.toString());
+          final parse = Uri.parse(decodeFull);
+          final url = Uri.parse(parse.fragment);
+
+          if(url.path.contains("ekram/mobile/transport")) {
             if(CommonProperties.userInfo != null) {
-              Map data = uri.queryParameters;
+              Map data = url.queryParameters;
               var bloc = EkramRequestTransportationBloc(
                 getCities: sl(),
                 getRequestDetails: sl(),
@@ -129,6 +134,7 @@ class AppWidgetState extends State<AppWidget> {
               );
             }
           }
+
         });
         print('_linkSubscription $uri');
       } catch (e) {
