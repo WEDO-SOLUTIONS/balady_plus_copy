@@ -214,7 +214,7 @@ class _NearestObject extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => uikit.ContentRowV2(
-        leading: const Icon(uikit.GeneralIcons.placeholder),
+        leading: const Icon(uikit.GeneralIcons.pin),
         text: nearestObject.when(
           data: (object) => uikit.ContentRowTextOptions(
             title: _buildTitle(object),
