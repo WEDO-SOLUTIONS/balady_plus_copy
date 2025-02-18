@@ -134,7 +134,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               Color(0xFF7035AF),
             ],
             title: context.l10n.addPlace,
-            subtitle: context.l10n.addInformationAboutCompany,
+            subtitle: context.l10n.addNewPlace,
           ),
           const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
