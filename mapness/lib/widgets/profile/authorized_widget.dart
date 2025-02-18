@@ -19,6 +19,7 @@ class AuthorizedWidget extends ConsumerWidget {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context, WidgetRef ref) {
+    //final user = ref.watch(currentUserProvider);
     return Padding(
       padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$4x + Spacing.$0_5x),
       child: Row(
