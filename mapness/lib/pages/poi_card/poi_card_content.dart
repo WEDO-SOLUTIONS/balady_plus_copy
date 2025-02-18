@@ -221,9 +221,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 valueListenable: _tabType,
                 builder: (context, tabType, _) => DecoratedSliver(
                   decoration: BoxDecoration(
-                    color: tabType == PoiTabsType.photos
-                        ? context.colorsV2.backgroundSurface1
-                        : context.colorsV2.backgroundSurface4,
+                    color: context.colorsV2.backgroundSurface4,
                     borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
                   ),
                   sliver: SliverFillAfter(
@@ -272,7 +270,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             ValueListenableBuilder(
               valueListenable: _tabType,
               builder: (context, tabType, _) {
-                if (tabType != PoiTabsType.photos) {
+                if (tabType != PoiTabsType.photos || isPhotosNotEmpty) {
                   return const SizedBox.shrink();
                 }
 
