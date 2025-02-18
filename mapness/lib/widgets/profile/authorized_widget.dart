@@ -17,8 +17,8 @@ class AuthorizedWidget extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.only(
         top: Spacing.$4x,
-        left: Spacing.$8x,
-        right: Spacing.$8x,
+        left: Spacing.$4x,
+        right: Spacing.$4x,
       ),
       child: Row(
         children: [
@@ -28,9 +28,10 @@ class AuthorizedWidget extends ConsumerWidget {
               child: Text(
                 userData.getFirstAndLastName(),
                 maxLines: 3,
+                textAlign: TextAlign.start,
                 overflow: TextOverflow.ellipsis,
                 style: context.textStyleV3.h3Medium.copyWith(
-                  color: context.colorsV2.foregroundDefault,
+                  color: context.colorsV3.foregroundDefault,
                 ),
               ),
             ),

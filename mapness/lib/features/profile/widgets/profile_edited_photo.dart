@@ -18,40 +18,23 @@ class ProfileEditablePhoto extends StatelessWidget {
         onTap: () => _showBottomSheet(context),
         child: Stack(
           children: [
-            const ProfileImageWidget(
-              dimension: Spacing.$10x + Spacing.$10x,
-            ),
+            const ProfileImageWidget(dimension: 2 * AppSizes.m),
             PositionedDirectional(
               start: Spacing.none,
               bottom: Spacing.none,
               child: Container(
-                width: Spacing.$8x,
-                height: Spacing.$8x,
-                decoration: const BoxDecoration(
+                padding: const EdgeInsets.all(Spacing.$1x),
+                width: AppSizes.xxs,
+                height: AppSizes.xxs,
+                decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.white,
+                  // TODO: Change to background screen
+                  color: context.colorsV3.staticWhite,
                 ),
                 child: Center(
-                  child: Container(
-                    width: Spacing.$6x,
-                    height: Spacing.$6x,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xff000000).withOpacity(.08),
-                          blurRadius: 4,
-                          offset: const Offset(Spacing.none, Spacing.px),
-                        ),
-                        BoxShadow(
-                          color: const Color(0xff000000).withOpacity(.04),
-                          spreadRadius: .5,
-                          offset: const Offset(Spacing.none, Spacing.px),
-                        ),
-                      ],
-                      color: context.color.surfaceBasePrimary,
-                    ),
-                    child: Icon(SystemIcons.edit, size: Spacing.$4x, color: context.color.textAndIconsBaseTertiary),
+                  child: General16Icons.edit.icon(
+                    color: context.colorsV3.foregroundMuted,
+                    size: AppSizes.$4xs,
                   ),
                 ),
               ),

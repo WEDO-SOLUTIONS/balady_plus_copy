@@ -16,8 +16,8 @@ class ProfileHeader extends HookConsumerWidget {
       padding: const EdgeInsets.symmetric(
         horizontal: Spacing.$4x,
       ).copyWith(
-        top: userData.hasValue ? 0 : Spacing.$6x,
-        bottom: userData.hasValue ? Spacing.$4x : Spacing.$8x,
+        top: userData.valueOrNull != null ? 0 : Spacing.$6x,
+        bottom: userData.valueOrNull != null ? Spacing.$4x : Spacing.$8x,
       ),
       child: userData.maybeWhen(
         orElse: () => UnauthorizedProfile(

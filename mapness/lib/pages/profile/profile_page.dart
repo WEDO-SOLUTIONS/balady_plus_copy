@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/features/_shared_features/notifications_cell/widgets/notifications_setting_cell_mapness.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +25,6 @@ class ProfilePage extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isLoading = useState(false);
     final textDirection = Directionality.of(context);
-    final actionIcon = SystemIcons.arrowCornerRightLarge.icon(
-      color: context.colorsV3.foregroundMuted,
-    );
     final trailing = ContentRowTextTrailingOptions(
       icon: SystemIcons.arrowCornerRightLarge,
       iconColor: context.colorsV3.foregroundMuted,
@@ -97,9 +93,9 @@ class ProfilePage extends HookConsumerWidget {
                                               isDividerEnabled: true,
                                               onTap: () => context.router.push(const ProfileInfoRoute()),
                                               trailing: trailing,
-                                              leading: leadingIconBuilder(GeneralIcons.user),
+                                              leading: leadingIconBuilder(GeneralIcons.userCircle),
                                               text: ContentRowTextOptions(
-                                                title: context.l10n.personalData,
+                                                title: context.l10n.account,
                                               ),
                                             ),
                                     ),
@@ -110,14 +106,14 @@ class ProfilePage extends HookConsumerWidget {
                                       text: ContentRowTextOptions(
                                         title: context.l10n.settings,
                                       ),
-                                      isDividerEnabled: userData.valueOrNull != null,
                                     ),
-                                    userData.maybeWhen(
-                                      orElse: () => const SizedBox.shrink(),
-                                      data: (data) => data == null
-                                          ? const SizedBox.shrink()
-                                          : NotificationsSettingsRow(actionIcon: actionIcon),
-                                    ),
+                                    //// We remove it for now
+                                    // userData.maybeWhen(
+                                    //   orElse: () => const SizedBox.shrink(),
+                                    //   data: (data) => data == null
+                                    //       ? const SizedBox.shrink()
+                                    //       : NotificationsSettingsRow(actionIcon: actionIcon),
+                                    // ),
                                   ],
                                 ),
                               ),
@@ -170,7 +166,7 @@ class ProfilePage extends HookConsumerWidget {
                                           ContentRowV2(
                                             onTap: () => _logOut(context, ref, isLoading),
                                             text: ContentRowTextOptions(
-                                              title: context.l10n.logOut,
+                                              title: context.l10n.signOut,
                                               titleOptions: ContentRowTextOption(
                                                 baseColor: context.colorsV3.errorDefault,
                                               ),
