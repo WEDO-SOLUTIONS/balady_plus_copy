@@ -1,7 +1,7 @@
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter/material.dart';
-import 'package:localize_and_translate/localize_and_translate.dart' show LocalizedApp;
+import 'package:localize_and_translate/localize_and_translate.dart'
+    show LocalizedApp;
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
@@ -19,7 +19,8 @@ void main() async {
       await setupMapness(EnvType.prod);
       await SentryFlutter.init(
         (options) {
-          options.dsn = 'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
+          options.dsn =
+              'https://c9e9c70957e4433e99fb6be6fc1cafc8@sentry.42.solutions/24';
           // Set tracesSampleRate to 1.0 to capture 100% of transactions for performance monitoring.
           // We recommend adjusting this value in production.
           options.tracesSampleRate = 1.0;
@@ -34,9 +35,9 @@ void main() async {
         appRunner: () => runApp(
           SentryScreenshotWidget(
             child: SentryUserInteractionWidget(
-              child:  const MapnessProviderScope(
+              child: const MapnessProviderScope(
                 child: LocalizedApp(
-                  child: const App(),
+                  child: App(),
                 ),
               ),
             ),

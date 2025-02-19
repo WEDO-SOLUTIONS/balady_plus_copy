@@ -9,8 +9,7 @@ abstract class LayersSvgPaths {
   static const building = 'packages/mapness/assets/icons/svg/layers/ic_building_pin.svg';
   static const fancy = 'packages/mapness/assets/icons/svg/layers/ic_fancy_pin.svg';
   static const invest = 'packages/mapness/assets/icons/svg/layers/ic_invest_pin.svg';
-
-  static const basicMarker = 'packages/mapness/assets/icons/svg/ic_marker_m.svg';
+  static const basicMarker = 'packages/mapness/assets/icons/svg/ic_marker_m_new.svg';
 }
 
 /// Deprecated paths to SVG icons. Used only for migration purposes.

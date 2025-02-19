@@ -5,12 +5,14 @@ import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:huawei_location/huawei_location.dart' as hms;
+import 'package:geolocator/geolocator.dart' as geo_locator;
 
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
-as calendar;
+    as calendar;
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
-as events;
+    as events;
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -24,6 +26,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -63,28 +66,26 @@ import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
 import '../errors/exceptions.dart';
 import './utils_exports.dart'
     show
-    AppColor,
-    AppConfig,
-    AppLanguage,
-    BlocStatus,
-    EnvType,
-    GeneralKey,
-    MimeType,
-    RouteName,
-    UIHelper,
-    WithDelay;
+        AppColor,
+        AppLanguage,
+        EnvType,
+        GeneralKey,
+        MimeType,
+        RouteName,
+        UIHelper,
+        WithDelay;
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show
-    AuthData,
-    BottomSheetDialog,
-    BottomSheetWithActions,
-    BridgeParams,
-    BuildingRequirementsDialog,
-    FileInfo;
+        AuthData,
+        BottomSheetDialog,
+        BottomSheetWithActions,
+        BridgeParams,
+        BuildingRequirementsDialog,
+        FileInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
@@ -92,14 +93,6 @@ import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
     show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
-import '../services/services_exports.dart'
-    show
-    AppInterceptors,
-    EntryPointBridge,
-    NavigationService,
-    NoParams,
-    WebService;
-import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
@@ -207,7 +200,7 @@ class CommonFunctions {
   }
 
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
-          (events, mapper) =>
+      (events, mapper) =>
           events.debounce(duration ?? UIHelper.duration).switchMap(mapper);
 
   static void signOut() {
@@ -215,6 +208,97 @@ class CommonFunctions {
 
     final entryPointBridge = sl<EntryPointBridge>();
     entryPointBridge(params);
+  }
+
+  static Future<bool> isHawaiiDevice() async {
+    return await FlutterHmsGmsAvailability.isHmsAvailable;
+  }
+
+  static final locationService = hms.FusedLocationProviderClient();
+
+  static Future<geo_locator.Position?> getLastLocationHuawei() async {
+    await locationService.initFusedLocationService();
+    final location = await locationService.getLastLocation();
+    if (location.latitude != null && location.longitude != null) {
+      return geo_locator.Position(
+        longitude: location.longitude!,
+        latitude: location.latitude!,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: location.altitude ?? 0,
+        altitudeAccuracy: 0,
+        heading: location.bearing ?? 0,
+        headingAccuracy: location.bearingAccuracyDegrees ?? 0,
+        speed: location.speed ?? 0,
+        speedAccuracy: location.speedAccuracyMetersPerSecond ?? 0,
+      );
+    }
+
+    return null;
+  }
+
+  static Future<LatLng?> getCurrentLocationHuawei() async {
+    try {
+      await locationService.initFusedLocationService();
+      final request = hms.LocationRequest();
+      request.priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY;
+      request.interval = 13000;
+
+      final settings = hms.LocationSettingsRequest(
+          requests: [request], needBle: true, alwaysShow: true);
+      try {
+        await locationService.checkLocationSettings(settings);
+      } catch (e) {
+        debugPrint('amr catch ${e.toString()}');
+      }
+
+      final location = await locationService.getLastLocation();
+
+      if (location.latitude != null && location.longitude != null) {
+        debugPrint(
+            'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
+        return LatLng(location.latitude!, location.longitude!);
+      } else {
+        await locationService.requestLocationUpdates(request);
+      }
+    } catch (error, stackTrace) {
+      return handelLocationCatch(true, error, stackTrace);
+    }
+    return null;
+  }
+
+  static Future<LatLng?> handelLocationCatch(
+      bool isHuawei, error, stackTrace) async {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+    try {
+      if (isHuawei) {
+        final position = await locationService.getLastLocation();
+        if (position.latitude != null && position.longitude != null) {
+          return LatLng(position.latitude!, position.longitude!);
+        }
+      } else {
+        geo_locator.Position? position;
+        position = await geo_locator.Geolocator.getLastKnownPosition();
+        if (position?.latitude != null && position?.longitude != null) {
+          return LatLng(position!.latitude, position.longitude);
+        }
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    return null;
   }
 
   static String fileMimeType(String extension) {
@@ -257,9 +341,9 @@ class CommonFunctions {
   }
 
   static Future<String> fileToBase64(
-      String filePath, {
-        String? mimeType,
-      }) async {
+    String filePath, {
+    String? mimeType,
+  }) async {
     final bytes = await File(filePath).readAsBytes();
     String base64RecordingFile = base64Encode(bytes);
     if (mimeType != null) {
@@ -273,7 +357,7 @@ class CommonFunctions {
     final dateStr = DateTime.tryParse(date ?? '')?.toLocal();
     return dateStr != null
         ? DateFormat('dd-MM-yyyy')
-        .format(dateStr.add(duration ?? const Duration()))
+            .format(dateStr.add(duration ?? const Duration()))
         : '';
   }
 
@@ -291,9 +375,9 @@ class CommonFunctions {
   }
 
   static Future<void> createOpenTempFile(
-      String fileName,
-      String content,
-      ) async {
+    String fileName,
+    String content,
+  ) async {
     // create Temporary File
     final tempDir = await getTemporaryDirectory();
     final tempDocumentPath = '${tempDir.path}/$fileName';
@@ -306,9 +390,9 @@ class CommonFunctions {
   }
 
   static Future<void> createOpenTempBytesFile(
-      String fileName,
-      Uint8List bytes,
-      ) async {
+    String fileName,
+    Uint8List bytes,
+  ) async {
     // create Temporary File
     final tempDir = await getTemporaryDirectory();
     final tempDocumentPath = '${tempDir.path}/$fileName';
@@ -367,14 +451,11 @@ class CommonFunctions {
   }
 
   static String getDateNoDash(String? dateStr) {
-    String formattedDate = "";
-
-    String year = dateStr?.substring(0,4) ?? "";
-    String month = dateStr?.substring(4,6) ?? "";
-    String day = dateStr?.substring(6,8) ?? "";
+    String year = dateStr?.substring(0, 4) ?? "";
+    String month = dateStr?.substring(4, 6) ?? "";
+    String day = dateStr?.substring(6, 8) ?? "";
 
     return "$year/$month/$day";
-
   }
 
   static String getMonthName(String? dateStr) {
@@ -424,7 +505,7 @@ class CommonFunctions {
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-      DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
+          DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
           .format(tempTime)
           .toString();
@@ -469,7 +550,7 @@ class CommonFunctions {
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-      DateFormat("yyyy/m/dd H:mm:ss").parse(biddingEndingTime);
+          DateFormat("yyyy/m/dd H:mm:ss").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
     } catch (error, stackTrace) {
@@ -615,12 +696,12 @@ class CommonFunctions {
   }
 
   static String hashRequest(
-      String url,
-      String method, {
-        String? body,
-        bool authorization = false,
-        String? corelationId,
-      }) {
+    String url,
+    String method, {
+    String? body,
+    bool authorization = false,
+    String? corelationId,
+  }) {
     //var encodedURL = Uri.encodeComponent(url);
 
     String message = "";
@@ -650,14 +731,15 @@ class CommonFunctions {
     try {
       String v1UUID = CommonProperties.uuidInstance.v1();
       String v5UUID =
-      CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
+          CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
 
-      if (v5UUID.isNotEmpty)
+      if (v5UUID.isNotEmpty) {
         return v5UUID.replaceAll("-", "");
-      else if (v1UUID.isNotEmpty)
+      } else if (v1UUID.isNotEmpty) {
         return v1UUID.replaceAll("-", "");
-      else
+      } else {
         return DateTime.now().millisecondsSinceEpoch.toString();
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -837,8 +919,8 @@ class CommonFunctions {
 
   static bool checkForVDExpectedForINC(
       {String? adminMunicipalityId,
-        String? municipalityName,
-        bool? isVDExcepted}) {
+      String? municipalityName,
+      bool? isVDExcepted}) {
     /* if (adminMunicipalityId == "003" && municipalityName == "العلا") {
       try {
         String error = ("ola_incident_error").tr(); //MMTr;
@@ -908,11 +990,13 @@ class CommonFunctions {
     });
   }
 
-  static showError(String error,[bool? isHtml]) {
+  static showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
       if (error.contains("https")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
-            NavigationService.navigatorKey.currentContext!, error,isHtml??false);
+            NavigationService.navigatorKey.currentContext!,
+            error,
+            isHtml ?? false);
       } else {
         try {
           BotToast.showSimpleNotification(
@@ -997,7 +1081,7 @@ class CommonFunctions {
           : null;
 
       TimeOfDay fromTime =
-      TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom!); // 3:00 PM
       int hoursFromAS12 = hoursFrom;
 
       if (hoursFrom == 0) hoursFromAS12 += 12;
@@ -1042,7 +1126,7 @@ class CommonFunctions {
       String minuteFromStr = minuteFrom! < 10 ? "0$minuteFrom" : "$minuteFrom";
       String minuteToStr = minuteTo! < 10 ? "0$minuteTo" : "$minuteTo";
       TimeOfDay fromTime =
-      TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
+          TimeOfDay(hour: hoursFrom!, minute: minuteFrom); // 3:00 PM
       TimeOfDay toTime = TimeOfDay(hour: hoursTo!, minute: minuteTo); // 5:00 AM
 
       int hoursFromAS12 = hoursFrom;
@@ -1181,18 +1265,18 @@ class CommonFunctions {
         NavigationService.navigatorKey.currentState?.pushNamed(
           RouteName.inappWebview,
           arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
           ),
         );
       } else {
         NavigationService.navigatorKey.currentState?.pushReplacementNamed(
           RouteName.inappWebview,
           arguments: (
-          requestNum: 'request'.tr(),
-          url: redirectUrl,
-          isObjections: false
+            requestNum: 'request'.tr(),
+            url: redirectUrl,
+            isObjections: false
           ),
         );
       }
@@ -1220,16 +1304,16 @@ class CommonFunctions {
   }
 
   static sendEvent(
-      {DioError? dioError,
-        Response? response,
-        Exception? ex,
-        String? errorMessage}) {
+      {DioException? dioError,
+      Response? response,
+      Exception? ex,
+      String? errorMessage}) {
     try {
       SentryRequest request = SentryRequest(
         url: dioError?.requestOptions.path ?? response?.realUri.path,
         data: dioError?.requestOptions.data ?? response?.requestOptions.data,
         method:
-        dioError?.requestOptions.method ?? response?.requestOptions.method,
+            dioError?.requestOptions.method ?? response?.requestOptions.method,
         queryString: dioError?.requestOptions.queryParameters.toString() ??
             response?.requestOptions.queryParameters.toString(),
         headers: dioError?.requestOptions.headers.cast() ??
@@ -1254,8 +1338,8 @@ class CommonFunctions {
           request: request,
           message: sentryMessage,
           transaction:
-          (dioError?.requestOptions.path ?? response?.realUri.path) ??
-              ex.toString(),
+              (dioError?.requestOptions.path ?? response?.realUri.path) ??
+                  ex.toString(),
           environment: sl<EnvType>().name,
           exceptions: [
             SentryException(
@@ -1269,7 +1353,7 @@ class CommonFunctions {
 // UX Cam Events
       if (RemoteConfig.uxCamKey.isNotEmpty) {
         Map<String, dynamic> headersMap = (dioError?.requestOptions.headers ??
-            response?.requestOptions.headers) ??
+                response?.requestOptions.headers) ??
             {};
         headersMap.remove("Authorization");
         headersMap.remove("authorization");
@@ -1277,20 +1361,19 @@ class CommonFunctions {
         String headers = (headersMap.cast().toString());
 
         String data = (dioError?.requestOptions.data.toString() ??
-            response?.requestOptions.data.toString()) ??
+                response?.requestOptions.data.toString()) ??
             "";
 
         String queryString =
             (dioError?.requestOptions.queryParameters.toString() ??
-                response?.requestOptions.queryParameters.toString()) ??
+                    response?.requestOptions.queryParameters.toString()) ??
                 "";
 
         String message = (dioError?.response?.data.toString() ??
-            response?.data.toString()) ??
+                response?.data.toString()) ??
             (errorMessage ?? ex.toString());
 
-        if (dioError != null &&  dioError is NoDataFoundException)
-        {
+        if (dioError != null && dioError is NoDataFoundException) {
           message = "Data Not Found";
         }
 
@@ -1307,9 +1390,9 @@ class CommonFunctions {
                 ? queryString
                 : queryString.substring(0, 1023),
             "Headers":
-            headers.length <= 1024 ? headers : headers.substring(0, 1023),
+                headers.length <= 1024 ? headers : headers.substring(0, 1023),
             "Message":
-            message.length <= 1024 ? message : message.substring(0, 1023),
+                message.length <= 1024 ? message : message.substring(0, 1023),
             "Environment": sl<EnvType>().name
           });
         }
@@ -1333,7 +1416,7 @@ class CommonFunctions {
       var dir = await getExternalStorageDirectory();
       if (dir != null) {
         await for (var entity
-        in dir.list(recursive: true, followLinks: false)) {
+            in dir.list(recursive: true, followLinks: false)) {
           if (entity is File && entity.path.contains("DGis")) {
             dGisFiles.add(entity);
           }
@@ -1389,7 +1472,7 @@ class CommonFunctions {
         try {
           EasyLoading.show();
           File fileDownloaded =
-          await createFileOfPdfUrl(fileUrl, fileName, serviceId: serviceId);
+              await createFileOfPdfUrl(fileUrl, fileName, serviceId: serviceId);
           EasyLoading.dismiss();
 
           /*  if (fileName.toLowerCase().contains(".pdf")) {
@@ -1450,10 +1533,10 @@ class CommonFunctions {
         options: Options(
             headers: {if (serviceId != null) "X-Service-Id": serviceId}));
     String extension =
-    r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
+        r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
 
     String dir = (await getTemporaryDirectory()).path;
-    File file = new File('$dir/$fileName.$extension');
+    File file = File('$dir/$fileName.$extension');
 
     await file.writeAsBytes(r.data);
     return file;
@@ -1485,27 +1568,20 @@ class CommonFunctions {
   static void openCreateCompliance() {
     //أصدر الشهادة
 
-    if (CommonProperties.isLoggedIn){
+    if (CommonProperties.isLoggedIn) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.createCompliancePage);
-    }
-
-    else
-    {
+    } else {
       showDialog(
           context: NavigationService.navigatorKey.currentContext!,
-          builder: (ctx) => NeedLoginDialog(
-              onSuccessLogin:
-                  (bool? isSuccess) async {
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
                   NavigationService.navigatorKey.currentState!
                       .pushNamed(RouteName.createCompliancePage);
                 }
               }));
     }
-
-
-
   }
 
   static void openRatingBuilding() {
@@ -1516,7 +1592,8 @@ class CommonFunctions {
 
   static void openComplianceFaq(String serviceID) {
 //اطلع على الاسئلة الشائعة
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage,arguments: serviceID);
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.QAPage, arguments: serviceID);
   }
 
   static void openComplianceTerms() async {
@@ -1535,7 +1612,7 @@ class CommonFunctions {
     sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
     BlocProvider.of<DashboardBloc>(
-        NavigationService.navigatorKey.currentContext!)
+            NavigationService.navigatorKey.currentContext!)
         .add(DashboardEventInitial());
   }
 
@@ -1646,9 +1723,10 @@ class CommonProperties {
   static String? fcmToken;
   static bool showEkramDriver = false;
 
-  static Uuid uuidInstance = Uuid();
-  static List<String> allowedSHAFingerprints = ["DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"];
-
+  static Uuid uuidInstance = const Uuid();
+  static List<String> allowedSHAFingerprints = [
+    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
+  ];
 
   //static String get token =>
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2OTEzMTQxMTEsImlhdCI6MTY5MTMxNDExMSwiZXhwIjoxNjkyNTIzNzExLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiN2MzNjY3NzgtYTAyMS00NzA3LTgyNDMtN2MzZGY1OWM3ZmY4IiwiYXV0aF90aW1lIjoxNjkxMzE0MTEwLCJpZHAiOiJsb2NhbCIsImVtYWlsIjoibS5haG1lZEBpbm5vc29mdC5tZXh4IiwicGhvbmVfbnVtYmVyIjoiNTkyODQyMjc1IiwibmFtZSI6IjIxMTE2OTI1OTIiLCJtYWlsIjoibS5haG1lZEBpbm5vc29mdC5tZXh4Iiwic2V4IjoiMSIsImRvYiI6IjMxLzA1LzE5OTUiLCJwaG9uZSI6IjA1OTI4NDIyNzUiLCJhcl9uYW1lIjoi2YXYrdmF2YjYryDZhdit2YXYr9io2YfYp9ih2KfZhNiv2YrZhiAg2KfYrdmF2K8iLCJlbl9uYW1lIjoiTUFITU9VRCBNT0hBTUVEQkFIQUVMREkgIEFITUVEIiwiaWRfbm8iOiIyMTExNjkyNTkyIiwibmlkIjoiMjA3IiwibmF0aW9uYWxpdHkiOiLZhdi12LEiLCJpZF90eXBlIjoiMiIsInNuYW1lIjoi2YXYrdmF2YjYryzZhdit2YXYr9io2YfYp9ih2KfZhNiv2YrZhiws2KfYrdmF2K8iLCJzaWQiOiI2REM4OEI1MDQ4NTRFNjE0Q0FFQUVENjJFODM4QTczRSIsImp0aSI6IjMxMDM4MjkxNEI1NzVDOUNFMzE5OUFBQUM1RjIwRjlFIn0.nQsrmyFoDuI9Qj1eRfAUAuqDIgvKIyZWRFanZChXQV0f-YZuMOlnYGRffegL0BhTSM2sRup57OicRhBQsEtAZHxaDmvjYp4cF0JSFTnIz5DWW5ZnCaoCVL-Jzzyyy5GC55oLiXrgrlWS_O0Y2SA-mkdzgGz-nTBjdiqYoY6BO7SWUiZb8RJLf7KJZEWALsqspEo1F836dvnCOPmKBT8Vr3iDxD5cbEL-u2R9Xt4VMXAO9B7ziXcW21kd6Si6mNPOSe29ga0HE4E5gRNMBUWQ3nLHfKrmNI0OYMdGGhclzEu8p1qaKJAIOPBbF6tuBXova0DpdjwZloM5ebSLF1FTBA";
@@ -1699,12 +1777,13 @@ class CommonProperties {
 
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 
-  static Stream<EntryPointState> get userStateStream => sl<EntryPointCubit>().stream;
+  static Stream<EntryPointState> get userStateStream =>
+      sl<EntryPointCubit>().stream;
 
   //static String token =
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODcwNjI0OTMsImlhdCI6MTY4NzA2MjQ5MywiZXhwIjoxNjg4MjcyMDkzLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwiYXV0aF90aW1lIjoxNjg3MDYyNDkyLCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sImVtYWlsIjoic3Vwcml5YS5qb25uYWR1bEBpbm92YXIuY29tIiwicGhvbmVfbnVtYmVyIjoiNTU3NjA5NzIyIiwibmFtZSI6IjEwMDU4MzAwODYiLCJ0aWQiOiIyMTMiLCJ0bm0iOiLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipIiwibWFpbCI6InN1cHJpeWEuam9ubmFkdWxAaW5vdmFyLmNvbSIsInNleCI6IjEiLCJkb2IiOiIwNy8wOC8xOTc2IiwicGhvbmUiOiIwNTU3NjA5NzIyIiwiYXJfbmFtZSI6Iti52KjYr9in2YTZhNmHINi02KfZgdmKINi52YLZitmEINin2YTYudmG2LLZiiIsImVuX25hbWUiOiJBQkRVTExBSCBTSEFGSSBBIEFMQU5BWkkiLCJpZF9ubyI6IjEwMDU4MzAwODYiLCJuaWQiOiIxMTMiLCJuYXRpb25hbGl0eSI6Itiz2LnZiNiv2YoiLCJpZF90eXBlIjoiMSIsInNuYW1lIjoi2LnYqNiv2KfZhNmE2Ycs2LTYp9mB2Yos2LnZgtmK2YQs2KfZhNi52YbYstmKIiwidGVuYW50cyI6Ilt7XCJUZW5hbnROYW1lXCI6XCLYp9mE2YbYt9in2YIg2KfZhNij2YjZhFwiLFwiVGVuYW50SWRcIjo2NDksXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINin2YTYtNix2KfYpti5INin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE3OSxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi52YXYsdipINin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE4MCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi02YjZgtmK2Kkg2KfZhNmB2LHYudmK2KlcIixcIlRlbmFudElkXCI6MTg3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTZg9io2LHZiSDZiNin2YTYrdmD2YjZhdmK2KlcIixcIlRlbmFudElkXCI6NjQ3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTYqtis2KfYsdmK2Kkg2YjYp9mE2KfYs9iq2KvZhdin2LHZitipXCIsXCJUZW5hbnRJZFwiOjY0OCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItin2YTZhti32KfZgiDYp9mE2KvYp9mG2YpcIixcIlRlbmFudElkXCI6NjUwLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KfZhNmG2LfYp9mCINin2YTYq9in2YTYq1wiLFwiVGVuYW50SWRcIjo2NTEsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLZiNiy2KfYsdipINin2YTYtNim2YjZhiDYp9mE2KjZhNiv2YrYqSDZiNin2YTZgtix2YjZitipINmI2KfZhNin2LPZg9in2YZcIixcIlRlbmFudElkXCI6MTIxMixcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItij2YXYp9mG2Kkg2KfZhNmF2K_ZitmG2Kkg2KfZhNmF2YbZiNix2KlcIixcIlRlbmFudElkXCI6MjEzLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjp0cnVlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINi62LHYqCDYudix2LnYsVwiLFwiVGVuYW50SWRcIjo1NTUsXCJUZW5hbnRUeXBlXCI6bnVsbCxcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfV0iLCJibWFpbCI6IiIsInNpZCI6IjQ2MkFENTM1Njc0NjREMzM0RkE0MkRENzBBMDhFQUJBIiwianRpIjoiRjQ3Mjc2Q0RCMTREREFGRUI5Rjc0RjAxQ0M3NkM2QzAifQ.OaiWru1BmWD_SbYYRNsmH7SWavSRrckOoMpBfVExBvUHWWgIh4vsUYPC2Xupw2z6F0s7Tuo2te27GVloPaVAQBJpMwZNYiu-rbPbEJ7x_EclxBXsXqIzL55ygqr8E0f332BDX6BDaNMDo_yt5oHfHE38FjHYP7E5tan0KA75bW9JI1psus9E2POoDKVea1MR3w_XNagHZsCyOY7QTJDrC9WFv3cRRTWDpHns9sxcliq7jgz28jeJnQ4Yv5wdgvKL5yUiPkVYzaVlCf5WTdt7N2xZckzR5a3PJ7ogmsosT19ZyQKlXhqAeZd1AEXUZCW4FNNGXdacfb1h6uocN92YnQ";
   static LatLng defaultLocation =
-  const LatLng(24.76836756001484, 46.720988751704304);
+      const LatLng(24.76836756001484, 46.720988751704304);
 }
 
 /*const _fakeUser = SsoUserInfo(

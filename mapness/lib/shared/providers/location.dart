@@ -72,8 +72,28 @@ class _Location extends _$Location {
         return false;
       } else {
         if (state == null) {
-          final userLocation = await Geolocator.getLastKnownPosition();
-          state = await _getLocation(userLocation);
+          final isHuawei = await CommonFunctions.isHawaiiDevice();
+          Position? userLocation;
+
+          if (isHuawei) {
+            userLocation = await CommonFunctions.getLastLocationHuawei();
+          } else {
+            userLocation = await Geolocator.getLastKnownPosition();
+          }
+          // final loc = await Helpers.getCurrentLocation();
+          state = await _getLocation(userLocation != null
+              ? Position(
+                  latitude: userLocation.latitude,
+                  longitude: userLocation.longitude,
+                  timestamp: userLocation.timestamp,
+                  accuracy: userLocation.accuracy,
+                  altitude: userLocation.altitude,
+                  altitudeAccuracy: userLocation.altitudeAccuracy,
+                  heading: userLocation.heading,
+                  headingAccuracy: userLocation.headingAccuracy,
+                  speed: userLocation.speed,
+                  speedAccuracy: userLocation.speedAccuracy)
+              : null);
         }
 
         return true;

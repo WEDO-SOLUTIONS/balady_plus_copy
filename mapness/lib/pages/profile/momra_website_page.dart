@@ -47,8 +47,8 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
       ..loadRequest(
         Uri.parse(
           switch (language) {
-            Language.arabic => 'https://balady.gov.sa/ar',
-            Language.english => 'https://balady.gov.sa/en',
+            Language.arabic => 'https://balady.sa/ar',
+            Language.english => 'https://balady.sa/en',
           },
         ),
       );

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dio/dio.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -33,9 +35,18 @@ class PoiPhoto extends _$PoiPhoto {
         },
         'preview_size': '100x100,100x,x100',
       },
+      options: Options(
+        validateStatus: (status) => status != null && status >= 200 && status < 300 || status == HttpStatus.notFound,
+      ),
       cancelToken: cancelToken,
     );
+
+    if (response.statusCode == HttpStatus.notFound) {
+      return DgisPhotosDto(albums: [], items: []);
+    }
+
     final data = DgisPhotosDto.fromJson(response.data as Map<String, dynamic>);
+
     return data;
   }
 }

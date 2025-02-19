@@ -1,42 +1,38 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/features/entry_point/domain/entities/sso_user_info.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+
+part 'default_profile_image.dart';
 
 class ProfileImageWidget extends ConsumerWidget {
   const ProfileImageWidget({
-    this.editable = false,
     this.color,
     this.dimension = 96,
     super.key,
   });
 
-  final bool editable;
   final Color? color;
   final double dimension;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileImage = ref.watch(profileImageProvider);
-
-    final Widget defaultImage = Icon(
-      GeneralIcons.userCircle,
-      size: dimension,
-      color: color ?? context.colorsV2.foregroundSoft,
-    );
-
-    return profileImage.maybeWhen(
-      data: (data) => data.imageBase64.isEmpty
-          ? defaultImage
-          : Picture.large(
-              key: ValueKey(data.imageBase64),
-              size: dimension,
-              imgBytes: base64Decode(data.imageBase64),
-            ),
-      orElse: () => defaultImage,
-    );
+    final value = profileImage.valueOrNull;
+    if (value != null && value.imageBase64.isNotEmpty) {
+      final imageBytes = base64Decode(value.imageBase64);
+      return Picture.large(
+        key: ValueKey(profileImage.valueOrNull!.imageBase64),
+        size: dimension,
+        imgBytes: imageBytes,
+      );
+    }
+    return DefaultProfileImage(dimension: dimension, color: color);
   }
 }
