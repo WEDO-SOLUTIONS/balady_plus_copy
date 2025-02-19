@@ -160,11 +160,13 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
   void _handleSPLNotication() async {
 
-    if(state.location?.lon != null && state.location?.lat != null) {
+    if(state.location?.lon != null && state.location?.lat != null && state.gisResponse?.municipalityId != null) {
       emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
 
 
-      final response = await _getSPLNotification([sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!,sl<CommercialLicenseInitialAprrovalBloc>().state.gisResponse?.municipalityId]);
+     // final response = await _getSPLNotification(["${sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!}",sl<CommercialLicenseInitialAprrovalBloc>().state.gisResponse!.municipalityId!]);
+      final response = await _getSPLNotification(["1004","1f89e13e-2cab-4794-ae57-d6b45d9877d4"]);
+
       response.fold(
               (failure) =>
               emit(state.copyWith(
@@ -172,7 +174,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
                 errorMessage: (failure as ServerFailure).errorMessage,
               )), (res) {
         emit(state.copyWith(status: BlocStatus.success,));
-        if(res.activitiesCostDetailes != null) {
+        if(res.isNotEmpty) {
 
           BottomSheetDialog.showDraggableSheet(
               NavigationService.navigatorKey.currentContext!,
@@ -185,25 +187,8 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
                         NavigationService.goBack();
                       }),
 
-                  // Row(
-                  //   children: [
-                  //
-                  //     // Expanded(
-                  //     //   child: ,
-                  //     // ),
-                  //     // const CustomHorizontalSpace(width: 32),
-                  //     //
-                  //     // Expanded(
-                  //     //   child: ElevatedButtonWidget.primaryCustomBorder(
-                  //     //       text: "cancelButton".tr(),
-                  //     //       onPressed: () {
-                  //     //         NavigationService.goBack();
-                  //     //       }),
-                  //     //
-                  //     // ),
-                  //   ],
-                  // ),
-                  body:IntactiveCalculatorFees( model: res,)
+
+                  body:Text(res)
               ));
 
 
@@ -690,6 +675,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         }
 
         calculateFeesInteractivly();
+        _handleSPLNotication();
       }
 
 
