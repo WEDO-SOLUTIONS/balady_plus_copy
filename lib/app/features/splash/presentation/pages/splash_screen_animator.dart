@@ -33,13 +33,6 @@ class SplashScreenAnimator extends StatefulWidget {
 class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
     with SingleTickerProviderStateMixin {
   String? image;
-  late Future<SplashModel> _splashFuture;
-
-  @override
-  initState() {
-    super.initState();
-    _splashFuture = SplashRemoteDataSourceImpl(webService: sl()).getSplash();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,51 +40,53 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
     // if (CommonFunctions.changeSpalsh()) {
     //   image = "assets/images/splash-screen-2.gif";
     // }
-    return BlocBuilder<SplashCubit, SplashState>(
-      builder: (cubitContext, state) {
-        return Scaffold(
-          backgroundColor: AppColor.primary900Light,
-          body: SizedBox(
-            width: double.maxFinite,
-            height: double.maxFinite,
-            child: state.status == BlocStatus.success
-                ? Gif(
-                    image: NetworkImage(state.splashUrl!),
-                    fps: 10,
-                    fit: BoxFit.cover,
-                    autostart: Autostart.once,
-                    onFetchCompleted: () async {
-                      // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                      Future.delayed(Duration(seconds: state.splashDuration!))
-                          .then((e) {
-                        sl<EntryPointCubit>().hideSplash();
-                        // Navigator.of(context).pop();
-                        // NavigationService.navigatorKey.currentState!.pop();
-                        slAuthentication<AuthenticationBloc>()
-                            .add(CheckLoginAuthentication());
-                      });
-                    },
-                  )
-                : Gif(
-                    image: const AssetImage('assets/images/splash-screen.gif'),
-                    fps: 10,
-                    fit: BoxFit.cover,
-                    autostart: Autostart.once,
-                    onFetchCompleted: () async {
-                      // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                      Future.delayed(const Duration(milliseconds: 3000))
-                          .then((e) {
-                        sl<EntryPointCubit>().hideSplash();
-                        Navigator.of(context).pop();
-                        // NavigationService.navigatorKey.currentState!.pop();
-                        slAuthentication<AuthenticationBloc>()
-                            .add(CheckLoginAuthentication());
-                      });
-                    },
-                  ),
+    return Scaffold(
+        backgroundColor: AppColor.primary900Light,
+        body: SizedBox(
+          width: double.maxFinite,
+          height: double.maxFinite,
+          child: BlocBuilder<SplashCubit, SplashState>(
+            builder: (context, state) {
+              if (state.status == BlocStatus.initial ||
+                  state.status == BlocStatus.loading) {
+                return const SizedBox();
+              } else if (state.status == BlocStatus.success) {
+                return Gif(
+                  image: NetworkImage(state.splashUrl!),
+                  fit: BoxFit.cover,
+                  autostart: Autostart.once,
+                  onFetchCompleted: () async {
+                    // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
+                    Future.delayed( Duration(seconds: state.splashDuration!)).then((e) {
+                      sl<EntryPointCubit>().hideSplash();
+                      // Navigator.of(context).pop();
+                      // NavigationService.navigatorKey.currentState!.pop();
+                      slAuthentication<AuthenticationBloc>()
+                          .add(CheckLoginAuthentication());
+                    });
+                  },
+                );
+              } else {
+                return Gif(
+                  image: const AssetImage('assets/images/splash-screen.gif'),
+                  fps: 10,
+                  fit: BoxFit.cover,
+                  autostart: Autostart.once,
+                  onFetchCompleted: () async {
+                    // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
+                    Future.delayed(const Duration(milliseconds: 3000))
+                        .then((e) {
+                      sl<EntryPointCubit>().hideSplash();
+                      Navigator.of(context).pop();
+                      // NavigationService.navigatorKey.currentState!.pop();
+                      slAuthentication<AuthenticationBloc>()
+                          .add(CheckLoginAuthentication());
+                    });
+                  },
+                );
+              }
+            },
           ),
-        );
-      },
-    );
+        ));
   }
 }
