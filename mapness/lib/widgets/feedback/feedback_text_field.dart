@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
@@ -11,7 +12,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 import 'package:mapness/widgets/feedback/feedback_input.dart';
 
-class FeedbackInput extends StatelessWidget {
+class FeedbackInput extends HookWidget {
   final FeedbackTextEntity field;
 
   const FeedbackInput({
@@ -35,7 +36,8 @@ class FeedbackInput extends StatelessWidget {
     };
 
     final isRequired = field.isRequired;
-    final controller = TextEditingController();
+
+    final controller = useTextEditingController();
 
     return FormBuilderField<String>(
         name: field.id,

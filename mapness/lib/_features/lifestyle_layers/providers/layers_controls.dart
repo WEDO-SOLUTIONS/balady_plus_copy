@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
 import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
 import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
@@ -18,6 +17,7 @@ import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -170,6 +170,14 @@ class LayersControls extends _$LayersControls {
       polygons: {},
       polylines: {},
     );
+  }
+
+  Future<void> hideActiveLayer() async {
+    final currentState = state.selectedType;
+
+    if (currentState != null) {
+      await _hidePreviousLayers(currentState);
+    }
   }
 
   Future<void> _tapHandler(LayerType value) async {
@@ -464,7 +472,13 @@ class LayersControls extends _$LayersControls {
 
     await _removeMapObjects();
 
-    if (state.selectedType != LayerType.parkingLots) {
+    final currentState = state.selectedType;
+
+    if (currentState != null && currentState != LayerType.parkingLots) {
+      await _hidePreviousLayers(currentState);
+    }
+
+    if (currentState != LayerType.parkingLots) {
       setSelection(selectedType: LayerType.parkingLots);
       await ref.read(parkingStateProvider.notifier).showParking();
     }

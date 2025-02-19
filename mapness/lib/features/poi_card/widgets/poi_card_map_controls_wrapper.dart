@@ -6,12 +6,12 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls.dart';
 
 class PoiCardMapControlsWrapper extends StatefulWidget {
-  final StatefulBottomSheetController<PoiCardBottomSheetState> bottomSheetController;
+  final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
   final int? objectIdForIndoorLevels;
 
   const PoiCardMapControlsWrapper({
-    required this.bottomSheetController,
     required this.objectIdForIndoorLevels,
+    this.bottomSheetController,
     super.key,
   });
 
@@ -26,14 +26,14 @@ class _PoiCardMapControlsWrapperState extends State<PoiCardMapControlsWrapper> w
   @override
   void initState() {
     opacityAnimation = AnimationController(vsync: this, value: 1.0);
-    widget.bottomSheetController.addListener(updateOpacity);
+    widget.bottomSheetController?.addListener(updateOpacity);
 
     super.initState();
   }
 
   void updateOpacity() {
-    final state = widget.bottomSheetController.state;
-    final interpolation = widget.bottomSheetController.interpolation;
+    final state = widget.bottomSheetController!.state;
+    final interpolation = widget.bottomSheetController!.interpolation;
 
     ignoreControls.value = state.index + interpolation > PoiCardBottomSheetState.halfOpen.index;
     final opacity =
@@ -48,15 +48,15 @@ class _PoiCardMapControlsWrapperState extends State<PoiCardMapControlsWrapper> w
       return;
     }
 
-    oldWidget.bottomSheetController.removeListener(updateOpacity);
-    widget.bottomSheetController.addListener(updateOpacity);
+    oldWidget.bottomSheetController?.removeListener(updateOpacity);
+    widget.bottomSheetController?.addListener(updateOpacity);
 
     updateOpacity();
   }
 
   @override
   void dispose() {
-    widget.bottomSheetController.removeListener(updateOpacity);
+    widget.bottomSheetController?.removeListener(updateOpacity);
     super.dispose();
   }
 

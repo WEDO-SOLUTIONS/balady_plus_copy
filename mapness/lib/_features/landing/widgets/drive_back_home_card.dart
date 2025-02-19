@@ -7,11 +7,11 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -29,7 +29,7 @@ class DriveBackHomeCard extends ConsumerStatefulWidget {
   ConsumerState<DriveBackHomeCard> createState() => _DriveBackHomeCardState();
 }
 
-class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
+class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with AutomaticKeepAliveClientMixin {
   static const navigatingType = RouteSearchOptionsMessage.car;
 
   final Debouncer debouncer = Debouncer(Durations.extralong4);
@@ -37,74 +37,77 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
   ProviderSubscription<AsyncValue<List<RouteInfo>>>? subscribtion;
 
   @override
-  Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: GestureDetector(
-          onTap: () => tryOpenNavigationBackHome(context, ref),
-          child: SizedBox(
-            width: double.infinity,
-            height: 123,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(RadiusBorder.xl),
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                  boxShadow: Shadows.s,
-                  image: const DecorationImage(
-                    image: AssetImage('assets/images/drive_home_background.png'),
-                    matchTextDirection: true,
-                    fit: BoxFit.cover,
-                    alignment: AlignmentDirectional.centerEnd,
-                  ),
+  Widget build(BuildContext context) {
+    super.build(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+      child: GestureDetector(
+        onTap: () => tryOpenNavigationBackHome(context, ref),
+        child: SizedBox(
+          width: double.infinity,
+          height: 123,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(RadiusBorder.xl),
+                boxShadow: Shadows.s,
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/drive_home_background.png'),
+                  matchTextDirection: true,
+                  fit: BoxFit.cover,
+                  alignment: AlignmentDirectional.centerEnd,
                 ),
-                child: Stack(
-                  children: [
-                    const Positioned(
-                      top: 40,
-                      left: -60,
-                      child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
+              ),
+              child: Stack(
+                children: [
+                  const Positioned(
+                    top: 40,
+                    left: -60,
+                    child: _BluredCircle(size: 181, blur: 149.85, opacity: 0.4),
+                  ),
+                  const Positioned(
+                    top: -110,
+                    right: -140,
+                    child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.centerEnd,
+                    child: Image.asset(
+                      'assets/images/drive_home_arrow.png',
+                      matchTextDirection: true,
                     ),
-                    const Positioned(
-                      top: -110,
-                      right: -140,
-                      child: _BluredCircle(size: 258, blur: 185.11, opacity: 0.3),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.centerEnd,
-                      child: Image.asset(
-                        'assets/images/drive_home_arrow.png',
-                        matchTextDirection: true,
-                      ),
-                    ),
-                    Align(
-                      alignment: AlignmentDirectional.topStart,
-                      child: Padding(
-                        padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
-                        child: RichText(
-                          text: TextSpan(
-                            text: context.l10n.driveBack,
-                            style: context.textStyleV3.h3Medium.copyWith(
-                              color: Colors.white,
-                            ),
-                            children: [
-                              TextSpan(
-                                text: '\n${context.l10n.homeQuestionMark}',
-                                style: context.textStyleV3.h3Medium.copyWith(
-                                  color: const Color(0xFF00FFFA),
-                                ),
-                              ),
-                            ],
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: Padding(
+                      padding: const EdgeInsetsDirectional.only(top: 12.0, start: 16.0),
+                      child: RichText(
+                        text: TextSpan(
+                          text: context.l10n.driveBack,
+                          style: context.textStyleV3.h3Medium.copyWith(
+                            color: Colors.white,
                           ),
+                          children: [
+                            TextSpan(
+                              text: '\n${context.l10n.homeQuestionMark}',
+                              style: context.textStyleV3.h3Medium.copyWith(
+                                color: const Color(0xFF00FFFA),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 
   void tryOpenNavigationBackHome(BuildContext context, WidgetRef ref) {
     final locationLabel = context.l10n.myLocation;
@@ -273,6 +276,9 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> {
       action: MetricAction.tap.toString(),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
 
 class _BluredCircle extends StatelessWidget {

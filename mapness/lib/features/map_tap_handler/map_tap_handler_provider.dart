@@ -6,6 +6,8 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -13,15 +15,15 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'map_tap_handler_provider.g.dart';
+part 'map_tap_mixin.dart';
 
 typedef OnMapTapHandler = void Function(TapEvent event);
 
 @riverpod
-class MapTapHandler extends _$MapTapHandler {
+class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
   StreamSubscription<TapEvent>? _baseStreamSubscription;
 
   OnMapTapHandler? _priorityMapTapHandler;
-  bool _isDisabledTapHandler = false;
 
   late final StreamController<TapEvent> _currentMapHandlers = StreamController.broadcast();
 
@@ -41,12 +43,6 @@ class MapTapHandler extends _$MapTapHandler {
   // ignore: avoid_setters_without_getters
   set priorityMapTapHandler(OnMapTapHandler handler) => _priorityMapTapHandler = handler;
 
-  /// Disables the default tap handler, preventing it from being called.
-  // ignore: avoid_setters_without_getters
-  set disableTapOnMap(bool value) => _isDisabledTapHandler = value;
-
-  bool get isDisabledTapHandler => _isDisabledTapHandler;
-
   /// Resets the previously set priority map tap handler, reverting to default behavior.
   void resetPriorityMapTapHandler() {
     _priorityMapTapHandler = null;
@@ -65,25 +61,17 @@ class MapTapHandler extends _$MapTapHandler {
     if (_priorityMapTapHandler != null) {
       _priorityMapTapHandler!(event);
     } else {
-      _defaultOnMapClickListener(event);
+      _guardDefaultTap(() => _defaultOnMapClickListener(event));
     }
     _currentMapHandlers.sink.add(event);
   }
 
   /// Processes map tap events if no priority handler is set,
   /// including navigation and metrics logging.
+  ///
+  /// Default tap handler just manages the tap events and navigates to the corresponding screens.
+  /// The logic of protection of unnecessary taps is implemented in the mixin.
   void _defaultOnMapClickListener(TapEvent event) {
-    final appRouter = ref.read(appRouterProvider);
-    final objectIgnoreRoute = [
-      RoutingMapSelectRoute.name,
-      SearchRoute.name,
-      RoutingRoutesRoute.name,
-    ];
-
-    if (objectIgnoreRoute.any(appRouter.isRouteActive)) {
-      return;
-    }
-
     if (event is ObjectTapEvent) {
       _handleObjectTapEvent(event);
     } else if (event is RoadEventTapEvent) {
@@ -146,13 +134,15 @@ class MapTapHandler extends _$MapTapHandler {
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
-    ref.read(appRouterProvider).push(
-          ShareMyLocationRoute(
-            cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-            closestPoint: userLocation != null
-                ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
-                : event.latLng,
-          ),
-        );
+
+    ref.read(appRouterProvider).replaceOrPush(
+      route: ShareMyLocationRoute(
+        cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+        closestPoint: userLocation != null
+            ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
+            : event.latLng,
+      ),
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
+    );
   }
 }

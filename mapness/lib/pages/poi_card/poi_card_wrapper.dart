@@ -51,7 +51,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     }
 
     /// error handling or invalid data
-    if (state.hasError || objectId == null || data == null) {
+    if (state.hasError || objectId == null) {
       if (state.error is PlatformException &&
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases
@@ -85,6 +85,15 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       );
     }
 
+    if (data == null) {
+      return _PoiCardNoInfo(
+        objectId: objectId,
+        poiCardState: poiCardState,
+        closestPoint: widget.closestPoint,
+        cameraConfig: widget.cameraConfig,
+      );
+    }
+
     return _PoiCardContent(
       objectId: objectId,
       data: data,
@@ -93,4 +102,90 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       cameraConfig: widget.cameraConfig,
     );
   }
+}
+
+void _openRoutingRoutes(
+  BuildContext context,
+  int objectId,
+  String title,
+  RouteParamsPoint finishPoint,
+) {
+  Metrics.logEventAdvanced(MetricsConstants.poiKeys.makeRoute,
+      group: MetricsConstants.poiTag,
+      action: MetricAction.tap.toString(),
+      props: {'object_id': objectId, 'finish_point': '${finishPoint.latitude},${finishPoint.longitude}'});
+
+  context.router.push(
+    RoutingRoutesRoute(
+      points: [
+        RouteParamsPointWithLabel(
+          value: null,
+          label: context.l10n.myLocation,
+        ),
+        RouteParamsPointWithLabel(
+          value: finishPoint,
+          label: title,
+        ),
+      ],
+    ),
+  );
+}
+
+Future<void> _onFavoriteTap({
+  required BuildContext context,
+  required WidgetRef ref,
+  required DirectoryObjectMessage data,
+  FavouriteItem? favouriteItem,
+}) async {
+  await ref.read(authMethodsProvider.notifier).authOrOpen(
+    context,
+    callback: () {
+      Metrics.logEventAdvanced(
+        MetricsConstants.poiKeys.addToFavorite,
+        group: MetricsConstants.poiTag,
+        action: MetricAction.tap.toString(),
+        props: {
+          'objectId': data.id?.objectId,
+        },
+      );
+
+      final favState = ref.read(favouriteCacheProvider).valueOrNull;
+      final favRepo = ref.read(favouriteCacheProvider.notifier);
+
+      /// if already in favourites - remove
+      if (favouriteItem != null) {
+        favRepo.deleteItem(favouriteItem);
+        return;
+      }
+
+      FavouriteItem? favItem = favouriteItem;
+      if (favItem == null && data.markerPosition != null && data.id != null) {
+        favItem = FavouriteItem(
+          coordinates: Coordinates(
+            latitude: data.markerPosition!.latitude,
+            longitude: data.markerPosition!.longitude,
+          ),
+          id: 'overriden',
+          subtitle: data.subtitle,
+          title: data.title,
+          entity: FavouriteItemEntity(
+            sourceType: EntitySourceType.urbi,
+            id: data.id!.objectId.toString(),
+          ),
+        );
+      }
+
+      if (favItem == null) {
+        return;
+      }
+
+      /// do not show dialog if home and work are set
+      if (favState?.home != null && favState?.work != null) {
+        favRepo.addItem(data.mapToFavourite());
+      } else {
+        /// show dialog to choose home, work or regular
+        context.router.push(PoiFavoriteDialogRoute(favItem: favItem));
+      }
+    },
+  );
 }

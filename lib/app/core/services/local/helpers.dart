@@ -3,32 +3,27 @@ import 'dart:io';
 
 import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
-import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:geolocator/geolocator.dart' as geoLocator;
+import 'package:geolocator/geolocator.dart';
+import 'package:geolocator/geolocator.dart' as geo_locator;
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
 import 'package:open_file_plus/open_file_plus.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'dart:developer' as devtools show log;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:share_plus/share_plus.dart';
 
 import '../../../features/_shared_feature_/presentation/dialogs/photo_permission_dialog.dart';
 import '../../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../../features/transaction_inquiry/presentation/core/models/gis_location_result.dart';
 import '../../dependency_injection/injection_container.dart';
-import '../../utils/constants/constants.dart';
 import '../../utils/constants/remote_config.dart';
 
 // use it insead of print() or debugPrint()
@@ -111,78 +106,34 @@ class Helpers {
 */
 
   static Future<LatLng?> getMapLocation() async {
-    try {
-      //  EasyLoading.show();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: geoLocator.LocationAccuracy.medium,
-              timeLimit: const Duration(seconds: 5));
-      //    EasyLoading.dismiss();
-
-      return LatLng(position.latitude, position.longitude);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-      //    EasyLoading.dismiss();
-      geoLocator.Position? position;
-      try {
-        position = await geoLocator.Geolocator.getLastKnownPosition();
-        if (position?.latitude != null && position?.longitude != null)
-          return LatLng(position!.latitude, position.longitude);
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-      }
-    }
-    return null;
+    return await getCurrentLocation(
+        accuracy: geo_locator.LocationAccuracy.medium,
+        duration: const Duration(seconds: 5));
   }
 
   static Future<LatLng?> getCurrentLocation(
-      {geoLocator.LocationAccuracy? accuracy, Duration? duration}) async {
+      {geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
+      bool isHuawei = await CommonFunctions.isHawaiiDevice();
+      if (isHuawei) {
+        final latLng = await CommonFunctions.getCurrentLocationHuawei();
+        debugPrint(
+            'amr from getCurrentLocation with huawei location ${latLng?.latitude}, ${latLng?.longitude}');
+        return latLng;
+      }
+      debugPrint('amr from  getCurrentLocation but with geo locator');
       //  EasyLoading.show();
-      geoLocator.Position position =
-          await geoLocator.Geolocator.getCurrentPosition(
-              desiredAccuracy: accuracy ?? geoLocator.LocationAccuracy.high,
-              timeLimit: duration ?? Duration(seconds: 13));
-      //    EasyLoading.dismiss();
-
-      return LatLng(position.latitude, position.longitude);
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
+      geo_locator.Position position =
+          await geo_locator.Geolocator.getCurrentPosition(
+        locationSettings: LocationSettings(
+            accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
+            timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      geoLocator.Position? position;
-      try {
-        position = await geoLocator.Geolocator.getLastKnownPosition();
-        if (position?.latitude != null && position?.longitude != null)
-          return LatLng(position!.latitude, position.longitude);
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-      }
+      return LatLng(position.latitude, position.longitude);
+    } catch (error, stackTrace) {
+      return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }
-    return null;
   }
 
   static Future<bool> checkPhotosSettings(BuildContext context) async {

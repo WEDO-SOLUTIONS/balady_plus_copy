@@ -97,16 +97,12 @@ class AppFeedbackMain extends HookConsumerWidget {
           padding: const EdgeInsets.all(Spacing.$4x),
           child: ValueListenableBuilder(
             valueListenable: rating,
-            builder: (context, ratingValue, _) => SizedBox(
-              // For prevent the text from moving when the rating changes
-              // Approved by design team
-              height: 40,
-              child: Text(
-                _ratingText(context.l10n, rating.value),
-                textAlign: TextAlign.center,
-                style: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: context.colorsV2.foregroundSoft,
-                ),
+            builder: (context, ratingValue, _) => Text(
+              _ratingText(context.l10n, rating.value),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: context.textStyleV3.bodyLargeRegular.copyWith(
+                color: context.colorsV2.foregroundSoft,
               ),
             ),
           ),

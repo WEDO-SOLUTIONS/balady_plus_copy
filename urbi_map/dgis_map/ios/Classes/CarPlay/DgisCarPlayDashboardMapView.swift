@@ -44,6 +44,7 @@ class DgisCarPlayDashboardMapView: UIViewController {
                 zoom: Zoom(value: 17)
             )
         }
+        myLocation()
         
         self.map = map
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -64,6 +65,11 @@ class DgisCarPlayDashboardMapView: UIViewController {
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
+    }
+    
+    func myLocation() {
+        guard let myLocationControlModel else { return }
+        myLocationControlModel.onClicked()
     }
     
     func addSpeedControl() {

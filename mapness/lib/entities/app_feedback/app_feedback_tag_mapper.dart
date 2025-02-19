@@ -25,11 +25,11 @@ class AppFeedbackTagMapper {
   Set<Tag> getTags(int rating) => switch (rating) {
         1 || 2 => {
             Tag.badDirections,
-            Tag.locationProblems,
+            Tag.location,
             Tag.poorTraffic,
-            Tag.wrongArrivalTime,
             Tag.poorDesign,
             Tag.parkingProblems,
+            Tag.wrongArrivalTime,
           },
         3 => {
             Tag.poorTraffic,

@@ -1,6 +1,7 @@
 import 'dart:async';
-import 'dart:io';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import 'map/dgis_controller.dart';
 
 part 'car_connection.g.dart';
@@ -10,18 +11,13 @@ part 'car_connection.g.dart';
 class CarConnection extends _$CarConnection {
   @override
   Future<bool> build() async {
-    // TODO(Sergei): implement CarPlay connection logic
-    if (Platform.isAndroid) {
-      _listenAndroidAutoConnectionEvents();
-      return _getAndroidAutoConnectionState();
-    } else {
-      return false;
-    }
+    _listenCarConnectionEvents();
+    return _getCarConnectionState();
   }
 
-  void _listenAndroidAutoConnectionEvents() {
+  void _listenCarConnectionEvents() {
     final dgisController = ref.watch(dgisControllerProvider);
-    final connectionSubscription = dgisController.value?.androidAutoConnectionEvents.listen((event) {
+    final connectionSubscription = dgisController.value?.carConnectionEvents.listen((event) {
       state = AsyncValue.data(event);
     });
     ref.onDispose(() {
@@ -29,9 +25,9 @@ class CarConnection extends _$CarConnection {
     });
   }
 
-  Future<bool> _getAndroidAutoConnectionState() async {
+  Future<bool> _getCarConnectionState() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    final connectionState = await dgisController.getAndroidAutoConnectionState();
+    final connectionState = await dgisController.getCarConnectionState();
     state = AsyncValue.data(connectionState);
     return connectionState;
   }

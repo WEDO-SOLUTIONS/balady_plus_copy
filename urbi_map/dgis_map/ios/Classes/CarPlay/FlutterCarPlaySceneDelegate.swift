@@ -5,7 +5,7 @@ import AVFoundation
 
 final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate, DgisCarPlayMapViewDelegate {
     static var mapView: DgisCarPlayMapView?
-
+    
     static private var mapTemplate: CPMapTemplate?
     static private var navigationSession: CPNavigationSession?
     static private let trip = CPTrip(
@@ -21,16 +21,20 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     private static var currentEstimates: CarPlayEstimates?
     
     static private(set) var map: Map?
-    
+    static var delegate: CarPlayConnectionSceneDelegate?
+
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
-    ) {        
+    ) {
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
-
+        
         let mapTemplate = CPMapTemplate()
+        if let maneuverColor = UIColor(named: "CarPlayManueverBackgroung") {
+            mapTemplate.guidanceBackgroundColor = maneuverColor
+        }
         mapTemplate.hidesButtonsWithNavigationBar = false
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
         
@@ -54,8 +58,10 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             makePanHeaderButton(),
             makeTrafficButton(),
         ]
-
+        
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
+        
+        Self.delegate?.onConnectionStateChanged(connected: true)
     }
     
     func viewDidLoad(with map: DGis.Map) {
@@ -79,6 +85,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         from window: CPWindow
     ) {
         FlutterCarPlaySceneDelegate.map = nil
+        Self.delegate?.onConnectionStateChanged(connected: false)
     }
 }
 
@@ -100,8 +107,8 @@ extension FlutterCarPlaySceneDelegate {
         }
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "ZoomIn")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "ZoomIn")!.withRenderingMode(.alwaysOriginal)
+        button.image = UIImage(named: "ZoomIn")!
+        button.focusedImage = UIImage(named: "ZoomIn")!
         
         return button
     }
@@ -112,8 +119,8 @@ extension FlutterCarPlaySceneDelegate {
         }
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "ZoomOut")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "ZoomOut")!.withRenderingMode(.alwaysOriginal)
+        button.image = UIImage(named: "ZoomOut")!
+        button.focusedImage = UIImage(named: "ZoomOut")!
         
         return button
     }
@@ -124,8 +131,8 @@ extension FlutterCarPlaySceneDelegate {
         }
         button.isHidden = false
         button.isEnabled = true
-        button.image = UIImage(named: "FollowOn")!.withRenderingMode(.alwaysOriginal)
-        button.focusedImage = UIImage(named: "FollowOn")!.withRenderingMode(.alwaysOriginal)
+        button.image = UIImage(named: "FollowOn")!
+        button.focusedImage = UIImage(named: "FollowOn")!
         
         return button
     }
@@ -207,7 +214,7 @@ extension FlutterCarPlaySceneDelegate {
         guard let map else {
             return
         }
-
+        
         guard let navigationSession else {
             return
         }
@@ -304,7 +311,19 @@ extension FlutterCarPlaySceneDelegate {
         Self.currentEstimates = nil
         self.navigationSession?.finishTrip()
         self.navigationSession = nil
+        
+        if mapView != nil || FlutterCarPlayDashboardSceneDelegate.mapView != nil {
+            // await for following to be disabled in SDK when navigation is stopped
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                mapView?.myLocation()
+                FlutterCarPlayDashboardSceneDelegate.mapView?.myLocation()
+            }
+        }
     }
+}
+
+public protocol CarPlayConnectionSceneDelegate {
+    func onConnectionStateChanged(connected: Bool)
 }
 
 extension Measurement<UnitLength> {
