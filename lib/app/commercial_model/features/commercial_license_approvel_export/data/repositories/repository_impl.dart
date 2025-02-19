@@ -75,7 +75,11 @@ class RepositoryImpl implements Repository {
     }
   }
 
-  @override
+
+
+
+
+    @override
   Future<Either<Failure, List<SubActivityEntity>>> getSubActivities( int requestID,int isicCode) async {
     try {
       final data = await remoteDataSource.getSubActivities(requestID, isicCode);
@@ -342,6 +346,25 @@ class RepositoryImpl implements Repository {
       return Left(ServerFailure(error.errorMessage,
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
+  }
+
+  @override
+  Future<Either<Failure, String>> getSPLNotification({required String requestId, required String mencipiltyId}) async{
+    try {
+      final data = await remoteDataSource.getSPLNotification( requestId: requestId,mencipiltyId: mencipiltyId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+
   }
 
 

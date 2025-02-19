@@ -40,6 +40,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../data/models/initialApproval/submit_activity_details_request.dart';
 import '../../../../data/models/lookups_model.dart';
 import '../../../../domain/use_cases/setp2_caluclate_fees_interactively.dart';
+import '../../../../domain/use_cases/setp2_get_spl_notification.dart';
 import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
 
 
@@ -53,6 +54,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   final GetSubActivityDetails _getSubActivityDetails;
   final SaveActivityDetails _saveActivityDetails;
   CaluclateFeesInteractively _caluclateFeesInteractively;
+  GetSPLNotification _getSPLNotification;
 
 
 
@@ -73,7 +75,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         _getGisData = GetGISData(repository: sl()),
         _saveLocationDetails = SaveLocationDetails(repository: sl()),
         _getGISImage = GetGISImage(sl()),
-
+        _getSPLNotification = GetSPLNotification(repository:sl()),
 
         super( Step2ActivityDataExportState()) {
         getAccommodationTypes();
@@ -156,6 +158,63 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     }
   }
 
+  void _handleSPLNotication() async {
+
+    if(state.location?.lon != null && state.location?.lat != null) {
+      emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
+
+
+      final response = await _getSPLNotification([sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!,sl<CommercialLicenseInitialAprrovalBloc>().state.gisResponse?.municipalityId]);
+      response.fold(
+              (failure) =>
+              emit(state.copyWith(
+                status: BlocStatus.failure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              )), (res) {
+        emit(state.copyWith(status: BlocStatus.success,));
+        if(res.activitiesCostDetailes != null) {
+
+          BottomSheetDialog.showDraggableSheet(
+              NavigationService.navigatorKey.currentContext!,
+              backgroundColor:AppColor.black,
+              child: BottomSheetWithActions(
+                  title: "warning_2".tr(),
+                  action: ElevatedButtonWidget.primaryCustom(
+                      text: "agree".tr(),
+                      onPressed: () {
+                        NavigationService.goBack();
+                      }),
+
+                  // Row(
+                  //   children: [
+                  //
+                  //     // Expanded(
+                  //     //   child: ,
+                  //     // ),
+                  //     // const CustomHorizontalSpace(width: 32),
+                  //     //
+                  //     // Expanded(
+                  //     //   child: ElevatedButtonWidget.primaryCustomBorder(
+                  //     //       text: "cancelButton".tr(),
+                  //     //       onPressed: () {
+                  //     //         NavigationService.goBack();
+                  //     //       }),
+                  //     //
+                  //     // ),
+                  //   ],
+                  // ),
+                  body:IntactiveCalculatorFees( model: res,)
+              ));
+
+
+
+        }
+
+
+
+      });
+    }
+  }
 
 
   void getSubActivityDetails(SubActivityEntity subActivity) async {

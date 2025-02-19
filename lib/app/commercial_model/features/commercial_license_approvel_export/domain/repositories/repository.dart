@@ -25,6 +25,7 @@ abstract class Repository {
   Future<Either<Failure, CalculateFeesResponseModel>> crCalculateFee({required CrCalculateFeesRequest params});
 
   Future<Either<Failure, CalculateFeesResponseModel>> CalculateFeesInteractively({required FeesRequest params});
+  Future<Either<Failure, String>> getSPLNotification({required String requestId,required String mencipiltyId});
 
   Future<Either<Failure, SubmitRequestResponseModel>> submitInitialApproval(int requestId);
 
