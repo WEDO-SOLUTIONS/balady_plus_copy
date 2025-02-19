@@ -63,7 +63,8 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                 child: GestureDetector(
                   onHorizontalDragUpdate: (details) {
                     setState(() {
-                      _dragPosition = (_dragPosition + details.delta.dx.abs()).clamp(0, maxWidth);
+                      final factor = Directionality.of(context) == TextDirection.ltr ? 1 : -1;
+                      _dragPosition = (_dragPosition + factor * details.delta.dx).clamp(0, maxWidth);
                     });
                   },
                   onHorizontalDragEnd: (details) {
