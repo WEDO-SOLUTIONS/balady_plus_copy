@@ -22,22 +22,16 @@ class ProfileImageWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final profileImage = ref.watch(profileImageProvider);
-
-    final Widget defaultImage = DefaultProfileImage(
-      dimension: dimension,
-      color: color,
-    );
-
-    return profileImage.maybeWhen(
-      data: (data) => data.imageBase64.isEmpty
-          ? defaultImage
-          : Picture.large(
-              key: ValueKey(data.imageBase64),
-              size: dimension,
-              imgBytes: base64Decode(data.imageBase64),
-            ),
-      orElse: () => defaultImage,
-    );
+    final value = profileImage.valueOrNull;
+    if (value != null && value.imageBase64.isNotEmpty) {
+      final imageBytes = base64Decode(value.imageBase64);
+      return Picture.large(
+        key: ValueKey(profileImage.valueOrNull!.imageBase64),
+        size: dimension,
+        imgBytes: imageBytes,
+      );
+    }
+    return DefaultProfileImage(dimension: dimension, color: color);
   }
 }
 

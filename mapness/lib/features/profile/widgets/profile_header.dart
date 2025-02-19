@@ -11,23 +11,25 @@ class ProfileHeader extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userData = ref.watch(authProvider);
+    final onConnect = ref.read(authProvider.notifier).doAuth;
 
+    final topPadding = userData.valueOrNull != null ? 0.0 : Spacing.$6x;
+    final bottomPadding = userData.valueOrNull != null ? Spacing.$4x : Spacing.$8x;
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: Spacing.$4x,
-      ).copyWith(
-        top: userData.valueOrNull != null ? 0 : Spacing.$6x,
-        bottom: userData.valueOrNull != null ? Spacing.$4x : Spacing.$8x,
+      padding: EdgeInsets.only(
+        left: Spacing.$4x,
+        right: Spacing.$4x,
+        top: topPadding,
+        bottom: bottomPadding,
       ),
       child: userData.maybeWhen(
-        orElse: () => UnauthorizedProfile(
-          onConnect: ref.read(authProvider.notifier).doAuth,
-        ),
-        data: (userData) => userData != null
-            ? AuthorizedWidget(userData: userData)
-            : UnauthorizedProfile(
-                onConnect: ref.read(authProvider.notifier).doAuth,
-              ),
+        orElse: () => UnauthorizedProfile(onConnect: onConnect),
+        data: (userData) {
+          if (userData == null) {
+            return UnauthorizedProfile(onConnect: onConnect);
+          }
+          return AuthorizedWidget(userData: userData);
+        },
       ),
     );
   }

@@ -107,13 +107,6 @@ class ProfilePage extends HookConsumerWidget {
                                         title: context.l10n.settings,
                                       ),
                                     ),
-                                    //// We remove it for now
-                                    // userData.maybeWhen(
-                                    //   orElse: () => const SizedBox.shrink(),
-                                    //   data: (data) => data == null
-                                    //       ? const SizedBox.shrink()
-                                    //       : NotificationsSettingsRow(actionIcon: actionIcon),
-                                    // ),
                                   ],
                                 ),
                               ),
