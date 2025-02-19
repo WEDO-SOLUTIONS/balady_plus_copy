@@ -1,3 +1,4 @@
+import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/data/repository/weather_repository.dart';
@@ -16,14 +17,15 @@ class _CurrentWeather extends _$CurrentWeather {
 
     final cancelToken = CancelToken();
 
-    final subscription =
-        controller?.cameraPositionEvents.debounceTime(const Duration(seconds: 1)).listen((event) async {
+    Future<void> listener(CameraPositionMessage event) async {
       final latitude = event.point.latitude;
       final longitude = event.point.longitude;
 
       final result = await repository.getForecastWeather(latitude, longitude, 1, cancelToken);
       state = result;
-    });
+    }
+
+    final subscription = controller?.cameraPositionEvents.debounceTime(const Duration(seconds: 1)).listen(listener);
 
     ref.onDispose(() {
       subscription?.cancel();

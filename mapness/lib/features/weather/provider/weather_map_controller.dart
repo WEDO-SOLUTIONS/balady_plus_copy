@@ -1,5 +1,5 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/entities/weather/weather_enum.dart';
+import 'package:mapness/entities/weather/weather_type_ext.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

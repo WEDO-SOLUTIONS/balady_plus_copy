@@ -30,11 +30,7 @@ class SunriseOrSunsetTime extends StatelessWidget {
           const SizedBox(
             height: 10,
           ),
-          Text(
-            time,
-            // fontSize: 14,
-            // fontWeight: FontWeight.bold,
-          ),
+          Text(time),
         ],
       );
 }

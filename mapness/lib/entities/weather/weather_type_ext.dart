@@ -1,8 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:intl/intl.dart';
 
-// enum WeatherMapType { temperature, precipitation }
-
 extension WeatherMapTypeExt on WeatherMapType {
   String measureUnit() => switch (this) {
         WeatherMapType.precipitation => 'mm',

@@ -41,16 +41,7 @@ class WindAndWeatherCard extends ConsumerWidget {
                     ),
                     Text(
                       '${allWeatherInfo?.current?.windKph.toString() ?? ''} k/h',
-                      // fontWeight: FontWeight.bold,
-                      // fontSize: 14,
-                      // fontColor: Colors.white,
                     ),
-                    /*const SizedBox(
-                          width: 10,
-                        ),
-                        CustomTextWidget(
-                          state.allWeatherInfo?.current?.windDir ?? '',
-                        ),*/
                   ],
                 ),
                 Row(
@@ -71,9 +62,6 @@ class WindAndWeatherCard extends ConsumerWidget {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         allWeatherInfo?.current?.humidity.toString() ?? '',
-                        // fontWeight: FontWeight.bold,
-                        // fontSize: 14,
-                        // fontColor: Colors.white,
                       ),
                     ),
                   ],
@@ -94,9 +82,6 @@ class WindAndWeatherCard extends ConsumerWidget {
                     ),
                     Text(
                       '${allWeatherInfo?.current?.visKm.toString() ?? ''} km',
-                      // fontWeight: FontWeight.bold,
-                      // fontSize: 14,
-                      // fontColor: Colors.white,
                     ),
                   ],
                 ),
