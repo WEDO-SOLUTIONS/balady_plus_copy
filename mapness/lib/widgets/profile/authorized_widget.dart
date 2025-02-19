@@ -12,7 +12,6 @@ class AuthorizedWidget extends ConsumerWidget {
   final SsoUserInfo userData;
 
   @override
-  // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context, WidgetRef ref) {
     var name = userData.getFirstAndLastName().trim();
     if (name.isEmpty) {

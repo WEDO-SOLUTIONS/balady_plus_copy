@@ -22,8 +22,9 @@ class LogoutSheet extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statelessBottomSheetController =
-        useStatelessBottomsheetController(onClose: (controller) => Navigator.of(context).pop());
+    final statelessBottomSheetController = useStatelessBottomsheetController(
+      onClose: (_) => Navigator.of(context).pop(),
+    );
     return StatelessBottomSheet(
       header: Padding(
         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
@@ -43,8 +44,12 @@ class LogoutSheet extends HookWidget {
             ),
           ),
           trailing: ContentRowCustomTrailingOptions(
-            builder: (context) =>
-                Align(alignment: Alignment.topCenter, child: AppButton.close(onTap: () => Navigator.of(context).pop())),
+            builder: (context) => Align(
+              alignment: Alignment.topCenter,
+              child: AppButton.close(
+                onTap: Navigator.of(context).pop,
+              ),
+            ),
           ),
         ),
       ),
