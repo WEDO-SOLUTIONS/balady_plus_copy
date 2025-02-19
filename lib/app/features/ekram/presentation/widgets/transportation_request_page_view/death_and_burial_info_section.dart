@@ -81,7 +81,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             DeathDateHijri(
                               currentDate: state
                                   .requestDetailsModel?.deathInfo?.deathDate,
-                              isDeathDatesDisabled: state.isDeathDatesDisabled,
+                              isDeathDatesDisabled: state.requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA",
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -97,7 +97,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             DeathDateGregorian(
                               currentDate: state.requestDetailsModel?.deathInfo
                                   ?.gregorianDeathDate,
-                              isDeathDatesDisabled: state.isDeathDatesDisabled,
+                              isDeathDatesDisabled: state.requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA",
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
