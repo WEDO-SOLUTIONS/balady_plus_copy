@@ -7,7 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/profile/profile_image_widget.dart';
+import 'package:mapness/widgets/profile/profile_image/profile_image_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileEditablePhoto extends StatelessWidget {
