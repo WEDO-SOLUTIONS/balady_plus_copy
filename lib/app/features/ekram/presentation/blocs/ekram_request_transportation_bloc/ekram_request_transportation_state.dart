@@ -664,4 +664,250 @@ class EkramRequestTransportationState extends Equatable {
 
     return true;
   }
+
+  bool isFieldDisabled(String? dataSource,EditFiledActionEnum field,String? data)  {
+
+
+    switch(field) {
+      case EditFiledActionEnum.Country:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+
+      case EditFiledActionEnum.DeathCity:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+      case EditFiledActionEnum.Hospital:
+        {
+          if (dataSource == "BALADY")
+            return false;
+          else if (dataSource == "SEHA") {
+            if (data != null)
+              return true;
+            else
+              return false;
+          }
+
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+      case EditFiledActionEnum.BurialCity:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return false;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+
+      case EditFiledActionEnum.BurialDate:
+        {
+          if (dataSource == "BALADY")
+          {
+
+            if(isTodayOrTomorrow(data!) == true)
+                return true;
+            else
+              return false;
+          }
+          else if (dataSource == "SEHA")
+            return false;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+
+      case EditFiledActionEnum.Prayer:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return false;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+      case EditFiledActionEnum.GraveType:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return false;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+
+    // TODO: Handle this case.
+
+    // TODO: Handle this case.
+      case EditFiledActionEnum.Cemetry:
+        {
+          if (dataSource == "BALADY")
+           {
+             if(isTodayOrTomorrow(data!) == true)
+               return true;
+             else
+               return false;
+
+
+           }
+          else if (dataSource == "SEHA")
+            return false;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+    // TODO: Handle this case.
+      case EditFiledActionEnum.Transport:
+        return false;
+      case EditFiledActionEnum.DeathDate:
+
+        {
+          if (dataSource == "BALADY")
+            return false;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return false;
+          else
+            return false;
+
+        }
+    // TODO: Handle this case.
+
+    // TODO: Handle this case.
+      case EditFiledActionEnum.Name:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+
+        }
+      case EditFiledActionEnum.Nationality:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+        }
+      case EditFiledActionEnum.Gender:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+        }
+      case EditFiledActionEnum.Religon:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+        }
+      case EditFiledActionEnum.NationalityType:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+        }
+      case EditFiledActionEnum.BirthDate:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+        }
+      case EditFiledActionEnum.NationalityId:
+        {
+          if (dataSource == "BALADY")
+            return true;
+          else if (dataSource == "SEHA")
+            return true;
+          else if (dataSource == "NIC")
+            return true;
+          else
+            return false;
+        }
+    }
+
+
+
+  }
+
+
+
+  bool isTodayOrTomorrow(String dateToCheck) {
+    DateTime now = DateTime.now();
+    DateFormat format = new DateFormat("yyyy/MM/dd");
+    DateTime date = format.parse(dateToCheck);
+
+    int days= DateTime(date.year, date.month, date.day).difference(DateTime(now.year, now.month, now.day)).inDays;
+
+    if(days==0 || days==1) {
+      return true;
+    } else {
+      return false;
+    }
+
+  }
+
 }

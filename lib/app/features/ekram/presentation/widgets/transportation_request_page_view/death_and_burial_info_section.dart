@@ -81,7 +81,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             DeathDateHijri(
                               currentDate: state
                                   .requestDetailsModel?.deathInfo?.deathDate,
-                              isDeathDatesDisabled: state.requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA",
+                             // isDeathDatesDisabled: state.requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA",
+
+                              isDeathDatesDisabled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.DeathDate, null),
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -97,7 +99,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             DeathDateGregorian(
                               currentDate: state.requestDetailsModel?.deathInfo
                                   ?.gregorianDeathDate,
-                              isDeathDatesDisabled: state.requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA",
+                             // isDeathDatesDisabled: state.requestDetailsModel?.deceasedInfo?.deceasedDataSource == "SEHA",
+                              isDeathDatesDisabled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.DeathDate, null),
+
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -112,7 +116,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.countries ?? [],
-                               isDisbaled:state.editInfoSection==false,
+                              // isDisbaled:(state.editInfoSection==false&&( state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="SEHA"||state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY")),
+                              isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Country, null),
+
                               value: state.getCountryById(state
                                   .requestDetailsModel?.deathInfo?.countryId),
                               onEmptyList: () async {
@@ -146,7 +152,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               showOptional: false,
-                              isDisbaled:state.editInfoSection==false,
+                             // isDisbaled:(state.editInfoSection==false&&( state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="SEHA"||state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY")),
+                              isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.DeathCity, null),
+
+
                               items: state.deathCities ?? [],
                               value: state.requestDetailsModel?.deathInfo
                                           ?.countryId ==
@@ -213,6 +222,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                           ?.countryId ==
                                       1
                                   ? ("ekram_death_city").tr()
+
                                   : ("arrivalCity").tr(),
                             ),
                             state.requestDetailsModel?.deathInfo?.countryId == 1
@@ -238,8 +248,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                       return null;
                                     }),
                             CustomLookUpLongDialog(
-                              isDisbaled: state.isHosptialDisabled(state
-                                  .requestDetailsModel?.deathInfo?.hospitalId),
+                              //isDisbaled: state.isHosptialDisabled(state.requestDetailsModel?.deathInfo?.hospitalId),
+
+                              isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Hospital, state.requestDetailsModel?.deathInfo?.hospitalId != null?"${state.requestDetailsModel?.deathInfo?.hospitalId}":null),
+
                               items: state.hospitals ?? [],
                               value: state.getHosptialById(
                                   state.requestDetailsModel?.deathInfo
@@ -323,7 +335,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: CustomRadioButtonEnd<bool>(
-                                    isDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                                   // isDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                                    isDisabled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BurialCity, null),
 
                                     title: ("burial_in_death_city").tr(),
                                     value: true,
@@ -359,7 +372,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 Expanded(
                                   child: CustomRadioButtonEnd<bool>(
                                     title: ("burial_in_other_city").tr(),
-                                    isDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                                   // isDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                                    isDisabled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BurialCity, null),
+
                                     value: true,
                                     currentSelected: state
                                             .requestDetailsModel
@@ -392,8 +407,10 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                         ?.isBurialInsideDeathCity ==
                                     false
                                 ? CustomLookUpLongDialog(
-                                    isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
-                                    items: state.burialCities ?? [],
+                                   // isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                                    isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BurialCity, null),
+
+                              items: state.burialCities ?? [],
                                     value: state.getBurialCityById(state
                                         .requestDetailsModel
                                         ?.burialInfo
@@ -437,7 +454,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               currentDate: state
                                   .requestDetailsModel?.burialInfo?.burialDate,
 
-                              isDeathDatesDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                             // isDeathDatesDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              isDeathDatesDisabled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BurialDate, state
+                                  .requestDetailsModel?.burialInfo?.gregorianBurialDate),
 
                               onChanged: (String? date) {
                                 context
@@ -455,8 +474,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               currentDate: state.requestDetailsModel?.burialInfo
                                   ?.gregorianBurialDate,
                              // isDeathDatesDisabled: state.isBurialDatesDisabled,
-                              isDeathDatesDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
-
+                              //isDeathDatesDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              isDeathDatesDisabled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BurialDate, state
+                                  .requestDetailsModel?.burialInfo?.gregorianBurialDate),
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -476,7 +496,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.prayers ?? [],
-                              isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                             // isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Prayer, null),
+
                               value: state.getParyerById(state.requestDetailsModel?.burialInfo?.prayId, state.requestDetailsModel?.burialInfo?.prayName),
                               onEmptyList: () async {
                                 context
@@ -679,7 +701,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   )
                                 : Container(),
                             CustomLookUpLongDialog(
-                              isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              //isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.GraveType, null),
 
                               items: state.cemetryTypeItems ?? [],
                               value: state.getCemtryTypeById(
@@ -717,7 +740,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                             CustomLookUpLongDialog(
                               items: state.cemetries ?? [],
-                              isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              //isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              isDisbaled:state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Cemetry, state
+                                  .requestDetailsModel?.burialInfo?.gregorianBurialDate),
 
                               value: state.getCemtryById(
                                   state.requestDetailsModel?.cemeteryData

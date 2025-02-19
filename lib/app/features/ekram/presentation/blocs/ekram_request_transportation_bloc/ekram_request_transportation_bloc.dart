@@ -1671,4 +1671,6 @@ class EkramRequestTransportationBloc extends Bloc<
             e.dataModel?.deceasedInfo?.identityTypeName),
         requestDetailsModel: e.dataModel));
   }
+
+
 }

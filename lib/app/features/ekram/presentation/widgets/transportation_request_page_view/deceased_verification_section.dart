@@ -13,6 +13,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
+import '../../../data/model/reset_action_enum.dart';
 
 class DeceasedVerificationSection extends StatelessWidget {
   DeceasedVerificationSection({super.key});
@@ -65,7 +66,8 @@ class DeceasedVerificationSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.nationalIdTypes ?? [],
-                              isDisbaled:(state.editInfoSection==false),
+                            //  isDisbaled:(state.editInfoSection==false),
+                             isDisbaled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.NationalityType, null),
 
                               value: state.selectedNationalIdType,
                               onEmptyList: () async {
@@ -84,9 +86,10 @@ class DeceasedVerificationSection extends StatelessWidget {
                               label: ("ekram_identity_type").tr(),
                               hint: ("ekram_identity_type").tr(),
                             ),
+
                             CustomTextFieldWidget(
                               isRequired: true,
-                              enabled:state.editInfoSection !=false,
+                              enabled:! state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.NationalityId, null),
                               label: "ekram_decesssed_identity".tr(),
                               isDigitsOnly: state.selectedNationalIdType?.id ==
                                           1 ||
@@ -117,8 +120,9 @@ class DeceasedVerificationSection extends StatelessWidget {
                                   .read<EkramRequestTransportationBloc>()
                                   .validateNationalId,
                             ),
-                             DeceasedBirthdateHijri(isDisabled: state.editInfoSection==false,),
-                             DeceasedBirthdateGregorian(isDisabled:state.editInfoSection==false ,),
+                             DeceasedBirthdateHijri(isDisabled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BirthDate, null),),
+                             DeceasedBirthdateGregorian(isDisabled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.BirthDate, null),
+                             ),
                             state.isDraft !=true? ElevatedButtonWidget.primaryCustomBorder(
                               //     btnPressed: isBtnDisabled
                               //         ? () {}

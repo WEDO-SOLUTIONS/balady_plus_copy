@@ -18,6 +18,7 @@ import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 import '../../../data/model/request_details_response_model/deceased_info.dart';
+import '../../../data/model/reset_action_enum.dart';
 
 // class DeceasedInfoSection extends StatefulWidget  {
 //   const DeceasedInfoSection({Key? key}) : super(key: key);
@@ -80,7 +81,7 @@ class DeceasedInfoSection extends StatelessWidget {
                               const SizedBox(
                                 height: 15,
                               ),
-                              state.editInfoSection == true
+                    state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Name, null)== false
                                   ? CustomTextFieldWidget(
                                       isRequired: true,
                                       enabled: true,
@@ -119,7 +120,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                               BorderRadius.circular(8)),
                                     ),
                               const CustomVerticalSpace(height: 16),
-                              state.editInfoSection == true
+                              state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Name, null)== false
                                   ? CustomTextFieldWidget(
                                       label: "ekram_second_name".tr(),
                                       hintText: "ekram_second_name".tr(),
@@ -155,7 +156,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                               BorderRadius.circular(8)),
                                     ),
                               const CustomVerticalSpace(height: 16),
-                              state.editInfoSection == true
+                              state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Name, null)== false
                                   ? CustomTextFieldWidget(
                                       label: "ekram_third_name".tr(),
                                       textFieldHeight: 55,
@@ -191,7 +192,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                               BorderRadius.circular(8)),
                                     ),
                               const CustomVerticalSpace(height: 16),
-                              state.editInfoSection == true
+                              state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Name, null)== false
                                   ? CustomTextFieldWidget(
                                       isRequired: true,
                                       label: "ekram_fourth_name".tr(),
@@ -253,9 +254,7 @@ class DeceasedInfoSection extends StatelessWidget {
                                   },
                                   label: ("nationality").tr(),
                                   hint: ("nationality").tr(),
-                                  isDisbaled: state.editInfoSection != null
-                                      ? !state.editInfoSection!
-                                      : false),
+                                  isDisbaled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Nationality, null)),
                               LabelTextWithOptional(
                                 label: 'sex'.tr(),
                                 labelColor: AppColor.blackModern700Light,
@@ -286,10 +285,11 @@ class DeceasedInfoSection extends StatelessWidget {
                                       unSelectedBackgroundColor:
                                           Colors.transparent,
                                       textSize: 16,
-                                      isDisabled: state.editInfoSection != null
-                                          ? !state.editInfoSection!
-                                          : false,
-                                    ),
+
+                                      isDisabled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Gender, null),
+
+
+        ),
                                   ),
                                   const SizedBox(
                                     width: 10,
@@ -313,9 +313,8 @@ class DeceasedInfoSection extends StatelessWidget {
                                       unSelectedBackgroundColor:
                                           Colors.transparent,
                                       textSize: 16,
-                                      isDisabled: state.editInfoSection != null
-                                          ? !state.editInfoSection!
-                                          : false,
+                                      isDisabled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Gender, null),
+
                                     ),
                                   ),
                                 ],
@@ -353,9 +352,8 @@ class DeceasedInfoSection extends StatelessWidget {
                                       unSelectedBackgroundColor:
                                           Colors.transparent,
                                       textSize: 16,
-                                      isDisabled: state.editInfoSection != null
-                                          ? !state.editInfoSection!
-                                          : false,
+                                      isDisabled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Religon, null),
+
                                     ),
                                   ),
                                   const SizedBox(
@@ -382,9 +380,8 @@ class DeceasedInfoSection extends StatelessWidget {
                                       unSelectedBackgroundColor:
                                           Colors.transparent,
                                       textSize: 16,
-                                      isDisabled: state.editInfoSection != null
-                                          ? !state.editInfoSection!
-                                          : false,
+                                      isDisabled: state.isFieldDisabled(state.requestDetailsModel?.deceasedInfo?.deceasedDataSource , EditFiledActionEnum.Religon, null),
+
                                     ),
                                   ),
                                 ],
