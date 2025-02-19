@@ -57,9 +57,10 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
                   autostart: Autostart.once,
                   onFetchCompleted: () async {
                     // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                    Future.delayed( Duration(seconds: state.splashDuration!)).then((e) {
+                    Future.delayed(Duration(seconds: state.splashDuration!))
+                        .then((e) {
                       sl<EntryPointCubit>().hideSplash();
-                      // Navigator.of(context).pop();
+                      Navigator.of(context).pop();
                       // NavigationService.navigatorKey.currentState!.pop();
                       slAuthentication<AuthenticationBloc>()
                           .add(CheckLoginAuthentication());
