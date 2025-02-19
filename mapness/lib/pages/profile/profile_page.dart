@@ -216,8 +216,6 @@ class ProfilePage extends HookConsumerWidget {
           Navigator.of(ctx).pop();
           await ref.read(authProvider.notifier).logOut();
           isLoading.value = false;
-          // TODO(Scroollocker): Fix close browser window after logout after new flutter_appauth version upgraded
-          Navigator.of(ctx).pop();
         },
       ),
     );
