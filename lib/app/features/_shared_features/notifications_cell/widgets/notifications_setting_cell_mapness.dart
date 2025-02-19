@@ -9,6 +9,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:jiffy/jiffy.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
+/// According to the design, the NotificationsSettingsRow should not be displayed
+/// Before it was displayed in the file `mapness/lib/pages/profile/profile_page.dart`
+/// You need to check commits and file history to see the previous implementation
+///
+/// We keep it here to use it in the future if needed because design can change
+/// If design will not change, we can delete this file
+///
+/// Task: BSA-1776
+/// Figma: https://www.figma.com/design/pBvXwBiDQdtN8qZ0IjdeAA/Profile-3.0?node-id=1009-29295&p=f&t=A2UFfEtVvSPOzq6K-0
+@Deprecated('Not used anymore, according to the design')
 class NotificationsSettingsRow extends StatelessWidget {
   const NotificationsSettingsRow({
     required this.actionIcon,

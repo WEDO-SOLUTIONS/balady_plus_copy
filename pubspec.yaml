@@ -186,7 +186,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.2.4
+    version: 3.2.5
 
   mapness:
     path: mapness

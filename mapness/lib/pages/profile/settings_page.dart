@@ -83,8 +83,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
                                   leadingIcon: leadingIcon(language),
                                 ),
                                 content: const LanguagePicker(),
-                                expandIconColor:
-                                    context.color.textAndIconsBaseSecondary,
+                                expandIconColor: context.color.textAndIconsBaseSecondary,
                               ),
                             ],
                           );
