@@ -6,14 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 
 class DeceasedBirthdateHijri extends StatelessWidget {
-  const DeceasedBirthdateHijri({super.key});
+  final bool isDisabled;
+   DeceasedBirthdateHijri({super.key,required this.isDisabled});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(builder: (context, state) {
       return HijriCalendarDateWidget(
-        isDisabled: state.isdeceasedInfoReadOnly,
+        isDisabled: isDisabled,
         currentVlaue: state.deceassedDOBHijri,
         fieldName: Helpers.translatingWord("cemetry_dob_hijri"),
         isMandatory: true,

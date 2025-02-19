@@ -112,6 +112,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.countries ?? [],
+                               isDisbaled:state.editInfoSection==false,
                               value: state.getCountryById(state
                                   .requestDetailsModel?.deathInfo?.countryId),
                               onEmptyList: () async {
@@ -145,6 +146,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               showOptional: false,
+                              isDisbaled:state.editInfoSection==false,
                               items: state.deathCities ?? [],
                               value: state.requestDetailsModel?.deathInfo
                                           ?.countryId ==
@@ -321,6 +323,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                               children: [
                                 Expanded(
                                   child: CustomRadioButtonEnd<bool>(
+                                    isDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+
                                     title: ("burial_in_death_city").tr(),
                                     value: true,
                                     currentSelected: state
@@ -355,6 +359,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                 Expanded(
                                   child: CustomRadioButtonEnd<bool>(
                                     title: ("burial_in_other_city").tr(),
+                                    isDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
                                     value: true,
                                     currentSelected: state
                                             .requestDetailsModel
@@ -387,12 +392,13 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                         ?.isBurialInsideDeathCity ==
                                     false
                                 ? CustomLookUpLongDialog(
+                                    isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
                                     items: state.burialCities ?? [],
                                     value: state.getBurialCityById(state
                                         .requestDetailsModel
                                         ?.burialInfo
                                         ?.cityId),
-                                    isDisbaled: false,
+
                                     onEmptyList: () async {
                                       return context
                                           .read<
@@ -430,7 +436,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             BurialDateHijri(
                               currentDate: state
                                   .requestDetailsModel?.burialInfo?.burialDate,
-                              isDeathDatesDisabled: state.isBurialDatesDisabled,
+
+                              isDeathDatesDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -446,7 +454,9 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             BurialDateGorgian(
                               currentDate: state.requestDetailsModel?.burialInfo
                                   ?.gregorianBurialDate,
-                              isDeathDatesDisabled: state.isBurialDatesDisabled,
+                             // isDeathDatesDisabled: state.isBurialDatesDisabled,
+                              isDeathDatesDisabled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+
                               onChanged: (String? date) {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -466,10 +476,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.prayers ?? [],
-                              value: state.getParyerById(
-                                  state.requestDetailsModel?.burialInfo?.prayId,
-                                  state.requestDetailsModel?.burialInfo
-                                      ?.prayName),
+                              isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+                              value: state.getParyerById(state.requestDetailsModel?.burialInfo?.prayId, state.requestDetailsModel?.burialInfo?.prayName),
                               onEmptyList: () async {
                                 context
                                     .read<EkramRequestTransportationBloc>()
@@ -542,28 +550,7 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                     },
                                   )
 
-                                //
-                                // ClockTimeWidget(
-                                //     title: "cemetry_deceassed_burial_time".tr(),
-                                //     currentTime: state.requestDetailsModel
-                                //             ?.burialInfo?.burialTime ??
-                                //         "",
-                                //     onSelectedTime: (TimeOfDay? time) {
-                                //       if (time != null) {
-                                //         context
-                                //             .read<
-                                //                 EkramRequestTransportationBloc>()
-                                //             .add(
-                                //               setBurialInfoEvent(
-                                //                 burialInfo: BurialInfo(
-                                //                   burialTime:
-                                //                       "${time.hour}:${time.minute}",
-                                //                 ),
-                                //               ),
-                                //             );
-                                //       }
-                                //     },
-                                //   )
+
                                 : const SizedBox(),
                             Row(
                               children: [
@@ -692,6 +679,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
                                   )
                                 : Container(),
                             CustomLookUpLongDialog(
+                              isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+
                               items: state.cemetryTypeItems ?? [],
                               value: state.getCemtryTypeById(
                                   state.requestDetailsModel?.cemeteryData
@@ -728,6 +717,8 @@ class DeathAndBurialInfoSection extends StatelessWidget {
 
                             CustomLookUpLongDialog(
                               items: state.cemetries ?? [],
+                              isDisbaled:(state.editInfoSection==false&& state.requestDetailsModel?.deceasedInfo?.deceasedDataSource=="BALADY"),
+
                               value: state.getCemtryById(
                                   state.requestDetailsModel?.cemeteryData
                                       ?.cemeteryId,

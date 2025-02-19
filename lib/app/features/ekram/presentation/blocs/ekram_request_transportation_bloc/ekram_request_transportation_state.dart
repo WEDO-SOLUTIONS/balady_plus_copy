@@ -296,6 +296,7 @@ class EkramRequestTransportationState extends Equatable {
 
   @override
   List<Object?> get props => [
+
         hospitals,
         isDeceasedBtnEnabled,
         deathCities,
@@ -350,7 +351,9 @@ class EkramRequestTransportationState extends Equatable {
         bodyArrivalCities,
         nationalities,
         nationalIdTypes,
-        isDraft
+        isDraft,
+        editInfoSection
+
       ];
 
   LookUpItem? getDeathCityById(int? id) {

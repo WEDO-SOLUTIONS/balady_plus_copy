@@ -65,6 +65,8 @@ class DeceasedVerificationSection extends StatelessWidget {
                             ),
                             CustomLookUpLongDialog(
                               items: state.nationalIdTypes ?? [],
+                              isDisbaled:(state.editInfoSection==false),
+
                               value: state.selectedNationalIdType,
                               onEmptyList: () async {
                                 return context
@@ -84,6 +86,7 @@ class DeceasedVerificationSection extends StatelessWidget {
                             ),
                             CustomTextFieldWidget(
                               isRequired: true,
+                              enabled:state.editInfoSection !=false,
                               label: "ekram_decesssed_identity".tr(),
                               isDigitsOnly: state.selectedNationalIdType?.id ==
                                           1 ||
@@ -114,8 +117,8 @@ class DeceasedVerificationSection extends StatelessWidget {
                                   .read<EkramRequestTransportationBloc>()
                                   .validateNationalId,
                             ),
-                            const DeceasedBirthdateHijri(),
-                            const DeceasedBirthdateGregorian(),
+                             DeceasedBirthdateHijri(isDisabled: state.editInfoSection==false,),
+                             DeceasedBirthdateGregorian(isDisabled:state.editInfoSection==false ,),
                             state.isDraft !=true? ElevatedButtonWidget.primaryCustomBorder(
                               //     btnPressed: isBtnDisabled
                               //         ? () {}

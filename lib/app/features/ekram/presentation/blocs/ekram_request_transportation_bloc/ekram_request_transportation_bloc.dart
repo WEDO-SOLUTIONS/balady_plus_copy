@@ -1663,6 +1663,8 @@ class EkramRequestTransportationBloc extends Bloc<
         deceasedId: e.dataModel?.deceasedInfo?.identityNumber,
         isDeceasedBtnEnabled: false,
         isDraft: state.nationalIdTypes != null ? true : false,
+        editInfoSection: isScreenEditable(e.dataModel),
+        cemeteryReservationMsg: e.dataModel?.cemeteryReservationMsg,
         requestId: e.dataModel?.requestId,
         selectedNationalIdType: state.getNationalIdTypesById(
             e.dataModel?.deceasedInfo?.identityType,

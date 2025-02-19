@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeceasedBirthdateGregorian extends StatelessWidget {
-  const DeceasedBirthdateGregorian({super.key});
+  final bool isDisabled;
+   DeceasedBirthdateGregorian({super.key,required this.isDisabled});
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<EkramRequestTransportationBloc,
         EkramRequestTransportationState>(builder: (context, state) {
       return GorgianCalendarDateWidget(
-        isDisabled: state.isdeceasedInfoReadOnly,
+        isDisabled: isDisabled,
         currentVlaue: state.deceassedDOBGorgian,
         fieldName: Helpers.translatingWord("cemetry_dob_gorgian"),
         isMandatory: true,
