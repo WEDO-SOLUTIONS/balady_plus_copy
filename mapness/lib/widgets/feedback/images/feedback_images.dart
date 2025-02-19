@@ -186,7 +186,7 @@ class FeedbackImages extends StatelessWidget {
   }
 
   Future<List<XFile>> _pickedImage() async {
-    final images = await ImagePicker().pickMultiImage();
+    final images = await ImagePicker().pickMultiImage(limit: 10);
 
     return images;
   }
