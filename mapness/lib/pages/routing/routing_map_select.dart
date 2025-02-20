@@ -7,8 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/routing/providers/nearest_object.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -19,7 +17,9 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
-import 'package:mapness/widgets/landing/ui/traffic_control.dart';
+import 'package:mapness/widgets/landing/follow_control.dart';
+import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 
 @RoutePage()
 class RoutingMapSelectPage extends ConsumerStatefulWidget {

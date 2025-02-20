@@ -16,8 +16,7 @@ class EventsHomeCardWrapper extends ConsumerStatefulWidget {
   final AppColorScheme colorScheme;
 
   @override
-  ConsumerState<EventsHomeCardWrapper> createState() =>
-      _EventsHomeCardWrapperState();
+  ConsumerState<EventsHomeCardWrapper> createState() => _EventsHomeCardWrapperState();
 }
 
 class _EventsHomeCardWrapperState extends ConsumerState<EventsHomeCardWrapper> {
@@ -30,11 +29,8 @@ class _EventsHomeCardWrapperState extends ConsumerState<EventsHomeCardWrapper> {
   @override
   Widget build(BuildContext context) => EventsHomeCard(
         colorScheme: widget.colorScheme,
-        onItemTap: (value) => Metrics.logEventAdvanced(
-            MetricsConstants.exploreKeys.eventsCalendarBanner,
-            action: MetricAction.tap.name,
-            group: MetricsConstants.exploreTag,
-            props: {'event_id': value.id}),
+        onItemTap: (value) => Metrics.logEventAdvanced(MetricsConstants.exploreKeys.eventsCalendarBanner,
+            action: MetricAction.tap.name, group: MetricsConstants.exploreTag, props: {'event_id': value.id}),
         onShowAll: () => Metrics.logEventAdvanced(
           MetricsConstants.exploreKeys.eventsCalendarViewAll,
           action: MetricAction.tap.name,

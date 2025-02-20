@@ -47,8 +47,7 @@ class PrayerCard extends ConsumerWidget {
             return const SizedBox();
           }
 
-          final isLoading = nextPrayer == null ||
-              state.status == BlocRequestStatus.submissionGetCanceled;
+          final isLoading = nextPrayer == null || state.status == BlocRequestStatus.submissionGetCanceled;
 
           return Padding(
             padding: const EdgeInsets.only(
@@ -76,13 +75,11 @@ class PrayerCard extends ConsumerWidget {
                           child: InkWell(
                             onTap: () {
                               Metrics.logEventAdvanced(
-                                MetricsConstants
-                                    .exploreKeys.prayerTimesBannerButton,
+                                MetricsConstants.exploreKeys.prayerTimesBannerButton,
                                 action: MetricAction.tap.name,
                                 group: MetricsConstants.exploreTag,
                               );
-                              NavigationService.navigatorKey.currentState!
-                                  .pushNamed(
+                              NavigationService.navigatorKey.currentState!.pushNamed(
                                 RouteName.prayerTimes,
                                 arguments: bloc,
                               );
@@ -96,12 +93,9 @@ class PrayerCard extends ConsumerWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    'remain_to_azan'.tr().replaceAll('{}',
-                                        state.nextPrayer!.prayer.label.tr()),
-                                    style: context.textStyleV3.bodyLargeRegular
-                                        .copyWith(
-                                      color: context
-                                          .color.textAndIconsBaseInversePrimary,
+                                    'remain_to_azan'.tr().replaceAll('{}', state.nextPrayer!.prayer.label.tr()),
+                                    style: context.textStyleV3.bodyLargeRegular.copyWith(
+                                      color: context.color.textAndIconsBaseInversePrimary,
                                     ),
                                   ),
                                   _NextPrayerTimer(
@@ -113,43 +107,29 @@ class PrayerCard extends ConsumerWidget {
                                   const Spacer(),
                                   Row(
                                     crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             '${'pray'.tr()} ${state.nextPrayer!.prayer.label.tr()}',
-                                            style: context
-                                                .textStyleV3.bodySmallRegular
-                                                .copyWith(
-                                              color: context.color
-                                                  .textAndIconsBaseInversePrimary,
+                                            style: context.textStyleV3.bodySmallRegular.copyWith(
+                                              color: context.color.textAndIconsBaseInversePrimary,
                                             ),
                                           ),
                                           RichText(
                                             textDirection: TextDirection.ltr,
                                             text: TextSpan(
-                                              style: context
-                                                  .textStyleV3.h2Medium
-                                                  .copyWith(
-                                                color: context
-                                                    .colorsV2.staticWhite,
+                                              style: context.textStyleV3.h2Medium.copyWith(
+                                                color: context.colorsV2.staticWhite,
                                               ),
                                               children: [
                                                 TextSpan(
-                                                  text: DateFormat('hh:mm')
-                                                      .format(state.nextPrayer!
-                                                          .dateTime),
+                                                  text: DateFormat('hh:mm').format(state.nextPrayer!.dateTime),
                                                 ),
                                                 TextSpan(
-                                                  text: state.nextPrayer!
-                                                              .dateTime.hour >
-                                                          12
-                                                      ? ' pm'
-                                                      : ' am',
+                                                  text: state.nextPrayer!.dateTime.hour > 12 ? ' pm' : ' am',
                                                 ),
                                               ],
                                             ),
@@ -180,8 +160,7 @@ class _NotificationIconSwitch extends StatefulWidget {
   const _NotificationIconSwitch();
 
   @override
-  State<_NotificationIconSwitch> createState() =>
-      _NotificationIconSwitchState();
+  State<_NotificationIconSwitch> createState() => _NotificationIconSwitchState();
 }
 
 class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
@@ -196,8 +175,7 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
             action: MetricAction.tap.name,
             group: MetricsConstants.exploreTag,
           );
-          provider.Provider.of<PrayerTimesCubit>(context, listen: false)
-              .prayerSettingsOnOff();
+          provider.Provider.of<PrayerTimesCubit>(context, listen: false).prayerSettingsOnOff();
         },
         onTapDown: (_) {
           setState(() {
@@ -220,12 +198,8 @@ class _NotificationIconSwitchState extends State<_NotificationIconSwitch> {
                   builder: (context, state) {
                     final isNotificationDisabled = state.isNotificationDisable;
                     return Icon(
-                      isNotificationDisabled
-                          ? SystemIcons.notification
-                          : SystemIcons.notificationFill,
-                      color: isPressed
-                          ? context.colorsV2.foregroundMuted
-                          : Colors.white,
+                      isNotificationDisabled ? SystemIcons.notification : SystemIcons.notificationFill,
+                      color: isPressed ? context.colorsV2.foregroundMuted : Colors.white,
                     );
                   },
                 ),
@@ -308,8 +282,7 @@ class _NextPrayerTimerState extends State<_NextPrayerTimer> {
 
         return Text(
           '$hours:$minutes:$seconds',
-          style: context.textStyleV3.h1Medium
-              .copyWith(color: context.colorsV2.staticWhite),
+          style: context.textStyleV3.h1Medium.copyWith(color: context.colorsV2.staticWhite),
           textDirection: TextDirection.ltr,
         );
       },
