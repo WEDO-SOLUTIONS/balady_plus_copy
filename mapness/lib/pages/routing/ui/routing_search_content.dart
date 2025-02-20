@@ -42,57 +42,44 @@ class RoutingSearchContent extends ConsumerWidget {
     });
 
     return searchState.map(
-      empty: () => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: MapSearchEmpty(),
+      empty: () => const SafeArea(
+        top: false,
+        child: MapSearchEmpty(),
+      ),
+      history: () => SafeArea(
+        top: false,
+        child: RoutingSearchHistory(
+          showMyLocation: showMyLocation,
         ),
       ),
-      history: () => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: RoutingSearchHistory(
-            showMyLocation: showMyLocation,
+      loading: () => SafeArea(
+        top: false,
+        child: Center(
+          child: Loading(
+            orientation: Axis.vertical,
+            size: LoaderSize.large,
+            title: context.l10n.loading,
           ),
         ),
       ),
-      loading: () => SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: Center(
-            child: Loading(
-              orientation: Axis.vertical,
-              size: LoaderSize.large,
-              title: context.l10n.loading,
-            ),
-          ),
+      suggest: (suggest) => SafeArea(
+        top: false,
+        child: RoutingSuggestList(
+          suggest: suggest,
         ),
       ),
-      suggest: (suggest) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: RoutingSuggestList(
-            suggest: suggest,
-          ),
+      results: (results) => SafeArea(
+        top: false,
+        child: RoutingSearchResults(
+          results: results,
+          scrollController: scrollController,
         ),
       ),
-      results: (results) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: RoutingSearchResults(
-            results: results,
-            scrollController: scrollController,
-          ),
-        ),
-      ),
-      failure: (query, errorMessage) => SliverToBoxAdapter(
-          child: BaseErrorWidget(
-              errorLabel: errorMessage,
-              onRetry: () {
-                ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-              })),
+      failure: (query, errorMessage) => BaseErrorWidget(
+          errorLabel: errorMessage,
+          onRetry: () {
+            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
+          }),
     );
   }
 }

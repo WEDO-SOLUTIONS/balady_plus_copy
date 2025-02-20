@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -63,10 +64,7 @@ class RoutingMapControls extends ConsumerWidget {
                 ),
               ),
             ),
-            ValueListenableBuilder(
-              valueListenable: bottomHeightNotifier,
-              builder: (context, value, _) => value.heightBox,
-            )
+            uikit.Spacing.$3x.heightBox
           ],
         ),
       );
