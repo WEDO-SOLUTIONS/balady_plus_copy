@@ -49,7 +49,7 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
             builder: (context, state) {
               if (state.status == BlocStatus.initial ||
                   state.status == BlocStatus.loading) {
-                return const SizedBox();
+                return const SizedBox.shrink();
               } else if (state.status == BlocStatus.success) {
                 return Gif(
                   image: NetworkImage(state.splashUrl!),
