@@ -19,12 +19,18 @@ class SplashCubit extends Cubit<SplashState> {
       final currentDate = DateTime.now();
       final startDate = splashData.startDate;
       final endDate = splashData.endDate;
-
-      if (currentDate.isAfter(startDate) && currentDate.isBefore(endDate)) {
-        emit(state.copyWith(status: BlocStatus.success, splashUrl: splashData.splashImage , splashDuration: splashData.seasonalSplashDuration));
+      if (currentDate.isAfter(startDate) &&
+          currentDate.isBefore(endDate) &&
+          splashData.splashImage != '') {
+        emit(state.copyWith(
+            status: BlocStatus.success,
+            splashUrl: splashData.splashImage,
+            splashDuration: splashData.seasonalSplashDuration));
       } else {
         emit(state.copyWith(status: BlocStatus.failure));
       }
-    } catch (e) {}
+    } catch (e) {
+      emit(state.copyWith(status: BlocStatus.failure));
+    }
   }
 }
