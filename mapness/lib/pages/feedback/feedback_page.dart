@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/feedback/feedback_category.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/feedback/feedback_categories.dart';
 import 'package:mapness/features/feedback/poi_feedback.dart';
@@ -17,16 +18,14 @@ import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
 import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
-final _formKey = GlobalKey<FormBuilderState>();
-
 @RoutePage()
 class FeedbackPage extends ConsumerStatefulWidget {
-  final String categoryId;
-  final int? poiId;
+  final int? objectId;
+  final FeedbackCategoryEntity category;
 
   const FeedbackPage({
-    required this.poiId,
-    required this.categoryId,
+    required this.category,
+    this.objectId,
     super.key,
   });
 
@@ -35,6 +34,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
 }
 
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
+  final _formKey = GlobalKey<FormBuilderState>();
   final _isFormValidNotifier = ValueNotifier<bool>(false);
 
   @override
@@ -45,23 +45,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
   @override
   Widget build(BuildContext context) {
-    final objectId = widget.poiId;
-    if (objectId == null) {
-      return const FeedbackFailureWidget();
-    }
-    final poiData = ref.watch(poiFeedbackProvider(objectId));
-    final objectType = poiData.valueOrNull?.types[0].type;
-    final provider = feedbackCategoriesProvider(FeedbackObjectType.fromMessage(objectType));
-    final categories = ref.watch(provider);
-    final category = categories.value?.firstWhereOrNull((element) => element.id == widget.categoryId);
-
-    if (category == null || category.fields.isEmpty) {
-      return FeedbackFailureWidget(
-        onRetry: () {
-          ref.invalidate(provider);
-        },
-      );
-    }
+    final category = widget.category;
 
     return FormBuilder(
       key: _formKey,
@@ -73,7 +57,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         builder: (context, isFormBalid, child) => FeedbackFormContainer(
           title: category.name,
           isSendEnabled: isFormBalid,
-          onSend: () => _collectForm(objectId, category.id),
+          onSend: () => _collectForm(objectId: widget.objectId, categoryId: category.id),
           child: child!,
         ),
         child: FeedbackFormWidget(fields: category.fields),
@@ -81,7 +65,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     );
   }
 
-  void _collectForm(int objectId, String categoryId) {
+  void _collectForm({required String categoryId, int? objectId}) {
     final formState = _formKey.currentState;
     if (formState == null) {
       return;

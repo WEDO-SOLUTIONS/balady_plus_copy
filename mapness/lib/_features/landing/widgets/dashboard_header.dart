@@ -132,12 +132,14 @@ class DashboardHeader extends ConsumerWidget {
               context.router.push(SearchRoute(expansion: Expansion.expanded));
             },
             child: AbsorbPointer(
-              child: BaladyInput.searchV2(
-                hintText: context.l10n.searchPlaceOrAddress,
-                readOnly: true,
-                fillColor: context.colorsV2.neutralContainerDefault,
-                hintColor: context.colorsV2.foregroundSoft,
-                textStyle: context.textStyleV3.bodySmallRegular,
+              child: BaladyTextInput.search(
+                inputState: BaladyInputState.readOnly,
+                config: BaladyInputConfig(
+                  hintText: context.l10n.searchPlaceOrAddress,
+                  fillColor: context.colorsV2.neutralContainerDefault,
+                  hintColor: context.colorsV2.foregroundSoft,
+                  textStyle: context.textStyleV3.bodySmallRegular,
+                ),
               ),
             ),
           ),

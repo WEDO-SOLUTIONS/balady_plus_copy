@@ -37,42 +37,26 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     fontSize: 13,
     textOffset: 4,
     strokeColor: 0xD3FFFFFF,
-    strokeWidth: 3,
+    strokeWidth: 1,
     fontName: fontName,
     textPlacement: MarkerTextPlacementMessage(
       placement: TextPlacementMessage.rightCenter,
     ),
   );
 
-  if (closestPoint != null) {
-    await selectedMarker.showMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: closestPoint.latitude,
-          longitude: closestPoint.longitude,
-          elevation: 1,
-        ),
-        text: directoryObject?.title,
-        textStyle: textStyle,
-        icon: mapMarkerMapper?.iconPath.bigIconPath,
-        id: poiPinId,
+  await selectedMarker.showMarker(
+    Markers.pinMarker(
+      GeoPointWithElevationMessage(
+        latitude: closestPoint?.latitude ?? position.latitude,
+        longitude: closestPoint?.longitude ?? position.longitude,
+        elevation: 1,
       ),
-    );
-  } else {
-    await selectedMarker.showMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(
-          latitude: position.latitude,
-          longitude: position.longitude,
-          elevation: 1,
-        ),
-        text: directoryObject?.title,
-        textStyle: textStyle,
-        icon: mapMarkerMapper?.iconPath.bigIconPath,
-        id: poiPinId,
-      ),
-    );
-  }
+      text: directoryObject?.title,
+      textStyle: textStyle,
+      icon: mapMarkerMapper?.iconPath.bigIconPath,
+      id: poiPinId,
+    ),
+  );
 
   final highlightController = ref.read(highlightProvider.notifier);
   await highlightController.removeAll();

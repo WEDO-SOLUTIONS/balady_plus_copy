@@ -74,8 +74,8 @@ class FeedbackSelectOptionsComponentWidget extends ConsumerWidget {
   ) {
     context.router.push(
       FeedbackRoute(
-        poiId: objectId,
-        categoryId: category.id,
+        category: category,
+        objectId: objectId,
       ),
     );
   }

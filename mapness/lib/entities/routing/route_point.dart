@@ -1,7 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/_features/favourites/domain/favourite_item.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum RoutePointType { object, myLocation }
@@ -24,6 +24,8 @@ sealed class RoutePoint {
   int? get entranceId;
 
   int? get levelId;
+
+  String? get label;
 }
 
 class RoutePointMyLocation extends RoutePoint {
@@ -53,11 +55,16 @@ class RoutePointMyLocation extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;
+
+  @override
+  String? get label => null;
 }
 
 class RoutePointCoordinates extends RoutePoint {
-  RoutePointCoordinates(this.coords);
+  RoutePointCoordinates(this.coords, this.address);
+
   final GeoPointMessage coords;
+  final String? address;
 
   @override
   String get icon => 'assets/icons/svg/ic_routing_circle.svg';
@@ -86,6 +93,9 @@ class RoutePointCoordinates extends RoutePoint {
 
   @override
   Color titleColor(BuildContext context) => context.color.textAndIconsBasePrimary;
+
+  @override
+  String? get label => address;
 }
 
 class RoutePointDirectoryObject extends RoutePoint {
@@ -119,6 +129,9 @@ class RoutePointDirectoryObject extends RoutePoint {
   @override
   Color titleColor(BuildContext context) =>
       object == null ? context.color.textAndIconsBaseTertiary : context.color.textAndIconsBasePrimary;
+
+  @override
+  String? get label => null;
 }
 
 class RoutePointFavouriteItem extends RoutePoint {
@@ -152,4 +165,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   @override
   Color titleColor(BuildContext context) =>
       item == null ? context.color.textAndIconsBaseTertiary : context.color.textAndIconsBasePrimary;
+
+  @override
+  String? get label => null;
 }

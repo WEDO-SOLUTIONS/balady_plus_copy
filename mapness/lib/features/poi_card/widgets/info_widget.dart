@@ -1,18 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -89,15 +88,19 @@ class InfoWidget extends ConsumerWidget {
         if (objectId == null) {
           return;
         }
-        context.router.push(FeedbackSelectTypeRoute(objectId: objectId));
+        final objectIdInt = int.tryParse(objectId);
+        if (objectIdInt == null) {
+          return;
+        }
+
+        context.router.push(
+          QuickFeedbackRoute(
+            type: QuickFeedbackType.editCompany,
+            params: FeedbackObjectIdParams(objectIdInt),
+          ),
+        );
       },
-      title: context.l10n.reportError,
-      buttonText: context.l10n.send,
-      image: SvgPicture.asset(
-        'assets/images_svg/illustration_notifications.svg',
-        matchTextDirection: true,
-        package: PackageConfig.packageName,
-      ),
+      title: context.l10n.dataIsIncorrect,
     );
 
     final poiContentData = PoiContentData(
@@ -112,11 +115,9 @@ class InfoWidget extends ConsumerWidget {
       feedback: objectId != null ? feedback : null,
     );
 
-    return SafeArea(
-      child: PoiContent(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        data: poiContentData,
-      ),
+    return PoiContent(
+      padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$2x),
+      data: poiContentData,
     );
   }
 }

@@ -9,7 +9,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
 import 'package:mapness/widgets/bottom_menu/lazy_index_stack.dart';
-import 'package:mapness/widgets/profile/profile_image_widget.dart';
+import 'package:mapness/widgets/profile/profile_image/profile_image_widget.dart';
 
 @RoutePage()
 class BottomMenuPage extends ConsumerWidget {

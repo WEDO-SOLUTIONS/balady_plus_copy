@@ -6,6 +6,7 @@ import AVFoundation
 final class FlutterCarPlayDashboardSceneDelegate: UIResponder, CPTemplateApplicationDashboardSceneDelegate, DgisCarPlayMapViewDelegate {
 
     static private(set) var map: Map?
+    static private(set) var mapView: DgisCarPlayDashboardMapView?
     
     func viewDidLoad(with map: DGis.Map) {
         FlutterCarPlayDashboardSceneDelegate.map = map
@@ -17,6 +18,7 @@ final class FlutterCarPlayDashboardSceneDelegate: UIResponder, CPTemplateApplica
         
         let mapView = DgisCarPlayDashboardMapView()
         mapView.delegate = self
+        FlutterCarPlayDashboardSceneDelegate.mapView = mapView
         
         let button = CPDashboardButton(titleVariants: [], subtitleVariants: [], image: UIImage(named: "MockImage")!.withRenderingMode(.alwaysOriginal))
         
@@ -29,5 +31,6 @@ final class FlutterCarPlayDashboardSceneDelegate: UIResponder, CPTemplateApplica
         didDisconnect dashboardController: CPDashboardController,
         from window: UIWindow) {
         FlutterCarPlayDashboardSceneDelegate.map = nil
+        FlutterCarPlayDashboardSceneDelegate.mapView = nil
     }
 }

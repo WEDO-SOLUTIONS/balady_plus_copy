@@ -1,9 +1,10 @@
 import 'package:dgis_map/library.dart';
 
 class Markers {
-  static const double defaultWidth = 58;
+  static const double defaultWidth = 60;
   static const double defaultHeight = 58;
   static const defaultPin = 'packages/mapness/assets/icons/lottie/pin_logo_animated.json';
+  static const defaultPinNew = 'packages/mapness/assets/icons/svg/ic_pin_new.svg';
 
   static Marker pinMarker(
     GeoPointWithElevationMessage position, {
@@ -19,7 +20,7 @@ class Markers {
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: icon ?? defaultPin,
+            svgPath: icon ?? defaultPinNew,
             width: width ?? defaultWidth,
           ),
           text: text,

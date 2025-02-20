@@ -34,6 +34,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var indoorControlHandler: IndoorControlHandler?
     private var routeHandler: RouteHandler?
     private var navigationHandler: NavigationHandler?
+    private var carPlayHandler: CarPlayHandler?
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
     private var weatherHandler: WeatherHandler?
@@ -116,6 +117,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel,
             view: self._view
         )
+        
+        self.carPlayHandler = CarPlayHandler(eventChannel: eventChannel)
         
         self.routeHandler = RouteHandler(
             map: map,
@@ -727,6 +730,24 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.objectTapHandler?.removeAllPolygons(from: manager?.id, completion: completion)
     }
     
+    // MARK: Circle
+    
+    func addCircle(circle: CircleMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addCircle(circle, to: manager?.id, completion: completion)
+    }
+    
+    func addCircles(circles: [CircleMessage], manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addCircles(circles, to: manager?.id, completion: completion)
+    }
+    
+    func removeCircle(id: String, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeCircle(id, from: manager?.id, completion: completion)
+    }
+    
+    func removeAllCircles(manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeAllCircles(from: manager?.id, completion: completion)
+    }
+    
     // MARK: Polyline
     
     func addPolyline( polyline: PolylineMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
@@ -1180,8 +1201,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
 
-    func getAndroidAutoConnectionState(completion: @escaping (Result<Bool, any Error>) -> Void) {
-        completion(Result.success(false))
+    func getCarConnectionState(completion: @escaping (Result<Bool, any Error>) -> Void) {
+        carPlayHandler?.getConnectionState(completion: completion)
     }
     
 

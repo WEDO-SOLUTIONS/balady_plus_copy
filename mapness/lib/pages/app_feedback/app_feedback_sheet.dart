@@ -61,21 +61,22 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     ref.watch(appFeedbackCanPopProvider.select((_) => null));
 
-    void onCloseBottomSheet(StatelessBottomSheetController controller) {
-      final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
-      final isInitial = ref.read(sendFeedbackProvider).valueOrNull == AppFeedbackState.initial;
+    // void onCloseBottomSheet(StatelessBottomSheetController controller) {
+    //   final feedbackCanpop = ref.read(appFeedbackCanPopProvider);
+    //   final isInitial = ref.read(sendFeedbackProvider).valueOrNull == AppFeedbackState.initial;
 
-      if (feedbackCanpop || !isInitial) {
-        context.router.popForced();
-      } else {
-        controller.open();
-        _showConfirmDialog(context);
-      }
-    }
+    //   if (feedbackCanpop || !isInitial) {
+    //     context.router.popForced();
+    //   } else {
+    //     controller.open();
+    //     _showConfirmDialog(context);
+    //   }
+    // }
 
-    final scrollController = useStatelessBottomsheetController(
-      onClose: onCloseBottomSheet,
-    );
+    //TODO(scroollocker): We removed the onClose callback from the hook, we need to find a way to fix it in bottomsheet
+    // Because onClose called every time when we open the bottomsheet
+
+    final scrollController = useStatelessBottomsheetController();
 
     return FeedbackSourceProvider(
       source: source,

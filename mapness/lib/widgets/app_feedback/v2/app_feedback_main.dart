@@ -97,16 +97,12 @@ class AppFeedbackMain extends HookConsumerWidget {
           padding: const EdgeInsets.all(Spacing.$4x),
           child: ValueListenableBuilder(
             valueListenable: rating,
-            builder: (context, ratingValue, _) => SizedBox(
-              // For prevent the text from moving when the rating changes
-              // Approved by design team
-              height: 40,
-              child: Text(
-                _ratingText(context.l10n, rating.value),
-                textAlign: TextAlign.center,
-                style: context.textStyleV3.bodyLargeRegular.copyWith(
-                  color: context.colorsV2.foregroundSoft,
-                ),
+            builder: (context, ratingValue, _) => Text(
+              _ratingText(context.l10n, rating.value),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              style: context.textStyleV3.bodyLargeRegular.copyWith(
+                color: context.colorsV2.foregroundSoft,
               ),
             ),
           ),
@@ -133,6 +129,7 @@ class AppFeedbackMain extends HookConsumerWidget {
               key: const ValueKey('app-feedback-balady-input'),
               padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 onTap: () async {
                   /// change feedback text
                   final result =
@@ -141,17 +138,17 @@ class AppFeedbackMain extends HookConsumerWidget {
                     feedbackTextController.text = result;
                   }
                 },
-                // TODO: Remove this ignore when you will do refacotring
-                // Added to make a hotfix
-                // ignore: deprecated_member_use
-                child: BaladyInput(
-                  readOnly: true,
-                  controller: feedbackTextController,
-                  hintText: context.l10n.appFeedbackHintText,
-                  maxLines: 4,
-                  enabled: false,
-                  isDisposed: false,
-                  onChanged: (_) {},
+                child: IgnorePointer(
+                  child: BaladyTextInput(
+                    inputState: BaladyInputState.readOnly,
+                    controller: feedbackTextController,
+                    config: BaladyInputConfig(
+                      hintText: context.l10n.appFeedbackHintText,
+                      maxLines: 4,
+                      isDisposed: false,
+                      onChanged: (_) {},
+                    ),
+                  ),
                 ),
               ),
             );

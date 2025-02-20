@@ -27,6 +27,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/ui/feedback_banner_card.dart';
 import 'package:mapness/widgets/stories/lib/stories_widget.dart';
 
 class Dashboard extends ConsumerStatefulWidget {
@@ -123,9 +124,22 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           floating: true,
         ),
         content: [
+          const SizedBox(height: uikit.Spacing.$3x),
+          FeedbackBannerCard(
+            imageAssetName: 'add_company.png',
+            onTap: () => context.router.push(QuickFeedbackRoute()),
+            gradientColors: const [
+              /// It's normal that some components are not from the design and color system too
+              Color(0xFF9F6AD7),
+              Color(0xFF7035AF),
+            ],
+            title: context.l10n.addPlace,
+            subtitle: context.l10n.addNewPlace,
+          ),
+          const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
             titleWidget: Padding(
-              padding: const EdgeInsets.symmetric(vertical: uikit.Spacing.$3x),
+              padding: const EdgeInsets.only(bottom: uikit.Spacing.$3x),
               child: DashboardTitle(context.l10n.whatIsNewInBalady),
             ),
           ),

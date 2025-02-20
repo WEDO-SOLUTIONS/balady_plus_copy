@@ -8,17 +8,21 @@ import 'package:mapness/widgets/search/ui/search_history_empty.dart';
 import 'package:provider/provider.dart';
 
 class SearchHistory extends ConsumerWidget {
+  final void Function(SearchHistoryItem item) onTap;
+
   const SearchHistory({
     required this.onTap,
     super.key,
   });
 
-  final Function(SearchHistoryItem item) onTap;
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final scope = context.read<SearchScope>();
     final history = ref.watch(searchHistoryProvider(scope.value));
+
+    if (history.isEmpty) {
+      return const SearchHistoryEmpty();
+    }
 
     final search = ref.watch(searchHistoryProvider(scope.value).notifier);
 
@@ -47,13 +51,11 @@ class SearchHistory extends ConsumerWidget {
       return 0;
     });
 
-    return history.isEmpty
-        ? const SearchHistoryEmpty()
-        : SearchHistoryCollapsible(
-            history: history,
-            onClear: search.clear,
-            onTap: onTap,
-            onDelete: search.delete,
-          );
+    return SearchHistoryCollapsible(
+      history: history,
+      onClear: search.clear,
+      onTap: onTap,
+      onDelete: search.delete,
+    );
   }
 }
