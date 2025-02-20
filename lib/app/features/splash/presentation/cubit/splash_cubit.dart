@@ -19,8 +19,9 @@ class SplashCubit extends Cubit<SplashState> {
       final currentDate = DateTime.now();
       final startDate = splashData.startDate;
       final endDate = splashData.endDate;
-
-      if (splashData.splashImage != '') {
+      if (currentDate.isAfter(startDate) &&
+          currentDate.isBefore(endDate) &&
+          splashData.splashImage != '') {
         emit(state.copyWith(
             status: BlocStatus.success,
             splashUrl: splashData.splashImage,
