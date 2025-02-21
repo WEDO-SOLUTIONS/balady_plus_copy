@@ -92,7 +92,7 @@ class MapSuggestList extends ConsumerWidget {
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.secondary,
               primaryIcon: uikit.GeneralIcons.plusCircle,
-              primaryLabel: context.l10n.searchAddCompany,
+              primaryLabel: context.l10n.addPlace,
               onTap: () => context.router.push(QuickFeedbackRoute()),
             ),
           )
