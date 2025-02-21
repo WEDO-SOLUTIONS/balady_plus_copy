@@ -6,6 +6,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
@@ -66,11 +67,23 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
     bool isRtl = true,
   }) async {
     final markers = <Marker>[];
+    final existingPositions = <LatLng>{};
+
     for (final markerInfo in itemMarkerInfos ?? List<ItemMarkerInfoMessage>.empty()) {
+      final position = markerInfo.geoPoint;
+      final latLng = LatLng(latitude: position.latitude, longitude: position.longitude);
+
+      if (existingPositions.contains(latLng)) {
+        continue;
+      }
+
+      existingPositions.add(latLng);
+
       final objectId = markerInfo.objectId?.objectId;
       final cleanupRubrics = (markerInfo.rubricIds ?? []).nonNulls;
       final rubrics = Set<int>.from(cleanupRubrics);
       final icon = iconResolver(rubrics)?.iconPath.markerIcon(size: 32);
+
       markers.add(
         Marker(
           id: objectId?.toString() ?? _invalidMarkerId,
@@ -104,8 +117,10 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
                 placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
             ),
-            position: markerInfo.geoPoint,
-            icon: icon ?? LayersSvgPaths.basicMarker.markerIcon(size: 16),
+            position: position,
+            isVisible: true,
+            icon: icon?.copyWith(iconOpacity: 1) ??
+                LayersSvgPaths.basicMarker.markerIcon(size: 16).copyWith(iconOpacity: 1),
           ),
         ),
       );

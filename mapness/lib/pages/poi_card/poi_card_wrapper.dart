@@ -34,7 +34,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     if (widget.closestPoint != null) {
       final closestPoint = widget.closestPoint!;
       data?.markerPosition = GeoPointWithElevationMessage(
-          latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 0);
+        latitude: closestPoint.latitude,
+        longitude: closestPoint.longitude,
+        elevation: 0,
+      );
     }
 
     /// loading progress indicator
