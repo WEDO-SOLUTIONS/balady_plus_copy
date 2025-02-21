@@ -19,7 +19,9 @@ class ClosureCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textStyle = context.textStyle;
+    final textStyle = context.textStyleV3;
+    final color = context.colorsV3;
+
     return SafeArea(
       top: false,
       child: Material(
@@ -27,7 +29,7 @@ class ClosureCard extends StatelessWidget {
         child: Container(
           margin: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: context.color.surfaceBasePrimary,
+            color: color.backgroundSurface1,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Container(
@@ -48,14 +50,14 @@ class ClosureCard extends StatelessWidget {
                         children: [
                           Text(
                             title,
-                            style: textStyle.heading1.copyWith(
-                              color: context.color.textAndIconsBasePrimary,
+                            style: textStyle.h4SemiBold.copyWith(
+                              color: color.foregroundDefault,
                             ),
                           ),
                           Text(
                             description,
-                            style: textStyle.footNote.copyWith(
-                              color: context.color.textAndIconsBasePrimary.withOpacity(0.64),
+                            style: textStyle.bodyLargeRegular.copyWith(
+                              color: color.extra01Default.withOpacity(0.64),
                             ),
                           ),
                         ],
@@ -71,8 +73,8 @@ class ClosureCard extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 12),
                     child: Text(
                       workDuration!,
-                      style: textStyle.caption.copyWith(
-                        color: context.color.textAndIconsBasePrimary.withOpacity(0.64),
+                      style: textStyle.bodySmallRegular.copyWith(
+                        color: color.foregroundSoft.withOpacity(0.64),
                       ),
                     ),
                   ),
