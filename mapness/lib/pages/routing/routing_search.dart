@@ -32,11 +32,9 @@ class RoutingSearchSheetPage extends ConsumerStatefulWidget {
 }
 
 class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
-  // late final DgisBottomSheetController _dgisSheetController;
   late final StatefulBottomSheetController<ThreeStateBottomSheet> _dgisSheetController;
   final kbVisibilityController = KeyboardVisibilityController();
   late final StreamSubscription<bool> _keyboardVisible;
-  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(Spacing.$3x);
 
   bool visible = true;
   bool isFirstLaunch = false;
@@ -81,20 +79,19 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   void dispose() {
     _dgisSheetController.dispose();
     _keyboardVisible.cancel();
-    _bottomHeightNotifier.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) => Stack(
         children: [
-          if (isFirstLaunch) RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
           SearchScope(
             named: SearchScopeEnum.routes,
             child: LayoutBuilder(
               builder: (context, constraints) => NotificationListener<ScrollNotification>(
                 onNotification: _onNotification,
                 child: StatefulBottomSheet<ThreeStateBottomSheet>(
+                  outside: const RoutingMapControls(),
                   key: const ValueKey('ROUTING SEARCH SHEET'),
                   scrollController: _dgisSheetController,
                   header: Column(

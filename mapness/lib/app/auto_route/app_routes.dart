@@ -78,10 +78,8 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
-              transitionsBuilder: TransitionsBuilders.slideBottom,
-              durationInMilliseconds: 250,
             ),
-            CustomRoute(
+            AppRoute(
               transitionsBuilder: TransitionsBuilders.slideBottom,
               durationInMilliseconds: 250,
               path: 'routingSearch',
