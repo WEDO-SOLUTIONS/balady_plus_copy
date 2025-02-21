@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
@@ -33,12 +34,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   );
 
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+  final dark = await ref.watch(darkModeProvider.future);
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
-    strokeColor: 0xD3FFFFFF,
+    strokeColor: dark.isDark ? 0xFF1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
     fontName: fontName,
+    color: dark.isDark ? 0xD3FFFFFF : 0xFF1B1B1B,
     textPlacement: MarkerTextPlacementMessage(
       placement: TextPlacementMessage.rightCenter,
     ),
