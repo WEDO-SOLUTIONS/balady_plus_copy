@@ -376,6 +376,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
       print("object");
+      EasyLoading.dismiss();
     }
 
     await _clearAuth(NoParams());
