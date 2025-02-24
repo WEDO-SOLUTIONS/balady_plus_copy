@@ -4214,6 +4214,7 @@
 
 
 
-  "service_lase_teen": "خدمة"
-
+  "service_lase_teen": "خدمة",
+  "invalid_license":"رقم الرخصة غير صحيح",
+  "enter_license_id":"ادخل رقم الرخصة"
 }

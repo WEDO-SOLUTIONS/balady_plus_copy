@@ -2,6 +2,7 @@ import 'package:balady_plus/app/commercial_model/dependency_injection/commercial
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
+import 'package:balady_plus/app/features/_shared_features/check_commercial_license/data/data_sources/check_commercial_license_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/datasources/balady_calendar_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/repositories/balady_calendar_repository.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
@@ -236,6 +237,10 @@ void initialize() {
   //  Noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
       () => NotificationRemoteDataSourceImplementation(webService: sl()));
+      
+  sl.registerLazySingleton<CheckCommercialLicenseDataSource>(
+      () => CheckCommercialLicesnseDataSourceImpl(webService: sl()));
+
   sl.registerLazySingleton<NotificationRepositoryImplementation>(
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
