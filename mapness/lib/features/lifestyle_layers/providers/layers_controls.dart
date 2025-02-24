@@ -4,21 +4,21 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/_features/lifestyle_layers/data/lifestyle_repository.dart';
-import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/lib/layers_type_extension.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
+import 'package:mapness/features/lifestyle_layers/models/building_compliance_certificate.dart';
+import 'package:mapness/features/lifestyle_layers/models/investment_sites.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_requests_params.dart';
+import 'package:mapness/features/lifestyle_layers/models/point_layers_data.dart';
+import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
+import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/lifestyle_layers/providers/lifestyle_repository.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
@@ -377,27 +377,6 @@ class LayersControls extends _$LayersControls {
     tapSubject.add(value);
   }
 
-  // Future<void> toggleIwish() async {
-  //   final layers = ref.watch(layersControlsProvider.notifier);
-  //   final currentState = state.selectedType;
-  //   await _viewPortSubscription?.cancel();
-
-  //   if (currentState == LayerType.joy) {
-  //     await ref
-  //         .read(mapObjectManagerProvider(
-  //           named: esriMapObjectSettings.name,
-  //           layerId: esriMapObjectSettings.layerId,
-  //         ).notifier)
-  //         .removeAllMarkers();
-  //     layers
-  //       ..setSelection()
-  //       ..update(isLoading: false);
-  //   } else {
-  //     setSelection(selectedType: LayerType.joy);
-  //     await showIwish();
-  //   }
-  // }
-
   Future<void> toggleComplianceBuildings() async {
     final currentState = state.selectedType;
     if (currentState != (LayerType.buildings)) {
@@ -583,7 +562,7 @@ class LayersControls extends _$LayersControls {
         .asyncMap(
           (visibleRect) => controller.getWhiteLands(
             MapRequestParams(
-              layer: GISMapLayers.BSWhiteParcelS,
+              layer: GISMapLayers.bsWhiteParcelS,
               southWestLongitude: visibleRect.southWestLon,
               southWestLatitude: visibleRect.southWestLat,
               northEastLongitude: visibleRect.northEastLon,

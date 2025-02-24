@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
 
 class PointLayersData {
   final String id;

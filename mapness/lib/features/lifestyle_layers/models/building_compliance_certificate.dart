@@ -1,13 +1,11 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
+import 'package:mapness/features/lifestyle_layers/models/point_layers_data.dart';
 
-List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(
-        List list) =>
+List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(List list) =>
     List<BuildingComplianceCertificate>.from(
       list.map(
-        (e) =>
-            BuildingComplianceCertificate.fromJson(e as Map<String, dynamic>),
+        (e) => BuildingComplianceCertificate.fromJson(e as Map<String, dynamic>),
       ),
     );
 
@@ -43,7 +41,7 @@ class BuildingComplianceCertificate extends PointLayersData {
     this.streetType,
     this.streetWidth,
     this.targetBuildingType,
-  }) : super(layerType: GISMapLayers.BSAimtithalBuildingsCertificateL);
+  }) : super(layerType: GISMapLayers.bsAimtithalBuildingsCertificateL);
 
   factory BuildingComplianceCertificate.fromJson(Map<String, dynamic> json) {
     final attributes = json['attributes'] as Map<String, dynamic>;

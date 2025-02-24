@@ -1,11 +1,10 @@
 import 'dart:async';
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/lifestyle_layers/data/lifestyle_service.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/map_requests_params.dart';
+import 'package:flutter/foundation.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_requests_params.dart';
 
 abstract class LifestyleDataSource {
-  factory LifestyleDataSource(LifestyleLayersService service) =>
-      _LifestyleDataSource(service: service);
+  factory LifestyleDataSource(Dio dio) => _LifestyleDataSource(dio: dio);
 
   Future<List<dynamic>?> getEsriPoints(
     MapRequestParams params,
@@ -14,8 +13,9 @@ abstract class LifestyleDataSource {
 }
 
 class _LifestyleDataSource implements LifestyleDataSource {
-  _LifestyleDataSource({required this.service});
-  final LifestyleLayersService service;
+  final Dio dio;
+
+  _LifestyleDataSource({required this.dio});
 
   @override
   Future<List<dynamic>?> getEsriPoints(
@@ -25,7 +25,7 @@ class _LifestyleDataSource implements LifestyleDataSource {
     Response points;
     try {
       final verifyingKey = params.getVerifyingKey();
-      points = await service.dio.get(
+      points = await dio.get(
         params.getUrl(),
         options: Options(
           headers: {
@@ -35,12 +35,13 @@ class _LifestyleDataSource implements LifestyleDataSource {
         cancelToken: cancelToken,
       );
 
+      // ignore: avoid_dynamic_calls
       return points.data['data']['result']['features'] as List<dynamic>?;
     } on DioException catch (error) {
-      print('[getEsriMarkers] DioError $error');
+      debugPrint('[getEsriMarkers] DioError $error');
       return null;
     } catch (error) {
-      print('[getEsriMarkers] $error');
+      debugPrint('[getEsriMarkers] $error');
       return null;
     }
   }

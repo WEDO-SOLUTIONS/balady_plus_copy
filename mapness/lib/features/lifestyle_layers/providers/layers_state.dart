@@ -5,13 +5,11 @@ enum LayerType {
   parkingLots,
   metro,
   fencing;
-  // joy;
 
   static List<LayerType> get lifestyle => [
         LayerType.favourites,
         LayerType.parkingLots,
         LayerType.metro,
-        // LayerType.joy,
       ];
 
   static List<LayerType> get business => [
@@ -29,7 +27,6 @@ extension LayerTypeEx on LayerType {
         'parkingLots' => LayerType.parkingLots,
         'fencing' => LayerType.fencing,
         'metro' => LayerType.metro,
-        // 'joy' => LayerType.joy,
         _ => null,
       };
 }

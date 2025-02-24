@@ -1,16 +1,16 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 extension LayerTypeExt on LayerType {
   GISMapLayers? getGISLayerType() => switch (this) {
         LayerType.favourites => null,
         LayerType.metro => null,
-        LayerType.invest => GISMapLayers.Opportunities,
-        LayerType.buildings => GISMapLayers.BSAimtithalBuildingsCertificateL,
-        LayerType.fencing => GISMapLayers.BSWhiteParcelS,
+        LayerType.invest => GISMapLayers.opportunities,
+        LayerType.buildings => GISMapLayers.bsAimtithalBuildingsCertificateL,
+        LayerType.fencing => GISMapLayers.bsWhiteParcelS,
         // LayerType.joy => null,
         LayerType.parkingLots => null,
       };
