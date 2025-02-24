@@ -26,6 +26,11 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       closestPoint: widget.closestPoint,
     );
     final state = ref.watch(viewModelProvider);
+    ref.listen(poiCardClosingProvider, (_, shouldClose) {
+      if (shouldClose) {
+        context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
+      }
+    });
 
     final poiCardState = state.valueOrNull;
     final data = poiCardState?.gisObjectIdMessage;
