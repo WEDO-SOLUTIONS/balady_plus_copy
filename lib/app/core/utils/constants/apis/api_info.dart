@@ -626,6 +626,8 @@ class ApiUrl {
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
 
+//splash
+  static const String splash = '/v1/portal-services/splash/images';
 
 
 

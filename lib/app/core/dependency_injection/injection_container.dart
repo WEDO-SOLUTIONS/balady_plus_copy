@@ -15,6 +15,8 @@ import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_c
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
     as events;
+import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
+import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:balady_plus/app/features/services/core/dependency_injection/home_services_injection.dart';
 import 'package:balady_plus/app/features/unknow/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart'
@@ -195,6 +197,7 @@ void initialize() {
   sl.registerLazySingleton(() => const DeviceDetails());
   sl.registerLazySingleton(() => const PackageDetails());
   sl.registerLazySingleton(() => LocationCubit());
+  sl.registerLazySingleton(() => SplashCubit(splashRemoteDataSource: sl()));
   sl.registerLazySingleton(
     () => CalendarBloc()..add(const calendar.GetSearchEvent()),
   );
@@ -244,6 +247,7 @@ void initialize() {
       () => NotificationManager(repository: sl()));
 
   sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(() => QuestionRemoteDataSourceImplementation(webService: sl()));
+  sl.registerLazySingleton<SplashRemoteDataSource>(() => SplashRemoteDataSourceImpl(webService: sl()));
 
 
   /////////////// End
