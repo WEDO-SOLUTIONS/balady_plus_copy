@@ -4473,8 +4473,9 @@
   "feature_services":"Feature Services",
   "services_categories":"Services Categories",
 
-  "service_lase_teen": "Services"
-
+  "service_lase_teen": "Services",
+  "invalid_license": "License number is incorrect",
+  "enter_license_id": "Please enter the license number"
 
 
 }
