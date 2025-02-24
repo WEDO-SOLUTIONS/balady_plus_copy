@@ -22,6 +22,7 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/enums/poi_tabs_type.dart';
 import 'package:mapness/features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/footer/poi_card_footer.dart';
