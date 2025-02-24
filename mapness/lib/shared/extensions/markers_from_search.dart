@@ -63,6 +63,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
   Future<List<Marker>> getMarkers({
     required AppRouter router,
     required MapMarkersType? Function(Set<int>) iconResolver,
+    required bool isDark,
     bool withLabel = true,
     bool isRtl = true,
   }) async {
@@ -107,12 +108,12 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
           options: MarkerOptionsMessage(
             text: withLabel && markerInfo.title != null ? _breakLineInTwo(_removeComma(markerInfo.title!)) : null,
             textStyle: MarkerTextStyleMessage(
-              color: 0xff1E2A36,
+              color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
+              strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
               fontSize: 13,
               fontName: _poiMapFont,
               textOffset: 4,
-              strokeColor: 0xD3FFFFFF,
-              strokeWidth: 1.25,
+              strokeWidth: .5,
               textPlacement: MarkerTextPlacementMessage(
                 placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
