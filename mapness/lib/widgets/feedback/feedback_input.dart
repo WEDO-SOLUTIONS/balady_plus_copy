@@ -23,7 +23,7 @@ class FeedbackTextInput extends StatefulWidget {
     this.allowedInputPattern,
     this.keyboardType,
     this.onChanged,
-    this.onValidate,
+    this.errorText,
     super.key,
   });
 
@@ -37,7 +37,7 @@ class FeedbackTextInput extends StatefulWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
-  final FormFieldValidator<String>? onValidate;
+  final String? errorText;
 
   @override
   State<FeedbackTextInput> createState() => _FeedbackTextInputState();
@@ -52,7 +52,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   final _inputErrorState = ValueNotifier<bool>(false);
   var _isForceLtr = false;
-  String? _errorText;
 
   @override
   void initState() {
@@ -93,15 +92,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     }
   }
 
-  String? _onValidate(String? value) {
-    if (_focusNode.hasFocus) {
-      return null;
-    }
-    final result = widget.onValidate?.call(value);
-    _inputErrorState.value = result != null;
-    return result;
-  }
-
   void _onChanged(String value) {
     if (_globalKey.currentState?.hasError ?? false) {
       _globalKey.currentState?.validate();
@@ -111,7 +101,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
       formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
     }
     widget.onChanged?.call(formattedValue);
-    _errorText = _onValidate(value);
   }
 
   @override
@@ -122,9 +111,10 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     // in arabic phone texted ltr but should be aligned to right edge as other fields
     final textAlign = _isForceLtr && srcDirection == TextDirection.rtl ? TextAlign.end : null;
 
-    final inputState = _errorText != null || (_controller.text.length > widget.maxLength)
+    final inputState = widget.errorText != null || (_controller.text.length > widget.maxLength)
         ? BaladyInputState.error
         : BaladyInputState.defaultValue;
+
     return Column(
       children: [
         Row(
@@ -152,8 +142,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
               focusNode: _focusNode,
               hintText: widget.hintText,
               fillColor: context.colorsV2.backgroundSurface1,
-              // Need to validate on the client side
-              //  onValidate: _onValidate,
               autovalidateMode: AutovalidateMode.onUnfocus,
               allowedInputPattern: widget.allowedInputPattern,
               maxLines: widget.maxLines,
@@ -168,7 +156,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
                 : null,
             supportingText: BaladySupportingText(
               maxLength: widget.maxLength,
-              text: _errorText,
+              text: widget.errorText,
             ),
           ),
         ),

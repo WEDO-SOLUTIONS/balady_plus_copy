@@ -81,7 +81,6 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
           ),
         ]),
       FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: _isRequired),
-      _ when _isRequired => FormBuilderValidators.required(),
       _ => (_) => null,
     };
 
@@ -144,7 +143,8 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
                     controller: _inputItems[i].controller,
                     labelText: i == 0 ? widget.field.label : null,
                     hintText: widget.field.hint,
-                    onValidate: (v) => _isValid(v) ? null : context.l10n.feedbackTextFieldWrongFormat,
+                    errorText:
+                        _isValid(_inputItems[i].controller.text) ? null : context.l10n.feedbackTextFieldWrongFormat,
                     allowedInputPattern: allowedInputPattern,
                     isRequired: widget.field.isRequired,
                     maxLength: widget.field.maxLength,

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
 import 'package:mapness/entities/feedback/feedback_object_type.dart';
 import 'package:mapness/features/feedback/feedback_categories.dart';
@@ -49,7 +50,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     return FormBuilder(
       key: _formKey,
-      onChanged: () => _isFormValidNotifier.value = _formKey.currentState?.isValid ?? false,
+      onChanged: () => _checkRequiredFields(category.fields),
 
       /// limit rebuilds to form title with send
       child: ValueListenableBuilder(
@@ -104,5 +105,22 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         payloadId: payloadId,
       ),
     );
+  }
+
+  void _checkRequiredFields(List<FeedbackBaseEntity> fields) {
+    final formFields = _formKey.currentState?.fields;
+
+    if (formFields == null) {
+      _isFormValidNotifier.value = false;
+      return;
+    }
+
+    final requiredFields = fields.where((field) => field.isRequired);
+    final allRequiredFilled = requiredFields.every((field) {
+      final formField = formFields[field.id];
+      return formField?.value?.toString().isNotEmpty ?? false;
+    });
+
+    _isFormValidNotifier.value = allRequiredFilled;
   }
 }
