@@ -316,7 +316,11 @@ flutter:
     - assets/athkar/
     - assets/athkar_en/
     - assets/icons/services/
-
+    - .env.stg
+    - .env.dev
+    - .env.prod
+    - .env.pre
+    - .env.urbiPre
 
   fonts:
     - family: Cairo
