@@ -29,6 +29,8 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.road_events.RoadEventType
+import ru.dgis.sdk.geometry.ComplexGeometry
+import ru.dgis.sdk.geometry.PointGeometry
 
 class ObjectTapHandler(
         private val map: ru.dgis.sdk.map.Map,
@@ -855,6 +857,22 @@ class ObjectTapHandler(
                 options = options,
                 callback = callback
         )
+    }
+
+    fun calcPositionForPoints(
+        area: GeometryMessage,
+        options: CalcPositionOptionsMessage,
+        callback: (Result<CameraPosition>) -> Unit
+    ) {
+        val geometry = ComplexGeometry(
+            geometries = listOf(
+                PointGeometry(point = area.bounds.northEast.toGeoPoint()),
+                PointGeometry(point = area.bounds.southWest.toGeoPoint()),
+            )
+        )
+
+        val position = calcPosition(camera = map.camera, geometry = geometry)
+        callback(Result.success(position))
     }
 
     private fun calcPositionForObjects(
