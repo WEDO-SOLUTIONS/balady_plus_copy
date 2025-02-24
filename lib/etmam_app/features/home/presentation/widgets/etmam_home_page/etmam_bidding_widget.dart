@@ -76,7 +76,7 @@ class EtmamBiddingWidget extends StatelessWidget {
                       CustomVerticalSpace(height: 16),
                       ElevatedButtonWidget.primaryCustom(
                           onPressed: () {
-                            if (CommonProperties.isLoggedIn) {
+                            if (CommonProperties.isLoggedInMunicipality) {
                               context
                                   .read<HomeBloc>()
                                   .add(FindByRequestTypeEvent());

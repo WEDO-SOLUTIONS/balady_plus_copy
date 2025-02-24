@@ -43,7 +43,7 @@ class FacilityRatingViewModel extends BaseViewModel {
     String licenseId = locator<FacilityQRDetailsViewModel>().getLicenseUuid();
     await getRatingsData();
 
-    if (!CommonProperties.isLoggedIn) return;
+    if (!CommonProperties.isLoggedInMunicipality) return;
 
     try {
       showLoading();

@@ -31,7 +31,7 @@ class _DraggableHeaderComponentState extends State<DraggableHeaderComponent> {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoggedIn = CommonProperties.isLoggedIn;
+    bool isLoggedIn = CommonProperties.isLoggedInMunicipality;
     String pm = isLoggedIn ? " مساء الخير  " : " مساء الخير";
     String am = isLoggedIn ? " صباح الخير  " : " صباح الخير";
 

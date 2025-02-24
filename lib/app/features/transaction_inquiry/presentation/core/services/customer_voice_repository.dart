@@ -407,7 +407,7 @@ class CustomerVoiceRepository {
       memo = fileName?.substring(0, extensionIndex) ?? fileMemo;
     }
     var body = {};
-    if (CommonProperties.isLoggedIn &&
+    if (CommonProperties.isLoggedInMunicipality &&
         CommonProperties.userInfo?.idNo != null) {
       if (CommonProperties.userInfo!.idNo!.startsWith("1")) {
         body = {

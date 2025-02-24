@@ -1582,7 +1582,7 @@ class CommonFunctions {
   static void openCreateCompliance() {
     //أصدر الشهادة
 
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.createCompliancePage);
     } else {
@@ -1793,7 +1793,10 @@ class CommonProperties {
     return null;
   }
 
+
+  static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
   static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
+
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
 

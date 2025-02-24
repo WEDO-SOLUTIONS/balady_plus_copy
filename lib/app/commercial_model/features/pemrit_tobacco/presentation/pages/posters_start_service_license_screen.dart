@@ -79,7 +79,7 @@ class _PermitsTobaccoLicenseStartServiceState
                         horizontal: 18, vertical: 26),
                     child: ElevatedButtonWidget.startService(
                       onPressed: () async {
-                        if (CommonProperties.isLoggedIn) {
+                        if (CommonProperties.isLoggedInMunicipality) {
                           context
                               .read<PermitTobaccoLicenseBloc>()
                               .add(const ValidatePermitEvent());

@@ -24,7 +24,7 @@ class ActionShowFilterWidget extends StatelessWidget {
 
     return IconButton(
       onPressed: () {
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           showDialogParsona(bloc, cubit, context);
         } else {
           showDialog(

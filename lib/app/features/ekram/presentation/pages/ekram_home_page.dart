@@ -122,7 +122,7 @@ class _EkramHomePageState extends State<EkramHomePage> {
               SafeArea(
                 child: CustomElevatedButtonWidget(
                   onPressed: () {
-                    if (CommonProperties.isLoggedIn) {
+                    if (CommonProperties.isLoggedInMunicipality) {
                       if (isDriver) {
                         NavigationService.navigatorKey.currentState!.pushNamed(
                             RouteName.driverEkramTransportationListScreen);

@@ -204,7 +204,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
 
     EasyLoading.dismiss();
-    return CommonProperties.isLoggedIn;
+    return CommonProperties.isLoggedInMunicipality;
   }
 
   ////////////////////////////////////////////////////////////////////////
