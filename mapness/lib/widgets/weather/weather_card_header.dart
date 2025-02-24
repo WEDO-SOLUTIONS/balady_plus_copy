@@ -8,9 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:mapness/entities/weather/weather_info.dart';
-import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
-import 'package:mapness/features/weather/provider/weather_map_controller.dart';
+import 'package:mapness/_features/weather/data/models/weather_model.dart';
+import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
+import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
