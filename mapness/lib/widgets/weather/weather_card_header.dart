@@ -15,13 +15,17 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-const weatherHeaderSize = 300.0;
+final borderRadius = BorderRadius.circular(16);
+double weatherHeaderSize = 300.0;
 
 class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
-  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final StatefulBottomSheetController<ThreeStateBottomSheet>
+      bottomSheetController;
+  final GlobalKey cardKey;
 
   const WeatherCardHeaderDelegate({
     required this.bottomSheetController,
+    required this.cardKey,
   });
 
   @override
@@ -31,6 +35,7 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) =>
       DashboardHeader(
+        cardKey: cardKey,
         bottomSheetController: bottomSheetController,
       );
 
@@ -41,14 +46,16 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => weatherHeaderSize;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class DashboardHeader extends ConsumerWidget {
   final StatefulBottomSheetController bottomSheetController;
+  final GlobalKey cardKey;
 
   const DashboardHeader({
     required this.bottomSheetController,
+    required this.cardKey,
     super.key,
   });
 
@@ -77,6 +84,7 @@ class DashboardHeader extends ConsumerWidget {
       child: Data(
         allWeatherInfo: allWeatherInfo,
         locale: locale,
+        cardKey: cardKey,
         onTap: () {
           if (bottomSheetController.state == ThreeStateBottomSheet.expanded) {
             bottomSheetController.setState(ThreeStateBottomSheet.hidden);
@@ -93,17 +101,20 @@ class Data extends ConsumerWidget {
   final AllWeatherInfoEntity? allWeatherInfo;
   final Locale locale;
   final Function()? onTap;
+  final GlobalKey cardKey;
 
   const Data({
     required this.onTap,
     required this.allWeatherInfo,
+    required this.cardKey,
     required this.locale,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final dateTime = DateFormat('h:mm a, d MMMM, E', locale.languageCode).format(DateTime.now());
+    final dateTime = DateFormat('h:mm a, d MMMM, E', locale.languageCode)
+        .format(DateTime.now());
     final windMph = allWeatherInfo?.current?.windMph?.toStringAsPrecision(2);
     final humidity = allWeatherInfo?.current?.humidity?.toStringAsPrecision(2);
     final pressureMb = allWeatherInfo?.current?.pressureMb?.toStringAsFixed(0);
@@ -118,9 +129,7 @@ class Data extends ConsumerWidget {
     );
 
     return Container(
-      height: weatherHeaderSize,
       decoration: const BoxDecoration(
-        // color: context.color.surfaceBasePrimary,
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(RadiusBorder.xl),
@@ -128,6 +137,8 @@ class Data extends ConsumerWidget {
         ),
       ),
       child: Column(
+        key: cardKey,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Spacing.$3x.heightBox,
           Row(
@@ -136,14 +147,17 @@ class Data extends ConsumerWidget {
               ///cityname
               Text(
                 placeName,
-                style: context.textStyle.heading2.copyWith(fontSize: 19, color: Colors.black),
+                style: context.textStyle.heading2
+                    .copyWith(fontSize: 19, color: Colors.black),
               ),
 
               ///close
               BaladyAppButton.close(
                 buttonType: BaladyButtonType.secondary,
                 onTap: () async {
-                  await ref.read(weatherMapControllerProvider().notifier).switchOffWeatherLayers();
+                  await ref
+                      .read(weatherMapControllerProvider().notifier)
+                      .switchOffWeatherLayers();
                   context.router.popForced();
                 },
               ),
@@ -180,14 +194,16 @@ class Data extends ConsumerWidget {
                                 dateTime,
                                 textAlign: TextAlign.end,
                                 style: context.textStyle.caption.copyWith(
-                                  color: context.color.textAndIconsBasePrimary.withOpacity(0.5),
+                                  color: context.color.textAndIconsBasePrimary
+                                      .withOpacity(0.5),
                                 ),
                               ),
                               const SizedBox(height: 16),
 
                               ///temperature
                               Row(
-                                mainAxisAlignment: Directionality.of(context) == TextDirection.rtl
+                                mainAxisAlignment: Directionality.of(context) ==
+                                        TextDirection.rtl
                                     ? MainAxisAlignment.end
                                     : MainAxisAlignment.start,
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -200,11 +216,13 @@ class Data extends ConsumerWidget {
                                     ),
                                     child: Text(
                                       tempC,
-                                      style: context.textStyle.heading2.copyWith(
+                                      style:
+                                          context.textStyle.heading2.copyWith(
                                         height: 1,
                                         fontSize: 64,
                                         fontWeight: FontWeight.w400,
-                                        color: context.color.textAndIconsBasePrimary,
+                                        color: context
+                                            .color.textAndIconsBasePrimary,
                                       ),
                                     ),
                                   ),
@@ -214,7 +232,8 @@ class Data extends ConsumerWidget {
                                       fontSize: 27,
                                       height: 1,
                                       fontWeight: FontWeight.w600,
-                                      color: context.color.textAndIconsBasePrimary,
+                                      color:
+                                          context.color.textAndIconsBasePrimary,
                                     ),
                                   ),
                                 ],
@@ -331,7 +350,9 @@ class Data extends ConsumerWidget {
                     height: 24,
                     width: 24,
                     colorFilter: ColorFilter.mode(
-                      colorIcon ?? context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                      colorIcon ??
+                          context.color.textAndIconsBasePrimary
+                              .withOpacity(0.7),
                       BlendMode.srcIn,
                     ),
                     package: PackageConfig.packageName,
