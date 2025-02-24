@@ -36,6 +36,15 @@ class CustomScrollPhysics extends ScrollPhysics {
     ),
   });
 
+  factory CustomScrollPhysics.common() => const CustomScrollPhysics(
+        velocityThreshold: 5,
+        spring: SpringDescription(
+          mass: .5,
+          stiffness: 200,
+          damping: 25,
+        ),
+      );
+
   @override
   CustomScrollPhysics applyTo(ScrollPhysics? ancestor) => CustomScrollPhysics(
         parent: buildParent(ancestor),

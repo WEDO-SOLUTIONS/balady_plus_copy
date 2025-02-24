@@ -80,14 +80,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
           child: Stack(
             children: [
               PhotoViewPager(
-                scrollPhysics: const CustomScrollPhysics(
-                  velocityThreshold: 5,
-                  spring: SpringDescription(
-                    mass: .5,
-                    stiffness: 200,
-                    damping: 25,
-                  ),
-                ),
+                scrollPhysics: CustomScrollPhysics.common(),
                 doubleTapZoomable: true,
                 easyImageProvider: multiImageProvider,
                 pageController: pageController,
