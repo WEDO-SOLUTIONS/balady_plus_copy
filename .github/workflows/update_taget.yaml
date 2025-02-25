@@ -14,6 +14,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const currentBranch = process.env.GITHUB_REF_NAME;
+            
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -21,11 +23,16 @@ jobs:
             });
 
             for (const pr of pullRequests) {
+              if (pr.base.ref === currentBranch) {
+                console.log(`PR #${pr.number} already targets ${currentBranch}. Skipping.`);
+                continue;
+              }
+            
               await github.rest.pulls.update({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 pull_number: pr.number,
-                base: $GITHUB_REF
+                base: currentBranch
               });
               console.log(`Updated PR #${pr.number} to target branch ${process.env.CURRENT_BRANCH}`);
             }
