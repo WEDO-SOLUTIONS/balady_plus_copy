@@ -38,9 +38,11 @@ class FeedbackInput extends HookWidget {
     final isRequired = field.isRequired;
 
     final controller = useTextEditingController();
+    final focusNode = useFocusNode();
 
     return FormBuilderField<String>(
         name: field.id,
+        focusNode: focusNode,
         validator: FormBuilderValidators.compose([
           switch (field.type) {
             FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
@@ -61,7 +63,8 @@ class FeedbackInput extends HookWidget {
                   labelText: field.label,
                   hintText: field.hint,
                   controller: controller,
-                  errorText: fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
+                  focusNode: focusNode,
+                  errorText: fieldState.hasError ? context.l10n.feedbackTextFieldWrongFormat : null,
                   allowedInputPattern: allowedInputPattern,
                   isRequired: field.isRequired,
                   maxLength: field.maxLength,

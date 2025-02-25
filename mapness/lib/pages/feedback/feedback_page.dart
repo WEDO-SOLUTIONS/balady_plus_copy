@@ -50,6 +50,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
 
     return FormBuilder(
       key: _formKey,
+      autovalidateMode: AutovalidateMode.onUnfocus,
       onChanged: () => _checkRequiredFields(category.fields),
 
       /// limit rebuilds to form title with send

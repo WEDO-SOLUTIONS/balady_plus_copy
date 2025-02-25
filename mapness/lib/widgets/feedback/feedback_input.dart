@@ -24,6 +24,7 @@ class FeedbackTextInput extends StatefulWidget {
     this.keyboardType,
     this.onChanged,
     this.errorText,
+    this.focusNode,
     super.key,
   });
 
@@ -38,6 +39,7 @@ class FeedbackTextInput extends StatefulWidget {
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
   final String? errorText;
+  final FocusNode? focusNode;
 
   @override
   State<FeedbackTextInput> createState() => _FeedbackTextInputState();
@@ -45,10 +47,6 @@ class FeedbackTextInput extends StatefulWidget {
 
 class _FeedbackTextInputState extends State<FeedbackTextInput> {
   late final TextEditingController _controller;
-  late final FocusNode _focusNode;
-
-  // TODO(ilyasov): Temporary fix, need to remove it after implementing custom form field
-  final _globalKey = GlobalKey<FormFieldState<String>>();
 
   final _inputErrorState = ValueNotifier<bool>(false);
   var _isForceLtr = false;
@@ -57,8 +55,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
-
-    _focusNode = FocusNode();
 
     _controller.addListener(_controllerListener);
   }
@@ -74,7 +70,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   @override
   void dispose() {
     _inputErrorState.dispose();
-    _focusNode.dispose();
     _controller.removeListener(_controllerListener);
     super.dispose();
   }
@@ -93,9 +88,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   }
 
   void _onChanged(String value) {
-    if (_globalKey.currentState?.hasError ?? false) {
-      _globalKey.currentState?.validate();
-    }
     var formattedValue = value;
     if (widget.type == FeedbackTextType.phone) {
       formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
@@ -138,8 +130,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
             config: BaladyInputConfig(
               isDisposed: false,
               textAlign: textAlign,
-              stateKey: _globalKey,
-              focusNode: _focusNode,
+              focusNode: widget.focusNode,
               hintText: widget.hintText,
               fillColor: context.colorsV2.backgroundSurface1,
               autovalidateMode: AutovalidateMode.onUnfocus,
