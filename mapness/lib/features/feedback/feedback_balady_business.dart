@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -16,8 +18,16 @@ class FeedbackBaladyBusiness extends _$FeedbackBaladyBusiness {
   Future<void> openBaladyBusiness() async {
     final url = state.valueOrNull;
     if (url != null) {
-      if (await canLaunchUrl(Uri.parse(url))) {
-        await launchUrl(Uri.parse(url));
+      final uri = Uri.parse(url);
+      try {
+        if (await canLaunchUrl(uri)) {
+          await launchUrl(uri);
+        }
+      } catch (e, stackTrace) {
+        log(
+          e.toString(),
+          stackTrace: stackTrace,
+        );
       }
     }
   }
