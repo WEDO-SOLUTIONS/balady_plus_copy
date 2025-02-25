@@ -23,13 +23,16 @@ class FeedbackTextListField extends StatefulWidget {
 
 class _InputItem {
   final TextEditingController controller;
+  final FocusNode focusNode;
   final Key key;
-  _InputItem({required this.controller, required this.key});
+
+  _InputItem({required this.controller, required this.key}) : focusNode = FocusNode();
 }
 
 class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   late List<_InputItem> _inputItems;
   late final bool _isRequired = widget.field.isRequired;
+  late final _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -51,7 +54,10 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   void dispose() {
     for (final item in _inputItems) {
       item.controller.dispose();
+      item.focusNode.dispose();
     }
+
+    _focusNode.dispose();
     super.dispose();
   }
 
@@ -66,6 +72,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
   void _removeInput(int index) {
     setState(() {
       _inputItems[index].controller.dispose();
+      _inputItems[index].focusNode.dispose();
       _inputItems.removeAt(index);
     });
   }
@@ -106,6 +113,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
     return FormBuilderField<List<String>>(
       name: widget.field.id,
       initialValue: _currentValues,
+      focusNode: _focusNode,
       valueTransformer: (values) {
         if (values == null) {
           return <String>[];
@@ -140,6 +148,7 @@ class _FeedbackTextListFieldState extends State<FeedbackTextListField> {
               children: [
                 Expanded(
                   child: FeedbackTextInput(
+                    focusNode: _inputItems[i].focusNode,
                     controller: _inputItems[i].controller,
                     labelText: i == 0 ? widget.field.label : null,
                     hintText: widget.field.hint,
