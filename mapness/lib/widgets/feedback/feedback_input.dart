@@ -48,7 +48,7 @@ class FeedbackTextInput extends StatefulWidget {
 class _FeedbackTextInputState extends State<FeedbackTextInput> {
   late final TextEditingController _controller;
 
-  final _inputErrorState = ValueNotifier<bool>(false);
+  BaladyInputState _inputErrorState = BaladyInputState.defaultValue;
   var _isForceLtr = false;
 
   @override
@@ -57,6 +57,14 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     _controller = widget.controller ?? TextEditingController();
 
     _controller.addListener(_controllerListener);
+
+    widget.focusNode?.addListener(() {
+      if (widget.focusNode?.hasFocus == true) {
+        setState(() {
+          _inputErrorState = BaladyInputState.defaultValue;
+        });
+      }
+    });
   }
 
   @override
@@ -69,7 +77,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   @override
   void dispose() {
-    _inputErrorState.dispose();
     _controller.removeListener(_controllerListener);
     super.dispose();
   }
@@ -103,9 +110,10 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     // in arabic phone texted ltr but should be aligned to right edge as other fields
     final textAlign = _isForceLtr && srcDirection == TextDirection.rtl ? TextAlign.end : null;
 
-    final inputState = widget.errorText != null || (_controller.text.length > widget.maxLength)
-        ? BaladyInputState.error
-        : BaladyInputState.defaultValue;
+    _inputErrorState =
+        widget.focusNode?.hasFocus == false && widget.errorText != null || (_controller.text.length > widget.maxLength)
+            ? BaladyInputState.error
+            : BaladyInputState.defaultValue;
 
     return Column(
       children: [
@@ -125,7 +133,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         Directionality(
           textDirection: direction,
           child: BaladyTextInput(
-            inputState: inputState,
+            inputState: _inputErrorState,
             controller: _controller,
             config: BaladyInputConfig(
               isDisposed: false,
@@ -147,7 +155,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
                 : null,
             supportingText: BaladySupportingText(
               maxLength: widget.maxLength,
-              text: widget.errorText,
+              text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText,
             ),
           ),
         ),
