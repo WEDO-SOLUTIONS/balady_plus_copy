@@ -222,7 +222,7 @@ dependencies:
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.31
+    version: 0.0.32
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -242,7 +242,6 @@ dependency_overrides:
   google_api_headers: ^4.2.4
   rxdart: 0.28.0
   collection: 1.19.0
-
 
 dev_dependencies:
   build_runner: ^2.4.12
