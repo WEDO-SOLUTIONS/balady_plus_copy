@@ -4452,5 +4452,22 @@
   "complianceFAQ": "Frequently asked questions",
   "complaince_save_clause":"Save Clause",
   "complinace_clause": "Clause",
-  "complaince_edit_clause":"Edit Clause"
+  "complaince_edit_clause":"Edit Clause",
+
+
+
+  "message_login_life_style": "Unlock the full potential of maps and navigation",
+  "by_continuing_agree": "By continuing, you agree to our ",
+  "privacy_policy": "Privacy Policy",
+  "continue": "Continue",
+  "enter_code_from_sms": "Enter the code from the SMS",
+  "to_confirm_number": "To confirm your number",
+  "get_code_again": "Get the code again",
+  "in" : "in",
+  "phone_number_not_valid": "The phone number is not valid",
+  "feature_services":"Feature Services",
+  "services_categories":"Services Categories",
+  "service_lase_teen": "Services",
+  "invalid_license": "License number is incorrect",
+  "enter_license_id": "Please enter the license number"
 }

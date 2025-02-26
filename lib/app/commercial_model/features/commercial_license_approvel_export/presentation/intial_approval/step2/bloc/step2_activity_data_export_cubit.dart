@@ -14,6 +14,8 @@ import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:dgis_map/dgis_map_controller.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +23,6 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
@@ -62,7 +63,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   TextEditingController mapNpController = TextEditingController();
   TextEditingController landNpController = TextEditingController();
   final GetGISData _getGisData;
-  late GoogleMapController mapController;
+  late DgisMapController mapController;
   final SaveLocationDetails _saveLocationDetails;
   final GetGISImage _getGISImage;
 
@@ -863,10 +864,22 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
   void animateCamera(double lat, double lng) {
     try {
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+      // mapController.animateCamera(
+      //   CameraUpdate.newCameraPosition(
+      //     CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+      //   ),
+      // );
+
+
+      mapController.moveCamera(
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: lat, longitude: lng),
+          zoom: 16.0,
+          tilt: 0.0,
+          bearing: 0.0,
         ),
+        0.3, // duration
+        CameraAnimationTypeMessage.linear,
       );
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

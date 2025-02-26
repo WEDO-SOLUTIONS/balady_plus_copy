@@ -377,6 +377,18 @@ class RouteName {
   static const SucessfullScreen = 'Sucessfull_Screen';
   static const chatHistoryDetailsRoute = 'chat_history_details';
 
+
+  static const vDAllTypesScreen = 'VDAllTypesScreen';
+  static const daemTypeScreen = 'DaemTypeScreen';
+  static const generalInquiryTypeScreen = 'GeneralInquiryTypeScreen';
+  static const mSRTypeScreen = 'MSRTypeScreen';
+  static const commercialPermitsScreen = 'CommercialPermitsScreen';
+  static const cityServicesEtmamMainPage = '/CityServicesEtmamMainPage';
+
+  static const CommercialLicenseInitialApprovelScreen = 'Commercial_license_initial_approvel_screen';
+  static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
+
+
 }
 
 class EtmamRoutesNames {
