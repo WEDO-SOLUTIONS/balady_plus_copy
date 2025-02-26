@@ -434,7 +434,7 @@ class CommercialModelEndPoints {
   static String cancelIntialApproval(int requestId) =>
       "/v1/balady-commercial-initial-approval-services/requests/$requestId";
 
-  static String getSPLNotifcation = "/v1/balady-commercial-mobile-spl-services/site-info";
+  static String getSPLNotifcation = "/v1/balady-commercial-mobile-services/spl/site-info";
 
 
 

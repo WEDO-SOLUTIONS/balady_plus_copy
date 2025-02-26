@@ -161,12 +161,12 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
   void _handleSPLNotication() async {
 
-    if(state.location?.lon != null && state.location?.lat != null && state.gisResponse?.municipalityId != null) {
+    if(state.gisResponse != null && state.gisResponse?.subMunicipalityguid != null && sl<CommercialLicenseInitialAprrovalBloc>().state.requestDetails != null) {
       emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
 
 
-     // final response = await _getSPLNotification(["${sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!}",sl<CommercialLicenseInitialAprrovalBloc>().state.gisResponse!.municipalityId!]);
-      final response = await _getSPLNotification(["1004","1f89e13e-2cab-4794-ae57-d6b45d9877d4"]);
+      final response = await _getSPLNotification(["${sl<CommercialLicenseInitialAprrovalBloc>().state.requestDetails?.requestType?.id!}",state.gisResponse!.subMunicipalityguid!]);
+     // final response = await _getSPLNotification(["1004","1f89e13e-2cab-4794-ae57-d6b45d9877d4"]);
 
       response.fold(
               (failure) =>
