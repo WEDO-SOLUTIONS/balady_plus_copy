@@ -16,10 +16,7 @@ class SsoCredentialView extends ConsumerWidget {
       children: [
         Text(
           'SSO Credentials',
-          style: Theme.of(context)
-              .extension<ThemeTextStyles>()
-              ?.footNote
-              .copyWith(color: Colors.black),
+          style: Theme.of(context).extension<ThemeTextStyles>()?.footNote.copyWith(color: Colors.black),
         ),
         _infoItem(
           context,
@@ -44,33 +41,31 @@ class SsoCredentialView extends ConsumerWidget {
   }
 }
 
-Widget _infoItem(BuildContext context,
-    {required String title, required String value,}) => Row(
-    children: [
-      Expanded(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()
-                  ?.footNoteBold
-                  .copyWith(color: Colors.black),
-            ),
-            Text(
-              value,
-              style: Theme.of(context)
-                  .extension<ThemeTextStyles>()
-                  ?.footNoteBold
-                  .copyWith(color: Colors.black),
-            ),
-          ],
+Widget _infoItem(
+  BuildContext context, {
+  required String title,
+  required String value,
+}) =>
+    Row(
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
+              ),
+              Text(
+                value,
+                style: Theme.of(context).extension<ThemeTextStyles>()?.footNoteBold.copyWith(color: Colors.black),
+              ),
+            ],
+          ),
         ),
-      ),
-      LabeledElevatedButton(
-        onPressed: () => Clipboard.setData(ClipboardData(text: value)),
-        label: 'copy',
-      ),
-    ],
-  );
+        LabeledElevatedButton(
+          onPressed: () => Clipboard.setData(ClipboardData(text: value)),
+          label: 'copy',
+        ),
+      ],
+    );

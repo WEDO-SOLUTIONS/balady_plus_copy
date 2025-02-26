@@ -22,7 +22,7 @@ class LinkChecker extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AutofillGroup(
-            child: TextField(
+          child: TextField(
             autofillHints: ref.read(appRouterProvider).routes.map((e) => e.path),
             controller: linkController,
             decoration: const InputDecoration(labelText: 'Link'),

@@ -15,7 +15,7 @@ class BetterRouteSettingsWidget extends ConsumerWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: NumericBase.$4x),
+      padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -23,20 +23,22 @@ class BetterRouteSettingsWidget extends ConsumerWidget {
           Row(
             children: [
               AppButton(
-                  buttonColorScheme: ButtonColorScheme.primary,
-                  size: ButtonSize.small,
-                  primaryLabel: 'set prod',
-                  onTap: () {
-                    ref.read(betterRouteSettingsProvider.notifier).setSettings(BetterRouteSettings.prod);
-                  }),
-              const SizedBox(width: NumericBase.$4x),
+                buttonColorScheme: ButtonColorScheme.primary,
+                size: ButtonSize.small,
+                primaryLabel: 'set prod',
+                onTap: () {
+                  ref.read(betterRouteSettingsProvider.notifier).setSettings(BetterRouteSettings.prod);
+                },
+              ),
+              const SizedBox(width: Spacing.$4x),
               AppButton(
-                  buttonColorScheme: ButtonColorScheme.primary,
-                  size: ButtonSize.small,
-                  primaryLabel: 'set test',
-                  onTap: () {
-                    ref.read(betterRouteSettingsProvider.notifier).setSettings(BetterRouteSettings.test);
-                  }),
+                buttonColorScheme: ButtonColorScheme.primary,
+                size: ButtonSize.small,
+                primaryLabel: 'set test',
+                onTap: () {
+                  ref.read(betterRouteSettingsProvider.notifier).setSettings(BetterRouteSettings.test);
+                },
+              ),
             ],
           ),
           Text('Search delay: ${settings.routeSearchDelay} sec'),

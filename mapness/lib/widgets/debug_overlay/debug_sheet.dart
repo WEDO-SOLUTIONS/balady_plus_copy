@@ -2,19 +2,19 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_features/debug_overlay/widgets/better_route_settings_widget.dart';
-import 'package:mapness/_features/debug_overlay/widgets/colorscheme_toggler.dart';
-import 'package:mapness/_features/debug_overlay/widgets/debug_navigation_controll.dart';
-import 'package:mapness/_features/debug_overlay/widgets/debug_server_url.dart';
-import 'package:mapness/_features/debug_overlay/widgets/link_checker.dart';
-import 'package:mapness/_features/debug_overlay/widgets/onboarding_button.dart';
-import 'package:mapness/_features/debug_overlay/widgets/slider_speed.dart';
-import 'package:mapness/_features/debug_overlay/widgets/sso_credential_view.dart';
-import 'package:mapness/_features/debug_overlay/widgets/voice_picker.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
+import 'package:mapness/widgets/debug_overlay/better_route_settings_widget.dart';
+import 'package:mapness/widgets/debug_overlay/colorscheme_toggler.dart';
+import 'package:mapness/widgets/debug_overlay/debug_navigation_controll.dart';
+import 'package:mapness/widgets/debug_overlay/debug_server_url.dart';
+import 'package:mapness/widgets/debug_overlay/link_checker.dart';
+import 'package:mapness/widgets/debug_overlay/onboarding_button.dart';
+import 'package:mapness/widgets/debug_overlay/slider_speed.dart';
+import 'package:mapness/widgets/debug_overlay/sso_credential_view.dart';
+import 'package:mapness/widgets/debug_overlay/voice_picker.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class DebugSheet extends ConsumerStatefulWidget {

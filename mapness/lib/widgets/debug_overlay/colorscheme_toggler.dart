@@ -8,8 +8,7 @@ class ColorschemeToggler extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final nextShemeIndex = (ref.watch(colorSchemeProvider).index + 1) %
-        AppColorScheme.values.length;
+    final nextShemeIndex = (ref.watch(colorSchemeProvider).index + 1) % AppColorScheme.values.length;
 
     return ElevatedButton(
       onPressed: () => ref
