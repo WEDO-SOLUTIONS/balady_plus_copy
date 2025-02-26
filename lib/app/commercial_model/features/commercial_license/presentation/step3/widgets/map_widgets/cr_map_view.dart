@@ -17,7 +17,7 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/map_utils.dart';
-import '../../../../../../../features/_shared_feature_/balady_features/widgets/map/UrbiMapSection.dart';
+import '../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../bloc/map_bloc.dart';
 import 'map_address_card.dart';

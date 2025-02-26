@@ -6,18 +6,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mapness/pages/map_search/search_page.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+
 import 'package:mapness/shared/ui/urbi_map.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
-import '../../../../../core/utils/constants/app_colors.dart';
+
 import '../../../../../core/utils/constants/constants.dart';
-import '../../../../../core/utils/constants/paths/icon_paths.dart';
-import '../../../../../core/utils/enums/app_font_weights.dart';
-import '../../../presentation/widgets/texts/custom_text_widget.dart';
-import '../UrbiMap/search_provider.dart';
-import '../UrbiMap/urbi_location_model.dart';
+
+import 'search_provider.dart';
+import 'urbi_location_model.dart';
 
 class UrbiMapSection extends StatefulWidget {
   final Function(LatLng position) updateMovedPosition;
@@ -159,11 +156,14 @@ class MapSearchSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Container(
+
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 120),
       alignment: Alignment.center,
       height: 52,
       decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
       child: TypeAheadField<UrbiLocationModel>(
+        errorBuilder: (context, error) =>  Text('errors_server_error_1'.tr()),
+        emptyBuilder: (context) =>  Text("noSearchFounded".tr()),
         suggestionsCallback: (search) => suggestionsCallback(search,currentUserLocation),
         builder: (context, controller, focusNode) {
           return TextField(
@@ -191,51 +191,7 @@ class MapSearchSection extends StatelessWidget {
     );
 
 
-    //   Container(
-    //   margin: showBigPaddingScreen
-    //       ? EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40)
-    //       : const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    //   alignment: Alignment.topCenter,
-    //   child: GestureDetector(
-    //     onTap: () {
-    //
-    //       // Navigator.push(
-    //       //   context,
-    //       //   MaterialPageRoute(builder: (context) => const SearchPage(expansion: Expansion.expanded)),
-    //       // );
-    //      // Nav.push(SearchPage(expansion: Expansion.expanded));
-    //     //  _showPlaceSearch(context);
-    //     },
-    //     child:
-    //     Container(
-    //       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-    //       alignment: Alignment.center,
-    //       height: 52,
-    //       decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
-    //       child: Padding(
-    //         padding: const EdgeInsets.symmetric(horizontal: 10),
-    //         child: Row(
-    //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //           children: <Widget>[
-    //             Expanded(
-    //                 child: CustomTextWidget(
-    //                   ("lbl_search_for_place").tr(),
-    //                   fontColor: AppColor.black400,
-    //                   fontWeight: AppFontWeight.medium,
-    //                   fontSize: 17,
-    //                   textAlign: TextAlign.start,
-    //                 )),
-    //             Image.asset(
-    //               IconPath.vdmapSearchIcon,
-    //               height: 24,
-    //               width: 24,
-    //             ),
-    //           ],
-    //         ),
-    //       ),
-    //     ),
-    //   ),
-    // );
+
   }
 
   Future<List<UrbiLocationModel>> suggestionsCallback(String pattern,LatLng? location) async {
