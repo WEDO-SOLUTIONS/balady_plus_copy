@@ -132,8 +132,8 @@ class CommercialRouteName {
 
   // ------- CR ---------
   static const commercialLicensePage = 'CommercialLicense_Service_Card_Page';
-  // static const commercialLicenseServicePage =
-  //     'CommercialLicense_Create_Details_Page';
+  static const commercialLicenseServicePage =
+      'CommercialLicense_Create_Details_Page';
 
   // ------- Wallet ------
   static const walletPage = 'Wallet_Page';
@@ -344,7 +344,7 @@ class CommercialRouteName {
   static const jodDonationPage = 'JodDonationPage';
   static const chatbot = '/chatbot';
 
-  // static const commercialLicenseOverView = 'OverviewCommercialLicense_Screen';
+  static const commercialLicenseOverView = 'OverviewCommercialLicense_Screen';
   static const commercialLicenseQuery = 'QueryCommercialLicense_Screen';
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
@@ -378,6 +378,4 @@ class CommercialRouteName {
   static const SucessfullScreen = 'Sucessfull_Screen';
 
   static const commercialDebtsListScreen = 'commercialDebtsListScreen';
-
-
 }
