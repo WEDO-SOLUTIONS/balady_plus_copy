@@ -121,9 +121,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             label: 'step2_label4'.tr(),
                             hintText: 'label4_hint'.tr(),
                             isDigitsOnly: true,
-                            initialValue: state.totalArea != null
-                                ? state.totalArea.toString()
-                                : null,
+                            initialValue: state.shopArea.toString(),
                             keyboardType: TextInputType.number,
                             suffixIcon: CustomTextWidget(
                               "m2".tr(),
@@ -140,17 +138,15 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           ),
                           const CustomVerticalSpace(height: 12),
                           if (state.showHotel()) ...[
-                            AccomodationDropDownTypes(),
+                            const AccomodationDropDownTypes(),
                             const CustomVerticalSpace(height: 16),
                             CustomTextFieldWidget(
                               label: "lbl_unit".tr(),
                               hintText: "lbl_unit".tr(),
                               isDigitsOnly: true,
-                              initialValue: state.unitCount != null
-                                  ? state.unitCount.toString()
-                                  : null,
+                              initialValue: state.unitCount?.toString(),
                               keyboardType: TextInputType.number,
-                              suffixIcon: CustomTextWidget(
+                              suffixIcon: const CustomTextWidget(
                                 "",
                                 fontSize: 12,
                                 fontWeight: AppFontWeight.semiBold,
@@ -232,7 +228,6 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                     ),
                   ),
                 ),
-
                 (state.subActivityDetailsStatus.isSubmissionLoading ||
                         state.status.isSubmissionLoading)
                     ? const Center(child: CustomCircularLoadingWidget())
