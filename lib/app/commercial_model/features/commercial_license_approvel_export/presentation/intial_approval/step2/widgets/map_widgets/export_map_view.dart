@@ -1,21 +1,10 @@
-import 'dart:async';
-import 'dart:io';
 
-import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:dgis_map/library.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
-
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
-import 'package:balady_plus/app/core/utils/map_utils.dart';
-import '../../../../../../../../features/_shared_feature_/balady_features/widgets/map/UrbiMapSection.dart';
-import '../../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../bloc/step2_activity_data_export_cubit.dart';
 import 'map_address_card.dart';
 
