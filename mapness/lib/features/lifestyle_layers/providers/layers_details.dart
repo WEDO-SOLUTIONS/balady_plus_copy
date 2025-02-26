@@ -37,17 +37,17 @@ class LayersDetails extends _$LayersDetails {
           params: requestParams,
           cancelToken: cancelToken,
         ))
-            .first,
+            .firstOrNull,
       GISMapLayers.bsWhiteParcelS => (await controller.getWhiteLands(
           requestParams,
           cancelToken,
         ))
-            .first,
+            .firstOrNull,
       GISMapLayers.bsAimtithalBuildingsCertificateL => (await controller.buildingComplianceCertificate(
           requestParams,
           cancelToken,
         ))
-            .first,
+            .firstOrNull,
       _ => null,
     };
   }
