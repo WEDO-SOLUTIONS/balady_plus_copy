@@ -16,7 +16,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../core/utils/constants/constants.dart';
 import '../../../../../core/utils/map_utils.dart';
-import '../../../../_shared_feature_/balady_features/widgets/map/UrbiMapSection.dart';
+import '../../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../vd/presentation/widgets/map_address_card.dart';
 import '../../blocs/create_dc_request/map_bloc/dc_map_bloc.dart';
