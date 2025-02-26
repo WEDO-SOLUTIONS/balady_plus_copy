@@ -3,12 +3,8 @@ import 'package:balady_plus/app/features/splash/presentation/pages/splash_screen
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart'
     show SystemChrome, SystemUiMode, SystemUiOverlay;
-
-import '../../../../core/base/base_view_model.dart';
 import '../../../../core/utils/app_analytics_events.dart';
 
-import '../../../force_update/presentation/core/force_update_view_model.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({Key? key}) : super(key: key);
@@ -39,40 +35,8 @@ class _SplashPageState extends State<SplashPage>
 
     _controller.addStatusListener((status) async {
       if (status == AnimationStatus.completed) {
-        /*  if ((await sl<LocationCubit>().getLocationCachedInit()) != true) {
-          Navigator.pushReplacement(context, MaterialPageRoute(builder: (ctx) {
-            return AcquireLocationPage();
-          }));
-        } else {*/
-        // final params = sl<BridgeParams>().copyWith(
-        //   isAuthenticated: true,
-        // );
-        // final entryPointBridge = sl<EntryPointBridge>();
-        // entryPointBridge(params);
-        // if (!CommonFunctions.changeSpalsh()) {
-        // sl<EntryPointCubit>().hideSplash();
-        // }
-        //   CommonFunctions.sendUrbiMapLogs();
-        //  }
-
-        // after splash screen completed check the version info to show the force update dialog
-        checkVersionInfo();
       } else {}
     });
-  }
-
-  void checkVersionInfo() {
-    try {
-      locator<ForceUpdateViewModel>().getVersionInfo();
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-    }
   }
 
   @override

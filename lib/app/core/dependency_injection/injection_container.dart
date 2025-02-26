@@ -43,7 +43,7 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../features/classification_certificate/core/dependency_injection/classification_certificate_injection.dart';
-import '../../features/force_update/presentation/core/force_update_view_model.dart';
+import '../../features/force_update/presentation/core/force_update_cubit.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
@@ -223,7 +223,7 @@ void initialize() {
     ),
   );
 
-  sl.registerLazySingleton(() => ForceUpdateViewModel());
+  sl.registerLazySingleton(() => ForceUpdateCubit());
 
   sl.registerLazySingleton<ChatBotDataSources>(
       () => ChatBotDataSourcesImplementation(webService: sl()));
