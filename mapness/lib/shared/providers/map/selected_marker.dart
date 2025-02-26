@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,23 +17,14 @@ class SelectedMarker extends _$SelectedMarker {
   @override
   Marker? build() => null;
 
-  Future<void> showMarker(Marker marker) async {
-    final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
-
-    if (_hiddenMarker != null) {
-      final options = _hiddenMarker!.options.copyWith(
-        isVisible: true,
+  MapObjectManager get mapObjectManager => ref.read(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+        ).notifier,
       );
 
-      unawaited(mapObjectManager.setMarkerOptions(_hiddenMarker!.id, options));
-      _hiddenMarker = null;
-    }
-
+  Future<void> showMarker(Marker marker) async {
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
         named: searchSettings.name,
@@ -42,22 +32,16 @@ class SelectedMarker extends _$SelectedMarker {
       ).notifier,
     );
 
+    _showHiddenMarkerIfPresent();
+
     final position = LatLng(
       latitude: marker.options.position.latitude,
       longitude: marker.options.position.longitude,
     );
-
     final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
-
     if (currentSearchMarker != null) {
-      _hiddenMarker = currentSearchMarker;
       marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
-
-      final options = currentSearchMarker.options.copyWith(
-        isVisible: false,
-      );
-
-      unawaited(searchObjectManager.setMarkerOptions(currentSearchMarker.id, options));
+      _hideMarker(currentSearchMarker);
     }
 
     await mapObjectManager.removeAllMarkers();
@@ -66,35 +50,34 @@ class SelectedMarker extends _$SelectedMarker {
   }
 
   Future<void> removeMarker(String id) async {
-    final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
-
-    if (_hiddenMarker != null) {
-      final options = _hiddenMarker!.options.copyWith(
-        isVisible: true,
-      );
-
-      unawaited(mapObjectManager.setMarkerOptions(_hiddenMarker!.id, options));
-      _hiddenMarker = null;
-    }
-
-    unawaited(mapObjectManager.removeMarkerById(id));
+    _showHiddenMarkerIfPresent();
+    await mapObjectManager.removeMarkerById(id);
     state = null;
   }
 
   Future<void> removeAllMarkers() async {
-    final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
-
     await mapObjectManager.removeAllMarkers();
+    _showHiddenMarkerIfPresent();
     state = null;
+  }
+
+  void _hideMarker(Marker marker) {
+    _hiddenMarker = marker;
+    _setMarkerIsVisible(marker, isVisible: false);
+  }
+
+  void _showHiddenMarkerIfPresent() {
+    final marker = _hiddenMarker;
+    if (marker != null) {
+      _setMarkerIsVisible(marker, isVisible: true);
+      _hiddenMarker = null;
+    }
+  }
+
+  Future<void> _setMarkerIsVisible(Marker marker, {required bool isVisible}) async {
+    await mapObjectManager.setMarkerOptions(
+      marker.id,
+      ChangeMarkerOptionsMessage(isVisible: marker.options.isVisible = isVisible),
+    );
   }
 }
