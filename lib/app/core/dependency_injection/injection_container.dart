@@ -35,6 +35,7 @@ import 'package:get_it/get_it.dart' show GetIt;
 import 'package:internet_connection_checker/internet_connection_checker.dart'
     show InternetConnectionChecker;
 import '../../features/_shared_feature_/balady_features/services/services.dart';
+import '../../features/_shared_feature_/balady_features/widgets/UrbiMap/search_provider.dart';
 import '../../features/_shared_feature_/data/entities/device_details.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
@@ -224,6 +225,9 @@ void initialize() {
 
   sl.registerLazySingleton<ChatBotDataSources>(
       () => ChatBotDataSourcesImplementation(webService: sl()));
+
+  sl.registerLazySingleton<UrbiSearchProvider>(() => UrbiSearchProvider());
+
   sl.registerLazySingleton<ChatBotRepository>(
       () => ChatBotRepositoryImplementation(sl()));
   sl.registerLazySingleton(() => SendQuestionMessageChatBot(sl()));

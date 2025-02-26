@@ -1,4 +1,6 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+
+import 'package:dgis_map/library.dart';
 
 class SelectedLocation {
   LatLng? userLocation;

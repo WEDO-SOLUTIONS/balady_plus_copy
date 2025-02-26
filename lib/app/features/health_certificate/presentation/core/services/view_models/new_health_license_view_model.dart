@@ -1,7 +1,8 @@
 import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:dgis_map/library.dart';
+
 import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';

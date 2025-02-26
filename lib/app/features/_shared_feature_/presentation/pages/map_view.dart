@@ -4,12 +4,13 @@ import 'dart:math' show cos, sqrt, asin;
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:dgis_map/dgis_map_controller.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_webservice/places.dart' as place;
+
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view_model.dart';
@@ -19,6 +20,7 @@ import '../../../transaction_inquiry/presentation/core/models/gis_location_resul
 import '../../../transaction_inquiry/presentation/core/models/selected_location.dart';
 import '../../../transaction_inquiry/presentation/core/services/customer_voice_repository.dart';
 import '../../../vd/presentation/widgets/map_address_card.dart';
+import '../../balady_features/widgets/map/UrbiMapSection.dart';
 import '../widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -60,7 +62,7 @@ class _MapViewState extends State<MapView> {
 
   bool showPreviousSelectedLocation = false;
   String? gisAddress;
-  late GoogleMapController mapController;
+  late DgisMapController mapController;
   bool isFirstLoad = true;
   @override
   void initState() {
@@ -82,8 +84,9 @@ class _MapViewState extends State<MapView> {
     return Stack(
       children: <Widget>[
         // google map section
-        GoogleMapSection(
+        UrbiMapSection(
           currentUserLocation: selectedLocation?.userLocation,
+          incidentLocation: null,
           onCameraIdle: (bool isIdle) {
             if (widget.showRadius) {
               if (movedPosition != null && !showPreviousSelectedLocation)
@@ -95,7 +98,7 @@ class _MapViewState extends State<MapView> {
           updateMovedPosition: (LatLng p) {
             movedPosition = p;
           },
-          onMapController: (GoogleMapController controller) {
+          onMapController: (DgisMapController controller) {
             mapController = controller;
           },
           showRadius: widget.showRadius,
@@ -142,14 +145,29 @@ class _MapViewState extends State<MapView> {
         if (widget.showSearch)
           MapSearchSection(
             showBigPaddingScreen: widget.showSearchPaddingScreen,
+            currentUserLocation: selectedLocation?.userLocation,
             onSearchResult: (LatLng location) {
-              mapController.animateCamera(
-                CameraUpdate.newCameraPosition(
-                  CameraPosition(
-                      target: LatLng(location.latitude, location.longitude),
-                      zoom: 16.0),
+
+
+              mapController.moveCamera(
+                CameraPositionMessage(
+                  point: GeoPointMessage(latitude: location.latitude, longitude: location.longitude),
+                  zoom: 16.0,
+                  tilt: 0.0,
+                  bearing: 0.0,
                 ),
+                0.3, // duration
+                CameraAnimationTypeMessage.linear,
               );
+              // mapController.animateCamera(
+              //   CameraUpdate.newCameraPosition(
+              //     CameraPosition(
+              //         target: LatLng(location.latitude, location.longitude),
+              //         zoom: 16.0),
+              //   ),
+              // );
+
+
             },
           ),
       ],
@@ -165,8 +183,8 @@ class _MapViewState extends State<MapView> {
 
       showPreviousSelectedLocation = false;
       selectedLocation?.userLocation ??= LatLng(
-          selectedLocation!.selectedLocation!.latitude,
-          selectedLocation!.selectedLocation!.longitude);
+
+         longitude: selectedLocation!.selectedLocation!.longitude, latitude:  selectedLocation!.selectedLocation!.latitude);
       return;
     }
 
@@ -178,9 +196,9 @@ class _MapViewState extends State<MapView> {
       EasyLoading.dismiss();
 
       selectedLocation?.userLocation =
-          LatLng(position.latitude, position.longitude);
+          LatLng(latitude:position.latitude, longitude:position.longitude);
       selectedLocation?.selectedLocation =
-          LatLng(position.latitude, position.longitude);
+          LatLng(latitude:position.latitude, longitude:position.longitude);
       animateCamera(position.latitude, position.longitude);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -206,9 +224,9 @@ class _MapViewState extends State<MapView> {
 
       if (position != null) {
         selectedLocation?.userLocation =
-            LatLng(position.latitude, position.longitude);
+            LatLng(latitude:position.latitude, longitude:position.longitude);
         selectedLocation?.selectedLocation =
-            LatLng(position.latitude, position.longitude);
+            LatLng(latitude:position.latitude,longitude: position.longitude);
         animateCamera(position.latitude, position.longitude);
       }
     }
@@ -216,11 +234,24 @@ class _MapViewState extends State<MapView> {
 
   void animateCamera(double lat, double lng) {
     try {
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+      mapController.moveCamera(
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: lat, longitude: lng),
+          zoom: 16.0,
+          tilt: 0.0,
+          bearing: 0.0,
         ),
+        0.3, // duration
+        CameraAnimationTypeMessage.linear,
       );
+
+      // mapController.animateCamera(
+      //   CameraUpdate.newCameraPosition(
+      //     CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+      //   ),
+      // );
+
+
     } catch (error, stackTrace) {
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(
@@ -294,13 +325,25 @@ class _MapViewState extends State<MapView> {
             isLocationAllowed = true;
           });
 
-          mapController.animateCamera(
-            CameraUpdate.newCameraPosition(
-              CameraPosition(
-                  target: LatLng(selectedLocation!.selectedLocation!.latitude,
-                      selectedLocation!.selectedLocation!.longitude),
-                  zoom: 13.0),
+          // mapController.animateCamera(
+          //   CameraUpdate.newCameraPosition(
+          //     CameraPosition(
+          //         target: LatLng(selectedLocation!.selectedLocation!.latitude,
+          //             selectedLocation!.selectedLocation!.longitude),
+          //         zoom: 13.0),
+          //   ),
+          // );
+
+
+          mapController.moveCamera(
+            CameraPositionMessage(
+              point: GeoPointMessage(latitude: selectedLocation!.selectedLocation!.latitude, longitude:  selectedLocation!.selectedLocation!.longitude),
+              zoom: 13.0,
+              tilt: 0.0,
+              bearing: 0.0,
             ),
+            0.3, // duration
+            CameraAnimationTypeMessage.linear,
           );
         });
       }
@@ -330,13 +373,27 @@ class _MapViewState extends State<MapView> {
       setState(() {
         this.selectedLocation?.selectedLocation = userLocation;
       });
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(
-              target: LatLng(userLocation.latitude, userLocation.longitude),
-              zoom: 16.0),
+
+      // mapController.animateCamera(
+      //   CameraUpdate.newCameraPosition(
+      //     CameraPosition(
+      //         target: LatLng(userLocation.latitude, userLocation.longitude),
+      //         zoom: 16.0),
+      //   ),
+      // );
+
+      mapController.moveCamera(
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: userLocation.latitude, longitude:  userLocation.longitude),
+          zoom: 16.0,
+          tilt: 0.0,
+          bearing: 0.0,
         ),
+        0.3, // duration
+        CameraAnimationTypeMessage.linear,
       );
+
+
     }
   }
 
@@ -345,244 +402,244 @@ class _MapViewState extends State<MapView> {
   }
 }
 
-class GoogleMapSection extends StatefulWidget {
-  final Function(LatLng position) updateMovedPosition;
-  final Function(bool cameraIdle) onCameraIdle;
-  final Function(GoogleMapController controller) onMapController;
-  final LatLng? currentUserLocation;
-  final bool showRadius;
-
-  const GoogleMapSection(
-      {Key? key,
-      required this.updateMovedPosition,
-      required this.onCameraIdle,
-      required this.currentUserLocation,
-      required this.onMapController,
-      required this.showRadius})
-      : super(key: key);
-
-  @override
-  _GoogleMapSectionState createState() => _GoogleMapSectionState();
-}
-
-class _GoogleMapSectionState extends State<GoogleMapSection> {
-  Set<Circle>? circles;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    setMapCircle(widget.currentUserLocation);
-    return GoogleMap(
-      zoomControlsEnabled: false,
-      // myLocationEnabled: true,
-      circles: circles ?? {},
-      myLocationButtonEnabled: false,
-      //circles: circles != null ? circles : {},
-      onCameraMove: (position) {
-        widget.updateMovedPosition(position.target);
-      },
-      onCameraIdle: () {
-        widget.onCameraIdle(true);
-      },
-      onMapCreated: (GoogleMapController controller) {
-        controller.setMapStyle(
-          """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-        );
-        widget.onMapController(controller);
-      },
-      markers: {
-        if (widget.currentUserLocation != null &&
-            MapUtils.userLocationMarker != null)
-          Marker(
-              icon: MapUtils.userLocationMarker!,
-              markerId: const MarkerId("userLocation"),
-              position: widget.currentUserLocation!),
-      },
-      initialCameraPosition: const CameraPosition(
-          target: LatLng(24.76836756001484, 46.720988751704304), zoom: 5),
-    );
-  }
-
-  void setMapCircle(LatLng? location) {
-    if (location != null && widget.showRadius) {
-      circles = {
-        Circle(
-          circleId: const CircleId("1"),
-          center: LatLng(location.latitude, location.longitude),
-          radius: RemoteConfig.mapRadius,
-          fillColor: const Color(0x8094cdd6),
-          strokeWidth: 0,
-        )
-      };
-    }
-  }
-}
-
-class HuaweiMapSection extends StatefulWidget {
-  const HuaweiMapSection({Key? key}) : super(key: key);
-
-  @override
-  _HuaweiMapSectionState createState() => _HuaweiMapSectionState();
-}
-
-class _HuaweiMapSectionState extends State<HuaweiMapSection> {
-  @override
-  Widget build(BuildContext context) {
-    return Container();
-    // return HuaweiMap(
-    //   onMapCreated: (HuaweiMapController controller) {
-    //     mapController = controller;
-    //
-    //     mapController.setMapStyle(_mapStyle);
-    //   },
-    //   myLocationButtonEnabled: false,
-    //   circles: circles,
-    //   onCameraMove: (position) {
-    //     if (position != null) {
-    //       movedPosition = position.target;
-    //     }
-    //   },
-    //   onCameraIdle: () {
-    //     if (movedPosition != null) {
-    //       if (selectedLocation != null && selectedLocation.userLocation != null)
-    //         _selectLocation(movedPosition);
-    //     }
-    //   },
-    //   markers: {
-    //     if (selectedLocation.userLocation != null)
-    //       Marker(
-    //           visible: userCurrentLocationMarker != null,
-    //           icon: userCurrentLocationMarker,
-    //           markerId: MarkerId("userLocation"),
-    //           position: LatLng(selectedLocation.userLocation.latitude,
-    //               selectedLocation.userLocation.longitude)),
-    //   },
-    //   // onTap: _selectLocation,
-    //   initialCameraPosition: selectedLocation.userLocation != null
-    //       ? CameraPosition(
-    //           zoom: 16,
-    //           target: LatLng(selectedLocation.userLocation.latitude,
-    //               selectedLocation.userLocation.longitude))
-    //       : initalCameralLocation,
-    // );
-  }
-}
-
-class PinMarkerSection extends StatelessWidget {
-  bool isLocationAllowed = true;
-  PinMarkerSection({this.isLocationAllowed = true});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          (isLocationAllowed)
-              ? const Center()
-              : Container(
-                  color: Colors.white,
-                  padding: const EdgeInsets.all(2),
-                  margin: const EdgeInsets.only(bottom: 85),
-                  child: Text(
-                    ('location_not_allowed_map').tr(),
-                    textScaleFactor: 1,
-                  ),
-                ),
-          Container(
-            margin: Platform.isAndroid
-                ? const EdgeInsets.only(bottom: 25)
-                : const EdgeInsets.only(bottom: 30),
-            height: 30.0,
-            width: 15.0,
-            child: Image.asset(
-              isLocationAllowed
-                  ? "assets/images/marker@3x.png"
-                  : "assets/images/redPinMarker@3x.png",
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class MapSearchSection extends StatelessWidget {
-  final showBigPaddingScreen;
-  Function(LatLng location) onSearchResult;
-
-  MapSearchSection(
-      {Key? key,
-      this.showBigPaddingScreen = false,
-      required this.onSearchResult})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: showBigPaddingScreen
-          ? EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40)
-          : const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      alignment: Alignment.topCenter,
-      child: GestureDetector(
-        onTap: () {
-          _showPlaceSearch(context);
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          alignment: Alignment.center,
-          height: 52,
-          decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                    child: CustomTextWidget(
-                  ("lbl_search_for_place").tr(),
-                  fontColor: AppColor.black400,
-                  fontWeight: AppFontWeight.medium,
-                  fontSize: 17,
-                  textAlign: TextAlign.start,
-                )),
-                Image.asset(
-                  Constants.imgPath + 'mapSearch@3x.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  _showPlaceSearch(BuildContext context) async {
-    place.Prediction? p = await PlacesAutocomplete.show(
-        context: context,
-        apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI",
-        mode: Mode.overlay,
-        types: [],
-        strictbounds: false,
-        language: "ar",
-        components: [new place.Component(place.Component.country, "sa")]);
-
-    final places = place.GoogleMapsPlaces(
-        apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI");
-    places.getDetailsByPlaceId(p?.placeId ?? "").then((response) {
-      var lat = response.result.geometry?.location.lat;
-      var long = response.result.geometry?.location.lng;
-
-      if (lat != null && long != null) {
-        onSearchResult(LatLng(lat, long));
-      }
-    });
-  }
-}
+// class GoogleMapSection extends StatefulWidget {
+//   final Function(LatLng position) updateMovedPosition;
+//   final Function(bool cameraIdle) onCameraIdle;
+//   final Function(GoogleMapController controller) onMapController;
+//   final LatLng? currentUserLocation;
+//   final bool showRadius;
+//
+//   const GoogleMapSection(
+//       {Key? key,
+//       required this.updateMovedPosition,
+//       required this.onCameraIdle,
+//       required this.currentUserLocation,
+//       required this.onMapController,
+//       required this.showRadius})
+//       : super(key: key);
+//
+//   @override
+//   _GoogleMapSectionState createState() => _GoogleMapSectionState();
+// }
+//
+// class _GoogleMapSectionState extends State<GoogleMapSection> {
+//   Set<Circle>? circles;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     setMapCircle(widget.currentUserLocation);
+//     return GoogleMap(
+//       zoomControlsEnabled: false,
+//       // myLocationEnabled: true,
+//       circles: circles ?? {},
+//       myLocationButtonEnabled: false,
+//       //circles: circles != null ? circles : {},
+//       onCameraMove: (position) {
+//         widget.updateMovedPosition(position.target);
+//       },
+//       onCameraIdle: () {
+//         widget.onCameraIdle(true);
+//       },
+//       onMapCreated: (GoogleMapController controller) {
+//         controller.setMapStyle(
+//           """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+//         );
+//         widget.onMapController(controller);
+//       },
+//       markers: {
+//         if (widget.currentUserLocation != null &&
+//             MapUtils.userLocationMarker != null)
+//           Marker(
+//               icon: MapUtils.userLocationMarker!,
+//               markerId: const MarkerId("userLocation"),
+//               position: widget.currentUserLocation!),
+//       },
+//       initialCameraPosition: const CameraPosition(
+//           target: LatLng(24.76836756001484, 46.720988751704304), zoom: 5),
+//     );
+//   }
+//
+//   void setMapCircle(LatLng? location) {
+//     if (location != null && widget.showRadius) {
+//       circles = {
+//         Circle(
+//           circleId: const CircleId("1"),
+//           center: LatLng(location.latitude, location.longitude),
+//           radius: RemoteConfig.mapRadius,
+//           fillColor: const Color(0x8094cdd6),
+//           strokeWidth: 0,
+//         )
+//       };
+//     }
+//   }
+// }
+//
+// class HuaweiMapSection extends StatefulWidget {
+//   const HuaweiMapSection({Key? key}) : super(key: key);
+//
+//   @override
+//   _HuaweiMapSectionState createState() => _HuaweiMapSectionState();
+// }
+//
+// class _HuaweiMapSectionState extends State<HuaweiMapSection> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//     // return HuaweiMap(
+//     //   onMapCreated: (HuaweiMapController controller) {
+//     //     mapController = controller;
+//     //
+//     //     mapController.setMapStyle(_mapStyle);
+//     //   },
+//     //   myLocationButtonEnabled: false,
+//     //   circles: circles,
+//     //   onCameraMove: (position) {
+//     //     if (position != null) {
+//     //       movedPosition = position.target;
+//     //     }
+//     //   },
+//     //   onCameraIdle: () {
+//     //     if (movedPosition != null) {
+//     //       if (selectedLocation != null && selectedLocation.userLocation != null)
+//     //         _selectLocation(movedPosition);
+//     //     }
+//     //   },
+//     //   markers: {
+//     //     if (selectedLocation.userLocation != null)
+//     //       Marker(
+//     //           visible: userCurrentLocationMarker != null,
+//     //           icon: userCurrentLocationMarker,
+//     //           markerId: MarkerId("userLocation"),
+//     //           position: LatLng(selectedLocation.userLocation.latitude,
+//     //               selectedLocation.userLocation.longitude)),
+//     //   },
+//     //   // onTap: _selectLocation,
+//     //   initialCameraPosition: selectedLocation.userLocation != null
+//     //       ? CameraPosition(
+//     //           zoom: 16,
+//     //           target: LatLng(selectedLocation.userLocation.latitude,
+//     //               selectedLocation.userLocation.longitude))
+//     //       : initalCameralLocation,
+//     // );
+//   }
+// }
+//
+// class PinMarkerSection extends StatelessWidget {
+//   bool isLocationAllowed = true;
+//   PinMarkerSection({this.isLocationAllowed = true});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       alignment: Alignment.center,
+//       child: Stack(
+//         alignment: Alignment.center,
+//         children: [
+//           (isLocationAllowed)
+//               ? const Center()
+//               : Container(
+//                   color: Colors.white,
+//                   padding: const EdgeInsets.all(2),
+//                   margin: const EdgeInsets.only(bottom: 85),
+//                   child: Text(
+//                     ('location_not_allowed_map').tr(),
+//                     textScaleFactor: 1,
+//                   ),
+//                 ),
+//           Container(
+//             margin: Platform.isAndroid
+//                 ? const EdgeInsets.only(bottom: 25)
+//                 : const EdgeInsets.only(bottom: 30),
+//             height: 30.0,
+//             width: 15.0,
+//             child: Image.asset(
+//               isLocationAllowed
+//                   ? "assets/images/marker@3x.png"
+//                   : "assets/images/redPinMarker@3x.png",
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+//
+// class MapSearchSection extends StatelessWidget {
+//   final showBigPaddingScreen;
+//   Function(LatLng location) onSearchResult;
+//
+//   MapSearchSection(
+//       {Key? key,
+//       this.showBigPaddingScreen = false,
+//       required this.onSearchResult})
+//       : super(key: key);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       margin: showBigPaddingScreen
+//           ? EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40)
+//           : const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+//       alignment: Alignment.topCenter,
+//       child: GestureDetector(
+//         onTap: () {
+//           _showPlaceSearch(context);
+//         },
+//         child: Container(
+//           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
+//           alignment: Alignment.center,
+//           height: 52,
+//           decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
+//           child: Padding(
+//             padding: const EdgeInsets.symmetric(horizontal: 10),
+//             child: Row(
+//               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//               children: <Widget>[
+//                 Expanded(
+//                     child: CustomTextWidget(
+//                   ("lbl_search_for_place").tr(),
+//                   fontColor: AppColor.black400,
+//                   fontWeight: AppFontWeight.medium,
+//                   fontSize: 17,
+//                   textAlign: TextAlign.start,
+//                 )),
+//                 Image.asset(
+//                   Constants.imgPath + 'mapSearch@3x.png',
+//                   height: 24,
+//                   width: 24,
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   _showPlaceSearch(BuildContext context) async {
+//     place.Prediction? p = await PlacesAutocomplete.show(
+//         context: context,
+//         apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI",
+//         mode: Mode.overlay,
+//         types: [],
+//         strictbounds: false,
+//         language: "ar",
+//         components: [new place.Component(place.Component.country, "sa")]);
+//
+//     final places = place.GoogleMapsPlaces(
+//         apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI");
+//     places.getDetailsByPlaceId(p?.placeId ?? "").then((response) {
+//       var lat = response.result.geometry?.location.lat;
+//       var long = response.result.geometry?.location.lng;
+//
+//       if (lat != null && long != null) {
+//         onSearchResult(LatLng(lat, long));
+//       }
+//     });
+//   }
+// }
