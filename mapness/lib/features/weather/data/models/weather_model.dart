@@ -76,12 +76,12 @@ class CurrentModel {
 @JsonSerializable()
 class ConditionModel {
   final String? text;
-  final String? icon;
+  final String icon;
   final int? code;
 
   const ConditionModel({
+    required this.icon,
     this.code,
-    this.icon,
     this.text,
   });
 

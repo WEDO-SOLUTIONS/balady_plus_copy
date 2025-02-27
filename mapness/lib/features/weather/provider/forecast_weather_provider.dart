@@ -50,10 +50,10 @@ class _ForecastWeather extends _$ForecastWeather {
     final latitude = value.point.latitude;
     final longitude = value.point.longitude;
     final result = await repository.getForecastWeather(
-      latitude,
-      longitude,
-      5,
-      cancelToken,
+      latitude: latitude,
+      longitude: longitude,
+      numberOfDays: 5,
+      cancelToken: cancelToken,
     );
     state = result;
   }

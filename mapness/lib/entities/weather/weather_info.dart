@@ -59,6 +59,7 @@ class Condition {
           ? "assets/icons/svg/weather/night/${icon!.split("night/").last.replaceAll(".png", ".svg")}"
           : "assets/icons/svg/weather/day/${icon!.split("day/").last.replaceAll(".png", ".svg")}";
     }
+
     return '';
   }
 }

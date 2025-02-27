@@ -39,13 +39,17 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
     required CancelToken cancelToken,
   }) async {
     mixpanel?.timeEvent('WebServiceWeather: getCurrentWeatherData');
-    const weatherAPI = '/v1/current.json?';
+    const weatherAPI = 'v1/current.json?';
     try {
       final map = params.toMap();
       final response = await dio.get(
         baseUrl + weatherAPI,
         queryParameters: map,
         cancelToken: cancelToken,
+        options: Options(
+          sendTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
+        ),
       );
       unawaited(mixpanel?.track('WebServiceWeather: getCurrentWeatherData'));
       return response.data as Map<String, dynamic>;
@@ -63,7 +67,7 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
     required CancelToken cancelToken,
   }) async {
     mixpanel?.timeEvent('WebServiceWeather: getForecastData');
-    const weatherAPI = '/v1/weather-services/forecast?';
+    const weatherAPI = 'v1/weather-services/forecast?';
     try {
       final response = await dio.get(
         baseUrl + weatherAPI,
@@ -74,6 +78,8 @@ class _WeatherRemoteDataSource implements WeatherRemoteDataSource {
             ApiHeader.requiresToken.eName: false,
             ApiHeader.verifyingKEY.name: params.getVerifyingKey(),
           },
+          sendTimeout: const Duration(seconds: 60),
+          receiveTimeout: const Duration(seconds: 60),
         ),
         cancelToken: cancelToken,
       );

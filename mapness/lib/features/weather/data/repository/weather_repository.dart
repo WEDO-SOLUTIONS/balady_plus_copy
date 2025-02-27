@@ -12,12 +12,12 @@ part 'weather_repository.g.dart';
 
 @riverpod
 class WeatherRepository extends _$WeatherRepository {
-  Future<AllWeatherInfoEntity?> getForecastWeather(
-    double latitude,
-    double longitude,
-    int numberOfDays,
-    CancelToken cancelToken,
-  ) async {
+  Future<AllWeatherInfoEntity?> getForecastWeather({
+    required double latitude,
+    required double longitude,
+    required int numberOfDays,
+    required CancelToken cancelToken,
+  }) async {
     final locale = ref.read(appLanguageProvider).locale;
     final env = await ref.read(dgisEnvironmentProvider.future);
 
@@ -30,7 +30,7 @@ class WeatherRepository extends _$WeatherRepository {
       proxy: env.proxy,
     );
 
-    final data = await state.value?.getForecastWeatherData(
+    final data = await state.valueOrNull?.getForecastWeatherData(
       params: weatherParams,
       cancelToken: cancelToken,
     );

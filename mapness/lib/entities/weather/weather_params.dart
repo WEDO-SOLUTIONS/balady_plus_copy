@@ -25,13 +25,13 @@ class WeatherParams {
     const weatherServices = 'v1/weather-services/forecast?';
     final params = toMap();
 
-    var hashedUrl =
-        proxy != null ? '${EnvironmentConfig.momrahStaging().weatherApi}$weatherServices' : '$domain$weatherServices';
+    final hashedUrl = proxy != null ? EnvironmentConfig.momrahStaging().weatherApi : domain;
 
-    params.forEach((key, value) => hashedUrl += '$key=$value&');
-    hashedUrl = hashedUrl.substring(0, hashedUrl.length - 1);
+    final query = params.entries.map((entry) => '${entry.key}=${entry.value}').join('&');
 
-    return hashRequest(hashedUrl, 'GET');
+    final url = '$hashedUrl$weatherServices$query';
+
+    return hashRequest(url, 'GET');
   }
 
   Map<String, dynamic> toMap() => {
