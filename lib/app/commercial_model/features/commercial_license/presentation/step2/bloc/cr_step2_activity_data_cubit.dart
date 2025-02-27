@@ -26,6 +26,7 @@ import '../../../domain/use_cases/get_warning_workflow_messsage.dart';
 import '../../step3/widgets/map_widgets/warning_message.dart';
 import '../page/salama_warning_message.dart';
 import 'package:collection/collection.dart';
+
 part 'cr_step2_activity_data_state.dart';
 
 class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
@@ -45,7 +46,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         _saveActivityDetails = SaveActivityDetails(repository: sl()),
         _getAddetionalActivites = GetAddetionalActivites(repository: sl()),
         _getAddetionalDetailsActivites =
-            GetAddetionalDetailsActivites(repository: sl()),
+        GetAddetionalDetailsActivites(repository: sl()),
         _getWarningMessage = GetWarningMessage(repository: sl()),
         _getWarninFlowMessage = GetWarningWorkFlowMessage(repository: sl()),
         super(const CrStep2ActivityDataState()) {
@@ -56,9 +57,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(
         subActivityDetailsStatus: BlocStatus.loading, errorMessage: ""));
     final response =
-        await _getSubActivityDetails(subActivity.id.toString() ?? '');
+    await _getSubActivityDetails(subActivity.id.toString() ?? '');
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               subActivityDetailsStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -93,7 +95,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         errorMessage: ""));
     final response = await _getSubActivities(isicActivity.id ?? '');
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               subActivitiesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -108,7 +111,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(accommodationTypesStatus: BlocStatus.loading));
     final response = await _getAccommodationTypes(NoParams());
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               accommodationTypesStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -153,12 +157,13 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         detailedActivityId: state.selectedSubActivity!.id!,
         atmFeesPaid: state.showAtm() ? state.atmFeesPaid : null,
         unitCount:
-            state.showHotel() ? int.tryParse(state.unitCount ?? "") : null,
+        state.showHotel() ? int.tryParse(state.unitCount ?? "") : null,
         accommodationTypeId: state.showHotel()
             ? state.selectedAccommodationType?.lookupId
             : null));
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -171,9 +176,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       AddetionalActivityItemDetails subActivity) async {
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     final response =
-        await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
+    await _getSubActivityDetails(subActivity.activityId.toString() ?? '');
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               status: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -228,7 +234,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
             subActivityId: state.selectedSubActivity!.id.toString(),
             addetionalActivityId: item.isicCode!));
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               addetionalActivityDetailsListStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -252,7 +259,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     final response = await _getAddetionalActivites(
         state.selectedSubActivity?.id.toString() ?? "");
     response.fold(
-        (failure) => emit(state.copyWith(
+            (failure) =>
+            emit(state.copyWith(
               additionalActivityListStatus: BlocStatus.failure,
               errorMessage: (failure as ServerFailure).errorMessage,
             )), (success) {
@@ -281,9 +289,9 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       final response = await _getWarningMessage(SalamaWarningRequest(
           activities: state.selectedAddetionalList != null
               ? state.selectedAddetionalList!.map((e) {
-                  return Activity(
-                      activityId: e.detailsItem?.activityId, area: e.area);
-                }).toList()
+            return Activity(
+                activityId: e.detailsItem?.activityId, area: e.area);
+          }).toList()
               : [],
           shopArea: state.totalArea,
           mainActivityId: state.selectedSubActivity?.id ?? 0));
@@ -387,7 +395,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           ),
           body: WarningMessage(
               message:
-                  "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
+              "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
         ));
   }
 
@@ -428,14 +436,15 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
       if (requestData?.activityInfo?.mainActivity?.isicActivityId != null) {
         selectedIsicActivity = recordInfo?.crInfo?.activities?.isicActivities
             ?.firstWhereOrNull((element) =>
-                element.isicCode ==
-                requestData?.activityInfo?.mainActivity?.isicActivityId
-                    .toString());
+        element.isicCode ==
+            requestData?.activityInfo?.mainActivity?.isicActivityId
+                .toString());
 
         final response =
-            await _getSubActivities(selectedIsicActivity?.id ?? '');
+        await _getSubActivities(selectedIsicActivity?.id ?? '');
         response.fold(
-            (failure) => emit(state.copyWith(
+                (failure) =>
+                emit(state.copyWith(
                   subActivitiesStatus: BlocStatus.failure,
                   errorMessage: (failure as ServerFailure).errorMessage,
                 )), (success) {
@@ -448,8 +457,8 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
         if (requestData?.activityInfo?.mainActivity?.detailedActivityId !=
             null) {
           selectedSubActivity = state.subActivities?.firstWhereOrNull(
-              (element) =>
-                  element.id ==
+                  (element) =>
+              element.id ==
                   requestData?.activityInfo?.mainActivity?.detailedActivityId);
 
           if (selectedSubActivity != null) {
@@ -457,6 +466,23 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           }
         }
       }
+
+      List<AddetionalActivityRequest> selectedAddetionalList = [];
+
+      // requestData?.activityInfo?.additionalActivities?.forEach((activity) {
+      //   selectedAddetionalList.add(
+      //     AddetionalActivityRequest(
+      //       item :,
+      //       detailsItem :,
+      //       details :,
+      //       area :,
+      //       faweryMessage :,
+      //     ),
+      //   );
+      // });
+
+
+      /// Hear Need Add The activities
       emit(state.copyWith(
           totalArea: requestData?.mainActivityArea?.toDouble(),
           shopArea: requestData?.shopArea,
@@ -464,6 +490,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           selectedIsicActivity: selectedIsicActivity,
           atmFeesPaid: atmFeesPaid,
           draftLoaded: true,
+          // selectedAddetionalList: selectedAddetionalList,
           draftStatus: BlocStatus.success,
           selectedSubActivity: Nullable(selectedSubActivity)));
     } else {
