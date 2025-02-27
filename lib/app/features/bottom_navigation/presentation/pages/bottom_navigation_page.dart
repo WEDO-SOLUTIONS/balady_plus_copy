@@ -72,7 +72,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           );
         },
         unAuthenticatedState: (data) {
-          sl<EntryPointCubit>().clearAuth();
+          sl<EntryPointCubit>().clearAuth(loginData: data);
         },
         linkWithNafaz: () {
           sl<EntryPointCubit>().onLoginNfaaz();
