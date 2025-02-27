@@ -20,14 +20,7 @@ import 'package:balady_authorization/src/authentication/bloc/authentication_bloc
 import 'package:balady_authorization/src/utils/injection/injection_container.dart';
 
 class SplashScreenAnimator extends StatefulWidget {
-  final SplashScreenAnimation animation;
-  final AnimationController controller;
-
-  SplashScreenAnimator({
-    Key? key,
-    required this.controller,
-  })  : animation = SplashScreenAnimation(controller),
-        super(key: key);
+  SplashScreenAnimator({Key? key}) : super(key: key);
 
   @override
   State<SplashScreenAnimator> createState() => _SplashScreenAnimatorState();
@@ -39,14 +32,14 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
   Widget build(BuildContext context) {
     return BlocListener<ForceUpdateCubit, ForceUpdateState>(
       listener: (context, state) {
-        if(state is HaveForceUpdateState) {
-          if(context.read<SplashCubit>().state is CompletedSplashState) {
+        if (state is HaveForceUpdateState) {
+          if (context.read<SplashCubit>().state is CompletedSplashState) {
             NavigationService.pushAndReplaceForceUpdate();
           }
         }
 
-        if(state is NotHaveForceUpdateState) {
-          if(context.read<SplashCubit>().state is CompletedSplashState) {
+        if (state is NotHaveForceUpdateState) {
+          if (context.read<SplashCubit>().state is CompletedSplashState) {
             takeActionChickLogin();
           }
         }
@@ -75,14 +68,19 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
                   autostart: Autostart.once,
                   onFetchCompleted: () async {
                     // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                    Future.delayed(Duration(seconds: state.splashDuration)).then(
+                    Future.delayed(Duration(seconds: state.splashDuration))
+                        .then(
                       (e) {
-                        if(context.read<ForceUpdateCubit>().state is NotHaveForceUpdateState) {
+                        if (context.read<ForceUpdateCubit>().state
+                            is NotHaveForceUpdateState) {
                           takeActionChickLogin();
-                        } else if (context.read<ForceUpdateCubit>().state is HaveForceUpdateState) {
+                        } else if (context.read<ForceUpdateCubit>().state
+                            is HaveForceUpdateState) {
                           NavigationService.pushAndReplaceForceUpdate();
-                        } else  {
-                          context.read<SplashCubit>().emitCompletedSplashState();
+                        } else {
+                          context
+                              .read<SplashCubit>()
+                              .emitCompletedSplashState();
                         }
                       },
                     );
@@ -97,12 +95,15 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
                   autostart: Autostart.once,
                   onFetchCompleted: () async {
                     // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                    Future.delayed(const Duration(milliseconds: 3000)).then((e) {
-                      if(context.read<ForceUpdateCubit>().state is NotHaveForceUpdateState) {
+                    Future.delayed(const Duration(milliseconds: 3000))
+                        .then((e) {
+                      if (context.read<ForceUpdateCubit>().state
+                          is NotHaveForceUpdateState) {
                         takeActionChickLogin();
-                      } else if (context.read<ForceUpdateCubit>().state is HaveForceUpdateState) {
+                      } else if (context.read<ForceUpdateCubit>().state
+                          is HaveForceUpdateState) {
                         NavigationService.pushAndReplaceForceUpdate();
-                      } else  {
+                      } else {
                         context.read<SplashCubit>().emitCompletedSplashState();
                       }
                     });
@@ -120,7 +121,6 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
   void takeActionChickLogin() {
     sl<EntryPointCubit>().hideSplash();
     Navigator.of(context).pop();
-    slAuthentication<AuthenticationBloc>()
-        .add(CheckLoginAuthentication());
+    slAuthentication<AuthenticationBloc>().add(CheckLoginAuthentication());
   }
 }
