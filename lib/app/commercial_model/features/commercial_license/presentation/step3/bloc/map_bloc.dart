@@ -20,6 +20,7 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 
+import '../../../../commercial_license_approvel_export/domain/use_cases/setp2_get_spl_notification.dart';
 import '../../../commercial_license_exports.dart'
     show
         CommercialLicenseBloc,
@@ -42,11 +43,13 @@ class MapBloc extends Bloc<MapEvent, MapState> {
   late DgisMapController mapController;
   final SaveLocationDetails _saveLocationDetails;
   final GetGISImage _getGISImage;
+  GetSPLNotification _getSPLNotification;
 
   MapBloc({MapScreenParams? params})
       : _getGisData = GetGISData(repository: sl()),
         _saveLocationDetails = SaveLocationDetails(repository: sl()),
         _getGISImage = GetGISImage(sl()),
+        _getSPLNotification = GetSPLNotification(repository:sl()),
         super(MapState(
           gisResponse: params?.gisResponse,
           location: params?.gisParams,
@@ -62,6 +65,48 @@ class MapBloc extends Bloc<MapEvent, MapState> {
     on<SaveLocationDataEvent>(_saveLocationHandler);
     on<UpdateFieldsEvent>(_updateFieldsHandler);
   }
+
+
+
+  void _handleSPLNotication() async {
+
+    if(state.gisResponse != null && state.gisResponse?.subMunicipalityguid != null ) {
+      emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
+
+      String requestTypeId= "1004";
+      if(sl<CommercialLicenseBloc>().state.isFromIntialApproval ==true)
+        requestTypeId ="1008";
+
+      final response = await _getSPLNotification([requestTypeId,state.gisResponse!.subMunicipalityguid!]);
+
+      response.fold(
+              (failure) =>
+              emit(state.copyWith(
+                status: BlocStatus.failure,
+                errorMessage: (failure as ServerFailure).errorMessage,
+              )), (res) {
+        emit(state.copyWith(status: BlocStatus.success,));
+        if(res.isNotEmpty) {
+
+          emit(state.copyWith(
+              status: BlocStatus.success,
+              errorMessage: "",
+              splNotification: res
+          ));
+
+
+
+
+
+
+        }
+
+
+
+      });
+    }
+  }
+
 
 
   Future<void> _getGisDataHandler(GetGISDataEvent e, Emitter emitter) async {
@@ -108,6 +153,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
           NavigationService.navigatorKey.currentState
               ?.pop(MapScreenParams(gisParams: e.params, gisResponse: success));
         }
+
+        _handleSPLNotication();
       }
     });
   }

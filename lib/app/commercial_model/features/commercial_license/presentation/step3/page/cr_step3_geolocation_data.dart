@@ -47,7 +47,9 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         CRHeaderDesc(header: "step3Title".tr()),
-                        const SizedBox(height: 12),
+                        state.splNotification != null?
+                        NotesWidget(notes: [state.splNotification??""],showText: true,marginBottom: 0,):Container(),
+                        SizedBox(height: state.splNotification != null?0:12),
                         DropDownWithTitle(
                             selectedValue: state.gisResponse?.getFullAddress(),
                             title: "loaction".tr(),

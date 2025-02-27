@@ -7,11 +7,11 @@ import '../../shared_feature_exports.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 class NotesWidget extends StatelessWidget {
-  const NotesWidget({super.key, required this.notes, this.showText});
+  const NotesWidget({super.key, required this.notes, this.showText,this.marginBottom});
 
   final List<String> notes;
   final bool? showText;
-
+  final double? marginBottom;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -74,7 +74,7 @@ class NotesWidget extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 24),
+         SizedBox(height: marginBottom??24),
       ],
     );
   }

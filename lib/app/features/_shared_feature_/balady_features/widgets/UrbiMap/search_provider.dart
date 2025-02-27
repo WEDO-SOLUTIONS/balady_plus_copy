@@ -37,7 +37,7 @@ class UrbiSearchProvider extends ChangeNotifier {
         "locale":"ar_SA",
         "fields":"items.full_address_name,items.point,items.adm_div",
         "q":query,
-        "location":"${location.longitude},${location.latitude}"
+        "location":"${location.latitude},${location.longitude}"
       };
       response = await webService.dio.get(url,
           queryParameters: formMap,
