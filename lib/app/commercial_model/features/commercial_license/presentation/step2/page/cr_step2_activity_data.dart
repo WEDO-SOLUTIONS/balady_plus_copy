@@ -121,7 +121,9 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             label: 'step2_label4'.tr(),
                             hintText: 'label4_hint'.tr(),
                             isDigitsOnly: true,
-                            initialValue: state.shopArea.toString(),
+                            initialValue: state.shopArea != null
+                                ? state.shopArea.toString()
+                                : '',
                             keyboardType: TextInputType.number,
                             suffixIcon: CustomTextWidget(
                               "m2".tr(),
