@@ -58,7 +58,8 @@ String _breakLineInTwo(String inputString) {
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
   static const _propertyKey = 'objectId';
-  static const _poiMapFont = 'Noto Sans Arabic Regular';
+  static const _poiMapFontAr = 'FrutigerLTArabic65Bold';
+  static const _poiMapFontEn = 'GolosText_SemiBold';
 
   Future<List<Marker>> getMarkers({
     required AppRouter router,
@@ -110,10 +111,10 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             textStyle: MarkerTextStyleMessage(
               color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
               strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
-              fontSize: 13,
-              fontName: _poiMapFont,
+              fontSize: 14,
+              fontName: isRtl ? _poiMapFontAr : _poiMapFontEn,
               textOffset: 4,
-              strokeWidth: .5,
+              strokeWidth: 1,
               textPlacement: MarkerTextPlacementMessage(
                 placement: isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
