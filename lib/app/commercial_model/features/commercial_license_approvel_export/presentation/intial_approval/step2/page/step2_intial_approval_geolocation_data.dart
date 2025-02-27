@@ -10,6 +10,7 @@ import '../../../../../../../features/_shared_feature_/presentation/components/b
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../../../features/_shared_feature_/presentation/fields/read_only_field.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/drop_downs/drop_down_box_with_title.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../../../commercial_routes/commercial_route_names.dart';
 import '../widgets/map_widgets/warning_message.dart';
@@ -48,7 +49,12 @@ class _Step2IntialApprovalGeolocationDataState extends State<Step2IntialApproval
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
            // CRHeaderDesc(header: "step3Title".tr()),
-            const SizedBox(height: 12),
+             SizedBox(height: state.splNotification != null?12:0),
+            state.splNotification != null?
+            NotesWidget(notes: [state.splNotification??""]):Container(),
+
+             SizedBox(height: state.splNotification != null?0:12),
+
             DropDownWithTitle(
                 selectedValue: state.gisResponse?.getFullAddress(),
                 title: "loaction".tr(),

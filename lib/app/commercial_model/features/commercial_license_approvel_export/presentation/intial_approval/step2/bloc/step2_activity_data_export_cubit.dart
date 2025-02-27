@@ -177,20 +177,27 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         emit(state.copyWith(status: BlocStatus.success,));
         if(res.isNotEmpty) {
 
-          BottomSheetDialog.showDraggableSheet(
-              NavigationService.navigatorKey.currentContext!,
-              backgroundColor:AppColor.black,
-              child: BottomSheetWithActions(
-                  title: "warning_2".tr(),
-                  action: ElevatedButtonWidget.primaryCustom(
-                      text: "agree".tr(),
-                      onPressed: () {
-                        NavigationService.goBack();
-                      }),
+          emit(state.copyWith(
+            status: BlocStatus.success,
+            errorMessage: "",
+            splNotification: res
+          ));
 
 
-                  body:Text(res)
-              ));
+          // BottomSheetDialog.showDraggableSheet(
+          //     NavigationService.navigatorKey.currentContext!,
+          //     backgroundColor:AppColor.black,
+          //     child: BottomSheetWithActions(
+          //         title: "warning_2".tr(),
+          //         action: ElevatedButtonWidget.primaryCustom(
+          //             text: "agree".tr(),
+          //             onPressed: () {
+          //               NavigationService.goBack();
+          //             }),
+          //
+          //
+          //         body:Text(res)
+          //     ));
 
 
 

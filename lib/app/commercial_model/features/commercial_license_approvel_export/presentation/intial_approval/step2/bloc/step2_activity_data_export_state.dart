@@ -41,7 +41,7 @@ class Step2ActivityDataExportState extends Equatable {
   final SaveLocationResponse? locationResponse;
   final String? landNo;
   final String? mapNo;
-
+  final String? splNotification;
 
 
    Step2ActivityDataExportState(
@@ -66,11 +66,8 @@ class Step2ActivityDataExportState extends Equatable {
       this.selectedWorkerType,
       this.lstSelectedAddetionalActivity,
       this.userSelectedAddetionalItem,
-      // this.addetionalDetailsItem,
-      // this.addetionalDetails,
       this.atmFeesPaid,
       this.isDraft,
-
         this.gisResponse,
         this.location,
         this.userLocation,
@@ -80,6 +77,7 @@ class Step2ActivityDataExportState extends Equatable {
         this.requestNo,
         this.landNo,
         this.mapNo,
+        this.splNotification
 
       });
 
@@ -116,6 +114,7 @@ class Step2ActivityDataExportState extends Equatable {
     requestNo,
     landNo,
     mapNo,
+    splNotification
       ];
 
   Step2ActivityDataExportState copyWith(
@@ -154,6 +153,7 @@ class Step2ActivityDataExportState extends Equatable {
         final SaveLocationResponse? locationResponse,
         final String? landNo,
         final String? mapNo,
+        final String? splNotification
 
       }) {
     return Step2ActivityDataExportState(
@@ -212,6 +212,7 @@ class Step2ActivityDataExportState extends Equatable {
       locationResponse: locationResponse ?? this.locationResponse,
       landNo: landNo ?? this.landNo,
       mapNo: mapNo ?? this.mapNo,
+        splNotification:splNotification??this.splNotification
 
     );
   }
