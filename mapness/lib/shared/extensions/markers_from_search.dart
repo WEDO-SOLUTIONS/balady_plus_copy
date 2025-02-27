@@ -111,7 +111,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             textStyle: MarkerTextStyleMessage(
               color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
               strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
-              fontSize: 14,
+              fontSize: 13,
               fontName: isRtl ? _poiMapFontAr : _poiMapFontEn,
               textOffset: 4,
               strokeWidth: 1,
