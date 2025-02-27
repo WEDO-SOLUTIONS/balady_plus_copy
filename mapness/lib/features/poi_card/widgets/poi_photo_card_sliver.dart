@@ -171,7 +171,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
           SliverToBoxAdapter(
             child: FeedbackBannerCard(
               imageAssetName: 'add_photo.png',
-              title: context.l10n.addPhoto,
+              title: context.l10n.addPhotoPOICardTitle,
               subtitle: context.l10n.addPhotosDescription,
               gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
               onTap: () => context.router.push(
