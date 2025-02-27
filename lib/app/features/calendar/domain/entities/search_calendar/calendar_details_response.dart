@@ -1,7 +1,7 @@
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_location.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_picture.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class CalendarDetailsResponse {

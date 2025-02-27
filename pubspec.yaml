@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.1+302
+version: 3.30.2+323
 #version: 3.11.15+264
 
 environment:
@@ -133,7 +133,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
 
   version: ^2.0.0
-  google_maps_flutter: ^2.5.3
+  #google_maps_flutter: ^2.5.3
   share_plus: ^10.0.2
   pinput: ^2.2.31
   pin_code_fields: ^8.0.1

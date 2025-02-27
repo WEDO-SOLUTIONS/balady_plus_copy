@@ -6,8 +6,9 @@ import 'package:balady_plus/etmam_app/core/dependency_injection/injection_contai
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/etmam_app/core/utils/enums/order_status.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 

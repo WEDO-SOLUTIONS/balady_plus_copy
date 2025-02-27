@@ -5,12 +5,12 @@ import 'package:balady_plus/app/core/services/services_exports.dart'
     show NavigationService;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:geolocator/geolocator.dart' as geo_locator;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show translator, Translation;
 import 'package:open_file_plus/open_file_plus.dart';
@@ -130,7 +130,7 @@ class Helpers {
             timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      return LatLng(position.latitude, position.longitude);
+      return LatLng(latitude:position.latitude, longitude:position.longitude);
     } catch (error, stackTrace) {
       return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }

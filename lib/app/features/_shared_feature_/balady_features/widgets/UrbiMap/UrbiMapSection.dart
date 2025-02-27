@@ -24,6 +24,7 @@ class UrbiMapSection extends StatefulWidget {
   final LatLng? incidentLocation;
   final bool showRadius;
   final bool readOnly;
+  final List<Marker>? marker;
 
   const UrbiMapSection(
       {Key? key,
@@ -33,6 +34,7 @@ class UrbiMapSection extends StatefulWidget {
         required this.incidentLocation,
         required this.onMapController,
         required this.showRadius,
+        this.marker,
         this.readOnly = false})
       : super(key: key);
 
@@ -65,6 +67,23 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
         onMapCreated: (DgisMapController controller) {
           // Setup listeners and initialize map
           // context.read<Step2ActivityDataExportCubit>().mapController = controller;
+        if(widget.currentUserLocation != null) {
+          controller.setCameraPosition(
+            CameraPositionMessage(
+              point: GeoPointMessage(
+                  latitude: widget.currentUserLocation!.latitude,
+                  longitude: widget.currentUserLocation!.longitude),
+              zoom: 16.0,
+              tilt: 0.0,
+              bearing: 0.0,
+            ),
+          );
+        }
+
+        if(widget.marker != null && widget.marker!.isNotEmpty) {
+          controller.addMarkers(widget.marker!);
+        }
+
           widget.onMapController(controller);
 
           _cameraStateListener = controller.cameraStateEvents.listen((event) {

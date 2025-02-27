@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:balady_plus/etmam_app/core/errors/errors_exports.dart'
     show ServerFailure;
@@ -12,9 +13,10 @@ import 'package:balady_plus/etmam_app/features/providers/providers_exports.dart'
 import 'package:balady_plus/etmam_app/features/services/domain/entities/service_details/service_details_params.dart';
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show GetServiceDetails;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:collection/collection.dart';
 
+import '../../../../../../app/core/utils/constants/constants.dart';
 import '../../../../../../app/core/utils/map_utils.dart';
 
 part 'provider_details_event.dart';
@@ -66,16 +68,38 @@ class ProviderDetailsBloc
   Set<Marker> getMarkers() {
     return state.args.branches != null
         ? state.args.branches!
-            .map((e) => e.getLatLng() != null && MapUtils.mapIconMarker != null
+            .map((e) => e.getLatLng() != null
                 ? Marker(
-                    markerId: MarkerId(e.id ?? "1"),
-                    position: e.getLatLng()!,
-                    icon: MapUtils.mapIconMarker ??
-                        BitmapDescriptor.defaultMarker,
-                    onTap: () {
-                      if (e.id != null)
-                        CommonFunctions.launchMap(e.location?.getLatLng());
-                    })
+      id: e.id ?? "1",
+      onTap: () {
+        if (e.id != null)
+          CommonFunctions.launchMap(e.location?.getLatLng());
+      },
+      options: MarkerOptionsMessage(
+        position: GeoPointWithElevationMessage(
+          latitude: e.getLatLng()!.latitude,
+          longitude: e.getLatLng()!.longitude,
+          elevation: 0,
+        ),
+        icon: MarkerIconMessage(
+          width: 28,
+          pngPath:Constants.pinDarkGreenMarkerLocation,
+        ),
+      ),
+    )
+
+    // Marker(
+    //                 id: MarkerId(e.id ?? "1"),
+    //                 position: e.getLatLng()!,
+    //                 icon: MapUtils.mapIconMarker ??
+    //                     BitmapDescriptor.defaultMarker,
+    //                 onTap: () {
+    //                   if (e.id != null)
+    //                     CommonFunctions.launchMap(e.location?.getLatLng());
+    //                 }, )
+
+
+
                 : null)
             .whereNotNull()
             .toSet()

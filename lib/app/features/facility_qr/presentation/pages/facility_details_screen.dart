@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'dart:async' show StreamController;
 
@@ -14,7 +15,7 @@ import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
         RatingLine,
         WorkingHourDetails;
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/base/base_view.dart';
@@ -27,6 +28,7 @@ import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/enums.dart';
+import '../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 import '../../../_shared_feature_/shared_feature_exports.dart'
@@ -246,6 +248,9 @@ class _FacilityScreenState extends State<FacilityScreen> {
 } //MM
 
 class FacilityInfoSection extends StatelessWidget {
+
+
+
   @override
   Widget build(BuildContext context) {
     final FacilityQRDetailsViewModel viewModel =
@@ -463,6 +468,8 @@ class EvaluationSection extends StatelessWidget {
 }
 
 class MapSection extends StatelessWidget {
+  DgisMapController? mapController;
+
   @override
   Widget build(BuildContext context) {
     final FacilityQRDetailsViewModel viewModel =
@@ -488,24 +495,53 @@ class MapSection extends StatelessWidget {
                   children: [
                     Container(
                       height: 160,
-                      child: GoogleMap(
-                          onMapCreated: (GoogleMapController controller) {
-                            controller.setMapStyle(
-                              """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-                            );
-                          },
-                          markers: {
-                            /* Marker(
-                                visible: MapUtils.locationMarker != null,
-                                markerId: const MarkerId("storeLocation"),
-                                icon: MapUtils.locationMarker!,
-                                position: viewModel.getMapLocation()!)*/
-                          },
-                          myLocationEnabled: false,
-                          myLocationButtonEnabled: false,
-                          zoomControlsEnabled: false,
-                          initialCameraPosition: CameraPosition(
-                              target: viewModel.getMapLocation()!, zoom: 13)),
+                      child:
+                      UrbiMapSection(
+                        readOnly: true,
+                        currentUserLocation:viewModel.getMapLocation(),
+                        incidentLocation:viewModel.getMapLocation(),
+                        onCameraIdle: (bool isIdle) {
+                          mapController?.moveCamera(
+                            CameraPositionMessage(
+                              point: GeoPointMessage(latitude:  viewModel.getMapLocation()!.latitude, longitude: viewModel.getMapLocation()!.longitude),
+                              zoom: 16.0,
+                              tilt: 0.0,
+                              bearing: 0.0,
+                            ),
+                            0.3, // duration
+                            CameraAnimationTypeMessage.linear,
+                          );
+                        },
+                        updateMovedPosition: (LatLng p) {
+
+                        },
+                        onMapController: (DgisMapController controller) {
+                          mapController = controller;
+                        },
+                        showRadius: true,
+                      ),
+
+                      // GoogleMap(
+                      //     onMapCreated: (GoogleMapController controller) {
+                      //       controller.setMapStyle(
+                      //         """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                      //       );
+                      //     },
+                      //     markers: {
+                      //       /* Marker(
+                      //           visible: MapUtils.locationMarker != null,
+                      //           markerId: const MarkerId("storeLocation"),
+                      //           icon: MapUtils.locationMarker!,
+                      //           position: viewModel.getMapLocation()!)*/
+                      //     },
+                      //     myLocationEnabled: false,
+                      //     myLocationButtonEnabled: false,
+                      //     zoomControlsEnabled: false,
+                      //     initialCameraPosition: CameraPosition(
+                      //         target: viewModel.getMapLocation()!, zoom: 13)),
+
+
+
                     ),
                     TextButton(
                       onPressed: () {
