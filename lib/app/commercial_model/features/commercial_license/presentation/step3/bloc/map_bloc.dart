@@ -456,6 +456,7 @@ class MapBloc extends Bloc<MapEvent, MapState> {
             errorMessage: "",
           ));
 
+          _handleSPLNotication();
         }
 
 
