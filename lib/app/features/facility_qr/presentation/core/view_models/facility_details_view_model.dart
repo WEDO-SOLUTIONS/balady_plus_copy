@@ -2,8 +2,9 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/facility_qr/data/license_ratings_items.dart';
 import 'package:balady_plus/app/features/facility_qr/data/qr_details_response.dart';
 import 'package:balady_plus/app/features/facility_qr/presentation/core/repository/facility_qr_repository.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:collection/collection.dart';
+import 'package:dgis_map/library.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -22,7 +23,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
   String coverPhoto = "";
   FacilityQRDetailsViewModel({this.facilityRespoonse}) {}
 
-  LatLng _userLocation = const LatLng(24.694203971954554, 46.81549530431028);
+  LatLng _userLocation = const LatLng(latitude:24.694203971954554, longitude:46.81549530431028);
   bool isOpenNow = true;
   final _repositry = FacilityQRRepository();
   String qrCode = "";
@@ -464,7 +465,7 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
       double? long = facilityRespoonse
           ?.data?.result?.comLicenseInfo?.locationInfo?.longitude;
       if (lat != null && long != null) {
-        return LatLng(lat, long);
+        return LatLng(latitude:lat, longitude:long);
       }
     }
 

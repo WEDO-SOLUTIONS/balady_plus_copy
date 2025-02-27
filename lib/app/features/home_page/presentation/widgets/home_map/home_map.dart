@@ -1,12 +1,16 @@
+import 'package:dgis_map/dgis_map_controller.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, CommonProperties, IconPath;
+import '../../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../home_exports.dart' show HomeAppBar, CircleIcon;
 
 class HomeMap extends StatelessWidget {
-  const HomeMap({super.key});
+   HomeMap({super.key});
+  DgisMapController? mapController;
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +19,41 @@ class HomeMap extends StatelessWidget {
       child: Stack(
         children: [
           SizedBox(
-            child: GoogleMap(
-              initialCameraPosition: CameraPosition(
-                  target: CommonProperties.defaultLocation, zoom: 6),
-              onMapCreated: (GoogleMapController controller) {
-                controller.setMapStyle(
-                  """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+            child:
+
+            UrbiMapSection(
+              readOnly: true,
+              currentUserLocation:CommonProperties.defaultLocation,
+              incidentLocation:CommonProperties.defaultLocation,
+              onCameraIdle: (bool isIdle) {
+                mapController?.moveCamera(
+                  CameraPositionMessage(
+                    point: GeoPointMessage(latitude:  CommonProperties.defaultLocation.latitude, longitude: CommonProperties.defaultLocation.longitude),
+                    zoom: 6.0,
+                    tilt: 0.0,
+                    bearing: 0.0,
+                  ),
+                  0.3, // duration
+                  CameraAnimationTypeMessage.linear,
                 );
               },
+              updateMovedPosition: (LatLng p) {
+
+              },
+              onMapController: (DgisMapController controller) {
+                mapController = controller;
+              },
+              showRadius: true,
             ),
+            // GoogleMap(
+            //   initialCameraPosition: CameraPosition(
+            //       target: CommonProperties.defaultLocation, zoom: 6),
+            //   onMapCreated: (GoogleMapController controller) {
+            //     controller.setMapStyle(
+            //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+            //     );
+            //   },
+            // ),
           ),
           const Padding(
             padding: EdgeInsets.all(16.0),

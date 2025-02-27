@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:dgis_map/library.dart';
+
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -465,7 +466,7 @@ class Result {
         double? xCoordinate = location.coOrdinatesList![i].xCoordinate;
         double? yCoordinate = location.coOrdinatesList![i].yCoordinate;
         if (xCoordinate != null && yCoordinate != null) {
-          locations.add(LatLng(yCoordinate, xCoordinate));
+          locations.add(LatLng(latitude:yCoordinate, longitude:xCoordinate));
         }
       }
     }
@@ -758,7 +759,7 @@ class CoOrdinatesList {
       };
   LatLng? getLocation() {
     if (xCoordinate != null && yCoordinate != null) {
-      return LatLng(yCoordinate!, xCoordinate!);
+      return LatLng(latitude:yCoordinate!, longitude:xCoordinate!);
     }
 
     return null;

@@ -5,10 +5,9 @@ import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:balady_plus/app/features/weather/domain/usecases/get_weather_info.dart';
 import 'package:balady_plus/app/features/weather/weather_exports.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/errors_exports.dart';
 import '../../../../core/services/local/navigation_services.dart';
