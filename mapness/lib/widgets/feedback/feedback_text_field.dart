@@ -35,8 +35,6 @@ class FeedbackInput extends HookWidget {
       _ => null,
     };
 
-    final isRequired = field.isRequired;
-
     final controller = useTextEditingController();
     final focusNode = useFocusNode();
 
@@ -45,15 +43,15 @@ class FeedbackInput extends HookWidget {
         focusNode: focusNode,
         validator: FormBuilderValidators.compose([
           switch (field.type) {
-            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
+            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: false),
             FeedbackTextType.phone => FormBuilderValidators.compose([
-                FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+                FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
                 FormBuilderValidators.minLength(
                   PhoneNumberFormatter.arabicPhoneNumberMinLength,
-                  checkNullOrEmpty: isRequired,
+                  checkNullOrEmpty: false,
                 ),
               ]),
-            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
+            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: false),
             _ => (_) => null,
           },
         ]),

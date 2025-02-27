@@ -1,22 +1,15 @@
-// ignore_for_file: unused_local_variable, unused_import, avoid_print
-
-import 'dart:convert';
-
 import 'package:auto_route/auto_route.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/feedback_category.dart';
-import 'package:mapness/entities/feedback/feedback_object_type.dart';
-import 'package:mapness/features/feedback/feedback_categories.dart';
-import 'package:mapness/features/feedback/poi_feedback.dart';
+import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/pages/feedback/components/feedback_form_widget.dart';
-import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
-import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
+import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
 @RoutePage()
@@ -37,6 +30,19 @@ class FeedbackPage extends ConsumerStatefulWidget {
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _isFormValidNotifier = ValueNotifier<bool>(false);
+  final _websiteUrl = 'website_url';
+
+  final Map<FeedbackTextType, String? Function(String?)> validators = {
+    FeedbackTextType.email: FormBuilderValidators.email(checkNullOrEmpty: false),
+    FeedbackTextType.phone: FormBuilderValidators.compose([
+      FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
+      FormBuilderValidators.minLength(
+        PhoneNumberFormatter.arabicPhoneNumberMinLength,
+        checkNullOrEmpty: false,
+      ),
+    ]),
+    FeedbackTextType.url: FormBuilderValidators.url(checkNullOrEmpty: false),
+  };
 
   @override
   void dispose() {
@@ -117,11 +123,42 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     }
 
     final requiredFields = fields.where((field) => field.isRequired);
+
     final allRequiredFilled = requiredFields.every((field) {
       final formField = formFields[field.id];
-      return formField?.value?.toString().isNotEmpty ?? false;
+      final value = formField?.value;
+
+      final String displayValue = (value == null || (value is List && value.isEmpty))
+          ? ''
+          : (value is List<String> ? value.join(', ') : value.toString());
+
+      // if the fields that areRequired are Email Phone and Type then send should work as this data will be correct
+      final FeedbackTextType? fieldType = _checkFieldType(field);
+
+      if (fieldType != null) {
+        final validator = validators[fieldType];
+        final error = validator?.call(displayValue);
+
+        if (error != null) {
+          return false;
+        }
+      }
+
+      return displayValue.isNotEmpty;
     });
 
     _isFormValidNotifier.value = allRequiredFilled;
+  }
+
+  FeedbackTextType? _checkFieldType(FeedbackBaseEntity field) {
+    if (field.id == FeedbackTextType.email.name) {
+      return FeedbackTextType.email;
+    } else if (field.id == FeedbackTextType.phone.name) {
+      return FeedbackTextType.phone;
+    } else if (field.id == _websiteUrl) {
+      return FeedbackTextType.url;
+    }
+
+    return null;
   }
 }
