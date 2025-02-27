@@ -17,6 +17,13 @@ class SelectedMarker extends _$SelectedMarker {
   @override
   Marker? build() => null;
 
+  MapObjectManager get mapObjectManager => ref.read(
+        mapObjectManagerProvider(
+          named: settings.name,
+          layerId: settings.layerId,
+        ).notifier,
+      );
+
   Future<void> showMarker(Marker marker) async {
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
@@ -25,9 +32,7 @@ class SelectedMarker extends _$SelectedMarker {
       ).notifier,
     );
 
-    if (_hiddenMarker != null) {
-      _showHiddenMarker();
-    }
+    _showHiddenMarkerIfPresent();
 
     final position = LatLng(
       latitude: marker.options.position.latitude,
@@ -35,17 +40,9 @@ class SelectedMarker extends _$SelectedMarker {
     );
     final currentSearchMarker = searchObjectManager.markerByGeoPoint(position);
     if (currentSearchMarker != null) {
-      _hiddenMarker = currentSearchMarker;
       marker.options.icon?.svgPath = currentSearchMarker.options.icon?.svgPath?.bigIconPath;
-      unawaited(searchObjectManager.removeMarkerById(currentSearchMarker.id));
+      _hideMarker(currentSearchMarker);
     }
-
-    final mapObjectManager = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
 
     await mapObjectManager.removeAllMarkers();
     await mapObjectManager.addMarker(marker);
@@ -53,40 +50,34 @@ class SelectedMarker extends _$SelectedMarker {
   }
 
   Future<void> removeMarker(String id) async {
-    final read = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
-    _showHiddenMarker();
-    unawaited(read.removeMarkerById(id));
+    _showHiddenMarkerIfPresent();
+    await mapObjectManager.removeMarkerById(id);
     state = null;
   }
 
   Future<void> removeAllMarkers() async {
-    final read = ref.read(
-      mapObjectManagerProvider(
-        named: settings.name,
-        layerId: settings.layerId,
-      ).notifier,
-    );
-    await read.removeAllMarkers();
-    _showHiddenMarker();
+    await mapObjectManager.removeAllMarkers();
+    _showHiddenMarkerIfPresent();
     state = null;
   }
 
-  void _showHiddenMarker() {
-    if (_hiddenMarker != null) {
-      ref
-          .read(
-            mapObjectManagerProvider(
-              named: searchSettings.name,
-              layerId: searchSettings.layerId,
-            ).notifier,
-          )
-          .addMarker(_hiddenMarker!);
+  void _hideMarker(Marker marker) {
+    _hiddenMarker = marker;
+    _setMarkerIsVisible(marker, isVisible: false);
+  }
+
+  void _showHiddenMarkerIfPresent() {
+    final marker = _hiddenMarker;
+    if (marker != null) {
+      _setMarkerIsVisible(marker, isVisible: true);
       _hiddenMarker = null;
     }
+  }
+
+  Future<void> _setMarkerIsVisible(Marker marker, {required bool isVisible}) async {
+    await mapObjectManager.setMarkerOptions(
+      marker.id,
+      ChangeMarkerOptionsMessage(isVisible: marker.options.isVisible = isVisible),
+    );
   }
 }

@@ -86,6 +86,20 @@ class CameraPosition extends _$CameraPosition {
     );
   }
 
+  Future<void> animateToRepresentativeArea(
+    GeometryMessage area, {
+    CalcPositionOptionsMessage? options,
+  }) async {
+    final dgisController = ref.read(dgisControllerProvider);
+
+    await dgisController.value!.animateToRepresentativeArea(
+      area,
+      options ?? CalcPositionOptionsMessage(),
+      0.3,
+      CameraAnimationTypeMessage.linear,
+    );
+  }
+
   Future<void> setPadding(CameraSetPaddingMessage padding) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
 

@@ -1,6 +1,5 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
-import 'package:flutter/foundation.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -11,7 +10,9 @@ import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -169,6 +170,8 @@ class Search extends _$Search {
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
+      await _animateToRepresentativeArea(results: results);
+
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: quickSearch');
@@ -224,6 +227,8 @@ class Search extends _$Search {
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
+      await _animateToRepresentativeArea(results: results);
+
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: query)
           : SearchStateResults(
@@ -277,6 +282,8 @@ class Search extends _$Search {
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
+      await _animateToRepresentativeArea(results: results);
+
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: text)
           : SearchStateResults(
@@ -308,7 +315,8 @@ class Search extends _$Search {
     );
     // We need it to track request in logs and look on it.
     // Why do we use print for this: see `Future<void> runMapnessApp`
-    debugPrint(
+    // ignore: avoid_print
+    print(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
     ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
@@ -352,7 +360,8 @@ class Search extends _$Search {
     );
     // We need it to track request in logs and look on it.
     // Why do we use print for this: see `Future<void> runMapnessApp`
-    debugPrint(
+    // ignore: avoid_print
+    print(
       '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $status',
     );
   }
@@ -382,5 +391,25 @@ class Search extends _$Search {
       GeoPointMessage(latitude: rect.southWestLat - areaExpansion, longitude: rect.southWestLon - areaExpansion),
       GeoPointMessage(latitude: rect.southWestLat - areaExpansion, longitude: rect.northEastLon + areaExpansion),
     ];
+  }
+
+  Future<void> _animateToRepresentativeArea({
+    required SearchResultMessage results,
+  }) async {
+    if (results.representativeArea != null) {
+      final _mediaQuery = ref.read(mediaQueryInfoProvider);
+      final devicePixelRatio = _mediaQuery?.devicePixelRatio ?? 1.0;
+      await ref.read(cameraPositionProvider.notifier).animateToRepresentativeArea(
+            results.representativeArea!,
+            options: CalcPositionOptionsMessage(
+              screenArea: CameraSetPaddingMessage(
+                leftPadding: (devicePixelRatio * (_mediaQuery?.padding.left ?? 0)).toInt(),
+                rightPadding: (devicePixelRatio * (_mediaQuery?.padding.right ?? 0)).toInt(),
+                topPadding: (devicePixelRatio * (_mediaQuery?.padding.top ?? 0)).toInt(),
+                bottomPadding: (devicePixelRatio * (_mediaQuery?.padding.bottom ?? 0)).toInt(),
+              ),
+            ),
+          );
+    }
   }
 }
