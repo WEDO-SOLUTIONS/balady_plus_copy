@@ -215,14 +215,18 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   void _startNavigation(RouteInfo route, RouteSearchOptionsMessage navigatingType) {
     final mapSetting = MapObjectManagerSettings.search();
-    ref
-        .read(
-          mapObjectManagerProvider(
-            named: mapSetting.name,
-            layerId: mapSetting.layerId,
-          ).notifier,
-        )
-        .removeAllMarkers();
+    final markerSettings = MapObjectManagerSettings.selectedMarker();
+
+    for (final settings in [mapSetting, markerSettings]) {
+      ref
+          .read(
+            mapObjectManagerProvider(
+              named: settings.name,
+              layerId: settings.layerId,
+            ).notifier,
+          )
+          .removeAllMarkers();
+    }
 
     Metrics.logEventAdvanced(
       MetricsConstants.routesKeys.routeSelectionGoButton,
@@ -245,7 +249,8 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       PathNavRoute(
         navType: navigatingType,
         isHomeOrWork: widget.isHomeOrWork,
-      initAction: PathNavPageInitAction.startNavigation,),
+        initAction: PathNavPageInitAction.startNavigation,
+      ),
     );
   }
 

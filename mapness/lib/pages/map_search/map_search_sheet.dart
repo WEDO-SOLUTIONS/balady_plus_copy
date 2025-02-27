@@ -20,12 +20,9 @@ import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
-import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
-
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
@@ -198,20 +195,14 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
       final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+      final dark = await ref.watch(darkModeProvider.future);
+
       final markers = await searchState.results.getMarkers(
         router: ref.read(appRouterProvider),
         iconResolver: mapMarkerMapper.getMarkerType,
         isRtl: isRtl,
+        isDark: dark.isDark,
       );
-
-      if (mapObjectManager.markers.isEmpty) {
-        await computeCameraPosition(
-          markers,
-          ref.read(cameraPositionProvider),
-          ref.read(locationProvider),
-          ref.read(cameraPositionProvider.notifier).animateTo,
-        );
-      }
       if (!ref.read(searchInRectProvider).isSearchInThisAreaRequest) {
         ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(false);
         await mapObjectManager.removeAllMarkers();

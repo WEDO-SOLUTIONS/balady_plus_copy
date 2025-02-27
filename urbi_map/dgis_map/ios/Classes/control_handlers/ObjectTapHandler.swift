@@ -379,6 +379,9 @@ class ObjectTapHandler {
         if let animatedAppearance = options.animatedAppearance {
             self.markers[id]?.0.animatedAppearance = animatedAppearance
         }
+        if let iconOpacity = options.icon?.iconOpacity {
+            self.markers[id]?.0.iconOpacity = Opacity(value: Float(iconOpacity))
+        }
         if let isVisible = options.isVisible {
             self.markers[id]?.0.isVisible = isVisible
         }
@@ -946,6 +949,17 @@ class ObjectTapHandler {
             options: options,
             completion: completion
         )
+    }
+    
+    func calcPosition(area: GeometryMessage, options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPosition, any Error>) -> Void) {
+            let geometry = ComplexGeometry(
+                geometries: [
+                    PointGeometry(point: area.bounds.northEast.geoPoint),
+                    PointGeometry(point:  area.bounds.southWest.geoPoint)
+                ]
+            )
+            let position = DGis.calcPosition(camera: map.camera, geometry: geometry)
+            completion(Result.success(position))
     }
     
     private func calcPosition(objects: [SimpleMapObject], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
