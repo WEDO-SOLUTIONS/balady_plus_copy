@@ -10,7 +10,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
