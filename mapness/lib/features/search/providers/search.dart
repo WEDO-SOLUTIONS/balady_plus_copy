@@ -1,9 +1,9 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
-
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -319,7 +319,7 @@ class Search extends _$Search {
     print(
         '${AdvancedMetricsConstants.debugConsole}::${MapnessConstants.analyticsSearchInThisAreaPressed}: status $_searchInThisAreaStarted');
 
-    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(true);
+    ref.read(searchInRectProvider.notifier).searchInThisAreaSwitch(value: true);
     switch (_previousType) {
       case null:
         break;

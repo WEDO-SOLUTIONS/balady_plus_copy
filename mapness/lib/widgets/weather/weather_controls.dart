@@ -4,11 +4,11 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/entities/weather/weather_type_ext.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
+import 'package:mapness/widgets/landing/compass_control.dart';
+import 'package:mapness/widgets/landing/follow_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/weather/weather_card_header.dart';
 import 'package:mapness/widgets/weather/weather_state_icon.dart';
 

@@ -36,5 +36,6 @@ class MapControls extends _$MapControls {
   @override
   MapControlsState build() => MapControlsStateIdle();
 
+  // ignore: use_setters_to_change_properties
   void update(MapControlsState value) => state = value;
 }

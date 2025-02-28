@@ -61,10 +61,11 @@ class ComplianceCard extends ConsumerWidget {
                   Divider(height: Spacing.px / 2, indent: 63, color: context.colorsV2.borderMuted),
                   _RowButton(
                     icon: context.isLTR ? GeneralIcons.questionSupportLTR : GeneralIcons.questionSupportRTL,
-                    onTap: () => {
-                      CommonFunctions.openComplianceFaq(
-                        RemoteConfig.MunicipalServicesIDs['create_complianceLocation']['id'],
-                      ),
+                    onTap: () {
+                      if ((RemoteConfig.MunicipalServicesIDs['create_complianceLocation'] as Map?)?['id']
+                          case final String id) {
+                        CommonFunctions.openComplianceFaq(id);
+                      }
                     },
                     label: context.l10n.complianceFAQ,
                   ),

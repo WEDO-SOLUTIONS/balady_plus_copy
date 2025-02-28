@@ -1,5 +1,5 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/models/search_in_rect_state.dart';
+import 'package:mapness/features/landing/models/search_in_rect_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -63,7 +63,7 @@ class SearchInRect extends _$SearchInRect {
     );
   }
 
-  void searchInThisAreaSwitch(bool value) {
+  void searchInThisAreaSwitch({required bool value}) {
     state = state.copyWith(isSearchInThisAreaRequest: value);
   }
 

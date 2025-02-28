@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/quick_filter_request_source_screen.dart';
-import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
+import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';

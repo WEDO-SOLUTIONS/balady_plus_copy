@@ -7,11 +7,10 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/dashboard.dart';
-import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/beta_notification.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -19,6 +18,7 @@ import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 
 @RoutePage()
 class LandingPage extends ConsumerStatefulWidget {
