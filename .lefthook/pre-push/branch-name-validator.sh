@@ -8,7 +8,7 @@ branch="$(git rev-parse --abbrev-ref HEAD)"
 # bugfix is for fixing a bug
 # hotfix is for changing code with a temporary solution and/or without following the usual process (usually because of an emergency)
 # test is for experimenting outside of an issue/ticket
-branch_validation_regex='^((feat|bugfix|hotfix|test)(/BSA-[0-9]+)?/[a-zA-Z_-]{3,}|(urbi-release-[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?))$'
+branch_validation_regex='^((feat|bugfix|hotfix|test)(/(BSA|BALADY)-[0-9]+)?/[a-zA-Z_-]{3,}|(urbi-release-[0-9]+\.[0-9]+\.[0-9]+(-rc[0-9]+)?))$'
 
 
 # if urbi team repo, force branch name to follow convention

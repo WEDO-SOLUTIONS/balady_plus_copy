@@ -8,14 +8,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:intl/intl.dart' hide TextDirection;
-import 'package:mapness/_features/weather/data/models/weather_model.dart';
-import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
-import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
+import 'package:mapness/entities/weather/weather_info.dart';
+import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
+import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-final borderRadius = BorderRadius.circular(16);
 const weatherHeaderSize = 300.0;
 
 class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
@@ -79,7 +78,7 @@ class DashboardHeader extends ConsumerWidget {
         allWeatherInfo: allWeatherInfo,
         locale: locale,
         onTap: () {
-          if(bottomSheetController.state == ThreeStateBottomSheet.expanded){
+          if (bottomSheetController.state == ThreeStateBottomSheet.expanded) {
             bottomSheetController.setState(ThreeStateBottomSheet.hidden);
           } else {
             bottomSheetController.setState(ThreeStateBottomSheet.expanded);
@@ -91,7 +90,7 @@ class DashboardHeader extends ConsumerWidget {
 }
 
 class Data extends ConsumerWidget {
-  final AllWeatherInfoModel? allWeatherInfo;
+  final AllWeatherInfoEntity? allWeatherInfo;
   final Locale locale;
   final Function()? onTap;
 
@@ -144,7 +143,7 @@ class Data extends ConsumerWidget {
               BaladyAppButton.close(
                 buttonType: BaladyButtonType.secondary,
                 onTap: () async {
-                  await ref.switchOffWeatherLayers();
+                  await ref.read(weatherMapControllerProvider().notifier).switchOffWeatherLayers();
                   context.router.popForced();
                 },
               ),

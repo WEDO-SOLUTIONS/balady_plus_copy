@@ -6,12 +6,12 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
-import 'package:mapness/_features/weather/weather_controls.dart';
-import 'package:mapness/_features/weather/weather_dashboard.dart';
-import 'package:mapness/_features/weather/wiidget_ref_extension.dart';
+import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
+import 'package:mapness/features/weather/provider/weather_map_controller.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
+import 'package:mapness/widgets/weather/weather_controls.dart';
+import 'package:mapness/widgets/weather/weather_dashboard.dart';
 
 @RoutePage()
 class WeatherPage extends ConsumerStatefulWidget {
@@ -32,10 +32,10 @@ class _WeatherPageState extends ConsumerState<WeatherPage> {
 
   @override
   void initState() {
-    ref.toggleWeatherMap(
-      type: WeatherMapType.temperature,
-      enable: true,
-    );
+    ref.read(weatherMapControllerProvider().notifier).toggleWeatherMap(
+          enable: true,
+          type: WeatherMapType.temperature,
+        );
     super.initState();
   }
 

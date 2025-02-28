@@ -1,11 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:intl/intl.dart';
 
-// enum WeatherMapType { temperature, precipitation }
-
 extension WeatherMapTypeExt on WeatherMapType {
-
-
   String measureUnit() => switch (this) {
         WeatherMapType.precipitation => 'mm',
         WeatherMapType.temperature => '℃',
@@ -49,14 +45,13 @@ extension WeatherMapTypeExt on WeatherMapType {
       };
 
   String iconRes() => switch (this) {
-        WeatherMapType.precipitation =>
-          'assets/icons/svg/weather/umbrella_empty.svg',
-        WeatherMapType.temperature =>
-          'assets/icons/svg/weather/thermometer_empty.svg',
+        WeatherMapType.precipitation => 'assets/icons/svg/weather/umbrella_empty.svg',
+        WeatherMapType.temperature => 'assets/icons/svg/weather/thermometer_empty.svg',
       };
 
+  // ignore_for_file: missing_whitespace_between_adjacent_strings
   String get parameters => switch (this) {
-    ///{code}~{level}~{time-resolution}~{aggregation}~{type}~{type-parameter}
+        ///{code}~{level}~{time-resolution}~{aggregation}~{type}~{type-parameter}
         WeatherMapType.temperature => '11~'
             '2 m above gnd~'
             'hourly~'
@@ -105,12 +100,10 @@ extension WeatherMapTypeExt on WeatherMapType {
             '30.0~rgba(170,53,77,1.0)~',
       };
 
-
-
   String tileSourceUri() => switch (this) {
-    WeatherMapType.precipitation => _tileSourceUri(this),
-    WeatherMapType.temperature => _tileSourceUri(this),
-  };
+        WeatherMapType.precipitation => _tileSourceUri(this),
+        WeatherMapType.temperature => _tileSourceUri(this),
+      };
 
   String _tileSourceUri(WeatherMapType type) {
     final format = DateFormat("yyyy-MM-dd'T'HH:mm").format(DateTime.now());
@@ -124,5 +117,4 @@ extension WeatherMapTypeExt on WeatherMapType {
         'temperatureUnit=C'
         '&apikey=$apiKey';
   }
-
 }
