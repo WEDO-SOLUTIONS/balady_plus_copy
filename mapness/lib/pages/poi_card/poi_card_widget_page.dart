@@ -31,6 +31,7 @@ import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
 import 'package:mapness/features/poi_card/widgets/poi_loading_sheet.dart';
+import 'package:mapness/features/poi_card/widgets/poi_photo_button.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';

@@ -267,40 +267,11 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 ),
               ),
             ),
-            ValueListenableBuilder(
-              valueListenable: _tabType,
-              builder: (context, tabType, _) {
-                if (tabType != PoiTabsType.photos || isPhotosNotEmpty) {
-                  return const SizedBox.shrink();
-                }
-
-                return Positioned.directional(
-                  end: Spacing.$3x,
-                  bottom: Spacing.$2x,
-                  textDirection: Directionality.of(context),
-                  child: Container(
-                    padding: const EdgeInsets.only(bottom: PoiCardFooter.height + 2 * PoiCardFooter.padding),
-                    alignment: AlignmentDirectional.bottomEnd,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(maxWidth: 132),
-                      child: AppButton(
-                        buttonColorScheme: ButtonColorScheme.onColor,
-                        onTap: () => context.router.push(
-                          QuickFeedbackRoute(
-                            type: QuickFeedbackType.addPhoto,
-                            params: FeedbackObjectIdParams(objectId),
-                          ),
-                        ),
-                        size: ButtonSize.small,
-                        primaryIcon: General16Icons.photoSolid,
-                        primaryLabel: context.l10n.addPhoto,
-                        textColor: context.colorsV3.accentDefault,
-                        iconColor: context.colorsV3.accentDefault,
-                      ),
-                    ),
-                  ),
-                );
-              },
+            PoiPhotoButton(
+              isPhotosNotEmpty: isPhotosNotEmpty,
+              tabType: _tabType,
+              objectId: objectId,
+              controller: _bottomSheetController,
             ),
           ],
         ),
