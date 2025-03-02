@@ -74,8 +74,8 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       emit(state.copyWith(status: BlocStatus.loading, errorMessage: "",));
 
       String requestTypeId= "1004";
-      if(sl<CommercialLicenseBloc>().state.isFromIntialApproval ==true)
-        requestTypeId ="1008";
+      // if(sl<CommercialLicenseBloc>().state.isFromIntialApproval ==true)
+      //   requestTypeId ="1801";
 
       final response = await _getSPLNotification([requestTypeId,state.gisResponse!.subMunicipalityguid!]);
 
