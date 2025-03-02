@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,11 +31,11 @@ class MapSearchResults extends ConsumerWidget {
     return SearchResults(
       results: results,
       scrollController: scrollController,
-      loaderBuilder: (context) => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
+      loaderBuilder: (context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: CircularProgressIndicator(
-            color: Colors.black,
+            color: context.colorsV2.accentDefault,
           ),
         ),
       ),

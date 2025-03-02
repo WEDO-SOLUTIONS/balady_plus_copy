@@ -255,43 +255,45 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   ////////////////////////////////////////////////////////////////////////
 
   Future<void> refreshToken(String refreshToken) async {
-    SSOToken? token = state.token;
-
-    if (token != null && token.token != null && token.token!.isNotEmpty) {
-      final failureOrSuccess = await _refreshToken(refreshToken);
-
-      return await failureOrSuccess.fold((failure) async {
-        //await autoLogout();
-      }, (success) async {
-        SSOToken token = SSOToken(
-            token: success.accessToken,
-            refreshToken: success.refreshToken,
-            idToken: success.idToken,
-            expirationTime: success.accessTokenExpirationDateTime.toString());
-        final failureOrSuccess = await _saveAuth(token);
-        failureOrSuccess.fold((f) {
-          emit(state.copyWith(
-            status: AuthStatus.notAuthenticated,
-            errorMessage: ("errors_server_error_1".tr()),
-          ));
-          return false;
-        }, (s) {
-          emit(state.copyWith(
-            status: AuthStatus.authenticated,
-            token: token,
-            errorMessage: "",
-          ));
-          if (CommonProperties.fcmToken != null &&
-              CommonProperties.fcmToken!.isNotEmpty) {
-            CommonFunctions.updateNotificationSettings(
-                CommonProperties.fcmToken!);
-          }
-          return true;
-        });
-      });
-    } else {
-      // await autoLogout();
-    }
+    // SSOToken? token = state.token;
+    //
+    // if (token != null && token.token != null && token.token!.isNotEmpty) {
+    //   final failureOrSuccess = await _refreshToken(refreshToken);
+    //
+    //   return await failureOrSuccess.fold((failure) async {
+    //     //await autoLogout();
+    //   },
+    //           (success) async {
+    //     SSOToken token = SSOToken(
+    //         token: success.accessToken,
+    //         refreshToken: success.refreshToken,
+    //         idToken: success.idToken,
+    //         expirationTime: success.accessTokenExpirationDateTime.toString());
+    //
+    //     final failureOrSuccess = await _saveAuth(token);
+    //     failureOrSuccess.fold((f) {
+    //       emit(state.copyWith(
+    //         status: AuthStatus.notAuthenticated,
+    //         errorMessage: ("errors_server_error_1".tr()),
+    //       ));
+    //       return false;
+    //     }, (s) {
+    //       emit(state.copyWith(
+    //         status: AuthStatus.authenticated,
+    //         token: token,
+    //         errorMessage: "",
+    //       ));
+    //       if (CommonProperties.fcmToken != null &&
+    //           CommonProperties.fcmToken!.isNotEmpty) {
+    //         CommonFunctions.updateNotificationSettings(
+    //             CommonProperties.fcmToken!);
+    //       }
+    //       return true;
+    //     });
+    //   });
+    // } else {
+    //   // await autoLogout();
+    // }
   }
 
   Future<bool> refreshAPIGeeToken() async {
@@ -331,7 +333,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     return Future.value(false);
   }
 
-  Future<void> clearAuth() async {
+  Future<void> clearAuth({LoginDataModel? loginData}) async {
     try {
       if (state.status == AuthStatus.notAuthenticated) {
         return;
@@ -344,14 +346,18 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         ),
       );
 
-      try {
-        await _logout(NoParams());
-      } catch (e) {
-        EasyLoading.dismiss();
+      if(loginData?.deviceIdToken != null) {
+        try {
+          await _logout(NoParams());
+        } catch (e) {
+          EasyLoading.dismiss();
+        }
+        sl<DelegatorsCubit>().clearDelegators();
+        await _clearAuth(NoParams());
+        clearSSOInfo();
       }
-      sl<DelegatorsCubit>().clearDelegators();
-      await _clearAuth(NoParams());
-      clearSSOInfo();
+
+
       if (CommonProperties.fcmToken != null &&
           CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
@@ -378,14 +384,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       print("object");
       EasyLoading.dismiss();
     }
-
-    await _clearAuth(NoParams());
-    sl<DelegatorsCubit>().clearDelegators();
-    clearSSOInfo();
-    try {
-      await _logout(NoParams());
-    } catch (e) {
-      EasyLoading.dismiss();
+    if(sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState) {
+      await _clearAuth(NoParams());
+      sl<DelegatorsCubit>().clearDelegators();
+      clearSSOInfo();
+      try {
+        await _logout(NoParams());
+      } catch (e) {
+        EasyLoading.dismiss();
+      }
     }
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
@@ -397,16 +404,19 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      final failureOrSuccessForProfile = await _getProfile(NoParams());
-      await failureOrSuccessForProfile.fold((failure) async {},
-          (success) async {
-        final failureOrSuccess = await _saveSSOProfile(success);
-        if (failureOrSuccess.isRight()) {
-          emit(state.copyWith(
-            userInfo: success,
-          ));
-        }
-      });
+      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
+      if(authState is AuthenticatedMunicipalityState) {
+        final failureOrSuccessForProfile = await _getProfile(NoParams());
+        await failureOrSuccessForProfile.fold((failure) async {},
+                (success) async {
+              final failureOrSuccess = await _saveSSOProfile(success);
+              if (failureOrSuccess.isRight()) {
+                emit(state.copyWith(
+                  userInfo: success,
+                ));
+              }
+            });
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

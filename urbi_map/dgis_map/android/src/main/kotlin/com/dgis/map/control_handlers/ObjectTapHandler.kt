@@ -29,6 +29,8 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.geometry.GeoPointWithElevation
 import ru.dgis.sdk.map.*
 import ru.dgis.sdk.road_events.RoadEventType
+import ru.dgis.sdk.geometry.ComplexGeometry
+import ru.dgis.sdk.geometry.PointGeometry
 
 class ObjectTapHandler(
         private val map: ru.dgis.sdk.map.Map,
@@ -239,11 +241,11 @@ class ObjectTapHandler(
         }
     }
 
-    private fun mapMarker(marker: MarkerMessage, callback: (Result<Unit>) -> Unit): Marker? {
+    private fun mapMarker(marker: MarkerMessage, callback: (Result<Unit>) -> Unit): Marker {
         var markerImage: Image? = null
         if (marker.options.icon != null) {
 
-            val iconOptions = marker.options.icon!!
+            val iconOptions = marker.options.icon
 
             val svgPath = iconOptions.svgPath
             val pngPath = iconOptions.pngPath
@@ -284,8 +286,10 @@ class ObjectTapHandler(
                                         ?: LogicalPixel(0f),
                         userData = MarkerId(marker.id),
                         animatedAppearance = marker.options.animatedAppearance ?: false,
-                        zIndex = ZIndex(marker.options.zIndex?.toInt() ?: 0)
-                )
+                        zIndex = ZIndex(marker.options.zIndex?.toInt() ?: 0),
+            visible = (marker.options.isVisible ?: true),
+            iconOpacity = Opacity(marker.options.icon?.iconOpacity?.toFloat() ?: 1.0f)
+        )
 
         return Marker(options)
     }
@@ -346,6 +350,9 @@ class ObjectTapHandler(
             markers[id]?.first?.iconWidth = LogicalPixel(iconWidth.toFloat())
         }
         options.zIndex?.let { zIndex -> markers[id]?.first?.zIndex = ZIndex(zIndex.toInt()) }
+        options.icon?.iconOpacity?.let { iconOpacity ->
+            markers[id]?.first?.iconOpacity = Opacity(iconOpacity.toFloat())
+        }
         options.animatedAppearance?.let { animatedAppearance ->
             markers[id]?.first?.animatedAppearance = animatedAppearance
         }
@@ -521,7 +528,7 @@ class ObjectTapHandler(
     ) {
         val polygonObjects = mutableMapOf<String, Pair<Polygon, String?>>()
         for (polygon in polygons) {
-            val polygonObject = mapPolygon(polygon) ?: return
+            val polygonObject = mapPolygon(polygon)
             polygonObjects[polygon.id] = Pair(polygonObject, managerId)
         }
 
@@ -850,6 +857,22 @@ class ObjectTapHandler(
                 options = options,
                 callback = callback
         )
+    }
+
+    fun calcPositionForPoints(
+        area: GeometryMessage,
+        options: CalcPositionOptionsMessage,
+        callback: (Result<CameraPosition>) -> Unit
+    ) {
+        val geometry = ComplexGeometry(
+            geometries = listOf(
+                PointGeometry(point = area.bounds.northEast.toGeoPoint()),
+                PointGeometry(point = area.bounds.southWest.toGeoPoint()),
+            )
+        )
+
+        val position = calcPosition(camera = map.camera, geometry = geometry)
+        callback(Result.success(position))
     }
 
     private fun calcPositionForObjects(

@@ -247,11 +247,6 @@ class DgisMapView(
         animationType: CameraAnimationTypeMessage,
         callback: (Result<Unit>) -> Unit
     ) {
-        val map = map ?: kotlin.run {
-            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
-            return
-        }
-
         val cameraPosition = CameraPosition(
             point = cameraPosition.point.toGeoPoint(),
             zoom = Zoom(cameraPosition.zoom.toFloat()),
@@ -265,6 +260,19 @@ class DgisMapView(
             CameraAnimationTypeMessage.SHOW_BOTH_POSITIONS -> CameraAnimationType.SHOW_BOTH_POSITIONS
         }
 
+        moveCameraNative(cameraPosition, duration, animationType, callback)
+    }
+
+    private fun moveCameraNative(
+        cameraPosition: CameraPosition,
+        duration: Duration,
+        animationType: CameraAnimationType,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        val map = map ?: kotlin.run {
+            callback(Result.failure(IllegalArgumentException("Map has not been initialized")))
+            return
+        }
         val moveFuture = map.camera.move(cameraPosition, duration, animationType).apply {
             onResult {
                 callback(Result.success(Unit))
@@ -346,6 +354,33 @@ class DgisMapView(
         callback: (Result<CameraPositionMessage>) -> Unit
     ) {
         objectTapHandler?.calcPositionForPolylines(polylines, options, callback)
+    }
+
+    override fun animateToRepresentativeArea(
+        area: GeometryMessage,
+        options: CalcPositionOptionsMessage,
+        duration: Double,
+        animationType: CameraAnimationTypeMessage,
+        callback: (Result<Unit>) -> Unit
+    ) {
+        objectTapHandler?.calcPositionForPoints(area, options) { positionResult ->
+            positionResult.fold(
+                onSuccess = { cameraPosition ->
+                    val duration = Duration.ofMilliseconds(round(duration * 1000).toLong())
+                    val animationType = when (animationType) {
+                        CameraAnimationTypeMessage.DEFAULT_TYPE -> CameraAnimationType.DEFAULT
+                        CameraAnimationTypeMessage.LINEAR -> CameraAnimationType.LINEAR
+                        CameraAnimationTypeMessage.SHOW_BOTH_POSITIONS -> CameraAnimationType.SHOW_BOTH_POSITIONS
+                    }
+                    // If we successfully got the CameraPosition, move the camera
+                    moveCameraNative(cameraPosition, duration, animationType, callback)
+                },
+                onFailure = { error ->
+                    // If calcPositionForPoints failed, propagate the error immediately
+                    callback(Result.failure(error))
+                }
+            )
+        }
     }
 
     override fun searchByObjectId(

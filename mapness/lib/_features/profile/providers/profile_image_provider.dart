@@ -155,8 +155,11 @@ class ProfileImage extends _$ProfileImage {
     }
   }
 
-  void clear() {
-    _prefs.remove(_imagePrefsKey);
+  Future<void> clear() async {
+    await _prefs.remove(_imagePrefsKey);
+    // Screen appears earlier than the image is removed from the cache
+    // So we have to force update the state to show the default image
+    state = const AsyncData(UserProfileData());
     _isUpdated = false;
     ref.invalidateSelf();
   }

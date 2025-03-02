@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
@@ -66,7 +67,6 @@ class SearchByRubrics extends _$SearchByRubrics {
 
       searchResults = await dgisController.searchByCategory(
         category,
-        sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
 
         /// TODO: Check if we need to set pageSize to better performance
@@ -75,7 +75,6 @@ class SearchByRubrics extends _$SearchByRubrics {
     } else {
       searchResults = await dgisController.searchByRubrics(
         filter.rubrics,
-        sortingType: SortingTypeMessage.byRelevance,
         searchRect: searchRect,
 
         /// TODO: Check if we need to set pageSize to better performance
@@ -101,11 +100,13 @@ class SearchByRubrics extends _$SearchByRubrics {
     final mapMarkerMapper = ref.read(rubricMarkerMapperProvider.notifier);
 
     final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+    final dark = await ref.watch(darkModeProvider.future);
 
     final markers = await value.getMarkers(
       router: ref.read(appRouterProvider),
       iconResolver: mapMarkerMapper.getMarkerType,
       isRtl: isRtl,
+      isDark: dark.isDark,
     );
 
     await searchObjectManager.removeAllMarkers();
