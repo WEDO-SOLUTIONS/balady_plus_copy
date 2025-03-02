@@ -84,6 +84,7 @@ class CrStep2ActivityDataState extends Equatable {
         addetionalDetails,
         atmFeesPaid,
         draftLoaded,
+        selectedAddetionalList,
         draftStatus
       ];
 
@@ -141,7 +142,7 @@ class CrStep2ActivityDataState extends Equatable {
         addetionalActivityItemDetails:
             addetionalActivityItemDetails ?? this.addetionalActivityItemDetails,
         addetionalActivityListStatus:
-            additionalActivityListStatus ?? this.addetionalActivityListStatus,
+            additionalActivityListStatus ?? addetionalActivityListStatus,
         addetionalActivityDetailsListStatus:
             addetionalActivityDetailsListStatus ??
                 this.addetionalActivityDetailsListStatus,

@@ -224,7 +224,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           const CustomVerticalSpace(height: 16),
                           if (state.addetionalActivityItems?.isNotEmpty ??
                               false)
-                            const ExtraActivityComponent(),
+                          const ExtraActivityComponent(),
                         ],
                       ),
                     ),
