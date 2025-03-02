@@ -33,6 +33,7 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
       if (state.status == BlocStatus.failure) {
         CommonFunctions.showError(state.errorMessage ?? "");
       }
+
     }, builder: (context, state) {
       return Stack(
         children: [
