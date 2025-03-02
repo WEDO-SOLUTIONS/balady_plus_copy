@@ -8,12 +8,12 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/profile/widgets/log_out_sheet.dart';
-import 'package:mapness/features/profile/widgets/profile_header.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/profile/log_out_sheet.dart';
+import 'package:mapness/widgets/profile/profile_header.dart';
 
 final InAppReview inAppReview = InAppReview.instance;
 
@@ -38,8 +38,13 @@ class ProfilePage extends HookConsumerWidget {
     final backgroundColor =
         userData.valueOrNull != null ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
 
+    final overlay = switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
+      Brightness.dark => SystemUiOverlayStyle.light,
+      Brightness.light => SystemUiOverlayStyle.dark,
+    };
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: userData.valueOrNull != null ? SystemUiOverlayStyle.dark : SystemUiOverlayStyle.light,
+      value: overlay,
       child: Scaffold(
         backgroundColor: backgroundColor,
         body: SafeArea(

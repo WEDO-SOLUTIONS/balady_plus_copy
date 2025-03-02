@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_catches_without_on_clauses
-
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -7,8 +5,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/profile/domain/user_profile_data.dart';
 import 'package:mapness/_generated/protocol/protocol.pb.dart' as proto;
+import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
