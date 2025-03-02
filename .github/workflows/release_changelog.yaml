@@ -25,7 +25,7 @@ jobs:
 
       - name: Generate changelog with custom parser
         run: |
-          conventional-changelog -p ./parser.js -i CHANGELOG.md -s
+          conventional-changelog -p angular -i CHANGELOG.md -s
 
       - name: Commit and push changelog
         run: |
