@@ -404,16 +404,19 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      final failureOrSuccessForProfile = await _getProfile(NoParams());
-      await failureOrSuccessForProfile.fold((failure) async {},
-          (success) async {
-        final failureOrSuccess = await _saveSSOProfile(success);
-        if (failureOrSuccess.isRight()) {
-          emit(state.copyWith(
-            userInfo: success,
-          ));
-        }
-      });
+      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
+      if(authState is AuthenticatedMunicipalityState) {
+        final failureOrSuccessForProfile = await _getProfile(NoParams());
+        await failureOrSuccessForProfile.fold((failure) async {},
+                (success) async {
+              final failureOrSuccess = await _saveSSOProfile(success);
+              if (failureOrSuccess.isRight()) {
+                emit(state.copyWith(
+                  userInfo: success,
+                ));
+              }
+            });
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
