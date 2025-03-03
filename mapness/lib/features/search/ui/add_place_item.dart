@@ -34,7 +34,7 @@ class AddPlaceItem extends StatelessWidget {
             buttonColorScheme: uikit.ButtonColorScheme.secondary,
             primaryIcon: uikit.GeneralIcons.plusCircle,
             // for the first iteration all buttons have same label. Will be changed later
-            primaryLabel: context.l10n.searchAddCompany,
+            primaryLabel: context.l10n.addPlace,
             onTap: () => context.router.push(QuickFeedbackRoute()),
           ),
         ),
