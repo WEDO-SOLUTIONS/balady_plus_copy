@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -9,6 +10,7 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
@@ -57,27 +59,44 @@ class MapSuggestList extends ConsumerWidget {
         right: Spacing.$4x,
         bottom: Spacing.$4x,
       ),
-      child: Material(
-        clipBehavior: Clip.antiAlias,
-        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-        color: contentColor,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-            itemBuilder: (context, index) => SuggestItem(
-              suggest: suggests[index],
-              myLocation: myLocation == null
-                  ? null
-                  : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-              isLast: index == suggests.length - 1,
-              onObjectTap: onObjectTap,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Material(
+            clipBehavior: Clip.antiAlias,
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+            color: contentColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                itemBuilder: (context, index) => SuggestItem(
+                  suggest: suggests[index],
+                  myLocation: myLocation == null
+                      ? null
+                      : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+                  isLast: index == suggests.length - 1,
+                  onObjectTap: onObjectTap,
+                ),
+                itemCount: suggests.length,
+              ),
             ),
-            itemCount: suggests.length,
           ),
-        ),
+          Padding(
+            padding: const EdgeInsets.only(
+              top: Spacing.$4x,
+              bottom: Spacing.$1_5x,
+            ),
+            child: uikit.AppButton(
+              buttonColorScheme: uikit.ButtonColorScheme.secondary,
+              primaryIcon: uikit.GeneralIcons.plusCircle,
+              primaryLabel: context.l10n.addPlace,
+              onTap: () => context.router.push(QuickFeedbackRoute()),
+            ),
+          )
+        ],
       ),
     );
   }

@@ -90,21 +90,21 @@ class CreateVDState extends Equatable {
       return gisResponse != null && location != null;
     else if (currentPageValue == 1)
       return splDetailsResponse != null;
-    else if (((CommonProperties.isLoggedIn && currentPageValue == 2) ||
-            (!CommonProperties.isLoggedIn && currentPageValue == 3)) &&
+    else if (((CommonProperties.isLoggedInMunicipality && currentPageValue == 2) ||
+            (!CommonProperties.isLoggedInMunicipality && currentPageValue == 3)) &&
         validateAddetionalFields()) {
       bool status = Formz.validate([incidentDescValidator]);
       bool isRegaValid = isRegaClass() == true ? (isCrValid ?? false) : true;
       if (!incidentDescValidator.isPure && status && isRegaValid) return true;
-    } else if ((!CommonProperties.isLoggedIn && currentPageValue == 2)) {
+    } else if ((!CommonProperties.isLoggedInMunicipality && currentPageValue == 2)) {
       bool guestFormStatus = Formz.validate(
           [firstNameValidator, lastNameValidator, phoneValidator]);
       if (!firstNameValidator.isPure &&
           !lastNameValidator.isPure &&
           !phoneValidator.isPure &&
           guestFormStatus) return true;
-    } else if (((CommonProperties.isLoggedIn && currentPageValue == 3) ||
-        (!CommonProperties.isLoggedIn && currentPageValue == 4))) {
+    } else if (((CommonProperties.isLoggedInMunicipality && currentPageValue == 3) ||
+        (!CommonProperties.isLoggedInMunicipality && currentPageValue == 4))) {
       return agreement ?? false;
     }
 

@@ -773,6 +773,29 @@ class PolygonMessage {
   final PolygonOptionsMessage options;
 }
 
+class CircleOptionsMessage {
+  CircleOptionsMessage({
+    required this.position,
+    required this.radius,
+    this.color,
+    this.strokeWidth,
+    this.strokeColor,
+  });
+
+  final GeoPointMessage position;
+  final double radius;
+  final int? color;
+  final double? strokeWidth;
+  final int? strokeColor;
+}
+
+class CircleMessage {
+  CircleMessage(this.id, this.options);
+
+  final String id;
+  final CircleOptionsMessage options;
+}
+
 class PolylineOptionsMessage {
   PolylineOptionsMessage({
     required this.points,
@@ -1375,6 +1398,14 @@ abstract class MapApi {
   );
 
   @async
+  void animateToRepresentativeArea(
+    GeometryMessage area,
+    CalcPositionOptionsMessage options,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  );
+
+  @async
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async
@@ -1480,6 +1511,21 @@ abstract class MapApi {
     bool isVisible,
     MapObjectManagerMessage? manager,
   );
+
+  @async
+  void addCircle(CircleMessage circle, MapObjectManagerMessage? manager);
+
+  @async
+  void addCircles(
+    List<CircleMessage> circles,
+    MapObjectManagerMessage? manager,
+  );
+
+  @async
+  void removeCircle(String id, MapObjectManagerMessage? manager);
+
+  @async
+  void removeAllCircles(MapObjectManagerMessage? manager);
 
   @async
   void addPolygon(PolygonMessage polygon, MapObjectManagerMessage? manager);
@@ -1686,7 +1732,7 @@ abstract class MapApi {
   void setBetterRouteEnabled(bool enabled);
 
   @async
-  bool getAndroidAutoConnectionState();
+  bool getCarConnectionState();
 }
 
 @FlutterApi()

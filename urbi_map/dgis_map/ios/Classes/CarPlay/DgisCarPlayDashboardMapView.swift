@@ -33,11 +33,18 @@ class DgisCarPlayDashboardMapView: UIViewController {
             markerType: .model
         ))
         
-        try? map.camera.setPosition(
-            point: DgisCarPlayMapView.defaultCameraPosition,
-            zoom: Zoom(value: 17)
-        )
-        myLocationControlModel?.onClicked()
+        if let location = try? sdk.locationService.lastLocation?.coordinates {
+            try? map.camera.setPosition(
+                point: location.value,
+                zoom: Zoom(value: 17)
+            )
+        } else {
+            try? map.camera.setPosition(
+                point: DgisCarPlayMapView.defaultCameraPosition,
+                zoom: Zoom(value: 17)
+            )
+        }
+        myLocation()
         
         self.map = map
         mapView.translatesAutoresizingMaskIntoConstraints = false
@@ -52,11 +59,17 @@ class DgisCarPlayDashboardMapView: UIViewController {
         ])
         self.mapView = mapView
         addSpeedControl()
+        DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         self.delegate?.viewDidLoad(with: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
         }
+    }
+    
+    func myLocation() {
+        guard let myLocationControlModel else { return }
+        myLocationControlModel.onClicked()
     }
     
     func addSpeedControl() {

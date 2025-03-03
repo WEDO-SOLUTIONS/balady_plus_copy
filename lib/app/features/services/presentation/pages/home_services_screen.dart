@@ -217,7 +217,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
   }
 
   void openDelegators(BuildContext context) async {
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       context.read<DelegatorsCubit>().getDelegators();
       context.read<DelegatorsCubit>().getAgents();
       await BottomSheetDialog.showDraggableSheet(

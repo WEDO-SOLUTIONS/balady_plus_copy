@@ -252,12 +252,7 @@ class NavigationHandler {
         do {
             setupCamera(speedRangeZoom: speedRangeZoom)
             
-            self.navigationManager.mapManager.addMap(map: self.map)
-            if let carPlayDashboardMap = FlutterCarPlayDashboardSceneDelegate.map {
-                self.navigationManager.mapManager.addMap(map: carPlayDashboardMap)
-            }
             if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-                self.navigationManager.mapManager.addMap(map: carPlayMap)
                 FlutterCarPlaySceneDelegate.startNavigation()
             }
             
@@ -335,19 +330,7 @@ class NavigationHandler {
     
     func stopNavigation() {
         self.navigationManager.stop()
-        
-        self.navigationManager.mapManager.removeMap(map: self.map)
-        if let carPlayDashboardMap = FlutterCarPlayDashboardSceneDelegate.map {
-            self.navigationManager.mapManager.removeMap(map: carPlayDashboardMap)
-        }
-        if let carPlayMap = FlutterCarPlaySceneDelegate.map {
-            self.navigationManager.mapManager.removeMap(map: carPlayMap)
-        }
-        
-        if FlutterCarPlaySceneDelegate.map != nil {
-            FlutterCarPlaySceneDelegate.stopNaviagtion()
-        }
-        
+        FlutterCarPlaySceneDelegate.stopNavigation()
         resetCamera()
     }
     

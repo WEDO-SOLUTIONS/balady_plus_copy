@@ -39,7 +39,7 @@ class _DashbordDataPageState extends State<DashbordDataPage> {
       value: sl<DelegatorsCubit>(),
       child: BlocBuilder<EntryPointCubit, EntryPointState>(
         builder: (context, state) {
-          bool isLoggedin = CommonProperties.isLoggedIn;
+          bool isLoggedin = CommonProperties.isLoggedInMunicipality;
           final list = ProfileSections.profileSections;
 
           return Scaffold(
@@ -64,7 +64,7 @@ class _DashbordDataPageState extends State<DashbordDataPage> {
                   ),
 
                   // Dashboard
-                  if (CommonProperties.isLoggedIn) ...[
+                  if (CommonProperties.isLoggedInMunicipality) ...[
                     // HeaderWithAll(
                     //   text: "dashboard".tr(),
                     //   margin: const EdgeInsets.all(16),

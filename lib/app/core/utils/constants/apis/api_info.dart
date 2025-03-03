@@ -618,7 +618,8 @@ class ApiUrl {
   // static const String INQSPLClassifications =
   //     '/prweb/PRRestService/FrontUserBalady/V1/GetSpecialClassifications';
 
-
+  static String checkCommercialLicense(String licenseId) =>
+      'v1/balady-commercial-mobile-services/license/exists/$licenseId';
 
   static const sendMessagechatBotFeedback = '/v1/chatbot-services/assign-feedback';
   static const getChatgptOldSession = '/v1/chatbot-services/old-sessions';

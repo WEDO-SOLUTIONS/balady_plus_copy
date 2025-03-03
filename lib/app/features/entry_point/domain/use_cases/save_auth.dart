@@ -8,6 +8,7 @@ class SaveAuth extends UseCase<bool, SSOToken> {
   final EntryPointRepository repository;
 
   SaveAuth({required this.repository});
+
   @override
   Future<Either<Failure, bool>> call(SSOToken params) async {
     return await repository.saveAuth(params);

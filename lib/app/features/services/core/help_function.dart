@@ -19,7 +19,7 @@ void checkIfLogin(BuildContext context, Service service) {
   if (service.requireLogin) {
     switch (service.levelLogin) {
       case LevelLogin.sso:
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           tackYouAction(context, service);
         } else {
           showDialog(

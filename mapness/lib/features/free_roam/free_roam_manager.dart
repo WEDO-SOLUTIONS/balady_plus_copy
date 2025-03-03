@@ -6,7 +6,9 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -96,8 +98,10 @@ class _FreeRoamManager extends _$FreeRoamManager {
     final isParkingEnabledByFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
 
     if (isParkingEnabledByFreeRoam) {
-      final layersNotifier = ref.read(layersControlsProvider.notifier);
-      await layersNotifier.toggleParking();
+      final layersControls = ref.read(layersControlsProvider.notifier);
+      if (ref.read(activeLayerProvider) == LayerType.parkingLots) {
+        await layersControls.hideActiveLayer();
+      }
       await sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, false);
     }
   }

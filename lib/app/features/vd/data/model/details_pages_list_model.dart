@@ -20,7 +20,7 @@ List registeredPages = [
 ];
 
 List getPageList() {
-  if (CommonProperties.isLoggedIn)
+  if (CommonProperties.isLoggedInMunicipality)
     return registeredPages;
   else
     return guestPages;

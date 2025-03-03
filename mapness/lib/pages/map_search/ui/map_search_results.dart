@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,14 +27,15 @@ class MapSearchResults extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final language = ref.watch(appLanguageProvider);
     final myLocation = ref.watch(locationProvider);
+
     return SearchResults(
       results: results,
       scrollController: scrollController,
-      loaderBuilder: (context) => const Padding(
-        padding: EdgeInsets.symmetric(vertical: 12),
+      loaderBuilder: (context) => Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(
           child: CircularProgressIndicator(
-            color: Colors.black,
+            color: context.colorsV2.accentDefault,
           ),
         ),
       ),
@@ -42,34 +44,36 @@ class MapSearchResults extends ConsumerWidget {
         language: language,
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-        onTap: () {
-          if (item.id == null) {
-            return;
-          }
-
-          Metrics.logEventAdvanced(
-            MetricsConstants.searchKeys.searchResult,
-            group: MetricsConstants.searchTag,
-            action: MetricAction.tap.toString(),
-            props: {
-              'object': item.id!.objectId,
-            },
-          );
-
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            context.router.replaceOrPush(
-              route: PoiCardWidgetRoute(
-                objectId: DgisObjectIdMessage(
-                  objectId: item.id!.objectId,
-                  entranceId: 0,
-                ),
-                cameraConfig: const PoiCameraConfig(zoom: 18),
-              ),
-              toCompareRoutes: [PoiCardWidgetRoute.page],
-            );
-          });
-        },
+        onTap: () => _onResultTap(context, item),
       ),
     );
+  }
+
+  void _onResultTap(BuildContext context, DirectoryObjectMessage item) {
+    if (item.id == null) {
+      return;
+    }
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.searchKeys.searchResult,
+      group: MetricsConstants.searchTag,
+      action: MetricAction.tap.toString(),
+      props: {
+        'object': item.id!.objectId,
+      },
+    );
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.router.replaceOrPush(
+        route: PoiCardWidgetRoute(
+          objectId: DgisObjectIdMessage(
+            objectId: item.id!.objectId,
+            entranceId: 0,
+          ),
+          cameraConfig: const PoiCameraConfig(zoom: 18),
+        ),
+        toCompareRoutes: [PoiCardWidgetRoute.page],
+      );
+    });
   }
 }

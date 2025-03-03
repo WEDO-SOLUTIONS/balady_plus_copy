@@ -2,6 +2,7 @@ package com.dgis.map.android_auto
 
 import android.location.Location
 import com.dgis.map.DgisMapInitializer
+import io.flutter.embedding.engine.loader.FlutterLoader
 import ru.dgis.sdk.DgisObjectId
 import ru.dgis.sdk.Duration
 import ru.dgis.sdk.File
@@ -47,6 +48,7 @@ import ru.dgis.sdk.map.Map as DgisMap
 
 class CarMapController(
     private val sharedPrefs: SharedPrefs,
+    private val flutterLoader: FlutterLoader,
 ) : AutoCloseable {
     private val closeables = mutableListOf<AutoCloseable>()
     private val sdkContext = DgisMapInitializer.getSdkContext()
@@ -104,10 +106,9 @@ class CarMapController(
 
     private fun setStyle() {
         val builder = StyleBuilder(sdkContext)
+        val stylePath = flutterLoader.getLookupKeyForAsset("packages/map_styles/src/styles.2gis")
         closeables.add(builder.loadStyle(
-            File.fromAsset(
-                sdkContext, "flutter_assets/assets/maps/styles/styles.2gis"
-            )
+            File.fromAsset(sdkContext, stylePath)
         ).apply {
             onResult { map?.style = it }
         })

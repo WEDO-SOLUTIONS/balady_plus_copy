@@ -18,11 +18,11 @@ class SubmitFeedbackPayload extends _$SubmitFeedbackPayload {
   FeedbackFormPayloadEntity? build(String payloadId) => null;
 
   void collectForm({
-    required int objectId,
     required String categoryId,
 
     /// complex fields should be already mapped to json
     required Iterable<MapEntry<String, dynamic>> fields,
+    int? objectId,
   }) {
     /// get curretn
     final cameraViewport = ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect;

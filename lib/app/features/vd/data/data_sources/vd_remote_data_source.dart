@@ -65,7 +65,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
     var response;
     String categoriesAPI = ApiUrl.vdCategories;
 
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       categoriesAPI = ApiUrl.vdCategoriesRegistered;
     }
 
@@ -73,7 +73,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
       response = await webService.dio.get(categoriesAPI,
           queryParameters: params.toMap(),
           options: Options(headers: {
-            if (CommonProperties.isLoggedIn)
+            if (CommonProperties.isLoggedInMunicipality)
               "Authorization": "Bearer " + (CommonProperties.token ?? "")
           }));
 
@@ -471,7 +471,7 @@ class VDRemoteDataSourceImpl extends VDRemoteDataSource {
 
     try {
       response = await webService.dio.post(ApiUrl.createIncidentUnRegistered,
-          data: params.toMap(isGuest: !CommonProperties.isLoggedIn));
+          data: params.toMap(isGuest: !CommonProperties.isLoggedInMunicipality));
 
       var data = response.data["data"]["result"];
 

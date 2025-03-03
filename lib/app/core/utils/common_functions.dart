@@ -5,6 +5,8 @@ import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:huawei_location/huawei_location.dart' as hms;
+import 'package:geolocator/geolocator.dart' as geo_locator;
 
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
@@ -27,6 +29,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'
     show BlocProvider, EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hijri/hijri_calendar.dart';
@@ -108,6 +111,10 @@ import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -218,6 +225,97 @@ class CommonFunctions {
 
     final entryPointBridge = sl<EntryPointBridge>();
     entryPointBridge(params);
+  }
+
+  static Future<bool> isHawaiiDevice() async {
+    return await FlutterHmsGmsAvailability.isHmsAvailable;
+  }
+
+  static final locationService = hms.FusedLocationProviderClient();
+
+  static Future<geo_locator.Position?> getLastLocationHuawei() async {
+    await locationService.initFusedLocationService();
+    final location = await locationService.getLastLocation();
+    if (location.latitude != null && location.longitude != null) {
+      return geo_locator.Position(
+        longitude: location.longitude!,
+        latitude: location.latitude!,
+        timestamp: DateTime.now(),
+        accuracy: 0,
+        altitude: location.altitude ?? 0,
+        altitudeAccuracy: 0,
+        heading: location.bearing ?? 0,
+        headingAccuracy: location.bearingAccuracyDegrees ?? 0,
+        speed: location.speed ?? 0,
+        speedAccuracy: location.speedAccuracyMetersPerSecond ?? 0,
+      );
+    }
+
+    return null;
+  }
+
+  static Future<LatLng?> getCurrentLocationHuawei() async {
+    try {
+      await locationService.initFusedLocationService();
+      final request = hms.LocationRequest();
+      request.priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY;
+      request.interval = 13000;
+
+      final settings = hms.LocationSettingsRequest(
+          requests: [request], needBle: true, alwaysShow: true);
+      try {
+        await locationService.checkLocationSettings(settings);
+      } catch (e) {
+        debugPrint('amr catch ${e.toString()}');
+      }
+
+      final location = await locationService.getLastLocation();
+
+      if (location.latitude != null && location.longitude != null) {
+        debugPrint(
+            'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
+        return LatLng(location.latitude!, location.longitude!);
+      } else {
+        await locationService.requestLocationUpdates(request);
+      }
+    } catch (error, stackTrace) {
+      return handelLocationCatch(true, error, stackTrace);
+    }
+    return null;
+  }
+
+  static Future<LatLng?> handelLocationCatch(
+      bool isHuawei, error, stackTrace) async {
+    LogsViewModel().sendEventFromModel(
+      event: ErrorExceptionModel(
+        nameEvent: EventsName.handledException,
+        message: error.toString(),
+        stackTrace: stackTrace.toString(),
+      ),
+    );
+    try {
+      if (isHuawei) {
+        final position = await locationService.getLastLocation();
+        if (position.latitude != null && position.longitude != null) {
+          return LatLng(position.latitude!, position.longitude!);
+        }
+      } else {
+        geo_locator.Position? position;
+        position = await geo_locator.Geolocator.getLastKnownPosition();
+        if (position?.latitude != null && position?.longitude != null) {
+          return LatLng(position!.latitude, position.longitude);
+        }
+      }
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    return null;
   }
 
   static String fileMimeType(String extension) {
@@ -370,14 +468,11 @@ class CommonFunctions {
   }
 
   static String getDateNoDash(String? dateStr) {
-    String formattedDate = "";
-
-    String year = dateStr?.substring(0,4) ?? "";
-    String month = dateStr?.substring(4,6) ?? "";
-    String day = dateStr?.substring(6,8) ?? "";
+    String year = dateStr?.substring(0, 4) ?? "";
+    String month = dateStr?.substring(4, 6) ?? "";
+    String day = dateStr?.substring(6, 8) ?? "";
 
     return "$year/$month/$day";
-
   }
 
   static String getMonthName(String? dateStr) {
@@ -655,12 +750,13 @@ class CommonFunctions {
       String v5UUID =
           CommonProperties.uuidInstance.v5(v1UUID, CommonProperties.deviceId);
 
-      if (v5UUID.isNotEmpty)
+      if (v5UUID.isNotEmpty) {
         return v5UUID.replaceAll("-", "");
-      else if (v1UUID.isNotEmpty)
+      } else if (v1UUID.isNotEmpty) {
         return v1UUID.replaceAll("-", "");
-      else
+      } else {
         return DateTime.now().millisecondsSinceEpoch.toString();
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -678,7 +774,9 @@ class CommonFunctions {
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
-  static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+  // add isMunicipality to check if the user is access municipality services
+  // or life style services, make teh default value is false for life style services
+  static Future<bool> onLogin({bool isMunicipality = false}) async => await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -1225,7 +1323,7 @@ class CommonFunctions {
   }
 
   static sendEvent(
-      {DioError? dioError,
+      {DioException? dioError,
       Response? response,
       Exception? ex,
       String? errorMessage}) {
@@ -1294,8 +1392,7 @@ class CommonFunctions {
                 response?.data.toString()) ??
             (errorMessage ?? ex.toString());
 
-        if (dioError != null &&  dioError is NoDataFoundException)
-        {
+        if (dioError != null && dioError is NoDataFoundException) {
           message = "Data Not Found";
         }
 
@@ -1458,7 +1555,7 @@ class CommonFunctions {
         r.headers["Content-Type"].toString().split("/")[1].replaceAll("]", "");
 
     String dir = (await getTemporaryDirectory()).path;
-    File file = new File('$dir/$fileName.$extension');
+    File file = File('$dir/$fileName.$extension');
 
     await file.writeAsBytes(r.data);
     return file;
@@ -1485,7 +1582,7 @@ class CommonFunctions {
   static void openCreateCompliance() {
     //أصدر الشهادة
 
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.createCompliancePage);
     } else {
@@ -1499,9 +1596,6 @@ class CommonFunctions {
                 }
               }));
     }
-
-
-
   }
 
   static void openRatingBuilding() {
@@ -1512,7 +1606,8 @@ class CommonFunctions {
 
   static void openComplianceFaq(String serviceID) {
 //اطلع على الاسئلة الشائعة
-    NavigationService.navigatorKey.currentState!.pushNamed(RouteName.QAPage,arguments: serviceID);
+    NavigationService.navigatorKey.currentState!
+        .pushNamed(RouteName.QAPage, arguments: serviceID);
   }
 
   static void openComplianceTerms() async {
@@ -1533,7 +1628,7 @@ class CommonFunctions {
     sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
     BlocProvider.of<DashboardBloc>(
-        NavigationService.navigatorKey.currentContext!)
+            NavigationService.navigatorKey.currentContext!)
         .add(DashboardEventInitial());
   }
 
@@ -1653,9 +1748,10 @@ class CommonProperties {
   static String? fcmToken;
   static bool showEkramDriver = false;
 
-  static Uuid uuidInstance = Uuid();
-  static List<String> allowedSHAFingerprints = ["DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"];
-
+  static Uuid uuidInstance = const Uuid();
+  static List<String> allowedSHAFingerprints = [
+    "DC:79:FD:7B:6E:64:E5:16:04:A6:05:D1:D5:A9:D9:AC:21:CB:97:88:7A:65:58:69:85:9F:29:ED:0A:6A:AB:6D"
+  ];
 
   //static String get token =>
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2OTEzMTQxMTEsImlhdCI6MTY5MTMxNDExMSwiZXhwIjoxNjkyNTIzNzExLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiN2MzNjY3NzgtYTAyMS00NzA3LTgyNDMtN2MzZGY1OWM3ZmY4IiwiYXV0aF90aW1lIjoxNjkxMzE0MTEwLCJpZHAiOiJsb2NhbCIsImVtYWlsIjoibS5haG1lZEBpbm5vc29mdC5tZXh4IiwicGhvbmVfbnVtYmVyIjoiNTkyODQyMjc1IiwibmFtZSI6IjIxMTE2OTI1OTIiLCJtYWlsIjoibS5haG1lZEBpbm5vc29mdC5tZXh4Iiwic2V4IjoiMSIsImRvYiI6IjMxLzA1LzE5OTUiLCJwaG9uZSI6IjA1OTI4NDIyNzUiLCJhcl9uYW1lIjoi2YXYrdmF2YjYryDZhdit2YXYr9io2YfYp9ih2KfZhNiv2YrZhiAg2KfYrdmF2K8iLCJlbl9uYW1lIjoiTUFITU9VRCBNT0hBTUVEQkFIQUVMREkgIEFITUVEIiwiaWRfbm8iOiIyMTExNjkyNTkyIiwibmlkIjoiMjA3IiwibmF0aW9uYWxpdHkiOiLZhdi12LEiLCJpZF90eXBlIjoiMiIsInNuYW1lIjoi2YXYrdmF2YjYryzZhdit2YXYr9io2YfYp9ih2KfZhNiv2YrZhiws2KfYrdmF2K8iLCJzaWQiOiI2REM4OEI1MDQ4NTRFNjE0Q0FFQUVENjJFODM4QTczRSIsImp0aSI6IjMxMDM4MjkxNEI1NzVDOUNFMzE5OUFBQUM1RjIwRjlFIn0.nQsrmyFoDuI9Qj1eRfAUAuqDIgvKIyZWRFanZChXQV0f-YZuMOlnYGRffegL0BhTSM2sRup57OicRhBQsEtAZHxaDmvjYp4cF0JSFTnIz5DWW5ZnCaoCVL-Jzzyyy5GC55oLiXrgrlWS_O0Y2SA-mkdzgGz-nTBjdiqYoY6BO7SWUiZb8RJLf7KJZEWALsqspEo1F836dvnCOPmKBT8Vr3iDxD5cbEL-u2R9Xt4VMXAO9B7ziXcW21kd6Si6mNPOSe29ga0HE4E5gRNMBUWQ3nLHfKrmNI0OYMdGGhclzEu8p1qaKJAIOPBbF6tuBXova0DpdjwZloM5ebSLF1FTBA";
@@ -1697,7 +1793,10 @@ class CommonProperties {
     return null;
   }
 
-  static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+
+  static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
+  static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
+
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
 

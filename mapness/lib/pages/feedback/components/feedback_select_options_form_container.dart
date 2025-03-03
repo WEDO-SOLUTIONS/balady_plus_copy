@@ -10,7 +10,7 @@ class FeedbackSelectOptionsFormContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => FeedbackFormContainer(
-        title: context.l10n.feedbackWhatsWrong,
+        title: context.l10n.whatsNew,
         isSendVisible: false,
         child: child,
       );

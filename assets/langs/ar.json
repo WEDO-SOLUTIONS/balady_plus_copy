@@ -4193,15 +4193,20 @@
   "quick_access_not_activated":"لا يوجد سمات حيوية مسجلة، نأمل تسجيل الدخول بإستخدام أحد الطرق الأخرى وحفظ السمات الحيوية",
   "deactivate":"إلغاء التنشيط",
   "biometrics_failed":"فشل المصادقة الحيوية! .فضلا المحاولة مرة أخرى أو يمكنك تسجيل الدخول عن طريق الرمز السريع أو إسم المستخدم و كلمة المرور",
-  "auth_pacakge_end": "end",
+  "message_login_life_style": "للوصول الى كامل خصائص الخرائط والملاحة، يرجى تسجيل الدخول",
+  "by_continuing_agree": "بالمتابعة، أوافق على ",
+  "privacy_policy": "سياسة الخصوصية",
+  "continue": "متابعة",
+  "enter_code_from_sms": "أدخل الرمز المرسل عبر الرسالة النصية",
+  "to_confirm_number": " لتأكيد رقم الجوال",
+  "get_code_again": "احصل عل الرمز",
+  "in" : "في",
+  "phone_number_not_valid": "رقم الجوال غير صحيح",
   "gptWelcome": "انا المساعد الذكي كيف يمكني مساعدتك ",
   "complianceFAQ":"الإسئلة الشائعة",
-
   "feature_services":"الخدمات الاكثر استخداما",
   "services_categories":"فئات الخدمات",
-
-
-
-  "service_lase_teen": "خدمة"
-
+  "service_lase_teen": "خدمة",
+  "invalid_license":"رقم الرخصة غير صحيح",
+  "enter_license_id":"ادخل رقم الرخصة"
 }

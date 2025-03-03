@@ -65,6 +65,14 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
   }
 
   @override
+  void didUpdateWidget(covariant FeedbackTextInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.controller?.text != _controller.text) {
+      _controller.text = widget.controller?.text ?? '';
+    }
+  }
+
+  @override
   void dispose() {
     _inputErrorState.dispose();
     _focusNode.dispose();
@@ -138,6 +146,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
             inputState: inputState,
             controller: _controller,
             config: BaladyInputConfig(
+              isDisposed: false,
               textAlign: textAlign,
               stateKey: _globalKey,
               focusNode: _focusNode,

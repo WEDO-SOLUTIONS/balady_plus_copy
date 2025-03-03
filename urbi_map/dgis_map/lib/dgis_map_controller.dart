@@ -57,8 +57,8 @@ class DgisMapController {
   /// Better route availability update.
   Stream<BetterRouteInfoEvent> get betterRouteInfoEvents => _instance.betterRouteInfoEvents;
 
-  /// Android Auto connection state.
-  Stream<bool> get androidAutoConnectionEvents => _instance.androidAutoConnectionEvents;
+  /// Android Auto/CarPlay connection state.
+  Stream<bool> get carConnectionEvents => _instance.androidAutoConnectionEvents;
 
   /// Events during navigation.
   Stream<NavigationEvent> get navigationEvents => _instance.navigationEvents;
@@ -200,6 +200,12 @@ class DgisMapController {
   /// Calculates camera position for given list of polylines to be visible
   Future<CameraPositionMessage> calcPositionForPolylines(List<String> polylines, CalcPositionOptionsMessage options) =>
       _instance.calcPositionForPolylines(polylines, options);
+
+  /// Animation of the camera to the representative area (or out view port) of the search.
+  /// Search returns a Geometry that represents the best area to show.
+  Future<void> animateToRepresentativeArea(GeometryMessage area, CalcPositionOptionsMessage options, double duration,
+          CameraAnimationTypeMessage animationType) =>
+      _instance.animateToRepresentativeArea(area, options, duration, animationType);
 
   /// Returns map camera position.
   Future<CameraPositionMessage> getCameraPosition() => _instance.getCameraPosition();
@@ -392,7 +398,22 @@ class DgisMapController {
     await _instance.removeAllMarkers(fromManager);
     await _instance.removeAllPolygons(fromManager);
     await _instance.removeAllPolylines(fromManager);
+    await _instance.removeAllCircles(fromManager);
   }
+
+  /// Add circle to map
+  Future<void> addCircle(Circle circle, {MapObjectManagerMessage? toManager}) => _instance.addCircle(circle, toManager);
+
+  /// Add several circles to map.
+  Future<void> addCircles(List<Circle> circles, {MapObjectManagerMessage? toManager}) =>
+      _instance.addCircles(circles, toManager);
+
+  /// Remove circle by id.
+  Future<void> removeCircle(String id, {MapObjectManagerMessage? fromManager}) =>
+      _instance.removeCircle(id, fromManager);
+
+  /// Remove all circles added with [addCircle].
+  Future<void> removeAllCircles({MapObjectManagerMessage? fromManager}) => _instance.removeAllCircles(fromManager);
 
   /// Add polygon to map.
   Future<void> addPolygon(Polygon polygon, {MapObjectManagerMessage? toManager}) =>
@@ -649,8 +670,8 @@ class DgisMapController {
   Future<void> setMapAttributeBool(String name, {required bool value}) =>
       _instance.setMapAttributeBool(name, value: value);
 
-  /// Getting Android Auto connection state
-  Future<bool> getAndroidAutoConnectionState() => _instance.getAndroidAutoConnectionState();
+  /// Getting Android Auto/CarPlay connection state
+  Future<bool> getCarConnectionState() => _instance.getCarConnectionState();
 }
 
 /// Extension methods for `WeekTimeSearchMessage`.

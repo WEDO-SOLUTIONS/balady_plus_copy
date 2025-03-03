@@ -28,6 +28,7 @@ class FeedbackTextDto extends FeedbackBaseDto {
         maxLength: length,
         hint: hint,
         type: resolveType(),
+        setOnMap: setOnMap ?? false,
       );
 
   FeedbackTextType resolveType() {

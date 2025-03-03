@@ -34,6 +34,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     private var indoorControlHandler: IndoorControlHandler?
     private var routeHandler: RouteHandler?
     private var navigationHandler: NavigationHandler?
+    private var carPlayHandler: CarPlayHandler?
     private var searchHandler: SearchHandler?
     private var packagesHandler: PackagesHandler?
     private var weatherHandler: WeatherHandler?
@@ -116,6 +117,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             eventChannel: eventChannel,
             view: self._view
         )
+        
+        self.carPlayHandler = CarPlayHandler(eventChannel: eventChannel)
         
         self.routeHandler = RouteHandler(
             map: map,
@@ -319,14 +322,14 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func moveCamera(cameraPosition: CameraPositionMessage, duration: Double, animationType: CameraAnimationTypeMessage, completion: @escaping (Result<Void, any Error>) -> Void) {
         guard let map = self.map else {
-            completion(
-                Result.failure(FlutterError(
-                code: "IllegalArgumentException",
-                message: "Map was not initialized properly",
-                details: nil
-            )))
-            return
-        }
+                    completion(
+                        Result.failure(FlutterError(
+                        code: "IllegalArgumentException",
+                        message: "Map was not initialized properly",
+                        details: nil
+                    )))
+                    return
+                }
         var desiredPosition = map.camera.position
         desiredPosition.point = cameraPosition.point.geoPoint
         desiredPosition.zoom = Zoom(value: Float(cameraPosition.zoom))
@@ -336,7 +339,21 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         let duration = TimeInterval(duration)
         let animationType = animationType.animationType
         
-        let moveCancelable = map.camera.move(position: desiredPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
+        moveCamera(cameraPosition: desiredPosition, duration: duration, animationType: animationType, completion: completion)
+    }
+    
+    private func moveCamera(cameraPosition: CameraPosition, duration: TimeInterval, animationType: CameraAnimationType, completion: @escaping (Result<Void, any Error>) -> Void) {
+        guard let map = self.map else {
+            completion(
+                Result.failure(FlutterError(
+                code: "IllegalArgumentException",
+                message: "Map was not initialized properly",
+                details: nil
+            )))
+            return
+        }
+        
+        let moveCancelable = map.camera.move(position: cameraPosition, time: duration, animationType: animationType).sink(receiveValue: { _ in
              completion(Result.success(()))
             return
         }, failure: { error in
@@ -364,6 +381,28 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func calcPositionForPolylines(polylines: [String], options: CalcPositionOptionsMessage, completion: @escaping (Result<CameraPositionMessage, any Error>) -> Void) {
         self.objectTapHandler?.calcPosition(polylines: polylines, options: options, completion: completion)
+    }
+
+    func animateToRepresentativeArea(area: GeometryMessage, options: CalcPositionOptionsMessage, duration: Double, animationType: CameraAnimationTypeMessage,  completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.calcPosition(area: area, options: options) { positionResult in
+               switch positionResult {
+                case .success(let cameraPosition):
+                   // Once we have the camera position, we can move the camera.
+                   let duration = TimeInterval(duration)
+                   let animationType = animationType.animationType
+                   
+                   self.moveCamera(
+                       cameraPosition: cameraPosition,
+                       duration: duration,
+                       animationType: animationType,
+                       completion: completion
+                   )
+                   
+                case .failure(let error):
+                   // If calcPosition failed, we immediately fail with the same error.
+                   completion(.failure(error))
+               }
+           }
     }
     
     func getNearestObjects(completion: @escaping (Result<[RenderedObjectMessage], any Error>) -> Void) {
@@ -725,6 +764,24 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func removeAllPolygons( manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.objectTapHandler?.removeAllPolygons(from: manager?.id, completion: completion)
+    }
+    
+    // MARK: Circle
+    
+    func addCircle(circle: CircleMessage, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addCircle(circle, to: manager?.id, completion: completion)
+    }
+    
+    func addCircles(circles: [CircleMessage], manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.addCircles(circles, to: manager?.id, completion: completion)
+    }
+    
+    func removeCircle(id: String, manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeCircle(id, from: manager?.id, completion: completion)
+    }
+    
+    func removeAllCircles(manager: MapObjectManagerMessage?, completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.objectTapHandler?.removeAllCircles(from: manager?.id, completion: completion)
     }
     
     // MARK: Polyline
@@ -1180,8 +1237,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
          completion(Result.success(()))
     }
 
-    func getAndroidAutoConnectionState(completion: @escaping (Result<Bool, any Error>) -> Void) {
-        completion(Result.success(false))
+    func getCarConnectionState(completion: @escaping (Result<Bool, any Error>) -> Void) {
+        carPlayHandler?.getConnectionState(completion: completion)
     }
     
 

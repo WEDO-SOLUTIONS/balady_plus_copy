@@ -18,7 +18,7 @@ class MapnessConstants {
   static const parkingEnabledFreeRoam = 'parkingEnabledFreeRoam';
 
   ///config region
-  static const envConfigBoxKey = 'envConfigKey';
+  static const envConfigBoxKey = 'envConfigKey_4.7.3';
   static const envTypeKey = 'envTypeKey';
   static const vendorConfigKey = 'vendorConfigKey';
   static const firebaseAppEnvConfigKey = 'app_env_config';

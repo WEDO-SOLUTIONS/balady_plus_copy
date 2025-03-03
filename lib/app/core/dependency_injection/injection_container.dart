@@ -2,6 +2,7 @@ import 'package:balady_plus/app/commercial_model/dependency_injection/commercial
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
+import 'package:balady_plus/app/features/_shared_features/check_commercial_license/data/data_sources/check_commercial_license_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/datasources/balady_calendar_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/repositories/balady_calendar_repository.dart';
 import 'package:balady_plus/app/features/balady_calender/domain/repositories/balady_calendar_repository.dart';
@@ -42,7 +43,7 @@ import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
 import '../../features/classification_certificate/core/dependency_injection/classification_certificate_injection.dart';
-import '../../features/force_update/presentation/core/force_update_view_model.dart';
+import '../../features/force_update/presentation/core/force_update_cubit.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
 import '../../features/map_page/data/repositories/layers_repositories.dart';
 import '../../features/notifications/data/data_source/notifications_remote_data_source.dart';
@@ -84,15 +85,12 @@ import 'features/retrive_dc_injection.dart';
 import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
 
-
 import 'package:balady_authorization/src/utils/injection/injection_container.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
 
 void initialize() {
-
-
   OLDInjection.init();
   //! Features
   //? Entry Point
@@ -130,7 +128,6 @@ void initialize() {
   //? Violation Guide
   ViolationGuideInjection.init();
 
-
 //? Objections
   ObjectionsInjection.init();
 //? Objectable Transactions
@@ -157,7 +154,7 @@ void initialize() {
 
   //! Core
   sl.registerLazySingleton(() => WebService(dio: sl()));
-  sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
+  // sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
   sl.registerLazySingleton(
       () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
 
@@ -221,10 +218,12 @@ void initialize() {
 
   sl.registerLazySingleton<RequestsRemoteDataSource>(
     () => RequestsRemoteDataSourceImplementation(
-        webService: sl(), crmWebService: sl()),
+      webService: sl(),
+      // crmWebService: sl(),
+    ),
   );
 
-  sl.registerLazySingleton(() => ForceUpdateViewModel());
+  sl.registerLazySingleton(() => ForceUpdateCubit());
 
   sl.registerLazySingleton<ChatBotDataSources>(
       () => ChatBotDataSourcesImplementation(webService: sl()));
@@ -241,6 +240,10 @@ void initialize() {
   //  Noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
       () => NotificationRemoteDataSourceImplementation(webService: sl()));
+
+  sl.registerLazySingleton<CheckCommercialLicenseDataSource>(
+      () => CheckCommercialLicesnseDataSourceImpl(webService: sl()));
+
   sl.registerLazySingleton<NotificationRepositoryImplementation>(
       () => NotificationRepositoryImplementation(remoteDataSource: sl()));
   sl.registerLazySingleton<NotificationManager>(
@@ -248,7 +251,6 @@ void initialize() {
 
   sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(() => QuestionRemoteDataSourceImplementation(webService: sl()));
   sl.registerLazySingleton<SplashRemoteDataSource>(() => SplashRemoteDataSourceImpl(webService: sl()));
-
 
   /////////////// End
 
@@ -266,6 +268,4 @@ void initialize() {
   /////////////// get All Home Services Certificate Injection Container
   HomeServicesInjectionContainer.init();
   /////////////// End
-
-
 }

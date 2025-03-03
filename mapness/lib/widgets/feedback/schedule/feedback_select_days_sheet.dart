@@ -182,33 +182,36 @@ class _SelectDayItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: context.colorsV2.neutralContainerActive,
-            ),
-          ),
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                dayName,
-                style: context.textStyleV3.bodyLargeRegular,
+  Widget build(BuildContext context) => GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: context.colorsV2.neutralContainerActive,
               ),
             ),
-            uikit.BaladyCheckBox(
-              state: state,
-              disable: disable,
-              onChanged: (state) => onTap(),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  dayName,
+                  style: context.textStyleV3.bodyLargeRegular,
+                ),
+              ),
+              uikit.BaladyCheckBox(
+                state: state,
+                disable: disable,
+                onChanged: (state) => onTap(),
 
-              /// rebuild checkbox when state or dayName changes
-              /// since weeldays does not update when everyday checked
-              key: ValueKey(dayName.hashCode ^ state.hashCode),
-            ),
-          ],
+                /// rebuild checkbox when state or dayName changes
+                /// since weeldays does not update when everyday checked
+                key: ValueKey(dayName.hashCode ^ state.hashCode),
+              ),
+            ],
+          ),
         ),
       );
 }

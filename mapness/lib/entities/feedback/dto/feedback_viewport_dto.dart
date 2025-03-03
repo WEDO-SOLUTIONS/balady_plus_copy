@@ -20,11 +20,11 @@ class FeedbackViewportDto {
         bound: ViewportBound(
           nw: LatLng(
             lat: cameraViewport.northEastLat,
-            long: cameraViewport.southWestLon,
+            lon: cameraViewport.southWestLon,
           ),
           se: LatLng(
             lat: cameraViewport.southWestLat,
-            long: cameraViewport.northEastLon,
+            lon: cameraViewport.northEastLon,
           ),
         ),
       );
@@ -46,11 +46,11 @@ class ViewportBound {
 @JsonSerializable(createFactory: false)
 class LatLng {
   final double lat;
-  final double long;
+  final double lon;
 
   const LatLng({
     required this.lat,
-    required this.long,
+    required this.lon,
   });
 
   Map<String, dynamic> toJson() => _$LatLngToJson(this);

@@ -73,57 +73,60 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       }
     });
 
-    return BaladySearchWithBackButton(
-      searchInput: BaladyInput.searchV2(
-        focusNode: _focusNode,
-        onChanged: (query) {
-          ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-          Metrics.logEventAdvanced(
-            MetricsConstants.searchKeys.searchField,
-            group: MetricsConstants.searchTag,
-            action: MetricAction.type.toString(),
-            props: {
-              'query': query,
-            },
-          );
-        },
-        onTap: () {
-          _controller.selection = TextSelection.fromPosition(
-            TextPosition(
-              offset: _controller.text.length,
-            ),
-          );
-        },
-        onSubmitted: (query) async {
-          Metrics.logEventAdvanced(
-            MetricsConstants.searchKeys.searchField,
-            group: MetricsConstants.searchTag,
-            action: MetricAction.type.toString(),
-            props: {
-              'query': query,
-            },
-          );
-          if (query.trim().isNotEmpty) {
-            await searcher.searchByText(query);
-            await ref.read(searchHistoryProvider(scope.value).notifier).put(
-                  SearchHistoryItem(
-                    title: query,
-                    address: '',
-                    objectId: null,
-                    entranceId: null,
-                    createdAt: DateTime.timestamp().toIso8601String(),
-                  ),
-                );
-            unawaited(ref.read(SendStatisticProvider(query).future));
-          }
-          _focusNode.requestFocus();
-        },
+    return BaladySearchWithBackButtonV2(
+      searchInput: BaladyTextInput.search(
         controller: _controller,
-        hintText: context.l10n.search,
-        fillColor: context.colorsV2.neutralContainerDefault,
-        hintColor: context.colorsV2.foregroundSoft,
-        // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
-        textStyle: context.textStyleV3.bodySmallRegular,
+        config: BaladyInputConfig(
+          focusNode: _focusNode,
+          onChanged: (query) {
+            ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
+            Metrics.logEventAdvanced(
+              MetricsConstants.searchKeys.searchField,
+              group: MetricsConstants.searchTag,
+              action: MetricAction.type.toString(),
+              props: {
+                'query': query,
+              },
+            );
+          },
+          onTap: () {
+            _controller.selection = TextSelection.fromPosition(
+              TextPosition(
+                offset: _controller.text.length,
+              ),
+            );
+          },
+          onSubmitted: (query) async {
+            Metrics.logEventAdvanced(
+              MetricsConstants.searchKeys.searchField,
+              group: MetricsConstants.searchTag,
+              action: MetricAction.type.toString(),
+              props: {
+                'query': query,
+              },
+            );
+            if (query.trim().isNotEmpty) {
+              await searcher.searchByText(query);
+              await ref.read(searchHistoryProvider(scope.value).notifier).put(
+                    SearchHistoryItem(
+                      title: query,
+                      address: '',
+                      objectId: null,
+                      entranceId: null,
+                      createdAt: DateTime.timestamp().toIso8601String(),
+                    ),
+                  );
+              unawaited(ref.read(SendStatisticProvider(query).future));
+            }
+            _focusNode.requestFocus();
+          },
+
+          hintText: context.l10n.search,
+          fillColor: context.colorsV2.neutralContainerDefault,
+          hintColor: context.colorsV2.foregroundSoft,
+          // TODO(uikit): BoxConstraints(0.0<=w<=Infinity, 48.0<=h<=40.0; NOT NORMALIZED)
+          textStyle: context.textStyleV3.bodySmallRegular,
+        ),
       ),
       option: SearchTextBackOption(
         text: context.l10n.cancel,

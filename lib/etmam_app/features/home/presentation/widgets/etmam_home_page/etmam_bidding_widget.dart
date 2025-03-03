@@ -25,9 +25,7 @@ class EtmamBiddingWidget extends StatelessWidget {
     return BlocListener<EntryPointCubit, EntryPointState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authenticated) {
-          context
-              .read<HomeBloc>()
-              .add(FindByRequestTypeEvent());
+          context.read<HomeBloc>().add(FindByRequestTypeEvent());
         }
       },
       child: BlocBuilder<HomeBloc, HomeState>(
@@ -78,13 +76,15 @@ class EtmamBiddingWidget extends StatelessWidget {
                       CustomVerticalSpace(height: 16),
                       ElevatedButtonWidget.primaryCustom(
                           onPressed: () {
-                            if (CommonProperties.isLoggedIn) {
+                            if (CommonProperties.isLoggedInMunicipality) {
                               context
                                   .read<HomeBloc>()
                                   .add(FindByRequestTypeEvent());
                             } else {
-                              sl<EntryPointCubit>()
-                                  .onLogin(isFromEtmam: true);
+                              sl<EntryPointCubit>().onLogin(
+                                isFromEtmam: true,
+                                isMunicipality: true,
+                              );
                             }
                           },
                           text: "bidding_home_publish".tr())

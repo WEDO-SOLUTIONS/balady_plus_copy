@@ -9,8 +9,8 @@ part 'feedback_form_payload_entity.freezed.dart';
 class FeedbackFormPayloadEntity with _$FeedbackFormPayloadEntity {
   const factory FeedbackFormPayloadEntity({
     required String category,
-    required int objectId,
     required IList<FeedbackFieldPayloadDto> fields,
     required VisibleRect viewport,
+    int? objectId,
   }) = _FeedbackFormPayloadEntity;
 }

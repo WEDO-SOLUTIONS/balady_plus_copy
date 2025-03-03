@@ -72,8 +72,7 @@ class ApiConstants {
 
 // GIS
 
-  static const String GisGetLocation =
-      '/gisservices/RestfulService.svc/Get_Full_Address';
+  static const String GisGetLocation = '/v1/gis-tawakkalna-services/address';
 
   // Health Certificate
   static const String HelathCertificatesURL = '/v1/mobile-health-certificates';

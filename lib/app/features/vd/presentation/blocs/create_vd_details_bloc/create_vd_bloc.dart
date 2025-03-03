@@ -98,13 +98,13 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           gisResponse: params?.gisResponse,
           pageType: params?.pageType,
           qrCodeFlow: params?.qrCodeFlow ?? false,
-          firstName: !CommonProperties.isLoggedIn
+          firstName: !CommonProperties.isLoggedInMunicipality
               ? sharedPrefs.getGuestFirstName()
               : null,
-          lastName: !CommonProperties.isLoggedIn
+          lastName: !CommonProperties.isLoggedInMunicipality
               ? sharedPrefs.getGuestLastName()
               : null,
-          mobileNumber: !CommonProperties.isLoggedIn
+          mobileNumber: !CommonProperties.isLoggedInMunicipality
               ? sharedPrefs.getGuestMobile()
               : null,
         )) {
@@ -235,7 +235,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           items: items,
           errorMessage: "",
         ));
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           add(CreateIncidentRegisteredEvent());
         } else {
           if (e.otpValue != null) {
@@ -247,7 +247,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         }
       });
     } else {
-      if (CommonProperties.isLoggedIn) {
+      if (CommonProperties.isLoggedInMunicipality) {
         add(CreateIncidentRegisteredEvent());
       } else {
         if (e.otpValue != null) {
@@ -451,7 +451,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
               type: PAGE_TYPE.newVD,
               // fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-      if (!CommonProperties.isLoggedIn) {
+      if (!CommonProperties.isLoggedInMunicipality) {
         sharedPrefs.storeGuestInfo(
             state.firstName, state.lastName, state.mobileNumber);
       }
@@ -810,7 +810,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   void sendEventStep(int page) {
     String eventName = "";
 
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       if (page == 0) {
         eventName = UXCamEvents.SnapAndSend_Open_Location_Step_Event;
       } else if (page == 1) {

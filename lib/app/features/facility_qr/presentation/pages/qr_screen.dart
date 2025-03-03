@@ -6,8 +6,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'dart:io';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-
+import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'

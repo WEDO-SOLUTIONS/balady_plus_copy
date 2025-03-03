@@ -3,9 +3,9 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/entry_point_exports.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
-import 'package:mapness/_features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
 import 'package:mapness/entry_point.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -25,12 +25,12 @@ class Auth extends _$Auth {
   Future<void> logOut() async {
     Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
+    await ref.read(profileImageProvider.notifier).clear();
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logOut');
     await mixpanel?.reset();
     await FlutterUxcam.setUserIdentity(null);
-    ref.read(profileImageProvider.notifier).clear();
   }
 
   Future<void> tokenExpireLogout() async {

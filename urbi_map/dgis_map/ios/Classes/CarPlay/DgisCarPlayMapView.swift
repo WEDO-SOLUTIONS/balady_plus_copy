@@ -10,6 +10,7 @@ protocol DgisCarPlayMapViewDelegate {
 class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     static let defaultCameraPositionPoint = CameraPositionPoint(x: 0.5, y: 0.8)
     static let defaultCameraPosition = GeoPoint(latitude: 24.712301, longitude: 46.674175)
+    static let defaultCameraZoom = Zoom(value: 17)
     
     var delegate: DgisCarPlayMapViewDelegate?
     
@@ -54,14 +55,21 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
             ),
             markerType: .model
         ))
-        
-        try? map.camera.setPosition(
-            point: Self.defaultCameraPosition,
-            zoom: Zoom(value: 17)
-        )
-        myLocationControlModel?.onClicked()
-        
         self.map = map
+        
+        if let location = try? sdk.locationService.lastLocation?.coordinates {
+            try? map.camera.setPosition(
+                point: location.value,
+                zoom: Self.defaultCameraZoom
+            )
+        } else {
+            try? map.camera.setPosition(
+                point: Self.defaultCameraPosition,
+                zoom: Self.defaultCameraZoom
+            )
+        }
+        myLocation()
+        
         mapView.translatesAutoresizingMaskIntoConstraints = false
         
         self.view.addSubview(mapView)
@@ -73,6 +81,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         ])
         self.mapView = mapView
         addSpeedControl()
+        DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
         self.delegate?.viewDidLoad(with: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
@@ -162,8 +171,47 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     }
     
     func myLocation() {
-        guard let myLocationControlModel else { return }
+        guard let camera = map?.camera, let myLocationControlModel,
+        let myLocation = try? DgisMapInitializer.shared.getSdkContainer().locationService.lastLocation?.coordinates else {
+            return
+        }
         
+        let position = camera.position
+        if position.zoom.value > Self.defaultCameraZoom.value - 1 {
+            myLocationControlModel.onClicked()
+            return
+        }
+        
+        let navigationManager = DgisMapInitializer.shared.getNavigationManager()
+        let navigationState = navigationManager.uiModel.state
+        if navigationState == .navigation || navigationState == .routeSearch {
+            cancellables.insert(
+                camera.move(
+                    point: myLocation.value,
+                    zoom: Self.defaultCameraZoom,
+                    tilt: position.tilt,
+                    bearing: position.bearing
+                ).sink(
+                    receiveValue: { _ in
+                        navigationManager.mapFollowController.setFollow(follow: true)
+                    },
+                    failure: { _ in }
+                )
+            )
+            return
+        }
+        
+        cancellables.insert(
+            camera.move(
+                point: myLocation.value,
+                zoom: Self.defaultCameraZoom,
+                tilt: position.tilt,
+                bearing: position.bearing
+            ).sink(
+                receiveValue: { _ in },
+                failure: { _ in }
+            )
+        )
         myLocationControlModel.onClicked()
     }
 }
@@ -180,8 +228,7 @@ extension UIView {
 
 extension Map {
     func loadStyle(styleFactory: DGis.IStyleFactory) -> DGis.Cancellable? {
-        // TODO(Sergei): load style from flutter lib map_styles
-        let stylePath = "Frameworks/App.framework/flutter_assets/assets/maps/styles/styles.2gis"
+        let stylePath = FlutterDartProject.lookupKey(forAsset: "packages/map_styles/src/styles.2gis")
         guard let assetPath = Bundle.main.path(forResource: stylePath, ofType: nil) else { return nil }
         return styleFactory.loadFile(path: assetPath).sink(
             receiveValue: { style in

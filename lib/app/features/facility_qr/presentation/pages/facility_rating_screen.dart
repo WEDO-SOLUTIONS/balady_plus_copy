@@ -47,7 +47,7 @@ class _FacilityRatingScreenState extends State<FacilityRatingScreen> {
         builder: (context, child) {
           FacilityRatingViewModel model =
               Provider.of<FacilityRatingViewModel>(context);
-          return !CommonProperties.isLoggedIn
+          return !CommonProperties.isLoggedInMunicipality
               ? NeedLoginWidget(
                   title: ('facility_evaluation').tr(),
                   desc: ('need_login_desc_evaluation').tr(),
