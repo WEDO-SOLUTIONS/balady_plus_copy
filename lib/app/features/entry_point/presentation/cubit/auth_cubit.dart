@@ -125,9 +125,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     bool isFromEtmam = false,
   }) async {
     try {
-      // TODO: Refactor [GoLoginScreenAuthentication]
-      // After upgrading version we have to pass the parameter [isMunicipality]
-      slAuthentication<AuthenticationBloc>().add(const GoLoginScreenAuthentication(isMunicipality: false));
+      slAuthentication<AuthenticationBloc>().add(GoLoginScreenAuthentication());
     } catch (e) {
       print("object");
     }
