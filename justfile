@@ -138,6 +138,7 @@ ios_setup:
         just pubget
         fvm flutter precache --ios
         rm -f Podfile.lock
+        rm -f ${HOME}/.cocoapods/repos/cocoapods/.git/index.lock
         pod repo update || true
         pod update
         pod install
