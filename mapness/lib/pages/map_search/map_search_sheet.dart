@@ -23,8 +23,6 @@ import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
-import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';

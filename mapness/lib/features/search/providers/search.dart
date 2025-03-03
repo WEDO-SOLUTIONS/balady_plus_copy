@@ -1,6 +1,5 @@
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
