@@ -36,9 +36,15 @@ class EtaSheetWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     double bottomPadding = media.padding.bottom;
+
     if (Platform.isAndroid) {
       bottomPadding += Spacing.$6x;
     }
+
+    final double? height = media.orientation == Orientation.landscape && isExpanded
+        ? (media.size.height - Spacing.$3x - bottomPadding)
+        : null;
+
     return MeasureSize(
       onChange: (size) {
         // This method called only if we want to rebuild (expand) our widget
@@ -78,7 +84,11 @@ class EtaSheetWrapper extends StatelessWidget {
               ),
               duration: duration,
               curve: curve,
-              child: child,
+              child: SizedBox(
+                width: double.infinity,
+                height: height,
+                child: child,
+              ),
             ),
           ),
         ],

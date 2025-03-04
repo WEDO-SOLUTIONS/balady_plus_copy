@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -67,6 +68,8 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
   @override
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
+    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     _isExpanded = eta?.isExpanded ?? false;
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
@@ -92,7 +95,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
-      backgroundColor: colorsV2.backgroundSurface4,
+      backgroundColor: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           contentColor: colorsV2.backgroundSurface4,
@@ -110,9 +113,11 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             title: eta != null ? eta.timeEta : '--',
           ),
           contentRows: [
+            Spacing.$3x.heightBox,
             ShareEtaBtn(
               durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
             ),
+            Spacing.$3x.heightBox,
             ContentRow(
               onTap: () => const SoundSettingsRoute().push(context),
               options: ContentRowOptions(
@@ -151,6 +156,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
               ),
             ),
+            Spacing.$3x.heightBox,
             ContentRow(
               onTap: () => context.router.push(const NavigatorSettingsRoute()),
               options: ContentRowOptions(
@@ -178,15 +184,14 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ),
           ],
           buttons: [
-            AppButton(
-              padding: const EdgeInsets.only(
-                left: Spacing.$4x,
-                right: Spacing.$4x,
-                bottom: Spacing.$3x,
+            Container(
+              color: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
+              padding: const EdgeInsets.all(Spacing.$4x),
+              child: AppButton(
+                buttonColorScheme: ButtonColorScheme.warning,
+                primaryLabel: l10n.endTrip,
+                onTap: widget.onEndTripPressed,
               ),
-              buttonColorScheme: ButtonColorScheme.warning,
-              primaryLabel: l10n.endTrip,
-              onTap: widget.onEndTripPressed,
             )
           ],
           onTapBurger: toggle,
