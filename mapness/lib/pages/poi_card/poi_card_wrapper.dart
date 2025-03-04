@@ -26,6 +26,11 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       closestPoint: widget.closestPoint,
     );
     final state = ref.watch(viewModelProvider);
+    ref.listen(poiCardClosingProvider, (_, shouldClose) {
+      if (shouldClose) {
+        context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
+      }
+    });
 
     final poiCardState = state.valueOrNull;
     final data = poiCardState?.gisObjectIdMessage;
@@ -34,7 +39,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     if (widget.closestPoint != null) {
       final closestPoint = widget.closestPoint!;
       data?.markerPosition = GeoPointWithElevationMessage(
-          latitude: closestPoint.latitude, longitude: closestPoint.longitude, elevation: 0);
+        latitude: closestPoint.latitude,
+        longitude: closestPoint.longitude,
+        elevation: 0,
+      );
     }
 
     /// loading progress indicator

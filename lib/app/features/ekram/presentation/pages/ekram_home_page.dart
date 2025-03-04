@@ -122,7 +122,7 @@ class _EkramHomePageState extends State<EkramHomePage> {
               SafeArea(
                 child: CustomElevatedButtonWidget(
                   onPressed: () {
-                    if (CommonProperties.isLoggedIn) {
+                    if (CommonProperties.isLoggedInMunicipality) {
                       if (isDriver) {
                         NavigationService.navigatorKey.currentState!.pushNamed(
                             RouteName.driverEkramTransportationListScreen);
@@ -131,7 +131,9 @@ class _EkramHomePageState extends State<EkramHomePage> {
                             .pushNamed(RouteName.ekramOrdersScreen);
                       }
                     } else {
-                      sl<EntryPointCubit>().onLogin();
+                      sl<EntryPointCubit>().onLogin(
+                        isMunicipality: true,
+                      );
                     }
                   },
                   text: trans('ekramStartService'),

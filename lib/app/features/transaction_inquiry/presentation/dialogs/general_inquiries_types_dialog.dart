@@ -8,20 +8,19 @@ import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../customer_voice_exports.dart' show InquiryViewModel;
 import '../../data/general_inquiry_data.dart';
 
-class GeneralInquiryTypeDialog extends StatefulWidget {
-  const GeneralInquiryTypeDialog({Key? key}) : super(key: key);
+class GeneralInquiryTypeScreen extends StatefulWidget {
+  const GeneralInquiryTypeScreen({Key? key}) : super(key: key);
 
   @override
-  State<GeneralInquiryTypeDialog> createState() => _GeneralInquiryTypeDialog();
+  State<GeneralInquiryTypeScreen> createState() => _GeneralInquiryTypeDialog();
 }
 
-class _GeneralInquiryTypeDialog extends State<GeneralInquiryTypeDialog> {
+class _GeneralInquiryTypeDialog extends State<GeneralInquiryTypeScreen> {
   late List<CustomerVoiceReportTypeModel> _list;
 
   @override
@@ -65,9 +64,11 @@ class _GeneralInquiryTypeDialog extends State<GeneralInquiryTypeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.sizeOf(context).height - 50,
-      child: GridView.builder(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("select_category".tr()),
+      ),
+      body: GridView.builder(
         padding: const EdgeInsets.only(
             bottom: Constants.mediumPadding,
             left: Constants.semiMediumPadding,

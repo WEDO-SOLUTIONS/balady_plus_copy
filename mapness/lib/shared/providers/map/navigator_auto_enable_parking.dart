@@ -5,19 +5,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'navigator_auto_enable_parking.g.dart';
 
-const String _autoEnableParkingKey = 'navigator_settings.auto_enable_parking';
-
 @riverpod
 class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
   @override
   bool? build() {
     final sharedPrefs = ref.read(sharedPrefsProvider);
-    final autoEnableParking = sharedPrefs.getBool(_autoEnableParkingKey);
-
-    if (autoEnableParking == true) {
-      ref.read(layersControlsProvider.notifier).enableParking();
-      sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-    }
+    final autoEnableParking = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam);
 
     return autoEnableParking;
   }
@@ -29,7 +22,7 @@ class _NavigatorAutoEnableParking extends _$NavigatorAutoEnableParking {
   void toggleAutoEnableParking({required bool value}) {
     state = value;
 
-    ref.read(sharedPrefsProvider).setBool(_autoEnableParkingKey, value);
+    ref.read(sharedPrefsProvider).setBool(MapnessConstants.parkingEnabledFreeRoam, value);
 
     if (value) {
       ref.read(layersControlsProvider.notifier).enableParking();

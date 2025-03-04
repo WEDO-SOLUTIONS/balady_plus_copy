@@ -31,7 +31,7 @@ class DashboardBloc extends Bloc<DashboardEvent, DashboardState> {
   }) : super(const DashboardState()) {
     on<DashboardEventInitial>(
       (event, emit) async {
-        if (!CommonProperties.isLoggedIn) return;
+        if (!CommonProperties.isLoggedInMunicipality) return;
         emit(
           state.copyWith(status: BlocRequestStatus.submissionGetLoading),
         );

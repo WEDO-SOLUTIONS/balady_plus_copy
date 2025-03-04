@@ -7,7 +7,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 /// See also:
 /// - [StatelessBottomSheetController]
 StatelessBottomSheetController useStatelessBottomsheetController({
-  required BottomSheetOnCloseCallback onClose,
+  BottomSheetOnCloseCallback? onClose,
   List<Object?>? keys,
   double? durationMultiplier,
   bool isInteractive = true,
@@ -25,12 +25,12 @@ StatelessBottomSheetController useStatelessBottomsheetController({
 
 class _StatelessBottomSheetControllerHook extends Hook<StatelessBottomSheetController> {
   final double? durationMultiplier;
-  final BottomSheetOnCloseCallback onClose;
+  final BottomSheetOnCloseCallback? onClose;
   final bool isInteractive;
   final BottomSheetHeightModel? heightModel;
 
   const _StatelessBottomSheetControllerHook({
-    required this.onClose,
+    this.onClose,
     this.durationMultiplier,
     this.isInteractive = true,
     this.heightModel,
@@ -44,12 +44,18 @@ class _StatelessBottomSheetControllerHook extends Hook<StatelessBottomSheetContr
 
 class _StatelessBottomSheetControllerHookState
     extends HookState<StatelessBottomSheetController, _StatelessBottomSheetControllerHook> {
-  late final controller = StatelessBottomSheetController(
-    durationMultiplier: hook.durationMultiplier ?? 1.0,
-    onClose: hook.onClose,
-    isInteractive: hook.isInteractive,
-    heightModel: hook.heightModel,
-  );
+  late final controller = hook.onClose == null
+      ? StatelessBottomSheetController(
+          durationMultiplier: hook.durationMultiplier ?? 1.0,
+          isInteractive: hook.isInteractive,
+          heightModel: hook.heightModel,
+        )
+      : StatelessBottomSheetController(
+          durationMultiplier: hook.durationMultiplier ?? 1.0,
+          onClose: hook.onClose!,
+          isInteractive: hook.isInteractive,
+          heightModel: hook.heightModel,
+        );
 
   @override
   StatelessBottomSheetController build(BuildContext context) => controller;

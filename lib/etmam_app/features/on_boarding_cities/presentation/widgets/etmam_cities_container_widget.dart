@@ -59,8 +59,8 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    (bool?, String?)? args =
-        ModalRoute.of(context)!.settings.arguments as (bool?, String?)?;
+    var data = ModalRoute.of(context)!.settings.arguments;
+    (bool?, String?)? args = data is (bool?, String?)? ? data : null;
 
     return Container(
       width: double.infinity,
@@ -139,9 +139,12 @@ class _CityContainerWidgetState extends State<EtmamCitiesContainerWidget> {
                   CustomPrimaryButton(
                     onPressed: () {
                       if (state.providersStatus != BlocStatus.loading) {
-                        sl<CityBloc>().add(SelectCityEvent(
+                        sl<CityBloc>().add(
+                          SelectCityEvent(
                             item: state.searchedItems?[selectedIndex],
-                            subServiceid: args?.$2));
+                            subServiceid: args?.$2,
+                          ),
+                        );
                       }
                     },
                     btnText: trans('choose_city'),

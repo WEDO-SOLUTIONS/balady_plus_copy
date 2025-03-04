@@ -25,12 +25,12 @@ class Auth extends _$Auth {
   Future<void> logOut() async {
     Metrics.logEvent('Auth/logOut');
     mixpanel?.timeEvent('Auth: logOut');
+    await ref.read(profileImageProvider.notifier).clear();
     await sl<EntryPointCubit>().clearAuth();
     ref.invalidateSelf();
     await mixpanel?.track('Auth: logOut');
     await mixpanel?.reset();
     await FlutterUxcam.setUserIdentity(null);
-    ref.read(profileImageProvider.notifier).clear();
   }
 
   Future<void> tokenExpireLogout() async {

@@ -26,7 +26,10 @@ class ChatBotScreen extends StatefulWidget {
 }
 
 class _ChatBotScreenState extends State<ChatBotScreen> {
-  ChatBotProvider provider = ChatBotProvider(sl(), sectionId: DateTime.now().millisecondsSinceEpoch,);
+  ChatBotProvider provider = ChatBotProvider(
+    sl(),
+    sectionId: DateTime.now().millisecondsSinceEpoch,
+  );
 
   @override
   void initState() {
@@ -36,10 +39,10 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var data = ModalRoute.of(context)!.settings.arguments;
 
-
-    SessionDetails? intailData = ModalRoute.of(context)!.settings.arguments != null? ModalRoute.of(context)!.settings.arguments as SessionDetails:null;
-    if(intailData != null) {
+    SessionDetails? intailData = data is SessionDetails ? data : null;
+    if (intailData != null) {
       provider.intaiteChat(intailData);
     }
 
@@ -57,11 +60,10 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                   return isLoading
                       ? const Center(child: CircularProgressIndicator())
                       : provider.isEnabled
-                          ?  Column(
+                          ? Column(
                               children: [
                                 ChatBotList(),
                                 SendMessageCardChatBot(),
-                                
                               ],
                             )
                           : Padding(

@@ -8,23 +8,21 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../data/models/daem_item.dart';
 import '../core/bloc/category_bloc/daem_category_bloc.dart';
 
-class DaemTypeDialog extends StatefulWidget {
+class DaemTypeScreen extends StatefulWidget {
   final List<DaemItem>? categories;
 
-  const DaemTypeDialog({Key? key, this.categories}) : super(key: key);
+  const DaemTypeScreen({Key? key, this.categories}) : super(key: key);
 
   @override
-  State<DaemTypeDialog> createState() => _DaemTypeDialog();
+  State<DaemTypeScreen> createState() => _DaemTypeDialog();
 }
 
-class _DaemTypeDialog extends State<DaemTypeDialog> {
+class _DaemTypeDialog extends State<DaemTypeScreen> {
   @override
   void initState() {
     super.initState();
@@ -38,57 +36,52 @@ class _DaemTypeDialog extends State<DaemTypeDialog> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => DaemCategoryBloc(categories: widget.categories),
-      child: BlocConsumer<DaemCategoryBloc, DaemCategoryState>(
-        listener: (context, state) {
-          if (state.status == BlocStatus.failure) {
-            CommonFunctions.showError(state.error ?? "");
-          }
-        },
-        builder: (context, state) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // types
-                  state.status == BlocStatus.retry
-                      ? ReloadWidget(
-                          onTab: () {
-                            context
-                                .read<DaemCategoryBloc>()
-                                .add(GetDaemCategoryEvent());
-                          },
-                        )
-                      : state.categoryTypeList != null
-                          ? ListView.builder(
-                              physics: const BouncingScrollPhysics(),
-                              padding: const EdgeInsets.only(
-                                bottom: Constants.mediumPadding,
-                                left: Constants.semiMediumPadding,
-                                right: Constants.semiMediumPadding,
-                              ),
-                              itemCount: state.categoryTypeList?.length,
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return DaemTypeWidget(
-                                    name: state.categoryTypeList![index],
-                                    icon: getIcon(
-                                        state.categoryTypeList![index].name ??
-                                            ""));
-                              },
-                            )
-                          : Container()
-                ],
-              ),
-              if (state.status == BlocStatus.loading)
-                Align(
-                  child: CustomCircularLoadingWidget(),
-                  alignment: Alignment.center,
-                ),
-            ],
-          );
-        },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("daem_select_category".tr()),
+        ),
+        body: BlocConsumer<DaemCategoryBloc, DaemCategoryState>(
+          listener: (context, state) {
+            if (state.status == BlocStatus.failure) {
+              CommonFunctions.showError(state.error ?? "");
+            }
+          },
+          builder: (context, state) {
+            if (state.status == BlocStatus.loading) {
+              return const Align(
+                alignment: Alignment.center,
+                child: CustomCircularLoadingWidget(),
+              );
+            }
+
+            return state.status == BlocStatus.retry
+                ? ReloadWidget(
+                    onTab: () {
+                      context
+                          .read<DaemCategoryBloc>()
+                          .add(GetDaemCategoryEvent());
+                    },
+                  )
+                : state.categoryTypeList != null
+                    ? ListView.builder(
+                        // physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Constants.mediumPadding,
+                          horizontal: Constants.semiMediumPadding,
+                        ),
+                        itemCount: state.categoryTypeList?.length,
+                        // shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return DaemTypeWidget(
+                            name: state.categoryTypeList![index],
+                            icon: getIcon(
+                                state.categoryTypeList![index].name ?? ""),
+                          );
+                        },
+                      )
+                    : Container();
+          },
+        ),
       ),
     );
   }

@@ -69,7 +69,7 @@ class MyAppointmentsViewModel extends BaseViewModel {
       {bool showLoad = true,
       bool showErrorMsg = false,
       bool autoLogout = true}) async {
-    if (!CommonProperties.isLoggedIn) {
+    if (!CommonProperties.isLoggedInMunicipality) {
       return false;
     } else {
       if (showLoad) showLoader();

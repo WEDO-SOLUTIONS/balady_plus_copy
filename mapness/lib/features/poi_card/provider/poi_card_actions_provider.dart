@@ -1,6 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter/services.dart';
-import 'package:mapness/_features/landing/providers/map_controls.dart';
+import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';

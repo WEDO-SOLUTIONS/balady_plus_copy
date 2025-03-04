@@ -5,9 +5,9 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
+import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -149,10 +149,11 @@ class _ComplianceClauseSubmitItemState
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
                         onChanged: (int val) {
-                          if (widget.item.edit == true) {
+                        //  if (widget.item.edit == true) {
                             widget.item.submitterAnswer = 1;
                             widget.onChange(widget.item);
-                          }
+                            widget.onSubmit(widget.item);
+                          //}
                         },
                       ),
                     ),
@@ -169,10 +170,11 @@ class _ComplianceClauseSubmitItemState
                         height: MediaQuery.of(context).size.height * 0.05,
                         titleStyle: AppStyle.complianceClausesOptionStyle,
                         onChanged: (int val) {
-                          if (widget.item.edit == true) {
+                        //  if (widget.item.edit == true) {
                             widget.item.submitterAnswer = 0;
                             widget.onChange(widget.item);
-                          }
+                            widget.onSubmit(widget.item);
+                         // }
                         },
                       ),
                     ),
@@ -190,15 +192,16 @@ class _ComplianceClauseSubmitItemState
                           height: MediaQuery.of(context).size.height * 0.05,
                           titleStyle: AppStyle.complianceClausesOptionStyle,
                           onChanged: (int val) {
-                            if (widget.item.edit == true) {
+                           // if (widget.item.edit == true) {
                               widget.item.submitterAnswer = 2;
                               widget.onChange(widget.item);
-                            }
+                            //}
                           },
                         ),
                       ),
                   ],
                 ),
+
                 const SizedBox(
                   height: 16,
                 ),
@@ -251,6 +254,9 @@ class _ComplianceClauseSubmitItemState
                     height: 16,
                   ),
                 ],
+
+                // change by fawzi to show it only when anser is equal 2
+               widget.item.submitterAnswer==2?
                 ElevatedButtonWidget.custom(
                   isDisabled: (widget.item.submitterAnswer == null ||
                           widget.item
@@ -273,7 +279,7 @@ class _ComplianceClauseSubmitItemState
                       widget.onChange(widget.item);
                     }
                   },
-                ),
+                ):Container(),
                 if (widget.item.itemData?.isNotEmpty ?? false) ...[
                   if (lastNote != null)
                     ComplianceClauseNotesItem(item: lastNote),

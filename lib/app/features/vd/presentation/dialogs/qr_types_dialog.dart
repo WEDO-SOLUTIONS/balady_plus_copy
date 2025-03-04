@@ -17,9 +17,9 @@ import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.
 import '../../domain/entities/camera/camera_page_params.dart';
 
 class QrTypesDialog extends StatefulWidget {
-  final bool? isFromHome;
   final CameraParamsPage? cmeraParamsPage;
-  QrTypesDialog({Key? key, this.isFromHome = false, this.cmeraParamsPage})
+
+  QrTypesDialog({Key? key, this.cmeraParamsPage})
       : super(key: key);
 
   @override
@@ -116,18 +116,19 @@ class _QrTypesDialog extends State<QrTypesDialog> {
                                     context);
                             if (isLocationAvailable && isCameraAllowed) {
                               NavigationService.navigatorKey.currentState!
-                                  .pushNamed(RouteName.vdCameraPage,
-                                      arguments: CameraParamsPage(
-                                          lat: widget.cmeraParamsPage?.lat,
-                                          lon: widget.cmeraParamsPage?.lon,
-                                          qrCodeFlow: true,
-                                          pageType:
-                                              widget.cmeraParamsPage?.pageType,
-                                          selectedCategory: CategoryItem(
-                                              categoryId: state
-                                                  .qrCategory?[index]
-                                                  .categoryId),
-                                          isFromHome: false));
+                                  .pushNamed(
+                                RouteName.vdCameraPage,
+                                arguments: CameraParamsPage(
+                                  lat: widget.cmeraParamsPage?.lat,
+                                  lon: widget.cmeraParamsPage?.lon,
+                                  qrCodeFlow: true,
+                                  pageType: widget.cmeraParamsPage?.pageType,
+                                  selectedCategory: CategoryItem(
+                                      categoryId:
+                                          state.qrCategory?[index].categoryId),
+                                  // isFromHome: false,
+                                ),
+                              );
                             }
                           }),
                     ),

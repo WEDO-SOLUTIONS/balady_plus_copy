@@ -12,7 +12,7 @@ class AuthQuickAccessBiometricWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<AuthenticationBloc, AuthenticationState>(
       builder: (BuildContext context, state) {
-        if (state is AuthenticatedState) {
+        if (state is AuthenticatedMunicipalityState) {
           return Column(
             children: [
               AuthQuickAccessCell(isQuickAccess: state.loginData.isPasCode),

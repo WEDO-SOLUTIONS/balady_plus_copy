@@ -66,7 +66,7 @@ class QAAskMore extends StatelessWidget {
                   title: "Inq_3",
                   id: 15);
 
-              if (CommonProperties.isLoggedIn) {
+              if (CommonProperties.isLoggedInMunicipality) {
                 bool isSuccess = await locator<InquiryViewModel>()
                     .getAllSplClassifications(type);
 

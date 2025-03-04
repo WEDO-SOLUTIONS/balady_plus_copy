@@ -54,6 +54,13 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<AuthorizationTokenResponse> authorize() async {
     try {
+      print("ssoClient:${RemoteConfig.ssoClient}");
+
+      print("ssoLoginUrl:${RemoteConfig.ssoLoginUrl}");
+      print("ssoLoginUrl:${RemoteConfig.ssoLoginUrl}");
+      print("ssoSecret:${RemoteConfig.ssoSecret}");
+
+
       final request = AuthorizationTokenRequest(
         RemoteConfig.ssoClient,
         RemoteConfig.ssoLoginUrl,
@@ -62,6 +69,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
         scopes: [
           'openid',
           'profile',
+          "IdentityServerApi",
           'offline_access',
           'EmployeeAdminstration.Api',
         ],

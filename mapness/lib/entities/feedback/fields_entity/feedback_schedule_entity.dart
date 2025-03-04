@@ -33,7 +33,7 @@ class FeedbackScheduleWorkingHoursEntity {
   }) =>
       FeedbackScheduleWorkingHoursEntity(
         workingTime: workingTime ?? this.workingTime,
-        breaks: breaks ?? this.breaks,
+        breaks: breaks,
 
         /// it is fast -> https://pub.dev/packages/fast_immutable_collections#26-iterables-to-create-iIList-fields
         days: ISet(days ?? this.days),

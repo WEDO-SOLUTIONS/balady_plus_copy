@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -18,12 +19,16 @@ class DgisEnvironment extends _$DgisEnvironment {
 
   @override
   Future<EnvironmentConfig> build() async {
-    final box =
-        await ref.watch(hiveProvider(MapnessConstants.envConfigBoxKey).future);
+    final box = await ref.watch(hiveProvider(MapnessConstants.envConfigBoxKey).future);
     final envConfig = box.get(MapnessConstants.firebaseAppEnvConfigKey);
     final envType = box.get(MapnessConstants.envTypeKey);
     final envTypeJsonKey = _env?.name ?? envType;
-    final environmentConfig = EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
-    return environmentConfig;
+    try {
+      // ignore: avoid_dynamic_calls
+      return EnvironmentConfig.fromJson(jsonDecode(envConfig)[envTypeJsonKey]);
+    } catch (_, __) {
+      log('Error parsing environment config');
+      return EnvironmentConfig.fromEnvType(envType);
+    }
   }
 }

@@ -20,6 +20,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
+import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -186,6 +187,7 @@ class LayersControls extends _$LayersControls {
     _cancelToken?.cancel();
     await _viewPortSubscription?.cancel();
     await _hideAllSelectedMarkers();
+    ref.read(poiCardClosingProvider.notifier).close();
 
     if (currentState != null && currentState != value) {
       await _hidePreviousLayers(currentState);

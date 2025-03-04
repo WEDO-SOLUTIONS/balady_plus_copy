@@ -6,49 +6,43 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/balady_logo/balady_logo.dart';
 
-class UnautorizedProfile extends ConsumerWidget {
-  const UnautorizedProfile({super.key, this.onConnect});
+class UnauthorizedProfile extends ConsumerWidget {
+  const UnauthorizedProfile({super.key, this.onConnect});
 
   final VoidCallback? onConnect;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
-          color: context.colorsV2.accentSecondaryDefault,
-        ),
-        child: Column(
-          children: [
-            Spacing.$8x.heightBox,
-            const BaladyLogo(),
-            Spacing.$6x.heightBox,
-            SizedBox(
-              width: 280,
-              child: Text(
-                context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
-                textAlign: TextAlign.center,
-                style: context.textStyle.text.copyWith(
-                  color: context.colorsV2.staticWhite,
-                ),
+  Widget build(BuildContext context, WidgetRef ref) => Column(
+        children: [
+          Spacing.$8x.heightBox,
+          BaladyLogo(
+            height: 48,
+            width: 127,
+            color: context.colorsV3.accentOnAccent,
+          ),
+          Spacing.$4x.heightBox,
+          SizedBox(
+            width: 280,
+            child: Text(
+              context.l10n.signInToUnlockTheFullPotentialOfTheBaladyApp,
+              textAlign: TextAlign.center,
+              style: context.textStyleV3.bodySmallRegular.copyWith(
+                color: context.colorsV3.accentOnAccent,
               ),
             ),
-            Spacing.$4x.heightBox,
-            Row(
-              children: [
-                Expanded(
-                  child: BaladyAppButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    primaryLabel: context.l10n.connectToMomrah,
-                    buttonColorScheme: BaladyButtonColorScheme.accent,
-                    onTap: onConnect,
-                    textColor: context.colorsV2.staticWhite,
-                    size: BaladyButtonSize.large,
-                  ),
-                ),
-              ],
+          ),
+          Spacing.$4x.heightBox,
+          SizedBox(
+            width: double.infinity,
+            child: BaladyAppButton(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              primaryLabel: context.l10n.connectToMomrah,
+              size: BaladyButtonSize.large,
+              buttonColorScheme: BaladyButtonColorScheme.accent,
+              onTap: onConnect,
             ),
-            Spacing.$4x.heightBox,
-          ],
-        ),
+          ),
+          Spacing.$4x.heightBox,
+        ],
       );
 }

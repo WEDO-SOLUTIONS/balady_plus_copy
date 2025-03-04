@@ -4,7 +4,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' show Spacing;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/share_eta/helpers/constants.dart';
@@ -16,6 +15,7 @@ import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 
 @RoutePage()
 class EtaRoutePage extends ConsumerStatefulWidget {
