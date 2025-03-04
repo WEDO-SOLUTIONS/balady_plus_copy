@@ -1,3 +1,14 @@
+
+
+
+
+
+
+
+
+
+
+
 import 'dart:async';
 import 'dart:io';
 
@@ -67,22 +78,22 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
         onMapCreated: (DgisMapController controller) {
           // Setup listeners and initialize map
           // context.read<Step2ActivityDataExportCubit>().mapController = controller;
-        if(widget.currentUserLocation != null) {
-          controller.setCameraPosition(
-            CameraPositionMessage(
-              point: GeoPointMessage(
-                  latitude: widget.currentUserLocation!.latitude,
-                  longitude: widget.currentUserLocation!.longitude),
-              zoom: 16.0,
-              tilt: 0.0,
-              bearing: 0.0,
-            ),
-          );
-        }
+          if(widget.currentUserLocation != null) {
+            controller.setCameraPosition(
+              CameraPositionMessage(
+                point: GeoPointMessage(
+                    latitude: widget.currentUserLocation!.latitude,
+                    longitude: widget.currentUserLocation!.longitude),
+                zoom: 16.0,
+                tilt: 0.0,
+                bearing: 0.0,
+              ),
+            );
+          }
 
-        if(widget.marker != null && widget.marker!.isNotEmpty) {
-          controller.addMarkers(widget.marker!);
-        }
+          if(widget.marker != null && widget.marker!.isNotEmpty) {
+            controller.addMarkers(widget.marker!);
+          }
 
           widget.onMapController(controller);
 
@@ -163,7 +174,7 @@ class MapSearchSection extends StatelessWidget {
   final showBigPaddingScreen;
   Function(LatLng location) onSearchResult;
   final LatLng? currentUserLocation;
-
+ String query = "";
 
   MapSearchSection(
       {Key? key,
@@ -182,7 +193,10 @@ class MapSearchSection extends StatelessWidget {
       decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
       child: TypeAheadField<UrbiLocationModel>(
         errorBuilder: (context, error) =>  Text('errors_server_error_1'.tr()),
-        emptyBuilder: (context) =>  Text("noSearchFounded".tr()),
+        emptyBuilder: (context) => query.isNotEmpty? Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Text("noSearchFounded".tr()),
+        ):SizedBox(),
         suggestionsCallback: (search) => suggestionsCallback(search,currentUserLocation),
         builder: (context, controller, focusNode) {
           return TextField(
@@ -232,8 +246,8 @@ class MapSearchSection extends StatelessWidget {
 
         onSelected: (model) {
           if (model.point != null) {
-                 onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
-               }
+            onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
+          }
         },
       ),
     );
@@ -243,15 +257,16 @@ class MapSearchSection extends StatelessWidget {
   }
 
   Future<List<UrbiLocationModel>> suggestionsCallback(String pattern,LatLng? location) async {
-
+    query = pattern;
     UrbiSearchProvider? provider = sl();
-   return provider.search(pattern,location??const LatLng(latitude:24.694163,longitude:46.722667));
+    return provider.search(pattern,location??const LatLng(latitude:24.694163,longitude:46.722667));
 
 
   }
 
 
 }
+
 
 
 
