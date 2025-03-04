@@ -314,9 +314,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     ),
                   ),
                 ),
-                ParkingBottomSheetPage(
-                  onSizeChanged: _onSizeChangedParking,
-                )
+                ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking)
               ],
             );
           } else {

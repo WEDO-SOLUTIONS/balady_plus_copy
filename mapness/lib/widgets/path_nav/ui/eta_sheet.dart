@@ -182,6 +182,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
               ),
             ),
+            Spacing.$3x.heightBox,
           ],
           buttons: [
             Container(

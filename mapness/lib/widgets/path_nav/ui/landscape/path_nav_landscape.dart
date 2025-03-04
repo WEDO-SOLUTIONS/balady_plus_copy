@@ -64,56 +64,57 @@ class _PathNavLandscapeState extends ConsumerState<PathNavLandscape> {
               expansionNotifier: widget.expansionNotifier,
               navType: widget.navType,
             ),
-            Positioned(
-              bottom: 0,
-              right: 0,
-              left: 0,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  ParkingBanner(
-                    navigatorType: widget.navType,
-                    navigationState: widget.navigationState,
-                    isHomeOrWork: widget.isHomeOrWork,
-                  ),
-                  SizedBox(
-                    width: _roadPanelWidth,
-                    child: Directionality(
-                      textDirection: Directionality.of(context),
-                      child: ValueListenableBuilder(
-                        valueListenable: widget.navigationState,
-                        builder: (context, state, child) {
-                          switch (state) {
-                            case PathNavState.running:
-                              return Align(
-                                alignment: Alignment.bottomCenter,
-                                child: EtaSheet(
-                                  onEndTripPressed: () => widget.endTripAndShowFeedback(context),
-                                  onRoutePressed: widget.onShowRoutePressed,
-                                  onBetterRouteAccept: () => widget.acceptBetterRoute(context),
-                                  onBetterRouteReject: () => widget.rejectBetterRoute(context),
-                                  betterRouteDurationProfit: widget.betterRouteDurationProfit,
-                                  onSizeChanged: widget.onSizeChanged,
-                                ),
-                              );
-                            case PathNavState.paused:
-                              return EtaContinue(
-                                onTap: widget.onContinuePressed,
-                                onSizeChanged: widget.onSizeChanged,
-                              );
-                            case PathNavState.finished:
-                              return EtaFinished(
-                                expansionNotifier: widget.expansionNotifier,
-                                onEndTripPressed: widget.endTripAndShowHome,
-                                onBuildAnotherRoutePressed: widget.endTripAndBuildAnotherRoute,
-                                onSizeChanged: widget.onSizeChanged,
-                              );
-                          }
-                        },
+            Positioned.fill(
+              child: Align(
+                alignment: AlignmentDirectional.bottomStart,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ParkingBanner(
+                      navigatorType: widget.navType,
+                      navigationState: widget.navigationState,
+                      isHomeOrWork: widget.isHomeOrWork,
+                    ),
+                    Flexible(
+                      child: SizedBox(
+                        width: _roadPanelWidth,
+                        child: Directionality(
+                          textDirection: Directionality.of(context),
+                          child: ValueListenableBuilder(
+                            valueListenable: widget.navigationState,
+                            builder: (context, state, child) {
+                              switch (state) {
+                                case PathNavState.running:
+                                  return EtaSheet(
+                                    onEndTripPressed: () => widget.endTripAndShowFeedback(context),
+                                    onRoutePressed: widget.onShowRoutePressed,
+                                    onBetterRouteAccept: () => widget.acceptBetterRoute(context),
+                                    onBetterRouteReject: () => widget.rejectBetterRoute(context),
+                                    betterRouteDurationProfit: widget.betterRouteDurationProfit,
+                                    onSizeChanged: widget.onSizeChanged,
+                                  );
+                                case PathNavState.paused:
+                                  return EtaContinue(
+                                    onTap: widget.onContinuePressed,
+                                    onSizeChanged: widget.onSizeChanged,
+                                  );
+                                case PathNavState.finished:
+                                  return EtaFinished(
+                                    expansionNotifier: widget.expansionNotifier,
+                                    onEndTripPressed: widget.endTripAndShowHome,
+                                    onBuildAnotherRoutePressed: widget.endTripAndBuildAnotherRoute,
+                                    onSizeChanged: widget.onSizeChanged,
+                                  );
+                              }
+                            },
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
             ParkingBottomSheetPage(onSizeChanged: widget.onSizeChangedParking)

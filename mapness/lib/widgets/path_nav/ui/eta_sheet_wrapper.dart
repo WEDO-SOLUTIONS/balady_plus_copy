@@ -41,16 +41,14 @@ class EtaSheetWrapper extends StatelessWidget {
       bottomPadding += Spacing.$6x;
     }
 
-    final double? height = media.orientation == Orientation.landscape && isExpanded
-        ? (media.size.height - Spacing.$3x - bottomPadding)
-        : null;
-
     return MeasureSize(
       onChange: (size) {
         // This method called only if we want to rebuild (expand) our widget
         onSizeChanged?.call(size);
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (betterRouteDurationProfit != null)
             ValueListenableBuilder(
@@ -70,24 +68,28 @@ class EtaSheetWrapper extends StatelessWidget {
                     )
                   : const SizedBox.shrink(),
             ),
-          Material(
-            color: isExpanded ? backgroundColor ?? Colors.white : Colors.transparent,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            child: AnimatedPadding(
-              padding: EdgeInsets.only(
-                left: isExpanded ? 0 : Spacing.$4x,
-                right: isExpanded ? 0 : Spacing.$4x,
-                bottom: bottomPadding,
-              ),
-              duration: duration,
-              curve: curve,
-              child: SizedBox(
-                width: double.infinity,
-                height: height,
-                child: child,
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(top: isExpanded ? Spacing.$3x : 0),
+              child: Material(
+                color: isExpanded ? backgroundColor ?? Colors.white : Colors.transparent,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+                child: AnimatedPadding(
+                  padding: EdgeInsets.only(
+                    left: isExpanded ? 0 : Spacing.$4x,
+                    right: isExpanded ? 0 : Spacing.$4x,
+                    bottom: bottomPadding,
+                  ),
+                  duration: duration,
+                  curve: curve,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: child,
+                  ),
+                ),
               ),
             ),
           ),
