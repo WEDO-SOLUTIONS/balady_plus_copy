@@ -3,7 +3,6 @@ import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
@@ -11,6 +10,7 @@ import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../../core/utils/enums/bloc_status.dart';
 
 part 'vd_category_event.dart';
+
 part 'vd_category_state.dart';
 
 class VDCategoryBloc extends Bloc<VDCategoryEvent, VDCategoryState> {
@@ -111,7 +111,7 @@ class VDCategoryBloc extends Bloc<VDCategoryEvent, VDCategoryState> {
   }
 
   void navigateToCamera(int index,
-      {bool isVD = false, bool isPromoted = false, bool isFromHome = false}) {
+      {bool isVD = false, bool isPromoted = false,}) {
     CategoryItem? selectedCategory;
 
     if (isVD)
@@ -121,9 +121,11 @@ class VDCategoryBloc extends Bloc<VDCategoryEvent, VDCategoryState> {
     else
       selectedCategory = state.allCategories?[index];
     NavigationService.navigatorKey.currentState!.pushNamed(
-        RouteName.vdCameraPage,
-        arguments: CameraParamsPage(
-            selectedCategory: selectedCategory,
-            isFromHome: isVD || isFromHome));
+      RouteName.vdCameraPage,
+      arguments: CameraParamsPage(
+        selectedCategory: selectedCategory,
+        // isFromHome: isVD || isFromHome,
+      ),
+    );
   }
 }

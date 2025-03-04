@@ -78,6 +78,7 @@ class FeedbackSuccessWidget extends StatelessWidget {
                       onTap: () {
                         context.router.popUntil((route) =>
                             route.settings.name == PoiCardWidgetRoute.name ||
+                            route.settings.name == SearchRoute.name ||
                             route.settings.name == BottomMenuRoute.name);
                       },
                     ),

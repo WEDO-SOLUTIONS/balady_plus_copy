@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/services/local/shared_prefs_manager.dart';
 import '../../../../core/services/local/use_case.dart';
@@ -6,21 +10,30 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class EntryPointLocalDataSource {
   Future<bool> saveAuth(SSOToken params);
+
   Future<SSOToken> getAuth();
+
   Future<NoType> clearAuth();
+
   Future<bool> saveSSOProfile(SsoUserInfo params);
+
   Future<SsoUserInfo> checkSSOProfile();
 //  Future<bool> saveProfile(Profile params);
 //  Future<Profile> checkProfile();
 }
 
 class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
+  FlutterSecureStorage secureStorage = const FlutterSecureStorage();
+
   EntryPointLocalDataSourceImpl();
 
   @override
-  Future<bool> saveAuth(SSOToken params) {
+  Future<bool> saveAuth(SSOToken params) async {
     try {
-      sharedPrefs.setSSOToken(params.toModel);
+      await secureStorage.write(
+        key: 'sso_token',
+        value: json.encode(params.toModel.toJson()),
+      );
       return Future.value(true);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -37,10 +50,11 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
   }
 
   @override
-  Future<SSOToken> getAuth() {
+  Future<SSOToken> getAuth() async {
     try {
-      SSOTokenModel? token = sharedPrefs.getSSOToken();
-      if (token != null) {
+      String? data = await secureStorage.read(key: 'sso_token');
+      if (data != null) {
+        SSOTokenModel token = SSOTokenModel.fromMap(json.decode(data));
         return Future.value(token);
       } else {
         throw AuthNotFoundedException();
@@ -60,7 +74,8 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
   @override
   Future<NoType> clearAuth() {
     try {
-      sharedPrefs.setSSOToken(null);
+      secureStorage.delete(key: "sso_token");
+      secureStorage.delete(key: "sso_user_profile");
       return Future.value(NoType());
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -75,9 +90,12 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
   }
 
   @override
-  Future<bool> saveSSOProfile(SsoUserInfo params) {
+  Future<bool> saveSSOProfile(SsoUserInfo params) async {
     try {
-      sharedPrefs.setSSOUserProfile(params.toModel);
+      await secureStorage.write(
+        key: 'sso_user_profile',
+        value: json.encode(params.toModel.toJson()),
+      );
       return Future.value(true);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -94,10 +112,11 @@ class EntryPointLocalDataSourceImpl extends EntryPointLocalDataSource {
   }
 
   @override
-  Future<SsoUserInfo> checkSSOProfile() {
+  Future<SsoUserInfo> checkSSOProfile() async {
     try {
-      SsoUserInfo? profile = sharedPrefs.getSSOUserProfile();
-      if (profile != null) {
+      String? data = await secureStorage.read(key: 'sso_user_profile');
+      if (data != null) {
+        SsoUserInfo profile = SsoUserInfoModel.fromJson(json.decode(data));
         return Future.value(profile);
       } else {
         throw AuthNotFoundedException();

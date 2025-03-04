@@ -26,7 +26,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
-import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
 
 part 'auth_state.dart';
 
@@ -123,9 +123,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   ////////////////////////////////////////////////////////////////////////
   Future<bool> onLogin({
     bool isFromEtmam = false,
+    // When Use This Function and you want to login with municipality send isMunicipality = true
+    required bool isMunicipality,
   }) async {
     try {
-      slAuthentication<AuthenticationBloc>().add(GoLoginScreenAuthentication());
+      sl<ActionLoginCubit>().openLoginScreen(
+        state: sl<AuthenticationBloc>().state,
+        isMunicipality: isMunicipality,
+      );
     } catch (e) {
       print("object");
     }
@@ -166,8 +171,32 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         );
       });
     }
-
-    _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+    AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
+    if (authState is AuthenticatedMunicipalityState) {
+      _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+    } else {
+      emit(
+        state.copyWith(
+          status: AuthStatus.authenticated,
+          token: token,
+          userInfo: const SsoUserInfo(),
+          errorMessage: "",
+        ),
+      );
+      try {
+        BlocProvider.of<DashboardBloc>(
+          NavigationService.navigatorKey.currentContext!,
+        ).add(DashboardEventInitial());
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+    }
 
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
@@ -175,7 +204,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
 
     EasyLoading.dismiss();
-    return CommonProperties.isLoggedIn;
+    return CommonProperties.isLoggedInMunicipality;
   }
 
   ////////////////////////////////////////////////////////////////////////
@@ -226,43 +255,45 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   ////////////////////////////////////////////////////////////////////////
 
   Future<void> refreshToken(String refreshToken) async {
-    SSOToken? token = state.token;
-
-    if (token != null && token.token != null && token.token!.isNotEmpty) {
-      final failureOrSuccess = await _refreshToken(refreshToken);
-
-      return await failureOrSuccess.fold((failure) async {
-        //await autoLogout();
-      }, (success) async {
-        SSOToken token = SSOToken(
-            token: success.accessToken,
-            refreshToken: success.refreshToken,
-            idToken: success.idToken,
-            expirationTime: success.accessTokenExpirationDateTime.toString());
-        final failureOrSuccess = await _saveAuth(token);
-        failureOrSuccess.fold((f) {
-          emit(state.copyWith(
-            status: AuthStatus.notAuthenticated,
-            errorMessage: ("errors_server_error_1".tr()),
-          ));
-          return false;
-        }, (s) {
-          emit(state.copyWith(
-            status: AuthStatus.authenticated,
-            token: token,
-            errorMessage: "",
-          ));
-          if (CommonProperties.fcmToken != null &&
-              CommonProperties.fcmToken!.isNotEmpty) {
-            CommonFunctions.updateNotificationSettings(
-                CommonProperties.fcmToken!);
-          }
-          return true;
-        });
-      });
-    } else {
-      // await autoLogout();
-    }
+    // SSOToken? token = state.token;
+    //
+    // if (token != null && token.token != null && token.token!.isNotEmpty) {
+    //   final failureOrSuccess = await _refreshToken(refreshToken);
+    //
+    //   return await failureOrSuccess.fold((failure) async {
+    //     //await autoLogout();
+    //   },
+    //           (success) async {
+    //     SSOToken token = SSOToken(
+    //         token: success.accessToken,
+    //         refreshToken: success.refreshToken,
+    //         idToken: success.idToken,
+    //         expirationTime: success.accessTokenExpirationDateTime.toString());
+    //
+    //     final failureOrSuccess = await _saveAuth(token);
+    //     failureOrSuccess.fold((f) {
+    //       emit(state.copyWith(
+    //         status: AuthStatus.notAuthenticated,
+    //         errorMessage: ("errors_server_error_1".tr()),
+    //       ));
+    //       return false;
+    //     }, (s) {
+    //       emit(state.copyWith(
+    //         status: AuthStatus.authenticated,
+    //         token: token,
+    //         errorMessage: "",
+    //       ));
+    //       if (CommonProperties.fcmToken != null &&
+    //           CommonProperties.fcmToken!.isNotEmpty) {
+    //         CommonFunctions.updateNotificationSettings(
+    //             CommonProperties.fcmToken!);
+    //       }
+    //       return true;
+    //     });
+    //   });
+    // } else {
+    //   // await autoLogout();
+    // }
   }
 
   Future<bool> refreshAPIGeeToken() async {
@@ -302,9 +333,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     return Future.value(false);
   }
 
-  Future<void> clearAuth() async {
+  Future<void> clearAuth({LoginDataModel? loginData}) async {
     try {
-      if(state.status == AuthStatus.notAuthenticated) {
+      if (state.status == AuthStatus.notAuthenticated) {
         return;
       }
       sl<AuthenticationBloc>().add(LogoutAuthentication());
@@ -315,14 +346,18 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         ),
       );
 
-      try {
-        await _logout(NoParams());
-      } catch (e) {
-        EasyLoading.dismiss();
+      if(loginData?.deviceIdToken != null) {
+        try {
+          await _logout(NoParams());
+        } catch (e) {
+          EasyLoading.dismiss();
+        }
+        sl<DelegatorsCubit>().clearDelegators();
+        await _clearAuth(NoParams());
+        clearSSOInfo();
       }
-      sl<DelegatorsCubit>().clearDelegators();
-      sharedPrefs.setSSOToken(null);
-      clearSSOInfo();
+
+
       if (CommonProperties.fcmToken != null &&
           CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
@@ -335,7 +370,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<void> autoLogout() async {
-    if(state.status == AuthStatus.notAuthenticated) {
+    if (state.status == AuthStatus.notAuthenticated) {
       return;
     }
     try {
@@ -347,16 +382,17 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       sl<AuthenticationBloc>().add(LogoutAuthentication());
     } catch (e) {
       print("object");
-    }
-
-    sharedPrefs.setSSOToken(null);
-    sl<DelegatorsCubit>().clearDelegators();
-    sharedPrefs.setSSOUserProfile(null);
-    clearSSOInfo();
-    try {
-      await _logout(NoParams());
-    } catch (e) {
       EasyLoading.dismiss();
+    }
+    if(sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState) {
+      await _clearAuth(NoParams());
+      sl<DelegatorsCubit>().clearDelegators();
+      clearSSOInfo();
+      try {
+        await _logout(NoParams());
+      } catch (e) {
+        EasyLoading.dismiss();
+      }
     }
     if (CommonProperties.fcmToken != null &&
         CommonProperties.fcmToken!.isNotEmpty) {
@@ -368,16 +404,19 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      final failureOrSuccessForProfile = await _getProfile(NoParams());
-      await failureOrSuccessForProfile.fold((failure) async {},
-          (success) async {
-        final failureOrSuccess = await _saveSSOProfile(success);
-        if (failureOrSuccess.isRight()) {
-          emit(state.copyWith(
-            userInfo: success,
-          ));
-        }
-      });
+      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
+      if(authState is AuthenticatedMunicipalityState) {
+        final failureOrSuccessForProfile = await _getProfile(NoParams());
+        await failureOrSuccessForProfile.fold((failure) async {},
+                (success) async {
+              final failureOrSuccess = await _saveSSOProfile(success);
+              if (failureOrSuccess.isRight()) {
+                emit(state.copyWith(
+                  userInfo: success,
+                ));
+              }
+            });
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -400,15 +439,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   void clearSSOInfo() async {
-    //MM sharedPrefs.storeINCReportsNumbers(null);
-    sharedPrefs.setAppCookie(null);
-    sharedPrefs.setLicenseClientImage(null);
-    sharedPrefs.storeGuestInfo(null, null, null);
-    sharedPrefs.setIsUserCOAuthorized(null);
+    // sharedPrefs.setAppCookie(null);
+    // sharedPrefs.setLicenseClientImage(null);
+    // sharedPrefs.setIsUserCOAuthorized(null);
 
-//MM    locator<MyAppointmentsViewModel>().reset();
-    //MM  locator<VisitMainViewModel>().reset();
-    //MM  locator<CustomerSoundViewModel>().reset();
+    sharedPrefs.storeGuestInfo(null, null, null);
     await CookieManager.instance().deleteAllCookies();
     sl<DelegatorsCubit>().clearDelegators();
   }
@@ -518,25 +553,35 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     required SSOToken token,
     required bool isFromEtmam,
   }) async {
+    print(" ");
+    print(" ");
+    print(" ");
+    print(" ");
     final failureOrSuccess = await _saveAuth(token);
-    if (failureOrSuccess.isRight()) {
-      emit(state.copyWith(
-        status: AuthStatus.loading,
-        token: token,
-        errorMessage: "",
-      ));
+    failureOrSuccess.fold((failure) {
+      print("object");
+    }, (success) async {
+      emit(
+        state.copyWith(
+          status: AuthStatus.loading,
+          token: token,
+          errorMessage: "",
+        ),
+      );
 
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
       SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
       final failureOrSuccess =
           await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
       if (failureOrSuccess.isRight()) {
-        emit(state.copyWith(
-          status: AuthStatus.authenticated,
-          token: token,
-          userInfo: user,
-          errorMessage: "",
-        ));
+        emit(
+          state.copyWith(
+            status: AuthStatus.authenticated,
+            token: token,
+            userInfo: user,
+            errorMessage: "",
+          ),
+        );
         FlutterUxcam.setUserIdentity(user.idNo);
         FlutterUxcam.setUserProperty("name", user.arName ?? "");
       }
@@ -566,7 +611,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           emit(state.copyWith(token: token));
         }
       });
+
       EasyLoading.dismiss();
+
       if (isFromEtmam) {
         sl<EtmamEntryPointCubit>().onLogin();
       }
@@ -576,10 +623,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         return;
       }
       getEkramPermissions();
+
       try {
         BlocProvider.of<DashboardBloc>(
-                NavigationService.navigatorKey.currentContext!)
-            .add(DashboardEventInitial());
+          NavigationService.navigatorKey.currentContext!,
+        ).add(DashboardEventInitial());
       } catch (error, stackTrace) {
         LogsViewModel().sendEventFromModel(
           event: ErrorExceptionModel(
@@ -589,6 +637,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           ),
         );
       }
-    }
+    });
   }
 }

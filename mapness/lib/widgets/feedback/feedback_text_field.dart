@@ -81,7 +81,7 @@ class FeedbackInput extends HookWidget {
                         buttonColorScheme: BaladyButtonColorScheme.accent,
                         primaryLabel: context.l10n.setOnTheMap,
                         primaryIcon: GeneralIcons.pin,
-                        onTap: () => _selectRoute(context, controller),
+                        onTap: () => _selectRoute(context, controller, fieldState),
                       ),
                     ),
                   ),
@@ -89,7 +89,11 @@ class FeedbackInput extends HookWidget {
             ));
   }
 
-  Future<void> _selectRoute(BuildContext context, TextEditingController controller) async {
+  Future<void> _selectRoute(
+    BuildContext context,
+    TextEditingController controller,
+    FormFieldState field,
+  ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
 
     if (result == null || result is! RoutePoint) {
@@ -98,5 +102,6 @@ class FeedbackInput extends HookWidget {
 
     final location = result.label ?? 'lat:${result.latitude}, lon:${result.longitude}';
     controller.text = location;
+    field.didChange(location);
   }
 }

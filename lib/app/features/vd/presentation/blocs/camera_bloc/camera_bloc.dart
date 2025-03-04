@@ -21,14 +21,17 @@ import 'package:balady_plus/app/core/errors/errors_exports.dart'
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../core/utils/animators/route_animator.dart';
 import '../../../../../core/utils/enums/enums.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+import 'package:image/image.dart' as myImage;
+import 'package:http/http.dart' as http;
 
 part 'camera_event.dart';
 
@@ -41,6 +44,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   final GetSpecialClassifications _getSplList;
   final GetGISData _getGisData;
   bool initializingCamera = false;
+
   CameraBloc(
       {required GetSpecialClassifications getSplList,
       required GetGISData getGisData,
@@ -49,25 +53,26 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       : _getSplList = getSplList,
         _getGisData = getGisData,
         super(CameraState(
-            location: (params.lat != null && params.lon != null)
-                ? GISParams(x: params.lon!, y: params.lat!)
-                : null,
-            qrCodeFlow: params.qrCodeFlow,
-            pageType: params.pageType,
-            selectedCattegory: params.selectedCategory!,
-            isFromHome: params.isFromHome)) {
+          location: (params.lat != null && params.lon != null)
+              ? GISParams(x: params.lon!, y: params.lat!)
+              : null,
+          qrCodeFlow: params.qrCodeFlow,
+          pageType: params.pageType,
+          selectedCattegory: params.selectedCategory!,
+          // isFromHome: params.isFromHome,
+        )) {
     on<InitCameraEvent>((event, emit) async {
       emit(state.copyWith(status: BlocStatus.loading));
       try {
         cameras = await availableCameras();
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         error.toString();
       }
       if (cameras?.length != 0) {
@@ -80,14 +85,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           initializingCamera = false;
           cameraController?.setFlashMode(FlashMode.off);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
       }
       emit(state.copyWith(
           isFlashOn: false,
@@ -142,24 +147,24 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
             timeLimit: const Duration(seconds: 20));
         emitter(state.copyWith(status: BlocStatus.success));
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         try {
           position = await Geolocator.getLastKnownPosition();
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         if (position != null) {
           emitter(state.copyWith(
             status: BlocStatus.success,
@@ -192,9 +197,30 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       emitter(state.copyWith(status: BlocStatus.success, errorMessage: ""));
       final fileBytes = await file?.readAsBytes();
       if (fileBytes != null) {
-        String base64File = base64Encode(fileBytes);
-        AttachmentItem item =
-            AttachmentItem(base64: base64File, filePath: file?.path);
+        // String base64File = base64Encode(fileBytes);
+        ///////////////////////////////////////////////////////////
+        myImage.Image? decodeImg = myImage.decodeImage(fileBytes);
+        DateTime? dateTime = await fetchOnlineDateTimeForKSA();
+        String date = DateFormat("yyyy-MM-dd HH:mm:ss").format(
+          dateTime ?? DateTime.now(),
+        );
+        // Define the black color
+        myImage.drawString(
+          decodeImg!,
+          date,
+          font: myImage.arial14,
+          x: 100,
+          y: 25,
+          color: decodeImg.getColor(0, 0, 0),
+        );
+        var encodeImage = myImage.encodeJpg(decodeImg, quality: 100);
+        String base64Image = base64.encode(encodeImage);
+        ///////////////////////////////////////////////////////////
+        AttachmentItem item = AttachmentItem(
+          base64: base64Image,
+          encodeImage: encodeImage,
+          filePath: file?.path,
+        );
         emitter(state.copyWith(status: BlocStatus.loading));
 
         List<AttachmentItem> items = state.files ?? [];
@@ -228,6 +254,27 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     }
   }
 
+  Future<DateTime?> fetchOnlineDateTimeForKSA() async {
+    try {
+      // World Time API URL for Saudi Arabia (Asia/Riyadh)
+      final url = Uri.parse('http://worldtimeapi.org/api/timezone/Asia/Riyadh');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final dateTimeString =
+            data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+        return DateTime.parse(dateTimeString);
+      } else {
+        print('Failed to fetch time: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching KSA date and time: $e');
+      return null;
+    }
+  }
+
   Future<void> _onNewCameraSelectedHandler(
       OnNewCameraSelected e, Emitter emitter) async {
     emitter(state.copyWith(
@@ -248,14 +295,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       initializingCamera = false;
       _controller.setFlashMode(FlashMode.off);
     } on CameraException catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     emitter(state.copyWith(
         status: BlocStatus.success,
         isCameraInitialized: cameraController?.value.isInitialized));
@@ -289,27 +336,29 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         }
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
   }
 
   Future<void> _onReTakePhotoHandler(
       ReTakePhotoEvent e, Emitter emitter) async {
-    emitter(state.copyWith(
-        showCamera: true, files: [], isCameraInitialized: false));
+    emitter(
+      state.copyWith(showCamera: true, files: [], isCameraInitialized: false),
+    );
   }
 
   Future<void> _showLoadingHandler(ShowLoading e, Emitter emitter) async {
-    if (e.status)
+    if (e.status) {
       emitter(state.copyWith(status: BlocStatus.loading));
-    else
+    } else {
       emitter(state.copyWith(status: BlocStatus.success));
+    }
   }
 
   Future<bool> _onNavigateToDetailsScreen(
@@ -318,16 +367,20 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   }
 
   bool navigateToCreateVDPage({GISParams? location, GISResponse? gisResponse}) {
-    createVdBloc.add(EditCreateVDPageEvent(
+    createVdBloc.add(
+      EditCreateVDPageEvent(
         params: CreateVDParamsPage(
-            files: state.files,
-            selectedCategory: state.selectedCattegory,
-            splResponse: state.splResponse,
-            location: location,
-            gisResponse: gisResponse,
-            qrCodeFlow: state.qrCodeFlow,
-            pageType: state.pageType,
-            isFromHome: state.isFromHome ?? false)));
+          files: state.files,
+          selectedCategory: state.selectedCattegory,
+          splResponse: state.splResponse,
+          location: location,
+          gisResponse: gisResponse,
+          qrCodeFlow: state.qrCodeFlow,
+          pageType: state.pageType,
+          // isFromHome: state.isFromHome ?? false,
+        ),
+      ),
+    );
     NavigationService.navigatorKey.currentState?.push(SliderUpPage(
       page: BlocProvider<CreateVDBloc>.value(
         value: createVdBloc,

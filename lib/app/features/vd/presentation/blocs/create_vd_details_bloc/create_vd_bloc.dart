@@ -50,9 +50,7 @@ import '../../../../_shared_feature_/data/entities/validators/name_validation.da
 import '../../../../_shared_feature_/data/entities/validators/phone_number_validation.dart';
 import '../../dialogs/duplicate_request_dialog.dart';
 
-
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
 
 part 'create_vd_event.dart';
 
@@ -94,19 +92,19 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           selectedCategory: params?.selectedCategory,
           splResponse: params?.splResponse,
           splItems: params?.splResponse?.items,
-          isFromHome: params?.isFromHome,
+          // isFromHome: params?.isFromHome,
           location: params?.location,
           currentUserlocation: params?.location,
           gisResponse: params?.gisResponse,
           pageType: params?.pageType,
           qrCodeFlow: params?.qrCodeFlow ?? false,
-          firstName: !CommonProperties.isLoggedIn
+          firstName: !CommonProperties.isLoggedInMunicipality
               ? sharedPrefs.getGuestFirstName()
               : null,
-          lastName: !CommonProperties.isLoggedIn
+          lastName: !CommonProperties.isLoggedInMunicipality
               ? sharedPrefs.getGuestLastName()
               : null,
-          mobileNumber: !CommonProperties.isLoggedIn
+          mobileNumber: !CommonProperties.isLoggedInMunicipality
               ? sharedPrefs.getGuestMobile()
               : null,
         )) {
@@ -164,7 +162,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         items: e.params.files,
         splResponse: e.params.splResponse,
         splItems: e.params.splResponse?.items,
-        isFromHome: e.params.isFromHome,
+        // isFromHome: e.params.isFromHome,
         location: e.params.location,
         currentUserlocation: e.params.location,
         gisResponse: e.params.gisResponse,
@@ -237,7 +235,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           items: items,
           errorMessage: "",
         ));
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           add(CreateIncidentRegisteredEvent());
         } else {
           if (e.otpValue != null) {
@@ -249,7 +247,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         }
       });
     } else {
-      if (CommonProperties.isLoggedIn) {
+      if (CommonProperties.isLoggedInMunicipality) {
         add(CreateIncidentRegisteredEvent());
       } else {
         if (e.otpValue != null) {
@@ -364,7 +362,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.newVD,
-              fromHomePage: state.isFromHome,
+              // fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
 
       CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Success_Event);
@@ -451,9 +449,9 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           RouteName.successRoute, predicate,
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.newVD,
-              fromHomePage: state.isFromHome,
+              // fromHomePage: state.isFromHome,
               thanksMessage: success.data?.responseMessage));
-      if (!CommonProperties.isLoggedIn) {
+      if (!CommonProperties.isLoggedInMunicipality) {
         sharedPrefs.storeGuestInfo(
             state.firstName, state.lastName, state.mobileNumber);
       }
@@ -483,14 +481,19 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           errorMessage: (failure as ServerFailure).errorMessage,
           selectedSPLIndex: -1));
     }, (success) {
-      //print("succcss");
-      //print(success);
       success.selectedSPLID = e.params.splID;
       emitter(state.copyWith(
         status: BlocStatus.success,
         splDetailsResponse: success,
         errorMessage: "",
       ));
+
+      if (e.autoSelect == true) {
+        emitter(state.copyWith(
+            status: BlocStatus.success,
+            currentPageValue: state.currentPageValue + 1));
+        add(GoToNextPageEvent());
+      }
     });
   }
 
@@ -696,26 +699,26 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
         if (pos == null) pos = (await Geolocator.getLastKnownPosition());
         emitter(state.copyWith(status: BlocStatus.success));
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         emitter(state.copyWith(status: BlocStatus.success));
         if (pos == null)
           try {
             pos = (await Geolocator.getLastKnownPosition());
           } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+            LogsViewModel().sendEventFromModel(
+              event: ErrorExceptionModel(
+                nameEvent: EventsName.handledException,
+                message: error.toString(),
+                stackTrace: stackTrace.toString(),
+              ),
+            );
+          }
       }
       if (pos != null)
         currentLocation = GISParams(x: pos.longitude, y: pos.latitude);
@@ -763,11 +766,23 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
           errorMessage: "",
         ));
 
-        controller.jumpToPage(e.nextPage);
-        sendEventStep(e.nextPage);
+        if (success.items?.length == 1 &&
+            state.selectedCategory?.categoryId ==
+                RemoteConfig.movingVeichleCategoryKey) {
+          await Future.delayed(Duration(milliseconds: 200));
 
-        emitter(state.copyWith(
-            status: BlocStatus.success, currentPageValue: e.nextPage));
+          add(GetSPLDetailsEvent(
+              autoSelect: true,
+              selectedIndex: 0,
+              params: SPLDetailsParams(
+                  municipalityID: state.gisResponse?.adminMunicipalityId ?? "",
+                  splID: success.items?[0].id ?? "")));
+        } else {
+          controller.jumpToPage(e.nextPage);
+          sendEventStep(e.nextPage);
+          emitter(state.copyWith(
+              status: BlocStatus.success, currentPageValue: e.nextPage));
+        }
 
         return true;
         //return navigateToCreateVDPage(e.createVDBloc);
@@ -795,7 +810,7 @@ class CreateVDBloc extends Bloc<CreateVDEvent, CreateVDState> {
   void sendEventStep(int page) {
     String eventName = "";
 
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       if (page == 0) {
         eventName = UXCamEvents.SnapAndSend_Open_Location_Step_Event;
       } else if (page == 1) {

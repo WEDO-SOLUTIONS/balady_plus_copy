@@ -1,0 +1,167 @@
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/debouncer.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
+import 'package:mapness/features/landing/search_by_rubrics.dart';
+import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
+import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/features/search/ui/search_scope.dart';
+import 'package:mapness/features/statistic/providers/statistics_provider.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/lib/search/compute_camera_position.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+
+class MapQuickFilters extends ConsumerStatefulWidget {
+  final List<FilterItem>? customFilters;
+  final void Function(FilterItem)? onCustomTap;
+  final bool forMap;
+  final QuickFilterScreen id;
+
+  final double? height;
+  final ItemScrollController? itemScrollController;
+
+  const MapQuickFilters({
+    required this.id,
+    super.key,
+    this.customFilters,
+    this.onCustomTap,
+    this.forMap = false,
+    this.height,
+    this.itemScrollController,
+  });
+
+  @override
+  ConsumerState<MapQuickFilters> createState() => _MapQuickFiltersState();
+}
+
+class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
+  final _debouncer = Debouncer(milliseconds: 400);
+
+  @override
+  void dispose() {
+    _debouncer.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final selectedQuickFilter = ref.watch(searchByRubricsQueryProvider);
+    final settings = MapObjectManagerSettings.search();
+    final searchObjectManager = ref.watch(
+      mapObjectManagerProvider(
+        named: settings.name,
+        layerId: settings.layerId,
+      ).notifier,
+    );
+    ref.listen(searchByRubricsProvider, (previous, next) async {
+      if (!widget.forMap) {
+        return;
+      }
+      final value = next.unwrapPrevious().value;
+      if (value != null) {
+        _debouncer.run(() async {
+          await computeCameraPosition(
+            value,
+            ref.read(cameraPositionProvider),
+            ref.read(locationProvider),
+            ref.read(cameraPositionProvider.notifier).animateTo,
+          );
+        });
+      }
+    });
+
+    return QuickFilters(
+      id: widget.id,
+      height: widget.height,
+      itemScrollController: widget.itemScrollController,
+      onFavouritesBookmarkTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
+        context,
+        callback: () {
+          if (!mounted) {
+            return;
+          }
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.bookmarkIcon,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+          context.router.push(const FavouritesRoute());
+        },
+      ),
+      onQuickFilterTap: (quickFilter) {
+        ref.read(urbiAnalyticsProvider).track(
+          'quickFilterSearch',
+          properties: {
+            'filter': quickFilter.name,
+          },
+        );
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+        final language = ref.read(appLanguageProvider);
+        final query = quickFilter.query[language];
+        if (query != null) {
+          ref.read(SendStatisticProvider(query).future);
+        }
+        context.router.push(SearchRoute(requestFocus: false));
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+        });
+        // TODO(Sergei): remove commented code when quick search feature is approved
+        // _debouncer.run(
+        //   () {
+        //     final isSame = quickFilter.type == selectedQuickFilter?.type;
+        //     if (isSame) {
+        //       ref.read(searchByRubricsQueryProvider.notifier).update(null);
+        //       searchObjectManager.removeAllMarkers();
+        //     } else {
+        //       // TODO(Sergei): we should call removeAllMarkers() because quick filter updating in sdk is slow,
+        //       // remove this when quick filters performance will be fixed
+        //       searchObjectManager.removeAllMarkers();
+        //       ref.read(layersControlsProvider.notifier).disable();
+        //       ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
+        //       ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
+        //     }
+        //     Metrics.logEventAdvanced(
+        //       MetricsConstants.exploreKeys.quickFilter,
+        //       action: MetricAction.tap.name,
+        //       group: MetricsConstants.exploreTag,
+        //       props: {
+        //         'filter': quickFilter.title,
+        //         'toggle_state': isSame,
+        //       },
+        //     );
+        //   },
+        // );
+      },
+      onFavouritesTap: () {
+        _debouncer.run(() {
+          Metrics.logEventAdvanced(
+            MetricsConstants.exploreKeys.bookmarkIcon,
+            action: MetricAction.tap.name,
+            group: MetricsConstants.exploreTag,
+          );
+
+          ref.read(searchByRubricsQueryProvider.notifier).update(null);
+          searchObjectManager.removeAllMarkers();
+        });
+      },
+      selectedQuickFilter: selectedQuickFilter,
+      customFilters: widget.customFilters,
+      onCustomTap: widget.onCustomTap,
+      padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),
+    );
+  }
+}

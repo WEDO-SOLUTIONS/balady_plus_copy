@@ -148,7 +148,7 @@ class NewMSRViewModel extends BaseViewModel {
       String mobileNumber = "";
       String email = "";
 
-      if (CommonProperties.isLoggedIn) {
+      if (CommonProperties.isLoggedInMunicipality) {
         firstName = CommonProperties.userInfo?.getFirstName() ?? "";
         middleName = CommonProperties.userInfo?.getMiddleName() ?? "";
         lastName = CommonProperties.userInfo?.getLastName() ?? "";
@@ -168,11 +168,11 @@ class NewMSRViewModel extends BaseViewModel {
 
       var body = {
         "CustomerInformation": {
-          if (CommonProperties.isLoggedIn &&
+          if (CommonProperties.isLoggedInMunicipality &&
               userId != null &&
               userId.startsWith("1"))
             "NationalID": CommonProperties.userInfo!.idNo!,
-          if (CommonProperties.isLoggedIn &&
+          if (CommonProperties.isLoggedInMunicipality &&
               userId != null &&
               !userId.startsWith("1"))
             "IqamaID": "" + CommonProperties.userInfo!.idNo!,

@@ -2,6 +2,7 @@ plugins {
     id "com.android.application"
     id "kotlin-android"
     id "dev.flutter.flutter-gradle-plugin"
+    id "org.jetbrains.kotlin.plugin.compose"
 }
 
 def localProperties = new Properties()
@@ -39,6 +40,14 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+    buildFeatures {
+      compose true
+   }
+
+   composeOptions {
+      kotlinCompilerExtensionVersion = "1.5.2"
+   }
+
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
@@ -134,6 +143,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-ads-identifier:18.1.0'
     implementation 'com.android.installreferrer:installreferrer:2.2'
     implementation 'com.adjust.sdk:adjust-android-meta-referrer:5.0.1'
+    implementation 'androidx.glance:glance-appwidget:1.0.0'
     implementation 'com.huawei.agconnect:agconnect-core:1.5.2.300'
 
 

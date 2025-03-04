@@ -18,7 +18,6 @@ class DCCameraState extends Equatable {
 
   DCCameraState({
     this.status = BlocStatus.initial,
-    this.isFromHome = false,
     this.errorMessage,
     this.showCamera = true,
     this.isFlashOn = false,
@@ -35,7 +34,6 @@ class DCCameraState extends Equatable {
 
   DCCameraState copyWith(
       {final BlocStatus? status,
-      final bool? isFromHome,
       final String? errorMessage,
       final bool? showCamera,
       final List<AttachmentItem>? files,
@@ -60,7 +58,6 @@ class DCCameraState extends Equatable {
         scaleFactor: scaleFactor ?? this.scaleFactor,
         zoom: zoom ?? this.zoom,
         isCameraInitialized: isCameraInitialized ?? this.isCameraInitialized,
-        isFromHome: isFromHome ?? this.isFromHome,
         location: location ?? this.location,
         gisResponse: gisResponse ?? this.gisResponse);
   }
@@ -73,7 +70,6 @@ class DCCameraState extends Equatable {
         zoom,
         scaleFactor,
         isCameraInitialized,
-        isFromHome,
         gisResponse,
         location
       ];
