@@ -1,118 +1,194 @@
 import '../../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../utils_exports.dart' show EnvType;
 
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 class RemoteConfig {
-  //! First
-  static String get gis => _RemoteConfig.gis[env]!;
-  static String get apigeeURL => _RemoteConfig.apigeeURL[env]!;
-  static String get pegaURL => _RemoteConfig.pegaURL[env]!;
+  //////  Not Used
+  // static String get baladyToken => _RemoteConfig.baladyToken[env]!;
+  // static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
+  // static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
+  // static String get publicLicenseShareURL => _RemoteConfig.publicLicenseShareURL[env]!;
+
+  ////   Not Used with API  used with downlod quran and image and open webView
+  static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
+
+  ////   Need Stop Using it
+  // static String get pegaURL => _RemoteConfig.pegaURL[env]!;
+  // static String get gis => _RemoteConfig.gis[env]!;
+  // static String get apigeeUsername => "__APIGEE-USERNAME__";
+  static String get apigeeUsername {
+    String apigeeUserName = '__APIGEE_USERNAME__';
+    // String apigeeUserName = const String.fromEnvironment(
+    //   'APIGEE_USERNAME',
+    // );
+    return apigeeUserName != "__APIGEE_USERNAME__"
+        ? apigeeUserName
+        : dotenv.env['APIGEE_USERNAME'] ?? "default"; // Get from .env
+  }
+
+  // static String get apigeePassword => "__APIGEE-PASSWORD__";
+  static String get apigeePassword {
+    String apigeePassword = '__APIGEE_PASSWORD__';
+    // String apigeePassword = const String.fromEnvironment(
+    //   'APIGEE_PASSWORD',
+    // );
+    return apigeePassword != "__APIGEE_PASSWORD__"
+        ? apigeePassword
+        : dotenv.env['APIGEE_PASSWORD'] ?? "default"; // Get from .env
+  }
+
+  ////   just used in one place in the app
   static String get webSiteUrl => _RemoteConfig.webSiteUrl[env]!;
+
   static String get baladyCommercialUrl =>
       _RemoteConfig.baladyCommercialUrl[env]!;
-
-  static String get hmCode => _RemoteConfig.hmCode[env]!;
-  static String get apigeeUsername => _RemoteConfig.apigeeUsername[env]!;
-  static String get apigeePassword => _RemoteConfig.apigeePassword[env]!;
-  static String get ssoUrl => _RemoteConfig.ssoUrl[env]!;
-  static String get ssoLoginUrl => _RemoteConfig.ssoLoginUrl[env]!;
-  static String get ssoLogOutUrl => _RemoteConfig.ssoLogOutUrl[env]!;
-  static String get ssoSecret => _RemoteConfig.ssoSecret[env]!;
-  static String get momraDomain => _RemoteConfig.momraDomain[env]!;
-  static String get ssoMomraDomain => _RemoteConfig.ssoMomraDomain[env]!;
-  static String get cookieURL => _RemoteConfig.cookieURL[env]!;
-  static String get ssoClient => _RemoteConfig.ssoClient[env]!;
-
-  static double get mapRadius => _RemoteConfig.mapRadius[env]!;
-  static String get regaClass => _RemoteConfig.regaClass[env]!;
-  static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
-
-  static String get specialConditionOldId =>
-      _RemoteConfig.specialConditionOldId[env]!;
-  static String get specialConditionId =>
-      _RemoteConfig.specialConditionId[env]!;
-
-  // List<String> get munciplities => _RemoteConfig.munciplities[env]!;
-  static String get baladyToken => _RemoteConfig.baladyToken[env]!;
-  static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
-  static String get baladyBaseUrl => _RemoteConfig.baladyBaseUrl[env]!;
 
   static String get publicAppointmentShareURL =>
       _RemoteConfig.publicAppointmentShareURL[env]!;
 
-  static String get publicLicenseShareURL =>
-      _RemoteConfig.publicLicenseShareURL[env]!;
+  static String get damagedCarsClass => _RemoteConfig.damagedCarsClass[env]!;
 
-  static String get webCookieHeader => _RemoteConfig.webCookieHeader[env]!;
-  static List<String> get marketClass => _RemoteConfig.marketClass[env]!;
-
-  static EnvType get env => sl<EnvType>();
+  static String get regaClass => _RemoteConfig.regaClass[env]!;
 
   static List<String> get MSRAllowedMuncipalites =>
       _RemoteConfig.MSRAllowedMuncipalites[env]!;
 
+//////////////////////////////////////////////////////
+//   static String get apigeeURL => "__APIGEE-URL__";
+  static String get apigeeURL {
+    String apigeeURL = '__APIGEE_URL__';
+    // String apigeeURL = const String.fromEnvironment(
+    //   'APIGEE_URL',
+    // );
+    return apigeeURL != "__APIGEE_URL__"
+        ? apigeeURL
+        : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
+  }
+
+  // static String get hmCode => "__HM-CODE__";
+  static String get hmCode {
+    String hmCode = '__HM_CODE__';
+    // String hmCode = const String.fromEnvironment(
+    //   'HM_CODE',
+    // );
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    // print("HM_CODE : $hmCode");
+    return hmCode != "__HM_CODE__"
+        ? hmCode
+        : dotenv.env['HM_CODE'] ?? "default"; // Get from .env
+  }
+
+  //////////////////////////////////////////////////////
+  static String get ssoUrl => _RemoteConfig.ssoUrl[env]!;
+
+  static String get ssoLoginUrl => _RemoteConfig.ssoLoginUrl[env]!;
+
+  static String get ssoLogOutUrl => _RemoteConfig.ssoLogOutUrl[env]!;
+
+  static String get ssoMomraDomain => _RemoteConfig.ssoMomraDomain[env]!;
+
+  // static String get ssoSecret => "__SSO-SECRET__";
+  static String get ssoSecret {
+    String ssoSecret = '__SSO_SECRET__';
+    // String ssoSecret = const String.fromEnvironment(
+    //   'SSO_SECRET',
+    // );
+    return ssoSecret != "__SSO_SECRET__"
+        ? ssoSecret
+        : dotenv.env['SSO_SECRET'] ?? "default"; // Get from .env
+  }
+
+  // static String get ssoClient => "__SSO-CLINT__";
+  static String get ssoClient {
+    String ssoClient = '__SSO_CLINT__';
+    // String ssoClient = const String.fromEnvironment(
+    //   'SSO_CLINT'
+    // );
+    return ssoClient != "__SSO_CLINT__"
+        ? ssoClient
+        : dotenv.env['SSO_CLINT'] ?? "default"; // Get from .env
+  }
+
+  //////////////////////////////////////////////////////
+  static String get momraDomain => _RemoteConfig.momraDomain[env]!;
+
+  static String get cookieURL => _RemoteConfig.cookieURL[env]!;
+
+  static double get mapRadius => _RemoteConfig.mapRadius[env]!;
+
+  static String get specialConditionOldId =>
+      _RemoteConfig.specialConditionOldId[env]!;
+
+  static String get specialConditionId =>
+      _RemoteConfig.specialConditionId[env]!;
+
+  // List<String> get munciplities => _RemoteConfig.munciplities[env]!;
+
+  static String get webCookieHeader => _RemoteConfig.webCookieHeader[env]!;
+
+  static List<String> get marketClass => _RemoteConfig.marketClass[env]!;
+
+  static EnvType get env => sl<EnvType>();
+
   static Map<String, dynamic> get MunicipalServicesIDs =>
       _RemoteConfig.municipal_services_IDS[env]!;
 
-  static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
-
   static String get uxCamKey => _RemoteConfig.uxCamKey[env]!;
+
+  static String get movingVeichleCategoryKey =>
+      _RemoteConfig.movingVeichleCategoryKey[env]!;
 }
 
 //! First solution
 class _RemoteConfig {
-  static final gis = _initValues<String>(
-    devVal: "https://gisappstg.momra.gov.sa",
-    stgVal: "https://gisappstg.momra.gov.sa",
-    preVal: "https://gisappstg.momra.gov.sa",
-    prodVal: "https://gisapps.momra.gov.sa",
-    urbiPreVal: "https://gisappstg.momra.gov.sa",
-  );
+  // static final apigeeURL = _initValues<String>(
+  //   devVal: "__DEV-APIGEE-URL__",
+  //   stgVal: "__STG-APIGEE-URL__",
+  //   preVal: "__PRE-APIGEE-URL__",
+  //   prodVal: "__PROD-APIGEE-URL",
+  //   urbiPreVal: "__STG-APIGEE-URL__",
+  // );
+  // static final hmCode = _initValues<String>(
+  //   devVal: "__DEV-HM-CODE__",
+  //   stgVal: "__STG-HM-CODE__",
+  //   preVal: "__PRE-HM-CODE__",
+  //   prodVal: "__PROD-HM-CODE__",
+  //   urbiPreVal: "__STG-HM-CODE__",
+  // );
+  // static final apigeeUsername = _initValues<String>(
+  //   devVal: "__DEV-APIGEE-USERNAME__",
+  //   stgVal: "__STG-APIGEE-USERNAME__",
+  //   preVal: "__PRE-APIGEE-USERNAME__",
+  //   prodVal: "__PROD-APIGEE-USERNAME__",
+  //   urbiPreVal: "__STG-APIGEE-USERNAME__",
+  // );
+  // static final apigeePassword = _initValues<String>(
+  //   devVal: "__DEV-APIGEE-PASSWORD__",
+  //   stgVal: "__STG-APIGEE-PASSWORD__",
+  //   preVal: "__PRE-APIGEE-PASSWORD__",
+  //   prodVal: "__PROD-APIGEE-PASSWORD__",
+  //   urbiPreVal: "__STG-APIGEE-PASSWORD__",
+  // );
+  // static final ssoClient = _initValues<String>(
+  //   devVal: "__DEV-SSO-CLINT__",//balady_mobile_app
+  //   stgVal: "__STG-SSO-CLINT__",
+  //   preVal: "__PRE-SSO-CLINT__",
+  //   prodVal: "__PROD-SSO-CLINT__",
+  //   urbiPreVal: "__STG-SSO-CLINT__",
+  // );
+  // static final ssoSecret = _initValues<String>(
+  //   devVal: "__DEV-SSO-SECRET__",
+  //   stgVal: "__STG-SSO-SECRET__",
+  //   preVal: "__PRE-SSO-SECRET__",
+  //   prodVal: "__PROD-SSO-SECRET__",
+  //   urbiPreVal: "__STG-SSO-SECRET__",
+  // );
 
-  static final uxCamKey = _initValues<String>(
-    devVal: "",
-    stgVal: "",
-    preVal: "3i45abbyrbljp32",
-    prodVal: "2w1otnta9bvvhzo",
-    urbiPreVal: "",
-  );
-  static final hmCode = _initValues<String>(
-    devVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    stgVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    preVal: "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-    prodVal: "TU9NUkEgTW9iaWxlIFRlYW0gMjAyMg==",
-    urbiPreVal:
-        "oxqUHJH1KXD84vP0KYBnyaHDUk5sJ9HkzqPDTice5TABqvfACZaLscG1TjjyPgIT",
-  );
-
-  static final apigeeURL = _initValues<String>(
-    devVal: "https://apiservicesstg.balady.gov.sa",
-    stgVal: "https://apiservicesstg.balady.gov.sa",
-    preVal: "https://apiservicespp.balady.gov.sa",
-    prodVal: "https://apiservices.balady.gov.sa",
-    urbiPreVal: "https://apiservicespp.balady.gov.sa",
-  );
-  static final pegaURL = _initValues<String>(
-    devVal: "https://crmustg.momra.gov.sa",
-    stgVal: "https://crmustg.momra.gov.sa",
-    preVal: "https://crmpre.momra.gov.sa",
-    prodVal: "https://crm.balady.gov.sa",
-    urbiPreVal: "https://crumupre.momra.gov.sa",
-  );
-
-  static final apigeeUsername = _initValues<String>(
-    devVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-    stgVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-    preVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-    prodVal: "4YxScCXqgTqPUpNqTH8rX1QZZUUzfbtw",
-    urbiPreVal: "7RmIkhYi6v4M7GUibBrpFdZuo8NsL2CC",
-  );
-  static final apigeePassword = _initValues<String>(
-    devVal: "ak3JXde3KdBB1xbM",
-    stgVal: "ak3JXde3KdBB1xbM",
-    preVal: "ak3JXde3KdBB1xbM",
-    prodVal: "b4Ocmvf3sNDNDdrs",
-    urbiPreVal: "ak3JXde3KdBB1xbM",
-  );
+  /////////////////////////
   static final ssoUrl = _initValues<String>(
     devVal: "https://sa1.ops.2gis.dev",
     stgVal: "https://ssoappdev.momra.gov.sa",
@@ -126,13 +202,6 @@ class _RemoteConfig {
     preVal: "com.momra.balady://callback",
     prodVal: "com.balady://callback",
     urbiPreVal: "com.momra.balady://callback",
-  );
-  static final ssoSecret = _initValues<String>(
-    devVal: "secret",
-    stgVal: "secret",
-    preVal: "1afa033f369849a2ac6d0d42e713eb82",
-    prodVal: "d19e0d31729144d3bff32d5cebbaef63",
-    urbiPreVal: "secret",
   );
   static final ssoLogOutUrl = _initValues<String>(
     devVal: "com.momra.balady://logout",
@@ -155,6 +224,8 @@ class _RemoteConfig {
     prodVal: ".ssoapp.balady.gov.sa",
     urbiPreVal: ".ssoappstg.momra.gov.sa",
   );
+
+  /////////////////////////
   static final cookieURL = _initValues<String>(
     devVal: "https://baladyapps.momra.gov.sa/",
     stgVal: "https://baladyapps.momra.gov.sa/",
@@ -163,12 +234,14 @@ class _RemoteConfig {
     urbiPreVal: "https://prebaladyapps.momra.gov.sa/",
   );
 
-  static final ssoClient = _initValues<String>(
-    devVal: "balady_mobile_app",
-    stgVal: "balady_mobile_app",
-    preVal: "balady_mobile_app",
-    prodVal: "balady_mobile_app",
-    urbiPreVal: "balady_mobile_app",
+  /////////////////////////
+
+  static final uxCamKey = _initValues<String>(
+    devVal: "",
+    stgVal: "",
+    preVal: "3i45abbyrbljp32",
+    prodVal: "2w1otnta9bvvhzo",
+    urbiPreVal: "",
   );
 
   static final mapRadius = _initValues<double>(
@@ -242,36 +315,12 @@ class _RemoteConfig {
     urbiPreVal: "https://commercial.balady.gov.sa",
   );
 
-  static final baladyToken = _initValues<String>(
-    devVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
-    stgVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
-    preVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
-    prodVal: "BEDD09A1277C4E099DEB80D0AEFAA245",
-    urbiPreVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
-  );
-
-  static final xBaladyToken = _initValues<String>(
-    devVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
-    stgVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
-    preVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
-    prodVal: "BE2019B8FECE4DACA5275BE2STGPROD",
-    urbiPreVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
-  );
-
   static final publicAppointmentShareURL = _initValues<String>(
     devVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     stgVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     preVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
     prodVal: "https://ebalady.momra.gov.sa/commonapi/apt/",
     urbiPreVal: "https://bldtrain.momra.gov.sa/commonapi/apt/",
-  );
-
-  static final publicLicenseShareURL = _initValues<String>(
-    devVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
-    stgVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
-    preVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
-    prodVal: "https://ebalady.momra.gov.sa/commonapi/clp",
-    urbiPreVal: "https://bldtrain.momra.gov.sa/commonapi/clp",
   );
 
   static final webCookieHeader = _initValues<String>(
@@ -373,6 +422,31 @@ class _RemoteConfig {
 
   static final municipal_services_IDS = _initValues<Map<String, dynamic>>(
     devVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
@@ -391,6 +465,31 @@ class _RemoteConfig {
       },
     },
     stgVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
@@ -409,6 +508,31 @@ class _RemoteConfig {
       },
     },
     preVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "classification_certificate": {
         "id": 11380,
         "Key_name": "classification_certificate",
@@ -427,6 +551,31 @@ class _RemoteConfig {
       },
     },
     prodVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "classification_certificate": {
         "id": 11380,
         "Key_name": "classification_certificate",
@@ -445,6 +594,31 @@ class _RemoteConfig {
       },
     },
     urbiPreVal: {
+      "CommercialLicenseRenew": {
+        "id": 10485,
+        "Key_name": "CommercialLicenseRenew",
+      },
+      "CommercialLicenseTransfer": {
+        "id": 10502,
+        "Key_name": "CommercialLicenseTransfer",
+      },
+      "CommercialLicenseCancel": {
+        "id": 10492,
+        "Key_name": "CommercialLicenseCancel",
+      },
+      "PostersLicenseService": {
+        "id": 11820,
+        "Key_name": "PostersLicenseService",
+      },
+      "PermitsLicenseService24H": {
+        "id": 10528,
+        "Key_name": "PermitsLicenseService24H",
+      },
+      "PermitsTobaccoLicense": {
+        "id": 10526,
+        "Key_name": "PermitsTobaccoLicense",
+      },
+      /////////  Not Used   //////////
       "survey_report_inquery": {
         "id": 11428,
         "Key_name": "license_query",
@@ -471,6 +645,15 @@ class _RemoteConfig {
     prodVal: "https://fees.balady.gov.sa/ewaa",
     urbiPreVal: "https://fees.balady.gov.sa/ewaa",
   );
+
+  static final movingVeichleCategoryKey = _initValues<String>(
+    devVal: "CG-53",
+    stgVal: "CG-53",
+    preVal: "CG-53",
+    prodVal: "CG-53",
+    urbiPreVal: "CG-53",
+  );
+
   static Map<EnvType, T> _initValues<T>({
     dynamic devVal,
     dynamic stgVal,

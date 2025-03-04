@@ -3,7 +3,10 @@ import 'dart:io';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
+import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
+import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
+import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
@@ -37,8 +40,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     if (RemoteConfig.uxCamKey.isNotEmpty) {
       FlutterUxConfig config = FlutterUxConfig(
           enableAdvancedGestureRecognition: true,
@@ -58,6 +59,8 @@ class App extends StatelessWidget {
         ),
         BlocProvider.value(value: sl<EtmamEntryPointCubit>()),
         BlocProvider.value(value: sl<LocationCubit>()),
+        BlocProvider.value(value: sl<SplashCubit>()),
+        BlocProvider.value(value: sl<ForceUpdateCubit>()),
         BlocProvider<DashboardBloc>(
           create: (_) => sl<DashboardBloc>()..add(DashboardEventInitial()),
         ),
@@ -109,7 +112,9 @@ class AppWidgetState extends State<AppWidget> {
               fontFamily: AppConfig.appFontType,
               useMaterial3: false,
               appBarTheme: const AppBarTheme(
-                backgroundColor: AppColor.blue,
+                backgroundColor: AppColor.primary900Light,
+                centerTitle: true,
+
               ),
               dropdownMenuTheme: const DropdownMenuThemeData(
                 inputDecorationTheme: InputDecorationTheme(),

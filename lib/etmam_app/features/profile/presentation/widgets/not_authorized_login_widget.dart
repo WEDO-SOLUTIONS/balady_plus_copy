@@ -58,7 +58,10 @@ class NotAuthorizedLoginWidget extends StatelessWidget {
             padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
             child: CustomPrimaryButton(
               onPressed: () {
-                context.read<EntryPointCubit>().onLogin(isFromEtmam: true);
+                context.read<EntryPointCubit>().onLogin(
+                      isFromEtmam: true,
+                      isMunicipality: true,
+                    );
               },
               btnText: trans("signIn"),
               btnColor: AppColor.white,

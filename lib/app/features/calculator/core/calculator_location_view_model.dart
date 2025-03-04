@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/calculator/data/model/IsicActivity.dart';
 import 'package:balady_plus/app/features/calculator/data/model/Item.dart';
@@ -17,7 +19,7 @@ import '../../transaction_inquiry/presentation/core/models/selected_location.dar
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class CalculatorLocationViewModel extends BaseViewModel {
-  final webServices = locator<PegaWebService>();
+  final webServices = sl<WebService>();
   GisLocationResult? gisLocation;
   SelectedLocation selectedLocation = SelectedLocation();
 
@@ -76,21 +78,63 @@ class CalculatorLocationViewModel extends BaseViewModel {
     }
   }
 
+  // Future<GisLocationResult?> getGisLocation(LatLng location) async {
+  //   String query =
+  //       "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
+  //
+  //   final body = await webServices.getRequest(
+  //       RemoteConfig.gis + ApiConstants.GisGetLocation,
+  //       relativePath: query);
+  //   bool state = body['state'];
+  //   dynamic data = body['data'];
+  //   String error =
+  //       body['error'] ?? Helpers.translatingWord("errors_server_error_2");
+  //
+  //   try {
+  //     GisLocationResult response =
+  //         GisLocationResult.fromJson(json.decode(data));
+  //     if (response != null) {
+  //       return response;
+  //     } else {
+  //       showError(error);
+  //     }
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     print(error);
+  //     showError(error.toString());
+  //     Helpers.sendLog(
+  //         url: RemoteConfig.gis + ApiConstants.GisGetLocation,
+  //         qeuryParms: query,
+  //         data: data);
+  //     return null;
+  //   }
+  // }
   Future<GisLocationResult?> getGisLocation(LatLng location) async {
-    String query =
-        "?x=${location.longitude}&y=${location.latitude}&guid=ba2570d8-6778-4048-9916-e234fac1c04b";
-
-    final body = await webServices.getRequest(
-        RemoteConfig.gis + ApiConstants.GisGetLocation,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-    String error =
-        body['error'] ?? Helpers.translatingWord("errors_server_error_2");
-
+    // final body = await webServices.getRequest(
+    //   ApiConstants.gisAddress,
+    // );
+    var response = await webServices.dio.get(
+        ApiConstants.GisGetLocation,
+        queryParameters: {
+          "x": location.longitude,
+          "y": location.latitude,
+          // "guid": "ba2570d8-6778-4048-9916-e234fac1c04b",
+        },
+    );
+    String error =  Helpers.translatingWord("errors_server_error_2");
+    if (response.statusCode != 200) {
+      showError(error);
+    }
+    Map<String,dynamic> data = {};
+    data["Contents"] = response.data['data']["result"];
     try {
-      GisLocationResult response =
-          GisLocationResult.fromJson(json.decode(data));
+      GisLocationResult response = GisLocationResult.fromJson(data);
       if (response != null) {
         return response;
       } else {
@@ -106,10 +150,6 @@ class CalculatorLocationViewModel extends BaseViewModel {
       );
       print(error);
       showError(error.toString());
-      Helpers.sendLog(
-          url: RemoteConfig.gis + ApiConstants.GisGetLocation,
-          qeuryParms: query,
-          data: data);
       return null;
     }
   }

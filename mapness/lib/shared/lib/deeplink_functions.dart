@@ -10,6 +10,8 @@ class BaldayDeeplink {
   static const String baseAuthority = 'apps.balady.gov.sa';
   static const String streamId = 'streamId';
   static const String tokenId = 'tokenId';
+  static const String homeWidget = 'homeWidget';
+
   static String get baseAuthorityWithScheme => 'https://$baseAuthority';
 
   // My location

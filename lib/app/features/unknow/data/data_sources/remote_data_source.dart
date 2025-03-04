@@ -21,10 +21,12 @@ abstract class RequestsRemoteDataSource {
 class RequestsRemoteDataSourceImplementation
     implements RequestsRemoteDataSource {
   final WebService webService;
-  final CRMWebService crmWebService;
+  // final CRMWebService crmWebService;
 
-  RequestsRemoteDataSourceImplementation(
-      {required this.webService, required this.crmWebService});
+  RequestsRemoteDataSourceImplementation({
+    required this.webService,
+    // required this.crmWebService,
+  });
 
   @override
   Future<DownloadIMSFileResult?> downloadFile(
@@ -74,14 +76,14 @@ class RequestsRemoteDataSourceImplementation
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),

@@ -11,7 +11,6 @@ import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../core/classification_certificate_routes/classification_certificate_route_names.dart';
-import '../../../core/classification_certificate_routes/classification_certificate_routes.dart';
 import '../../../data/model/lookups/activity_lookups_model.dart';
 import '../../../data/model/lookups/city_lookups_model.dart';
 import '../../../data/model/lookups/classification_certificate_lookup_model.dart';
@@ -138,8 +137,7 @@ class AdvancedSearchWidget extends StatelessWidget {
             onTap: () async {
               BottomSheetDialog.showDraggableSheet<CityLookupsModel>(
                 context,
-                currentRouteName: ClassificationCertificateRouteName
-                    .classificationCertificateVerifyOverviewScreen,
+                currentRouteName: ClassificationCertificateRouteName.classificationCertificateVerifyScreen,
                 child: GenericBottomSheetList<CityLookupsModel>(
                   title: "city_select".tr(),
                   items: state.cities,

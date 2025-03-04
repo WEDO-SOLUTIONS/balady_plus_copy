@@ -170,12 +170,12 @@ class CreateDCBloc extends Bloc<CreateDCEvent, CreateDCState> {
           items: items,
           errorMessage: "",
         ));
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           add(CreateIncidentRegisteredEvent());
         } else {}
       });
     } else {
-      if (CommonProperties.isLoggedIn) {
+      if (CommonProperties.isLoggedInMunicipality) {
         add(CreateIncidentRegisteredEvent());
       } else {}
     }

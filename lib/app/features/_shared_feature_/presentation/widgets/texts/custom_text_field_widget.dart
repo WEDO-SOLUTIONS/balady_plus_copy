@@ -152,7 +152,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           children: [
             Flexible(
               child: WidgetLabel(
-                isRequired: isRequired,
+                isRequired:!showOptional || isRequired ? true : false,
                 label: label,
                 labelStyle: labelStyle,
               ),
@@ -162,19 +162,6 @@ class CustomTextFieldWidget extends StatelessWidget {
                 message: toolTipMessage ?? "",
                 child: const Icon(Icons.info_outline),
               ),
-            ],
-            if (showOptional == true) ...[
-              const SizedBox(
-                width: 4,
-              ),
-              Text(
-                ('optional').tr(),
-                style: const TextStyle(
-                    color: Color(0xffbabbbb),
-                    fontSize: 13.0,
-                    fontFamily: GeneralKey.appFontType,
-                    fontWeight: FontWeight.bold),
-              )
             ],
           ],
         ),
@@ -577,7 +564,6 @@ class CustomTextFieldWithValueWidget extends StatefulWidget {
   final String? label;
   final TextStyle? labelStyle;
   final bool isRequired;
-
   final FocusNode? focusNode;
   final bool autocorrect;
   final List<String>? autofillHints;
@@ -599,9 +585,7 @@ class CustomTextFieldWithValueWidget extends StatefulWidget {
   final Color? disabledColor;
   final TextAlign? textAlign;
   final TextInputAction? textInputAction;
-
   final TextStyle? textFieldStyle;
-
   final double? textFieldWidth;
   final double? textFieldHeight;
   final String? hintText;
@@ -715,7 +699,7 @@ class _CustomTextFieldWithValueWidgetState
         // Label
         // if field is required, then show label beside asterisk e.g. *Username
         WidgetLabel(
-          isRequired: widget.isRequired,
+          isRequired: widget.isRequired ,
           label: widget.label,
           labelStyle: widget.labelStyle,
         ),

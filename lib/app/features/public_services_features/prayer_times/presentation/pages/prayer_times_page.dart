@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/enums/prayers.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
@@ -50,7 +51,7 @@ class _PrayerTimesPageState extends State<PrayerTimesPage> {
   late PrayerTimesCubit cubit;
   @override
   Widget build(BuildContext context) {
-    cubit = ModalRoute.of(context)!.settings.arguments as PrayerTimesCubit;
+    cubit = NavigationService.bottomNavKey.currentContext!.read<PrayerTimesCubit>();
     return BlocProvider.value(
       value: cubit,
       child: Scaffold(

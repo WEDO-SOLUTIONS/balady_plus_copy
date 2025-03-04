@@ -243,7 +243,7 @@ class AppInterceptors extends Interceptor {
     final method = options.method;
 
     if (options.headers['Authorization'] == null &&
-        CommonProperties.isLoggedIn &&
+        CommonProperties.isLoggedInMunicipality &&
         !options.uri.toString().contains("bcg/upload-file")) {
       options.headers['Authorization'] = 'Bearer ${CommonProperties.token}';
     }

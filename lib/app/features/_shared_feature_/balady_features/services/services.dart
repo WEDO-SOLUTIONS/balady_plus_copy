@@ -248,7 +248,7 @@ class BaladyServices {
   }
 
   static void openChatGPT() {
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       NavigationService.navigatorKey.currentState?.pushNamed(RouteName.chatbot);
     } else {
       showDialog(
