@@ -467,10 +467,10 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
           AddetionalActivityRequest(
               area: activity.area,
               item: AddetionalActivityItem(
-                  isicCode: activity.detailedActivityId.toString(),
+                  isicCode: activity.isicActivityId.toString(),
                   isicName: activity.detailedActivityName),
               detailsItem: AddetionalActivityItemDetails(
-                activityId: activity.isicActivityId,
+                activityId: activity.detailedActivityId,
                 isicName: activity.detailedActivityName,
               ),
               faweryMessage: activity.salamaWorkflow),
