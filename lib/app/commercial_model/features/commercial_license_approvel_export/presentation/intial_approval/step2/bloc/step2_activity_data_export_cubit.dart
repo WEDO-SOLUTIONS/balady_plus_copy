@@ -657,7 +657,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         mapNo: !e.refreshLocation
             ? success.planNo != "Null"
             ? success.planNo ?? ""
-            : ""
+            : state.mapNo??""
             : null,
         landNo: !e.refreshLocation
             ? success.parcelNo != "Null"

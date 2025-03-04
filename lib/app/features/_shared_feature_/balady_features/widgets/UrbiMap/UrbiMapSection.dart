@@ -196,11 +196,40 @@ class MapSearchSection extends StatelessWidget {
           );
         },
         itemBuilder: (context, model) {
-          return ListTile(
-            title: Text(model.fullName??""),
-            subtitle: Text(model.type??""),
+
+          String? area="";
+          String? region = "";
+          if( model.admDiv != null &&  model.admDiv!.isNotEmpty) {
+
+
+            List? districtArea = model.admDiv!.where((item) => item.type == "district_area").toList();
+
+            if(districtArea.isNotEmpty) {
+              area = districtArea.first.name;
+            }
+
+            List? districtRegion = model.admDiv!.where((item) => item.type == "region").toList();
+
+            if(districtRegion.isNotEmpty) {
+              region = districtRegion.first.name;
+            }
+
+          }
+          String Type = "";
+          if(model.type == "street") {
+            Type= "${model.type!},";
+          }
+          return Column(
+            children: [
+              ListTile(
+                title: Text( Type + (model.searchAttributes?.suggestedText??"")),
+                subtitle: Text("${area!},${region}"),
+              ),
+              Divider(thickness: 1,)
+            ],
           );
         },
+
         onSelected: (model) {
           if (model.point != null) {
                  onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
@@ -216,7 +245,7 @@ class MapSearchSection extends StatelessWidget {
   Future<List<UrbiLocationModel>> suggestionsCallback(String pattern,LatLng? location) async {
 
     UrbiSearchProvider? provider = sl();
-   return provider.search(pattern,location??const LatLng(latitude:46.722667,longitude:24.694163));
+   return provider.search(pattern,location??const LatLng(latitude:24.694163,longitude:46.722667));
 
 
   }
