@@ -15,6 +15,8 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 
 class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
+  static const abRouteHeightWithPadding = RoutingHeader._abRouteHeight + RoutingHeader._verticalPaddingAfterABRoute;
+
   RoutingHeaderDelegate({
     required this.points,
     required this.updatePoints,
@@ -50,6 +52,12 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class RoutingHeader extends ConsumerWidget {
+  // This is an empirical hack of ABRoute height
+  // We can do better and constrain height with rule "Constraints go down", but we must refactor uikit widget [ABRoute]
+  static const _abRouteHeight = 56 * 2;
+
+  static const _verticalPaddingAfterABRoute = Spacing.$4x;
+
   const RoutingHeader({
     required this.points,
     required this.updatePoints,
@@ -93,7 +101,7 @@ class RoutingHeader extends ConsumerWidget {
             onTap: (i) => _onTap(i, context, ref),
             onReorder: _onReorder,
           ),
-          Spacing.$4x.heightBox,
+          _verticalPaddingAfterABRoute.heightBox,
           RoutingFavourites(
             showBookmark: true,
             onFavouriteTap: _onFavouritesTap,
