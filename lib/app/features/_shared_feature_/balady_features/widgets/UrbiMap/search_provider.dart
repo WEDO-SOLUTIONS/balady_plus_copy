@@ -1,8 +1,5 @@
 import 'dart:async';
 
-
-
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/widgets/UrbiMap/urbi_location_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
@@ -17,10 +14,10 @@ import '../../../data/models/response_body_model.dart';
 
 class UrbiSearchProvider extends ChangeNotifier {
 
- 
-   ValueNotifier<UrbiLocationModel>? lstSuggestedLocation;
 
- 
+  ValueNotifier<UrbiLocationModel>? lstSuggestedLocation;
+
+
   UrbiSearchProvider() {}
 
 
@@ -29,7 +26,7 @@ class UrbiSearchProvider extends ChangeNotifier {
 
     Response? response;
     try {
-      String url= "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api/3.0/items";
+      String url= "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api/3.0/suggests";
 
       WebService webService= sl();
       Map<String, dynamic>    formMap =
@@ -37,10 +34,10 @@ class UrbiSearchProvider extends ChangeNotifier {
         "locale":"ar_SA",
         "fields":"items.full_address_name,items.point,items.adm_div",
         "q":query,
-        "location":"${location.latitude},${location.longitude}"
+        "location":"${location.longitude},${location.latitude}"
       };
       response = await webService.dio.get(url,
-          queryParameters: formMap,
+        queryParameters: formMap,
 
       );
 
@@ -51,7 +48,7 @@ class UrbiSearchProvider extends ChangeNotifier {
           : [];
 
       parsedResult=  parsedResult.where((item) => (item.fullName != null && item.fullName!.isNotEmpty)).toList();
-     return parsedResult;
+      return parsedResult;
     } on DioError catch (error, stackTrace) {
 
       return [];
