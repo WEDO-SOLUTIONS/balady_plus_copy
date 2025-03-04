@@ -19,6 +19,8 @@ class _PathNavEta extends _$PathNavEta {
   }
 
   Future<void> _subscribe() async {
+    ref.keepAlive();
+
     final mapController = await ref.read(dgisControllerProvider.future);
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
