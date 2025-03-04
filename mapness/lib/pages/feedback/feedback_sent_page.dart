@@ -22,7 +22,7 @@ class FeedbackSentPage extends ConsumerWidget {
     final sentFeedback = ref.watch(submitFeedbackProvider(payloadId));
 
     return sentFeedback.when(
-      data: (data) => const FeedbackSuccessWidget(),
+      data: (data) => FeedbackSuccessWidget(),
       loading: () => const FeedbackLoadingWidget(),
       error: (error, stack) {
         log(
