@@ -4209,5 +4209,11 @@
   "services_categories":"فئات الخدمات",
   "service_lase_teen": "خدمة",
   "invalid_license":"رقم الرخصة غير صحيح",
-  "enter_license_id":"ادخل رقم الرخصة"
+  "enter_license_id":"ادخل رقم الرخصة",
+
+  "commerical_license_export": "إصدار مبدئي لرخصة تجارية",
+  "commerical_add_activity_sucessfull": "تم ارسال الطلب بنجاح",
+  "requestFlow": "المتطلبات المبدئية لاصدار رخصة تجارية",
+  "officeName": "اسم المكتب",
+  "commercialOffice": "المكاتب الدعائية"
 }

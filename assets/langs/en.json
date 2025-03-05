@@ -4469,5 +4469,10 @@
   "services_categories":"Services Categories",
   "service_lase_teen": "Services",
   "invalid_license": "License number is incorrect",
-  "enter_license_id": "Please enter the license number"
+  "enter_license_id": "Please enter the license number",
+  "commerical_add_activity_sucessfull": "Request Send Successfully",
+  "commerical_license_export": "commerical License Intial Approval",
+  "requestFlow": "request Flow",
+  "officeName": "office Name",
+  "commercialOffice": "Commercial Offices"
 }
