@@ -6,9 +6,9 @@ import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/widgets/path_nav/ui/landscape/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
+import 'package:mapness/widgets/path_nav/ui/path_nav_map_controls.dart';
 
 class PathNavLandscape extends ConsumerStatefulWidget {
   final ValueNotifier<double> bottomHeightNotifier;
@@ -58,7 +58,7 @@ class _PathNavLandscapeState extends ConsumerState<PathNavLandscape> {
         bottom: false,
         child: Stack(
           children: [
-            PathNavMapControlsLandscape(
+            PathNavMapControls(
               bottomHeightNotifier: widget.bottomHeightNotifier,
               navigationState: widget.navigationState,
               expansionNotifier: widget.expansionNotifier,
