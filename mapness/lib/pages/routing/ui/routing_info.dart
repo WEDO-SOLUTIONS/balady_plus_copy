@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -236,6 +237,10 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
     // log advert analytics event
     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
+    if (ref.read(sharedPrefsProvider).getBool(AdvertMetricsKeys.journeyStartedUnique.name) != true) {
+      ref.read(sharedPrefsProvider).setBool(AdvertMetricsKeys.journeyStartedUnique.name, true);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeyStartedUnique);
+    }
 
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',

@@ -312,6 +312,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     if (_navigationState.value != PathNavState.finished) {
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingHalfway);
+      if (ref.read(sharedPrefsProvider).getBool(AdvertMetricsKeys.journeyHalfwayUnique.name) != true) {
+        await ref.read(sharedPrefsProvider).setBool(AdvertMetricsKeys.journeyHalfwayUnique.name, true);
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeyHalfwayUnique);
+      }
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
@@ -437,6 +441,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
+      if (ref.read(sharedPrefsProvider).getBool(AdvertMetricsKeys.journeyCompleteUnique.name) != true) {
+        ref.read(sharedPrefsProvider).setBool(AdvertMetricsKeys.journeyCompleteUnique.name, true);
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeyCompleteUnique);
+      }
       _navigationState.value = PathNavState.finished;
       ref.read(layersControlsProvider.notifier).hideParking();
       ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
