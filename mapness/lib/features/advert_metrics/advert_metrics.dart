@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'advert_metrics.g.dart';
 
-enum AdvertMetircsKeys {
+enum AdvertMetricsKeys {
   /// event: explore_landing_engage
   exploreLandingEngagement,
 
@@ -24,17 +24,49 @@ enum AdvertMetircsKeys {
   navigationRoutingHalfway,
 
   onboardingStoriesCompleted,
+
+  /// event: add_poi_banner
+  addPoiBanner,
+
+  /// event: add_poi_stories
+  addPoiStories,
+
+  /// event: add_poi_search
+  addPoiSearch,
+
+  /// event: poi_submitted
+  poiSubmitted,
+
+  /// event: journey_search
+  journeySearch,
+
+  /// event: journey_started_unique
+  journeyStartedUnique,
+
+  /// event: journey_halfway_unique
+  journeyHalfwayUnique,
+
+  /// event: journey_complete_unique
+  journeyCompleteUnique,
 }
 
-extension AdvertMetircsKeysEx on AdvertMetircsKeys {
+extension AdvertMetircsKeysEx on AdvertMetricsKeys {
   String get event => switch (this) {
-        AdvertMetircsKeys.exploreLandingEngagement => 'g1f5nk',
-        AdvertMetircsKeys.exploreLandingRoute => 'g1f5nk',
-        AdvertMetircsKeys.exploreSearch => 'wldgmt',
-        AdvertMetircsKeys.navigationRoutingStartedJorney => '5yfcni',
-        AdvertMetircsKeys.navigationRoutingCompleted => '9fxp9f',
-        AdvertMetircsKeys.navigationRoutingHalfway => 'dgxg78',
-        AdvertMetircsKeys.onboardingStoriesCompleted => 'f54acw',
+        AdvertMetricsKeys.exploreLandingEngagement => 'g1f5nk',
+        AdvertMetricsKeys.exploreLandingRoute => 'g1f5nk',
+        AdvertMetricsKeys.exploreSearch => 'wldgmt',
+        AdvertMetricsKeys.navigationRoutingStartedJorney => '5yfcni',
+        AdvertMetricsKeys.navigationRoutingCompleted => '9fxp9f',
+        AdvertMetricsKeys.navigationRoutingHalfway => 'dgxg78',
+        AdvertMetricsKeys.onboardingStoriesCompleted => 'f54acw',
+        AdvertMetricsKeys.addPoiBanner => 'unqoza',
+        AdvertMetricsKeys.addPoiStories => '5s2ddu',
+        AdvertMetricsKeys.addPoiSearch => 'n0d96o',
+        AdvertMetricsKeys.poiSubmitted => 'vkqfwl',
+        AdvertMetricsKeys.journeySearch => 'pysar1',
+        AdvertMetricsKeys.journeyStartedUnique => 'pjpkj9',
+        AdvertMetricsKeys.journeyHalfwayUnique => 'uj1ybw',
+        AdvertMetricsKeys.journeyCompleteUnique => 'vps1sz',
       };
 }
 
@@ -48,7 +80,7 @@ class AdvertMetrics extends _$AdvertMetrics {
     Adjust.trackEvent(eventMetric);
   }
 
-  void sendEvent(AdvertMetircsKeys event) {
+  void sendEvent(AdvertMetricsKeys event) {
     sendTextEvent(event.event);
   }
 }

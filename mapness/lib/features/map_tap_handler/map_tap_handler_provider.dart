@@ -131,7 +131,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       action: MetricAction.tap.toString(),
     );
 
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
 

@@ -216,7 +216,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
       action: MetricAction.tap.toString(),
     );
 
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
     final userLocation = ref.read(locationProvider);
     if (userLocation != null) {

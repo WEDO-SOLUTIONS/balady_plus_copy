@@ -319,7 +319,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
               builder: (context, ref, _) => AppButton.close(
                 onTap: () {
                   if (widget.frameIndex == widget.frameLength - 1) {
-                    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
+                    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
                   }
                   StoryArgsProvider.of(context).onClose();
                 },

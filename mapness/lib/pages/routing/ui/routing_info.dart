@@ -235,7 +235,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
 
     // log advert analytics event
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
 
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
