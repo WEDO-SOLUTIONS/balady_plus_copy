@@ -121,8 +121,8 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             label: 'step2_label4'.tr(),
                             hintText: 'label4_hint'.tr(),
                             isDigitsOnly: true,
-                            initialValue: state.shopArea != null
-                                ? state.shopArea.toString()
+                            initialValue: state.totalArea != null
+                                ? state.totalArea.toString()
                                 : '',
                             keyboardType: TextInputType.number,
                             suffixIcon: CustomTextWidget(
@@ -165,7 +165,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           ],
                           ReadOnlyField(
                             title: "cr_main_activity_area".tr(),
-                            subTitle: state.getTotalArea().toString(),
+                            subTitle: state.getMainActivityArea().toString(),
                             showSpace: false,
                           ),
                           const CustomVerticalSpace(height: 16),
@@ -224,7 +224,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           const CustomVerticalSpace(height: 16),
                           if (state.addetionalActivityItems?.isNotEmpty ??
                               false)
-                          const ExtraActivityComponent(),
+                            const ExtraActivityComponent(),
                         ],
                       ),
                     ),

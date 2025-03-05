@@ -15,7 +15,6 @@ class CrStep2ActivityDataState extends Equatable {
   final CrLookupsEntity? selectedAccommodationType;
   final String errorMessage;
   final double? totalArea;
-  final double? shopArea;
   final String? unitCount;
 
   final WorkersTypes? workerType;
@@ -51,7 +50,6 @@ class CrStep2ActivityDataState extends Equatable {
       this.accommodationTypes = const [],
       this.errorMessage = '',
       this.totalArea,
-      this.shopArea,
       this.workerType,
       this.selectedAddetionalList,
       this.addetionalItem,
@@ -73,7 +71,6 @@ class CrStep2ActivityDataState extends Equatable {
         subActivityDetails,
         errorMessage,
         totalArea,
-        shopArea,
         workerType,
         status,
         unitCount,
@@ -102,7 +99,6 @@ class CrStep2ActivityDataState extends Equatable {
       CrLookupsEntity? selectedAccommodationType,
       String? errorMessage,
       double? totalArea,
-      double? shopArea,
       WorkersTypes? workerType,
       List<AddetionalActivityItem>? addetionalActivityItems,
       List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
@@ -135,7 +131,6 @@ class CrStep2ActivityDataState extends Equatable {
             selectedAccommodationType ?? this.selectedAccommodationType,
         errorMessage: errorMessage ?? this.errorMessage,
         totalArea: totalArea ?? this.totalArea,
-        shopArea: shopArea ?? this.shopArea,
         workerType: workerType ?? this.workerType,
         addetionalActivityItems:
             addetionalActivityItems ?? this.addetionalActivityItems,
@@ -196,7 +191,7 @@ class CrStep2ActivityDataState extends Equatable {
     return selectedIsicActivity?.atmActivity == true;
   }
 
-  double getTotalArea() {
+  double getMainActivityArea() {
     double total = totalArea ?? 0;
 
     selectedAddetionalList?.forEach((element) {

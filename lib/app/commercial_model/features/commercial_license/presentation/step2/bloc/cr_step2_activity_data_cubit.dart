@@ -479,8 +479,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
       /// Hear Need Add The activities
       emit(state.copyWith(
-          totalArea: requestData?.mainActivityArea?.toDouble(),
-          shopArea: requestData?.shopArea,
+          totalArea: requestData?.shopArea,
           workerType: workerType,
           selectedIsicActivity: selectedIsicActivity,
           atmFeesPaid: atmFeesPaid,
