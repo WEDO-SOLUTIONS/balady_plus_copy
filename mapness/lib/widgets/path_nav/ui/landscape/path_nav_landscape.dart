@@ -67,19 +67,19 @@ class _PathNavLandscapeState extends ConsumerState<PathNavLandscape> {
             Positioned.fill(
               child: Align(
                 alignment: AlignmentDirectional.bottomStart,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    ParkingBanner(
-                      navigatorType: widget.navType,
-                      navigationState: widget.navigationState,
-                      isHomeOrWork: widget.isHomeOrWork,
-                    ),
-                    Flexible(
-                      child: SizedBox(
-                        width: _roadPanelWidth,
+                child: SizedBox(
+                  width: _roadPanelWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ParkingBanner(
+                        navigatorType: widget.navType,
+                        navigationState: widget.navigationState,
+                        isHomeOrWork: widget.isHomeOrWork,
+                      ),
+                      Flexible(
                         child: Directionality(
                           textDirection: Directionality.of(context),
                           child: ValueListenableBuilder(
@@ -112,8 +112,8 @@ class _PathNavLandscapeState extends ConsumerState<PathNavLandscape> {
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
