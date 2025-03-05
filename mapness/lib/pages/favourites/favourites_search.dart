@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/favourites/mappers/directory_object_message_mapper.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -73,6 +74,9 @@ class FavouritesSearch extends ConsumerWidget {
           ),
         );
         unawaited(onSearchTap(ref, context, object));
+      },
+      onTapOfSearch: () {
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
       },
       onClose: () {
         FocusScope.of(context).unfocus();

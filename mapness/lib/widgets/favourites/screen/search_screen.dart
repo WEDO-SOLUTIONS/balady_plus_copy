@@ -13,6 +13,7 @@ class SearchScreen extends HookWidget {
   final Widget Function(BuildContext context, int index) itemBuilder;
   final void Function(SearchHistoryItem? item)? onHistoryItemTap;
   final void Function(String)? onChanged;
+  final VoidCallback? onTapOfSearch;
 
   const SearchScreen({
     required this.itemBuilder,
@@ -22,6 +23,7 @@ class SearchScreen extends HookWidget {
     this.hintText,
     super.key,
     this.onHistoryItemTap,
+    this.onTapOfSearch,
   });
 
   @override
@@ -51,6 +53,7 @@ class SearchScreen extends HookWidget {
                       ),
                       searchInput: BaladyTextInput.search(
                         config: BaladyInputConfig(
+                          onTap: onTapOfSearch,
                           focusNode: focusNode,
                           autofocus: true,
                           hintText: hintText ?? context.l10n.search,
