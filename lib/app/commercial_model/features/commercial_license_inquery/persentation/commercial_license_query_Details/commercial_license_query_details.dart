@@ -391,7 +391,7 @@ class _CommercialLicenseQueryDetailsState
                           workingHours:
                               (commercialLicenceQueryDetails.workTimes!),
                           customerServiceNumber: commercialLicenceQueryDetails
-                              .customerServicePhoneNumber!,
+                              .customerServicePhoneNumber??"",
                         ),
                     ],
                   ),
