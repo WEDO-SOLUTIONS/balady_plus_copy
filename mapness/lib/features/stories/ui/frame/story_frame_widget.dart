@@ -32,6 +32,7 @@ class StoryFrameWidget extends StatefulWidget {
   final StoryTypes type;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
+  final void Function(StoryFrameData)? onActionPressed;
 
   const StoryFrameWidget({
     required this.duration,
@@ -41,6 +42,7 @@ class StoryFrameWidget extends StatefulWidget {
     required this.frameLength,
     required this.onNext,
     required this.onPrevious,
+    this.onActionPressed,
     super.key,
     this.controller,
   });
@@ -290,6 +292,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                   actionTheme: storyTheme.actionTheme,
                   action: widget.frame.action!,
                   onNext: _onNext,
+                  onActionPressed: () => widget.onActionPressed?.call(widget.frame),
                 )
               : const SizedBox.shrink(),
         ),

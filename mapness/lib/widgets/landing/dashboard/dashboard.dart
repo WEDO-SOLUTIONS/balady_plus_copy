@@ -127,7 +127,10 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: uikit.Spacing.$3x),
           FeedbackBannerCard(
             imageAssetName: 'add_company.png',
-            onTap: () => context.router.push(QuickFeedbackRoute()),
+            onTap: () {
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
+              context.router.push(QuickFeedbackRoute());
+            },
             gradientColors: const [
               /// It's normal that some components are not from the design and color system too
               Color(0xFF9F6AD7),

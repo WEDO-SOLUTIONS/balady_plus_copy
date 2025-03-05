@@ -50,7 +50,7 @@ enum AdvertMetricsKeys {
   journeyCompleteUnique,
 }
 
-extension AdvertMetircsKeysEx on AdvertMetricsKeys {
+extension AdvertMetricsKeysEx on AdvertMetricsKeys {
   String get event => switch (this) {
         AdvertMetricsKeys.exploreLandingEngagement => 'g1f5nk',
         AdvertMetricsKeys.exploreLandingRoute => 'g1f5nk',
