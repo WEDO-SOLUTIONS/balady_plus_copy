@@ -3,7 +3,6 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/general_32_icons.dart';
@@ -159,23 +158,13 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                 children: [
                   QuickActionButton(
                     text: context.l10n.quaranAction,
-                    widget: DrawIconBasedTypeWidget(
-                      icon: IconPath.serviceIcon('holy_quran'),
-                      iconSize: 32,
-                      iconColor: context.colorsV3.accentDefault,
-                    ),
-                    // icon: General32Icons.parkingAction,
+                    icon: General32Icons.quaranAction,
                     onTap: () => _openQuran(context),
                   ),
                   const SizedBox(width: uikit.Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.athkarAction,
-                    widget: DrawIconBasedTypeWidget(
-                      icon: IconPath.serviceIcon('azkar'),
-                      iconSize: 32,
-                      iconColor: context.colorsV3.accentDefault,
-                    ),
-                    // icon: General32Icons.parkingAction,
+                    icon: General32Icons.athkarAction,
                     onTap: () => _openAthkar(context),
                   ),
                   const SizedBox(width: uikit.Spacing.$2x),
