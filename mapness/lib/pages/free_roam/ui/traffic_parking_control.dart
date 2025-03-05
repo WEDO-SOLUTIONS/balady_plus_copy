@@ -16,10 +16,12 @@ import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
   final bool trafficVisible;
+  final bool parkingVisible;
 
   const TrafficParkingControl({
     super.key,
     this.trafficVisible = true,
+    this.parkingVisible = true,
   });
 
   @override
@@ -48,36 +50,38 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
               trafficState: trafficNotifier,
               isVisable: isTrafficVisable,
             ),
-          Consumer(
-            builder: (context, ref, child) {
-              final parkingState = ref.watch(parkingStateProvider);
+          if (widget.parkingVisible)
+            Consumer(
+              builder: (context, ref, child) {
+                final parkingState = ref.watch(parkingStateProvider);
 
-              final layersNotifier = ref.watch(layersControlsProvider.notifier);
-              final layers = ref.watch(layersControlsProvider);
-              final isParkingEnabled = parkingState.visible;
+                final layersNotifier = ref.watch(layersControlsProvider.notifier);
+                final layers = ref.watch(layersControlsProvider);
+                final isParkingEnabled = parkingState.visible;
 
-              return _ParkingWidget(
-                isEnabled: isParkingEnabled,
-                isNoTopBorderRadius: isTrafficVisable,
-                onParkingTap: () {
-                  final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
+                return _ParkingWidget(
+                  isEnabled: isParkingEnabled,
+                  isNoTopBorderRadius: isTrafficVisable,
+                  onParkingTap: () {
+                    final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
 
-                  if (autoEnableParking == null) {
-                    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
-                    return;
-                  }
+                    if (autoEnableParking == null) {
+                      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
+                      return;
+                    }
 
-                  final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+                    final parkingEnabledFreeRoam =
+                        sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
 
-                  if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
-                    sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-                  }
+                    if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
+                      sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
+                    }
 
-                  layersNotifier.toggleParking();
-                },
-              );
-            },
-          )
+                    layersNotifier.toggleParking();
+                  },
+                );
+              },
+            )
         ],
       ),
     );

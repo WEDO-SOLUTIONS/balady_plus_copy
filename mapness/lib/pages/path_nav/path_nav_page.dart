@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
@@ -278,7 +279,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                           isHomeOrWork: widget.isHomeOrWork,
                         ),
                         Directionality(
-                          textDirection: Directionality.of(context),
+                          textDirection: ref.watch(uiDirectionProvider),
                           child: ValueListenableBuilder(
                             valueListenable: _navigationState,
                             builder: (context, state, child) {
@@ -322,9 +323,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                     child: NaviPanelLandscape(
                       navigationState: _navigationState,
                       expansionNotifier: _expansionNotifier,
-                      navType: widget.navType,
-                      isHomeOrWork: widget.isHomeOrWork,
-                      onSizeChangedParking: _onSizeChangedParking,
                       endTripAndShowFeedback: _endTripAndShowFeedback,
                       onShowRoutePressed: _onShowRoutePressed,
                       acceptBetterRoute: _acceptBetterRoute,

@@ -44,7 +44,6 @@ class PathNavMapControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const trafficParkingControlWidget = TrafficParkingControl(trafficVisible: false);
     const compassControlWidget = CompassControl();
     const pathNavFollowControlWidget = PathNavFollowControl();
 
@@ -121,7 +120,7 @@ class PathNavMapControls extends StatelessWidget {
                   uikit.Spacing.$5x.widthBox,
                   Column(
                     children: [
-                      trafficParkingControlWidget,
+                      const TrafficParkingControl(parkingVisible: false),
                       const Spacer(),
                       zoomControlWidget,
                       const Spacer(),
@@ -163,7 +162,10 @@ class PathNavMapControls extends StatelessWidget {
                   ),
                   const Padding(
                     padding: padding,
-                    child: trafficParkingControlWidget,
+                    child: TrafficParkingControl(
+                      trafficVisible: false,
+                      parkingVisible: false,
+                    ),
                   ),
                   const Spacer(),
                   Padding(

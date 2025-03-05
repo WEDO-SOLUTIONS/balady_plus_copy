@@ -1,19 +1,16 @@
-import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 
-class NaviPanelLandscape extends ConsumerWidget {
+class NaviPanelLandscape extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
   final ValueNotifier<bool> expansionNotifier;
-  final RouteSearchOptionsMessage navType;
-  final bool isHomeOrWork;
-  final Function(double size) onSizeChangedParking;
   final Function(BuildContext context) endTripAndShowFeedback;
   final VoidCallback onShowRoutePressed;
   final Function(BuildContext context) acceptBetterRoute;
@@ -27,9 +24,6 @@ class NaviPanelLandscape extends ConsumerWidget {
   const NaviPanelLandscape({
     required this.navigationState,
     required this.expansionNotifier,
-    required this.navType,
-    required this.isHomeOrWork,
-    required this.onSizeChangedParking,
     required this.endTripAndShowFeedback,
     required this.onShowRoutePressed,
     required this.acceptBetterRoute,
@@ -43,57 +37,60 @@ class NaviPanelLandscape extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    const double _roadPanelWidth = 370;
+  ConsumerState<NaviPanelLandscape> createState() => _NaviPanelLandscapeState();
+}
+
+class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
+  @override
+  void initState() {
+    super.initState();
+    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+  }
+
+  @override
+  void deactivate() {
+    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = false;
+    super.deactivate();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    const double roadPanelWidth = 370;
 
     return SafeArea(
       bottom: false,
       child: SizedBox(
-        width: _roadPanelWidth,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.end,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ParkingBanner(
-              navigatorType: navType,
-              navigationState: navigationState,
-              isHomeOrWork: isHomeOrWork,
-            ),
-            Flexible(
-              child: Directionality(
-                textDirection: Directionality.of(context),
-                child: ValueListenableBuilder<PathNavState>(
-                  valueListenable: navigationState,
-                  builder: (context, state, child) {
-                    switch (state) {
-                      case PathNavState.running:
-                        return EtaSheet(
-                          onEndTripPressed: () => endTripAndShowFeedback(context),
-                          onRoutePressed: onShowRoutePressed,
-                          onBetterRouteAccept: () => acceptBetterRoute(context),
-                          onBetterRouteReject: () => rejectBetterRoute(context),
-                          betterRouteDurationProfit: betterRouteDurationProfit,
-                          onSizeChanged: onSizeChanged,
-                        );
-                      case PathNavState.paused:
-                        return EtaContinue(
-                          onTap: onContinuePressed,
-                          onSizeChanged: onSizeChanged,
-                        );
-                      case PathNavState.finished:
-                        return EtaFinished(
-                          expansionNotifier: expansionNotifier,
-                          onEndTripPressed: endTripAndShowHome,
-                          onBuildAnotherRoutePressed: endTripAndBuildAnotherRoute,
-                          onSizeChanged: onSizeChanged,
-                        );
-                    }
-                  },
-                ),
-              ),
-            ),
-          ],
+        width: roadPanelWidth,
+        child: Directionality(
+          textDirection: ref.watch(uiDirectionProvider),
+          child: ValueListenableBuilder<PathNavState>(
+            valueListenable: widget.navigationState,
+            builder: (context, state, child) {
+              switch (state) {
+                case PathNavState.running:
+                  return EtaSheet(
+                    onEndTripPressed: () => widget.endTripAndShowFeedback(context),
+                    onRoutePressed: widget.onShowRoutePressed,
+                    onBetterRouteAccept: () => widget.acceptBetterRoute(context),
+                    onBetterRouteReject: () => widget.rejectBetterRoute(context),
+                    betterRouteDurationProfit: widget.betterRouteDurationProfit,
+                    onSizeChanged: widget.onSizeChanged,
+                  );
+                case PathNavState.paused:
+                  return EtaContinue(
+                    onTap: widget.onContinuePressed,
+                    onSizeChanged: widget.onSizeChanged,
+                  );
+                case PathNavState.finished:
+                  return EtaFinished(
+                    expansionNotifier: widget.expansionNotifier,
+                    onEndTripPressed: widget.endTripAndShowHome,
+                    onBuildAnotherRoutePressed: widget.endTripAndBuildAnotherRoute,
+                    onSizeChanged: widget.onSizeChanged,
+                  );
+              }
+            },
+          ),
         ),
       ),
     );
