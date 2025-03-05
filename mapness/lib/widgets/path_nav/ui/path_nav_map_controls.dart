@@ -16,6 +16,7 @@ import 'package:mapness/widgets/landing/route_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 
+// TODO(Ayat) change controls and take them from uikit
 class PathNavMapControls extends StatelessWidget {
   final ValueNotifier<double> bottomHeightNotifier;
   final ValueNotifier<PathNavState> navigationState;
@@ -43,6 +44,18 @@ class PathNavMapControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const trafficParkingControlWidget = TrafficParkingControl(trafficVisible: false);
+    const compassControlWidget = CompassControl();
+    const pathNavFollowControlWidget = PathNavFollowControl();
+
+    final zoomControlWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        if (navType == RouteSearchOptionsMessage.pedestrian) const IndoorControl() else const SizedBox.shrink(),
+        const ZoomControl(),
+      ],
+    );
+
     final maneuverAndLimitWidget = Directionality(
       // Here we set the text direction according to the current locale to display the correct direction of the widget.
       textDirection: Directionality.of(context),
@@ -84,21 +97,7 @@ class PathNavMapControls extends StatelessWidget {
       ),
     );
 
-    const trafficParkingControlWidget = TrafficParkingControl(trafficVisible: false);
-
-    final zoomControlWidget = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (navType == RouteSearchOptionsMessage.pedestrian) const IndoorControl() else const SizedBox.shrink(),
-        const ZoomControl(),
-      ],
-    );
-
-    const compassControlWidget = CompassControl();
-
-    const pathNavFollowControlWidget = PathNavFollowControl();
-
-    // https://www.figma.com/design/59ohkX2UrM4EDS2zdw5C9r/Landscape-Mode-For-Navigation?node-id=493-24015&t=YZybI5BZ44k4JHls-0
+    /// Landscape https://www.figma.com/design/59ohkX2UrM4EDS2zdw5C9r/Landscape-Mode-For-Navigation?node-id=493-24015&t=YZybI5BZ44k4JHls-0
     Widget landscapeLayout() => ValueListenableBuilder(
           valueListenable: navigationState,
           builder: (context, pathNavState, child) {
@@ -109,27 +108,30 @@ class PathNavMapControls extends StatelessWidget {
               child: child,
             );
           },
-          child: Padding(
-            padding: const EdgeInsets.all(uikit.Spacing.$4x).copyWith(top: uikit.Spacing.$3x),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(child: maneuverAndLimitWidget),
-                // $8x in design, but BaladyManeuverAndLimit already has symmetric(horizontal: 12) so only $1x added
-                (uikit.Spacing.$1x + uikit.Spacing.$4x).widthBox,
-                Column(
-                  children: [
-                    trafficParkingControlWidget,
-                    const Spacer(),
-                    zoomControlWidget,
-                    const Spacer(),
-                    compassControlWidget,
-                    uikit.Spacing.$2x.heightBox,
-                    pathNavFollowControlWidget,
-                  ],
-                ),
-              ],
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.all(uikit.Spacing.$4x).copyWith(top: uikit.Spacing.$3x),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(child: maneuverAndLimitWidget),
+                  // $8x in design, but BaladyManeuverAndLimit already has symmetric(horizontal: 12)
+                  uikit.Spacing.$5x.widthBox,
+                  Column(
+                    children: [
+                      trafficParkingControlWidget,
+                      const Spacer(),
+                      zoomControlWidget,
+                      const Spacer(),
+                      compassControlWidget,
+                      uikit.Spacing.$2x.heightBox,
+                      pathNavFollowControlWidget,
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         );

@@ -36,7 +36,7 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/widgets/path_nav/ui/landscape/path_nav_landscape.dart';
+import 'package:mapness/widgets/path_nav/ui/landscape/navi_panel_landscape.dart';
 import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
@@ -223,23 +223,23 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       canPop: false,
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: OrientationBuilder(builder: (context, orientation) {
-          if (orientation == Orientation.portrait) {
-            return Stack(
-              children: [
-                ValueListenableBuilder(
+        child: OrientationBuilder(
+          builder: (context, orientation) => Stack(
+            children: [
+              ValueListenableBuilder(
                 valueListenable: _navigationState,
                 builder: (context, state, _) {
                   final isShowRoute = state == PathNavState.running;
 
                   returnPathNavMapControls(
-                  bottomHeightNotifier: _bottomHeightNotifier,
-                  navigationState: _navigationState,
-                  expansionNotifier: _expansionNotifier,
-                  navType: widget.navType,
-                onRoutePressed: isShowRoute ? _onShowRoutePressed : null,
+                bottomHeightNotifier: _bottomHeightNotifier,
+                navigationState: _navigationState,
+                expansionNotifier: _expansionNotifier,
+                navType: widget.navType,
+              onRoutePressed: isShowRoute ? _onShowRoutePressed : null,
                   );
                 }),
+              if (orientation == Orientation.portrait)
                 Consumer(
                   builder: (_, ref, __) {
                     final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
@@ -258,6 +258,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                         : const SizedBox.shrink();
                   },
                 ),
+              if (orientation == Orientation.portrait)
                 Positioned(
                   bottom: 0,
                   right: 0,
@@ -313,30 +314,33 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                       ],
                     ),
                   ),
+                )
+              else
+                Positioned.fill(
+                  child: Align(
+                    alignment: AlignmentDirectional.bottomStart,
+                    child: NaviPanelLandscape(
+                      navigationState: _navigationState,
+                      expansionNotifier: _expansionNotifier,
+                      navType: widget.navType,
+                      isHomeOrWork: widget.isHomeOrWork,
+                      onSizeChangedParking: _onSizeChangedParking,
+                      endTripAndShowFeedback: _endTripAndShowFeedback,
+                      onShowRoutePressed: _onShowRoutePressed,
+                      acceptBetterRoute: _acceptBetterRoute,
+                      rejectBetterRoute: _rejectBetterRoute,
+                      betterRouteDurationProfit: _betterRouteDurationProfit,
+                      onSizeChanged: _onSizeChanged,
+                      onContinuePressed: _onContinuePressed,
+                      endTripAndShowHome: _endTripAndShowHome,
+                      endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
+                    ),
+                  ),
                 ),
-                ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking)
-              ],
-            );
-          } else {
-            return PathNavLandscape(
-              bottomHeightNotifier: _bottomHeightNotifier,
-              navigationState: _navigationState,
-              expansionNotifier: _expansionNotifier,
-              navType: widget.navType,
-              isHomeOrWork: widget.isHomeOrWork,
-              onSizeChangedParking: _onSizeChangedParking,
-              endTripAndShowFeedback: _endTripAndShowFeedback,
-              onShowRoutePressed: _onShowRoutePressed,
-              acceptBetterRoute: _acceptBetterRoute,
-              rejectBetterRoute: _rejectBetterRoute,
-              betterRouteDurationProfit: _betterRouteDurationProfit,
-              onSizeChanged: _onSizeChanged,
-              onContinuePressed: _onContinuePressed,
-              endTripAndShowHome: _endTripAndShowHome,
-              endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
-            );
-          }
-        }),
+              ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking)
+            ],
+          ),
+        ),
       ),
     );
   }
