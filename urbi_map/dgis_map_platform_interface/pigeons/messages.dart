@@ -1398,6 +1398,14 @@ abstract class MapApi {
   );
 
   @async
+  void animateToRepresentativeArea(
+    GeometryMessage area,
+    CalcPositionOptionsMessage options,
+    double duration,
+    CameraAnimationTypeMessage animationType,
+  );
+
+  @async
   DirectoryObjectMessage searchByObjectId(DgisObjectIdMessage objectId);
 
   @async

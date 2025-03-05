@@ -65,6 +65,7 @@ class FlutterClusterRenderer: SimpleClusterRenderer {
             } ?? Anchor(x: 0.5, y: 0.5),
             text: message!.text,
             textStyle: message!.textStyle?.textStyle,
+            iconOpacity: message!.icon?.iconOpacity.map { Opacity(value: Float($0)) } ?? Opacity(value: Float(1.0)),
             iconWidth: (message!.icon?.width).map {
                 LogicalPixel(value: Float($0))
             } ?? LogicalPixel(value: 0),

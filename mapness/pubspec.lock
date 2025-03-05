@@ -194,17 +194,17 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: "85ad6863ed7e27b9d90a6e27a750a14280fe692cb0c3369f0281737fd4aea3cb"
+      sha256: b77ab001eaf2657853fb3b7e281bcaf2066a87cbfea7b94f740277e2ddb5c9b5
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.31"
+    version: "0.0.46"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.11.21+262"
+    version: "3.30.1+327"
   balady_uikit:
     dependency: "direct main"
     description:
@@ -357,6 +357,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.1"
+  cached_network_svg_image:
+    dependency: transitive
+    description:
+      name: cached_network_svg_image
+      sha256: fe9df0217c12e3903558dad14e1bb938c51296a1d96faa080415c6146bbd7a7d
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.0"
   camera:
     dependency: transitive
     description:
@@ -1025,6 +1033,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
+  flutter_dotenv:
+    dependency: transitive
+    description:
+      name: flutter_dotenv
+      sha256: b7c7be5cd9f6ef7a78429cabd2774d3c4af50e79cb2b7593e3d5d763ef95c61b
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_easyloading:
     dependency: transitive
     description:
@@ -1444,6 +1460,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.8"
+  flutter_typeahead:
+    dependency: transitive
+    description:
+      name: flutter_typeahead
+      sha256: d64712c65db240b1057559b952398ebb6e498077baeebf9b0731dade62438a6d
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.0"
   flutter_uxcam:
     dependency: "direct main"
     description:
@@ -1601,54 +1625,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.2.1"
-  google_maps:
-    dependency: transitive
-    description:
-      name: google_maps
-      sha256: "4d6e199c561ca06792c964fa24b2bac7197bf4b401c2e1d23e345e5f9939f531"
-      url: "https://pub.dev"
-    source: hosted
-    version: "8.1.1"
-  google_maps_flutter:
-    dependency: transitive
-    description:
-      name: google_maps_flutter
-      sha256: "209856c8e5571626afba7182cf634b2910069dc567954e76ec3e3fb37f5e9db3"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.10.0"
-  google_maps_flutter_android:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_android
-      sha256: bccf64ccbb2ea672dc62a61177b315a340af86b0228564484b023657544a3fd5
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.14.11"
-  google_maps_flutter_ios:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_ios
-      sha256: "6f798adb0aa1db5adf551f2e39e24bd06c8c0fbe4de912fb2d9b5b3f48147b02"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.13.2"
-  google_maps_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_platform_interface
-      sha256: a951981c22d790848efb9f114f81794945bc5c06bc566238a419a92f110af6cb
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.9.5"
-  google_maps_flutter_web:
-    dependency: transitive
-    description:
-      name: google_maps_flutter_web
-      sha256: ff39211bd25d7fad125d19f757eba85bd154460907cd4d135e07e3d0f98a4130
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.5.10"
   google_maps_webservice:
     dependency: transitive
     description:
@@ -1714,6 +1690,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.1"
+  home_widget:
+    dependency: transitive
+    description:
+      name: home_widget
+      sha256: "7430f7549d42cef2e729bd3c779de748b93f1eb78b1abfe6bca8fffd1cfce3e9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.0+1"
   hooks_riverpod:
     dependency: "direct main"
     description:
@@ -1906,6 +1890,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.19.0"
+  intl_phone_field:
+    dependency: transitive
+    description:
+      name: intl_phone_field
+      sha256: "73819d3dfcb68d2c85663606f6842597c3ddf6688ac777f051b17814fe767bbf"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   io:
     dependency: transitive
     description:
@@ -2127,10 +2119,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: ebde3d008e49abaee25385f5aa1549d713e199dab72b280fd1a5ef9b61b58d3d
+      sha256: "971fed351e36af473a70b0e966022ad477f4fe12dd3ea2d262c9c8fc7e41f190"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.13"
+    version: "1.0.16"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -2468,6 +2460,38 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  pointer_interceptor:
+    dependency: transitive
+    description:
+      name: pointer_interceptor
+      sha256: "57210410680379aea8b1b7ed6ae0c3ad349bfd56fe845b8ea934a53344b9d523"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1+2"
+  pointer_interceptor_ios:
+    dependency: transitive
+    description:
+      name: pointer_interceptor_ios
+      sha256: a6906772b3205b42c44614fcea28f818b1e5fdad73a4ca742a7bd49818d9c917
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.1"
+  pointer_interceptor_platform_interface:
+    dependency: transitive
+    description:
+      name: pointer_interceptor_platform_interface
+      sha256: "0597b0560e14354baeb23f8375cd612e8bd4841bf8306ecb71fcd0bb78552506"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.0+1"
+  pointer_interceptor_web:
+    dependency: transitive
+    description:
+      name: pointer_interceptor_web
+      sha256: "7a7087782110f8c1827170660b09f8aa893e0e9a61431dbbe2ac3fc482e8c044"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.2+1"
   pool:
     dependency: transitive
     description:
@@ -2644,14 +2668,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.28.0"
-  sanitize_html:
-    dependency: transitive
-    description:
-      name: sanitize_html
-      sha256: "12669c4a913688a26555323fb9cec373d8f9fbe091f2d01c40c723b33caa8989"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0"
   scan:
     dependency: transitive
     description:
