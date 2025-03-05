@@ -1,13 +1,16 @@
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
@@ -146,32 +149,61 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           const SizedBox(height: uikit.Spacing.$6x),
           DashboardTitle(context.l10n.quickActions),
           const SizedBox(height: uikit.Spacing.$4x),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                QuickActionButton(
-                  text: context.l10n.parkingAction,
-                  icon: General32Icons.parkingAction,
-                  onTap: _openParking,
-                ),
-                QuickActionButton(
-                  text: context.l10n.qibla,
-                  icon: General32Icons.qiblaAction,
-                  onTap: () => _openQibla(context),
-                ),
-                QuickActionButton(
-                  text: context.l10n.locationAction,
-                  icon: General32Icons.locationAction,
-                  onTap: _openMyLocation,
-                ),
-                QuickActionButton(
-                  text: context.l10n.snapAndSendAction,
-                  icon: General32Icons.snapAndSendAction,
-                  onTap: _openSnapAndSend,
-                ),
-              ],
+          ScrollConfiguration(
+            behavior: NoGlowingScrollBehavior(),
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x, vertical: uikit.Spacing.$0_5x),
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  QuickActionButton(
+                    text: context.l10n.quaranAction,
+                    widget: DrawIconBasedTypeWidget(
+                      icon: IconPath.serviceIcon('holy_quran'),
+                      iconSize: 32,
+                      iconColor: context.colorsV3.accentDefault,
+                    ),
+                    // icon: General32Icons.parkingAction,
+                    onTap: () => _openQuran(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.athkarAction,
+                    widget: DrawIconBasedTypeWidget(
+                      icon: IconPath.serviceIcon('azkar'),
+                      iconSize: 32,
+                      iconColor: context.colorsV3.accentDefault,
+                    ),
+                    // icon: General32Icons.parkingAction,
+                    onTap: () => _openAthkar(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.qibla,
+                    icon: General32Icons.qiblaAction,
+                    onTap: () => _openQibla(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.snapAndSendAction,
+                    icon: General32Icons.snapAndSendAction,
+                    onTap: _openSnapAndSend,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.parkingAction,
+                    icon: General32Icons.parkingAction,
+                    onTap: _openParking,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.locationAction,
+                    icon: General32Icons.locationAction,
+                    onTap: _openMyLocation,
+                  ),
+                ],
+              ),
             ),
           ),
           const SizedBox(height: uikit.Spacing.$4x),
@@ -207,6 +239,14 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         context.router.push(const KiblahRoute());
       }
     });
+  }
+
+  void _openQuran(BuildContext context) {
+    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+  }
+
+  void _openAthkar(BuildContext context) {
+    NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
   }
 
   void _openMyLocation() {
