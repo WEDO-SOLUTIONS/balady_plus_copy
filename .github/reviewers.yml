@@ -13,6 +13,9 @@ reviewers:
       - ForesThule
       - DmitriiProshutinskii
       - smitsk
+    devops-team:
+      - r9odt
+      - popov-ilya
     support-team:
       - Demezy
       - AyatAliev
@@ -20,15 +23,15 @@ reviewers:
 files:
   ".github/**":
     - doldrums
-    - r9odt
+    - devops-team
     - alexstrnik
   ".lefthook/**":
     - doldrums
-    - r9odt
+    - devops-team
     - demezy
   "justscripts/**":
     - doldrums
-    - r9odt
+    - devops-team
     - platform-team
   "urbi_map/**":
     - platform-team
@@ -36,7 +39,7 @@ files:
   "mapness/scripts/**":
     - platform-team
     - doldrums
-    - r9odt
+    - devops-team
   "tests/**":
     - doldrums
     - support-team
