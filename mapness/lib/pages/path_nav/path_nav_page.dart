@@ -211,13 +211,19 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         textDirection: TextDirection.ltr,
         child: Stack(
           children: [
-            PathNavMapControls(
-              bottomHeightNotifier: _bottomHeightNotifier,
-              navigationState: _navigationState,
-              expansionNotifier: _expansionNotifier,
-              navType: widget.navType,
-              onRoutePressed: _onShowRoutePressed,
-            ),
+            ValueListenableBuilder(
+                valueListenable: _navigationState,
+                builder: (context, state, _) {
+                  final isShowRoute = state == PathNavState.running;
+
+                  return PathNavMapControls(
+                    bottomHeightNotifier: _bottomHeightNotifier,
+                    navigationState: _navigationState,
+                    expansionNotifier: _expansionNotifier,
+                    navType: widget.navType,
+                    onRoutePressed: isShowRoute ? _onShowRoutePressed : null,
+                  );
+                }),
             Consumer(
               builder: (_, ref, __) {
                 final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;

@@ -21,7 +21,7 @@ class PathNavMapControls extends StatelessWidget {
   final ValueNotifier<PathNavState> navigationState;
   final ValueNotifier<bool> expansionNotifier;
   final RouteSearchOptionsMessage navType;
-  final VoidCallback onRoutePressed;
+  final VoidCallback? onRoutePressed;
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -30,7 +30,7 @@ class PathNavMapControls extends StatelessWidget {
     required this.navigationState,
     required this.expansionNotifier,
     required this.navType,
-    required this.onRoutePressed,
+    this.onRoutePressed,
     super.key,
   });
 
@@ -130,9 +130,10 @@ class PathNavMapControls extends StatelessWidget {
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      RouteControl(
-                        onTap: onRoutePressed,
-                      ),
+                      if (onRoutePressed != null)
+                        RouteControl(
+                          onTap: onRoutePressed!,
+                        ),
                       const Spacer(),
                       const Column(
                         children: [
