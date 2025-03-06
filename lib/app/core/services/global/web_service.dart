@@ -281,9 +281,10 @@ class AppInterceptors extends Interceptor {
     "Opps, recieved Error: ${err.response?.statusCode}".errorLog();
     "Opps, recieved Error: ${err.response?.data}".errorLog();
     sendAPIEvents(
-      nameEvent: EventsName.requestAPISuccessful,
+      nameEvent: EventsName.requestAPIError,
       responseData:  err.response?.data?.toString() ?? "",
       requestOptions: err.requestOptions,
+      statusCode: err.response?.statusCode,
     );
 
     switch (err.type) {
@@ -354,6 +355,7 @@ class AppInterceptors extends Interceptor {
         nameEvent: EventsName.requestAPISuccessful,
         requestOptions: response.requestOptions,
         responseData:  response.data?.toString() ?? "",
+        statusCode: response.statusCode
       );
     }
     return handler.next(response);
@@ -388,12 +390,13 @@ void sendAPIEvents({
   required String nameEvent,
   required String responseData,
   required RequestOptions requestOptions,
+  int? statusCode,
 }) {
   try {
     String requestData = requestOptions.data?.toString() ?? "";
     LogsViewModel().sendEventFromModel(
       event: RequestApiModel(
-        nameEvent: EventsName.requestAPISuccessful,
+        nameEvent: nameEvent,
         message: responseData.length > 1024
             ? responseData.substring(0, 1024)
             : responseData,
@@ -402,6 +405,7 @@ void sendAPIEvents({
             ? requestData.substring(0, 1024)
             : requestData,
         verifyingKEY: requestOptions.headers["verifyingKEY"] ?? "",
+        statusCode: statusCode,
       ),
     );
   } catch (error, stackTrace) {
