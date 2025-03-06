@@ -1,0 +1,26 @@
+diff --git a/ios/MovingViolationsExtension.entitlements b/ios/MovingViolationsExtension.entitlements
+index ac176fc0d0..b874181df7 100644
+--- a/ios/MovingViolationsExtension.entitlements
++++ b/ios/MovingViolationsExtension.entitlements
+@@ -4,7 +4,7 @@
+ <dict>
+ 	<key>com.apple.security.application-groups</key>
+ 	<array>
+-		<string>group.movingViolations</string>
++		<string>group.urbi.movingViolations</string>
+ 	</array>
+ </dict>
+ </plist>
+diff --git a/ios/Runner/Runner.entitlements b/ios/Runner/Runner.entitlements
+index 89c9cf5d37..b4afcc58f8 100644
+--- a/ios/Runner/Runner.entitlements
++++ b/ios/Runner/Runner.entitlements
+@@ -14,7 +14,7 @@
+ 	<true/>
+ 	<key>com.apple.security.application-groups</key>
+ 	<array>
+-		<string>group.movingViolations</string>
++		<string>group.urbi.movingViolations</string>
+ 	</array>
+ </dict>
+ </plist>

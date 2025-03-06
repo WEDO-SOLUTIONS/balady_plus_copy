@@ -1,4 +1,4 @@
-import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
+import 'package:mapness/shared/entities/coordinates.dart';
 
 class FavouriteItem {
   final String id;

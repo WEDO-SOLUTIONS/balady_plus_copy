@@ -1,18 +1,18 @@
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/providers/search_in_rect.dart';
-import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
-import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/layers_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
+import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
-import 'package:mapness/widgets/landing/ui/traffic_control.dart';
+import 'package:mapness/widgets/landing/compass_control.dart';
+import 'package:mapness/widgets/landing/complience_building_legend.dart';
+import 'package:mapness/widgets/landing/follow_control.dart';
+import 'package:mapness/widgets/landing/layers_control.dart';
+import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
-import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/indoor_control.dart';
-import 'package:mapness/_features/landing/widgets/layers_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/widgets/landing/ui/traffic_control.dart';
+import 'package:mapness/widgets/landing/compass_control.dart';
+import 'package:mapness/widgets/landing/complience_building_legend.dart';
+import 'package:mapness/widgets/landing/follow_control.dart';
+import 'package:mapness/widgets/landing/indoor_control.dart';
+import 'package:mapness/widgets/landing/layers_control.dart';
+import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 
 class ClosureControls extends ConsumerWidget {
   const ClosureControls({super.key});
