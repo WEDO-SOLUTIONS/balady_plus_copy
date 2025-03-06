@@ -1,5 +1,7 @@
 import 'package:adjust_sdk/adjust.dart';
 import 'package:adjust_sdk/adjust_event.dart';
+import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'advert_metrics.g.dart';
@@ -80,7 +82,21 @@ class AdvertMetrics extends _$AdvertMetrics {
     Adjust.trackEvent(eventMetric);
   }
 
-  void sendEvent(AdvertMetricsKeys event) {
-    sendTextEvent(event.event);
+  void sendEvent(AdvertMetricsKeys event, {bool isUniquePerSession = false}) {
+    if (isUniquePerSession && _checkIfUnique(event)) {
+      sendTextEvent(event.event);
+    } else {
+      sendTextEvent(event.event);
+    }
+  }
+
+  bool _checkIfUnique(AdvertMetricsKeys event) {
+    final currentSessionId = AdvancedMetrics.instance.sessionId;
+    final prevSessionId = ref.read(sharedPrefsProvider).getString(event.name);
+    if (currentSessionId != prevSessionId) {
+      ref.read(sharedPrefsProvider).setString(event.name, currentSessionId);
+      return true;
+    }
+    return false;
   }
 }
