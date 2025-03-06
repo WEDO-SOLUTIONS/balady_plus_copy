@@ -15,6 +15,9 @@ import 'package:balady_plus/app/features/events/presentation/bloc/events_event.d
     as events;
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
+import 'package:balady_plus/app/features/vd/domain/entities/camera/camera_page_params.dart';
+import 'package:balady_plus/app/features/vd/domain/entities/categories/category_item.dart';
+import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
@@ -67,7 +70,9 @@ import '../errors/exceptions.dart';
 import './utils_exports.dart'
     show
         AppColor,
+        AppConfig,
         AppLanguage,
+        BlocStatus,
         EnvType,
         GeneralKey,
         MimeType,
@@ -93,11 +98,23 @@ import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
 import '../../features/profile_features/delegators/delegators_exports.dart'
     show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
+import '../services/services_exports.dart'
+    show
+        AppInterceptors,
+        EntryPointBridge,
+        NavigationService,
+        NoParams,
+        WebService;
+import 'constants/apis/api_headers.dart';
 import 'constants/dialog_names.dart';
 import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -757,7 +774,9 @@ class CommonFunctions {
   static bool get isAppAR =>
       translator.activeLanguageCode == AppLanguage.ar.name;
 
-  static Future<bool> onLogin() async => await sl<EntryPointCubit>().onLogin();
+  // add isMunicipality to check if the user is access municipality services
+  // or life style services, make teh default value is false for life style services
+  static Future<bool> onLogin({bool isMunicipality = false}) async => await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -1555,20 +1574,15 @@ class CommonFunctions {
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.SnapAndSend_Open_From_Home_Event);
 
-    await BottomSheetDialog.showDraggableSheet(
-        NavigationService.navigatorKey.currentContext!,
-        dialogKeyName: DialogName.vdTypesDialog,
-        currentRouteName: "HomePage",
-        child: BottomSheetWithActions(
-          title: "choose_incident_type".tr(),
-          body: VDAllTypesDialog(),
-        ));
+    NavigationService.navigatorKey.currentState!.pushNamed(
+      RouteName.vDAllTypesScreen,
+    );
   }
 
   static void openCreateCompliance() {
     //أصدر الشهادة
 
-    if (CommonProperties.isLoggedIn) {
+    if (CommonProperties.isLoggedInMunicipality) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.createCompliancePage);
     } else {
@@ -1608,6 +1622,8 @@ class CommonFunctions {
   }
 
   static void refreshHomePage() async {
+    // Add This Line to When change lang app lade new data with the lang.
+    sl<HomeServicesCubit>().loadServices();
     sl<EventsBloc>().add(const events.GetSearchEvent());
     sl<CalendarBloc>().add(const calendar.GetSearchEvent());
 
@@ -1698,6 +1714,15 @@ class CommonFunctions {
     return false;
   }
 
+  static void openMovingViolations(Uri? uri) {
+    NavigationService.navigatorKey.currentState!.pushNamed(
+        RouteName.vdCameraPage,
+        arguments: CameraParamsPage(
+            selectedCategory:
+                CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey),
+            /*isFromHome: true*/));
+  }
+
   static bool isFoundationDay() {
     return false;
     DateTime today = DateTime.now();
@@ -1768,7 +1793,10 @@ class CommonProperties {
     return null;
   }
 
-  static bool get isLoggedIn => sl<EntryPointCubit>().state.token != null;
+
+  static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
+  static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
+
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
 

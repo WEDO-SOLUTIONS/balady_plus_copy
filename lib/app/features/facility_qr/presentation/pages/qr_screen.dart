@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'dart:io';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
-//import 'package:flutter_qr_reader/flutter_qr_reader.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
@@ -15,12 +14,9 @@ import 'package:balady_plus/app/features/facility_qr/facility_qr_exports.dart'
 import 'package:scan/scan.dart';
 
 import '../../../../core/base/base_view_model.dart';
-import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/common_functions.dart';
 import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
-import '../../../../core/utils/constants/remote_config.dart';
 import '../../../../core/utils/constants/route_names.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../core/utils/enums/app_font_weights.dart';
@@ -30,7 +26,6 @@ import '../../../_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../vd/domain/entities/camera/camera_page_params.dart';
-import '../../../vd/domain/entities/categories/category_item.dart';
 import '../../../vd/presentation/dialogs/qr_types_dialog.dart';
 
 String scanResult = "";
@@ -265,11 +260,12 @@ void checkBarcode(BuildContext context) async {
                               title: "customerVoiceReportTypeWord".tr(),
                               body: QrTypesDialog(
                                 cmeraParamsPage: CameraParamsPage(
-                                    lat: lat,
-                                    lon: long,
-                                    qrCodeFlow: true,
-                                    pageType: PAGE_TYPE.qrDialog,
-                                    isFromHome: false),
+                                  lat: lat,
+                                  lon: long,
+                                  qrCodeFlow: true,
+                                  pageType: PAGE_TYPE.qrDialog,
+                                  // isFromHome: false,
+                                ),
                               ),
                             ));
                       }

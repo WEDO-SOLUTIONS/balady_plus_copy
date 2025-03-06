@@ -3,7 +3,7 @@ const _svgPrayerIconPath = 'assets/icons/svg/prayers/';
 const _svgWeatherIconPath = 'assets/icons/svg/weather/';
 const _svgEtmamAppIconPath = 'assets//etmam_app/icons/svg/';
 const _svgMapIconPath = 'assets/icons/svg/map/';
-const _svgServicesIconPath = 'assets/icons/svg/services/';
+const _svgServicesIconPath = 'assets/services/';
 const _svgProfileIconPath = 'assets/icons/svg/profile/';
 const _svgNearbyIconPath = 'assets/icons/svg/nearby/';
 const _pngVDIconPath = 'assets/icons/png/vd/';
@@ -119,7 +119,7 @@ class IconPath {
   static const isha = '${_svgPrayerIconPath}iconSalahIsha$_svg';
 
   // Services
-  static serviceIcon(String name) => '$_svgServicesIconPath$name$_svg';
+  static serviceIcon(String name) => '$_svgServicesIconPath$name';
   static const rating = '${_svgServicesIconPath}rating$_svg';
   static const duration = '${_svgServicesIconPath}duration$_svg';
   static const warnings = '${_svgServicesIconPath}warnings$_svg';

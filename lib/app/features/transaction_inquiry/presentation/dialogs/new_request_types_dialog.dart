@@ -4,24 +4,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../core/base/base_view_model.dart';
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/ux_cam_events.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
-import '../../customer_voice_exports.dart' show InquiryViewModel;
 import '../../data/general_inquiry_data.dart';
 
-class MSRTypeDialog extends StatefulWidget {
-  const MSRTypeDialog({Key? key}) : super(key: key);
+class MSRTypeScreen extends StatefulWidget {
+  const MSRTypeScreen({Key? key}) : super(key: key);
 
   @override
-  State<MSRTypeDialog> createState() => _MSRTypeDialog();
+  State<MSRTypeScreen> createState() => _MSRTypeDialog();
 }
 
-class _MSRTypeDialog extends State<MSRTypeDialog> {
+class _MSRTypeDialog extends State<MSRTypeScreen> {
   late List<CustomerVoiceReportTypeModel> _list;
 
   @override
@@ -69,21 +66,27 @@ class _MSRTypeDialog extends State<MSRTypeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.sizeOf(context).height - 50,
-      child: GridView.builder(
-        padding: const EdgeInsets.only(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("select_category".tr()),
+      ),
+      body: SizedBox(
+        height: MediaQuery.sizeOf(context).height - 50,
+        child: GridView.builder(
+          padding: const EdgeInsets.only(
             bottom: Constants.mediumPadding,
             left: Constants.semiMediumPadding,
             right: Constants.semiMediumPadding,
-            top: Constants.smallPadding),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 19.0,
-          mainAxisSpacing: 18.0,
+            top: Constants.smallPadding,
+          ),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            crossAxisSpacing: 19.0,
+            mainAxisSpacing: 18.0,
+          ),
+          itemCount: _list.length,
+          itemBuilder: (context, index) => MSRTypeWidget(_list[index]),
         ),
-        itemCount: _list.length,
-        itemBuilder: (context, index) => MSRTypeWidget(_list[index]),
       ),
     );
   }

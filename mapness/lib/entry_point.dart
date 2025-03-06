@@ -22,7 +22,6 @@ import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
-import 'package:mapness/_features/debug_overlay/debug_overlay.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
@@ -35,6 +34,7 @@ import 'package:mapness/features/share_eta/helpers/utils.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
+import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
@@ -360,6 +360,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final objectId = url.queryParameters[BaldayDeeplink.dgisObjectIdKey];
     final streamId = url.queryParameters[BaldayDeeplink.streamId];
     final tokenId = url.queryParameters[BaldayDeeplink.tokenId];
+    final homeWidget = url.queryParameters[BaldayDeeplink.homeWidget];
 
     double? latitude;
     double? longitude;
@@ -412,6 +413,11 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
+    } else if (homeWidget != null) {
+      if (isFirstRun) {
+        await Future.delayed(const Duration(seconds: 8));
+      }
+      CommonFunctions.openMovingViolations(uri);
     } else if (url.toString().isNotEmpty) {
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }

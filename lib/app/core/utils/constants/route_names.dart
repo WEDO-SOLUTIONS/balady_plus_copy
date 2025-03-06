@@ -12,13 +12,14 @@ class RouteName {
   static const apigeeImageFullScreen = '/apigeeImageFullScreen';
 
   static const etmamMainPage = '/etmamMainPage';
+  static const cityServicesEtmamMainPage = '/CityServicesEtmamMainPage';
   static const etmamMainPageCitySelector = '/etmamMainPageCitySelector';
 
   static const forceUpdateRoute = '/forceUpdateRoute';
   static const QAPage = '/QAPage';
 
   //! Services
-  static const serviceCards = '/serviceCards';
+  // static const serviceCards = '/serviceCards';
 
   //? General Services
   static const prayerTimes = 'Prayer_Times_Page';
@@ -337,7 +338,7 @@ class RouteName {
   //! Dashboard Page
   static const DashbordDataPage = 'DashbordDataPage';
 
-  static const SpecificServicePage = 'SpecificServicePage';
+  // static const SpecificServicePage = 'SpecificServicePage';
   static const jodDonationPage = 'JodDonationPage';
   static const chatbot = '/chatbot';
 
@@ -376,6 +377,14 @@ class RouteName {
   static const newOwner = 'newOwner_Screen';
   static const SucessfullScreen = 'Sucessfull_Screen';
   static const chatHistoryDetailsRoute = 'chat_history_details';
+
+  ////////////////////
+
+  static const vDAllTypesScreen = 'VDAllTypesScreen';
+  static const daemTypeScreen = 'DaemTypeScreen';
+  static const generalInquiryTypeScreen = 'GeneralInquiryTypeScreen';
+  static const mSRTypeScreen = 'MSRTypeScreen';
+  static const commercialPermitsScreen = 'CommercialPermitsScreen';
 
 }
 

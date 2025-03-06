@@ -21,7 +21,7 @@ abstract class IServviceCalculatorPresenter
   void calculateCost(CalculateCost request);
   void calculateDiggingCost(CalculateDiggingCost request);
   void calculatRenewDiggingCost(CalculateRenewDiggingCost request);
-  void getGpsLocation(LatLng latLng);
+  // void getGpsLocation(LatLng latLng);
 }
 
 abstract class IServiceCalculatorView extends BaseView {

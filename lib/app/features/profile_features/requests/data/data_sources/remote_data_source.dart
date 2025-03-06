@@ -28,12 +28,17 @@ abstract class RequestsRemoteDataSource {
   Future<List<RequestsModel>> getRequests(
     RequestsParamsModel params,
   );
+
   Future<List<RequestStatusModel>> getRequestStatuses();
+
   Future<List<MunicipalityModel>> getMunicipalities();
+
   Future<List<SubMunicipalityModel>> getSubMunicipalities(
     SubMunicipalityParamsModel params,
   );
+
   Future<List<RequestTypeModel>> getRequestTypes();
+
   Future<List<RequestSubTypeModel>> getRequestSubTypes(
     RequestSubTypeParamsModel params,
   );
@@ -46,10 +51,12 @@ abstract class RequestsRemoteDataSource {
 class RequestsRemoteDataSourceImplementation
     implements RequestsRemoteDataSource {
   final WebService webService;
-  final CRMWebService crmWebService;
+  // final CRMWebService crmWebService;
 
-  RequestsRemoteDataSourceImplementation(
-      {required this.webService, required this.crmWebService});
+  RequestsRemoteDataSourceImplementation({
+    required this.webService,
+    // required this.crmWebService,
+  });
 
   @override
   Future<List<RequestsModel>> getRequests(
@@ -396,15 +403,12 @@ class RequestsRemoteDataSourceImplementation
   Future<CRMRequestModel> getCRMRequests(CRMRequestsParamsModel params) async {
     var response;
     try {
-
-   // , queryParameters: params.toMap()
+      // , queryParameters: params.toMap()
 
       // fawzi change api tp apigee
-      response = await webService.dio
-          .get(ApiUrl.crmRequestsList);
+      response = await webService.dio.get(ApiUrl.crmRequestsList);
 
-
-       final result = CRMRequestModel.fromJson(response.data["data"]["result"]);
+      final result = CRMRequestModel.fromJson(response.data["data"]["result"]);
 
       return result;
     } on DioError catch (error, stackTrace) {
@@ -422,13 +426,13 @@ class RequestsRemoteDataSourceImplementation
         if (result.totalRecordCount == "0")
           throw NoDataFoundException(error.requestOptions, response);
       } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
         if (error is NoDataFoundException) {
           rethrow;
         }

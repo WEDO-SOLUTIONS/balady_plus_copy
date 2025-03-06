@@ -1,9 +1,11 @@
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_routes.dart';
+import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
 import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_routes.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
 import 'package:balady_plus/app/features/boarding/presentation/pages/boarding_main_page.dart';
+import 'package:balady_plus/app/features/daem/presentation/dialogs/daem_types_dialog.dart';
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/jod_services/presentation/tobacco_list/pages/jod_donation_page.dart';
 import 'package:balady_plus/app/features/notifications/presentation/pages/notifications_details_screen.dart';
@@ -15,9 +17,14 @@ import 'package:balady_plus/app/features/profile_features/help/presentation/scre
 import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
+import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_routes.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
+import 'package:balady_plus/app/features/transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
+import 'package:balady_plus/app/features/vd/presentation/dialogs/vd_all_types_dialog.dart';
 import 'package:balady_plus/app/features/weather/presentation/pages/weather_main_page.dart';
 import 'package:balady_plus/app/features/zmzm_points/zmzm_points_exports.dart';
+import 'package:balady_plus/etmam_app/features/home/presentation/pages/city_services_etmam_main_page.dart';
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -43,7 +50,7 @@ import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart
 import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
 import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
 import '../../core/utils/utils_exports.dart'
-    show EtmamRoutesNames, RouteName, RouteName;
+    show EtmamRoutesNames, RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
@@ -51,7 +58,6 @@ import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
 import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
-import '../../features/construction_license_inquery/persentation/construction_license_overview/construction_license_overview_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query_Details/construction_license_inquery_details.dart';
 import '../../features/create_compliance/presentation/pages/compliance_details_page.dart';
@@ -89,9 +95,7 @@ import '../../features/qa/presentation/pages/qa_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_main_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_result_page.dart';
 import '../../features/self_ratiing/presentation/pages/self_rating_section_page.dart';
-import '../../features/services/presentation/pages/all_services_page.dart';
 import '../../features/services/presentation/pages/dashboard_page/presentation/pages/profile_page.dart';
-import '../../features/survey_license_inquery_report/persentation/survey_license_overview/survey_report_overview_screen.dart';
 import '../../features/survey_license_inquery_report/persentation/survey_license_query/survey_report_inquery_screen.dart';
 import '../../features/survey_license_inquery_report/persentation/survey_license_query_Details/survey_report_inquery_details.dart';
 import '../../features/unknow/pages/direct_page.dart';
@@ -159,7 +163,6 @@ import '../../features/retrive_car/presentation/pages/dc_select_retrive_request_
 import '../../features/retrive_car/presentation/pages/dc_vehicles_page.dart';
 
 import '../../features/public_services_features/prayer_times/presentation/pages/prayer_times_page.dart';
-import '../../features/services/services_exports.dart' show ServiceCardsPage;
 
 import '../../features/transaction_inquiry/presentation/pages/inquiry/general_inquiry/general_inquiry_page.dart';
 import '../../features/transaction_inquiry/presentation/pages/inquiry/transactions_inquiry/inquiry_details_screen.dart';
@@ -307,6 +310,7 @@ class Routes {
 
     RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
     RouteName.etmamMainPage: (context) => const EtmamMainPage(),
+    RouteName.cityServicesEtmamMainPage: (context) => const CityServicesEtmamMainPage(),
     RouteName.etmamMainPageCitySelector: (context) => const EtmamMainCityPage(),
 
     //! Services
@@ -383,7 +387,7 @@ class Routes {
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
     RouteName.apigeeImageFullScreen: (context) => const ViewAPIGEEImageScreen(),
 
-    RouteName.serviceCards: (context) => const ServiceCardsPage(),
+    // RouteName.serviceCards: (context) => const ServiceCardsPage(),
 
     //? General Services
 
@@ -607,20 +611,16 @@ class Routes {
     RouteName.EkramRequestTransportationStartService: (context) =>
         const EkramRequestTransportationStartService(),
     RouteName.DashbordDataPage: (context) => const DashbordDataPage(),
-    RouteName.SpecificServicePage: (context) => const AllServicesPage(),
+    // RouteName.SpecificServicePage: (context) => const AllServicesPage(),
     RouteName.jodDonationPage: (context) => const JodDonationPage(),
     RouteName.chatbot: (context) => const ChatBotScreen(),
     RouteName.chatHistoryDetailsRoute: (context) =>
     const ChatHistoryDetails(),
 
-    RouteName.surveyReportInqueryOverView: (context) =>
-        const SurveyReportOverviewScreen(),
     RouteName.surveyReportInquery: (context) =>
         const SurveyReportInqueryScreen(),
     RouteName.surveyReportInqueryDetails: (context) =>
         const SurveyReportInqueryDetails(),
-    RouteName.constructionLicenseOverView: (context) =>
-        const ConstructionLicenseOverviewScreen(),
     RouteName.constructionLicenseInquery: (context) =>
         const ConstructionLicenseInqueryScreen(),
     RouteName.constructionLicenseInqueryDetails: (context) =>
@@ -631,9 +631,11 @@ class Routes {
         const NotificationsDetailsScreen(),
 
 
-
-
-
+    RouteName.vDAllTypesScreen: (context) => const VDAllTypesScreen(),
+    RouteName.daemTypeScreen: (context) => const DaemTypeScreen(),
+    RouteName.generalInquiryTypeScreen: (context) => const GeneralInquiryTypeScreen(),
+    RouteName.mSRTypeScreen: (context) => const MSRTypeScreen(),
+    RouteName.commercialPermitsScreen: (context) => const CommercialPermitsScreen()
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {
@@ -643,6 +645,7 @@ class Routes {
     all.addAll(CommercialRoutes.routes);
     all.addAll(AuthenticationRoutes.routes);
     all.addAll(ClassificationCertificateRoutes.routes);
+    all.addAll(HomeServicesRoutes.routes);
     return all;
   }
 }

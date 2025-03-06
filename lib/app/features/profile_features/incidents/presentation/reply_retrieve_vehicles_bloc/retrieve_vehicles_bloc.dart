@@ -73,12 +73,12 @@ class ReplyRetrieveVehiclesBloc
           file: file,
           errorMessage: "",
         ));
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           add(CreateIncidentRegisteredEvent());
         } else {}
       });
     } else {
-      if (CommonProperties.isLoggedIn) {
+      if (CommonProperties.isLoggedInMunicipality) {
         add(CreateIncidentRegisteredEvent());
       } else {}
     }

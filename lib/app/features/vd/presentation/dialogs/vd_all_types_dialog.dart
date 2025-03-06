@@ -14,19 +14,21 @@ import '../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.da
 import '../../../_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class VDAllTypesDialog extends StatefulWidget {
-  final bool? isFromHome;
-  VDAllTypesDialog({Key? key, this.isFromHome = false}) : super(key: key);
+class VDAllTypesScreen extends StatefulWidget {
+  const VDAllTypesScreen({Key? key}) : super(key: key);
 
   @override
-  State<VDAllTypesDialog> createState() => _VDAllTypesDialog();
+  State<VDAllTypesScreen> createState() => _VDAllTypesDialog();
 }
 
-class _VDAllTypesDialog extends State<VDAllTypesDialog> {
+class _VDAllTypesDialog extends State<VDAllTypesScreen> {
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    CommonFunctions.sendUXCamEvent(
+      UXCamEvents.SnapAndSend_Open_From_Services_Event,
+    );
     CommonFunctions.sendUXCamEvent(UXCamEvents.typeServiceSnapAndSend);
     CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_Types_Event);
   }
@@ -35,16 +37,18 @@ class _VDAllTypesDialog extends State<VDAllTypesDialog> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => VDCategoryBloc(getCategories: sl()),
-      child: BlocConsumer<VDCategoryBloc, VDCategoryState>(
-        listener: (context, state) {
-          if (state.allCategorystatus == BlocStatus.failure) {
-            CommonFunctions.showError(state.errorMessage ?? "");
-          }
-        },
-        builder: (context, state) {
-          return Container(
-            height: MediaQuery.of(context).size.height - 200,
-            child: Column(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("customerVoiceReportTypeWord".tr()),
+        ),
+        body: BlocConsumer<VDCategoryBloc, VDCategoryState>(
+          listener: (context, state) {
+            if (state.allCategorystatus == BlocStatus.failure) {
+              CommonFunctions.showError(state.errorMessage ?? "");
+            }
+          },
+          builder: (context, state) {
+            return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // button, title,
@@ -62,19 +66,20 @@ class _VDAllTypesDialog extends State<VDAllTypesDialog> {
                   ],
                 ),
                 if (state.allCategorystatus == BlocStatus.loading)
-                  Expanded(
-                      child: Padding(
-                    padding: const EdgeInsets.only(
-                        /* bottom: GeneralKey.mediumPadding,
+                  const Expanded(
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                          /* bottom: GeneralKey.mediumPadding,
                         left: GeneralKey.semiMediumPadding,
                         right: GeneralKey.semiMediumPadding,
                         top: GeneralKey.smallPadding*/
-                        ),
-                    child: CustomShimmerGridViewWidget(
-                      height: 100,
-                      mainAxisExtent: 150,
+                          ),
+                      child: CustomShimmerGridViewWidget(
+                        height: 100,
+                        mainAxisExtent: 150,
+                      ),
                     ),
-                  )),
+                  ),
 
                 if (state.allCategorystatus == BlocStatus.failure)
                   Expanded(
@@ -101,28 +106,29 @@ class _VDAllTypesDialog extends State<VDAllTypesDialog> {
                               mainAxisExtent: 150),
                       itemCount: state.allCategories?.length ?? 0,
                       itemBuilder: (context, index) => VDCardWidgetInDialog(
-                          title: state.allCategories?[index].categoryName ?? "",
-                          icon: state.allCategories?[index].getMainImageUrl() ??
-                              "",
-                          btnPressed: () async {
-                            bool isLocationAvailable =
-                                await CommonFunctions.checkLocationSettings(
-                                    context);
-                            bool isCameraAllowed =
-                                await CommonFunctions.checkCameraSettings(
-                                    context);
-                            if (isLocationAvailable && isCameraAllowed)
-                              context.read<VDCategoryBloc>().navigateToCamera(
+                        title: state.allCategories?[index].categoryName ?? "",
+                        icon:
+                            state.allCategories?[index].getMainImageUrl() ?? "",
+                        btnPressed: () async {
+                          bool isLocationAvailable =
+                              await CommonFunctions.checkLocationSettings(
+                                  context);
+                          bool isCameraAllowed =
+                              await CommonFunctions.checkCameraSettings(
+                                  context);
+                          if (isLocationAvailable && isCameraAllowed) {
+                            context.read<VDCategoryBloc>().navigateToCamera(
                                   index,
-                                  isFromHome: widget.isFromHome ?? false);
-                          }),
+                                );
+                          }
+                        },
+                      ),
                     ),
                   )
               ],
-            ),
-          );
-          return Container();
-        },
+            );
+          },
+        ),
       ),
     );
   }

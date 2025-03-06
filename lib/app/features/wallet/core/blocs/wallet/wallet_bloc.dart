@@ -29,7 +29,7 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
     on<ShareWalletItemEvent>(_printWalletItem);
     on<ChangeViewAllEvent>(_changeViewAllHandler);
     on<ChangeTypeEvent>(_selectTypeHandler);
-    if (CommonProperties.isLoggedIn) add(GetWalletDataEvent());
+    if (CommonProperties.isLoggedInMunicipality) add(GetWalletDataEvent());
   }
 
   Future<void> _changeViewAllHandler(
