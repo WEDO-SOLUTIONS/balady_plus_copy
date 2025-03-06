@@ -400,7 +400,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     print(draftLoaded);
     if (draftLoaded == false && isDraft) {
       emit(state.copyWith(
-        draftStatus: BlocStatus.success,
+     //   draftStatus: BlocStatus.success,
       ));
       // if (true) {
       CommercialRequestDetailsResponse? requestData =
