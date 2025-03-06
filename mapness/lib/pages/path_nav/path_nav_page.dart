@@ -216,6 +216,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
               navigationState: _navigationState,
               expansionNotifier: _expansionNotifier,
               navType: widget.navType,
+              onRoutePressed: _onShowRoutePressed,
             ),
             Consumer(
               builder: (_, ref, __) {
@@ -264,7 +265,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                 alignment: Alignment.bottomCenter,
                                 child: EtaSheet(
                                   onEndTripPressed: () => _endTripAndShowFeedback(context),
-                                  onRoutePressed: _onShowRoutePressed,
+                                  onSearchPressed: () => _onSearchPressed(context),
                                   onBetterRouteAccept: () => _acceptBetterRoute(context),
                                   onBetterRouteReject: () => _rejectBetterRoute(context),
                                   betterRouteDurationProfit: _betterRouteDurationProfit,
@@ -278,6 +279,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                               );
                             case PathNavState.finished:
                               return EtaFinished(
+                                onSearchPressed: () => _onSearchPressed(context),
                                 expansionNotifier: _expansionNotifier,
                                 onEndTripPressed: _endTripAndShowHome,
                                 onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
@@ -510,5 +512,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     } catch (e) {
       log(e.toString());
     }
+  }
+
+  Future<void> _onSearchPressed(BuildContext context) async {
+    final mapSettings = MapObjectManagerSettings.search();
+    final mapObjectProvider = ref.read(mapObjectManagerProvider(
+      named: mapSettings.name,
+      layerId: mapSettings.layerId,
+    ).notifier);
+
+    await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
+    await context.router.push(NaviSearchRoute());
+    await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: false);
   }
 }
