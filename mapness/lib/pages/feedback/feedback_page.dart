@@ -15,7 +15,6 @@ import 'package:mapness/features/feedback/poi_feedback.dart';
 import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/pages/feedback/components/feedback_form_widget.dart';
 import 'package:mapness/pages/feedback/feedback_failure_widget.dart';
-import 'package:mapness/pages/feedback/feedback_loading_widget.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
 @RoutePage()

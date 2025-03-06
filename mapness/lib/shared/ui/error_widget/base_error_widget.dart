@@ -83,16 +83,19 @@ class BaseErrorWidget extends StatelessWidget {
               )
             else
               const SizedBox(height: Spacing.$2x),
-            Text(
-              errorText,
-              textAlign: TextAlign.center,
-              style: context.textStyle.text.copyWith(
-                color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
+              child: Text(
+                errorText,
+                textAlign: TextAlign.center,
+                style: context.textStyle.text.copyWith(
+                  color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
+                ),
               ),
             ),
             if (withRetryButton)
               Padding(
-                padding: const EdgeInsets.only(top: Spacing.$6x),
+                padding: const EdgeInsets.only(top: Spacing.$6x, bottom: Spacing.$3x),
                 child: AppButton(
                   onTap: onRetry,
                   buttonColorScheme: buttonColorScheme,
