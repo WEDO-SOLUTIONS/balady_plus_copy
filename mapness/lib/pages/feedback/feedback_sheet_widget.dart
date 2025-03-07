@@ -151,7 +151,7 @@ class _FeedbackTitle extends StatelessWidget {
         crossFadeState: state == FeedbackSheetState.success ? CrossFadeState.showFirst : CrossFadeState.showSecond,
         firstChild: Center(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs),
+            padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
             child: Text(
               context.l10n.feedbackSuccessTitle,
               style: context.textStyleV3.h3SemiBold,
