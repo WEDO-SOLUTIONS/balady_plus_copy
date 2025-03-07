@@ -1,0 +1,25 @@
+diff --git a/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart b/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart
+index 37088a42df..439a1c1175 100644
+--- a/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart
++++ b/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart
+@@ -29,13 +29,13 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
+   @override
+   void initState() {
+     super.initState();
+-    WidgetsBinding.instance.addPostFrameCallback(
+-      (_) {
+-        Navigator.of(context).pushNamed(
+-          RouteName.splashScreen,
+-        );
+-      },
+-    );
++    // WidgetsBinding.instance.addPostFrameCallback(
++    //   (_) {
++    //     Navigator.of(context).pushNamed(
++    //       RouteName.splashScreen,
++    //     );
++    //   },
++    // );
+   }
+ 
+   @override
