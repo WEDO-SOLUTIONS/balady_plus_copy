@@ -59,7 +59,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     _controller.addListener(_controllerListener);
 
     widget.focusNode?.addListener(() {
-      if (widget.focusNode?.hasFocus == true) {
+      if (widget.focusNode?.hasFocus == true && mounted) {
         setState(() {
           _inputErrorState = BaladyInputState.defaultValue;
         });
@@ -77,6 +77,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   @override
   void dispose() {
+    widget.focusNode?.dispose();
     _controller.removeListener(_controllerListener);
     super.dispose();
   }
@@ -110,10 +111,11 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     // in arabic phone texted ltr but should be aligned to right edge as other fields
     final textAlign = _isForceLtr && srcDirection == TextDirection.rtl ? TextAlign.end : null;
 
+    final bool hasNoFocusWithError = widget.focusNode?.hasFocus == false && widget.errorText != null;
+    final bool exceedsMaxLength = _controller.text.length > widget.maxLength;
+
     _inputErrorState =
-        widget.focusNode?.hasFocus == false && widget.errorText != null || (_controller.text.length > widget.maxLength)
-            ? BaladyInputState.error
-            : BaladyInputState.defaultValue;
+        (hasNoFocusWithError || exceedsMaxLength) ? BaladyInputState.error : BaladyInputState.defaultValue;
 
     return Column(
       children: [

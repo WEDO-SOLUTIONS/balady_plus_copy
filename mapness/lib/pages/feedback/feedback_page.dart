@@ -128,9 +128,12 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       final formField = formFields[field.id];
       final value = formField?.value;
 
-      final String displayValue = (value == null || (value is List && value.isEmpty))
-          ? ''
-          : (value is List<String> ? value.join(', ') : value.toString());
+      final String displayValue = switch (value) {
+        null => '',
+        final List<String> v when v.isEmpty => '',
+        final List<String> v => v.join(', '),
+        _ => value.toString(),
+      };
 
       // if the fields that areRequired are Email Phone and Type then send should work as this data will be correct
       final FeedbackTextType? fieldType = _checkFieldType(field);
