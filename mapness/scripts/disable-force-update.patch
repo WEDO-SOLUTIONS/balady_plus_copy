@@ -1,8 +1,8 @@
-diff --git a/lib/app/features/force_update/presentation/core/force_update_view_model.dart b/lib/app/features/force_update/presentation/core/force_update_view_model.dart
-index 2ab66fdc..b8d0eb4b 100644
---- a/lib/app/features/force_update/presentation/core/force_update_view_model.dart
-+++ b/lib/app/features/force_update/presentation/core/force_update_view_model.dart
-@@ -68,13 +68,13 @@ class ForceUpdateViewModel extends BaseViewModel {
+diff --git a/lib/app/features/force_update/presentation/core/force_update_cubit.dart b/lib/app/features/force_update/presentation/core/force_update_cubit.dart
+index 45f948096..aa4f77dc1 100644
+--- a/lib/app/features/force_update/presentation/core/force_update_cubit.dart
++++ b/lib/app/features/force_update/presentation/core/force_update_cubit.dart
+@@ -112,14 +112,14 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
      if (currentVersionNo != null &&
          latestVersionNo != null &&
          forceUpdate != null) {
@@ -10,19 +10,22 @@ index 2ab66fdc..b8d0eb4b 100644
 -        Version currentVersion = Version.parse(currentVersionNo);
 -        Version latestVersion = Version.parse(latestVersionNo);
 -        if (currentVersion < latestVersion) {
--          NavigationService.pushAndReplaceForceUpdate();
+-          emit(const HaveForceUpdateState());
+-          return true;
 -        }
 -      }
 +      // if (forceUpdate) {
 +      //   Version currentVersion = Version.parse(currentVersionNo);
 +      //   Version latestVersion = Version.parse(latestVersionNo);
 +      //   if (currentVersion < latestVersion) {
-+      //     NavigationService.pushAndReplaceForceUpdate();
++      //     emit(const HaveForceUpdateState());
++      //     return true;
 +      //   }
 +      // }
      }
-   }
- }
+     emit(const NotHaveForceUpdateState());
+     return false;
+
 diff --git a/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart b/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart
 index d63daf0c..9b3183d5 100644
 --- a/lib/etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart

@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -43,7 +42,7 @@ class DCCameraBloc extends Bloc<DCCameraEvent, DCCameraState> {
         _getGisData = GetGISData(repository: sl()),
         super(DCCameraState(
             selectedCattegory: params.selectedCategory!,
-            isFromHome: params.isFromHome)) {
+            )) {
     on<InitCameraEvent>((event, emit) async {
       emit(state.copyWith(status: BlocStatus.loading));
       try {

@@ -14,7 +14,7 @@ class BaladySmartAdvisorCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (CommonProperties.isLoggedIn) {
+        if (CommonProperties.isLoggedInMunicipality) {
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.municipalAdvisor);
         } else {
@@ -77,7 +77,7 @@ class BaladySmartAdvisorCard extends StatelessWidget {
                         btnWidth: 163,
                         text: 'askAdvisor'.tr(),
                         onPressed: () async {
-                          if (CommonProperties.isLoggedIn) {
+                          if (CommonProperties.isLoggedInMunicipality) {
                             NavigationService.navigatorKey.currentState!
                                 .pushNamed(RouteName.municipalAdvisor);
                           } else {

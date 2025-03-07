@@ -44,10 +44,12 @@ abstract class RequestsRemoteDataSource {
 class RequestsRemoteDataSourceImplementation
     implements RequestsRemoteDataSource {
   final WebService webService;
-  final CRMWebService crmWebService;
+  // final CRMWebService crmWebService;
 
-  RequestsRemoteDataSourceImplementation(
-      {required this.webService, required this.crmWebService});
+  RequestsRemoteDataSourceImplementation({
+    required this.webService,
+    // required this.crmWebService,
+  });
 
   @override
   Future<RequestDetailsResponse> getCRMIncidentRequestDetails(
@@ -68,7 +70,8 @@ class RequestsRemoteDataSourceImplementation
       response = await webService.dio
           .get(ApiUrl.IncidentRequestDetails, queryParameters: queryParms);
 
-      final result = RequestDetailsResponse.fromJson(response.data["data"]["result"]);
+      final result =
+          RequestDetailsResponse.fromJson(response.data["data"]["result"]);
 
       return result;
     } on DioError catch (error, stackTrace) {
@@ -130,7 +133,8 @@ class RequestsRemoteDataSourceImplementation
       final data = response.data;
       data.toString().successLog();
 
-      final result = RequestDetailsResponse.fromJson(response.data["data"]["result"]);
+      final result =
+          RequestDetailsResponse.fromJson(response.data["data"]["result"]);
 
       return result;
     } on DioError catch (error, stackTrace) {
@@ -190,7 +194,8 @@ class RequestsRemoteDataSourceImplementation
 
       // fawzi change api tp apigee
 
-      final result = RequestDetailsResponse.fromJson(response.data["data"]["result"],
+      final result = RequestDetailsResponse.fromJson(
+          response.data["data"]["result"],
           type: RequestsType.REQ);
 
       return result;
@@ -278,14 +283,14 @@ class RequestsRemoteDataSourceImplementation
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -314,10 +319,11 @@ class RequestsRemoteDataSourceImplementation
         };
       }
 
-      response = await webService.dio.get(ApiUrl.IncidentDownloadFile,
-          queryParameters: queryParms);
+      response = await webService.dio
+          .get(ApiUrl.IncidentDownloadFile, queryParameters: queryParms);
 
-      final result = DownloadFileResult.fromJson(response.data['data']['result']);
+      final result =
+          DownloadFileResult.fromJson(response.data['data']['result']);
       return result;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -349,14 +355,14 @@ class RequestsRemoteDataSourceImplementation
         try {
           //  CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),
@@ -414,14 +420,14 @@ class RequestsRemoteDataSourceImplementation
         try {
           //CommonFunctions.sendExceptionLog(exception:  error, response: response);
         } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),

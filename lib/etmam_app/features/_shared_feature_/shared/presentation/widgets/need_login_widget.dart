@@ -81,9 +81,10 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
                   CustomPrimaryButton(
                     btnWidth: 176,
                     onPressed: () {
-                      context
-                          .read<EntryPointCubit>()
-                          .onLogin(isFromEtmam: true);
+                      context.read<EntryPointCubit>().onLogin(
+                            isFromEtmam: true,
+                            isMunicipality: true,
+                          );
                     },
                     btnText: trans("signIn"),
                   ),

@@ -67,7 +67,7 @@ class _NeedLoginWidgetState extends State<NeedLoginWidget> {
               const SizedBox(height: 16),
               EnhancedCustomElevatedButtonWidget(
                 btnPressed: () {
-                  CommonFunctions.onLogin();
+                  CommonFunctions.onLogin(isMunicipality: true);
                 },
                 btnText: ("signInButton").tr(),
                 btnTextSize: 18,

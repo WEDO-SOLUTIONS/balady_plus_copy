@@ -164,3 +164,8 @@ reports/
 
 # FVM Version Cache
 .fvm/
+/.env.pre
+/.env.prod
+/.env.stg
+/.env.dev
+/.env.urbiPre
