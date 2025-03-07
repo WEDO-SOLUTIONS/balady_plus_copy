@@ -45,7 +45,11 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
     super.initState();
     _dgisSheetController = StatefulBottomSheetController(
       initialState: ThreeStateBottomSheet.expanded,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
+      behavior: AspectRatioSnappingBehavior(aspectRatios: {
+        0.0,
+        if (Platform.isIOS) .3 else .38,
+        if (Platform.isIOS) .931 else .98,
+      }),
       stateMapper: const LandingStateMapper(),
     );
 
