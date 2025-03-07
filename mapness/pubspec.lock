@@ -204,16 +204,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.12.1+266"
+    version: "3.30.1+327"
   balady_uikit:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "bugfix/bottomsheets-fixes"
-      resolved-ref: "7ee739c319b6858fd53c46bcb825724f9efd9e9e"
-      url: "https://github.com/urbi-ae/balady_uikit.git"
-    source: git
-    version: "3.2.6"
+      name: balady_uikit
+      sha256: "36a29147b9108def6e6907124de9d0e4eb31a4145a3b94e881a73b501cf67d74"
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
+    version: "3.2.8"
   battery_plus:
     dependency: transitive
     description:
