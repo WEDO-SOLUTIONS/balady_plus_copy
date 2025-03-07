@@ -25,6 +25,12 @@ enum Language {
         // default is arabic
         _ => Platform.localeName.toLowerCase().contains('en') ? Language.english : Language.arabic,
       };
+
+  static Language? parceString(String? s) => switch (s) {
+        'en' => Language.english,
+        'ar' => Language.arabic,
+        _ => null,
+      };
 }
 
 ///TODO need to get from context.l10n
@@ -55,6 +61,10 @@ extension LanguageData on Language {
       };
 
   String get languageCode => this == Language.arabic ? 'ar_SA' : 'en_SA';
+
+  bool get isEnglish => this == Language.english;
+
+  bool get isArabic => this == Language.arabic;
 }
 
 @Riverpod(keepAlive: true)
