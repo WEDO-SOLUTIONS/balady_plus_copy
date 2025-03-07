@@ -30,7 +30,7 @@ class FeedbackPage extends ConsumerStatefulWidget {
 class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _isFormValidNotifier = ValueNotifier<bool>(false);
-  final _websiteUrl = 'website_url';
+  static const _websiteUrl = 'website_url';
 
   final Map<FeedbackTextType, String? Function(String?)> validators = {
     FeedbackTextType.email: FormBuilderValidators.email(checkNullOrEmpty: false),
