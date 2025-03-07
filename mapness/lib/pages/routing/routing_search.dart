@@ -1,18 +1,19 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/landing_state_mapper.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
+import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 
 @RoutePage()
 class RoutingSearchSheetPage extends ConsumerStatefulWidget {
@@ -44,7 +45,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
     super.initState();
     _dgisSheetController = StatefulBottomSheetController(
       initialState: ThreeStateBottomSheet.expanded,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, 1}),
+      behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
       stateMapper: const LandingStateMapper(),
     );
 
@@ -83,41 +84,55 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          SearchScope(
-            named: SearchScopeEnum.routes,
-            child: LayoutBuilder(
-              builder: (context, constraints) => NotificationListener<ScrollNotification>(
-                onNotification: _onNotification,
-                child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                  outside: const RoutingMapControls(),
-                  key: const ValueKey('ROUTING SEARCH SHEET'),
-                  scrollController: _dgisSheetController,
-                  header: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        child: RoutingSearchBar(
-                          placeholder: widget.placeholder,
-                        ),
+  Widget build(BuildContext context) => SearchScope(
+        named: SearchScopeEnum.routes,
+        child: LayoutBuilder(
+          builder: (context, constraints) => NotificationListener<ScrollNotification>(
+            onNotification: _onNotification,
+            child: SafeArea(
+              bottom: false,
+              child: StatefulBottomSheet<ThreeStateBottomSheet>(
+                outside: MapDashboardControls(_dgisSheetController, key: const ValueKey('RoutesControls')),
+                outsideOpacityDelegate: (controller) {
+                  final aspectRatio = controller.aspectRatio;
+                  final interpolation = controller.interpolation;
+                  final state = controller.state;
+
+                  final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
+                  final isSheetStateOpen = state == ThreeStateBottomSheet.open;
+                  final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+
+                  final isFull =
+                      (_dgisSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+                          isSheetCoversHalfOfTheScreen;
+
+                  return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+                },
+                key: const ValueKey('ROUTING SEARCH SHEET'),
+                scrollController: _dgisSheetController,
+                header: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: RoutingSearchBar(
+                        placeholder: widget.placeholder,
                       ),
-                      const SizedBox(
-                        height: 16,
-                      ),
-                    ],
-                  ),
-                  content: [
-                    RoutingSearchContent(
-                      showMyLocation: widget.showMyLocation,
-                      scrollController: _dgisSheetController,
+                    ),
+                    const SizedBox(
+                      height: 16,
                     ),
                   ],
                 ),
+                content: [
+                  RoutingSearchContent(
+                    showMyLocation: widget.showMyLocation,
+                    scrollController: _dgisSheetController,
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       );
 
   void _unFocusOnScroll() {
