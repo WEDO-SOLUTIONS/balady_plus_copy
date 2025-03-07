@@ -20,6 +20,18 @@ enum FeedbackSheetState {
 
 const switchDuration = Durations.extralong4;
 
+final confettiShapes = [
+  (startPosition, velocity, scale, gradient, x, y, z) =>
+      DiamondShape(startPosition, velocity, scale, gradient, x, y, z),
+  (startPosition, velocity, scale, gradient, x, y, z) =>
+      TrapezoidShape(startPosition, velocity, scale, gradient, x, y, z),
+  (startPosition, velocity, scale, gradient, x, y, z) =>
+      FlagRectangularShape(startPosition, velocity, scale, gradient, x, y, z),
+  (startPosition, velocity, scale, gradient, x, y, z) =>
+      SmoothParallelogramShape(startPosition, velocity, scale, gradient, x, y, z),
+  (startPosition, velocity, scale, gradient, x, y, z) => ArcShape(startPosition, velocity, scale, gradient, x, y, z),
+];
+
 class FeedbackSheetWidget extends HookWidget {
   final FeedbackSheetState state;
   final VoidCallback onRetry;
@@ -42,24 +54,15 @@ class FeedbackSheetWidget extends HookWidget {
       onClose: (_) => popNavigation(context, confettiController),
     );
 
-    final config = useMemoized(() => ConfettiGeneratorConfig.confetti(
-          animationDuration: const Duration(seconds: 3),
-          commonShapeAppearance: 0,
-          velocityMinY: -1.0,
-          velocityMaxY: 0.4,
-          confettiShapes: [
-            (startPosition, velocity, scale, gradient, x, y, z) =>
-                DiamondShape(startPosition, velocity, scale, gradient, x, y, z),
-            (startPosition, velocity, scale, gradient, x, y, z) =>
-                TrapezoidShape(startPosition, velocity, scale, gradient, x, y, z),
-            (startPosition, velocity, scale, gradient, x, y, z) =>
-                FlagRectangularShape(startPosition, velocity, scale, gradient, x, y, z),
-            (startPosition, velocity, scale, gradient, x, y, z) =>
-                SmoothParallelogramShape(startPosition, velocity, scale, gradient, x, y, z),
-            (startPosition, velocity, scale, gradient, x, y, z) =>
-                ArcShape(startPosition, velocity, scale, gradient, x, y, z),
-          ],
-        ));
+    final config = useMemoized(
+      () => ConfettiGeneratorConfig.confetti(
+        animationDuration: const Duration(seconds: 3),
+        commonShapeAppearance: 0,
+        velocityMinY: -1.0,
+        velocityMaxY: 0.4,
+        confettiShapes: confettiShapes,
+      ),
+    );
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
