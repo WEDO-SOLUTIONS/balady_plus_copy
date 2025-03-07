@@ -207,12 +207,9 @@ class _FeedbackButton extends StatelessWidget {
           ),
           child: ClipPath(
             clipper: ShapeBorderClipper(shape: smoothBorder(ButtonSize.medium.radius)),
-            child: ColoredBox(
-              color: ButtonColorScheme.secondary.backgroundColor(context),
-              child: SizedBox(
-                height: ButtonSize.medium.height,
-                width: double.infinity,
-              ),
+            child: ShimmerEffectWidget(
+              height: ButtonSize.medium.height,
+              width: double.infinity,
             ),
           ),
         ),
