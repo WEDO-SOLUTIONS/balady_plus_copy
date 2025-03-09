@@ -22,7 +22,7 @@ import 'package:balady_plus/app/features/entry_point/data/models/permission_resp
 
 abstract class EntryPointRemoteDataSource {
   Future<AuthorizationTokenResponse> authorize();
-  Future<EndSessionResponse> endSession();
+  Future<bool> endSession();
   Future<String> logout();
 
   Future<TokenResponse> refreshToken(String refreshToken);
@@ -47,7 +47,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     authorizationEndpoint: '${RemoteConfig.ssoUrl}/connect/authorize',
     tokenEndpoint: '${RemoteConfig.ssoUrl}/connect/token',
     endSessionEndpoint: "${RemoteConfig.ssoUrl}/connect/endsession",
-  );
+  );//https://ssoappdev.momra.gov.sa/connect/endsession
 
   EntryPointRemoteDataSourceImpl({required this.webService});
 
@@ -185,7 +185,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
     }
   }
   @override
-  Future<EndSessionResponse> endSession() async {
+  Future<bool> endSession() async {
     try {
       String? idToken = await sharedPrefs.getIsNafathLogin();
       if(idToken != null) {
@@ -194,18 +194,17 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
           postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
           serviceConfiguration: _serviceConfiguration,
           additionalParameters: {
-            "id_token_hint": idToken,
-            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
+            // "id_token_hint": idToken,
+            // "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
           },
-
         );
         EndSessionResponse? response = await _appAuth.endSession(
           endSessionRequest,
         );
         await sharedPrefs.setIsNafathLogin(null);
-        return response;
+        return true;
       } else {
-        throw ServerException("", errorCode: "");
+        return false;
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
