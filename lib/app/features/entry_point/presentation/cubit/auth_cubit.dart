@@ -79,7 +79,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _getTestData = GetTestData(repository: sl()),
         _getEkramPermission = GetEkramPermission(repository: sl()),
         _getGisData = getGisData,
-        super(const EntryPointState());
+        super(const EntryPointState()) {
+    sl<LocationCubit>().getLocationInit();
+      refreshAPIGeeToken();
+  }
 
   void hideSplash() {
     emit(
