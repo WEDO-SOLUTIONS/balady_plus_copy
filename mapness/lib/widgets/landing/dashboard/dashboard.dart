@@ -26,6 +26,7 @@ import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
 import 'package:mapness/widgets/landing/dashboard_feedback_card.dart';
 import 'package:mapness/widgets/landing/dashboard_header.dart';
+import 'package:mapness/widgets/landing/dashboard_offers_card.dart';
 import 'package:mapness/widgets/landing/dashboard_title.dart';
 import 'package:mapness/widgets/landing/drive_back_home_card.dart';
 import 'package:mapness/widgets/landing/place_preview.dart';
@@ -210,6 +211,8 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
           ),
           const SizedBox(height: Spacing.$4x),
           const DriveBackHomeCard(),
+          const SizedBox(height: Spacing.$6x),
+          const DashboardOffersRow(),
           const SizedBox(height: Spacing.$6x),
           DashboardTitle(context.l10n.exploreNearby),
           const SizedBox(height: Spacing.$4x),
