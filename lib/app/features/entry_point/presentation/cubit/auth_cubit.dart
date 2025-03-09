@@ -10,6 +10,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -81,7 +82,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _getGisData = getGisData,
         super(const EntryPointState()) {
     sl<LocationCubit>().getLocationInit();
-      refreshAPIGeeToken();
+    refreshAPIGeeToken();
+    Permission.notification.request();
   }
 
   void hideSplash() {

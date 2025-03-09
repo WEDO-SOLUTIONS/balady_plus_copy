@@ -117,7 +117,7 @@ dependencies:
   # QR.Flutter is a Flutter library for simple and fast QR code rendering.
   qr_flutter: ^4.1.0
   # A cross platform plugin for displaying and scheduling local notifications
-  flutter_local_notifications: 17.2.3
+  flutter_local_notifications: ^18.0.1
   # A flutter plugin for getting the local timezone of the device.
   flutter_timezone: ^1.0.7
   youtube_player_flutter: ^9.1.0
