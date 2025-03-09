@@ -2,6 +2,7 @@ import 'package:balady_plus/app/commercial_model/dependency_injection/commercial
 import 'package:balady_plus/app/core/dependency_injection/features/old_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/dc_injection.dart';
 import 'package:balady_plus/app/core/dependency_injection/features/profile/crm_requests_injection.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/features/_shared_features/check_commercial_license/data/data_sources/check_commercial_license_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/datasources/balady_calendar_data_source.dart';
 import 'package:balady_plus/app/features/balady_calender/data/repositories/balady_calendar_repository.dart';
@@ -87,6 +88,7 @@ import 'features/violation_guide_injection.dart';
 import 'features/weather_alerts_injection.dart';
 
 import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+import 'package:balady_authorization/src/web/global/remote_config.dart';
 
 /// sl -> Service Locator
 final sl = GetIt.instance;
@@ -263,13 +265,37 @@ void initialize() {
   /////////////// get All Commercial Injection Container
   CommercialInjectionContainer.init();
   /////////////// End
-  /////////////// get All Authentication Model Injection Container
-  AuthenticationInjection.initialize();
-  /////////////// End
   /////////////// get All Classification Certificate Injection Container
   ClassificationCertificateInjectionContainer.init();
   /////////////// End
   /////////////// get All Home Services Certificate Injection Container
   HomeServicesInjectionContainer.init();
+  /////////////// End
+
+
+
+  /////////////// get All Authentication Model Injection Container
+  switch (sl<EnvType>().name) {
+    case "dev":
+      slAuthentication.registerLazySingleton(
+              () => BaladyAuthorizationEnvType.dev);
+      break;
+    case "stg":
+      slAuthentication.registerLazySingleton(
+              () => BaladyAuthorizationEnvType.stg);
+      break;
+    case "pre":
+      slAuthentication.registerLazySingleton(
+              () => BaladyAuthorizationEnvType.pre);
+      break;
+    case "prod":
+      slAuthentication.registerLazySingleton(
+              () => BaladyAuthorizationEnvType.prod);
+    case "urbiPre":
+      slAuthentication.registerLazySingleton(
+              () => BaladyAuthorizationEnvType.urbiPre);
+      break;
+  }
+  AuthenticationInjection.initialize();
   /////////////// End
 }
