@@ -80,6 +80,7 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       }
 
       response.accessToken.actionLog();
+      await sharedPrefs.setIsNafathLogin(response.idToken);
       return response;
     } catch (error) {
       throw ServerException(
@@ -107,7 +108,6 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       if (response == null) {
         throw Exception('Response of [refreshToken] is null. Please check the response. ${request.toString()}');
       }
-
       return response;
     } on PlatformException catch (error) {
       final errorMessage = error.toString();
@@ -158,51 +158,19 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   @override
   Future<String> logout() async {
     Response? response;
-
     try {
-      response = await webService.dio.get(
-        "${RemoteConfig.ssoUrl}/connect/endsession",
-        queryParameters: {
-          "id_token_hint": sl<EntryPointCubit>().state.token?.idToken,
-          "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
-        },
-      );
-      return response.data;
-    } on DioException catch (error) {
-      throw ServerException(
-        error.toString(),
-        statusCode: error.response?.statusCode,
-        dioError: error,
-      );
-    } on ServerException catch (e) {
-      devtools.log(e.toString());
-      rethrow;
-    } catch (ex) {
-      throw serverException(ex, response);
-    }
-  }
-
-  @override
-  Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params}) async {
-    Response? response;
-
-    try {
-      response = await webService.dio.get(
-        ApiUrl.forceUpdate,
-        queryParameters: {
-          ApiParam.type.name: params.type,
-          ApiParam.appID.name: params.appId,
-        },
-      );
-
-      final data = response.data["data"]?["result"];
-      if (data == null) {
-        throw ServerException("errors_server_error_2".tr());
+      if(sl<EntryPointCubit>().state.token != null) {
+        response = await webService.dio.get(
+          "${RemoteConfig.ssoUrl}/connect/endsession",
+          queryParameters: {
+            "id_token_hint": sl<EntryPointCubit>().state.token!.idToken,
+            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
+          },
+        );
+        return response.data.toString();
+      } else {
+        return "";
       }
-
-      var parsedResult = ForceUpdateResponseModel.fromMap(data);
-
-      return parsedResult;
     } on DioException catch (error) {
       throw ServerException(
         error.toString(),
@@ -216,25 +184,29 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
       throw serverException(ex, response);
     }
   }
-
   @override
   Future<EndSessionResponse> endSession() async {
     try {
-      EndSessionRequest endSessionRequest = EndSessionRequest(
-        idTokenHint: sl<EntryPointCubit>().state.token?.idToken,
-        postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
-        serviceConfiguration: _serviceConfiguration,
-        additionalParameters: {
-          "id_token_hint": sl<EntryPointCubit>().state.token?.idToken ?? '',
-          "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
-        },
+      String? idToken = await sharedPrefs.getIsNafathLogin();
+      if(idToken != null) {
+        EndSessionRequest endSessionRequest = EndSessionRequest(
+          idTokenHint: idToken,
+          postLogoutRedirectUrl: RemoteConfig.ssoLogOutUrl,
+          serviceConfiguration: _serviceConfiguration,
+          additionalParameters: {
+            "id_token_hint": idToken,
+            "post_logout_redirect_uri": RemoteConfig.ssoLogOutUrl
+          },
 
-      );
-      EndSessionResponse? response = await _appAuth.endSession(
-        endSessionRequest,
-      );
-  
-      return response!;
+        );
+        EndSessionResponse? response = await _appAuth.endSession(
+          endSessionRequest,
+        );
+        await sharedPrefs.setIsNafathLogin(null);
+        return response;
+      } else {
+        throw ServerException("", errorCode: "");
+      }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -396,6 +368,44 @@ class EntryPointRemoteDataSourceImpl extends EntryPointRemoteDataSource {
   }
 
   // HANDLERS
+
+
+
+  @override
+  Future<ForceUpdateResponseModel> getForceVersion({required ForceUpdateParams params}) async {
+    Response? response;
+
+    try {
+      response = await webService.dio.get(
+        ApiUrl.forceUpdate,
+        queryParameters: {
+          ApiParam.type.name: params.type,
+          ApiParam.appID.name: params.appId,
+        },
+      );
+
+      final data = response.data["data"]?["result"];
+      if (data == null) {
+        throw ServerException("errors_server_error_2".tr());
+      }
+
+      var parsedResult = ForceUpdateResponseModel.fromMap(data);
+
+      return parsedResult;
+    } on DioException catch (error) {
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } on ServerException catch (e) {
+      devtools.log(e.toString());
+      rethrow;
+    } catch (ex) {
+      throw serverException(ex, response);
+    }
+  }
+
 
   Exception serverException(Object ex, Response? response) => ServerException(
         "errors_server_error_2".tr(),

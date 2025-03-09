@@ -308,12 +308,16 @@ class SharedPrefs {
     return _sharedPreferences?.getString('chatbot_session_id');
   }
 
-  Future<void> setIsNafathLogin(bool bool ) async {
-   await _sharedPreferences?.setBool('IsNafathLogin', bool);
+  Future<void> setIsNafathLogin(String? idToken) async {
+    if(idToken != null ){
+      await _sharedPreferences?.setString('IsNafathLogin', idToken);
+    } else {
+      await _sharedPreferences?.remove('IsNafathLogin');
+    }
   }
 
-  bool? getIsNafathLogin() {
-    return _sharedPreferences?.getBool('IsNafathLogin');
+  String? getIsNafathLogin() {
+    return _sharedPreferences?.getString('IsNafathLogin');
   }
 }
 
