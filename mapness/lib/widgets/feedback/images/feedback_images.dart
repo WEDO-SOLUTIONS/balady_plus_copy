@@ -153,6 +153,10 @@ class FeedbackImages extends StatelessWidget {
 
     final value = fieldState.value ?? const IList.empty();
 
+    if (images.length > field.maxImages) {
+      images.removeRange(field.maxImages, images.length);
+    }
+
     fieldState.didChange(
       value.addAll(
         images.map(
@@ -167,9 +171,11 @@ class FeedbackImages extends StatelessWidget {
     required List<XFile> images,
   }) async {
     final sizes = await Future.wait(images.map((e) => e.length()));
-    final totalSize = sizes.reduce((value, element) => value + element);
+    // final totalSize = sizes.reduce((value, element) => value + element);
 
-    if (totalSize > field.maxSize) {
+    if (sizes.any(
+      (element) => element > field.maxSize,
+    )) {
       return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }
 
