@@ -631,6 +631,10 @@ class ApiUrl {
   static const String splash = '/v1/portal-services/splash/images';
 
 
+  static  String getObserverStatus(String identityNumber) => ' /v1/cis-certified-observers-services/registered-certified-observer-data/$identityNumber';
+
+
+
 
 
 

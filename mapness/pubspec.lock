@@ -194,25 +194,25 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: b77ab001eaf2657853fb3b7e281bcaf2066a87cbfea7b94f740277e2ddb5c9b5
+      sha256: "2db4936e45f77752557fb1a7f2062d0211c4969e7a4d0c88d24347072398ca47"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.46"
+    version: "0.0.49"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.1+327"
+    version: "3.12.2+267"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "992f88372b562827e09fcc7d464a65e59037da942dbf6220ca609d49d50ef06f"
+      sha256: "7a4b62c77741ac6b13049cc891aa757ee60be7c0bb919ff72b23e18d241066f9"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.5"
+    version: "3.2.7"
   battery_plus:
     dependency: transitive
     description:

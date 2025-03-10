@@ -386,6 +386,8 @@ class RouteName {
   static const mSRTypeScreen = 'MSRTypeScreen';
   static const commercialPermitsScreen = 'CommercialPermitsScreen';
 
+  static const Observer_Choose_Municipality = 'Observer_Choose_Municipality';
+
 }
 
 class EtmamRoutesNames {
@@ -454,6 +456,9 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
+
 
 
 }
