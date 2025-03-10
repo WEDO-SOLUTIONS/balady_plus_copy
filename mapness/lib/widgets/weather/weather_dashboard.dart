@@ -23,6 +23,24 @@ class WeatherDashboard extends ConsumerStatefulWidget {
 }
 
 class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
+  final cardKey = GlobalKey();
+
+  void _updateHeaderHeight() {
+    final renderBox = cardKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (renderBox != null && weatherHeaderSize != renderBox.size.height) {
+      setState(() {
+        weatherHeaderSize = renderBox.size.height;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _updateHeaderHeight());
+  }
+
   @override
   Widget build(BuildContext context) {
     final weatherData = ref.watch(forecastWeatherProvider);
@@ -31,11 +49,13 @@ class _WeatherDashboardState extends ConsumerState<WeatherDashboard> {
       scrollController: widget.bottomSheetController,
       sliverBeforeContent: SliverPersistentHeader(
         delegate: WeatherCardHeaderDelegate(
+          cardKey: cardKey,
           bottomSheetController: widget.bottomSheetController,
         ),
         pinned: true,
       ),
       content: [
+        Spacing.$4x.heightBox,
         ListView.separated(
           padding: const EdgeInsets.only(bottom: Spacing.$4x),
           primary: false,
