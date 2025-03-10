@@ -1,11 +1,12 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
-import 'package:collection/collection.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+
 
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';
@@ -151,7 +152,7 @@ class RequestDetailsBloc
         double? lon = double.tryParse(item.lastX ?? "");
         if (lat != null && lon != null)
           NavigationService.navigatorKey.currentState!
-              .pushNamed(RouteName.EkramMapPage, arguments: LatLng(lat, lon));
+              .pushNamed(RouteName.EkramMapPage, arguments: LatLng(latitude:lat, longitude:lon));
       }
     });
   }

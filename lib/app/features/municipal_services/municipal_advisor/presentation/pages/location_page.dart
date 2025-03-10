@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:google_maps_webservice/places.dart' as place;
 import '../../../../../core/utils/constants/constants.dart';
@@ -18,6 +19,7 @@ import '../../../../../core/utils/utils_exports.dart'
         CommonFunctions,
         CommonProperties,
         IconPath;
+import '../../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../../_shared_feature_/shared_feature_exports.dart'
     show
         CustomTextWidget,
@@ -42,14 +44,19 @@ class LocationPage extends StatefulWidget {
 }
 
 class LocationPageState extends State<LocationPage> {
-  final Completer<GoogleMapController> _controller =
-      Completer<GoogleMapController>();
-  late GoogleMapController mapController;
+  final Completer<DgisMapController> _controller =
+      Completer<DgisMapController>();
+  late DgisMapController mapController;
 
-  static final CameraPosition defaultLocation = CameraPosition(
-    target: CommonProperties.defaultLocation,
+  static final CameraPositionMessage defaultLocation = CameraPositionMessage(
+
+    point: GeoPointMessage(latitude: CommonProperties.defaultLocation.latitude, longitude: CommonProperties.defaultLocation.longitude),
     zoom: 10,
+    tilt: 0.0,
+    bearing: 0.0,
   );
+
+
   //Varaibles
   LatLng? coordinates;
 
@@ -61,9 +68,24 @@ class LocationPageState extends State<LocationPage> {
       bool isSuccess = await CommonFunctions.checkLocationSettings(context);
       if (isSuccess) {
         LatLng? latlng = await Helpers.getMapLocation();
-        mapController.animateCamera(CameraUpdate.newCameraPosition(
-          CameraPosition(target: latlng!, zoom: 16.0),
-        ));
+
+        // mapController.animateCamera(CameraUpdate.newCameraPosition(
+        //   CameraPosition(target: latlng!, zoom: 16.0),
+        // ));
+
+        if(latlng!= null)
+         mapController.moveCamera(
+          CameraPositionMessage(
+            point: GeoPointMessage(latitude: latlng!.latitude, longitude: latlng.longitude),
+            zoom: 16.0,
+            tilt: 0.0,
+            bearing: 0.0,
+          ),
+          0.3, // duration
+          CameraAnimationTypeMessage.linear,
+        );
+
+
       }
     });
   }
@@ -79,32 +101,64 @@ class LocationPageState extends State<LocationPage> {
         child: Builder(builder: (context) {
           return Stack(
             children: [
-              GoogleMap(
-                myLocationEnabled: true,
-                zoomControlsEnabled: false,
-                initialCameraPosition: defaultLocation,
-                padding: const EdgeInsets.only(bottom: 60),
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                  mapController = controller;
-                  mapController.setMapStyle(
-                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-                  );
-                },
-                onCameraIdle: () async {
+
+              UrbiMapSection(
+                readOnly: true,
+                currentUserLocation:LatLng(latitude: CommonProperties.defaultLocation.latitude, longitude: CommonProperties.defaultLocation.longitude),
+                incidentLocation:LatLng(latitude: CommonProperties.defaultLocation.latitude, longitude: CommonProperties.defaultLocation.longitude),
+                onCameraIdle: (bool isIdle) {
                   if (coordinates == null || !context.mounted) return;
-                  context.read<MunicipalAdvisorBloc>().add(
-                        MunicipalAdvisorGetGisLocationEvent(
-                          latLng: coordinates!,
-                        ),
-                      );
+                      context.read<MunicipalAdvisorBloc>().add(
+                            MunicipalAdvisorGetGisLocationEvent(
+                              latLng: coordinates!,
+                            ),
+                          );
+
                 },
-                onCameraMove: (position) {
+                updateMovedPosition: (LatLng p) {
                   if (context.mounted) {
-                    coordinates = position.target;
-                  }
+                          coordinates = p;
+                        }
+
                 },
+                onMapController: (DgisMapController controller) {
+                  mapController = controller;
+                },
+                showRadius: true,
               ),
+
+
+              // GoogleMap(
+              //   myLocationEnabled: true,
+              //   zoomControlsEnabled: false,
+              //   initialCameraPosition: defaultLocation,
+              //   padding: const EdgeInsets.only(bottom: 60),
+              //   onMapCreated: (GoogleMapController controller) {
+              //     _controller.complete(controller);
+              //     mapController = controller;
+              //     mapController.setMapStyle(
+              //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+              //     );
+              //   },
+              //   onCameraIdle: () async {
+              //     if (coordinates == null || !context.mounted) return;
+              //     context.read<MunicipalAdvisorBloc>().add(
+              //           MunicipalAdvisorGetGisLocationEvent(
+              //             latLng: coordinates!,
+              //           ),
+              //         );
+              //   },
+              //   onCameraMove: (position) {
+              //     if (context.mounted) {
+              //       coordinates = position.target;
+              //     }
+              //   },
+              // ),
+
+
+
+
+
               Positioned(
                 bottom: (MediaQuery.of(context).size.height / 2) + 28,
                 left: MediaQuery.of(context).size.width / 2 - 12,
@@ -191,15 +245,30 @@ class LocationPageState extends State<LocationPage> {
                 ),
               ),
               MapSearchSection(
+                currentUserLocation: LatLng(latitude: CommonProperties.defaultLocation.latitude, longitude: CommonProperties.defaultLocation.longitude),
                 showBigPaddingScreen: true,
                 onSearchResult: (LatLng location) {
-                  mapController.animateCamera(
-                    CameraUpdate.newCameraPosition(
-                      CameraPosition(
-                          target: LatLng(location.latitude, location.longitude),
-                          zoom: 16.0),
+
+                  mapController.moveCamera(
+                    CameraPositionMessage(
+                      point: GeoPointMessage(latitude: location.latitude, longitude: location.longitude),
+                      zoom: 16.0,
+                      tilt: 0.0,
+                      bearing: 0.0,
                     ),
+                    0.3, // duration
+                    CameraAnimationTypeMessage.linear,
                   );
+
+                  // mapController.animateCamera(
+                  //   CameraUpdate.newCameraPosition(
+                  //     CameraPosition(
+                  //         target: LatLng(location.latitude, location.longitude),
+                  //         zoom: 16.0),
+                  //   ),
+                  // );
+
+
                 },
               ),
               Container(
@@ -216,10 +285,25 @@ class LocationPageState extends State<LocationPage> {
                                 context);
                         if (isSuccess) {
                           LatLng? latlng = await Helpers.getMapLocation();
-                          mapController
-                              .animateCamera(CameraUpdate.newCameraPosition(
-                            CameraPosition(target: latlng!, zoom: 16.0),
-                          ));
+
+
+                          if(latlng != null)
+                          mapController.moveCamera(
+                            CameraPositionMessage(
+                              point: GeoPointMessage(latitude: latlng!.latitude, longitude: latlng.longitude),
+                              zoom: 16.0,
+                              tilt: 0.0,
+                              bearing: 0.0,
+                            ),
+                            0.3, // duration
+                            CameraAnimationTypeMessage.linear,
+                          );
+                          // mapController
+                          //     .animateCamera(CameraUpdate.newCameraPosition(
+                          //   CameraPosition(target: latlng!, zoom: 16.0),
+                          // ));
+
+
                         }
                       },
                       child: Container(
@@ -243,77 +327,4 @@ class LocationPageState extends State<LocationPage> {
   }
 }
 
-class MapSearchSection extends StatelessWidget {
-  final showBigPaddingScreen;
-  Function(LatLng location) onSearchResult;
 
-  MapSearchSection(
-      {Key? key,
-      this.showBigPaddingScreen = false,
-      required this.onSearchResult})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: showBigPaddingScreen
-          ? EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40)
-          : const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-      alignment: Alignment.topCenter,
-      child: GestureDetector(
-        onTap: () {
-          _showPlaceSearch(context);
-        },
-        child: Container(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 15),
-          alignment: Alignment.center,
-          height: 52,
-          decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                    child: CustomTextWidget(
-                  ("lbl_search_for_place").tr(),
-                  fontColor: AppColor.black400,
-                  fontWeight: AppFontWeight.medium,
-                  fontSize: 17,
-                  textAlign: TextAlign.start,
-                )),
-                Image.asset(
-                  Constants.imgPath + 'mapSearch@3x.png',
-                  height: 24,
-                  width: 24,
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  _showPlaceSearch(BuildContext context) async {
-    place.Prediction? p = await PlacesAutocomplete.show(
-        context: context,
-        apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI",
-        mode: Mode.overlay,
-        types: [],
-        strictbounds: false,
-        language: "ar",
-        components: [new place.Component(place.Component.country, "sa")]);
-
-    final places = place.GoogleMapsPlaces(
-        apiKey: "AIzaSyA-Hs2J4hgwr1m5ScEnLwpZQpTUdtZfhMI");
-    places.getDetailsByPlaceId(p?.placeId ?? "").then((response) {
-      var lat = response.result.geometry?.location.lat;
-      var long = response.result.geometry?.location.lng;
-
-      if (lat != null && long != null) {
-        onSearchResult(LatLng(lat, long));
-      }
-    });
-  }
-}

@@ -1,8 +1,9 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'dart:convert';
 
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../data/model/deceased_request_details_model.dart';
@@ -282,7 +283,7 @@ class DeceasedInfoResponseDtoList {
   LatLng? getTransferOrganizationLocation() {
     double? x = double.tryParse(transferOrganizationX ?? "");
     double? y = double.tryParse(transferOrganizationY ?? "");
-    if (x != null && y != null) return LatLng(y, x);
+    if (x != null && y != null) return LatLng(latitude: y, longitude:x);
   }
 }
 

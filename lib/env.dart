@@ -62,7 +62,8 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
-    MapUtils.loadMarkers();
+   //MapUtils.loadMarkers();
+
     sharedPrefs.init();
     // di: dependency injection
     di.initialize();

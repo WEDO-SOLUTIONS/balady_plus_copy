@@ -5,11 +5,12 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/r
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_inquery/persentation/commercial_license_query_Details/socail_contact_widget.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_inquery/persentation/commercial_license_query_Details/working_hours_details_update.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../domain/entity/commercial_license_data_entity.dart';
 import '../bloc/commercial_license_query_details_cubit.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
@@ -27,6 +28,7 @@ class _CommercialLicenseQueryDetailsState
   CommercialLicenseQueryDetailsCubit? bloc;
   bool showDays = false;
   String? commercialLicenseNumber;
+  DgisMapController? mapController;
 
   @override
   void initState() {
@@ -190,35 +192,65 @@ class _CommercialLicenseQueryDetailsState
                         ? SizedBox(
                             height: 250,
                             child: Stack(children: [
-                              GoogleMap(
-                                initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                      double.parse(
-                                          commercialLicenceQueryDetails.y!),
-                                      double.parse(
-                                          commercialLicenceQueryDetails.x!),
+
+
+                              UrbiMapSection(
+                                readOnly: true,
+                                currentUserLocation:LatLng(latitude: double.parse(commercialLicenceQueryDetails.y!),longitude: double.parse(commercialLicenceQueryDetails.x!)),
+                                incidentLocation:LatLng(latitude: double.parse(commercialLicenceQueryDetails.y!),longitude: double.parse(commercialLicenceQueryDetails.x!)),
+                                onCameraIdle: (bool isIdle) {
+                                  mapController?.moveCamera(
+                                    CameraPositionMessage(
+                                      point: GeoPointMessage(latitude:  double.parse(commercialLicenceQueryDetails.y!), longitude: double.parse(commercialLicenceQueryDetails.x!)),
+                                      zoom: 16.0,
+                                      tilt: 0.0,
+                                      bearing: 0.0,
                                     ),
-                                    zoom: 16),
-                                markers: {
-                                  Marker(
-                                    markerId: const MarkerId('position'),
-                                    position: LatLng(
-                                      double.parse(
-                                          commercialLicenceQueryDetails.y!),
-                                      double.parse(
-                                          commercialLicenceQueryDetails.x!),
-                                    ),
-                                  )
-                                },
-                                onMapCreated: (GoogleMapController controller) {
-                                  controller.setMapStyle(
-                                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                    0.3, // duration
+                                    CameraAnimationTypeMessage.linear,
                                   );
                                 },
-                                zoomControlsEnabled: false,
-                                zoomGesturesEnabled: false,
-                                scrollGesturesEnabled: false,
+                                updateMovedPosition: (LatLng p) {
+
+                                },
+                                onMapController: (DgisMapController controller) {
+                                  mapController = controller;
+                                },
+                                showRadius: true,
                               ),
+                              // GoogleMap(
+                              //   initialCameraPosition: CameraPosition(
+                              //       target: LatLng(
+                              //         double.parse(
+                              //             commercialLicenceQueryDetails.y!),
+                              //         double.parse(
+                              //             commercialLicenceQueryDetails.x!),
+                              //       ),
+                              //       zoom: 16),
+                              //   markers: {
+                              //     Marker(
+                              //       markerId: const MarkerId('position'),
+                              //       position: LatLng(
+                              //         double.parse(
+                              //             commercialLicenceQueryDetails.y!),
+                              //         double.parse(
+                              //             commercialLicenceQueryDetails.x!),
+                              //       ),
+                              //     )
+                              //   },
+                              //   onMapCreated: (GoogleMapController controller) {
+                              //     controller.setMapStyle(
+                              //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                              //     );
+                              //   },
+                              //   zoomControlsEnabled: false,
+                              //   zoomGesturesEnabled: false,
+                              //   scrollGesturesEnabled: false,
+                              // ),
+
+
+
+
                               Positioned(
                                 bottom: 20,
                                 left: 20,
@@ -359,7 +391,7 @@ class _CommercialLicenseQueryDetailsState
                           workingHours:
                               (commercialLicenceQueryDetails.workTimes!),
                           customerServiceNumber: commercialLicenceQueryDetails
-                              .customerServicePhoneNumber!,
+                              .customerServicePhoneNumber??"",
                         ),
                     ],
                   ),

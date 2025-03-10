@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/no_data_widget.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../../core/utils/constants/constants.dart';
+import '../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../domain/entity/survey_inquery_data_entity.dart';
 import '../bloc/survey_report_inquery_details_cubit.dart';
 
@@ -179,36 +181,70 @@ class _SurveyReportInqueryDetailsState
                               ? SizedBox(
                                   height: 250,
                                   child: Stack(children: [
-                                    GoogleMap(
-                                      initialCameraPosition: CameraPosition(
-                                          target: LatLng(
-                                            double.parse(
-                                                licenceQueryDetails.y!),
-                                            double.parse(
-                                                licenceQueryDetails.x!),
-                                          ),
-                                          zoom: 16),
-                                      onMapCreated:
-                                          (GoogleMapController controller) {
-                                        controller.setMapStyle(
-                                          """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-                                        );
-                                      },
-                                      markers: {
+
+                                    UrbiMapSection(
+                                      readOnly: true,
+                                      marker:  [
                                         Marker(
-                                          markerId: const MarkerId('position'),
-                                          position: LatLng(
-                                            double.parse(
-                                                licenceQueryDetails.y!),
-                                            double.parse(
-                                                licenceQueryDetails.x!),
+                                        id: "Location",
+                                        options: MarkerOptionsMessage(
+                                          position: GeoPointWithElevationMessage(
+                                            latitude: double.parse(licenceQueryDetails.y!),
+                                            longitude: double.parse(licenceQueryDetails.x!),
+                                            elevation: 0,
                                           ),
-                                        )
+                                          icon: MarkerIconMessage(
+                                            width: 28,
+                                            pngPath:  Constants.mapMarkerLocation,
+                                          ),
+
+                                        ),
+                                      )],
+                                      currentUserLocation: LatLng(latitude:double.parse(licenceQueryDetails.y!), longitude:double.parse(licenceQueryDetails.x!)),
+                                      incidentLocation: LatLng(latitude:double.parse(licenceQueryDetails.y!), longitude:double.parse(licenceQueryDetails.x!)),
+                                      onCameraIdle: (bool isIdle) {
+
                                       },
-                                      zoomControlsEnabled: false,
-                                      zoomGesturesEnabled: false,
-                                      scrollGesturesEnabled: false,
+                                      updateMovedPosition: (LatLng p) {
+
+                                      },
+                                      onMapController: (DgisMapController controller) {
+
+                                      },
+                                      showRadius: true,
                                     ),
+
+
+                                    // GoogleMap(
+                                    //   initialCameraPosition: CameraPosition(
+                                    //       target: LatLng(
+                                    //         double.parse(
+                                    //             licenceQueryDetails.y!),
+                                    //         double.parse(
+                                    //             licenceQueryDetails.x!),
+                                    //       ),
+                                    //       zoom: 16),
+                                    //   onMapCreated:
+                                    //       (GoogleMapController controller) {
+                                    //     controller.setMapStyle(
+                                    //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                    //     );
+                                    //   },
+                                    //   markers: {
+                                    //     Marker(
+                                    //       markerId: const MarkerId('position'),
+                                    //       position: LatLng(
+                                    //         double.parse(
+                                    //             licenceQueryDetails.y!),
+                                    //         double.parse(
+                                    //             licenceQueryDetails.x!),
+                                    //       ),
+                                    //     )
+                                    //   },
+                                    //   zoomControlsEnabled: false,
+                                    //   zoomGesturesEnabled: false,
+                                    //   scrollGesturesEnabled: false,
+                                    // ),
                                     Positioned(
                                       bottom: 20,
                                       left: 20,

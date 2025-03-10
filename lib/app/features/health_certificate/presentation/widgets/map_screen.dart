@@ -1,5 +1,6 @@
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/constants.dart';
@@ -29,9 +30,9 @@ class MapScreen extends StatefulWidget {
 class _MapScreen extends State<MapScreen> {
   //final model = locator<NewIncdietViewModel>();
   SelectedLocation selectedLocation = SelectedLocation(
-      userLocation: const LatLng(26.271596, 50.201437),
+      userLocation: const LatLng(latitude: 26.271596, longitude:50.201437),
       selectedLocationAddress: 'dammam',
-      selectedLocation: const LatLng(26.271596, 50.201437));
+      selectedLocation: const LatLng(latitude:26.271596, longitude:50.201437));
 
   @override
   Widget build(BuildContext context) {

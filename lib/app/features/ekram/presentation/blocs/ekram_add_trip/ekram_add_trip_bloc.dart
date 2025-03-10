@@ -9,10 +9,11 @@ import 'package:balady_plus/app/features/ekram/domain/use_cases/get_mosques.dart
 import 'package:balady_plus/app/features/ekram/domain/use_cases/update_driver_location.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:intl/intl.dart';
 import 'package:collection/collection.dart';
 

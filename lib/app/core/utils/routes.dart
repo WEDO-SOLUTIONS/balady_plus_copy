@@ -574,7 +574,7 @@ class Routes {
     RouteName.driverEkramTransportationDetailsScreen: (context) =>
         const UsersEkramTransportationDetailsPage(),
 
-    RouteName.EkramMapPage: (context) => const EkramMapPage(),
+    RouteName.EkramMapPage: (context) =>  EkramMapPage(),
 
     RouteName.ekramCemetryRequestScreen: (context) =>
         const EkramBookCemetryPage(),

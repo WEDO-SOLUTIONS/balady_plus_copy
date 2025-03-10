@@ -43,26 +43,6 @@ class FeedbackSuccessWidget extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 12),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: AppSizes.xxs,
-                        ),
-                        child: Consumer(
-                          builder: (context, ref, child) {
-                            final userInfo = ref.watch(authProvider).valueOrNull;
-
-                            return Text(
-                              userInfo == null
-                                  ? context.l10n.feedbackSuccessTextUnauthorized
-                                  : context.l10n.feedbackSuccessText(
-                                      userInfo.getFirstAndLastName(),
-                                    ),
-                              style: context.textStyleV3.bodyLargeRegular,
-                              textAlign: TextAlign.center,
-                            );
-                          },
-                        ),
-                      ),
                     ],
                   ),
                   const Spacer(),
@@ -78,6 +58,7 @@ class FeedbackSuccessWidget extends StatelessWidget {
                       onTap: () {
                         context.router.popUntil((route) =>
                             route.settings.name == PoiCardWidgetRoute.name ||
+                            route.settings.name == SearchRoute.name ||
                             route.settings.name == BottomMenuRoute.name);
                       },
                     ),

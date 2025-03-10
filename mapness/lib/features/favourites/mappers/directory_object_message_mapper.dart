@@ -1,6 +1,6 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/happiness_map/domain/happiness_feedback.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
+import 'package:mapness/shared/entities/coordinates.dart';
 
 extension DirectoryObjectMessageExt on DirectoryObjectMessage {
   FavouriteItem mapToFavourite() => FavouriteItem(

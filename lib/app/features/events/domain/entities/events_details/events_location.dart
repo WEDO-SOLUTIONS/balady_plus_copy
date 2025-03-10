@@ -1,4 +1,6 @@
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+
+import 'package:dgis_map/library.dart';
 
 class Location {
   final String? x;
@@ -21,6 +23,6 @@ class Location {
 
   LatLng? get mapLatLng =>
       double.tryParse(x ?? "") != null && double.tryParse(y ?? "") != null
-          ? LatLng(double.tryParse(y ?? "")!, double.tryParse(x ?? "")!)
+          ? LatLng(latitude:double.tryParse(y ?? "")!, longitude:double.tryParse(x ?? "")!)
           : null;
 }
