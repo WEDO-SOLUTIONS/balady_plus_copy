@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.1+330
-version: 3.12.2+267
+version: 3.30.1+330
+#version: 3.12.1+266
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -117,7 +117,7 @@ dependencies:
   # QR.Flutter is a Flutter library for simple and fast QR code rendering.
   qr_flutter: ^4.1.0
   # A cross platform plugin for displaying and scheduling local notifications
-  flutter_local_notifications: 17.2.3
+  flutter_local_notifications: ^18.0.1
   # A flutter plugin for getting the local timezone of the device.
   flutter_timezone: ^1.0.7
   youtube_player_flutter: ^9.1.0
@@ -223,7 +223,7 @@ dependencies:
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.48
+    version: ^0.0.49
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization

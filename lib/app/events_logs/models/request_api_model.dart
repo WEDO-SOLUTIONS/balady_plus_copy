@@ -4,6 +4,7 @@ class RequestApiModel extends EventModel {
   final String url;
   final String verifyingKEY;
   final String body;
+  final int? statusCode;
 
   RequestApiModel({
     required super.message,
@@ -11,6 +12,7 @@ class RequestApiModel extends EventModel {
     required this.url,
     required this.body,
     required this.verifyingKEY,
+    this.statusCode,
   });
 
   @override
@@ -20,6 +22,7 @@ class RequestApiModel extends EventModel {
       "url": url,
       "requestBody": body,
       "verifyingKEY": verifyingKEY,
+      "statusCode": statusCode,
       "date": DateTime.now().toIso8601String(),
     };
   }

@@ -83,3 +83,22 @@
 -dontwarn com.huawei.android.os.**
 -dontwarn com.huawei.hms.**
 -dontwarn com.huawei.libcore.io.**
+
+
+
+
+# Preserve generic signatures (needed for Gson TypeToken)
+-keepattributes Signature
+
+# Keep all classes that extend TypeToken
+-keep class com.google.gson.reflect.TypeToken { *; }
+
+# Keep Gson model classes (if applicable)
+-keep class your.package.name.** { *; }  # Replace with your actual package name
+
+# Keep all classes used by Flutter Local Notifications
+-keep class com.dexterous.flutterlocalnotifications.** { *; }
+
+# Keep Firebase and Google Play Services if you're using them
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }

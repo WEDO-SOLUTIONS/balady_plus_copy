@@ -68,7 +68,6 @@ class App extends StatelessWidget {
       child: BlocProvider<EntryPointCubit>.value(
         value: sl<EntryPointCubit>(),
         child: BaladyAuthorizationBloc(
-          env: sl<EnvType>().name,
           child: AppWidget(
             key: materialAppKey,
           ),
