@@ -170,8 +170,7 @@ class FeedbackImages extends StatelessWidget {
     BuildContext context, {
     required List<XFile> images,
   }) async {
-    final sizes = await Future.wait(images.map((e) => e.length()));
-
+    final sizes = await Future.wait(images.map((e) async => (await e.readAsBytes()).length));
     final hasExceededImage = sizes.any((element) => element > field.maxSize);
 
     if (hasExceededImage) {
