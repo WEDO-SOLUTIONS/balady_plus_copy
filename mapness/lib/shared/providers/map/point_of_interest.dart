@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
-import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
 import 'package:mapness/shared/providers/map/highlight.dart';
@@ -37,7 +37,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
 
   final selectedMarker = ref.read(selectedMarkerProvider.notifier);
   final dark = await ref.watch(darkModeProvider.future);
-  final isRtl = ref.read(appLanguageProvider) == Language.arabic;
+  final isRtl = directoryObject?.title.isRTL == true;
 
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
