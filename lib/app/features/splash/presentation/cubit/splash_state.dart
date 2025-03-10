@@ -22,16 +22,16 @@ class OfflineSplashState extends SplashState {
 }
 
 class OnlineSplashState extends SplashState {
-  final String splashUrl;
+  final File splashFile;
   final int splashDuration;
 
   const OnlineSplashState({
-    required this.splashUrl,
+    required this.splashFile,
     required this.splashDuration,
   });
 
   @override
-  List<Object?> get props => [splashUrl, splashDuration];
+  List<Object?> get props => [splashFile, splashDuration];
 }
 
 class CompletedSplashState extends SplashState {
@@ -40,4 +40,3 @@ class CompletedSplashState extends SplashState {
   @override
   List<Object?> get props => [];
 }
-
