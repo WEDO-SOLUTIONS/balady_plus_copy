@@ -9,6 +9,7 @@ class StoryFrameActionButton extends StatefulWidget {
     required this.actionTheme,
     required this.action,
     required this.onNext,
+    this.onActionPressed,
     super.key,
   });
 
@@ -20,6 +21,9 @@ class StoryFrameActionButton extends StatefulWidget {
 
   /// The callback function that is called when the next button is pressed.
   final VoidCallback onNext;
+
+  /// Additional event called when the button is pressed.
+  final VoidCallback? onActionPressed;
 
   @override
   State<StoryFrameActionButton> createState() => _StoryFrameActionButtonState();
@@ -86,6 +90,9 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         textColor: widget.actionTheme.textColor,
         buttonColorScheme: ButtonColorScheme.primary,
         primaryLabel: _getActionTitle(),
-        onTap: () => _onActionPressed(context),
+        onTap: () {
+          widget.onActionPressed?.call();
+          _onActionPressed(context);
+        },
       );
 }
