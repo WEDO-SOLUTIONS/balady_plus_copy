@@ -40,7 +40,6 @@ class FeedbackInput extends HookWidget {
 
     return FormBuilderField<String>(
         name: field.id,
-        focusNode: focusNode,
         validator: FormBuilderValidators.compose([
           switch (field.type) {
             FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: false),
