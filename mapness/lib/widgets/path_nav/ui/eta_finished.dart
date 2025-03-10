@@ -35,8 +35,7 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
           onSizeChanged: widget.onSizeChanged,
           child: BaseRoadPanel(
             roadPanelModel: RoadPanelModelArrived(
-              onSearchTap: widget.onSearchPressed,
-              enabledHeader: value,
+              onSearchTap: widget.onSearchPressed,enabledHeader: value,
               title: context.l10n.youArrived,
               onTapBurger: toggle,
               buttons: [
@@ -53,6 +52,7 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
                   onTap: widget.onBuildAnotherRoutePressed,
                 ),
               ],
+              onSearchTap: () {},
             ),
           ),
         ),

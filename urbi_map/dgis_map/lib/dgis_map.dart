@@ -21,6 +21,7 @@ class DgisMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PageRoute;
     return defaultTargetPlatform == TargetPlatform.android
         ? AndroidView(
             key: key,

@@ -210,10 +210,10 @@ packages:
     description:
       path: "."
       ref: "feature/update-navi-road-panel"
-      resolved-ref: "076cb05d9744b1247fe6870076b3c76eb502647b"
+      resolved-ref: "6f9c1328cce6f77ea438bf3eedff217659d00b07"
       url: "git@github.com:urbi-ae/balady_uikit.git"
     source: git
-    version: "3.2.5"
+    version: "3.3.0"
   battery_plus:
     dependency: transitive
     description:

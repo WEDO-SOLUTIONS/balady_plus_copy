@@ -119,7 +119,10 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ),
             Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => const SoundSettingsRoute().push(context),
+              onTap: () => context.router.push(switch (MediaQuery.orientationOf(context)) {
+                Orientation.portrait => const SoundSettingsRoute(),
+                Orientation.landscape => const SoundSettingsLandscapeRoute(),
+              }),
               options: ContentRowOptions(
                 subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                   color: color.textAndIconsBaseSecondary,
@@ -158,7 +161,12 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ),
             Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => context.router.push(const NavigatorSettingsRoute()),
+              onTap: () => context.router.push(
+                switch (MediaQuery.orientationOf(context)) {
+                  Orientation.portrait => const NavigatorSettingsRoute(),
+                  Orientation.landscape => const NavigatorSettingsLandscapeRoute(),
+                },
+              ),
               options: ContentRowOptions(
                 titleStyle: textStyleV3.bodyLargeRegular.copyWith(
                   color: colorsV2.foregroundDefault,

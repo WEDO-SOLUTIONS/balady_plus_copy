@@ -115,7 +115,12 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
                               children: [
                                 ContentRow(
                                   onTap: () {
-                                    context.router.push(const SoundSettingsRoute());
+                                    context.router.push(
+                                      switch (MediaQuery.orientationOf(context)) {
+                                        Orientation.portrait => const SoundSettingsRoute(),
+                                        Orientation.landscape => const SoundSettingsLandscapeRoute(),
+                                      },
+                                    );
                                   },
                                   options: ContentRowOptions(
                                     subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
