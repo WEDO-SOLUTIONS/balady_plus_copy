@@ -150,6 +150,14 @@ class FeedbackImages extends StatelessWidget {
 
     final filteredImages = await filterImages(context, images: images, fieldState: fieldState);
     final value = fieldState.value ?? const IList.empty();
+
+    /// avoid upload same image twice
+    filteredImages.removeWhere(
+      (element) => value.any(
+        (element2) => element2.srcPath == element.path,
+      ),
+    );
+
     fieldState.didChange(
       value.addAll(
         filteredImages.map(
