@@ -48,8 +48,8 @@ class _RegisterObserverHomeState
                 },
                 child: Scaffold(
                   appBar: DetailsAppBarTwo(
-                    currentStep:  state.pagesList != null ?(state.currentPageValue + 1):0,
-                    pageLength: state.pagesList != null ?state.pagesList!.length:0,
+                    currentStep:  state.pagesList!.isNotEmpty  ?(state.currentPageValue + 1):0,
+                    pageLength: state.pagesList?.length??0,
                     backOnPress: () => context
                         .read<ChooseMuncipalityBloc>()
                         .add(const GoToPreviousPageEvent()),
@@ -62,7 +62,7 @@ class _RegisterObserverHomeState
                   body: Stack(
                     children: [
                       PageView.builder(
-                          itemCount: state.pagesList != null ?state.pagesList!.length:0,
+                          itemCount:state.pagesList?.length??0,
                           scrollDirection: Axis.vertical,
                           physics: const NeverScrollableScrollPhysics(),
                           controller: context

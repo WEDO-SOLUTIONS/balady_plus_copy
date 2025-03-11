@@ -94,7 +94,7 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Left(ServerFailure(error.errorMessage));
+      return Left(ServerFailure(error.errorMessage,errorCode: error.errorCode));
     }
   }
 }

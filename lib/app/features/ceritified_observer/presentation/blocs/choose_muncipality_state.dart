@@ -41,7 +41,7 @@ class ChooseMuncipalityState extends Equatable {
         lstMunicipalityLookUp:lstMunicipalityLookUp??this.lstMunicipalityLookUp,
         requestData:requestData??this.requestData,
         isAcceptNewObservers:isAcceptNewObservers??this.isAcceptNewObservers,
-        pagesList:pagesList??pagesList,
+        pagesList:pagesList??this.pagesList,
         currentPageValue:currentPageValue??this.currentPageValue
 
     );
@@ -55,7 +55,8 @@ class ChooseMuncipalityState extends Equatable {
     lstMunicipalityLookUp,
     requestData,
     isAcceptNewObservers,
-    pagesList
+    pagesList,
+    currentPageValue
   ];
 
 

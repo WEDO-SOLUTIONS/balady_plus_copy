@@ -36,86 +36,84 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
 
         builder: (context, state) {
 
-          return  Expanded(
-            child: Column(
+          return  Column(
 
-              children: [
+            children: [
 
-                ExpandableCard(title: 'location'.tr(), children: [
+              ExpandableCard(title: 'location'.tr(), children: [
 
-                    SizedBox(height: 5,),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        CustomTextWidget(
-                          "choose_muncipality".tr(),
-                          fontSize: 12,
-                          fontWeight: AppFontWeight.medium,
-                          fontColor: AppColor.black500,
-                          height: 1.4,
-                          maxLines: 4,
-                        ),
-                      ],
-                    ),
-
-                    CustomLookUpLongDialog(
-                      showOptional:false,
-                      items: state.lstMunicipalityLookUp ?? [],
-                      value: state.getMuncipalityById(state.requestData?.municipalityID),
-                      onEmptyList: () async {
-                        return context
-                            .read<ChooseMuncipalityBloc>()
-                            .getMuncipalityList();
-                      },
-                      onChangeType: (LookUpItem? item) {
-                        if (item != null) {
-
-                          context.read<ChooseMuncipalityBloc>().add(setRequestDataEvent(dataModel: RegisterObserverRequest(municipalityID: item.strId!)));
-
-                        }
-                      },
-                      label: "license_health_municipality".tr(),
-                      hint: "license_health_municipality".tr(),
-                    ),
-
-
-                  state.isAcceptNewObservers==false? NotesWidget(notes: ['muncipality_not_accept'.tr()],):Container(),
-                  ],),
-
-                Spacer(),
-                Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(36),
-                      topRight: Radius.circular(36),
-                    ),
-                    color: Colors.white,
+                  SizedBox(height: 5,),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      CustomTextWidget(
+                        "choose_muncipality".tr(),
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.medium,
+                        fontColor: AppColor.black500,
+                        height: 1.4,
+                        maxLines: 4,
+                      ),
+                    ],
                   ),
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 18, vertical: 26),
-                  child: CustomElevatedButtonWidget(
 
-                    btnColor: AppColor.primary800Light,
-                    textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                      color: AppColor.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 16,
-                    ),
-                    btnHeight: 56,
-                    text: "next".tr(),
-                    onPressed: () {
-
-                      if(state.requestData?.municipalityID != null)
-                        {
-                          context.read<ChooseMuncipalityBloc>().checkMuncipalityAcceptance();
-
-                        }
-
+                  CustomLookUpLongDialog(
+                    showOptional:false,
+                    items: state.lstMunicipalityLookUp ?? [],
+                    value: state.getMuncipalityById(state.requestData?.municipalityID),
+                    onEmptyList: () async {
+                      return context
+                          .read<ChooseMuncipalityBloc>()
+                          .getMuncipalityList();
                     },
+                    onChangeType: (LookUpItem? item) {
+                      if (item != null) {
+
+                        context.read<ChooseMuncipalityBloc>().add(setRequestDataEvent(dataModel: RegisterObserverRequest(municipalityID: item.strId!)));
+
+                      }
+                    },
+                    label: "license_health_municipality".tr(),
+                    hint: "license_health_municipality".tr(),
                   ),
+
+
+                state.isAcceptNewObservers==false? NotesWidget(notes: ['muncipality_not_accept'.tr()],):Container(),
+                ],),
+
+              Spacer(),
+              Container(
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(36),
+                    topRight: Radius.circular(36),
+                  ),
+                  color: Colors.white,
                 ),
-              ],
-            ),
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 18, vertical: 26),
+                child: CustomElevatedButtonWidget(
+
+                  btnColor: AppColor.primary800Light,
+                  textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                    color: AppColor.white,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 16,
+                  ),
+                  btnHeight: 56,
+                  text: "next".tr(),
+                  onPressed: () {
+
+                    if(state.requestData?.municipalityID != null)
+                      {
+                        context.read<ChooseMuncipalityBloc>().checkMuncipalityAcceptance();
+
+                      }
+
+                  },
+                ),
+              ),
+            ],
           );
         }
 

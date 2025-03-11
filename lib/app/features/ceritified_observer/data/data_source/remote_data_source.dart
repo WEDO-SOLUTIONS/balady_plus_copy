@@ -155,9 +155,11 @@ class CertifiedObserverRemoteDataSourceImplementation implements CertifiedObserv
       if (error is NoDataFoundException) {
         rethrow;
       }
+      var s = error.response?.data["data"];
       throw ServerException(
         error.toString(),
-        statusCode: error.response?.statusCode,
+        errorCode: error.response?.data["data"]['responseCode'],
+        statusCode:error.response?.statusCode ,
         dioError: error,
       );
     } catch (error, stackTrace) {

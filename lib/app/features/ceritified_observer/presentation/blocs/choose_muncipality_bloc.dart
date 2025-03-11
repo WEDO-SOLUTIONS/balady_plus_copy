@@ -142,7 +142,11 @@ class ChooseMuncipalityBloc extends Bloc<ChooseMuncipalityEvent,ChooseMuncipalit
     failureOrSuccess.fold(
           (failure) {
         emit(
-          state.copyWith(status: BlocStatus.failure,),);
+          state.copyWith(
+            status: BlocStatus.failure,
+            isAcceptNewObservers: false,
+
+          ));
         CommonFunctions.showError(failure is ServerFailure ? (failure).errorMessage : "");
       },
           (response) {
