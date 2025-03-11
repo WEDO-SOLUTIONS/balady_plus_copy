@@ -9,7 +9,7 @@ class ChooseMuncipalityState extends Equatable {
   final RegisterObserverRequest? requestData;
   final bool? isAcceptNewObservers;
    final List? pagesList;
-  double currentPageValue;
+  int currentPageValue;
 
    ChooseMuncipalityState({
     this.status = BlocStatus.initial,
@@ -19,7 +19,7 @@ class ChooseMuncipalityState extends Equatable {
     this.requestData,
     this.isAcceptNewObservers,
     this.pagesList,
-    this.currentPageValue = 0.0
+    this.currentPageValue = 0
   });
 
 
@@ -32,7 +32,7 @@ class ChooseMuncipalityState extends Equatable {
     RegisterObserverRequest? requestData,
     bool? isAcceptNewObservers,
     List? pagesList,
-    double? currentPageValue
+    int? currentPageValue
   }) {
     return ChooseMuncipalityState(
       status: status ?? this.status,
