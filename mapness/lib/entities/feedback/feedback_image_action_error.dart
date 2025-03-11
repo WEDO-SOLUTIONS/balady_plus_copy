@@ -23,10 +23,3 @@ class FeedbackImageSizeExceededError extends FeedbackImagePickError {
 
   const FeedbackImageSizeExceededError({required this.maxFileSize});
 }
-
-/// Represents an error when the image resolution exceeds the maximum allowed resolution.
-///
-/// Example: allowed resolution up to `5000 * 5000`
-class FeedbackImageWrongDimsError extends FeedbackImagePickError {
-  const FeedbackImageWrongDimsError();
-}

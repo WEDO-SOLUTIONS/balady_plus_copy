@@ -187,13 +187,11 @@ class FeedbackImages extends StatelessWidget {
   }) async {
     final sizes = await Future.wait(images.map((e) async => File(e.path).length()));
     final dims = await Future.wait(images.map((e) async => _calculateImageDimension(e.path)));
-    final hasWrongDimsImage = dims.any((element) => element.width > 5000 || element.height > 5000);
+    final hasWrongDimsImage =
+        dims.any((element) => element.width > _maxImageResolution || element.height > _maxImageResolution);
     final hasExceededImage = sizes.any((element) => element > field.maxSize);
 
-    if (hasWrongDimsImage) {
-      return const FeedbackImageWrongDimsError();
-    }
-    if (hasExceededImage) {
+    if (hasWrongDimsImage || hasExceededImage) {
       return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }
 
