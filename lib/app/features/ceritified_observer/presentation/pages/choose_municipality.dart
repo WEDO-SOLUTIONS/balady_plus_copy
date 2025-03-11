@@ -8,13 +8,20 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/services/local/navigation_services.dart';
 import '../../../../core/utils/constants/app_colors.dart';
+import '../../../../core/utils/constants/app_style.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/constants/route_names.dart';
-import '../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
+import '../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../core/utils/enums/bloc_status.dart';
+import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import '../../../_shared_feature_/presentation/widgets/shimmer_effect_widget.dart';
+import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import '../../../profile_features/dashboard/dashboard_exports.dart';
 import '../blocs/choose_muncipality_bloc.dart';
-
-
-
+import '../widget/choose_muncipality_widget.dart';
+import '../widget/wait_for_approval_widget.dart';
 
 class ChooseMunicipality extends StatefulWidget {
   const ChooseMunicipality({Key? key}) : super(key: key);
@@ -39,82 +46,45 @@ class _ChooseMunicipalityState extends State<ChooseMunicipality> {
       create: (context) => ChooseMuncipalityBloc(),
       child: BlocConsumer<ChooseMuncipalityBloc, ChooseMuncipalityState>(
         listener: (context, state) {
-          // if (state.cemetryListStatus == BlocStatus.failure ||
-          //     state.status == BlocStatus.failure) {
-          //   CommonFunctions.showError(state.errorMessage ?? "");
-          // }
-          //
         },
         builder: (context, state) {
-          return  Scaffold(
-            appBar: AppBar(
-              titleSpacing: 0,
-              automaticallyImplyLeading: false,
-              backgroundColor: Colors.transparent,
-              iconTheme: const IconThemeData(color: Colors.black),
-              elevation: 0,
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios,
-                        color: AppColor.black),
-                    onPressed: () {
-                      Navigator.of(context).pop(); // Navigate back
-                    },
-                  ),
-                  Expanded(
-                    child: Text(
-                      "ekram_benf_transport".tr(),
-                      maxLines: 2,
-                      style: const TextStyle(
-                        color: AppColor.black,
-                        fontSize: 18.0, // Adjust font size for readability
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.start, // Center the title
-                    ),
-                  ),
 
-                  InkWell(
-                    onTap: () => NavigationService.navigatorKey.currentState!
-                        .pushNamed(RouteName.EkramRequestTransportationStartService,),
-                    child: CircleAvatar(
-                      backgroundColor: AppColor.primary50Light,
-                      child: SvgPicture.asset(
-                        IconPath.add,
-                        width: 40,
-                        height: 40,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8.0), // Add consistent spacing
-                  // InkWell(
-                  //   onTap: () async {
-                  //     context
-                  //         .read<TransportRequestsBloc>()
-                  //         .add(ShowFilterEvent());
-                  //   },
-                  //   child: CircleAvatar(
-                  //     backgroundColor: AppColor.primary50Light,
-                  //     child: SvgPicture.asset(
-                  //       IconPath.filter,
-                  //     ),
-                  //   ),
-                  // ),
-                ],
+         // if (state.status == BlocRequestStatus.submissionGetSuccess) {
+            return Scaffold(
+              appBar:getAppBar(),
+              body:  Padding(
+              padding: EdgeInsets.only(left: 5.0, right: 5, bottom: 20),
+              child: Column(
+               mainAxisAlignment: MainAxisAlignment.start,
+               children: [
+
+                 ChooseMuncipalityWidget(),
+
+
+
+              // state.observerStatusEntity?.qualification ==
+              //     "Waiting for approval"
+              //     ? const WaitForApprovalWidget()
+              //     : Container(),
+
+
+                  state.status == BlocRequestStatus.submissionGetLoading? const Center(child: CustomCircularLoadingWidget()):Container()
+
+            ],
+          ),
+        ),
+            );
+         // }
+
+
+          return Scaffold(
+            appBar:getAppBar(),
+            body: const Padding(
+              padding: EdgeInsets.only(left: 5.0, right: 5, bottom: 20),
+              child: Center(
+                child: NoDataWidget(),
               ),
-              // bottom: AppBarSeachBar(
-              //   onChanged: (value) {
-              //     _debouncer.run(() {
-              //       context.read<TransportRequestsBloc>().add(
-              //           GetDeceasedTransportRequestsEvent(
-              //               isDriver: false, text: value));
-              //     });
-              //   },
-              // ),
             ),
-            body: Container(),
 
           );
         },
@@ -124,5 +94,44 @@ class _ChooseMunicipalityState extends State<ChooseMunicipality> {
 
 
 
+  }
+
+
+  PreferredSizeWidget getAppBar()
+  {
+    return AppBar(
+      titleSpacing: 0,
+      automaticallyImplyLeading: false,
+      backgroundColor: Colors.transparent,
+      iconTheme: const IconThemeData(color: Colors.black),
+      elevation: 0,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios,
+                color: AppColor.black),
+            onPressed: () {
+              Navigator.of(context).pop(); // Navigate back
+            },
+          ),
+          Expanded(
+            child: Text(
+              "certified_observer".tr(),
+              maxLines: 2,
+              style: const TextStyle(
+                color: AppColor.black,
+                fontSize: 18.0, // Adjust font size for readability
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.start, // Center the title
+            ),
+          ),
+          // Add consistent spacing
+
+        ],
+      ),
+
+    );
   }
 }

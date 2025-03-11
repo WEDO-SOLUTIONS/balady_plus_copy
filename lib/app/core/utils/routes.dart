@@ -57,6 +57,7 @@ import '../../features/calculator/presentation/pages/service_calculator_result_s
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../features/ceritified_observer/presentation/pages/choose_municipality.dart';
+import '../../features/ceritified_observer/presentation/pages/register_observer_home.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
 import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
@@ -638,7 +639,7 @@ class Routes {
     RouteName.mSRTypeScreen: (context) => const MSRTypeScreen(),
     RouteName.commercialPermitsScreen: (context) => const CommercialPermitsScreen(),
 
-  RouteName.Observer_Choose_Municipality: (context) => const ChooseMunicipality()
+  RouteName.Observer_Choose_Municipality: (context) => const RegisterObserverHome()
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {

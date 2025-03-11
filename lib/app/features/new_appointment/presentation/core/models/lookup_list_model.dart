@@ -66,6 +66,7 @@ class Data {
 class LookUpItem {
   LookUpItem(
       {this.id,
+        this.strId,
       this.name,
       this.isOther,
       this.fillInfo,
@@ -73,6 +74,7 @@ class LookUpItem {
       this.isDisblaed});
 
   int? id;
+  String? strId;
   String? name;
   bool? isOther;
   bool? fillInfo;

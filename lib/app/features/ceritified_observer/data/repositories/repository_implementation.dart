@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/entity/MunicipalityLookUp.dart';
 
 import 'package:dartz/dartz.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
@@ -21,6 +22,60 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
     try {
 
       final data = await remoteDataSource.getObserverStatus(identityNumber);
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<List<MunicipalityLookUp>>>> getMuncipalityList() async{
+    try {
+
+      final data = await remoteDataSource.getMuncipalityList();
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, ResponseBodyModel<bool>>> checkMuncipalityAcceptance(String id) async{
+    try {
+
+      final data = await remoteDataSource.checkMuncipalityAcceptance(id);
       return Right(data);
     } on NoDataFoundException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

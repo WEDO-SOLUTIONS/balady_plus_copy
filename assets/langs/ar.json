@@ -4208,5 +4208,11 @@
   "services_categories":"فئات الخدمات",
   "service_lase_teen": "خدمة",
   "invalid_license":"رقم الرخصة غير صحيح",
-  "enter_license_id":"ادخل رقم الرخصة"
+  "enter_license_id":"ادخل رقم الرخصة",
+  "waitingForApprovalMessage": "عزيزي المستخدم تم استلام طلبك بنجاح، يعتمد قبول طلبك بشكل نهائي على اجتيازك مرحلة التدريب للدخول لمنصة التدريب:",
+ "start_training" :"بدء التدريب",
+  "certified_observer": "الراصد المعتمد",
+  "choose_muncipality": "يجب تحديد الأمانة التي تود العمل بها",
+  "muncipality_not_accept": "عفوا، غير متاح حاليا التسجيل كراصد معتمد جديد في الأمانة التي تم اختيارها"
+
 }

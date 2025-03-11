@@ -1,25 +1,47 @@
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
+import '../../../../core/services/local/navigation_services.dart';
+import '../../../../core/utils/common_functions.dart';
+import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../domain/entity/MunicipalityLookUp.dart';
 import '../../domain/entity/observer_status_entity.dart';
+import '../../domain/entity/register_observer_request.dart';
+import '../../domain/use_cases/check_muncipality_acceptance.dart';
+import '../../domain/use_cases/get_muncipality_list.dart';
 import '../../domain/use_cases/get_registered_observer_status.dart';
+import '../pages/choose_municipality.dart';
+import '../widget/choose_muncipality_widget.dart';
+import '../widget/wait_for_approval_widget.dart';
 part  'choose_muncipality_state.dart';
+part 'choose_muncipality_event.dart';
 
 
-class ChooseMuncipalityBloc extends Cubit<ChooseMuncipalityState> {
+class ChooseMuncipalityBloc extends Bloc<ChooseMuncipalityEvent,ChooseMuncipalityState> {
   final GetRegisteredObserverStatus _getRegisteredObserverStatus;
+  final GetMuncipalityList _getMuncipalityList;
+  final CheckMuncipalityAcceptance _checkMuncipalityAcceptance;
 
+  PageController controller = PageController();
 
 
 
   ChooseMuncipalityBloc()
       :
         _getRegisteredObserverStatus=GetRegisteredObserverStatus(repository: sl()),
-        super(const ChooseMuncipalityState()) {
+        _getMuncipalityList=GetMuncipalityList(repository: sl()),
+        _checkMuncipalityAcceptance=CheckMuncipalityAcceptance(repository: sl()),
+        super( ChooseMuncipalityState(pagesList: [])) {
+
     getObserverStatus("1006966525");
+    on<setRequestDataEvent>(_setRequestDataHandler);
+    on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
+    on<GoToNextPageEvent>(_goToNextPageHandler);
+
   }
 
   Future<void> getObserverStatus(String identityNumber) async {
@@ -27,30 +49,161 @@ class ChooseMuncipalityBloc extends Cubit<ChooseMuncipalityState> {
 
 
     emit(
-      state.copyWith(status: BlocRequestStatus.submissionGetLoading),
+      state.copyWith(status: BlocStatus.loading),
     );
     final failureOrSuccess = await _getRegisteredObserverStatus(identityNumber);
     failureOrSuccess.fold(
           (failure) {
         emit(
-          state.copyWith(
-            status: BlocRequestStatus.submissionGetFailure,
-            errorMessage:
-            failure is ServerFailure ? (failure).errorMessage : "",
-          ),
-        );
+          state.copyWith(status: BlocStatus.failure,),);
+        CommonFunctions.showError(failure is ServerFailure ? (failure).errorMessage : "");
       },
           (response) {
+            ObserverStatusEntity obj = (response.data!.result) as ObserverStatusEntity;
+            List? pagesList = state.pagesList;
+            if(obj.isCertifiedObserver == true)
+              {
+                pagesList = [ChooseMuncipalityWidget()];
+              }
+
+            else {
+              if (response.data!.result?.qualification ==
+                  "Waiting for approval") {
+                pagesList = [WaitForApprovalWidget()];
+              }
+            }
+
         emit(
           state.copyWith(
-            status: BlocRequestStatus.submissionGetSuccess,
-            observerStatusEntity:
-            (response.data!.result) as ObserverStatusEntity,
+            status: BlocStatus.success,
+              pagesList:pagesList,
+            observerStatusEntity: (response.data!.result) as ObserverStatusEntity,
           ),
         );
       },
     );
 
 
+
+  }
+
+
+  Future<void> getMuncipalityList() async {
+
+    emit(
+      state.copyWith(status: BlocStatus.loading),
+    );
+    final failureOrSuccess = await _getMuncipalityList(null);
+    failureOrSuccess.fold(
+          (failure) {
+        emit(
+          state.copyWith(status: BlocStatus.failure,),);
+        CommonFunctions.showError(failure is ServerFailure ? (failure).errorMessage : "");
+      },
+          (response) {
+            List<LookUpItem> lstMunicipalityLookUp = [];
+            if(response.data != null && response.data!.result != null &&response.data!.result!.isNotEmpty)
+              {
+
+                for (var item in response.data!.result!) {
+                  lstMunicipalityLookUp.add(LookUpItem(strId: item.municipalityID,name: item.municipalityName));
+                }
+
+              }
+            emit(
+              state.copyWith(
+                status: BlocStatus.success,
+                lstMunicipalityLookUp: lstMunicipalityLookUp,
+              ),
+            );
+
+
+
+      },
+    );
+
+
+  }
+
+  Future<void> _setRequestDataHandler(setRequestDataEvent e, Emitter emitter) async {
+    RegisterObserverRequest? data = state.requestData;
+    data ??= RegisterObserverRequest();
+    data= data.copyWith(municipalityID: e.dataModel?.municipalityID);
+
+    emitter(state.copyWith(requestData: data));
+
+  }
+
+  Future<void> checkMuncipalityAcceptance() async {
+
+
+    emit(state.copyWith(status: BlocStatus.loading),);
+    final failureOrSuccess = await _checkMuncipalityAcceptance(state.requestData?.municipalityID);
+    failureOrSuccess.fold(
+          (failure) {
+        emit(
+          state.copyWith(status: BlocStatus.failure,),);
+        CommonFunctions.showError(failure is ServerFailure ? (failure).errorMessage : "");
+      },
+          (response) {
+        emit(
+          state.copyWith(
+            status: BlocStatus.success,
+            isAcceptNewObservers: (response.data!.result) as bool,
+          ),
+
+        );
+
+        if(response.data!.result == true)
+          {
+
+          }
+      },
+    );
+
+
+  }
+
+
+  Future<void> _goToPreviousPageHandler(GoToPreviousPageEvent e, Emitter emitter) async {
+    if (state.currentPageValue == 0) {
+      NavigationService.navigatorKey.currentState!.pop();
+    } else {
+      if (state.status == BlocStatus.performing) return;
+      int prvoiusPage = state.currentPageValue - 1;
+
+      emitter(state.copyWith(status: BlocStatus.performing,));
+      controller.jumpToPage(prvoiusPage);
+
+
+      emitter(state.copyWith(
+        status: BlocStatus.success,
+        currentPageValue: prvoiusPage,
+      ));
+    }
+    hideKeyboard();
+  }
+
+  Future<void> _goToNextPageHandler(GoToNextPageEvent e, Emitter emitter) async {
+    if (state.status == BlocStatus.performing) return;
+    int nextPage = state.currentPageValue + 1;
+
+    emitter(state.copyWith(
+      status: BlocStatus.performing,
+    ));
+    controller.jumpToPage(nextPage);
+
+    emitter(
+        state.copyWith(status: BlocStatus.success, currentPageValue: nextPage));
+
+    // if (nextPage == 1) {
+    //   add(getRequestDetailsEvent(requestId: state.requestId!));
+    // }
+  }
+
+
+
+  hideKeyboard() {
+    FocusManager.instance.primaryFocus?.unfocus();
   }
 }

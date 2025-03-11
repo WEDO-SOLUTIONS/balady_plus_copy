@@ -8,12 +8,14 @@ import 'package:balady_plus/app/features/_shared_feature_/data/models/response_b
 import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
+import '../../domain/entity/MunicipalityLookUp.dart';
 import '../../domain/entity/observer_status_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 abstract class CertifiedObserverRemoteDataSource {
   Future<ResponseBodyModel<ObserverStatusEntity>> getObserverStatus(String identityNumber);
-
+  Future<ResponseBodyModel<List<MunicipalityLookUp>>> getMuncipalityList();
+  Future<ResponseBodyModel<bool>> checkMuncipalityAcceptance(String id);
 }
 
 class CertifiedObserverRemoteDataSourceImplementation implements CertifiedObserverRemoteDataSource {
@@ -32,6 +34,112 @@ class CertifiedObserverRemoteDataSourceImplementation implements CertifiedObserv
           ? ObserverStatusEntity.fromJson(data["data"]["result"])
           : null;
       final decodedResponse = ResponseBodyModel<ObserverStatusEntity>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<MunicipalityLookUp>>> getMuncipalityList() async{
+    var response;
+    try {
+      response = await webService.dio.get(ApiUrl.getMuncipalitList);
+      var data = response.data["data"]?["result"];
+
+      List<MunicipalityLookUp> parsedResult = data != null
+          ? List<MunicipalityLookUp>.from(data.map((x) => MunicipalityLookUp.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<MunicipalityLookUp>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<bool>> checkMuncipalityAcceptance(String id) async{
+    var response;
+    try {
+      response = await webService.dio.get(ApiUrl.checkMuncipalityAcceptance(id));
+      var data = response.data["data"]?["result"];
+
+
+       bool? parsedResult= data != null?data['RegisterNewCertifiedObservers']:false;
+      final decodedResponse = ResponseBodyModel<bool>.fromMap(
           response.data,
           parsedResult: parsedResult);
 
