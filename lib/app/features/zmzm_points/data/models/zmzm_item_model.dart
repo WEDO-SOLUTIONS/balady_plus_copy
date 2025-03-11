@@ -5,12 +5,17 @@ class ZMZMItemModel extends Equatable {
   final String name;
   final String city;
   final String mapUrl;
+  final double latitude;
+  final double longitude;
 
-  const ZMZMItemModel(
-      {required this.id,
-      required this.city,
-      required this.mapUrl,
-      required this.name});
+  const ZMZMItemModel({
+    required this.id,
+    required this.city,
+    required this.mapUrl,
+    required this.name,
+    required this.latitude,
+    required this.longitude,
+  });
 
   @override
   List<Object?> get props => [id, name, city, mapUrl];
