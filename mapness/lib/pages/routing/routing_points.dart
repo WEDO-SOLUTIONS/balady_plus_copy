@@ -209,6 +209,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
     final index =
         points.indexWhere((element) => element is RoutePointFavouriteItem || element is RoutePointDirectoryObject);
+    if (index.isNegative) {
+      return;
+    }
     points[index] = RoutePointFavouriteItem(point);
     _updatePoints(points);
   }
