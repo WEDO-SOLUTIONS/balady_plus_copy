@@ -22,6 +22,8 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class AppointmentRepository {
   final webServices = locator<PegaWebService>();
 
+  
+
   Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments(
       {int pageSize = 20,
       int pageIndex = 0,
@@ -79,7 +81,7 @@ class AppointmentRepository {
       int appointmentId) async {
     String query = appointmentId.toString();
 
-    var res;
+    Response res;
 
     try {
       res =
@@ -144,14 +146,14 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple4<bool?, String?, Uint8List?, String?>(
         state, error, result, contentType);
@@ -190,14 +192,14 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, CancelAppointmentResponse?>(
         state, error, result);
@@ -205,24 +207,31 @@ class AppointmentRepository {
 
   Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
       confirmAppointment(String requestId) async {
-    String query = "$requestId";
-
-    final body = await webServices.postApigeeRequest(
-        ApiConstants.ConfirmAppointment,
-        relativePath: query);
-    bool state = body['state'];
-    dynamic data = body['data'];
-
-    ConfirmAppointmentResponse? result;
-    String error = body['error'] ?? ("errors_server_error_1").tr();
-
+    Response res;
     try {
+      res = await sl<web.WebService>()
+          .dio
+          .get(ApiConstants.ConfirmAppointment(requestId));
       ConfirmAppointmentResponse response =
-          ConfirmAppointmentResponse.fromJson(json.decode(data));
-      result = response;
-      if (!state) {
-        error = result.data?.responseMessage ?? error;
-      }
+          ConfirmAppointmentResponse.fromJson(res.data);
+      return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+          true, "", response);
+    } on DioException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print("ERRRRO ${error.toString()}");
+      ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+      return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+          false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -231,25 +240,58 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      try {
-        Helpers.sendLog(
-            url: ApiConstants.ConfirmAppointment,
-            qeuryParms: query,
-            data: data,
-            errorMsg: error.toString());
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+          false, error.toString(), null);
     }
-    return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
-        state, error, result);
   }
+
+  // Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
+  //     confirmAppointment(String requestId) async {
+  //   String query = "$requestId";
+
+  //   final body = await webServices.postApigeeRequest(
+  //       ApiConstants.ConfirmAppointment,
+  //       relativePath: query);
+  //   bool state = body['state'];
+  //   dynamic data = body['data'];
+
+  //   ConfirmAppointmentResponse? result;
+  //   String error = body['error'] ?? ("errors_server_error_1").tr();
+
+  //   try {
+  //     ConfirmAppointmentResponse response =
+  //         ConfirmAppointmentResponse.fromJson(json.decode(data));
+  //     result = response;
+  //     if (!state) {
+  //       error = result.data?.responseMessage ?? error;
+  //     }
+  //   } catch (error, stackTrace) {
+  //     LogsViewModel().sendEventFromModel(
+  //       event: ErrorExceptionModel(
+  //         nameEvent: EventsName.handledException,
+  //         message: error.toString(),
+  //         stackTrace: stackTrace.toString(),
+  //       ),
+  //     );
+  //     try {
+  //       Helpers.sendLog(
+  //           url: ApiConstants.ConfirmAppointment,
+  //           qeuryParms: query,
+  //           data: data,
+  //           errorMsg: error.toString());
+  //     } catch (error, stackTrace) {
+  //   LogsViewModel().sendEventFromModel(
+  //     event: ErrorExceptionModel(
+  //       nameEvent: EventsName.handledException,
+  //       message: error.toString(),
+  //       stackTrace: stackTrace.toString(),
+  //     ),
+  //   );
+  // }
+  //   }
+  //   return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+  //       state, error, result);
+  // }
 
   Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(
       var reqBody) async {
@@ -282,14 +324,14 @@ class AppointmentRepository {
             data: data,
             errorMsg: error.toString());
       } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
     }
     return Tuple3<bool?, String?, SaveAppointmentResponse?>(
         state, error, result);

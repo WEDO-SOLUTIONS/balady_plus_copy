@@ -1,4 +1,5 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/check_boxes/checkbox_with_title.dart';
 import 'package:balady_plus/app/features/vd/presentation/widgets/summery_widgets/field_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -54,6 +55,36 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
                   const AppointmentTypeWidget(),
 
                 const CustomVerticalSpace(height: 30.0),
+
+                model.serviceConfigResponse?.data?.result!.first
+                            .askForWakeelVisit ==
+                        true
+                    ? CheckBoxWithTitle(
+                        title: "did_visit_wakeel".tr(),
+                        onChanged: (value) {
+                          if (value != null)
+                            model.setExistedWakeelVisit = value;
+                          model.validateForm();
+                        },
+                        fontSize: 20,
+                      )
+                    : const SizedBox.shrink(),
+                Constants.verticalSpaceMedium,
+
+                model.serviceConfigResponse?.data?.result!.first
+                            .commitmentable ==
+                        true
+                    ? CheckBoxWithTitle(
+                        title: "accepted_agreement".tr(),
+                        onChanged: (value) {
+                          if (value != null) model.setAgreementStatus = value;
+                          model.validateForm();
+                        },
+                        fontSize: 20,
+                      )
+                    : const SizedBox.shrink(),
+
+                Constants.verticalSpaceMedium,
 
                 const AppointmentAttachmentSection(),
 
@@ -122,7 +153,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               if (item != null) model.catetgoryType = item;
               model.validateForm();
             },
-            label: ("bookNewAppointmentVisitCategoryWord").tr(),
+            label: '${("bookNewAppointmentVisitCategoryWord").tr()} *',
             hint: ("bookNewAppointmentVisitCategoryWord").tr(),
             searchHint: ("searchFor").tr(),
           ),
@@ -131,21 +162,19 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           items: model.municipalitiesList,
           value: model.municipalityType,
           onChangeType: (DropDownItem? item) {
-            if (item != null && item.externalSystem==false) {
+            if (item != null && item.externalSystem == false) {
               model.getSubMunicipalities(item);
               model.validateForm();
+            } else if (item != null && item.externalSystem == true) {
+              CommonFunctions.showError(
+                  "${"redircetionMessage1".tr()}${item.name}${"redircetionMessage2".tr()}"
+                  "<a href=\"${item.externalSystemUrl}\"> ${"here".tr()}</a>",
+                  true);
+
+              //
             }
-            else if (item != null && item.externalSystem==true)
-            {
-
-                CommonFunctions.showError( "${"redircetionMessage1".tr()}${item.name}${"redircetionMessage2".tr()}"+"<a href=\"${item.externalSystemUrl}\"> ${"here".tr()}</a>",true);
-
-                //
-
-              }
-
           },
-          label: ("homeUpComingAppointmentMunicipality").tr(),
+          label: '${("homeUpComingAppointmentMunicipality").tr()} *',
           hint: ("bookNewAppointmentMunicipalityDropDownHintWord").tr(),
           searchHint: ("search_for_municipality").tr(),
         ),
@@ -156,7 +185,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getMainClassifications(item);
             model.validateForm();
           },
-          label: ("homeUpComingAppointmentMunicipalEntity").tr(),
+          label: '${("homeUpComingAppointmentMunicipalEntity").tr()} *',
           hint: ("bookNewAppointmentMunicipalDropDownHintWord").tr(),
           searchHint: ("search_for_sub_municipality").tr(),
           errorText: ('select_municipality_first').tr(),
@@ -168,10 +197,11 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getSubClassifications(item);
             model.validateForm();
           },
-          label: ("service_main_classification").tr(),
+          label: '${("service_main_classification").tr()} *',
           hint: ("service_main_classification_hint").tr(),
           searchHint: ("search_for_main_classification").tr(),
           errorText: ('select_sub_municipality_first').tr(),
+          showOptional: false,
         ),
         CustomTapWidgetForLongDialog(
           items: model.subClassList,
@@ -180,10 +210,11 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getServiceConfig(item);
             model.validateForm();
           },
-          label: ("service_sub_main_classification").tr(),
+          label: '${("service_sub_main_classification").tr()} *',
           hint: ("service_sub_main_classification_hint").tr(),
           searchHint: ("search_for_sub_classification").tr(),
           errorText: ('select_main_classification_first').tr(),
+          showOptional: false,
         ),
         // CustomTapWidgetForLongDialog(
         //   items: model.departmentsList,
@@ -229,13 +260,15 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
         CustomTextFieldWidgetWithOptinal(
           controller: model.dataModel.transactionNoController,
           focusNode: _transactionNoFocusNode,
-          label: ("bookNewAppointmentServiceNumberFieldLabelWord").tr(),
+          label: model.serviceConfigResponse?.data?.result?.first
+                      .prevTransNoRequired ==
+                  true
+              ? '${("bookNewAppointmentServiceNumberFieldLabelWord").tr()} *'
+              : ("bookNewAppointmentServiceNumberFieldLabelWord").tr(),
           hintText: ("bookNewAppointmentServiceNumberFieldHintWord").tr(),
           keyboardType: TextInputType.text,
           textInputAction: TextInputAction.next,
           fillColor: Colors.transparent,
-          showOptional:
-              model.catetgoryType?.id != "4" && model.catetgoryType != null,
           onSaved: (_) {
             FocusScope.of(context).requestFocus(_descFocusNode);
           },
@@ -328,7 +361,6 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           label: ("bookNewAppointmentNotesFieldLabelWord").tr(),
           hintText: ("appointment_purpose_hint").tr(),
           maxLength: 500,
-
           maxLines: 4,
           keyboardType: TextInputType.multiline,
           inputFormatters: [
@@ -350,7 +382,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
                   !CommonFunctions.isAppAR) {
                 return ("error_only_arabic").tr();
               }
-              if(text.toString().length<20) {
+              if (text.toString().length < 20) {
                 return ("error_less_20").tr();
               }
             }

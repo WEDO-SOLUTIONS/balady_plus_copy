@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
+import 'package:smart_advisor/app/core/utils/constants/language.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../_shared_feature_/data/entities/drop_down_item.dart';
@@ -57,12 +58,16 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
   String get appointmentDetails => dataModel.appointmentDetails ?? "";
 
   String get getTransactionNo => dataModel.transactionNo ?? "";
+  bool get getExistedWakeelVisit => dataModel.existedWakeelVisit ?? false;
+  bool get getAgreementStatus => dataModel.agreementChecked ?? false;
+  bool get getprevTransNoRequired => dataModel.prevTransNoRequired ?? false;
 
   String get getServiceName => dataModel.serviceName ?? "";
 
   VisitType? get appointmentTypeItem => dataModel.appointmentTypeItem;
 
-  List<AttachmentsConfig>? get lstAttachmentConfig => dataModel.attachmentConfigList;
+  List<AttachmentsConfig>? get lstAttachmentConfig =>
+      dataModel.attachmentConfigList;
 
   LookUpItem? get specialConditionItem => dataModel.specialConditionItem;
 
@@ -79,6 +84,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
   set setAppointmentDetails(String data) => dataModel.appointmentDetails = data;
 
   set setTransactionNo(String data) => dataModel.transactionNo = data;
+  set setExistedWakeelVisit(bool data) => dataModel.existedWakeelVisit = data;
+  set setAgreementStatus(bool data) => dataModel.agreementChecked = data;
 
   set setServiceName(String data) => dataModel.serviceName = data;
 
@@ -304,18 +311,31 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
           selectedSubClassItem != null &&
           catetgoryType != null &&
           serviceConfigResponse != null &&
-          serviceConfigResponse?.getServiceId() != null) {
-        if (catetgoryType?.id == "4") {
+          serviceConfigResponse?.getServiceId() != null &&
+          getExistedWakeelVisit != false &&
+          getAgreementStatus != false) {
+        if (getprevTransNoRequired) {
           if (getTransactionNo.isNotEmpty) {
             isValid = true;
           } else {
             isValid = false;
           }
-        } else {
-          isValid = true;
         }
+        // if (catetgoryType?.id == "4") {
+        //   if (getTransactionNo.isNotEmpty) {
+        //     isValid = true;
+        //   } else {
+        //     isValid = false;
+        //   }
+        // } else {
+        //   isValid = true;
+        // }
       } else {
         isValid = false;
+      }
+
+      if (getExistedWakeelVisit != false) {
+        CommonFunctions.showError('visit_wakeel_is_manadatory'.tr());
       }
 
       /*  if (selectedSubClassItem?.isOther == true && getServiceName.isEmpty) {
@@ -348,48 +368,44 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         }*/
       }
 
-      var value =checkAttachmentValidation();
-      if(value != null && isValid==true) {
+      var value = checkAttachmentValidation();
+      if (value != null && isValid == true) {
         isValid = value;
       }
-
 
       if (isFormValid != isValid) {
         isFormValid = isValid;
         notifyListeners();
       }
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
     notifyListeners();
   }
 
-
-  bool? checkAttachmentValidation(){
-    bool? isValide=true;
-    if(lstAttachmentConfig != null) {
+  bool? checkAttachmentValidation() {
+    bool? isValide = true;
+    if (lstAttachmentConfig != null) {
       for (var index = 0; index < lstAttachmentConfig!.length; index++) {
         if (lstAttachmentConfig![index].mandatory == true) {
           var lst = attachmentsList.where((attachment) =>
-          attachment.attachmentId == lstAttachmentConfig![index].id);
+              attachment.attachmentId == lstAttachmentConfig![index].id);
           if (lst.isEmpty) {
             isValide = false;
           }
         }
       }
+    } else {
+      isValide = null;
     }
-    else
-      {
-        isValide=null;
-      }
 
-   return isValide;
+    return isValide;
   }
 
   void init() {
@@ -462,15 +478,13 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     }
   }
 
-  void deleteAttachment(int index) async{
-
+  void deleteAttachment(int index) async {
     dataModel.atttachmentItems.removeAt(index);
-   // bool isSuccess = await dataModel.deleteAttachment( dataModel.atttachmentItems[index].attachmentUuid!);
-   // if(isSuccess == true) {
-   //
-   //   notifyListeners();
-   // }
-
+    // bool isSuccess = await dataModel.deleteAttachment( dataModel.atttachmentItems[index].attachmentUuid!);
+    // if(isSuccess == true) {
+    //
+    //   notifyListeners();
+    // }
   }
 
   void checkRealStateRequest() async {
@@ -479,14 +493,13 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-  void saveAttachment(
-      String filePath, String fileName, Uint8List base64,int? attachmentId) async {
-
+  void saveAttachment(String filePath, String fileName, Uint8List base64,
+      int? attachmentId) async {
     bool isSuccess = false;
 
-    isSuccess = await dataModel.uploadFile(base64, fileName, filePath,attachmentId);
+    isSuccess =
+        await dataModel.uploadFile(base64, fileName, filePath, attachmentId);
     validateForm();
     notifyListeners();
-
   }
 }

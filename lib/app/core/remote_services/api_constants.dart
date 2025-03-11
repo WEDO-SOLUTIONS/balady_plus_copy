@@ -147,39 +147,45 @@ class ApiConstants {
 
 // Appointment
   static const String AppointmentURL = '/v1/mobile-appointment';
+  static const String NewAppointmentURL = '/v1/appointments-mobile-services';
 
   static const String AppointmentMunicipalities =
-      '$AppointmentURL/municipalities';
-  static const String AppointmentSubMunicipalities =
-      '$AppointmentURL/sub-municipalities/';
+      '$NewAppointmentURL/municipalities';
+  static String AppointmentSubMunicipalities(String id) =>
+      '$NewAppointmentURL/municipalities/$id/sub-municipalities';
   static const String AppointmentDepartments =
       '$AppointmentURL/department-list/';
 
-  static const String AppointmentMainClasssifications =
-      '$AppointmentURL/main-classes/';
-  static const String AppointmentSubClasssifications =
-      '$AppointmentURL/sub-classes/';
+  static String AppointmentMainClasssifications(String id) =>
+      '$NewAppointmentURL/services/main-classes/$id';
+  static String AppointmentSubClasssifications(
+          String subMunicipalityId, String mainClassId) =>
+      '$NewAppointmentURL/services/sub-classes/$subMunicipalityId/$mainClassId';
 
-  static const String MyAppointments = '$AppointmentURL/my-appointments/';
+  static const String MyAppointments = '$NewAppointmentURL/my-appointments';
   static const String AppointmentDetails = '$AppointmentURL/appointment-by-id/';
   static const String PrintAppointmentDetails =
       '$AppointmentURL/print-appointment/';
   static const String CancelAppointment = '$AppointmentURL/cancel-appointment/';
-  static const String ConfirmAppointment =
-      '$AppointmentURL/confirm-appointment/';
+  static  String ConfirmAppointment (String uuid) =>
+      '$NewAppointmentURL/appointments/confirm/$uuid';
+
+      //   static  String ConfirmAppointmentNewAppointment(String uuid) =>
+      // '$NewAppointmentURL/appointments/confirm/$uuid';
 
   static const String AppointmentAvailableDates =
       '$AppointmentURL/available-dates/';
   static const String AppointmentAvailableTimes =
       '$AppointmentURL/available-times/';
   static const String AppointmentLookUpList = '$AppointmentURL/lookup-list/';
-  static const String AppointmentServiceConfig =
-      '$AppointmentURL/service-config/';
+  static String AppointmentServiceConfig(
+          String subMunicipalityId, String subClassId) =>
+      '$NewAppointmentURL/services/config/$subMunicipalityId/$subClassId';
   static const String AppointmentSave = '$AppointmentURL/save-appointment';
   static String AppointmentUpdate(int id) =>
       '/v1/appointments-mobile-services/appoinments/$id';
 
-  static  String AppointmentUploadFile(int typeId) =>
+  static String AppointmentUploadFile(int typeId) =>
       '$AppointmentURL/appointment-upload-attachment/$typeId';
 
   static const String coSubmit = '/v1/social-inspectors/crm/push-info';
