@@ -145,7 +145,7 @@ class FeedbackImages extends StatelessWidget {
     }
 
     final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage();
+    final images = await _pickedImage(limit: field.maxImages);
     if (images.isEmpty) {
       return;
     }
@@ -207,8 +207,9 @@ class FeedbackImages extends StatelessWidget {
     return null;
   }
 
-  Future<List<XFile>> _pickedImage() async {
-    final images = await ImagePicker().pickMultiImage();
+  Future<List<XFile>> _pickedImage({int? limit}) async {
+    final images = await ImagePicker().pickMultiImage(
+        maxWidth: _maxImageResolution.toDouble(), maxHeight: _maxImageResolution.toDouble(), limit: limit);
 
     return images;
   }
