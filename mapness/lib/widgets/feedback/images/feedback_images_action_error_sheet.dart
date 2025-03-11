@@ -22,6 +22,7 @@ class FeedbackImagesActionErrorSheet extends StatelessWidget {
       FeedbackImageSizeExceededError(maxFileSize: final maxFileSize) => l10n.feedbackImageSizeExceedFailure(
           maxFileSize.formatAsFileSize(),
         ),
+      FeedbackImageWrongDimsError() => 'images resolution must be 5000X5000',
     };
     return BaseErrorWidget(
       errorLabel: label,

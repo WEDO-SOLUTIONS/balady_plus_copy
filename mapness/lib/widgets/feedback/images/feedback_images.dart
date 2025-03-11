@@ -34,6 +34,21 @@ class FeedbackImages extends StatelessWidget {
     super.key,
   });
 
+  Future<Size> _calculateImageDimension(String imagePath) {
+    final Completer<Size> completer = Completer();
+    final Image image = Image.file(File(imagePath));
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (image, synchronousCall) {
+          final myImage = image.image;
+          final Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
+          completer.complete(size);
+        },
+      ),
+    );
+    return completer.future;
+  }
+
   @override
   Widget build(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -170,9 +185,14 @@ class FeedbackImages extends StatelessWidget {
     BuildContext context, {
     required List<XFile> images,
   }) async {
-    final sizes = await Future.wait(images.map((e) async => (await e.readAsBytes()).length));
+    final sizes = await Future.wait(images.map((e) async => File(e.path).length()));
+    final dims = await Future.wait(images.map((e) async => _calculateImageDimension(e.path)));
+    final hasWrongDimsImage = dims.any((element) => element.width > 5000 || element.height > 5000);
     final hasExceededImage = sizes.any((element) => element > field.maxSize);
 
+    if (hasWrongDimsImage) {
+      return const FeedbackImageWrongDimsError();
+    }
     if (hasExceededImage) {
       return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
     }

@@ -51,7 +51,7 @@ class FeedbackUploadImage extends _$FeedbackUploadImage {
         queryParameters: {'type': 'discrepancy_images'},
         data: Stream.fromIterable(fileBytes.map((e) => [e])),
         options: Options(
-          sendTimeout: const Duration(minutes: 10),
+          sendTimeout: const Duration(days: 1),
           headers: {
             ...dio.options.headers,
             'Content-Type': 'application/octet-stream',
