@@ -249,13 +249,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       },
     );
 
-    context.router.push(
-      PathNavRoute(
-        navType: navigatingType,
-        isHomeOrWork: widget.isHomeOrWork,
-        initAction: PathNavPageInitAction.startNavigation,
-      ),
-    );
+    context.router.pushAndPopUntil(
+        PathNavRoute(
+          navType: navigatingType,
+          isHomeOrWork: widget.isHomeOrWork,
+          initAction: PathNavPageInitAction.startNavigation,
+        ),
+        predicate: (route) => route.settings.name == BottomMenuRoute.name);
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {
