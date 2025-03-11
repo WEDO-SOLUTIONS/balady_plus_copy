@@ -12,15 +12,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/entities/feedback/feedback_image_action_error.dart';
 import 'package:mapness/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
-import 'package:mapness/widgets/feedback/images/feedback_images_action_error_sheet.dart';
 import 'package:permission_handler/permission_handler.dart';
+
+import '../../../shared/ui/error_widget/base_error_widget.dart';
 
 const _maxImageResolution = 5000;
 const _minPhotoWidth = 100;
@@ -143,68 +143,67 @@ class FeedbackImages extends StatelessWidget {
       await showPermissionDeniedDialog(context);
       return;
     }
-
-    final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
     final images = await _pickedImage(limit: field.maxImages);
     if (images.isEmpty) {
       return;
     }
 
-    final pickError = await isImageSupported(
-      context,
-      images: images + selectedImages,
-    );
-
-    if (pickError != null) {
-      unawaited(
-        _showImageActionErrorSheet(
-          context,
-          error: pickError,
-          onRetry: () => _handlePickImage(context, fieldState),
-        ),
-      );
-      return;
-    }
-
+    final filteredImages = await filterImages(context, images: images, fieldState: fieldState);
     final value = fieldState.value ?? const IList.empty();
-
-    if (images.length > field.maxImages) {
-      images.removeRange(field.maxImages, images.length);
-    }
-
     fieldState.didChange(
       value.addAll(
-        images.map(
+        filteredImages.map(
           (image) => FileUpload.init(srcPath: image.path),
         ),
       ),
     );
   }
 
-  Future<FeedbackImagePickError?> isImageSupported(
-    BuildContext context, {
-    required List<XFile> images,
-  }) async {
-    final sizes = await Future.wait(images.map((e) async => File(e.path).length()));
-    final dims = await Future.wait(images.map((e) async => _calculateImageDimension(e.path)));
-    final hasWrongDimsImage =
-        dims.any((element) => element.width > _maxImageResolution || element.height > _maxImageResolution);
-    final hasExceededImage = sizes.any((element) => element > field.maxSize);
+  Future<bool> isValidImage(String path) async {
+    final fileType = path.split('.').last.toLowerCase();
+    final isImageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
+    final size = await File(path).length();
+    final isSizeAccepted = size <= field.maxSize;
+    final dim = await _calculateImageDimension(path);
+    final isDimAccepted = dim.width <= _maxImageResolution && dim.height <= _maxImageResolution;
+    return isImageFormatAccepted && isSizeAccepted && isDimAccepted;
+  }
 
-    if (hasWrongDimsImage || hasExceededImage) {
-      return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
-    }
-
+  Future<List<XFile>> filterImages(BuildContext context,
+      {required List<XFile> images, required FormFieldState<IList<FileUpload>> fieldState}) async {
+    final List<XFile> filteredImages = [];
+    bool isAllImagesValid = true;
     for (final image in images) {
-      final fileType = image.path.split('.').last.toLowerCase();
-      final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
-
-      if (!imageFormatAccepted) {
-        return FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
+      final isImageValid = await isValidImage(image.path);
+      isAllImagesValid &= isImageValid;
+      if (isImageValid) {
+        filteredImages.add(image);
       }
     }
 
-    return null;
+    if (filteredImages.length > field.maxImages) {
+      filteredImages.removeRange(field.maxImages, filteredImages.length);
+    }
+
+    if (!isAllImagesValid) {
+      unawaited(
+        _showImageActionErrorSheet(
+          context,
+          error: BaseErrorWidget(
+            errorLabel: context.l10n.feedbackImageSizeExceedFailure(
+              field.maxSize.formatAsFileSize(),
+            ),
+            buttonLabel: context.l10n.done,
+            onRetry: () {
+              Navigator.of(context).pop(true);
+            },
+          ),
+          // FeedbackImageSizeExceededError(maxFileSize: field.maxSize),
+          onRetry: () => _handlePickImage(context, fieldState),
+        ),
+      );
+    }
+    return filteredImages;
   }
 
   Future<List<XFile>> _pickedImage({int? limit}) async {
@@ -216,7 +215,7 @@ class FeedbackImages extends StatelessWidget {
 
   Future<void> _showImageActionErrorSheet(
     BuildContext context, {
-    required FeedbackImagePickError error,
+    required Widget error,
     required AsyncCallback onRetry,
   }) async {
     final route = ModalRoute.of(context);
@@ -230,9 +229,7 @@ class FeedbackImages extends StatelessWidget {
           top: Radius.circular(RadiusBorder.l),
         ),
       ),
-      builder: (_) => FeedbackImagesActionErrorSheet(
-        error: error,
-      ),
+      builder: (_) => error,
     );
     if (needToRetry ?? false) {
       await onRetry();
