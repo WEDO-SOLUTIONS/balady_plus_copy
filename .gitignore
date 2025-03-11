@@ -2,6 +2,7 @@
 *.class
 *.log
 *.swp
+*.lock
 .DS_Store
 .atom/
 .buildlog/
@@ -20,7 +21,6 @@ migrate_working_dir/
 .classpath
 .project
 .settings/
-.vscode/
 devtools_options.yaml
 
 # Flutter repo-specific

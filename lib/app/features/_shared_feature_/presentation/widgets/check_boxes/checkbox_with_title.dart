@@ -18,7 +18,9 @@ class CheckBoxWithTitle extends StatelessWidget {
       required this.onChanged,
       this.forceSelection,
       this.initialValue,
-      this.textStyle})
+      this.textStyle,
+      this.fontSize
+      })
       : super(key: key);
 
   final String title;
@@ -26,6 +28,7 @@ class CheckBoxWithTitle extends StatelessWidget {
   final Function(bool? value) onChanged;
   final bool? initialValue;
   final TextStyle? textStyle;
+  final double? fontSize;
   final bool? forceSelection;
 
   @override
@@ -58,7 +61,7 @@ class CheckBoxWithTitle extends StatelessWidget {
                 Flexible(
                     child: CustomTextWidget(
                   title,
-                  fontSize: 12,
+                  fontSize: fontSize ?? 12,
                   fontWeight: AppFontWeight.semiBold,
                   fontColor: AppColor.blackModern500Light,
                 )),

@@ -512,7 +512,7 @@ class ApiUrl {
 
 //! Appointments New APIs
   static getAppointmentById(String id) =>
-      'v1/appointments-mobile-services/appointments/$id';
+      '/v1/appointments-mobile-services/appointments/$id';
 
   static const saveAppointment = "v1/appointments-mobile-services/appointments";
 
