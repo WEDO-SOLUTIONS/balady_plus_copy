@@ -334,10 +334,6 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         isValid = false;
       }
 
-      if (getExistedWakeelVisit != false) {
-        CommonFunctions.showError('visit_wakeel_is_manadatory'.tr());
-      }
-
       /*  if (selectedSubClassItem?.isOther == true && getServiceName.isEmpty) {
         isValid = false;
       }*/
