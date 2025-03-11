@@ -1,4 +1,4 @@
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../repository/appointment_repository.dart';
