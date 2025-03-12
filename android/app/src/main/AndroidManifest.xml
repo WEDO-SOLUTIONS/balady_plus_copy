@@ -58,6 +58,8 @@
     <!-- Always include this permission -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <queries>
         <intent>
@@ -215,6 +217,30 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+
+        <meta-data
+            android:name="push_kit_auto_init_enabled"
+            android:value="true" />
+
+        <receiver
+            android:name="com.huawei.hms.flutter.push.receiver.local.HmsLocalNotificationBootEventReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <receiver
+            android:name="com.huawei.hms.flutter.push.receiver.local.HmsLocalNotificationScheduledPublisher"
+            android:exported="false" />
+
+        <receiver
+            android:name="com.huawei.hms.flutter.push.receiver.BackgroundMessageBroadcastReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.huawei.hms.flutter.push.receiver.BACKGROUND_REMOTE_MESSAGE" />
+            </intent-filter>
+        </receiver>
 
           <receiver android:name=".HomeWidgetReceiver"
           android:exported="true">

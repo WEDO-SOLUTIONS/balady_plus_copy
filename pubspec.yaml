@@ -178,6 +178,8 @@ dependencies:
   dotted_border: ^2.0.0+3
   sentry_dio: 8.9.0
   linkable: ^3.0.0
+  flutter_hms_gms_availability: ^3.10.0
+  huawei_push: ^6.12.0+303
 
   # Map urbi SDK
   dgis_map:
@@ -232,7 +234,6 @@ dependencies:
   ############################################################
 
   syncfusion_localizations:
-  flutter_hms_gms_availability: ^3.10.0
   huawei_location: ^6.14.2+300
 
   home_widget: ^0.7.0

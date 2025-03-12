@@ -4,12 +4,14 @@ class NotificationRequest {
     this.appId,
     this.appVersion,
     this.fcmToken,
+    this.FCMTokenSource
   });
 
   Device? device;
   String? appId;
   String? appVersion;
   String? fcmToken;
+  String? FCMTokenSource;
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
@@ -19,6 +21,7 @@ class NotificationRequest {
     map['appId'] = appId;
     map['appVersion'] = appVersion;
     map['fcmToken'] = fcmToken;
+    map['appNotificationsChannel'] = FCMTokenSource;
     return map;
   }
 }

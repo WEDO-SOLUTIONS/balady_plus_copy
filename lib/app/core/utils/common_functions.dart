@@ -209,6 +209,7 @@ class CommonFunctions {
     PackageDetails info = sl();
     NotificationRequest request = NotificationRequest();
     request.fcmToken = fcm;
+    request.FCMTokenSource = await isHawaiiDevice()?"HUAWEI":"FIREBASE";
     request.appId = GeneralKey.appId;
     request.device = device;
     request.appVersion = info.version;
@@ -427,6 +428,9 @@ class CommonFunctions {
 
     await OpenFile.open(url);
   }
+
+
+
 
   static String getDayName(String? dateStr) {
     String dayName = "";
@@ -1473,6 +1477,9 @@ class CommonFunctions {
       );
     }
   }
+
+
+
 
   static void showApigeeFile(String fileUrl, String fileName,
       {int? serviceId}) async {
