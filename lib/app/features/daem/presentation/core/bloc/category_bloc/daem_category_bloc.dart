@@ -2,7 +2,6 @@ import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/enums/bloc_status.dart';
@@ -41,21 +40,21 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       GetDaemCategoryEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    Tuple3<bool?, String?, DaemCategoryTypeResponse?> response =
+    (bool?, String?, DaemCategoryTypeResponse?) response =
         await _repository.getDaemCategoryList();
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.categoryTypeList != null &&
-        response.item3!.categoryTypeList!.isNotEmpty) {
+    if (response.$1 != null &&
+        response.$1! &&
+        response.$3?.categoryTypeList != null &&
+        response.$3!.categoryTypeList!.isNotEmpty) {
       emitter(state.copyWith(
           status: BlocStatus.success,
-          categoryTypeList: response.item3?.getList()));
+          categoryTypeList: response.$3?.getList()));
     } else {
       emitter(state.copyWith(
           status: BlocStatus.retry,
           categoryTypeList: [],
-          error: response.item2 ?? ("errors_server_error_1").tr()));
+          error: response.$2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -63,22 +62,22 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       GetDaemSubCategoryEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    Tuple3<bool?, String?, DaemSubCategoryTypeResponse?> response =
+    (bool?, String?, DaemSubCategoryTypeResponse?) response =
         await _repository.getDaemSubCategoryList(e.category.id!);
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.categoryTypeList != null &&
-        response.item3!.categoryTypeList!.isNotEmpty) {
+    if (response.$1 != null &&
+        response.$1! &&
+        response.$3?.categoryTypeList != null &&
+        response.$3!.categoryTypeList!.isNotEmpty) {
       emitter(state.copyWith(
         status: BlocStatus.success,
-        subCategoryTypeList: response.item3?.getList(),
+        subCategoryTypeList: response.$3?.getList(),
       ));
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
           // categoryTypeList: [],
-          error: response.item2 ?? ("errors_server_error_1").tr()));
+          error: response.$2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -86,12 +85,12 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       GetDaemMunicipalityEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    Tuple3<bool?, String?, DaemMunicipalityResponse?> response =
+    (bool?, String?, DaemMunicipalityResponse?) response =
         await _repository.getAmanat();
     emitter(state.copyWith(status: BlocStatus.loaded));
-    List<DaemItem>? amanat = response.item3?.getList();
-    if (response.item1 != null &&
-        response.item1! &&
+    List<DaemItem>? amanat = response.$3?.getList();
+    if (response.$1 != null &&
+        response.$1! &&
         amanat != null &&
         amanat.isNotEmpty) {
       emitter(state.copyWith(
@@ -102,7 +101,7 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       emitter(state.copyWith(
           status: BlocStatus.failure,
           // categoryTypeList: [],
-          error: response.item2 ?? ("errors_server_error_1").tr()));
+          error: response.$2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -117,32 +116,32 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       _repository.getDaemSubCategoryList(e.category.id!)
     ]);
 
-    Tuple3<bool?, String?, DaemMunicipalityResponse?> response1 = results[0];
-    Tuple3<bool?, String?, DaemSubCategoryTypeResponse?> response2 = results[1];
+    (bool?, String?, DaemMunicipalityResponse?) response1 = results[0];
+    (bool?, String?, DaemSubCategoryTypeResponse?) response2 = results[1];
 
     emitter(state.copyWith(status: BlocStatus.loaded));
 
-    List<DaemItem>? amanat = response1.item3?.getList();
+    List<DaemItem>? amanat = response1.$3?.getList();
 
     List<SubCategoryTypeList>? subcategoryTypeList =
-        response2.item3?.categoryTypeList;
-    if ((response1.item1 != null &&
-            response1.item1! &&
+        response2.$3?.categoryTypeList;
+    if ((response1.$1 != null &&
+            response1.$1! &&
             amanat != null &&
             amanat.isNotEmpty) &&
-        (response2.item1 != null &&
-            response2.item1! &&
+        (response2.$1 != null &&
+            response2.$1! &&
             subcategoryTypeList != null &&
             subcategoryTypeList.isNotEmpty)) {
       emitter(state.copyWith(
           status: BlocStatus.success,
           municipalities: amanat,
           category: e.category,
-          subCategoryTypeList: response2.item3?.getList()));
+          subCategoryTypeList: response2.$3?.getList()));
       if (subcategoryTypeList.length == 1) {
         add(GetDaemAreasEvent(
             category: e.category,
-            subCategory: response2.item3!.getList()!.first));
+            subCategory: response2.$3!.getList()!.first));
       } else {
         NavigationService.navigatorKey.currentState!.pushNamed(
             RouteName.newDaemTicket,
@@ -154,7 +153,7 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          error: response2.item2 ?? ("errors_server_error_1").tr()));
+          error: response2.$2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -162,15 +161,15 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       GetDaemAreasEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    Tuple3<bool?, String?, DaemAreaTypeResponse?> response =
+    (bool?, String?, DaemAreaTypeResponse?) response =
         await _repository.getDaemAreaList(
             category: e.category.id!, subCategory: e.subCategory.id!);
     emitter(state.copyWith(
       status: BlocStatus.loaded,
     ));
-    List<DaemItem>? areaList = response.item3!.getList();
-    if (response.item1 != null &&
-        response.item1! &&
+    List<DaemItem>? areaList = response.$3!.getList();
+    if (response.$1 != null &&
+        response.$1! &&
         areaList != null &&
         areaList.isNotEmpty) {
       emitter(state.copyWith(
@@ -207,7 +206,7 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
       GetDaemIssuesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    Tuple3<bool?, String?, DaemIssueTypeResponse?> response =
+    (bool?, String?, DaemIssueTypeResponse?) response =
         await _repository.getDaemIssueTypeList(
             category: e.category.id!,
             subCategory: e.subCategory.id!,
@@ -215,9 +214,9 @@ class DaemCategoryBloc extends Bloc<DaemCategoryEvent, DaemCategoryState> {
     emitter(state.copyWith(
       status: BlocStatus.loaded,
     ));
-    List<DaemItem>? issues = response.item3!.getList();
-    if (response.item1 != null &&
-        response.item1! &&
+    List<DaemItem>? issues = response.$3!.getList();
+    if (response.$1 != null &&
+        response.$1! &&
         issues != null &&
         issues.isNotEmpty) {
       emitter(state.copyWith(

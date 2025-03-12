@@ -10,7 +10,7 @@ import 'package:balady_plus/app/features/facility_qr/presentation/core/repositor
 import 'package:balady_plus/app/features/facility_qr/presentation/core/view_models/facility_details_view_model.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../core/utils/constants/ux_cam_events.dart';
@@ -87,20 +87,20 @@ class FacilityRatingViewModel extends BaseViewModel {
     try {
       showLoading();
 
-      final Tuple3<bool?, String?, LicenseRatingItems?> response =
+      final (bool?, String?, LicenseRatingItems?) response =
           await _repositry.getLicenseRatingitems();
 
       hideLoading();
 
-      if (response.item3 != null && response.item1 == true) {
+      if (response.$3 != null && response.$1 == true) {
         // ratingsData = response;
-        ratingItems = response.item3?.data?.result ?? [];
+        ratingItems = response.$3?.data?.result ?? [];
         // setPreviousRatings();
         notifyListeners();
         return true;
       } else {
         // show Error
-        showError(response.item2 ?? "");
+        showError(response.$2 ?? "");
         return false;
       }
     } catch (error, stackTrace) {
@@ -120,12 +120,12 @@ class FacilityRatingViewModel extends BaseViewModel {
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.YourFeedback_Submit_Rating_Event);
     showLoading();
-    final Tuple3<bool?, String?, SubmitRatingResponse?> response =
+    final (bool?, String?, SubmitRatingResponse?) response =
         await _repositry.postLicenseRatingitems(licenseId, ratingItems);
     hideLoading();
 
-    if (response.item3 != null && response.item1 == true) {
-      submitRatingData = response.item3;
+    if (response.$3 != null && response.$1 == true) {
+      submitRatingData = response.$3;
       // navigation.currentState!.pushReplacementNamed(RouteName.successRoute,
       //     arguments: SuccessScreenArgs(type: PAGE_TYPE.ratingScreen));
       navigation.currentState?.pop();
@@ -145,7 +145,7 @@ class FacilityRatingViewModel extends BaseViewModel {
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.finishServiceYourFeedbackRating);
     } else {
-      showError(response.item2 ?? "");
+      showError(response.$2 ?? "");
     }
   }
 
