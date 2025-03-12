@@ -20,7 +20,7 @@ extension StringNullableExt on String? {
     if (text == null) {
       return false;
     }
-    // Регулярное выражение для проверки арабских символов
+    // Regular expression for checking Arabic characters
     final arabicRegex = RegExp(r'[\u0600-\u06FF\u0750-\u077F]');
     return arabicRegex.hasMatch(text);
   }
