@@ -18,35 +18,11 @@ class BaseLandscapeBottomSheet extends StatefulWidget {
 }
 
 class _BaseLandscapeBottomSheetState extends State<BaseLandscapeBottomSheet> {
-  final controller = StatefulBottomSheetController(
-    behavior: AspectRatioSnappingBehavior(
-      aspectRatios: {0, 1},
-      clipByHeader: false,
-    ),
-    stateMapper: const ThreeStateMapper(),
-    initialState: ThreeStateBottomSheet.open,
+  late final controller = StatelessBottomSheetController(
+    onClose: (_) {
+      context.router.popForced();
+    },
   );
-
-  bool _wasOpened = false;
-
-  @override
-  void initState() {
-    controller.addListener(() {
-      if (ModalRoute.of(context)?.isCurrent != true) {
-        return;
-      }
-      _wasOpened = _wasOpened || (controller.state == ThreeStateBottomSheet.open);
-
-      if (!_wasOpened) {
-        return;
-      }
-
-      if (controller.sheetHeight.abs() < .0001) {
-        context.router.popForced();
-      }
-    });
-    super.initState();
-  }
 
   @override
   void dispose() {
@@ -75,7 +51,7 @@ class _BaseLandscapeBottomSheetState extends State<BaseLandscapeBottomSheet> {
                   padding: const EdgeInsets.only(top: Spacing.$3x),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: _landscapeWidth),
-                    child: StatefulBottomSheet(
+                    child: StatelessBottomSheet(
                       scrollController: controller,
                       content: widget.content,
                     ),
