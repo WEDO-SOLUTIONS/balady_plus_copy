@@ -8,6 +8,7 @@ import '../../../../../../../core/utils/constants/app_colors.dart';
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/enums/app_font_weights.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../bloc/step3_conclusion_cubit.dart';
 
@@ -72,6 +73,10 @@ class _CalcualtorFeesState extends State<CalcualtorFees> {
                     ),
 
                     /////////////////////////////////////////////////////////
+
+
+                    NotesWidget(notes: [ "calculatorFeesNote".tr()],marginBottom: 0,),
+
 
                     Column(
                       children: ( state.issueCommercialConculsionEntity?.calculateStandardFees?.costsInfo ??

@@ -4215,5 +4215,10 @@
   "commerical_add_activity_sucessfull": "تم ارسال الطلب بنجاح",
   "requestFlow": "المتطلبات المبدئية لاصدار رخصة تجارية",
   "officeName": "اسم المكتب",
-  "commercialOffice": "المكاتب الدعائية"
+  "commercialOffice": "المكاتب الدعائية",
+  "fee_calculator_license": "حاسبة رسوم اصدار الرخصة",
+  "calculatorFeesNote": "قيمة الرسوم محددة لسنه واحدة فقط وللوحات سعر المتر لسنه واحدة",
+  "premits_limit": "التصاريح الممكن إصدارها على مستوى النشاط التفصيلي الأساسي، بحد أقصى عدد (8) تصاريح",
+  "do_you_want_to_cancel": "هل أنت متأكد من إلغاء الطلب"
+
 }

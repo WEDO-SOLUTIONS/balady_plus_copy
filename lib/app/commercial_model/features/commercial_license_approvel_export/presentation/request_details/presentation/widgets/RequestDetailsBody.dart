@@ -4,12 +4,19 @@ import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports
 import 'package:balady_plus/app/commercial_model/features/commercial_license_details/presentation/widgets/attachment_show_widget.dart';
 import 'package:balady_plus/app/commercial_model/features/request_commercial_license_details/data/models/commercial_license_details_model.dart';
 import 'package:balady_plus/app/commercial_model/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+
+import '../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
+import 'ConclusionWidget.dart';
+import 'ExtraActivitiesInfoWidget.dart';
+import 'MainActivityInfoWidget.dart';
+import 'SubmitterInfoWidget.dart';
 
 class RequestDetailsBody extends StatefulWidget {
   const RequestDetailsBody({super.key});
@@ -21,6 +28,7 @@ class RequestDetailsBody extends StatefulWidget {
 
 class _RequestDetailsBodyState
     extends State<RequestDetailsBody> {
+  DgisMapController? mapController;
   @override
   void initState() {
     super.initState();
@@ -86,6 +94,12 @@ class _RequestDetailsBodyState
                     ),
                   ],
                 ),
+
+
+                SubmitterInfoWidget(
+                  submitterName: requestCommercialLicenseDetails.submitter?.name,submitterType:requestCommercialLicenseDetails.submitterType?.name,CRNumber: requestCommercialLicenseDetails.owner?.crNumber,
+                ),
+
                 ExpandableCard(
                   title: 'request_data'.tr(),
                   icon: IconPath.editIcon,
@@ -97,41 +111,99 @@ class _RequestDetailsBodyState
                       requestCommercialLicenseDetails.requestId.toString(),
                     ),
                     CardParameter(
+                      title: 'request_status'.tr(),
+                      value:
+                      requestCommercialLicenseDetails.requestStatus?.name??"",
+                    ),
+
+                    CardParameter(
+                      title: 'objection_date'.tr(),
+                      value:
+                      requestCommercialLicenseDetails.creationDate??"",
+                    ),
+
+                    CardParameter(
                       title: 'request_type'.tr(),
                       value: requestCommercialLicenseDetails.requestType?.name??"",
                     ),
-                    CardParameter(
-                      title: 'license_type'.tr(),
-                      value: "dashboardCommercialLicenseWord".tr(),
-                    ),
-                    CardParameter(
-                      title: 'sub_municipality'.tr(),
-                      value:
-                      requestCommercialLicenseDetails.location?.municipality?.name??"",
-                    ),
-                    /////////////////////
-                    // CardParameter(
-                    //   title: 'objection_last_update'.tr(),
-                    //   value: requestCommercialLicenseDetails.lastUpdateDate
-                    //       ?.toWrittenDate() ??
-                    //       "",
-                    // ),
 
-                    // requestCommercialLicenseDetails.cancellationReasonName !=
-                    //     null
-                    //     ? CardParameter(
-                    //   title: 'reason_cancellation'.tr(),
-                    //   value: requestCommercialLicenseDetails
-                    //       .cancellationReasonName!,
-                    // )
-                    //     : const SizedBox(),
-
-
+                    
                   ],
                 ),
 
-                /////////////////////////////////////////////////
-                /////////////////////////////////////////////////
+                ExpandableCard(
+                title: 'locationInfo'.tr(),
+        icon: IconPath.qrLocationIcon,
+        children: [
+        const SizedBox(height: 16),
+        requestCommercialLicenseDetails.location?.latitude != null && requestCommercialLicenseDetails.location?.longitude != null
+        ? SizedBox(
+        height: 250,
+        child:
+        UrbiMapSection(
+        readOnly: true,
+        currentUserLocation:LatLng(latitude: double.parse(requestCommercialLicenseDetails.location!.latitude!),longitude: double.parse(requestCommercialLicenseDetails.location!.longitude!)),
+        incidentLocation:LatLng(latitude: double.parse(requestCommercialLicenseDetails.location!.latitude!),longitude: double.parse(requestCommercialLicenseDetails.location!.longitude!)),
+        onCameraIdle: (bool isIdle) {
+        mapController?.moveCamera(
+        CameraPositionMessage(
+        point: GeoPointMessage(latitude:  double.parse(requestCommercialLicenseDetails.location!.latitude!), longitude: double.parse(requestCommercialLicenseDetails.location!.longitude!)),
+        zoom: 16.0,
+        tilt: 0.0,
+        bearing: 0.0,
+        ),
+        0.3, // duration
+        CameraAnimationTypeMessage.linear,
+        );
+        },
+        updateMovedPosition: (LatLng p) {
+
+        },
+        onMapController: (DgisMapController controller) {
+        mapController = controller;
+        },
+        showRadius: true,
+        ),
+          
+        )
+            : const SizedBox(),
+          CardParameter(
+            title: 'municipalityName'.tr(),
+            value:
+            requestCommercialLicenseDetails.location?.municipality?.name??"",
+          ),
+
+          CardParameter(
+            title: 'subMunicipalityName'.tr(),
+            value:
+            requestCommercialLicenseDetails.location?.subMunicipality?.name??"",
+          ),
+
+
+          CardParameter(
+            title: 'district'.tr(),
+            value:
+            requestCommercialLicenseDetails.location?.district?.name??"",
+          ),
+
+          CardParameter(
+            title: 'street'.tr(),
+            value:
+            requestCommercialLicenseDetails.location?.street?.name??"",
+          ),
+        ],
+        ),
+
+                MainActivityInfoWidget(activityInfo: requestCommercialLicenseDetails.activities,),
+                ExtraActivitiesInfoWidget(additionalActivities:requestCommercialLicenseDetails.activities?.addedActivities),
+                ExpandableCard(
+                  title: 'municipalAdvisorRequirementsTitle'.tr(),
+                  icon: IconPath.notificationStatusIcon,
+                children: [
+                  ConclusionWidget(),
+                ],
+                ),
+
                 ExpandableCard(
                   title: 'responses_request'.tr(),
                   icon: IconPath.notificationStatusIcon,

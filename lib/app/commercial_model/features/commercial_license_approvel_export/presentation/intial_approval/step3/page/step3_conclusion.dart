@@ -78,14 +78,14 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
                 children: [
       
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
 
                   state.issueCommercialConculsionEntity?.calculateStandardFees != null?  CustomExpansionPanelWidget(
-                      title:"fee_calculator".tr(),
+                      title:"fee_calculator_license".tr(),
                       leading: SvgPicture.asset(IconPath.serviceCardDesc),
                       children: [CalcualtorFees(),]
                   ):Container(),
@@ -128,8 +128,9 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
 
 class ExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
+  final String? note;
 
-  const ExpansionSectionItem({super.key, required this.term});
+  const ExpansionSectionItem({super.key, required this.term,this.note});
 
   @override
   Widget build(BuildContext context) {
@@ -139,7 +140,9 @@ class ExpansionSectionItem extends StatelessWidget {
         CustomExpansionPanelWidget(
           title: term?.sectionName,
           leading: SvgPicture.asset(IconPath.serviceCardDesc),
-          children: [ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [])]
+          children: [
+
+            ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [],note: note,)]
           ,
         ),
         const SizedBox(height: 15,),
@@ -150,8 +153,9 @@ class ExpansionSectionItem extends StatelessWidget {
 
 class ConditionItem extends StatelessWidget {
   final String? name;
+  final String? note;
   final List<String>? values;
-  const ConditionItem({super.key, this.name, this.values});
+  const ConditionItem({super.key, this.name, this.values,this.note});
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +169,9 @@ class ConditionItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          note != null?NotesWidget(notes: [note!],marginBottom: 10,):Container(),
+
+
           if (name != null && name!.isNotEmpty)
             CustomTextWidget(
               name!,
@@ -174,6 +181,7 @@ class ConditionItem extends StatelessWidget {
             ),
           if (name != null && name!.isNotEmpty)
             const CustomVerticalSpace(height: 4),
+
           if ((values?.length ?? 0) <= 1)
             Html(
               data: values?.firstOrNull ?? "",
