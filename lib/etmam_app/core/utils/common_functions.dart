@@ -16,6 +16,8 @@ import 'constants/app_color.dart';
 import 'constants/constans.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+import 'package:balady_plus/app/core/utils/common_functions.dart' as CommonFunctionsApp;
+
 //FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
 class CommonFunctions {
@@ -172,9 +174,9 @@ class CommonFunctions {
 
   static void launchMap(LatLng? location) async {
     if (location != null) {
-      final url =
-          'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
-      await CommonFunctions.externalLaunch(url);
+      // final url =
+      //     'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
+      CommonFunctionsApp.CommonFunctions.openMap(location.latitude, location.longitude);
     }
   }
 

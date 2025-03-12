@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus, CommonFunctions, Prayers;
@@ -40,7 +41,18 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     getPrayerTimeRange();
   }
 
-  void setNotifications() {
+
+  Future<bool> checkExactAlarmPermission() async {
+    if ((await Permission.scheduleExactAlarm.request()).isGranted) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void setNotifications() async {
+
+    await checkExactAlarmPermission();
     final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
     if (isNotificationTurnOff) return NotificationService.cancelAll();
 
@@ -89,6 +101,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTimeRange() async {
+    LatLng? location = await Helpers.getCurrentLocation();
+
     if (CommonProperties.userLocation == null) return;
     final params = PrayerTimeRangeParams(
       startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),
