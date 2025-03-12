@@ -127,7 +127,7 @@ dependencies:
   battery_plus: ^6.0.4
   app_tracking_transparency: ^2.0.6
   adjust_sdk: 5.0.2
-  flutter_appauth: ^7.0.1
+  flutter_appauth: ^9.0.0
 
   webview_flutter: 4.10.0
   flutter_inappwebview: ^6.1.5
