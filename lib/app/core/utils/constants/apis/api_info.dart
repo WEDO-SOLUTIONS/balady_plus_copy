@@ -635,6 +635,7 @@ class ApiUrl {
   static  String getMuncipalitList = 'v1/cis-certified-observers-services/municipalities';
   static  String checkMuncipalityAcceptance(String id) => 'v1/cis-certified-observers-services/municipalities/$id/verifications';
 
+  static  String getMuncipalityCites(String municipalityId) => 'v1/cis-certified-observers-services/cities/$municipalityId';
 
 
 

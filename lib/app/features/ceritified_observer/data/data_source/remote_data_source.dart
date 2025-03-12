@@ -9,6 +9,7 @@ import 'package:dio/dio.dart' show DioError;
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation;
 import '../../domain/entity/MunicipalityLookUp.dart';
+import '../../domain/entity/city_entity.dart';
 import '../../domain/entity/observer_status_entity.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
@@ -16,6 +17,7 @@ abstract class CertifiedObserverRemoteDataSource {
   Future<ResponseBodyModel<ObserverStatusEntity>> getObserverStatus(String identityNumber);
   Future<ResponseBodyModel<List<MunicipalityLookUp>>> getMuncipalityList();
   Future<ResponseBodyModel<bool>> checkMuncipalityAcceptance(String id);
+  Future<ResponseBodyModel<List<CityEntity>>> getCityList(String municipalityId);
 }
 
 class CertifiedObserverRemoteDataSourceImplementation implements CertifiedObserverRemoteDataSource {
@@ -160,6 +162,61 @@ class CertifiedObserverRemoteDataSourceImplementation implements CertifiedObserv
         error.toString(),
         errorCode: error.response?.data["data"]['responseCode'],
         statusCode:error.response?.statusCode ,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<ResponseBodyModel<List<CityEntity>>> getCityList(String municipalityId) async{
+    var response;
+    try {
+
+      response = await webService.dio.get(ApiUrl.getMuncipalityCites(municipalityId));
+      var data = response.data["data"]?["result"];
+
+      List<CityEntity> parsedResult = data != null
+          ? List<CityEntity>.from(data.map((x) => CityEntity.fromJson(x)))
+          : [];
+
+      final decodedResponse = ResponseBodyModel<List<CityEntity>>.fromMap(
+          response.data,
+          parsedResult: parsedResult);
+
+      return decodedResponse.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
         dioError: error,
       );
     } catch (error, stackTrace) {
