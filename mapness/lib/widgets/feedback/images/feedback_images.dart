@@ -202,7 +202,7 @@ class FeedbackImages extends StatelessWidget {
             ),
             buttonLabel: context.l10n.done,
             onRetry: () {
-              Navigator.of(context).pop(true);
+              Navigator.of(context).pop();
             },
           ),
           onRetry: () => _handlePickImage(context, fieldState),
