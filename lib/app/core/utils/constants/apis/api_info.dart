@@ -626,6 +626,7 @@ class ApiUrl {
   static const getChatgptSessionDetails = '/v1/chatbot-services/view-session';
 
   static const refreshChatSession = '/v1/chatbot-services/load-session';
+  static const promptQuestions = '/v1/chatbot-services/prompt-questions';
 
 //splash
   static const String splash = '/v1/portal-services/splash/images';
