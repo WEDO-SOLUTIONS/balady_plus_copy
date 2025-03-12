@@ -17,10 +17,9 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
-
-import '../../../shared/ui/error_widget/base_error_widget.dart';
 
 const _maxImageResolution = 5000;
 const _minPhotoWidth = 100;
@@ -206,7 +205,6 @@ class FeedbackImages extends StatelessWidget {
               Navigator.of(context).pop(true);
             },
           ),
-          // FeedbackImageSizeExceededError(maxFileSize: field.maxSize),
           onRetry: () => _handlePickImage(context, fieldState),
         ),
       );
