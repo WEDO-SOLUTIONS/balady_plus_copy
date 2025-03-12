@@ -12,13 +12,4 @@ extension StringExt on String {
   }
 
   String get reversed => split('').reversed.join();
-
-  bool get isRTL {
-    if (isEmpty) {
-      return false;
-    }
-
-    final rtlRegex = RegExp(r'^[\u0590-\u08FF]');
-    return rtlRegex.hasMatch(trim());
-  }
 }
