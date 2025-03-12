@@ -474,20 +474,9 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
 
   void launchMapsUrl(LatLng _location) async {
     if (_location != null) {
-      final url =
-          'https://www.google.com/maps/search/?api=1&query=${_location.latitude},${_location.longitude}';
-      //print(url);
-      try {
-        await launch(url);
-      } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      // final url =
+      //     'https://www.google.com/maps/search/?api=1&query=${_location.latitude},${_location.longitude}';
+      CommonFunctions.openMap(_location.latitude, _location.longitude);
     }
   }
 

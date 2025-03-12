@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/material.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/export/models/mapness_route_point.dart';
@@ -10,13 +11,13 @@ export 'package:mapness/export/models/mapness_route_point.dart';
 
 class MapnessFunctions {
   static Future<void> openRoutesScreen({
-    required BuildContext context,
     required MapnessRoutePoint finishPoint,
     MapnessRoutePoint? startPoint,
   }) async {
-    final appLocalizations = context.read<AppLocalizations>();
+    NavigationService.navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    final appLocalizations = rootNavigatorKey.currentContext!.read<AppLocalizations>();
 
-    await context.router.push(
+    await AutoRouter.of(rootNavigatorKey.currentContext!).push(
       RoutingRoutesRoute(
         points: [
           RouteParamsPointWithLabel(

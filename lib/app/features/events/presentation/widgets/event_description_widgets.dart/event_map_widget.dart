@@ -1,8 +1,4 @@
-import 'package:balady_plus/app/core/services/local/helpers.dart';
-import 'package:balady_plus/app/core/utils/constants/paths/image_paths.dart';
-import 'package:balady_plus/app/core/utils/map_utils.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import 'package:balady_plus/app/features/events/presentation/widgets/event_description_widgets.dart/event_title.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -10,10 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
 
-import '../../../../_shared_feature_/presentation/buttons/elevated_icon_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
-import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
 class EventMapWidget extends StatelessWidget {
   final LatLng? location;
@@ -45,20 +39,23 @@ class EventMapWidget extends StatelessWidget {
                     fontSize: 16,
                   ),
                   icon: const CustomSvgIconWidget(
-                      "assets/icons/svg/ic_car_poi.svg",
-                      iconColor: AppColor.primary800Light,
-                      iconSize: 24.0),
+                    "assets/icons/svg/ic_car_poi.svg",
+                    iconColor: AppColor.primary800Light,
+                    iconSize: 24.0,
+                  ),
                   onPressed: () {
                     MapnessFunctions.openRoutesScreen(
-                        context: context,
-                        finishPoint: MapnessRoutePoint(
-                            latitude: location!.latitude,
-                            longitude: location!.longitude,
-                            label: name ?? ""));
+                      finishPoint: MapnessRoutePoint(
+                        latitude: location!.latitude,
+                        longitude: location!.longitude,
+                        label: name ?? "",
+                      ),
+                    );
                   },
                 )
               ],
-            ))
+            ),
+          )
         : Container();
   }
 }
