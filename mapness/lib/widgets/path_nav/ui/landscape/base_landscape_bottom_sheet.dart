@@ -37,9 +37,7 @@ class _BaseLandscapeBottomSheetState extends State<BaseLandscapeBottomSheet> {
             Positioned.fill(
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  context.router.popForced();
-                },
+                onTap: context.router.popForced,
                 child: const SizedBox.expand(),
               ),
             ),
