@@ -16,7 +16,7 @@ class NavigatorSettingsLandscapePage extends StatelessWidget {
             title: context.l10n.navigatorSettings,
             trailing: ActionModel(
               text: context.l10n.feedbackBreaksSheetClose,
-              onPressed: () => context.router.popForced(),
+              onPressed: context.router.popForced,
             ),
           ),
           const NavigatorSettingsPageContent(),

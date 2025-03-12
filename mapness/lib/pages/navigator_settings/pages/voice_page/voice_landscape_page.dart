@@ -16,7 +16,7 @@ class VoiceLandscapePage extends StatelessWidget {
             title: context.l10n.voice,
             trailing: ActionModel(
               text: context.l10n.feedbackBreaksSheetClose,
-              onPressed: () => context.router.popForced(),
+              onPressed: context.router.popForced,
             ),
           ),
           const VoicePageContent(),
