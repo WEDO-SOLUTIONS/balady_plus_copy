@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/dialog_names.dart';
@@ -23,6 +24,7 @@ import '../../bloc/commercial_license_details_bloc.dart';
 class RequestDetailsPage extends StatelessWidget {
    RequestDetailsPage({super.key});
    CommercialLicenseDetailsBloc?  bloc;
+
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
@@ -93,7 +95,6 @@ class RequestDetailsPage extends StatelessWidget {
                                       break;
 
                                     case "print":
-
 
                                       break;
                                     case "cancel":

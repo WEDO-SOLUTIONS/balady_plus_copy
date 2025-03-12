@@ -69,9 +69,15 @@ class CommercialLicenseDetailsBloc
 
         , (res) {
 
-              emit(state.copyWith(requestDetails: res.data?.result,status:BlocStatus.success ));
+              RequestDetailsModel? model;
+              if(res.data?.result != null)
+                {
+                  model = res.data?.result;
+                  model?.allowedActions!.removeWhere((item) => item.id == "view-details");
+                  model?.allowedActions!.removeWhere((item) => item.id == "print");
+                }
+              emit(state.copyWith(requestDetails: model,status:BlocStatus.success ));
     });
-
   }
 
   Future<void> cancelIntialApproval() async {
