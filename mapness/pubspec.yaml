@@ -39,8 +39,12 @@ dependencies:
     path: ..
 
   balady_uikit:
-    hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.2.5
+    git:
+      url: https://github.com/urbi-ae/balady_uikit.git
+      ref: feature/sliver-align-box-widget
+    # TODO: change then 3.3.0 will be released
+    # hosted: https://baladyapp-unpub.urbi.ae/
+    # version: 3.3.0
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/

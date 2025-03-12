@@ -121,159 +121,149 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     return Directionality(
       textDirection: Directionality.of(context),
       child: SafeArea(
-        child: Stack(
-          children: [
-            StatefulBottomSheet(
-              scrollController: _bottomSheetController,
-              offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
-              safeAreaColor: context.colorsV2.backgroundSurface2,
-              draggerColor: context.colorsV2.backgroundSurface2,
-              backgroundColor: context.colorsV2.backgroundSurface2,
-              backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
-              outside: PoiCardMapControlsWrapper(
-                  bottomSheetController: _bottomSheetController,
-                  // we should not use objectIdForIndoorLevels if POI has levelId
-                  objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : objectId),
-              topHeader: PoiPhotosHeader(objectId: objectId),
-              footer: PoiCardFooter(
-                bottomSheetController: _bottomSheetController,
-                data: data,
-                share: () {
-                  Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
-                      group: MetricsConstants.poiTag,
-                      action: MetricAction.tap.toString(),
-                      props: {
-                        'object_id': data.id?.objectId,
-                        'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
-                      });
+        child: StatefulBottomSheet(
+          scrollController: _bottomSheetController,
+          offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
+          safeAreaColor: context.colorsV2.backgroundSurface2,
+          draggerColor: context.colorsV2.backgroundSurface2,
+          backgroundColor: context.colorsV2.backgroundSurface2,
+          backgroundColorDelegate: PoiCardStateMapper.backgroundColorDelegate,
+          outside: PoiCardMapControlsWrapper(
+              bottomSheetController: _bottomSheetController,
+              // we should not use objectIdForIndoorLevels if POI has levelId
+              objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : objectId),
+          topHeader: PoiPhotosHeader(objectId: objectId),
+          footer: PoiCardFooter(
+            bottomSheetController: _bottomSheetController,
+            data: data,
+            share: () {
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'object_id': data.id?.objectId,
+                    'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
+                  });
 
-                  poiActions.share(
-                    objectId: objectId,
-                    markerCoords: widget.closestPoint,
+              poiActions.share(
+                objectId: objectId,
+                markerCoords: widget.closestPoint,
+              );
+            },
+            callPhone: () {
+              Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
+                  group: MetricsConstants.poiTag,
+                  action: MetricAction.tap.toString(),
+                  props: {
+                    'objectId': objectId,
+                  });
+
+              final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+                    (element) => element.type == ContactsInfoType.phone,
                   );
-                },
-                callPhone: () {
-                  Metrics.logEventAdvanced(MetricsConstants.poiKeys.call,
-                      group: MetricsConstants.poiTag,
-                      action: MetricAction.tap.toString(),
-                      props: {
-                        'objectId': objectId,
-                      });
+              if (phoneNumber?.value != null) {
+                poiActions.callPhone(phoneNumber!.value!);
+              }
+            },
+            onEntranceTap: () => poiActions.toggleEntrances(
+              data,
+              () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+              widget.closestPoint,
+            ),
+            onTapCar: () {
+              final mapSetting = MapObjectManagerSettings.search();
+              ref
+                  .read(
+                    mapObjectManagerProvider(
+                      named: mapSetting.name,
+                      layerId: mapSetting.layerId,
+                    ).notifier,
+                  )
+                  .setMapObjectManagerIsVisible(isVisible: false);
 
-                  final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
-                        (element) => element.type == ContactsInfoType.phone,
-                      );
-                  if (phoneNumber?.value != null) {
-                    poiActions.callPhone(phoneNumber!.value!);
-                  }
-                },
-                onEntranceTap: () => poiActions.toggleEntrances(
-                  data,
-                  () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                  widget.closestPoint,
+              _openRoutingRoutes(
+                context,
+                data.id!.objectId,
+                data.title,
+                RouteParamsPoint(
+                  latitude: data.markerPosition!.latitude,
+                  longitude: data.markerPosition!.longitude,
+                  objectId: data.id?.objectId,
+                  entranceId: data.id?.entranceId,
+                  levelId: data.levelId,
                 ),
-                onTapCar: () {
-                  final mapSetting = MapObjectManagerSettings.search();
-                  ref
-                      .read(
-                        mapObjectManagerProvider(
-                          named: mapSetting.name,
-                          layerId: mapSetting.layerId,
-                        ).notifier,
-                      )
-                      .setMapObjectManagerIsVisible(isVisible: false);
+              );
+            },
+            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+          ),
+          header: PoiHeader(
+            title: data.address?.buildingName ?? data.title,
+            subTitle: _getParkingSubtitle(data.parkingInfo, context.l10n) ?? data.subtitle,
+            parkingInfo: data.parkingInfo,
+            poiCardState: poiCardState,
+            tabController: _tabController,
+            data: data,
+            onTapClose: () {
+              Metrics.logEventAdvanced(
+                MetricsConstants.poiKeys.exitButton,
+                group: MetricsConstants.poiTag,
+                action: MetricAction.tap.toString(),
+              );
 
-                  _openRoutingRoutes(
-                    context,
-                    data.id!.objectId,
-                    data.title,
-                    RouteParamsPoint(
-                      latitude: data.markerPosition!.latitude,
-                      longitude: data.markerPosition!.longitude,
-                      objectId: data.id?.objectId,
-                      entranceId: data.id?.entranceId,
-                      levelId: data.levelId,
-                    ),
-                  );
-                },
-                onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              ref.read(highlightProvider.notifier).removeHighlight(data.id!);
+              context.router.popForced();
+            },
+          ),
+          sliverBeforeContent: ValueListenableBuilder(
+            valueListenable: _tabType,
+            builder: (context, tabType, _) => DecoratedSliver(
+              decoration: BoxDecoration(
+                color: context.colorsV2.backgroundSurface4,
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
               ),
-              header: PoiHeader(
-                title: data.address?.buildingName ?? data.title,
-                subTitle: _getParkingSubtitle(data.parkingInfo, context.l10n) ?? data.subtitle,
-                parkingInfo: data.parkingInfo,
-                poiCardState: poiCardState,
-                tabController: _tabController,
-                data: data,
-                onTapClose: () {
-                  Metrics.logEventAdvanced(
-                    MetricsConstants.poiKeys.exitButton,
-                    group: MetricsConstants.poiTag,
-                    action: MetricAction.tap.toString(),
-                  );
-
-                  ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-                  ref.read(highlightProvider.notifier).removeHighlight(data.id!);
-                  context.router.popForced();
-                },
-              ),
-              sliverBeforeContent: ValueListenableBuilder(
-                valueListenable: _tabType,
-                builder: (context, tabType, _) => DecoratedSliver(
-                  decoration: BoxDecoration(
-                    color: context.colorsV2.backgroundSurface4,
-                    borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
-                  ),
-                  sliver: SliverFillAfter(
-                    sliver: SliverAnimatedSwitcher(
-                      duration: Durations.medium2,
-                      child: switch (tabType) {
-                        PoiTabsType.info => SliverList(
-                            delegate: SliverChildListDelegate(
-                              [
-                                FeedbackBannerCard(
-                                  imageAssetName: 'city_expert.png',
-                                  title: context.l10n.cityExpert,
-                                  subtitle: context.l10n.cityExpertDescription,
-                                  gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
-                                  onTap: () {
-                                    context.router.push(QuickFeedbackRoute(
-                                      type: QuickFeedbackType.editCompany,
-                                      params: FeedbackObjectIdParams(objectId),
-                                    ));
-                                  },
-                                ),
-                                InfoWidget(
-                                  objectInfo: poiCardState?.gisObjectIdMessage,
-                                  qrTradeLicense: poiCardState?.qrTradeLicense,
-                                  onEntrancesTap: () => poiActions.toggleEntrances(
-                                    data,
-                                    () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                                    widget.closestPoint,
-                                  ),
-                                ),
-                              ],
+              sliver: SliverFillAfter(
+                sliver: SliverAnimatedSwitcher(
+                  duration: Durations.medium2,
+                  child: switch (tabType) {
+                    PoiTabsType.info => SliverList(
+                        delegate: SliverChildListDelegate(
+                          [
+                            FeedbackBannerCard(
+                              imageAssetName: 'city_expert.png',
+                              title: context.l10n.cityExpert,
+                              subtitle: context.l10n.cityExpertDescription,
+                              gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
+                              onTap: () {
+                                context.router.push(QuickFeedbackRoute(
+                                  type: QuickFeedbackType.editCompany,
+                                  params: FeedbackObjectIdParams(objectId),
+                                ));
+                              },
                             ),
-                          ),
-                        PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
-                        PoiTabsType.organizations => PoiOrganizationsSliver(
-                            state: poiCardState,
-                            objectId: data.id!,
-                            bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
-                          ),
-                      },
-                    ),
-                  ),
+                            InfoWidget(
+                              objectInfo: poiCardState?.gisObjectIdMessage,
+                              qrTradeLicense: poiCardState?.qrTradeLicense,
+                              onEntrancesTap: () => poiActions.toggleEntrances(
+                                data,
+                                () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
+                                widget.closestPoint,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
+                    PoiTabsType.organizations => PoiOrganizationsSliver(
+                        state: poiCardState,
+                        objectId: data.id!,
+                        bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                      ),
+                  },
                 ),
               ),
             ),
-            PoiPhotoButton(
-              isPhotosNotEmpty: isPhotosNotEmpty,
-              tabType: _tabType,
-              objectId: objectId,
-              controller: _bottomSheetController,
-            ),
-          ],
+          ),
         ),
       ),
     );
