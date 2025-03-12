@@ -82,10 +82,11 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   }
 
   @override
-  Future<Either<Failure, bool>> sendFeedBack({required String messID, required bool like}) async {
-
+  Future<Either<Failure, bool>> sendFeedBack(
+      {required String messID, required bool like}) async {
     try {
-      final isEnabled = await remoteDataSource.sendFeedBack(messID: messID, like: like);
+      final isEnabled =
+          await remoteDataSource.sendFeedBack(messID: messID, like: like);
       return Right(isEnabled);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -100,10 +101,10 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   }
 
   @override
-  Future<Either<Failure,  List<SessionData>>> getSesionHistory({required String id}) async {
-
+  Future<Either<Failure, List<SessionData>>> getSesionHistory(
+      {required String id}) async {
     try {
-      final data = await remoteDataSource.getSessionHistory( id:id );
+      final data = await remoteDataSource.getSessionHistory(id: id);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -117,13 +118,11 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-
   @override
   Future<Either<Failure, SessionDetails>> getSessionDetails(
       {required String id}) async {
-
     try {
-      final data = await remoteDataSource.getSessionDetails( id:id );
+      final data = await remoteDataSource.getSessionDetails(id: id);
       return Right(data!);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -140,9 +139,8 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   @override
   Future<Either<Failure, ChatRefreshSession>> refreshSession(
       {required String id}) async {
-
     try {
-      final data = await remoteDataSource.refreshSession( id:id );
+      final data = await remoteDataSource.refreshSession(id: id);
       return Right(data!);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -156,7 +154,20 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
     }
   }
 
-
-
-
+  @override
+  Future<Either<Failure, List<String>>> getPromptQuestions({required String userId}) async {
+    try {
+      final data = await remoteDataSource.getPromptQuestions(userId: userId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
 }
