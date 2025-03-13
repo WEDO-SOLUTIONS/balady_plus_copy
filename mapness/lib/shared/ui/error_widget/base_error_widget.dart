@@ -15,6 +15,7 @@ class BaseErrorWidget extends StatelessWidget {
     this.buttonLabel,
     this.errorLabel,
     this.errorTitle,
+    this.paddingForImage = EdgeInsets.zero,
     super.key,
   });
 
@@ -50,6 +51,9 @@ class BaseErrorWidget extends StatelessWidget {
   /// The color scheme for the retry button.
   final ButtonColorScheme buttonColorScheme;
 
+  /// The padding for the image.
+  final EdgeInsetsGeometry paddingForImage;
+
   @override
   Widget build(BuildContext context) {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
@@ -68,9 +72,12 @@ class BaseErrorWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            SvgPicture.asset(
-              'assets/images_svg/illustration_error.svg',
-              package: PackageConfig.packageName,
+            Padding(
+              padding: paddingForImage,
+              child: SvgPicture.asset(
+                'assets/images_svg/illustration_error.svg',
+                package: PackageConfig.packageName,
+              ),
             ),
             if (errorTitle != null)
               Padding(

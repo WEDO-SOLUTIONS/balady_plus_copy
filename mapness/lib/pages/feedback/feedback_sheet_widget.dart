@@ -1,16 +1,15 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
-import 'package:sliver_tools/sliver_tools.dart';
 
 enum FeedbackSheetState {
   success,
@@ -64,13 +63,27 @@ class FeedbackSheetWidget extends HookWidget {
       ),
     );
 
+    useEffect(() {
+      if (state == FeedbackSheetState.success) {
+        confettiController
+            .animateTo(
+          1,
+          duration: config.animationDuration,
+          curve: config.animationCurve,
+        )
+            .whenCompleteOrCancel(() {
+          confettiController.reset();
+        });
+      }
+      return null;
+    }, [state]);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
       child: Material(
         color: Colors.transparent,
         child: Stack(
           children: [
-            RepaintBoundary(child: ConfettiAnimation(animationController: confettiController, config: config)),
             SafeArea(
               child: StatelessBottomSheet(
                 backgroundColor: context.colorsV2.backgroundSurface1,
@@ -87,134 +100,106 @@ class FeedbackSheetWidget extends HookWidget {
                         }),
                   ),
                 ),
-                sliverBeforeContent: SliverAnimatedSwitcher(
-                  duration: Durations.medium4,
-                  child: state == FeedbackSheetState.failure
-                      ? SliverToBoxAdapter(
-                          child: BaseErrorWidget(
-                            onRetry: onRetry,
-                            buttonColorScheme: ButtonColorScheme.primary,
-                            errorLabel: context.l10n.appFeedbackConnectionIssueV2,
-                          ),
-                        )
-                      : SliverList(
-                          delegate: SliverChildListDelegate(
-                            [
-                              SizedBox(
-                                width: 200,
-                                height: 116,
-                                child: FeedbackConfirmationIndicator(
-                                  isLoading: state == FeedbackSheetState.loading,
-                                  color: context.color.textAndIconsStatusAccent,
-                                  onComplete: () {
-                                    if (state == FeedbackSheetState.success) {
-                                      confettiController
-                                          .animateTo(
-                                        1,
-                                        duration: config.animationDuration,
-                                        curve: config.animationCurve,
-                                      )
-                                          .whenCompleteOrCancel(() {
-                                        confettiController.value = 0;
-                                      });
-                                    }
-                                  },
+                content: [
+                  AnimatedSwitcher(
+                    duration: switchDuration,
+                    child: switch (state) {
+                      FeedbackSheetState.failure => BaseErrorWidget(
+                          onRetry: onRetry,
+                          buttonColorScheme: ButtonColorScheme.primary,
+                          errorLabel: context.l10n.appFeedbackConnectionIssueV2,
+                          paddingForImage: const EdgeInsets.symmetric(vertical: AppSizes.$3xs),
+                        ),
+                      FeedbackSheetState.success => Column(
+                          key: const Key('feedback_success'),
+                          children: [
+                            Center(
+                              child: SizedBox(
+                                width: 180.0,
+                                child: SvgPicture.asset(
+                                  'assets/images_svg/illustration_notifications.svg',
+                                  matchTextDirection: true,
+                                  package: PackageConfig.packageName,
                                 ),
                               ),
-                              _FeedbackTitle(state: state),
-                              const SizedBox(height: AppSizes.$4xs),
-                              _FeedbackButton(
-                                state: state,
-                                onTap: sheetController.close,
+                            ),
+                            const SizedBox(height: AppSizes.$4xs),
+                            Center(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
+                                child: Text(
+                                  context.l10n.feedbackSuccessTitle,
+                                  style: context.textStyleV3.h3SemiBold,
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            ],
-                          ),
+                            ),
+                            const SizedBox(height: AppSizes.$4xs),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: AppButton(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: Spacing.$4x,
+                                    vertical: Spacing.$4x,
+                                  ),
+                                  buttonColorScheme: ButtonColorScheme.primary,
+                                  primaryLabel: context.l10n.done,
+                                  onTap: sheetController.close,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                ),
+                      FeedbackSheetState.loading => Column(
+                          key: const Key('feedback_loading'),
+                          children: [
+                            const SizedBox(height: AppSizes.$4xs),
+                            LayoutBuilder(
+                              builder: (context, constraints) {
+                                final textPainter = TextPainter(
+                                    text: TextSpan(
+                                      text: context.l10n.feedbackSuccessTitle,
+                                      style: context.textStyleV3.h3SemiBold,
+                                    ),
+                                    textDirection: Directionality.of(context))
+                                  ..layout(maxWidth: constraints.maxWidth - AppSizes.xxs * 2);
+                                final height = textPainter.height;
+                                return SizedBox(height: height);
+                              },
+                            ),
+                            const Center(
+                              child: SizedBox(
+                                  width: 139,
+                                  height: 139,
+                                  child: Center(
+                                    child: Loading(
+                                      size: LoaderSize.large,
+                                    ),
+                                  )),
+                            ),
+                            const SizedBox(height: AppSizes.$4xs),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                vertical: Spacing.$3x + Spacing.$4x,
+                              ),
+                              child: SizedBox(
+                                height: ButtonSize.medium.height,
+                                width: double.infinity,
+                              ),
+                            ),
+                          ],
+                        ),
+                    },
+                  ),
+                ],
               ),
             ),
+            RepaintBoundary(child: ConfettiAnimation(animationController: confettiController, config: config)),
           ],
         ),
       ),
     );
   }
-}
-
-class _FeedbackTitle extends StatelessWidget {
-  final FeedbackSheetState state;
-
-  const _FeedbackTitle({required this.state});
-
-  @override
-  Widget build(BuildContext context) => AnimatedCrossFade(
-        duration: switchDuration,
-        crossFadeState: state == FeedbackSheetState.success ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-        firstChild: Center(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs + Spacing.$4x),
-            child: Text(
-              context.l10n.feedbackSuccessTitle,
-              style: context.textStyleV3.h3SemiBold,
-              textAlign: TextAlign.center,
-            ),
-          ),
-        ),
-        secondChild: LayoutBuilder(
-          builder: (context, constraints) {
-            final textPainter = TextPainter(
-                text: TextSpan(
-                  text: context.l10n.feedbackSuccessTitle,
-                  style: context.textStyleV3.h3SemiBold,
-                ),
-                textDirection: Directionality.of(context))
-              ..layout(maxWidth: constraints.maxWidth - AppSizes.xxs * 2);
-            final height = textPainter.height;
-            return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSizes.xxs),
-              child: ShimmerEffectWidget(height: height),
-            );
-          },
-        ),
-      );
-}
-
-class _FeedbackButton extends StatelessWidget {
-  final FeedbackSheetState state;
-  final VoidCallback onTap;
-
-  const _FeedbackButton({required this.state, required this.onTap});
-
-  @override
-  Widget build(BuildContext context) => AnimatedCrossFade(
-        duration: switchDuration,
-        crossFadeState: state == FeedbackSheetState.success ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-        firstChild: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-          child: SizedBox(
-            width: double.infinity,
-            child: AppButton(
-              padding: const EdgeInsets.symmetric(
-                horizontal: Spacing.$4x,
-                vertical: Spacing.$4x,
-              ),
-              buttonColorScheme: ButtonColorScheme.primary,
-              primaryLabel: context.l10n.complete,
-              onTap: onTap,
-            ),
-          ),
-        ),
-        secondChild: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: Spacing.$4x,
-            vertical: Spacing.$3x + Spacing.$4x,
-          ),
-          child: ClipPath(
-            clipper: ShapeBorderClipper(shape: smoothBorder(ButtonSize.medium.radius)),
-            child: ShimmerEffectWidget(
-              height: ButtonSize.medium.height,
-              width: double.infinity,
-            ),
-          ),
-        ),
-      );
 }
