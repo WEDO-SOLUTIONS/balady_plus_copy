@@ -8,13 +8,18 @@ on:
       - ready_for_review
       - synchronize
 
+permissions:
+  contents: write
+
 jobs:
-  test-coverage:
+  graph-generate:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
@@ -26,7 +31,7 @@ jobs:
         run: |
           sudo apt install graphviz
           dart pub global activate lakos
-          lakos -o graph/lakos.dot mapness/
+          lakos -o graph/lakos.dot mapness/ --cycles-allowed
           dot -Tsvg graph/lakos.dot -o graph/lakos.svg
       - name: Push on GitHub
         run: |
