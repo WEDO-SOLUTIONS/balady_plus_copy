@@ -26,7 +26,7 @@ jobs:
         run: |
           sudo apt install graphviz
           dart pub global activate lakos
-          lakos -o graph/lakos.dot mapness/
+          lakos -o graph/lakos.dot mapness/ --cycles-allowed
           dot -Tsvg graph/lakos.dot -o graph/lakos.svg
       - name: Push on GitHub
         run: |
