@@ -22,7 +22,7 @@ class IssueCommercialConculsionEntity {
   List<EngOffices>? engOffices;
   List<PreDefinedConditionTypes>? preDefinedConditionTypes;
   List<RequestFlow>? requestFlow;
-  List<PreDefinedConditionsByType>? lstPreDefinedConditionsByType;
+  List<String>? lstPreDefinedConditionsByType;
   List<FastFlowConditions>? lstFastFlowConditions;
 
   List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities;
@@ -38,7 +38,7 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
   List<EngOffices>? engOffices,
   List<PreDefinedConditionTypes>? preDefinedConditionTypes,
   List<RequestFlow>? requestFlow,
-  List<PreDefinedConditionsByType>? lstPreDefinedConditionsByType,
+  List<String>? lstPreDefinedConditionsByType,
   List<FastFlowConditions>? lstFastFlowConditions,
   List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities,
   List<String>? lstboardContractRequirementMessage,
@@ -114,12 +114,15 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
 
       lstboardContractRequirementMessage = json['boardContractRequirementMessage'] != null ? json['boardContractRequirementMessage'].cast<String>() : [];
 
-    if (json['preDefinedConditionsByType'] != null) {
-      lstPreDefinedConditionsByType = [];
-      json['preDefinedConditionsByType'].forEach((v) {
-        lstPreDefinedConditionsByType?.add(PreDefinedConditionsByType.fromJson(v));
-      });
-    }
+    // if (json['preDefinedConditionsByType'] != null) {
+    //   lstPreDefinedConditionsByType = [];
+    //   json['preDefinedConditionsByType'].forEach((v) {
+    //     lstPreDefinedConditionsByType?.add(PreDefinedConditionsByType.fromJson(v));
+    //   });
+    // }
+
+    lstPreDefinedConditionsByType = json['preDefinedConditionsByType'] != null ? json['preDefinedConditionsByType'].cast<String>() : [];
+
 
     if (json['supervisingAuthoritiesForActivities'] != null) {
       supervisingAuthoritiesForActivities = [];

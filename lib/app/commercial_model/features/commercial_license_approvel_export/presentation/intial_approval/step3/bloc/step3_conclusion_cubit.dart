@@ -83,7 +83,7 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
     List<CommercialOffices>? commercialOffices, List<EngOffices>? engOffices,
     List<PreDefinedConditionTypes>? preDefinedConditionTypes,
     List<SupervisingAuthoritiesForActivities>? lstSupervisingAuthorities,
-    List<PreDefinedConditionsByType>? lstPreDefinedConditionsByType,
+    List<String>? lstPreDefinedConditionsByType,
     List<FastFlowConditions>? lstFastFlowConditions,List<String>? lstboardContractRequirementMessage
 
   }) {
@@ -169,7 +169,7 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
       section.label="PreDefinedConditionsByTypeTitle".tr();
       section.value=[];
       lstPreDefinedConditionsByType.asMap().forEach((index, value) {
-        section.value?.add(value.name!);
+        section.value?.add(value);
       });
       obj.sectionContent = section;
       return obj;
