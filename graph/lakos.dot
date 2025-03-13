@@ -3422,12 +3422,13 @@ digraph "" {
   "/lib/pages/routing/routing_routes.dart" -> "/lib/widgets/path_nav/ui/layout_size_wrapper.dart";
   "/lib/pages/routing/lib/route_point_extension.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/routing/lib/route_point_extension.dart" -> "/lib/entities/routing/route_search_point.dart";
+  "/lib/pages/routing/routing_search.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/ui/search_scope.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
+  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
+  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_bar.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_content.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_header_delegate.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart";
+  "/lib/pages/routing/routing_search.dart" -> "/lib/widgets/landing/dashboard/map_dashboard_controls.dart";
   "/lib/pages/routing/ui/routing_favourites.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/routing/ui/routing_favourites.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/pages/routing/ui/routing_favourites.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
