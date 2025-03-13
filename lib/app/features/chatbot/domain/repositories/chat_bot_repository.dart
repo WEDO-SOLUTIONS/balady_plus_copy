@@ -26,7 +26,7 @@ abstract class ChatBotRepository {
   Future<Either<Failure, ChatRefreshSession>> refreshSession(
       {required String id});
 
+  Future<Either<Failure, List<String>>> getPromptQuestions({required String userId});
 
 
-
-}
+  }
