@@ -109,7 +109,7 @@ class RequestDetailsPage extends StatelessWidget {
 
 
                                       break;
-                                    case "view-details":
+                                    case "reply-on-notes":
 
 
                                       break;

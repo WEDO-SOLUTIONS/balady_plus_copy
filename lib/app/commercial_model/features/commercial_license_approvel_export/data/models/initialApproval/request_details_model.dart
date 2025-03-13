@@ -2,6 +2,7 @@
 
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/initialApproval/sub_activity_details_data.dart';
 
+import '../../../presentation/request_details/domain/entity/request_note_info.dart';
 import '../lookups_model.dart';
 
 class RequestDetailsModel {
@@ -61,7 +62,12 @@ class RequestDetailsModel {
     }
     notifications = json['notifications'];
     rejectionInfo = json['rejectionInfo'] != null ? RejectionInfo.fromJson(json['rejectionInfo']) : null;
-    notes = json['notes'];
+    if (json['notes'] != null) {
+      notes = [];
+      json['notes'].forEach((v) {
+        notes?.add(RequestNoteInfo.fromJson(v));
+      });
+    }
     currentTab = json['currentTab'];
     initialApprovalExpiryDate = json['initialApprovalExpiryDate'];
     configuredShopMaximumArea = json['configuredShopMaximumArea'];
@@ -94,7 +100,7 @@ class RequestDetailsModel {
   List<AllowedActions>? allowedActions;
   dynamic notifications;
   RejectionInfo? rejectionInfo;
-  dynamic notes;
+  List<RequestNoteInfo>? notes;
   int? currentTab;
   dynamic initialApprovalExpiryDate;
   double? configuredShopMaximumArea;
@@ -126,7 +132,7 @@ class RequestDetailsModel {
     List<AllowedActions>? allowedActions,
     dynamic notifications,
     RejectionInfo? rejectionInfo,
-    dynamic notes,
+    List<RequestNoteInfo> ?notes,
     int? currentTab,
     dynamic initialApprovalExpiryDate,
     double? configuredShopMaximumArea,
