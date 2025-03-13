@@ -30,6 +30,7 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../app/core/utils/utils_exports.dart' show EnvType;
+import 'package:flutter_insider/flutter_insider.dart';
 
 // import 'baldy';
 
@@ -87,6 +88,30 @@ class AppWidget extends StatefulWidget {
 }
 
 class AppWidgetState extends State<AppWidget> {
+@override
+void initState() {
+  super.initState();
+  initInsider();
+}
+
+
+Future initInsider() async {
+  if (!mounted) return;
+    
+  // Call in async method.
+  await FlutterInsider.Instance.init("your_partner_name","appgroup", callback);
+
+
+  // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
+  FlutterInsider.Instance.registerWithQuietPermission(false);    
+}
+
+
+void callback(){
+
+
+}
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
