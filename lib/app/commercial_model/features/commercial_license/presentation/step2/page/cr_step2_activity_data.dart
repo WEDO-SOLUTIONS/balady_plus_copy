@@ -131,7 +131,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             isDigitsOnly: true,
                             initialValue: state.totalArea != null
                                 ? state.totalArea.toString()
-                                : null,
+                                : '',
                             keyboardType: TextInputType.number,
                             suffixIcon: CustomTextWidget(
                               "m2".tr(),
@@ -148,12 +148,12 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
 
                           ) :ReadOnlyField(
                             title: "step2_label4".tr(),
-                            subTitle: state.getTotalArea().toString(),
+                            subTitle: state.getMainActivityArea().toString(),
                             showSpace: false,
                           ) ,
                           const CustomVerticalSpace(height: 12),
                           if (state.showHotel()) ...[
-                            AccomodationDropDownTypes(),
+                            const AccomodationDropDownTypes(),
                             const CustomVerticalSpace(height: 16),
 
 
@@ -167,7 +167,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                   ? state.unitCount.toString()
                                   : null,
                               keyboardType: TextInputType.number,
-                              suffixIcon: CustomTextWidget(
+                              suffixIcon: const CustomTextWidget(
                                 "",
                                 fontSize: 12,
                                 fontWeight: AppFontWeight.semiBold,
@@ -184,7 +184,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           ],
                           ReadOnlyField(
                             title: "cr_main_activity_area".tr(),
-                            subTitle: state.getTotalArea().toString(),
+                            subTitle: state.getMainActivityArea().toString(),
                             showSpace: false,
                           ),
                           const CustomVerticalSpace(height: 16),

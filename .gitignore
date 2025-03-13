@@ -8,6 +8,7 @@
 .buildlog/
 .history
 *.pyc
+*.lock
 .svn/
 migrate_working_dir/
 
@@ -157,7 +158,7 @@ mapness/lib/l10n/generated
 mapness/lib/l10n/*.arb
 mapness/lib/app/auto_route/app_routes.gr.dart
 .sdk-version
-pubspec.lock
+
 
 # tests
 reports/

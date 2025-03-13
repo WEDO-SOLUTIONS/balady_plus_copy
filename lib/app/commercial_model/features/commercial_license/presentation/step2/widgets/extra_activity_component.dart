@@ -91,7 +91,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                         "activity_must_be_bigger_than_0".tr());
                                     return;
                                   }
-                                  if (a >= state.getTotalArea()) {
+                                  if (a >= state.getMainActivityArea()) {
                                     CommonFunctions.showError(
                                         "total_areas_error".tr());
                                     return;
