@@ -111,17 +111,25 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       props: {'event': event.id.objectId, 'title': event.title},
     );
 
-    ref.read(appRouterProvider).push(
-          RoadClosureRoute(
-            id: event.id,
-            title: event.title,
-            description: event.description,
-            startTime: event.startTime,
-            finishTime: event.finishTime,
-            latitude: event.latLng.latitude,
-            longitude: event.latLng.longitude,
-          ),
-        );
+    final router = ref.read(appRouterProvider);
+    final roadClosureRoute = RoadClosureRoute(
+      id: event.id,
+      title: event.title,
+      description: event.description,
+      startTime: event.startTime,
+      finishTime: event.finishTime,
+      latitude: event.latLng.latitude,
+      longitude: event.latLng.longitude,
+    );
+    if (router.isRouteActive(RoadClosureRoute.name)) {
+      router.popAndPush(
+        roadClosureRoute,
+      );
+    } else {
+      router.push(
+        roadClosureRoute,
+      );
+    }
   }
 
   void _handleMyLocationTapEvent(MyLocationTapEvent event) {
