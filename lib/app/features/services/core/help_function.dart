@@ -51,7 +51,7 @@ void tackYouAction(BuildContext context, Service service) async {
       isFullHeight: false,
       dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
       currentRouteName: RouteName.postersStartService,
-      child: const NotAuthorizedIndivisualDialog(),
+      child:  NotAuthorizedIndivisualDialog(),
     );
     return;
   }

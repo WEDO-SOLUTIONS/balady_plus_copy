@@ -24,7 +24,7 @@ dependencies:
   dio: 5.7.0
   pretty_dio_logger: 1.4.0
   dio_smart_retry: 7.0.1
-  flutter_appauth: 7.0.1
+  flutter_appauth: ^9.0.0
 
   ##! Local Storage
   # Lightweight fast key-value database

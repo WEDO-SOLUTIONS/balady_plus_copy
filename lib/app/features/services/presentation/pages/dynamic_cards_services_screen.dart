@@ -50,7 +50,7 @@ class DynamicCardsServicesScreen extends StatelessWidget {
                       dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
                       currentRouteName:
                           HomeServicesRouteName.dynamicCardsServicesScreen,
-                      child: const NotAuthorizedIndivisualDialog(),
+                      child:  NotAuthorizedIndivisualDialog(),
                     );
                     return;
                   } else {

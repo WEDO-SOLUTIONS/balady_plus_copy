@@ -93,6 +93,23 @@ class IssueSteps {
 }
 
 /// have in  Issue Steps on mobile 11 but vildet on 7
+///
+///
+///
+///
+var listIntialApprovalSteps = const [
+  "", // add Fake Step
+  IssueSteps.saveActivity,
+  IssueSteps.saveLocation,
+  "", // add Fake Step
+  "", // add Fake Step
+  "", // add Fake Step
+  "", // add Fake Step
+  IssueSteps.calculateFees,
+  IssueSteps.submitSteps,
+];
+
+
 var listIssueSteps = const [
   "", // add Fake Step
   IssueSteps.saveActivity,

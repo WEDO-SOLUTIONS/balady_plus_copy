@@ -6,6 +6,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import '../../../commercial_license_exports.dart';
+import '../../../domain/entities/request_info_arragments.dart';
 import '../../step10/bloc/cr_step10_addetional_data_cubit.dart';
 import '../../step11/bloc/cr_step11_attachment_data_cubit.dart';
 import '../../step12/bloc/cr_step12_sadad_cubit.dart';
@@ -38,7 +39,7 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
 
   @override
   Widget build(BuildContext context) {
-    int? requestId = ModalRoute.of(context)!.settings.arguments as int?;
+    RequestInfoArragments? requestData = ModalRoute.of(context)!.settings.arguments as RequestInfoArragments?;
 
     return MultiBlocProvider(
       providers: [
@@ -49,6 +50,8 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
           lazy: false,
           create: (context) => CrStep1ApplicantDataCubit()..getRecordInfo(),
         ),
+
+
         BlocProvider(
           create: (context) => CrStep2ActivityDataCubit(),
         ),
@@ -79,7 +82,7 @@ class _CommercialLicenseScreenState extends State<CommercialLicenseScreen> {
         ),
       ],
       child: CommercialLicenseBody(
-        requestId: requestId,
+        requestData: requestData,
       ),
     );
   }
