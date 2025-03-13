@@ -75,9 +75,15 @@ class AppRouter extends RootStackRouter {
               path: 'deeplink',
               page: DeeplinkRoute.page,
             ),
-            AppRoute(
+            CustomRoute(
               path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
+            ),
+            AppRoute(
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              durationInMilliseconds: 250,
+              path: 'routingSearch',
+              page: RoutingSearchSheetRoute.page,
             ),
             AppRoute(
               path: 'eta_route/:lat/:lon',
@@ -86,10 +92,6 @@ class AppRouter extends RootStackRouter {
             AppRoute(
               path: 'weather_router',
               page: WeatherRoute.page,
-            ),
-            AppRoute(
-              path: 'routingSearch',
-              page: RoutingSearchSheetRoute.page,
             ),
             CustomRoute(
               path: 'road_panel_sheet',
