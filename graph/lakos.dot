@@ -482,10 +482,9 @@ digraph "" {
   "/lib/pages/iwish/iwish_place_card.dart" [label="iwish_place_card"];
   "/lib/pages/iwish/iwish_feedback_comment.dart" [label="iwish_feedback_comment"];
   "/lib/pages/iwish/iwish_feedback.dart" [label="iwish_feedback"];
+  "/lib/pages/feedback/feedback_sheet_widget.dart" [label="feedback_sheet_widget"];
   "/lib/pages/feedback/feedback_failure_widget.dart" [label="feedback_failure_widget"];
   "/lib/pages/feedback/feedback_sent_page.dart" [label="feedback_sent_page"];
-  "/lib/pages/feedback/feedback_loading_widget.dart" [label="feedback_loading_widget"];
-  "/lib/pages/feedback/feedback_success_widget.dart" [label="feedback_success_widget"];
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" [label="feedback_select_options_component_widget"];
   "/lib/pages/feedback/components/feedback_field_widget.dart" [label="feedback_field_widget"];
   "/lib/pages/feedback/components/feedback_form_widget.dart" [label="feedback_form_widget"];
@@ -1715,10 +1714,9 @@ digraph "" {
         }
         subgraph "cluster~/lib/pages/feedback" {
           label="feedback";
+          "/lib/pages/feedback/feedback_sheet_widget.dart";
           "/lib/pages/feedback/feedback_failure_widget.dart";
           "/lib/pages/feedback/feedback_sent_page.dart";
-          "/lib/pages/feedback/feedback_loading_widget.dart";
-          "/lib/pages/feedback/feedback_success_widget.dart";
           "/lib/pages/feedback/feedback_page.dart";
           "/lib/pages/feedback/feedback_select_type_page.dart";
           "/lib/pages/feedback/quick_feedback_page.dart";
@@ -3705,16 +3703,14 @@ digraph "" {
   "/lib/pages/iwish/iwish_feedback.dart" -> "/lib/shared/ui/sheets/loading_thanks_sheet.dart";
   "/lib/pages/iwish/iwish_feedback.dart" -> "/lib/widgets/iwish/ui/iwish_feedback_mood.dart";
   "/lib/pages/iwish/iwish_feedback.dart" -> "/lib/widgets/iwish/ui/iwish_feedback_tags.dart";
+  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/config/package_config.dart";
+  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/ui/error_widget/fullscreen_error_widget.dart";
   "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/features/feedback/submit_feedback.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_failure_widget.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_loading_widget.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_success_widget.dart";
-  "/lib/pages/feedback/feedback_loading_widget.dart" -> "/lib/widgets/feedback/feedback_form_container.dart";
-  "/lib/pages/feedback/feedback_success_widget.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
-  "/lib/pages/feedback/feedback_success_widget.dart" -> "/lib/shared/config/package_config.dart";
-  "/lib/pages/feedback/feedback_success_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_sheet_widget.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/entities/feedback/feedback_category.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/entities/feedback/feedback_object_type.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/features/feedback/feedback_categories.dart";
