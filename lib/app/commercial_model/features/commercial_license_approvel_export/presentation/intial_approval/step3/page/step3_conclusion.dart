@@ -78,6 +78,7 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
                 children: [
 
 
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
 
                   //ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
@@ -86,7 +87,6 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
 
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
                  // ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(preDefinedConditionTypes:state.issueCommercialConculsionEntity?.preDefinedConditionTypes),),
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
 
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),

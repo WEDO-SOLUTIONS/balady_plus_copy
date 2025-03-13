@@ -70,14 +70,15 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
 
-               // ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
+
+                // ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstSupervisingAuthorities:state.issueCommercialConculsionEntity?.supervisingAuthoritiesForActivities),),
 
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
                // ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(preDefinedConditionTypes:state.issueCommercialConculsionEntity?.preDefinedConditionTypes),),
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
 
                 OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
                 OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
