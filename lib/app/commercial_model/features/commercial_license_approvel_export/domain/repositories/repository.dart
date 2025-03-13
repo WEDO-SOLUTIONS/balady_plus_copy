@@ -32,4 +32,6 @@ abstract class Repository {
   Future<Either<Failure, IssueCommercialConculsionEntity>> getCommercialConculsion({required int params});
 
   Future<Either<Failure, bool>> cancelIntialApproval({required int params});
+
+  Future<Either<Failure, bool>> ReplyWithNote(String requestId,String note,String noteId);
 }

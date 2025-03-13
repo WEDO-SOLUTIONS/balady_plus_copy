@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/request_details/presentation/pages/replyWithNotes.dart';
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/request_details/presentation/widgets/RequestDetailsBody.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
@@ -12,8 +13,10 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 import 'package:screenshot/screenshot.dart';
 
+import '../../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
@@ -111,7 +114,14 @@ class RequestDetailsPage extends StatelessWidget {
                                       break;
                                     case "reply-on-notes":
 
-
+                                      if(state.requestDetails!.notes != null&& state.requestDetails!.notes!.isNotEmpty)
+                                      BottomSheetDialog.showDraggableSheet(
+                                          NavigationService.navigatorKey.currentContext!,
+                                          backgroundColor:AppColor.black,
+                                          child: BottomSheetWithActions(
+                                              title: "replyWithNotes".tr(),
+                                              body:ReplyWithNotes(bloc: bloc!,noteId:"${state.requestDetails!.notes?[0].id}")
+                                          ));
                                       break;
                                   }
                                 },

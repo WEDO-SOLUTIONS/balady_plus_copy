@@ -7,8 +7,11 @@ class IssueCommercialConculsionEntity {
       this.commercialOffices, 
       this.engOffices, 
       this.preDefinedConditionTypes, 
-      this.requestFlow, 
-      this.supervisingAuthoritiesForActivities,});
+      this.requestFlow,
+      this.lstPreDefinedConditionsByType,
+      this.supervisingAuthoritiesForActivities,
+  this.lstFastFlowConditions,
+    this.lstboardContractRequirementMessage});
 
 
   List<AllowedPermits>? allowedPermits;
@@ -19,7 +22,12 @@ class IssueCommercialConculsionEntity {
   List<EngOffices>? engOffices;
   List<PreDefinedConditionTypes>? preDefinedConditionTypes;
   List<RequestFlow>? requestFlow;
+  List<PreDefinedConditionsByType>? lstPreDefinedConditionsByType;
+  List<FastFlowConditions>? lstFastFlowConditions;
+
   List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities;
+  List<String>? lstboardContractRequirementMessage;
+
 
 
 IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits,
@@ -30,7 +38,10 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
   List<EngOffices>? engOffices,
   List<PreDefinedConditionTypes>? preDefinedConditionTypes,
   List<RequestFlow>? requestFlow,
+  List<PreDefinedConditionsByType>? lstPreDefinedConditionsByType,
+  List<FastFlowConditions>? lstFastFlowConditions,
   List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities,
+  List<String>? lstboardContractRequirementMessage,
 }) => IssueCommercialConculsionEntity( allowedPermits: allowedPermits ?? this.allowedPermits,
   calculateStandardFees: calculateStandardFees ?? this.calculateStandardFees,
   civilDefenseAllowedDocuments: civilDefenseAllowedDocuments ?? this.civilDefenseAllowedDocuments,
@@ -39,7 +50,10 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
   engOffices: engOffices ?? this.engOffices,
   preDefinedConditionTypes: preDefinedConditionTypes ?? this.preDefinedConditionTypes,
   requestFlow: requestFlow ?? this.requestFlow,
+  lstPreDefinedConditionsByType:lstPreDefinedConditionsByType??this.lstPreDefinedConditionsByType,
+  lstFastFlowConditions:lstFastFlowConditions??this.lstFastFlowConditions,
   supervisingAuthoritiesForActivities: supervisingAuthoritiesForActivities ?? this.supervisingAuthoritiesForActivities,
+    lstboardContractRequirementMessage:lstboardContractRequirementMessage??this.lstboardContractRequirementMessage
 );
 
 
@@ -82,12 +96,31 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
         preDefinedConditionTypes?.add(PreDefinedConditionTypes.fromJson(v));
       });
     }
+
+    if (json['fastFlowConditions'] != null) {
+      lstFastFlowConditions = [];
+      json['fastFlowConditions'].forEach((v) {
+        lstFastFlowConditions?.add(FastFlowConditions.fromJson(v));
+      });
+    }
+
     if (json['requestFlow'] != null) {
       requestFlow = [];
       json['requestFlow'].forEach((v) {
         requestFlow?.add(RequestFlow.fromJson(v));
       });
     }
+
+
+      lstboardContractRequirementMessage = json['boardContractRequirementMessage'] != null ? json['boardContractRequirementMessage'].cast<String>() : [];
+
+    if (json['preDefinedConditionsByType'] != null) {
+      lstPreDefinedConditionsByType = [];
+      json['preDefinedConditionsByType'].forEach((v) {
+        lstPreDefinedConditionsByType?.add(PreDefinedConditionsByType.fromJson(v));
+      });
+    }
+
     if (json['supervisingAuthoritiesForActivities'] != null) {
       supervisingAuthoritiesForActivities = [];
       json['supervisingAuthoritiesForActivities'].forEach((v) {
@@ -529,6 +562,56 @@ AllowedPermits copyWith({  int? id,
     final map = <String, dynamic>{};
     map['id'] = id;
     map['name'] = name;
+    return map;
+  }
+
+}
+
+class PreDefinedConditionsByType {
+  PreDefinedConditionsByType({
+    this.id,
+    this.name,});
+
+  PreDefinedConditionsByType.fromJson(dynamic json) {
+    id = json['id'];
+    name = json['name'];
+  }
+  String? id;
+  String? name;
+  PreDefinedConditionsByType copyWith({  String? id,
+    String? name,
+  }) => PreDefinedConditionsByType(  id: id ?? this.id,
+    name: name ?? this.name,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['id'] = id;
+    map['name'] = name;
+    return map;
+  }
+
+}
+
+class FastFlowConditions {
+  FastFlowConditions({
+    this.conditionName,
+    this.required,});
+
+  FastFlowConditions.fromJson(dynamic json) {
+    conditionName = json['conditionName'];
+    required = json['required'];
+  }
+  String? conditionName;
+  bool? required;
+  FastFlowConditions copyWith({  String? conditionName,
+    bool? required,
+  }) => FastFlowConditions(  conditionName: conditionName ?? this.conditionName,
+    required: required ?? this.required,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['conditionName'] = conditionName;
+    map['required'] = required;
     return map;
   }
 

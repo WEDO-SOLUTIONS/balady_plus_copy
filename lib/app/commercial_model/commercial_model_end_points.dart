@@ -431,10 +431,13 @@ class CommercialModelEndPoints {
   static String intialApprovalConclusion(int requestId) =>
       "/v1/balady-commercial-initial-approval-services/lookups/$requestId?typeId=issuing";
 
-  static String cancelIntialApproval(int requestId) =>
-      "/v1/balady-commercial-initial-approval-services/requests/$requestId";
+  static String cancelIntialApproval(int requestId) => "/v1/balady-commercial-initial-approval-services/requests/$requestId";
 
   static String getSPLNotifcation = "/v1/balady-commercial-mobile-services/spl/site-info";
+
+  static String replyWithNote(String requestId) => "/v1/balady-commercial-initial-approval-services/reply-note/$requestId";
+
+
 
 
 

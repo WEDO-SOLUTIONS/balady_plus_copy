@@ -4219,6 +4219,13 @@
   "fee_calculator_license": "حاسبة رسوم اصدار الرخصة",
   "calculatorFeesNote": "قيمة الرسوم محددة لسنه واحدة فقط وللوحات سعر المتر لسنه واحدة",
   "premits_limit": "التصاريح الممكن إصدارها على مستوى النشاط التفصيلي الأساسي، بحد أقصى عدد (8) تصاريح",
-  "do_you_want_to_cancel": "هل أنت متأكد من إلغاء الطلب"
+  "do_you_want_to_cancel": "هل أنت متأكد من إلغاء الطلب",
+  "preDefinedConditionTypesTitle": "preDefinedConditionTypes",
+  "SupervisingAuthorities": "الجهات المشرفة",
+  "PreDefinedConditionsByTypeTitle": "المتطلبات المبدئية لاصدار رخصة تجارية",
+  "fastFlowConditions": "قائمة التفحص",
+  "boardContractRequirementMessage": "عقد لوحات",
+  "send": "ارسال",
+  "replyWithNotes": "الرد علي الملاحظات"
 
 }
