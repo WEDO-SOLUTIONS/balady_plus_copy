@@ -98,7 +98,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             group: MetricsConstants.exploreTag,
           );
 
-          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
           context.router.push(const FavouritesRoute());
         },
       ),
@@ -109,7 +109,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             'filter': quickFilter.name,
           },
         );
-        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
         final language = ref.read(appLanguageProvider);
         final query = quickFilter.query[language];
         if (query != null) {

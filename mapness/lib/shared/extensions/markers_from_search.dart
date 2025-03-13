@@ -7,6 +7,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
@@ -113,19 +114,12 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
               strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
               fontSize: 13,
-              fontName: isRtl
-                  ? _poiMapFontAr
-                  : containsArabic(text)
-                      ? _poiMapFontAr
-                      : _poiMapFontEn,
+              fontName: text.containsArabic() || isRtl ? _poiMapFontAr : _poiMapFontEn,
               textOffset: 4,
               strokeWidth: 1,
               textPlacement: MarkerTextPlacementMessage(
-                placement: isRtl
-                    ? TextPlacementMessage.leftCenter
-                    : containsArabic(text)
-                        ? TextPlacementMessage.leftCenter
-                        : TextPlacementMessage.rightCenter,
+                placement:
+                    text.containsArabic() || isRtl ? TextPlacementMessage.leftCenter : TextPlacementMessage.rightCenter,
               ),
             ),
             position: position,
@@ -139,12 +133,6 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
 
     return markers;
   }
-}
-
-bool containsArabic(String? text) {
-  // Регулярное выражение для проверки арабских символов
-  final arabicRegex = RegExp(r'[\u0600-\u06FF\u0750-\u077F]');
-  return arabicRegex.hasMatch(text ?? '');
 }
 
 /// According to the icons that we have in our pack and which we can show on the map as marker

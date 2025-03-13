@@ -11,7 +11,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:sms_user_consent/sms_user_consent.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../core/models/send_otp_sertificate.dart';
@@ -57,12 +57,12 @@ class UpdatePhotoCertificateCubit extends Cubit<UpdatePhotoCertificateState> {
       return;
     }
     emit(state.copyWith(status: BlocStatus.loading));
-    Tuple3<bool?, String?, SendOtpCertificateResult?> result =
+    (bool?, String?, SendOtpCertificateResult?) result =
         await _rpository.sendOTPCertificate(state.certificateUUID!);
 
-    if (result.item1 == true) {
+    if (result.$1 == true) {
       emit(state.copyWith(
-          status: BlocStatus.success, sendOtpCertificateResult: result.item3));
+          status: BlocStatus.success, sendOtpCertificateResult: result.$3));
       if (!resend) {
         otpCode = TextEditingController();
         NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
@@ -72,48 +72,48 @@ class UpdatePhotoCertificateCubit extends Cubit<UpdatePhotoCertificateState> {
       }
     } else {
       emit(state.copyWith(
-          status: BlocStatus.failure, errorMessage: result.item2));
+          status: BlocStatus.failure, errorMessage: result.$2));
     }
   }
 
   void verifyOTP(String otp) async {
     emit(state.copyWith(otpStatus: BlocStatus.loading));
-    Tuple3<bool?, String?, bool?> result =
+    (bool?, String?, bool?) result =
         await _rpository.verifyOTPCertificate(
             requestId: state.certificateUUID!,
             otp: otp,
             otpKey: state.sendOtpCertificateResult!.otpTokenKey!);
 
-    if (result.item1 == true) {
+    if (result.$1 == true) {
       emit(state.copyWith(
-          otpStatus: BlocStatus.success, verifyOTPCertificate: result.item3));
+          otpStatus: BlocStatus.success, verifyOTPCertificate: result.$3));
 
       NavigationService.navigatorKey.currentState?.pop(true);
 
       UpdatePhoto();
     } else {
       emit(state.copyWith(
-          otpStatus: BlocStatus.failure, errorMessage: result.item2));
+          otpStatus: BlocStatus.failure, errorMessage: result.$2));
     }
   }
 
   void UpdatePhoto() async {
     emit(state.copyWith(status: BlocStatus.loading));
-    Tuple3<bool?, String?, UpdatePhotoResponse?> result =
+    (bool?, String?, UpdatePhotoResponse?) result =
         await _rpository.updatePhoto(
             licenseNo: state.certificateUUID!,
             birthDate: toHijriFormattedDate(state.birthDate!),
             otpToken: state.sendOtpCertificateResult!.otpTokenKey!,
             versionNo: int.tryParse(state.versionNo!)!);
 
-    if (result.item1 == true) {
+    if (result.$1 == true) {
       emit(state.copyWith(
-          status: BlocStatus.success, updatePhotoResponse: result.item3));
+          status: BlocStatus.success, updatePhotoResponse: result.$3));
       onUpdate();
       NavigationService.navigatorKey.currentState?.pop(true);
     } else {
       emit(state.copyWith(
-          status: BlocStatus.failure, errorMessage: result.item2));
+          status: BlocStatus.failure, errorMessage: result.$2));
     }
   }
 

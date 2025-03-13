@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
@@ -69,7 +69,7 @@ class InquiryRepository {
   //   }
   // }
 
-  Future<Tuple3<bool?, String?, ClassificationResponse?>>
+  Future<(bool?, String?, ClassificationResponse?)>
       getAllSplClassificationsLsit({required String category}) async {
     Map<String, dynamic> queryParms = {};
 
@@ -128,8 +128,7 @@ class InquiryRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, ClassificationResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
   ///////////////////////fawzi comment this fun not used
@@ -259,7 +258,7 @@ class InquiryRepository {
 //         state, error, result);
 //   }
 
-  Future<Tuple3<bool?, String?, SubMainClassification?>>
+  Future<(bool?, String?, SubMainClassification?)>
       getMainAndSubClassficiation(String splClassID) async {
     Map<String, dynamic> queryParms = {};
 
@@ -314,7 +313,7 @@ class InquiryRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, SubMainClassification?>(state, error, result);
+    return (state, error, result);
   }
 
   /////////////////////// fawzi comment this fun not used
@@ -423,7 +422,7 @@ class InquiryRepository {
   //       state, error, result);
   // }
 
-  Future<Tuple3<bool?, String?, CreateIncidentResult?>> createINQRequest(
+  Future<(bool?, String?, CreateIncidentResult?)> createINQRequest(
     var body,
   ) async {
     String url = ApiUrl.INQCreate;
@@ -464,7 +463,6 @@ class InquiryRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, CreateIncidentResult?>(
-        state, error, response);
+    return (state, error, response);
   }
 }

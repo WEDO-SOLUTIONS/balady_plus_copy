@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -93,7 +94,10 @@ class MapSuggestList extends ConsumerWidget {
               buttonColorScheme: uikit.ButtonColorScheme.secondary,
               primaryIcon: uikit.GeneralIcons.plusCircle,
               primaryLabel: context.l10n.addPlace,
-              onTap: () => context.router.push(QuickFeedbackRoute()),
+              onTap: () {
+                ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
+                context.router.push(QuickFeedbackRoute());
+              },
             ),
           )
         ],

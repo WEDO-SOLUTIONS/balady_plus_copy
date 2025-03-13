@@ -47,7 +47,7 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
         child: InkWell(
           onTap: () {
             ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-            context.router.push(FreeRoamRoute());
+            context.router.push(const FreeRoamRoute());
             ref.read(freeRoamStarterProvider.notifier).setShown();
           },
           borderRadius: BorderRadius.circular(RadiusBorder.l),

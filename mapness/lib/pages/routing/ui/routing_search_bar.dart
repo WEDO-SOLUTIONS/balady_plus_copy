@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -63,6 +64,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
         controller: _controller,
         config: BaladyInputConfig(
           focusNode: _focusNode,
+          onTap: () {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
+          },
           onChanged: (query) {
             Metrics.logEventAdvanced(
               MetricsConstants.routesKeys.searchSubmit,
