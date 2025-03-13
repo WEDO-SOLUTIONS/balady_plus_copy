@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/providers/search_pagination.dart';
 import 'package:mapness/features/search/ui/add_place_item.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
@@ -82,7 +83,11 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
           if (_hasNext) {
             return widget.loaderBuilder(context);
           }
-          return const AddPlaceItem();
+          return AddPlaceItem(
+            onTapMetrics: () {
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
+            },
+          );
         }
 
         return widget.itemBuilder(context, results[index]);

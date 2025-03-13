@@ -35,24 +35,22 @@ class FeedbackInput extends HookWidget {
       _ => null,
     };
 
-    final isRequired = field.isRequired;
-
     final controller = useTextEditingController();
+    final focusNode = useFocusNode();
 
     return FormBuilderField<String>(
         name: field.id,
         validator: FormBuilderValidators.compose([
           switch (field.type) {
-            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
+            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: false),
             FeedbackTextType.phone => FormBuilderValidators.compose([
-                FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
+                FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
                 FormBuilderValidators.minLength(
                   PhoneNumberFormatter.arabicPhoneNumberMinLength,
-                  checkNullOrEmpty: isRequired,
+                  checkNullOrEmpty: false,
                 ),
               ]),
-            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
-            _ when isRequired => FormBuilderValidators.required(),
+            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: false),
             _ => (_) => null,
           },
         ]),
@@ -62,7 +60,8 @@ class FeedbackInput extends HookWidget {
                   labelText: field.label,
                   hintText: field.hint,
                   controller: controller,
-                  onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
+                  focusNode: focusNode,
+                  errorText: fieldState.hasError ? context.l10n.feedbackTextFieldWrongFormat : null,
                   allowedInputPattern: allowedInputPattern,
                   isRequired: field.isRequired,
                   maxLength: field.maxLength,

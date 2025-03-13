@@ -19,16 +19,16 @@ class InquiryViewModel extends BaseViewModel {
         .getAllSplClassificationsLsit(category: inqTypeModel.code)
         .then((value) {
       hideLoading();
-      splClassification = value.item3;
-      setSPLClassification(value.item3);
+      splClassification = value.$3;
+      setSPLClassification(value.$3);
 
       notifyListeners();
       if (value != null &&
-          value.item3 != null &&
-          value.item3!.data.isNotEmpty) {
+          value.$3 != null &&
+          value.$3!.data.isNotEmpty) {
         return true;
       } else {
-        showError(value.item2 ?? "");
+        showError(value.$2 ?? "");
       }
       return false;
     }).catchError((error) {

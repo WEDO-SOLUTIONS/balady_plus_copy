@@ -77,7 +77,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
       return;
     }
     if (page <= -1 || page >= _maxPages) {
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
       _onClose();
     }
 
@@ -110,7 +110,7 @@ class _StoriesFullscreenState extends ConsumerState<StoriesFullscreen> {
 
   void _nextStory() {
     if (_currentPage + 1 >= _maxPages) {
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
       _onClose();
       return;
     }

@@ -5,7 +5,6 @@ import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/log.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:tuple/tuple.dart';
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/dependency_injection/injection_container.dart';
@@ -27,7 +26,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class DaemRepository {
   final pegaWebServices = locator<PegaWebService>();
   final webServices = sl<WebService>();
-  Future<Tuple3<bool?, String?, DaemCategoryTypeResponse?>> getDaemCategoryList() async {
+  Future<(bool?, String?, DaemCategoryTypeResponse?)> getDaemCategoryList() async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
       queryParms = {
@@ -80,11 +79,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemCategoryTypeResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemSubCategoryTypeResponse?>> getDaemSubCategoryList(String category) async {
+  Future<(bool?, String?, DaemSubCategoryTypeResponse?)> getDaemSubCategoryList(String category) async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
       queryParms = {
@@ -136,11 +134,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemSubCategoryTypeResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemAreaTypeResponse?>> getDaemAreaList(
+  Future<(bool?, String?, DaemAreaTypeResponse?)> getDaemAreaList(
       {required String category, required String subCategory}) async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
@@ -195,10 +192,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemAreaTypeResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemIssueTypeResponse?>> getDaemIssueTypeList(
+  Future<(bool?, String?, DaemIssueTypeResponse?)> getDaemIssueTypeList(
       {required String category,
       required String subCategory,
       required String area}) async {
@@ -255,10 +252,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemIssueTypeResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemMunicipalityResponse?>> getAmanat() async {
+  Future<(bool?, String?, DaemMunicipalityResponse?)> getAmanat() async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
       queryParms = {
@@ -311,11 +308,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemMunicipalityResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemSubMunicipalityResponse?>> getBaladiat(
+  Future<(bool?, String?, DaemSubMunicipalityResponse?)> getBaladiat(
       {required String amanaID}) async {
     Map<String, dynamic> queryParms = {};
     if (CommonProperties.userInfo?.idNo != null) {
@@ -368,11 +364,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemSubMunicipalityResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DaemCreateTicket?>> createTicket(
+  Future<(bool?, String?, DaemCreateTicket?)> createTicket(
       {required String category,
       required String subCategory,
       required String area,
@@ -479,10 +474,10 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DaemCreateTicket?>(state, err, result);
+    return (state, err, result);
   }
 
-  Future<Tuple3<bool?, String?, UploadFileResult?>> uploadFile(
+  Future<(bool?, String?, UploadFileResult?)> uploadFile(
       String? caseID,
       String? fileName,
       String? fileBase64,
@@ -590,7 +585,7 @@ class DaemRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
+    return (state, error, response);
   }
 
   Future<DownloadFileResult?> downloadFile(

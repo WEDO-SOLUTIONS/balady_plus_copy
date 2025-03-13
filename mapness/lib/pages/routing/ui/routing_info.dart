@@ -235,7 +235,11 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
 
     // log advert analytics event
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
+    ref.read(advertMetricsProvider.notifier).sendEvent(
+          AdvertMetricsKeys.journeyStartedUnique,
+          isUniquePerSession: true,
+        );
 
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
@@ -245,13 +249,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       },
     );
 
-    context.router.push(
-      PathNavRoute(
-        navType: navigatingType,
-        isHomeOrWork: widget.isHomeOrWork,
-        initAction: PathNavPageInitAction.startNavigation,
-      ),
-    );
+    context.router.pushAndPopUntil(
+        PathNavRoute(
+          navType: navigatingType,
+          isHomeOrWork: widget.isHomeOrWork,
+          initAction: PathNavPageInitAction.startNavigation,
+        ),
+        predicate: (route) => route.settings.name == BottomMenuRoute.name);
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {
