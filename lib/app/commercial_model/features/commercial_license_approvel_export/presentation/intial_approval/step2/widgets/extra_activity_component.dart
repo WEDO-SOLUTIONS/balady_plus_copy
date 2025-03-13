@@ -126,7 +126,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                                               [],
                                           value: state.userSelectedAddetionalItem,
                                           label:
-                                              "userLicensesLicenseDetailsAIESECActivityWord"
+                                              "detailedActivityName"
                                                   .tr(),
                                           marginBottom: 8,
                                           onChangeType: (item) {
