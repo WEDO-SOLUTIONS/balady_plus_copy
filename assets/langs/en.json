@@ -4469,5 +4469,14 @@
   "services_categories": "Services Categories",
   "service_lase_teen": "Services",
   "invalid_license": "License number is incorrect",
-  "enter_license_id": "Please enter the license number"
+  "enter_license_id": "Please enter the license number",
+  "commerical_add_activity_sucessfull": "Request Send Successfully",
+  "commerical_license_export": "commerical License Intial Approval",
+  "requestFlow": "request Flow",
+  "officeName": "office Name",
+  "commercialOffice": "Commercial Offices",
+  "fee_calculator_license": "Fees Calculator for Commercial License Issuing",
+  "calculatorFeesNote":"The fee is for one year only, and the price per square meter for plates is for one year",
+  "premits_limit": "Permits that can be issued at the basic detailed activity level, with a maximum number of (8) permits.",
+  "do_you_want_to_cancel": "Are you sure you want to cancel the request?"
 }

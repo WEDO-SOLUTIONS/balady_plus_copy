@@ -5,12 +5,14 @@ class CommercialLicenseDetailsState extends Equatable {
   final String ? error;
   final int? requestId;
   final RequestDetailsModel? requestDetails;
+  final IssueCommercialConculsionEntity? issueCommercialConculsionEntity;
 
   const CommercialLicenseDetailsState({
     this.status = BlocStatus.initial,
     this.error,
     this.requestId,
     this.requestDetails,
+    this.issueCommercialConculsionEntity
 
   });
 
@@ -19,7 +21,8 @@ class CommercialLicenseDetailsState extends Equatable {
         status,
          error,
         requestId,
-        requestDetails
+        requestDetails,
+    issueCommercialConculsionEntity
       ];
 
   CommercialLicenseDetailsState copyWith(
@@ -27,12 +30,15 @@ class CommercialLicenseDetailsState extends Equatable {
         BlocStatus? status,
         String? error,
       Nullable<int?>? requestId,
-        RequestDetailsModel? requestDetails}) {
+        RequestDetailsModel? requestDetails,
+        IssueCommercialConculsionEntity? issueCommercialConculsionEntity
+      }) {
     return CommercialLicenseDetailsState(
         status: status ?? this.status,
         error: error ?? this.error,
         requestId: requestId == null ? this.requestId : requestId.value,
         requestDetails: requestDetails ?? this.requestDetails,
+        issueCommercialConculsionEntity:issueCommercialConculsionEntity??this.issueCommercialConculsionEntity
     );
   }
 

@@ -10,11 +10,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
+import 'package:screenshot/screenshot.dart';
 
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/dialog_names.dart';
 import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../../commercial_routes/commercial_route_names.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
@@ -22,6 +24,7 @@ import '../../bloc/commercial_license_details_bloc.dart';
 class RequestDetailsPage extends StatelessWidget {
    RequestDetailsPage({super.key});
    CommercialLicenseDetailsBloc?  bloc;
+
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
@@ -95,7 +98,16 @@ class RequestDetailsPage extends StatelessWidget {
 
                                       break;
                                     case "cancel":
-                                     bloc?.cancelIntialApproval();
+                                      CustomPopUpsWidgets
+                                          .showConfirmAppMessageDialog(
+                                          context, ("do_you_want_to_cancel").tr(),
+                                          primaryBtn: () {
+                                            Navigator.of(context).pop(true);
+                                            bloc?.cancelIntialApproval();
+                                          });
+
+
+
                                       break;
                                     case "view-details":
 
