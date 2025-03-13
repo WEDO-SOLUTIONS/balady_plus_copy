@@ -8,8 +8,11 @@ on:
       - ready_for_review
       - synchronize
 
+permissions:
+  contents: write
+
 jobs:
-  test-coverage:
+  graph-generate:
     runs-on: ubuntu-latest
 
     steps:
