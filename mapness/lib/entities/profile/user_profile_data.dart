@@ -4,10 +4,11 @@ import 'package:mapness/shared/providers/app_language.dart';
 
 @immutable
 class UserProfileData {
+  final String imageBase64;
+
   const UserProfileData({
     this.imageBase64 = '',
   });
-  final String imageBase64;
 
   @override
   bool operator ==(Object other) {
@@ -50,6 +51,7 @@ extension LocalizedName on SsoUserInfo {
   }
 
   String getLocalizedFirstAndLastName(Language lang) => '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
+
   String getLocalizedAbbreviatedName(Language lang) {
     final firstName = getLocalizedFirstName(lang);
     final lastName = getLocalizedLastName(lang);
