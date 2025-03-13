@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart';
 
-const _landscapeWidth = 370.0;
+const landscapeWidth = 370.0;
 
 class BaseLandscapeBottomSheet extends HookWidget {
   final List<Widget> content;
@@ -36,7 +36,7 @@ class BaseLandscapeBottomSheet extends HookWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: Spacing.$3x),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: _landscapeWidth),
+                  constraints: const BoxConstraints(maxWidth: landscapeWidth),
                   child: StatelessBottomSheet(
                     scrollController: controller,
                     content: content,

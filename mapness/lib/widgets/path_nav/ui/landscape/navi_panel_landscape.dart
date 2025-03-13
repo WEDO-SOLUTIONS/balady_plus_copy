@@ -7,6 +7,7 @@ import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart';
 
 class NaviPanelLandscape extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
@@ -54,45 +55,41 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    const double roadPanelWidth = 370;
-
-    return SafeArea(
-      bottom: false,
-      child: SizedBox(
-        width: roadPanelWidth,
-        child: Directionality(
-          textDirection: ref.watch(uiDirectionProvider),
-          child: ValueListenableBuilder<PathNavState>(
-            valueListenable: widget.navigationState,
-            builder: (context, state, child) {
-              switch (state) {
-                case PathNavState.running:
-                  return EtaSheet(
-                    onEndTripPressed: () => widget.endTripAndShowFeedback(context),
-                    onRoutePressed: widget.onShowRoutePressed,
-                    onBetterRouteAccept: () => widget.acceptBetterRoute(context),
-                    onBetterRouteReject: () => widget.rejectBetterRoute(context),
-                    betterRouteDurationProfit: widget.betterRouteDurationProfit,
-                    onSizeChanged: widget.onSizeChanged,
-                  );
-                case PathNavState.paused:
-                  return EtaContinue(
-                    onTap: widget.onContinuePressed,
-                    onSizeChanged: widget.onSizeChanged,
-                  );
-                case PathNavState.finished:
-                  return EtaFinished(
-                    expansionNotifier: widget.expansionNotifier,
-                    onEndTripPressed: widget.endTripAndShowHome,
-                    onBuildAnotherRoutePressed: widget.endTripAndBuildAnotherRoute,
-                    onSizeChanged: widget.onSizeChanged,
-                  );
-              }
-            },
+  Widget build(BuildContext context) => SafeArea(
+        bottom: false,
+        child: SizedBox(
+          width: landscapeWidth,
+          child: Directionality(
+            textDirection: ref.watch(uiDirectionProvider),
+            child: ValueListenableBuilder<PathNavState>(
+              valueListenable: widget.navigationState,
+              builder: (context, state, child) {
+                switch (state) {
+                  case PathNavState.running:
+                    return EtaSheet(
+                      onEndTripPressed: () => widget.endTripAndShowFeedback(context),
+                      onRoutePressed: widget.onShowRoutePressed,
+                      onBetterRouteAccept: () => widget.acceptBetterRoute(context),
+                      onBetterRouteReject: () => widget.rejectBetterRoute(context),
+                      betterRouteDurationProfit: widget.betterRouteDurationProfit,
+                      onSizeChanged: widget.onSizeChanged,
+                    );
+                  case PathNavState.paused:
+                    return EtaContinue(
+                      onTap: widget.onContinuePressed,
+                      onSizeChanged: widget.onSizeChanged,
+                    );
+                  case PathNavState.finished:
+                    return EtaFinished(
+                      expansionNotifier: widget.expansionNotifier,
+                      onEndTripPressed: widget.endTripAndShowHome,
+                      onBuildAnotherRoutePressed: widget.endTripAndBuildAnotherRoute,
+                      onSizeChanged: widget.onSizeChanged,
+                    );
+                }
+              },
+            ),
           ),
         ),
-      ),
-    );
-  }
+      );
 }
