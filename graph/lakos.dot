@@ -639,7 +639,6 @@ digraph "" {
   "/lib/widgets/feedback/images/feedback_image_item.dart" [label="feedback_image_item"];
   "/lib/widgets/feedback/images/feedback_images.dart" [label="feedback_images"];
   "/lib/widgets/feedback/images/feedback_image_widget.dart" [label="feedback_image_widget"];
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" [label="feedback_images_action_error_sheet"];
   "/lib/widgets/feedback/images/feedback_error_image_item.dart" [label="feedback_error_image_item"];
   "/lib/widgets/feedback/feedback_type_item_widget.dart" [label="feedback_type_item_widget"];
   "/lib/widgets/search/lib/build_suggest_title.dart" [label="build_suggest_title"];
@@ -719,7 +718,6 @@ digraph "" {
   "/lib/entities/feedback/fields_entity/feedback_text_type_entity.dart" [label="feedback_text_type_entity"];
   "/lib/entities/feedback/fields_entity/feedback_image_input_entity.dart" [label="feedback_image_input_entity"];
   "/lib/entities/feedback/fields_entity/feedback_chips_entity.dart" [label="feedback_chips_entity"];
-  "/lib/entities/feedback/feedback_image_action_error.dart" [label="feedback_image_action_error"];
   "/lib/entities/feedback/page_params/feedback_route_params.dart" [label="feedback_route_params"];
   "/lib/entities/feedback/feedback_object_type.dart" [label="feedback_object_type"];
   "/lib/entities/feedback/feedback_category.dart" [label="feedback_category"];
@@ -2009,7 +2007,6 @@ digraph "" {
             "/lib/widgets/feedback/images/feedback_image_item.dart";
             "/lib/widgets/feedback/images/feedback_images.dart";
             "/lib/widgets/feedback/images/feedback_image_widget.dart";
-            "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart";
             "/lib/widgets/feedback/images/feedback_error_image_item.dart";
           }
         }
@@ -2148,7 +2145,6 @@ digraph "" {
           label="feedback";
           "/lib/entities/feedback/iset_weekday_extension.dart";
           "/lib/entities/feedback/feedback_base_entity.dart";
-          "/lib/entities/feedback/feedback_image_action_error.dart";
           "/lib/entities/feedback/feedback_object_type.dart";
           "/lib/entities/feedback/feedback_category.dart";
           "/lib/entities/feedback/feedback_form_payload_entity.dart";
@@ -4272,21 +4268,15 @@ digraph "" {
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/shared/utils/text_utils/phone_number_formatter.dart";
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/widgets/feedback/feedback_input.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
-  "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/feedback_image_action_error.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/extensions/int_extention.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/lib/file_upload.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/lib/image_denied_dialog.dart";
+  "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/widgets/feedback/images/feedback_image_widget.dart";
-  "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart";
   "/lib/widgets/feedback/images/feedback_image_widget.dart" -> "/lib/features/feedback/feedback_upload_image.dart";
   "/lib/widgets/feedback/images/feedback_image_widget.dart" -> "/lib/shared/lib/file_upload.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/entities/feedback/feedback_image_action_error.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/shared/extensions/int_extention.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/ui/dismissible/app_dismissible.dart";
