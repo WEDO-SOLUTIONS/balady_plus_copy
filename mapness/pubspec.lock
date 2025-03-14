@@ -194,10 +194,10 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: b77ab001eaf2657853fb3b7e281bcaf2066a87cbfea7b94f740277e2ddb5c9b5
+      sha256: "5a1dd295bdad430a2ac599c54eabfe014f41b40bce06e56202aaa7e870d0fdd6"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.46"
+    version: "0.0.48"
   balady_plus:
     dependency: "direct main"
     description:
@@ -209,10 +209,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "7a4b62c77741ac6b13049cc891aa757ee60be7c0bb919ff72b23e18d241066f9"
+      sha256: "36a29147b9108def6e6907124de9d0e4eb31a4145a3b94e881a73b501cf67d74"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.7"
+    version: "3.2.8"
   battery_plus:
     dependency: transitive
     description:
@@ -2159,10 +2159,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "971fed351e36af473a70b0e966022ad477f4fe12dd3ea2d262c9c8fc7e41f190"
+      sha256: "4e50258b972d92b5a5c0f3a41b9379cf4339509df16cc38d940881ba77bf3a1a"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.16"
+    version: "1.0.17"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -3161,14 +3161,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
-  tuple:
-    dependency: transitive
-    description:
-      name: tuple
-      sha256: a97ce2013f240b2f3807bcbaf218765b6f301c3eff91092bcfa23a039e7dd151
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.2"
   typed_data:
     dependency: transitive
     description:

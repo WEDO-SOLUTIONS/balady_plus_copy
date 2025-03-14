@@ -35,7 +35,7 @@ class FollowControl extends ConsumerWidget {
           action: MetricAction.tap.name,
         );
 
-        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
         final location = ref.read(locationProvider.notifier);
         final result = await location.checkLocationPermission();

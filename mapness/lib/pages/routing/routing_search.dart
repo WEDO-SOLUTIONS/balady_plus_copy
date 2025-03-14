@@ -1,17 +1,19 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
-import 'package:mapness/pages/routing/ui/routing_map_controls.dart';
+import 'package:mapness/pages/landing/landing_state_mapper.dart';
+import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
-import 'package:mapness/pages/routing/ui/routing_search_header_delegate.dart';
-import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
+import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 
 @RoutePage()
 class RoutingSearchSheetPage extends ConsumerStatefulWidget {
@@ -31,17 +33,42 @@ class RoutingSearchSheetPage extends ConsumerStatefulWidget {
 }
 
 class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
-  late final DgisBottomSheetController _dgisSheetController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _dgisSheetController;
   final kbVisibilityController = KeyboardVisibilityController();
   late final StreamSubscription<bool> _keyboardVisible;
-  late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(Spacing.$3x);
 
   bool visible = true;
+  bool isFirstLaunch = false;
 
   @override
   void initState() {
     super.initState();
-    _dgisSheetController = DgisBottomSheetController();
+    _dgisSheetController = StatefulBottomSheetController(
+      initialState: ThreeStateBottomSheet.expanded,
+      behavior: AspectRatioSnappingBehavior(aspectRatios: {
+        0.0,
+        if (Platform.isIOS) .3 else .38,
+        if (Platform.isIOS) .931 else .98,
+      }),
+      stateMapper: const LandingStateMapper(),
+    );
+
+    _dgisSheetController.addListener(
+      () {
+        if (_dgisSheetController.state == ThreeStateBottomSheet.open && context.mounted) {
+          setState(() {
+            isFirstLaunch = true;
+          });
+        } else if (_dgisSheetController.state == ThreeStateBottomSheet.hidden && context.mounted) {
+          if (isFirstLaunch) {
+            setState(() {
+              isFirstLaunch = false;
+              ref.read(appRouterProvider).back();
+            });
+          }
+        }
+      },
+    );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
 
     if (widget.initialQuery != null) {
@@ -55,68 +82,61 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
 
   @override
   void dispose() {
+    _dgisSheetController.dispose();
     _keyboardVisible.cancel();
-    _bottomHeightNotifier.dispose();
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => Stack(
-        children: [
-          RoutingMapControls(bottomHeightNotifier: _bottomHeightNotifier),
-          LayoutBuilder(
-            builder: (context, constraints) => NotificationListener<ScrollNotification>(
-              onNotification: _onNotification,
-              child: DgisBottomSheet(
-                key: const ValueKey('ROUTING SEARCH SHEET'),
-                controller: _dgisSheetController,
-                initialExpansion: Expansion.expanded,
-                availableExpansions: const {
-                  Expansion.hidden,
-                  Expansion.middle,
-                  Expansion.expanded,
-                },
-                onExpansionChanged: (expansion, {byUser = false}) {
-                  if (expansion == Expansion.hidden && context.mounted) {
-                    context.router.popForced();
-                  }
-                },
-                middleHeight: constraints.maxHeight * 0.7,
-                scrollableBody: (context, scrollController) {
-                  scrollController.addListener(_unFocusOnScroll);
-                  final bgColor = context.colorsV2.backgroundSurface1;
+  Widget build(BuildContext context) => SearchScope(
+        named: SearchScopeEnum.routes,
+        child: LayoutBuilder(
+          builder: (context, constraints) => NotificationListener<ScrollNotification>(
+            onNotification: _onNotification,
+            child: SafeArea(
+              bottom: false,
+              child: StatefulBottomSheet<ThreeStateBottomSheet>(
+                outside: MapDashboardControls(_dgisSheetController, key: const ValueKey('RoutesControls')),
+                outsideOpacityDelegate: (controller) {
+                  final aspectRatio = controller.aspectRatio;
+                  final interpolation = controller.interpolation;
+                  final state = controller.state;
 
-                  return ClipRRect(
-                    borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                    child: Material(
-                      color: bgColor,
-                      child: SearchScope(
-                        named: SearchScopeEnum.routes,
-                        child: CustomScrollView(
-                          controller: scrollController,
-                          physics: const ClampingScrollPhysics(),
-                          slivers: [
-                            SliverPersistentHeader(
-                              delegate: RoutingSearchHeaderDelegate(
-                                placeholder: widget.placeholder,
-                                backgroundColor: bgColor,
-                              ),
-                              pinned: true,
-                            ),
-                            RoutingSearchContent(
-                              showMyLocation: widget.showMyLocation,
-                              scrollController: scrollController,
-                            ),
-                          ],
-                        ),
+                  final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
+                  final isSheetStateOpen = state == ThreeStateBottomSheet.open;
+                  final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+
+                  final isFull =
+                      (_dgisSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+                          isSheetCoversHalfOfTheScreen;
+
+                  return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+                },
+                key: const ValueKey('ROUTING SEARCH SHEET'),
+                scrollController: _dgisSheetController,
+                header: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: RoutingSearchBar(
+                        placeholder: widget.placeholder,
                       ),
                     ),
-                  );
-                },
+                    const SizedBox(
+                      height: 16,
+                    ),
+                  ],
+                ),
+                content: [
+                  RoutingSearchContent(
+                    showMyLocation: widget.showMyLocation,
+                    scrollController: _dgisSheetController,
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       );
 
   void _unFocusOnScroll() {
@@ -144,13 +164,13 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
     if (!kbState) {
       return;
     }
-    final currentExp = _dgisSheetController.currentExpansion;
-    if (currentExp == Expansion.expanded || currentExp == Expansion.middle) {
+    final currentExp = _dgisSheetController.state;
+    if (currentExp == ThreeStateBottomSheet.expanded || currentExp == ThreeStateBottomSheet.open) {
       return;
     }
 
     Future.delayed(Durations.short1).then((_) {
-      _dgisSheetController.animateTo(Expansion.expanded);
+      _dgisSheetController.setState(ThreeStateBottomSheet.expanded);
     });
   }
 }

@@ -142,12 +142,20 @@ class FeedbackImages extends StatelessWidget {
       await showPermissionDeniedDialog(context);
       return;
     }
-    final images = await _pickedImage(limit: field.maxImages);
+
+    // Work only IOS
+    final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
+    final images = await _pickedImage(limit: field.maxImages - selectedImages.length);
     if (images.isEmpty) {
       return;
     }
 
-    final filteredImages = await filterImages(context, images: images, fieldState: fieldState);
+    final filteredImages = await filterImages(
+      context,
+      images: images,
+      fieldState: fieldState,
+      selectedImages: selectedImages,
+    );
     final value = fieldState.value ?? const IList.empty();
 
     /// avoid upload same image twice
@@ -176,8 +184,12 @@ class FeedbackImages extends StatelessWidget {
     return isImageFormatAccepted && isSizeAccepted && isDimAccepted;
   }
 
-  Future<List<XFile>> filterImages(BuildContext context,
-      {required List<XFile> images, required FormFieldState<IList<FileUpload>> fieldState}) async {
+  Future<List<XFile>> filterImages(
+    BuildContext context, {
+    required List<XFile> images,
+    required FormFieldState<IList<FileUpload>> fieldState,
+    required List<XFile> selectedImages,
+  }) async {
     final List<XFile> filteredImages = [];
     bool isAllImagesValid = true;
     for (final image in images) {
@@ -189,7 +201,7 @@ class FeedbackImages extends StatelessWidget {
     }
 
     if (filteredImages.length > field.maxImages) {
-      filteredImages.removeRange(field.maxImages, filteredImages.length);
+      filteredImages.removeRange(field.maxImages - selectedImages.length, filteredImages.length);
     }
 
     if (!isAllImagesValid) {
@@ -214,7 +226,10 @@ class FeedbackImages extends StatelessWidget {
 
   Future<List<XFile>> _pickedImage({int? limit}) async {
     final images = await ImagePicker().pickMultiImage(
-        maxWidth: _maxImageResolution.toDouble(), maxHeight: _maxImageResolution.toDouble(), limit: limit);
+      maxWidth: _maxImageResolution.toDouble(),
+      maxHeight: _maxImageResolution.toDouble(),
+      limit: limit,
+    );
 
     return images;
   }

@@ -3,7 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/dependency_injection/injection_container.dart';
@@ -36,7 +36,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class AppointmentRepository {
   final webServices = locator<PegaWebService>();
 
-  Future<Tuple3<bool?, String?, LookUpList?>> getLookupList(String type) async {
+  Future<(bool?, String?, LookUpList?)> getLookupList(String type) async {
     String query = type;
     final body = await webServices.getApigeeRequest(
         ApiConstants.AppointmentLookUpList,
@@ -75,18 +75,17 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, LookUpList?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, RequeestRealStateResponseModel?>>
+  Future<(bool?, String?, RequeestRealStateResponseModel?)>
       checkRealStateRequest(String id) async {
     var res;
 
     try {
       res = await sl<web.WebService>().dio.get(ApiUrl.validateRealEstate(id));
 
-      return const Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
-          true, "", null);
+      return const (true, "", null);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -101,8 +100,7 @@ class AppointmentRepository {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-      return Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -111,12 +109,11 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, RequeestRealStateResponseModel?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     }
   }
 
-  Future<Tuple3<bool?, String?, Municipality?>> getMunicipalities() async {
+  Future<(bool?, String?, Municipality?)> getMunicipalities() async {
     final body = await webServices
         .getApigeeRequest(ApiConstants.AppointmentMunicipalities);
     bool state = body['state'];
@@ -153,10 +150,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, Municipality?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, SubMunicipality?>> getSubMunicipalities(
+  Future<(bool?, String?, SubMunicipality?)> getSubMunicipalities(
       String municipalityId) async {
     String query = municipalityId;
     final body = await webServices.getApigeeRequest(
@@ -196,10 +193,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, SubMunicipality?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DepartmentList?>> getDepartments(
+  Future<(bool?, String?, DepartmentList?)> getDepartments(
       String subMunicipalityId) async {
     String query = subMunicipalityId;
     final body = await webServices.getApigeeRequest(
@@ -239,10 +236,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, DepartmentList?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, MainClassResponse?>> getMainClassifications(
+  Future<(bool?, String?, MainClassResponse?)> getMainClassifications(
       String subMunicipalityId) async {
     String query = subMunicipalityId;
     final body = await webServices.getApigeeRequest(
@@ -283,10 +280,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, MainClassResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, SubClassResponse?>> getSubClassifications(
+  Future<(bool?, String?, SubClassResponse?)> getSubClassifications(
       String subMunicipalityId, String mainClassId) async {
     String query = subMunicipalityId + "/" + mainClassId;
     final body = await webServices.getApigeeRequest(
@@ -326,10 +323,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, SubClassResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, ServiceConfigResponse?>> getServiceConfig(
+  Future<(bool?, String?, ServiceConfigResponse?)> getServiceConfig(
       String subMunicipalityId, String subClassId) async {
     String query = subMunicipalityId + "/" + subClassId;
     final body = await webServices.getApigeeRequest(
@@ -370,10 +367,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, ServiceConfigResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, AvailableDatesResponse?>> getAppointmentDates(
+  Future<(bool?, String?, AvailableDatesResponse?)> getAppointmentDates(
       int serviceId,
       {String? currentDraftTime}) async {
     String query = "${(serviceId)}";
@@ -416,11 +413,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, AvailableDatesResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, AvailableTimesResponse?>> getAppointmentTimes(
+  Future<(bool?, String?, AvailableTimesResponse?)> getAppointmentTimes(
       int serviceId, String date) async {
     String query = "${(serviceId)}/${(date)}";
     final body = await webServices.getApigeeRequest(
@@ -461,11 +457,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, AvailableTimesResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments(
+  Future<(bool?, String?, MyAppointmentsResponse?)> getMyAppointments(
       {int pageSize = 20,
       int pageIndex = 0,
       bool upcomingAppointments = true,
@@ -514,11 +509,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, MyAppointmentsResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, AppointmentDetails?>> getAppointmentDetails(
+  Future<(bool?, String?, AppointmentDetails?)> getAppointmentDetails(
       int appointmentId) async {
     String query = appointmentId.toString();
 
@@ -530,7 +524,7 @@ class AppointmentRepository {
 
       AppointmentDetails response = AppointmentDetails.fromJson(res.data);
 
-      return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
+      return (true, "", response);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -544,8 +538,7 @@ class AppointmentRepository {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-      return Tuple3<bool?, String?, AppointmentDetails?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -554,12 +547,11 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, AppointmentDetails?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     }
   }
 
-  Future<Tuple4<bool?, String?, Uint8List?, String?>> printAppointment(
+  Future<(bool?, String?, Uint8List?, String?)> printAppointment(
       int id) async {
     String query = "$id";
 
@@ -598,11 +590,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple4<bool?, String?, Uint8List?, String?>(
-        state, error, result, contentType);
+    return (state, error, result, contentType);
   }
 
-  Future<Tuple3<bool?, String?, CancelAppointmentResponse?>> cancelAppointment(
+  Future<(bool?, String?, CancelAppointmentResponse?)> cancelAppointment(
       int requestId,
       List<LookUpItem> cancelReasons,
       String? otherReason) async {
@@ -654,11 +645,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, CancelAppointmentResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
+  Future<(bool?, String?, ConfirmAppointmentResponse?)>
       confirmAppointment(String requestId) async {
     String query = "$requestId";
 
@@ -701,11 +691,10 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> updateAppointment(
+  Future<(bool?, String?, SaveAppointmentResponse?)> updateAppointment(
       var reqBody, int id) async {
     var res;
 
@@ -714,8 +703,7 @@ class AppointmentRepository {
           .dio
           .put(ApiUrl.getAppointmentById(id.toString()), data: reqBody);
 
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          true, "", SaveAppointmentResponse());
+      return (true, "", SaveAppointmentResponse());
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -729,8 +717,7 @@ class AppointmentRepository {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -739,8 +726,7 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     }
 
     try {
@@ -748,8 +734,7 @@ class AppointmentRepository {
           .dio
           .put(ApiConstants.AppointmentUpdate(id), data: reqBody);
 
-      return Tuple3<bool?, String?, SaveAppointmentResponse>(
-          true, "", SaveAppointmentResponse());
+      return (true, "", SaveAppointmentResponse());
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -776,8 +761,7 @@ class AppointmentRepository {
     );
   }
 
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -786,12 +770,11 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     }
   }
 
-  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(
+  Future<(bool?, String?, SaveAppointmentResponse?)> saveAppointment(
       var reqBody) async {
     var res;
 
@@ -803,8 +786,7 @@ class AppointmentRepository {
       SaveAppointmentResponse response =
           SaveAppointmentResponse.fromJson(res.data);
 
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          true, "", response);
+      return (true, "", response);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -818,8 +800,7 @@ class AppointmentRepository {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -828,12 +809,11 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     }
   }
 
-  Future<Tuple3<bool?, String?, UploadFileResponse?>> uploadFile(
+  Future<(bool?, String?, UploadFileResponse?)> uploadFile(
       Uint8List? base64,
       String? fileName,
       String? filePath,
@@ -880,11 +860,11 @@ class AppointmentRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, UploadFileResponse?>(state, error, result);
+    return (state, error, result);
   }
 
 
-  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> deleteAttachment(String udid,) async {
+  Future<(bool?, String?, SaveAppointmentResponse?)> deleteAttachment(String udid,) async {
     var res;
     try {
       res = await sl<web.WebService>()
@@ -894,8 +874,7 @@ class AppointmentRepository {
       SaveAppointmentResponse response =
       SaveAppointmentResponse.fromJson(res.data);
 
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          true, "", response);
+      return (true, "", response);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -909,8 +888,7 @@ class AppointmentRepository {
         statusCode: error.response?.statusCode,
         dioError: error,
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -919,8 +897,7 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, SaveAppointmentResponse?>(
-          false, error.toString(), null);
+      return (false, error.toString(), null);
     }
   }
 

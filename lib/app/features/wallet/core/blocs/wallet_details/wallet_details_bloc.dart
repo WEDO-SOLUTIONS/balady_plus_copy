@@ -3,7 +3,7 @@ import 'dart:typed_data';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/services/local/helpers.dart';
@@ -34,19 +34,19 @@ class WalletDetailsBloc extends Bloc<WalletDetailsEvent, WalletDetailsState> {
 
   Future<void> _printWalletItem(ShareWalletItem e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.download));
-    Tuple4<bool?, String?, Uint8List?, String?> response =
+    (bool?, String?, Uint8List?, String?) response =
         await _repository.downLoadLicense(e.selectedIetm?.uuid ?? "");
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.item3 != null && response.item1 != null && response.item1!) {
+    if (response.$3 != null && response.$1 != null && response.$1!) {
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-      if (response.item3 != null)
-        Helpers.openFile(response.item3!, contentType: response.item4);
+      if (response.$3 != null)
+        Helpers.openFile(response.$3!, contentType: response.$4);
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          errorMessage: response.item2 ??
+          errorMessage: response.$2 ??
               Helpers.translatingWord("errors_server_error_1")));
     }
   }
@@ -58,31 +58,31 @@ class WalletDetailsBloc extends Bloc<WalletDetailsEvent, WalletDetailsState> {
         await locator<HealthLicenseRepository>()
             .checkUpdatedPhoto(state.selectedItem!.requestId!);
 
-    if (result.item3?.data?.result == true) {
+    if (result.$3?.data?.result == true) {
       emit(state.copyWith(photoStatus: BlocStatus.success));
-    } else if (result.item3?.data?.result == false) {
+    } else if (result.$3?.data?.result == false) {
       emit(state.copyWith(photoStatus: BlocStatus.success));
     } else {
       emit(state.copyWith(photoStatus: BlocStatus.failure));
     }
 
-    return result.item3?.data?.result;
+    return result.$3?.data?.result;
   }*/
 
   void checkPhoto() async {
     print("HEREE ${state.selectedItem!.requestId}");
     emit(state.copyWith(status: BlocStatus.download));
 
-    Tuple3<bool?, String?, CheckUpdateClientPhoto?> result =
+    (bool?, String?, CheckUpdateClientPhoto?) result =
         await locator<HealthLicenseRepository>()
             .checkUpdatedPhoto(state.selectedItem!.requestId!);
     print(result);
     emit(state.copyWith(status: BlocStatus.success));
 
-    if (result.item3?.data?.result == true) {
+    if (result.$3?.data?.result == true) {
       add(ShareWalletItem(selectedIetm: state.selectedItem));
-    } else if (result.item3 != null) {
-      if (result.item3?.data?.responseCode == "2") {
+    } else if (result.$3 != null) {
+      if (result.$3?.data?.responseCode == "2") {
         bool? isUpdated = await BottomSheetDialog.showDraggableSheet(
             NavigationService.navigatorKey.currentContext!,
             dialogKeyName: DialogName.healthCertificateUpdatePhotoActionsDialog,
@@ -97,7 +97,7 @@ class WalletDetailsBloc extends Bloc<WalletDetailsEvent, WalletDetailsState> {
           add(ShareWalletItem(selectedIetm: state.selectedItem));
       }
     } else {
-      CommonFunctions.showError(result.item2 ?? "");
+      CommonFunctions.showError(result.$2 ?? "");
     }
   }
 }
