@@ -25,7 +25,6 @@ import 'package:permission_handler/permission_handler.dart';
 const _maxImageResolution = 5000;
 const _minPhotoWidth = 100;
 const _photoPadding = 8.0;
-const limitPhoto = 10;
 
 class FeedbackImages extends StatelessWidget {
   final FeedbackImageInputEntity field;
@@ -131,7 +130,7 @@ class FeedbackImages extends StatelessWidget {
     }
 
     final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage(selectedImages: selectedImages);
+    final images = await _pickedImage();
     if (images.isEmpty) {
       return;
     }
@@ -186,8 +185,8 @@ class FeedbackImages extends StatelessWidget {
     return null;
   }
 
-  Future<List<XFile>> _pickedImage({required List<XFile> selectedImages}) async {
-    final images = await ImagePicker().pickMultiImage(limit: limitPhoto - selectedImages.length);
+  Future<List<XFile>> _pickedImage() async {
+    final images = await ImagePicker().pickMultiImage();
 
     return images;
   }
