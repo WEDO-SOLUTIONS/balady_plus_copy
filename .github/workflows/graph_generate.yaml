@@ -1,12 +1,9 @@
 name: Lakos graph generate
 
 on:
-  pull_request:
-    types:
-      - opened
-      - reopened
-      - ready_for_review
-      - synchronize
+  push:
+    branches:
+      - 'urbi-release-*'
 
 permissions:
   contents: write
