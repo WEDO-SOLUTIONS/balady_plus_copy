@@ -192,7 +192,6 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'poi_favorite_dialog',
               page: PoiFavoriteDialogRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'error_sheet_dialog',

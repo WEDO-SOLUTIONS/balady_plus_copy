@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:auto_route/annotations.dart';
+import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/poi_card/widgets/poi_favorite_dialog_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
-import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
@@ -28,9 +27,13 @@ class PoiFavoriteDialogPage extends ConsumerStatefulWidget {
 }
 
 class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
+  late final scrollController = StatelessBottomSheetController(
+    onClose: (_) => context.router.popForced(),
+  );
+
   void _withPop(Future<void> future) {
     unawaited(future);
-    Navigator.of(context).pop();
+    scrollController.close();
   }
 
   @override
@@ -55,54 +58,77 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
         ) !=
         null;
 
+    const itemPadding = EdgeInsets.symmetric(
+      horizontal: Spacing.$4x,
+      vertical: Spacing.$3x,
+    );
+    final itemTitleStyle = context.textStyleV3.bodyLargeRegular.copyWith(
+      color: context.colorsV2.foregroundDefault,
+    );
+
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Material(
-              borderRadius: BorderRadius.circular(8),
-              color: Colors.white,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (showWork)
-                    PoiFavoriteDialogButton(
-                      iconAsset: 'assets/icons/svg/ic_work.svg',
-                      title: context.l10n.work,
-                      showBorder: true,
-                      onTap: () => _withPop(favNotifier.setWork(widget.favItem)),
-                    ),
-                  if (showHome)
-                    PoiFavoriteDialogButton(
-                      iconAsset: 'assets/icons/svg/ic_home.svg',
-                      title: context.l10n.home,
-                      showBorder: true,
-                      onTap: () => _withPop(favNotifier.setHome(widget.favItem)),
-                    ),
-                  PoiFavoriteDialogButton(
-                    iconAsset: 'assets/icons/svg/ic_bookmark.svg',
-                    title: context.l10n.favourites,
-                    showBorder: false,
-                    onTap: () => _onFavTap(isFavourite),
-                  ),
-                ],
+      child: StatelessBottomSheet(
+        scrollController: scrollController,
+        backgroundColor: context.colorsV2.backgroundSurface4,
+        draggerColor: context.colorsV2.backgroundSurface4,
+        safeAreaColor: context.colorsV2.backgroundSurface4,
+        content: [
+          ContentRow(
+            options: ContentRowOptions(
+              padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
+              title: context.l10n.addToFavorites,
+              titleStyle: context.textStyleV3.h4SemiBold.copyWith(
+                color: context.colorsV2.foregroundDefault,
+              ),
+              customActionWidget: AppButton.close(
+                onTap: scrollController.close,
+                padding: EdgeInsets.zero,
+                textColor: context.colorsV2.neutralOnContainer,
+                color: context.colorsV2.neutralContainerDefault,
+                innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
               ),
             ),
-            const SizedBox(height: 8),
-            LabeledElevatedButton(
-              textColor: context.color.textAndIconsBasePrimary,
-              backgroundColor: Colors.white,
-              onPressed: () => Navigator.of(context).pop(),
-              label: context.l10n.cancel,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$5x),
+            child: ContentWrapper(
+              color: Colors.white,
+              children: [
+                if (showWork)
+                  ContentRow(
+                    onTap: () => _withPop(favNotifier.setWork(widget.favItem)),
+                    options: ContentRowOptions(
+                      padding: itemPadding,
+                      dividerEnabled: true,
+                      title: context.l10n.setAsWork,
+                      titleStyle: itemTitleStyle,
+                      leadingIcon: Icon(GeneralIcons.briefcase, color: context.colorsV2.foregroundDefault),
+                    ),
+                  ),
+                if (showHome)
+                  ContentRow(
+                    onTap: () => _withPop(favNotifier.setHome(widget.favItem)),
+                    options: ContentRowOptions(
+                      padding: itemPadding,
+                      dividerEnabled: true,
+                      title: context.l10n.setAsHome,
+                      titleStyle: itemTitleStyle,
+                      leadingIcon: Icon(GeneralIcons.home, color: context.colorsV2.foregroundDefault),
+                    ),
+                  ),
+                ContentRow(
+                  onTap: () => _onFavTap(isFavourite),
+                  options: ContentRowOptions(
+                    padding: itemPadding,
+                    title: context.l10n.addToFavorite,
+                    titleStyle: itemTitleStyle,
+                    leadingIcon: Icon(SystemIcons.bookmarkAdd, color: context.colorsV2.foregroundDefault),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 32),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
