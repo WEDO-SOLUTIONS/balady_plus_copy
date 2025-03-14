@@ -140,7 +140,7 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.16
+    version: 1.0.17
 
 dependency_overrides:
   # for dio_http_cache
