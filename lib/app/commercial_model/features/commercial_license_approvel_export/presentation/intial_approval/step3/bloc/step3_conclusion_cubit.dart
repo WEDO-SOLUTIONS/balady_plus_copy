@@ -78,29 +78,32 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
   }
 
 
-
   ConclusionSection? getConclusionSection({List<RequestFlow>? requestFlow,List<AllowedPermits>? allowedPermits
     ,List<CivilDefenseAllowedDocuments>? civilDefenseDocuments,List<CleaningOptions>? cleaningOptions,
-    List<CommercialOffices>? commercialOffices, List<EngOffices>? engOffices
+    List<CommercialOffices>? commercialOffices, List<EngOffices>? engOffices,
+    List<PreDefinedConditionTypes>? preDefinedConditionTypes,
+    List<SupervisingAuthoritiesForActivities>? lstSupervisingAuthorities,
+    List<String>? lstPreDefinedConditionsByType,
+    List<FastFlowConditions>? lstFastFlowConditions,List<String>? lstboardContractRequirementMessage
 
   }) {
 
 
     if(requestFlow != null&& requestFlow.isNotEmpty)
-      {
-        ConclusionSection obj = ConclusionSection();
-        obj.sectionName = "requestFlow".tr();
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "requestFlow".tr();
 
-        Content section = Content();
-        section.label="requirements".tr();
-        section.value=[];
-        requestFlow.asMap().forEach((index, value) {
-          section.value?.add(value.stepName!);
-        });
-        obj.sectionContent = section;
+      Content section = Content();
+      section.label="requirements".tr();
+      section.value=[];
+      requestFlow.asMap().forEach((index, value) {
+        section.value?.add(value.stepName!);
+      });
+      obj.sectionContent = section;
 
-        return obj;
-      }
+      return obj;
+    }
     else  if(allowedPermits != null&& allowedPermits.isNotEmpty)
     {
       ConclusionSection obj = ConclusionSection();
@@ -144,6 +147,77 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
 
       return obj;
     }
+    else  if(preDefinedConditionTypes != null&& preDefinedConditionTypes.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "preDefinedConditionTypesTitle".tr();
+      Content section = Content();
+      section.label="preDefinedConditionTypesTitle".tr();
+      section.value=[];
+      preDefinedConditionTypes.asMap().forEach((index, value) {
+        section.value?.add(value.name!);
+      });
+      obj.sectionContent = section;
+      return obj;
+    }
+
+    else  if(lstPreDefinedConditionsByType != null&& lstPreDefinedConditionsByType.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "PreDefinedConditionsByTypeTitle".tr();
+      Content section = Content();
+      section.label="PreDefinedConditionsByTypeTitle".tr();
+      section.value=[];
+      lstPreDefinedConditionsByType.asMap().forEach((index, value) {
+        section.value?.add(value);
+      });
+      obj.sectionContent = section;
+      return obj;
+    }
+
+    else  if(lstboardContractRequirementMessage != null&& lstboardContractRequirementMessage.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "boardContractRequirementMessage".tr();
+      Content section = Content();
+      section.label="boardContractRequirementMessage".tr();
+      section.value=[];
+      lstboardContractRequirementMessage.asMap().forEach((index, value) {
+        section.value?.add(value);
+      });
+      obj.sectionContent = section;
+      return obj;
+    }
+
+    else  if(lstFastFlowConditions != null&& lstFastFlowConditions.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "fastFlowConditions".tr();
+      Content section = Content();
+      section.label="fastFlowConditions".tr();
+      section.value=[];
+      lstFastFlowConditions.asMap().forEach((index, value) {
+        section.value?.add(value.conditionName!);
+      });
+      obj.sectionContent = section;
+      return obj;
+    }
+
+
+
+    else  if(lstSupervisingAuthorities != null&& lstSupervisingAuthorities.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "SupervisingAuthorities".tr();
+      Content section = Content();
+      section.label="SupervisingAuthorities".tr();
+      section.value=[];
+      lstSupervisingAuthorities[0].supervisions?.asMap().forEach((index, value) {
+        section.value?.add(value.agencyName!);
+      });
+      obj.sectionContent = section;
+      return obj;
+    }
 
     else  if(commercialOffices != null&& commercialOffices.isNotEmpty)
     {
@@ -178,4 +252,5 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
 
 
   }
+
 }

@@ -367,6 +367,24 @@ class RepositoryImpl implements Repository {
 
   }
 
+  @override
+  Future<Either<Failure, bool>> ReplyWithNote(String requestId,String note,String noteId)async {
+    try {
+      final data = await remoteDataSource.ReplyWithNotes(requestId,note,noteId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
+
 
 
 

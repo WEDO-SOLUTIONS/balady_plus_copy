@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 
 import '../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
+import '../../domain/entity/request_note_info.dart';
 import 'ConclusionWidget.dart';
 import 'ExtraActivitiesInfoWidget.dart';
 import 'MainActivityInfoWidget.dart';
@@ -211,11 +212,11 @@ class _RequestDetailsBodyState
                     requestCommercialLicenseDetails.notes != null
                         ? ListView.builder(
                       itemCount: requestCommercialLicenseDetails
-                          .notes!.length,
+                          .notes?.length??0,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) {
-                        RequestNotesInfo requestNotesInfo =
+                        RequestNoteInfo requestNotesInfo =
                         requestCommercialLicenseDetails
                             .notes![index];
                         return Card(
@@ -238,8 +239,7 @@ class _RequestDetailsBodyState
                                     ),
                                     const Spacer(),
                                     CustomTextWidget(
-                                      requestNotesInfo.date
-                                          .toWrittenDate(),
+                                      requestNotesInfo.date??"",
                                       fontSize: 12,
                                       fontColor:
                                       AppColor.blackModern500Light,
@@ -250,7 +250,7 @@ class _RequestDetailsBodyState
                                 ),
                                 const SizedBox(height: 16),
                                 CustomTextWidget(
-                                  requestNotesInfo.note,
+                                  requestNotesInfo.note??"",
                                   fontSize: 12,
                                   maxLines: 100,
                                   fontColor: AppColor.blackModern600Light,

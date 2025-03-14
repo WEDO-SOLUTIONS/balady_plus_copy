@@ -91,7 +91,7 @@ class _Step2IntialApprovalActivityDataState extends State<Step2IntialApprovalAct
                                               ? context
                                               .read<
                                               Step2ActivityDataExportCubit>()
-                                              .onSelectIsicActivity(i)
+                                              .onSelectIsicActivity(i,false)
                                               : null;
                                         });
                                   },

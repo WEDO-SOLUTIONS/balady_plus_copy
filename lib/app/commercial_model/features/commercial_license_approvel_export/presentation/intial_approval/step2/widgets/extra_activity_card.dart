@@ -30,7 +30,7 @@ class ExtraActivityCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CustomTextWidget(
-                "isicName2".tr(),
+                "subActivity".tr(),
                 fontColor: AppColor.primary700Light,
                 fontSize: 12,
                 fontWeight: AppFontWeight.bold,

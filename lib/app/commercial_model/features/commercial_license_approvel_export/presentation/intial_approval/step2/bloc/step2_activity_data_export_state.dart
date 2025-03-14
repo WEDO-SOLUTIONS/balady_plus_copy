@@ -114,7 +114,8 @@ class Step2ActivityDataExportState extends Equatable {
     requestNo,
     landNo,
     mapNo,
-    splNotification
+    splNotification,
+    lstSelectedAddetionalActivity
       ];
 
   Step2ActivityDataExportState copyWith(
@@ -186,9 +187,7 @@ class Step2ActivityDataExportState extends Equatable {
         addetionalActivityDetailsListStatus:
             addetionalActivityDetailsListStatus ??
                 this.addetionalActivityDetailsListStatus,
-        lstSelectedAddetionalActivity: lstSelectedAddetionalActivities == null
-            ? this.lstSelectedAddetionalActivity
-            : lstSelectedAddetionalActivities.value,
+        lstSelectedAddetionalActivity: lstSelectedAddetionalActivities == null ? this.lstSelectedAddetionalActivity : lstSelectedAddetionalActivities.value,
         userSelectedAddetionalItem:
             userSelectedAddetionalItem == null ? this.userSelectedAddetionalItem : userSelectedAddetionalItem.value,
         // addetionalDetailsItem: addetionalDetailsItem == null

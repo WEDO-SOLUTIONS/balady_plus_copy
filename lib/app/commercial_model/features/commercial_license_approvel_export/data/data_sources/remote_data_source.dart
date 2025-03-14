@@ -48,6 +48,7 @@ abstract class RemoteDataSource {
 
   Future<bool> cancelIntialApproval({required int requestId});
   Future<String> getSPLNotification({required String requestId,required String mencipiltyId});
+  Future<bool> ReplyWithNotes( String requestId, String note,String noteId);
 }
 
 class RemoteDataSourceImpl extends RemoteDataSource {
@@ -1057,6 +1058,58 @@ class RemoteDataSourceImpl extends RemoteDataSource {
       var data = response.data["data"]["result"];
       final decodedResponse =
       ResponseBodyModel<String>.fromMap(response.data, parsedResult: data);
+
+      return decodedResponse.data!.result!.toFuture();
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
+      else {
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: error.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<bool> ReplyWithNotes( String requestId,  String note, String noteId) async {
+    var response;
+
+    try {
+      response = await webService.dio.post(CommercialModelEndPoints.replyWithNote(requestId),
+      data: {
+        "noteId":noteId,
+        "replyText":note
+      }
+      );
+
+
+      final decodedResponse =
+      ResponseBodyModel<bool>.fromMap(response.data, parsedResult: true);
 
       return decodedResponse.data!.result!.toFuture();
     } on DioError catch (error, stackTrace) {

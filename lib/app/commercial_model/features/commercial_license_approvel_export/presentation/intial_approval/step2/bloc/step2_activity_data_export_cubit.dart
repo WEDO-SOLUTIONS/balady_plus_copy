@@ -127,25 +127,6 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
                               onPressed: () {
                                 NavigationService.goBack();
                               }),
-
-                          // Row(
-                          //   children: [
-                          //
-                          //     // Expanded(
-                          //     //   child: ,
-                          //     // ),
-                          //     // const CustomHorizontalSpace(width: 32),
-                          //     //
-                          //     // Expanded(
-                          //     //   child: ElevatedButtonWidget.primaryCustomBorder(
-                          //     //       text: "cancelButton".tr(),
-                          //     //       onPressed: () {
-                          //     //         NavigationService.goBack();
-                          //     //       }),
-                          //     //
-                          //     // ),
-                          //   ],
-                          // ),
                           body:IntactiveCalculatorFees( model: res,)
                       ));
 
@@ -210,12 +191,12 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   }
 
 
-  void getSubActivityDetails(SubActivityEntity subActivity) async {
+  void getSubActivityDetails(SubActivityEntity subActivity,bool? draft) async {
     if(subActivity.id == null) return;
     emit(state.copyWith(
         subActivityDetailsStatus: BlocStatus.loading, errorMessage: "",
-        userSelectedAddetionalItem:state.isDraft==true?null: Nullable(null),
-        lstSelectedAddetionalActivities:state.isDraft==true?null: Nullable(null)
+        userSelectedAddetionalItem:draft==true?null: Nullable(null),
+        lstSelectedAddetionalActivities:draft==true?null: Nullable(null)
     ));
 
 
@@ -239,14 +220,16 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     });
 
   }
-  void onSelectIsicActivity(IsicsMainActivity isicActivity) async {
+  void onSelectIsicActivity(IsicsMainActivity isicActivity,bool? draft) async {
     if(isicActivity.id == null||isicActivity.id.toString().isEmpty) return;
 
     emit(state.copyWith(
-        selectedSubActivity:state.isDraft==true?null: Nullable(null),
-        subActivityDetails: state.isDraft==true?null: Nullable(null),
-        lstAddetionalActivities:state.isDraft==true?null:  [],
-        lstSelectedAddetionalActivities: state.isDraft==true?null: Nullable([]),
+        selectedSubActivity:draft==true?null: Nullable(null),
+        subActivityDetails: draft==true?null: Nullable(null),
+        lstAddetionalActivities:draft==true?null:  [],
+        lstSelectedAddetionalActivities: draft==true?null: Nullable([]
+
+        ),
 
         subActivitiesStatus: BlocStatus.loading,
         errorMessage: ""));
@@ -279,7 +262,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
     });
   }
   void onSelectSubActivity(SubActivityEntity subActivity) async {
-    getSubActivityDetails(subActivity);
+    getSubActivityDetails(subActivity,false);
 
   }
   void onAccommodationTypes(LookupsModel accommodationTypes) =>
@@ -315,9 +298,13 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         status: BlocStatus.success,
         userSelectedAddetionalItem: Nullable(null),
         lstSelectedAddetionalActivities: Nullable(selectedAddetionalList)));
-  }
-  void onSelectAddetionalActivity(AllowedActivities item) async {
 
+    List<AddetionalActivityRequest> selectedAddetionalList11 =
+        state.lstSelectedAddetionalActivity ?? [];
+  }
+
+
+  void onSelectAddetionalActivity(AllowedActivities item) async {
 
     emit(state.copyWith(
         addetionalActivityDetailsListStatus: BlocStatus.success,
@@ -539,7 +526,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
             selectedAccommodationType: Nullable(null),
             selectedIsicActivity: Nullable(null),
             atmFeesPaid: false,
-            isDraft: false,
+            isDraft: true,
             draftStatus: BlocStatus.loading,
             selectedSubActivity: Nullable(null)
         ));
@@ -586,7 +573,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
             selectedAccommodationType: Nullable(requestData.activities?.accommodationType),
             selectedIsicActivity:selectedMainActivity.id != null? Nullable(selectedMainActivity):Nullable(null),
             atmFeesPaid: atmFeesPaid,
-            isDraft: false,
+            isDraft: true,
             draftStatus: BlocStatus.success,
             selectedSubActivity:selectedSubActivity.id != null? Nullable(selectedSubActivity):Nullable(null)
         ));
@@ -604,9 +591,9 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
           }
         }
         if(selectedMainActivity.id != null && selectedMainActivity.id.toString().isNotEmpty ) {
-          onSelectIsicActivity(selectedMainActivity);
+          onSelectIsicActivity(selectedMainActivity,true);
         }
-        getSubActivityDetails(selectedSubActivity);
+        getSubActivityDetails(selectedSubActivity,true);
 
 
       }
