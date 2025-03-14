@@ -2902,10 +2902,8 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/shared/ui/loading_image/loading_shimmer_image.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/features/poi_card/widgets/poi_favorite_dialog_button.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/loading_sheet.dart";
   "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
