@@ -150,7 +150,12 @@ class FeedbackImages extends StatelessWidget {
       return;
     }
 
-    final filteredImages = await filterImages(context, images: images, fieldState: fieldState);
+    final filteredImages = await filterImages(
+      context,
+      images: images,
+      fieldState: fieldState,
+      selectedImages: selectedImages,
+    );
     final value = fieldState.value ?? const IList.empty();
 
     /// avoid upload same image twice
@@ -179,8 +184,12 @@ class FeedbackImages extends StatelessWidget {
     return isImageFormatAccepted && isSizeAccepted && isDimAccepted;
   }
 
-  Future<List<XFile>> filterImages(BuildContext context,
-      {required List<XFile> images, required FormFieldState<IList<FileUpload>> fieldState}) async {
+  Future<List<XFile>> filterImages(
+    BuildContext context, {
+    required List<XFile> images,
+    required FormFieldState<IList<FileUpload>> fieldState,
+    required List<XFile> selectedImages,
+  }) async {
     final List<XFile> filteredImages = [];
     bool isAllImagesValid = true;
     for (final image in images) {
@@ -192,7 +201,6 @@ class FeedbackImages extends StatelessWidget {
     }
 
     if (filteredImages.length > field.maxImages) {
-      final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
       filteredImages.removeRange(field.maxImages - selectedImages.length, filteredImages.length);
     }
 
