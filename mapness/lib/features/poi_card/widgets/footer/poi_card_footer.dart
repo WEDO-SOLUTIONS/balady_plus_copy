@@ -86,6 +86,7 @@ class PoiCardFooter extends HookConsumerWidget {
 
     return ThrottledCallbackWidget(
       callback: share,
+      throttleDuration: const Duration(seconds: 2),
       builder: (context, throttledShare) => BottomActionBar(
         displayShadow: displayShadow.value,
         items: [

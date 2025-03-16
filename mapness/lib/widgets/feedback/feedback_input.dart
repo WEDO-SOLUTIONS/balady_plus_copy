@@ -23,7 +23,8 @@ class FeedbackTextInput extends StatefulWidget {
     this.allowedInputPattern,
     this.keyboardType,
     this.onChanged,
-    this.onValidate,
+    this.errorText,
+    this.focusNode,
     super.key,
   });
 
@@ -37,7 +38,8 @@ class FeedbackTextInput extends StatefulWidget {
   final TextEditingController? controller;
   final TextInputType? keyboardType;
   final ValueChanged<String>? onChanged;
-  final FormFieldValidator<String>? onValidate;
+  final String? errorText;
+  final FocusNode? focusNode;
 
   @override
   State<FeedbackTextInput> createState() => _FeedbackTextInputState();
@@ -45,23 +47,24 @@ class FeedbackTextInput extends StatefulWidget {
 
 class _FeedbackTextInputState extends State<FeedbackTextInput> {
   late final TextEditingController _controller;
-  late final FocusNode _focusNode;
 
-  // TODO(ilyasov): Temporary fix, need to remove it after implementing custom form field
-  final _globalKey = GlobalKey<FormFieldState<String>>();
-
-  final _inputErrorState = ValueNotifier<bool>(false);
+  BaladyInputState _inputErrorState = BaladyInputState.defaultValue;
   var _isForceLtr = false;
-  String? _errorText;
 
   @override
   void initState() {
     super.initState();
     _controller = widget.controller ?? TextEditingController();
 
-    _focusNode = FocusNode();
-
     _controller.addListener(_controllerListener);
+
+    widget.focusNode?.addListener(() {
+      if (widget.focusNode?.hasFocus == true && mounted) {
+        setState(() {
+          _inputErrorState = BaladyInputState.defaultValue;
+        });
+      }
+    });
   }
 
   @override
@@ -74,8 +77,6 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
 
   @override
   void dispose() {
-    _inputErrorState.dispose();
-    _focusNode.dispose();
     _controller.removeListener(_controllerListener);
     super.dispose();
   }
@@ -93,25 +94,12 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     }
   }
 
-  String? _onValidate(String? value) {
-    if (_focusNode.hasFocus) {
-      return null;
-    }
-    final result = widget.onValidate?.call(value);
-    _inputErrorState.value = result != null;
-    return result;
-  }
-
   void _onChanged(String value) {
-    if (_globalKey.currentState?.hasError ?? false) {
-      _globalKey.currentState?.validate();
-    }
     var formattedValue = value;
     if (widget.type == FeedbackTextType.phone) {
       formattedValue = PhoneNumberFormatter.formatPure(formattedValue);
     }
     widget.onChanged?.call(formattedValue);
-    _errorText = _onValidate(value);
   }
 
   @override
@@ -122,9 +110,12 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     // in arabic phone texted ltr but should be aligned to right edge as other fields
     final textAlign = _isForceLtr && srcDirection == TextDirection.rtl ? TextAlign.end : null;
 
-    final inputState = _errorText != null || (_controller.text.length > widget.maxLength)
-        ? BaladyInputState.error
-        : BaladyInputState.defaultValue;
+    final bool hasNoFocusWithError = widget.focusNode?.hasFocus == false && widget.errorText != null;
+    final bool exceedsMaxLength = _controller.text.length > widget.maxLength;
+
+    _inputErrorState =
+        (hasNoFocusWithError || exceedsMaxLength) ? BaladyInputState.error : BaladyInputState.defaultValue;
+
     return Column(
       children: [
         Row(
@@ -143,17 +134,14 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
         Directionality(
           textDirection: direction,
           child: BaladyTextInput(
-            inputState: inputState,
+            inputState: _inputErrorState,
             controller: _controller,
             config: BaladyInputConfig(
               isDisposed: false,
               textAlign: textAlign,
-              stateKey: _globalKey,
-              focusNode: _focusNode,
+              focusNode: widget.focusNode,
               hintText: widget.hintText,
               fillColor: context.colorsV2.backgroundSurface1,
-              // Need to validate on the client side
-              //  onValidate: _onValidate,
               autovalidateMode: AutovalidateMode.onUnfocus,
               allowedInputPattern: widget.allowedInputPattern,
               maxLines: widget.maxLines,
@@ -168,7 +156,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
                 : null,
             supportingText: BaladySupportingText(
               maxLength: widget.maxLength,
-              text: _errorText,
+              text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText,
             ),
           ),
         ),

@@ -23,9 +23,9 @@ class PopupCard extends StatelessWidget {
   final Widget child;
 
   const PopupCard({
-    Key? key,
     required this.items,
     required this.child,
+    Key? key,
   }) : super(key: key);
 
   @override
@@ -64,9 +64,9 @@ class PopupMenuWidget extends StatelessWidget {
   final TextStyle? titleStyle;
 
   const PopupMenuWidget({
-    super.key,
     required this.title,
     required this.icon,
+    super.key,
     this.titleStyle,
     this.showDivider = true,
   });
@@ -81,8 +81,8 @@ class PopupMenuWidget extends StatelessWidget {
             width: 140,
             child: Padding(
               padding: const EdgeInsets.symmetric(
-                vertical: Spacing.verticalPaddingInsideCell,
-                horizontal: Spacing.horizontalPaddingInsideWrapper,
+                vertical: Spacing.$3x,
+                horizontal: Spacing.$4x,
               ),
               child: ContentRow(
                 options: ContentRowOptions(

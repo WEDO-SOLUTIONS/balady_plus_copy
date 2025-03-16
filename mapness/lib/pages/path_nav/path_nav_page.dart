@@ -311,7 +311,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await _stopActiveSharing();
 
     if (_navigationState.value != PathNavState.finished) {
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingHalfway);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingHalfway);
+      ref.read(advertMetricsProvider.notifier).sendEvent(
+            AdvertMetricsKeys.journeyHalfwayUnique,
+            isUniquePerSession: true,
+          );
       ref.read(pathNavMessageProvider.notifier).stopNavigation();
       await ref.read(dgisControllerProvider).value?.stopNavigation();
     }
@@ -436,7 +440,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   void _naviEvent(NavigationEvent event) {
     if (event == NavigationEvent.finished) {
       ref.read(urbiAnalyticsProvider).track('tripCompleted');
-      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingCompleted);
+      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingCompleted);
+      ref.read(advertMetricsProvider.notifier).sendEvent(
+            AdvertMetricsKeys.journeyCompleteUnique,
+            isUniquePerSession: true,
+          );
       _navigationState.value = PathNavState.finished;
       ref.read(layersControlsProvider.notifier).hideParking();
       ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);

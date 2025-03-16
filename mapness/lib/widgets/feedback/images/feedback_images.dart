@@ -12,14 +12,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/entities/feedback/feedback_image_action_error.dart';
 import 'package:mapness/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
-import 'package:mapness/widgets/feedback/images/feedback_images_action_error_sheet.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 const _maxImageResolution = 5000;
@@ -33,6 +32,21 @@ class FeedbackImages extends StatelessWidget {
     required this.field,
     super.key,
   });
+
+  Future<Size> _calculateImageDimension(String imagePath) {
+    final Completer<Size> completer = Completer();
+    final Image image = Image.file(File(imagePath));
+    image.image.resolve(const ImageConfiguration()).addListener(
+      ImageStreamListener(
+        (image, synchronousCall) {
+          final myImage = image.image;
+          final Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
+          completer.complete(size);
+        },
+      ),
+    );
+    return completer.future;
+  }
 
   @override
   Widget build(BuildContext context) => Column(
@@ -129,71 +143,100 @@ class FeedbackImages extends StatelessWidget {
       return;
     }
 
+    // Work only IOS
     final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage();
+    final images = await _pickedImage(limit: field.maxImages - selectedImages.length);
     if (images.isEmpty) {
       return;
     }
 
-    final pickError = await isImageSupported(
+    final filteredImages = await filterImages(
       context,
-      images: images + selectedImages,
+      images: images,
+      fieldState: fieldState,
+      selectedImages: selectedImages,
     );
-
-    if (pickError != null) {
-      unawaited(
-        _showImageActionErrorSheet(
-          context,
-          error: pickError,
-          onRetry: () => _handlePickImage(context, fieldState),
-        ),
-      );
-      return;
-    }
-
     final value = fieldState.value ?? const IList.empty();
+
+    /// avoid upload same image twice
+    filteredImages.removeWhere(
+      (element) => value.any(
+        (element2) => element2.srcPath == element.path,
+      ),
+    );
 
     fieldState.didChange(
       value.addAll(
-        images.map(
+        filteredImages.map(
           (image) => FileUpload.init(srcPath: image.path),
         ),
       ),
     );
   }
 
-  Future<FeedbackImagePickError?> isImageSupported(
+  Future<bool> isValidImage(String path) async {
+    final fileType = path.split('.').last.toLowerCase();
+    final isImageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
+    final size = await File(path).length();
+    final isSizeAccepted = size <= field.maxSize;
+    final dim = await _calculateImageDimension(path);
+    final isDimAccepted = dim.width <= _maxImageResolution && dim.height <= _maxImageResolution;
+    return isImageFormatAccepted && isSizeAccepted && isDimAccepted;
+  }
+
+  Future<List<XFile>> filterImages(
     BuildContext context, {
     required List<XFile> images,
+    required FormFieldState<IList<FileUpload>> fieldState,
+    required List<XFile> selectedImages,
   }) async {
-    final sizes = await Future.wait(images.map((e) => e.length()));
-    final totalSize = sizes.reduce((value, element) => value + element);
-
-    if (totalSize > field.maxSize) {
-      return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
-    }
-
+    final List<XFile> filteredImages = [];
+    bool isAllImagesValid = true;
     for (final image in images) {
-      final fileType = image.path.split('.').last.toLowerCase();
-      final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
-
-      if (!imageFormatAccepted) {
-        return FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
+      final isImageValid = await isValidImage(image.path);
+      isAllImagesValid &= isImageValid;
+      if (isImageValid) {
+        filteredImages.add(image);
       }
     }
 
-    return null;
+    if (filteredImages.length > field.maxImages) {
+      filteredImages.removeRange(field.maxImages - selectedImages.length, filteredImages.length);
+    }
+
+    if (!isAllImagesValid) {
+      unawaited(
+        _showImageActionErrorSheet(
+          context,
+          error: BaseErrorWidget(
+            errorLabel: context.l10n.feedbackImageSizeExceedFailure(
+              field.maxSize.formatAsFileSize(),
+            ),
+            buttonLabel: context.l10n.done,
+            onRetry: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          onRetry: () => _handlePickImage(context, fieldState),
+        ),
+      );
+    }
+    return filteredImages;
   }
 
-  Future<List<XFile>> _pickedImage() async {
-    final images = await ImagePicker().pickMultiImage();
+  Future<List<XFile>> _pickedImage({int? limit}) async {
+    final images = await ImagePicker().pickMultiImage(
+      maxWidth: _maxImageResolution.toDouble(),
+      maxHeight: _maxImageResolution.toDouble(),
+      limit: limit,
+    );
 
     return images;
   }
 
   Future<void> _showImageActionErrorSheet(
     BuildContext context, {
-    required FeedbackImagePickError error,
+    required Widget error,
     required AsyncCallback onRetry,
   }) async {
     final route = ModalRoute.of(context);
@@ -207,9 +250,7 @@ class FeedbackImages extends StatelessWidget {
           top: Radius.circular(RadiusBorder.l),
         ),
       ),
-      builder: (_) => FeedbackImagesActionErrorSheet(
-        error: error,
-      ),
+      builder: (_) => error,
     );
     if (needToRetry ?? false) {
       await onRetry();

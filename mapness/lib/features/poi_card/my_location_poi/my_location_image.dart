@@ -4,8 +4,8 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/profile/domain/user_profile_data.dart';
-import 'package:mapness/_features/profile/providers/profile_image_provider.dart';
+import 'package:mapness/entities/profile/user_profile_data.dart';
+import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 

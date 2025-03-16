@@ -27,7 +27,6 @@ class Repository extends _$Repository {
         settings: const TalkerDioLoggerSettings(
           printRequestHeaders: true,
           printResponseHeaders: true,
-          printResponseMessage: true,
         ),
       ),
     );
