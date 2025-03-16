@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
@@ -44,14 +45,14 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   Future<bool> getAppointmentDetailsResponse(int appointmentId) async {
     isLoading = true;
     notifyListeners();
-    (bool?, String?, AppointmentDetails?) response = await _repository.getAppointmentDetails(appointmentId);
-    if (response.$1 != null && response.$1! && response.$3?.data?.result != null) {
-      appointmentDetailsResponse = response.$3;
+    Tuple3<bool?, String?, AppointmentDetails?> response = await _repository.getAppointmentDetails(appointmentId);
+    if (response.item1 != null && response.item1! && response.item3?.data?.result != null) {
+      appointmentDetailsResponse = response.item3;
       isLoading = false;
       notifyListeners();
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     isLoading = false;
     notifyListeners();
@@ -80,27 +81,27 @@ class AppointmentDetailsViewModel extends BaseViewModel {
     }
   }
 
-  Future<(Uint8List?, String?)> printAppointment(int appointmentId) async {
+  Future<Tuple2<Uint8List?, String?>> printAppointment(int appointmentId) async {
     showLoading();
 
-    (bool?, String?, Uint8List?, String?) response = await _repository.printAppointment(appointmentId);
+    Tuple4<bool?, String?, Uint8List?, String?> response = await _repository.printAppointment(appointmentId);
     hideLoading();
-    if (response.$3 != null && response.$1 != null && response.$1!) {
-      return (response.$3, response.$4);
+    if (response.item3 != null && response.item1 != null && response.item1!) {
+      return Tuple2<Uint8List?, String?>(response.item3, response.item4);
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
-    return (response.$3, response.$4);
+    return Tuple2<Uint8List?, String?>(response.item3, response.item4);
   }
 
   void printAppointmentFunction(int appointmentId) async {
-    (Uint8List?, String?) res = await printAppointment(appointmentId);
-    if (res.$1 != null) openFile(res.$1!, contentType: res.$2);
+    Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
+    if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
   }
 
   void shareAppointmentFunction(int appointmentId) async {
-    (Uint8List?, String?) res = await printAppointment(appointmentId);
-    if (res.$1 != null) shareFile(res.$1!, contentType: res.$2);
+    Tuple2<Uint8List?, String?> res = await printAppointment(appointmentId);
+    if (res.item1 != null) shareFile(res.item1!, contentType: res.item2);
   }
 
   void shareFile(Uint8List bytes, {String? contentType}) async {
@@ -179,39 +180,39 @@ class AppointmentDetailsViewModel extends BaseViewModel {
   Future<CancelAppointmentResponse?> cancelAppointmentApi(
       int requestNumber, List<LookUpItem> cancelReasons, String? otherReason) async {
     showLoading();
-    (bool?, String?, CancelAppointmentResponse?) response =
+    Tuple3<bool?, String?, CancelAppointmentResponse?> response =
         await _repository.cancelAppointment(requestNumber, cancelReasons, otherReason);
     hideLoading();
-    if (response.$3 != null && response.$3?.data != null && response.$1 != null && response.$1!) {
-      return response.$3;
+    if (response.item3 != null && response.item3?.data != null && response.item1 != null && response.item1!) {
+      return response.item3;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return null;
   }
 
   Future<ConfirmAppointmentResponse?> confirmAppointmentApi(String requestNumber) async {
     showLoading();
-    (bool?, String?, ConfirmAppointmentResponse?) response = await _repository.confirmAppointment(requestNumber);
+    Tuple3<bool?, String?, ConfirmAppointmentResponse?> response = await _repository.confirmAppointment(requestNumber);
     hideLoading();
-    if (response.$3 != null && response.$3?.data != null && response.$1 != null && response.$1!) {
-      return response.$3;
+    if (response.item3 != null && response.item3?.data != null && response.item1 != null && response.item1!) {
+      return response.item3;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return null;
   }
 
   Future<bool> getLookUpList() async {
     showLoading();
-    (bool?, String?, LookUpList?) response = await _repository.getLookupList("CANCEL_REASONS");
+    Tuple3<bool?, String?, LookUpList?> response = await _repository.getLookupList("CANCEL_REASONS");
     hideLoading();
-    if (response.$1 != null && response.$1! && response.$3?.data?.result != null) {
-      setCancelReasons(response.$3);
+    if (response.item1 != null && response.item1! && response.item3?.data?.result != null) {
+      setCancelReasons(response.item3);
 
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }

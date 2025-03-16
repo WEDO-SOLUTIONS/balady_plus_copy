@@ -9,7 +9,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/helpers.dart';
@@ -77,13 +77,13 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         requestDetails?.data?.result?.requestTypeId == 1303 ||
         requestDetails?.data?.result?.requestTypeId == 1308) {
       showLoading();
-      (bool?, String?, CheckUpdateClientPhoto?) result = await _rpository
+      Tuple3<bool?, String?, CheckUpdateClientPhoto?> result = await _rpository
           .checkUpdatedPhoto(requestDetails!.data!.result!.requestId!);
       hideLoading();
-      if (result.$3?.data?.result == true) {
+      if (result.item3?.data?.result == true) {
         printLicense();
-      } else if (result.$3 != null) {
-        if (result.$3?.data?.responseCode == "2") {
+      } else if (result.item3 != null) {
+        if (result.item3?.data?.responseCode == "2") {
           bool? isUpdated = await BottomSheetDialog.showDraggableSheet(
               NavigationService.navigatorKey.currentContext!,
               dialogKeyName:
@@ -100,7 +100,7 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
           if (isUpdated == true) printLicense();
         }
       } else {
-        showError(result.$2 ?? "");
+        showError(result.item2 ?? "");
       }
     } else {
       printLicense();
@@ -176,8 +176,8 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
           .map((e) => dataModel.downloadAttachments(e.attachUrl ?? "")));
 
     }*/
-    (Uint8List?, String?) res = await dataModel.downloadAttachments(id);
-    if (res.$1 != null) showFile(res.$1!, contentType: res.$2);
+    Tuple2<Uint8List?, String?> res = await dataModel.downloadAttachments(id);
+    if (res.item1 != null) showFile(res.item1!, contentType: res.item2);
   }
 
   // LICENSE_MANAGEMENT_STATUS isOrderDeletable() {
@@ -266,16 +266,16 @@ class HealthRequestDetailsViewModel extends BaseViewModel {
         .toString();
     if (licenseId != null) {
       if (requestDetails?.data?.result?.printable == true) {
-        (Uint8List?, String?) res =
+        Tuple2<Uint8List?, String?> res =
             await dataModel.downloadLicense(licenseId);
 
-        if (res.$1 != null) openFile(res.$1!, contentType: res.$2);
+        if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
       } else if (requestDetails?.getLicenseStatus() ==
           LICENSE_MANAGEMENT_STATUS.CANCELED) {
-        (Uint8List?, String?) res =
+        Tuple2<Uint8List?, String?> res =
             await dataModel.downloadCanceledLicense(licenseId);
 
-        if (res.$1 != null) openFile(res.$1!, contentType: res.$2);
+        if (res.item1 != null) openFile(res.item1!, contentType: res.item2);
       } else if (requestDetails?.getLicenseStatus() ==
           LICENSE_MANAGEMENT_STATUS.HOLDED) {
         showError(

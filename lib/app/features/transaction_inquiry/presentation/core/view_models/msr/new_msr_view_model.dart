@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
+import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/helpers.dart';
@@ -107,15 +107,15 @@ class NewMSRViewModel extends BaseViewModel {
       LatLng? location,
       bool? select = false}) async {
     showLoading();
-    final response =
+    final Tuple3<bool?, String?, SpecializedClassification?> response =
         await _repositry.getMSRSPlList(gis?.adminMunicipalityId ?? "",
             category: category);
     hideLoading();
-    if (response.$3?.splClassificationList?.isNotEmpty ?? false) {
+    if (response.item3?.splClassificationList?.isNotEmpty ?? false) {
       gisLocation = gis;
       selectedLocation.selectedLocation = location;
 
-      setSplClassifications(response.$3);
+      setSplClassifications(response.item3);
 
       navigateToDetails(
           snap: snap, select: select, clearClassificationSelection: true);
@@ -124,7 +124,7 @@ class NewMSRViewModel extends BaseViewModel {
       return true;
     } else {
       // show Error
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
       return false;
     }
   }
@@ -132,7 +132,7 @@ class NewMSRViewModel extends BaseViewModel {
   Future createRequest(FileDataItem? file) async {
     ///MMM
     if (createRequestresponse != null) return true;
-    (bool?, String?, CreateIncidentResult?) response;
+    Tuple3<bool?, String?, CreateIncidentResult?> response;
     String error = ("server_error_1").tr();
     try {
       CommonFunctions.sendUXCamEvent(
@@ -215,20 +215,20 @@ class NewMSRViewModel extends BaseViewModel {
       };
       response = await _repositry.createMSRRequest(body);
 
-      error = response.$2 ?? error;
+      error = response.item2 ?? error;
 
-      if (response.$1 == true &&
-          response.$3 != null &&
-          response.$3?.pyId != null) {
+      if (response.item1 == true &&
+          response.item3 != null &&
+          response.item3?.pyId != null) {
         continueIncidentCreation = null;
-        createRequestresponse = response.$3;
+        createRequestresponse = response.item3;
         return Future.value(true);
       } else {
-        if (response.$3?.errors != null &&
-            response.$3!.errors!.isNotEmpty) {
-          String? errorId = response.$3!.errors![0].id;
-          String duplicateRequestId = response.$3!.errors![0].pyID ?? "";
-          error = response.$3!.errors![0].message ?? error;
+        if (response.item3?.errors != null &&
+            response.item3!.errors!.isNotEmpty) {
+          String? errorId = response.item3!.errors![0].id;
+          String duplicateRequestId = response.item3!.errors![0].pyID ?? "";
+          error = response.item3!.errors![0].message ?? error;
           if (errorId == "CS_API_023") {
             continueIncidentCreation = null;
             showCustomDialog(DuplicateRequestDialog(
@@ -254,7 +254,7 @@ class NewMSRViewModel extends BaseViewModel {
             showError(error);
           }
         } else {
-          showError(response.$2 ?? "");
+          showError(response.item2 ?? "");
         }
         return Future.value(false);
       }
@@ -280,17 +280,17 @@ class NewMSRViewModel extends BaseViewModel {
       String? lastMemo,
       String? pyDescription,
       String? categoery}) async {
-    (bool?, String?, UploadFileResult?) response;
+    Tuple3<bool?, String?, UploadFileResult?> response;
     try {
       response = await _repositry.uploadFile(caseID, fileName, fileBase64,
           fileMemo, lastMemo, pyDescription, categoery);
 
-      if (response.$1 == true) {
+      if (response.item1 == true) {
         return Future.value(true);
       } else {
         response = await _repositry.uploadFile(caseID, fileName, fileBase64,
             fileMemo, lastMemo, pyDescription, categoery);
-        if (response.$1 == true) {
+        if (response.item1 == true) {
           return Future.value(true);
         } else {
           return Future.value(false);

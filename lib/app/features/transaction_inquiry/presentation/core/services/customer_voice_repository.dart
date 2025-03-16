@@ -5,7 +5,7 @@ import 'package:dartz/dartz.dart' hide Tuple3;
 import 'package:dio/dio.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+import 'package:tuple/tuple.dart';
 
 import '../../../../../core/services/global/web_service.dart' as web;
 
@@ -216,7 +216,7 @@ class CustomerVoiceRepository {
   //       state, error, result);
   // }
 
-  Future<(bool?, String?, SpecializedClassification?)> getMSRSPlList(
+  Future<Tuple3<bool?, String?, SpecializedClassification?>> getMSRSPlList(
       String municipality,
       {String? category}) async {
     Map<String, dynamic> queryParms = {};
@@ -251,7 +251,7 @@ class CustomerVoiceRepository {
       if (response.splClassificationList?.isEmpty ?? false) {
         errorMessage = ("no_spl_classification_error").tr();
       }
-      return (
+      return Tuple3<bool?, String?, SpecializedClassification?>(
         state,
         errorMessage,
         result,
@@ -276,7 +276,7 @@ class CustomerVoiceRepository {
 
       errorMessage = "error_please_try_again_later".tr();
     }
-    return (
+    return Tuple3<bool?, String?, SpecializedClassification?>(
       false,
       errorMessage,
       null,
@@ -393,7 +393,7 @@ class CustomerVoiceRepository {
     }
   }
 
-  Future<(bool?, String?, UploadFileResult?)> uploadFile(
+  Future<Tuple3<bool?, String?, UploadFileResult?>> uploadFile(
       String? caseID,
       String? fileName,
       String? fileBase64,
@@ -482,7 +482,7 @@ class CustomerVoiceRepository {
         );
       }
     }
-    return (state, error, response);
+    return Tuple3<bool?, String?, UploadFileResult?>(state, error, response);
   }
 
   /////////////  comment by fawzi not used in app
@@ -524,7 +524,7 @@ class CustomerVoiceRepository {
   //       state, error, response);
   // }
 
-  Future<(bool?, String?, CreateIncidentResult?)> createMSRRequest(
+  Future<Tuple3<bool?, String?, CreateIncidentResult?>> createMSRRequest(
     var body,
   ) async {
     String url = ApiUrl.MSRCreate;
@@ -562,6 +562,7 @@ class CustomerVoiceRepository {
         );
       }
     }
-    return (state, error, response);
+    return Tuple3<bool?, String?, CreateIncidentResult?>(
+        state, error, response);
   }
 }
