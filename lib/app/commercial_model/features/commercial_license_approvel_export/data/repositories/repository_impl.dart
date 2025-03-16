@@ -9,6 +9,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import '../models/initialApproval/fees_request.dart';
 import '../models/initialApproval/isics_main_activity.dart';
 import '../models/initialApproval/request_details_model.dart';
+import '../models/initialApproval/save_activity_and_location_response_model.dart';
 import '../models/initialApproval/sub_activity_details_data.dart';
 
 class RepositoryImpl implements Repository {
@@ -177,7 +178,7 @@ class RepositoryImpl implements Repository {
   }
 
   @override
-  Future<Either<Failure, int>> saveActivityDetails(
+  Future<Either<Failure, ResponseBodyModel<SaveActivityAndLocationResponseModel>>> saveActivityDetails(
       SubmitActivityDetailRequest? params) async {
     try {
       final data = await remoteDataSource.saveActivityDetails(params: params);

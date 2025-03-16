@@ -36,6 +36,7 @@ import '../../../../../../../features/vd/domain/use_cases/get_gis_data.dart';
 import '../../../../data/models/initialApproval/fees_request.dart';
 import '../../../../data/models/initialApproval/isics_main_activity.dart';
 import '../../../../data/models/initialApproval/request_details_model.dart';
+import '../../../../data/models/initialApproval/save_activity_and_location_response_model.dart';
 import '../../../../data/models/initialApproval/sub_activity_details_data.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../data/models/initialApproval/submit_activity_details_request.dart';
@@ -45,6 +46,7 @@ import '../../../../domain/use_cases/setp2_get_spl_notification.dart';
 import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
 
 
+import '../../step3/bloc/step3_conclusion_cubit.dart';
 import '../widgets/intactive_calculator_fees.dart';
 part 'step2_activity_data_export_state.dart';
 part 'map_export_event.dart';
@@ -121,7 +123,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
                       NavigationService.navigatorKey.currentContext!,
                       backgroundColor:AppColor.black,
                       child: BottomSheetWithActions(
-                          title: "warning_2".tr(),
+                          title: "intial_approval_fees".tr(),
                           action: ElevatedButtonWidget.primaryCustom(
                               text: "agree".tr(),
                               onPressed: () {
@@ -330,7 +332,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
   }
 
 
-  void saveSiteAndActivities() async {
+  void saveSiteAndActivities(BuildContext context) async {
     int requestId = sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!;
 
     emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
@@ -384,6 +386,8 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
           errorMessage: (failure as ServerFailure).errorMessage,
         )), (success) {
 
+     SaveActivityAndLocationResponseModel?  obj= success.data?.result;
+      context.read<Step3ConclusionCubit>().add(InitWorkFlowNameEvent(name: obj?.workFlow?.name));
       sl<CommercialLicenseInitialAprrovalBloc>().add((const NextPageEvent()));
       emit(state.copyWith(status: BlocStatus.success));
     });
@@ -393,119 +397,7 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
 
 
-  // void getSalamaWarningMessage() async {
-  //   emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-  //   try {
-  //     final response = await _getWarningMessage(SalamaWarningRequest(
-  //         activities: state.lstSelectedAddetionalActivity != null
-  //             ? state.lstSelectedAddetionalActivity!.map((e) {
-  //                 return Activity(
-  //                     activityId: e.detailsItem?.activityId, area: e.area);
-  //               }).toList()
-  //             : [],
-  //         shopArea: state.totalArea,
-  //         mainActivityId: state.selectedSubActivity?.id ?? 0));
-  //     response.fold((failure) {
-  //       print(failure);
-  //       emit(state.copyWith(
-  //         status: BlocStatus.failure,
-  //         errorMessage: (failure as ServerFailure).errorMessage,
-  //       ));
-  //     }, (success) {
-  //       emit(state.copyWith(
-  //         status: BlocStatus.success,
-  //       ));
-  //
-  //       if (success.isNotEmpty) {
-  //         BottomSheetDialog.showDraggableSheet(
-  //             NavigationService.navigatorKey.currentContext!,
-  //             child: BottomSheetWithActions(
-  //               title: "warning_2".tr(),
-  //               action: Row(
-  //                 children: [
-  //                   Expanded(
-  //                     child: ElevatedButtonWidget.primaryCustom(
-  //                         text: "agree".tr(),
-  //                         onPressed: () {
-  //                           NavigationService.goBack();
-  //
-  //                           save();
-  //                         }),
-  //                   ),
-  //                   const CustomHorizontalSpace(width: 32),
-  //                   Expanded(
-  //                     child: ElevatedButtonWidget.primaryCustomBorder(
-  //                         text: "cancelButton".tr(),
-  //                         onPressed: () {
-  //                           NavigationService.goBack();
-  //                         }),
-  //                   ),
-  //                 ],
-  //               ),
-  //               body: SalamaWarningMessage(
-  //                 message: success,
-  //               ),
-  //             ));
-  //       } else {
-  //         save();
-  //       }
-  //     });
-  //   } catch (error, stackTrace) {
-  //     LogsViewModel().sendEventFromModel(
-  //       event: ErrorExceptionModel(
-  //         nameEvent: EventsName.handledException,
-  //         message: error.toString(),
-  //         stackTrace: stackTrace.toString(),
-  //       ),
-  //     );
-  //     print(error);
-  //   }
-  // }
-  // Future<String> getActivitesSalamaWarningMessage(double area) async {
-  //   emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
-  //
-  //   final response = await _getWarninFlowMessage(SalamaWarningRequest(
-  //       activities: [
-  //         Activity(
-  //             activityId: state.addetionalDetailsItem?.activityId, area: area)
-  //       ],
-  //       shopArea: state.totalArea,
-  //       mainActivityId: state.selectedSubActivity?.id ?? 0));
-  //   return await response.fold((failure) async {
-  //     emit(state.copyWith(
-  //       status: BlocStatus.failure,
-  //       errorMessage: (failure as ServerFailure).errorMessage,
-  //     ));
-  //     return "";
-  //   }, (success) {
-  //     emit(state.copyWith(
-  //       status: BlocStatus.success,
-  //     ));
-  //
-  //     return success;
-  //   });
-  // }
-  // void showCraftMessage() {
-  //   BottomSheetDialog.showDraggableSheet(
-  //       NavigationService.navigatorKey.currentContext!,
-  //       child: BottomSheetWithActions(
-  //         title: "warning_2".tr(),
-  //         action: Row(
-  //           children: [
-  //             Expanded(
-  //               child: ElevatedButtonWidget.primaryCustom(
-  //                   text: "agree".tr(),
-  //                   onPressed: () {
-  //                     NavigationService.goBack();
-  //                   }),
-  //             ),
-  //           ],
-  //         ),
-  //         body: WarningMessage(
-  //             message:
-  //                 "<p>عزيزي صاحب المنشأة: وجود عامل حرفي مرخص شرط أساسي لإصدار أو تجديد الرخص التجارية لمنشأتك . بادر بترخيص عمالتك حرفيا على منصة بلدي من خلال الرابط التالي <a href='https://balady.gov.sa/Services/Terms/?id=328'>https://balady.gov.sa/Services/Terms/?id=328 </a> </p>"),
-  //       ));
-  // }
+
   void initDraft() async {
     // bool isDraft = sl<CommercialLicenseInitialExportBloc>().state.isDraft ?? false;
     // bool draftLoaded = state.isDraft ?? false;

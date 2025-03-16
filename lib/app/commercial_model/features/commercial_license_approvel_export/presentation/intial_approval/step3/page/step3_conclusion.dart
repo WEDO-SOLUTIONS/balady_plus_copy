@@ -113,7 +113,18 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
       
           (state.status == BlocStatus.loading)
               ? const Center(child: CustomCircularLoadingWidget()):Container(),
-      
+
+
+          if(state.workFlowName != null)
+
+              Column(
+                children: [
+                  SizedBox(height: 10,),
+                  NotesWidget(notes: [state.workFlowName!], marginBottom: 0,),
+                ],
+              ),
+
+
           IntialApprovalPreviousNextButtons(
             onPressed: () {
               context.read<Step3ConclusionCubit>()

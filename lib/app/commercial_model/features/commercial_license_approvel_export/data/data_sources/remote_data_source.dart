@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import '../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../commercial_license_exports.dart';
 import '../models/initialApproval/conclusion_response_entity.dart';
+import '../models/initialApproval/save_activity_and_location_response_model.dart';
 import '../models/initialApproval/submit_request_response_model.dart';
 import '../models/initialApproval/fees_request.dart';
 import '../models/initialApproval/isics_main_activity.dart';
@@ -31,7 +32,7 @@ abstract class RemoteDataSource {
 
   Future<int> applyLicenseExport(int params);
 
-  Future<int> saveActivityDetails({SubmitActivityDetailRequest? params});
+  Future<ResponseBodyModel<SaveActivityAndLocationResponseModel>> saveActivityDetails({SubmitActivityDetailRequest? params});
 
   Future<SaveLocationResponseModel> saveLocationDetails(
       {SaveLocationDataRequest? params});
@@ -523,7 +524,7 @@ class RemoteDataSourceImpl extends RemoteDataSource {
   }
 
   @override
-  Future<int> saveActivityDetails({SubmitActivityDetailRequest? params}) async {
+  Future<ResponseBodyModel<SaveActivityAndLocationResponseModel>> saveActivityDetails({SubmitActivityDetailRequest? params}) async {
     var response;
 
     try {
@@ -533,7 +534,19 @@ class RemoteDataSourceImpl extends RemoteDataSource {
 
       var data = response.data["data"]?["result"];
 
-      return data["requestId"];
+
+
+      var parsedResult =
+      data != null ? SaveActivityAndLocationResponseModel.fromJson(data) : null;
+      final decodedResponse =
+      ResponseBodyModel<SaveActivityAndLocationResponseModel>.fromMap(response.data,
+          parsedResult: parsedResult);
+
+
+      return decodedResponse.toFuture();
+
+
+     // return data["requestId"];
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

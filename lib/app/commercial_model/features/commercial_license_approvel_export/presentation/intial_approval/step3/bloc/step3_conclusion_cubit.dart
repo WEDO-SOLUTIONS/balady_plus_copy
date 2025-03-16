@@ -16,9 +16,11 @@ import '../../../../domain/entities/sub_activity_details_entity.dart';
 import '../../../../domain/use_cases/get_commercial_conclusion.dart';
 import '../../../../domain/use_cases/step3_initial_approval_submit.dart';
 import '../../commercial_license/blocs/commercial_license_initial_Approval_bloc.dart';
-part 'step3_conclusion_state.dart';
 
-class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
+part 'step3_conclusion_state.dart';
+part 'step3_conclusion_event.dart';
+
+class Step3ConclusionCubit extends Bloc<ConclusionEvent,Step3ConclusionState> {
   final GetIntialApprovalConclusion _getCommercialConclusion;
   final InitialApprovalSubmit _initialApprovalSubmit;
 
@@ -26,10 +28,18 @@ class Step3ConclusionCubit extends Cubit<Step3ConclusionState> {
       : _getCommercialConclusion = GetIntialApprovalConclusion(repository: sl()),
         _initialApprovalSubmit = InitialApprovalSubmit(repository: sl()),
 
-        super(const Step3ConclusionState());
+        super(const Step3ConclusionState()){
+           on<InitWorkFlowNameEvent>(_initWorkFlowNameHandler);
+
+  }
+
+
+
+  Future<void> _initWorkFlowNameHandler(InitWorkFlowNameEvent e, Emitter emitter) async {
+    emit(state.copyWith(workFlowName: e.name));
+  }
 
   void  getConclusion() async {
-
     emit(state.copyWith(status: BlocStatus.loading));
     final response = await _getCommercialConclusion(sl<CommercialLicenseInitialAprrovalBloc>().state.requestId!);
 

@@ -4227,6 +4227,9 @@
   "fastFlowConditions": "قائمة التفحص",
   "boardContractRequirementMessage": "عقد لوحات",
   "send": "ارسال",
-  "replyWithNotes": "الرد علي الملاحظات"
-
+  "replyWithNotes": "الرد علي الملاحظات",
+  "issuing_using_minstery_activities": "سيتم السماح بإصدار الرخصة بالأنشطة الموجودة في السجل التجاري والمفعلة في وزارة البلديات والاسكان",
+  "min_shop_area": "مساحة المحل يجب ان لا تقل عن ",
+  "max_shop_area": "مساحة المحل يجب ان لا تزيد عن ",
+  "intial_approval_fees": "رسوم طلب الموافقة المبدئية"
 }
