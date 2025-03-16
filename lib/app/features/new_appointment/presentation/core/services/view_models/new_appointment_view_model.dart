@@ -168,9 +168,9 @@ class NewAppointmentViewModel extends BaseViewModel {
     realEstateRequestId = null;
 
     transactionNo = null;
-    existedWakeelVisit = false;
+    existedWakeelVisit = null;
     prevTransNoRequired = false;
-    agreementChecked = false;
+    agreementChecked = null;
     serviceName = null;
     appointmentTypeItem = null;
     submitterTypeItem = null;

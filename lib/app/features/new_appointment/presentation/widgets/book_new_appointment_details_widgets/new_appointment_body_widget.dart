@@ -76,6 +76,7 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
                         true
                     ? CheckBoxWithTitle(
                         title: "accepted_agreement".tr(),
+                        maxlines: 5,
                         onChanged: (value) {
                           if (value != null) model.setAgreementStatus = value;
                           model.validateForm();
@@ -272,7 +273,11 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           onSaved: (_) {
             FocusScope.of(context).requestFocus(_descFocusNode);
           },
-          inputFormatter: [LengthLimitingTextInputFormatter(10)],
+          inputFormatter: [
+            FilteringTextInputFormatter.allow(RegExp(r'[\u0600-\u06FF0-9]')),
+            FilteringTextInputFormatter.deny(RegExp(r'[٠-٩]')),
+            LengthLimitingTextInputFormatter(50)
+          ],
           validator: (text) {
             if (text.toString().isEmpty) {
               return ('text_field_error').tr();

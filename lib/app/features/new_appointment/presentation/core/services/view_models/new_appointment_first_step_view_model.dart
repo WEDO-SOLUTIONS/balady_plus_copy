@@ -31,7 +31,7 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
     locator<NewAppointmentViewModel>().withPreviousTransaction =
         withPreviousTransaction;
-    if (isDraft == false) locator<NewAppointmentViewModel>().init();
+    // if (isDraft == false) locator<NewAppointmentViewModel>().init();
     dataModel.setShowSpecialConditionSection();
     dataModel.setShowSpecialConditionOld();
     dataModel.checkIfUserIsOld();
@@ -58,8 +58,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
   String get appointmentDetails => dataModel.appointmentDetails ?? "";
 
   String get getTransactionNo => dataModel.transactionNo ?? "";
-  bool get getExistedWakeelVisit => dataModel.existedWakeelVisit ?? false;
-  bool get getAgreementStatus => dataModel.agreementChecked ?? false;
+  bool? get getExistedWakeelVisit => dataModel.existedWakeelVisit;
+  bool? get getAgreementStatus => dataModel.agreementChecked;
   bool get getprevTransNoRequired => dataModel.prevTransNoRequired ?? false;
 
   String get getServiceName => dataModel.serviceName ?? "";
@@ -320,6 +320,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
           } else {
             isValid = false;
           }
+        } else {
+          isValid = true;
         }
         // if (catetgoryType?.id == "4") {
         //   if (getTransactionNo.isNotEmpty) {

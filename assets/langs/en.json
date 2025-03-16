@@ -959,9 +959,9 @@
   "appointmentDetailsRegulationsWord": "Instructions and guidance",
   "appointmentDetailsCancelAppointmentWord": "Cancel the appointment",
   "appointmentDetailsConfirmAppointmentWord": "Confirm the appointment",
-  "did_visit_wakeel":"Did you visit the delegate before",
-  "accepted_agreement":"Agreed on the agreement conditions",
-  "visit_wakeel_is_manadatory":"Visiting the delgate is mandatory",
+  "did_visit_wakeel": "Did you visit the delegate before",
+  "accepted_agreement": "I acknowledge and undertake that all the entered and attached data are accurate and compliant with regulations for submission to the concerned authorities, and I bear full legal responsibility.",
+  "visit_wakeel_is_manadatory": "Visiting the delgate is mandatory",
   "CRMRequestsTypes": "CRM Requests",
   "inc_title": "Reports",
   "dc_title": "Damaged cars reports",
@@ -4476,7 +4476,7 @@
   "officeName": "office Name",
   "commercialOffice": "Commercial Offices",
   "fee_calculator_license": "Fees Calculator for Commercial License Issuing",
-  "calculatorFeesNote":"The fee is for one year only, and the price per square meter for plates is for one year",
+  "calculatorFeesNote": "The fee is for one year only, and the price per square meter for plates is for one year",
   "premits_limit": "Permits that can be issued at the basic detailed activity level, with a maximum number of (8) permits.",
   "do_you_want_to_cancel": "Are you sure you want to cancel the request?"
 }
