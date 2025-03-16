@@ -4,7 +4,7 @@ import 'package:balady_plus/app/features/wallet/core/models/wallet_type.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+import 'package:tuple/tuple.dart';
 import 'package:collection/collection.dart';
 
 import '../../../../../core/services/local/helpers.dart';
@@ -51,23 +51,23 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
   Future<void> _getWalletData(GetWalletDataEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    (bool?, String?, WalletResponse?) response =
+    Tuple3<bool?, String?, WalletResponse?> response =
         await _repository.getWalletItems();
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.$1 != null && response.$1!) {
+    if (response.item1 != null && response.item1!) {
       emitter(state.copyWith(
           status: BlocStatus.success,
-          items: response.$3?.data?.result ?? [],
-          selectedItem: response.$3?.data?.result?.firstOrNull));
+          items: response.item3?.data?.result ?? [],
+          selectedItem: response.item3?.data?.result?.firstOrNull));
     } else {
-      if (response.$3?.data?.responseCode == "2") {
+      if (response.item3?.data?.responseCode == "2") {
         emitter(state.copyWith(
             status: BlocStatus.success, items: [], errorMessage: ""));
       } else {
         emitter(state.copyWith(
             status: BlocStatus.retry,
             items: [],
-            errorMessage: response.$2 ??
+            errorMessage: response.item2 ??
                 Helpers.translatingWord("errors_server_error_1")));
       }
     }
@@ -75,19 +75,19 @@ class WalletBloc extends Bloc<WalletEvent, WalletState> {
 
   Future<void> _printWalletItem(ShareWalletItemEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.download));
-    (bool?, String?, Uint8List?, String?) response =
+    Tuple4<bool?, String?, Uint8List?, String?> response =
         await _repository.downLoadLicense(e.selectedIetm?.uuid ?? "");
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.$3 != null && response.$1 != null && response.$1!) {
+    if (response.item3 != null && response.item1 != null && response.item1!) {
       emitter(state.copyWith(
         status: BlocStatus.success,
       ));
-      if (response.$3 != null)
-        Helpers.openFile(response.$3!, contentType: response.$4);
+      if (response.item3 != null)
+        Helpers.openFile(response.item3!, contentType: response.item4);
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          errorMessage: response.$2 ??
+          errorMessage: response.item2 ??
               Helpers.translatingWord("errors_server_error_1")));
     }
   }

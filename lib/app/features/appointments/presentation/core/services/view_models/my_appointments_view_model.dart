@@ -1,9 +1,11 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/utils/common_functions.dart';
 import '../../../../../new_appointment/presentation/core/models/my_appointments_response.dart';
 import '../../../../../new_appointment/presentation/core/services/repository/appointment_repository.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class MyAppointmentsViewModel extends BaseViewModel {
@@ -23,19 +25,19 @@ class MyAppointmentsViewModel extends BaseViewModel {
       bool showErrorMsg = false,
       bool autoLogout = true}) async {
     showCircularLoader ? showLoading() : {if (showLoad) showLoader()};
-    (bool?, String?, MyAppointmentsResponse?) response =
+    Tuple3<bool?, String?, MyAppointmentsResponse?> response =
         await _repository.getMyAppointments(
             pageIndex: pageIndex ?? 0,
             pageSize: pageSize ?? 20,
             upcomingAppointments: upcomingAppointments,
             autoLogout: autoLogout);
     showLoad ? hideLoader() : null;
-    if (response.$1 != null && response.$1!) {
+    if (response.item1 != null && response.item1!) {
       if (upcomingAppointments) {
-        myUpcomingAppointmentsResponse = response.$3;
+        myUpcomingAppointmentsResponse = response.item3;
       } else {
         if (pageIndex == 0) {
-          myPreviousAppointmentsResponse = response.$3;
+          myPreviousAppointmentsResponse = response.item3;
           prevoiusPageIndex = 1;
           prevoiusNoResults = false;
           if ((myPreviousAppointmentsResponse?.data?.result?.length ?? 0) <
@@ -43,13 +45,13 @@ class MyAppointmentsViewModel extends BaseViewModel {
             prevoiusNoResults = true;
           }
         } else {
-          if (response.$3?.data?.result != null) {
-            if (response.$3!.data!.result!.isEmpty) {
+          if (response.item3?.data?.result != null) {
+            if (response.item3!.data!.result!.isEmpty) {
               prevoiusNoResults = true;
             } else {
               prevoiusPageIndex += 1;
               myPreviousAppointmentsResponse?.data?.result
-                  ?.addAll(response.$3!.data!.result!);
+                  ?.addAll(response.item3!.data!.result!);
             }
           }
         }
@@ -57,7 +59,7 @@ class MyAppointmentsViewModel extends BaseViewModel {
       return true;
     } else {
       if (showErrorMsg) {
-        if (response.$2 != null) showError(response.$2!);
+        if (response.item2 != null) showError(response.item2!);
       }
       return false;
     }

@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../core/utils/constants/ux_cam_events.dart';
@@ -69,15 +70,15 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
       GetDaemAreaListEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    (bool?, String?, DaemAreaTypeResponse?) response =
+    Tuple3<bool?, String?, DaemAreaTypeResponse?> response =
         await _repository.getDaemAreaList(
             category: e.category.id ?? "", subCategory: e.subCategory.id ?? "");
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.areaList != null &&
-        response.$3!.areaList!.isNotEmpty) {
-      this.areaList = response.$3!.getList();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.areaList != null &&
+        response.item3!.areaList!.isNotEmpty) {
+      this.areaList = response.item3!.getList();
       this.issueypeList = null;
 
       emitter(state.copyWith(
@@ -89,7 +90,7 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          error: response.$2 ?? ("errors_server_error_1").tr()));
+          error: response.item2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -97,17 +98,17 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
       GetDaemIssueTypeEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    (bool?, String?, DaemIssueTypeResponse?) response =
+    Tuple3<bool?, String?, DaemIssueTypeResponse?> response =
         await _repository.getDaemIssueTypeList(
             category: e.category.id ?? "",
             subCategory: e.subCategory.id ?? "",
             area: e.area.id ?? "");
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.categoryTypeList != null &&
-        response.$3!.categoryTypeList!.isNotEmpty) {
-      issueypeList = response.$3!.getList();
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.categoryTypeList != null &&
+        response.item3!.categoryTypeList!.isNotEmpty) {
+      issueypeList = response.item3!.getList();
       DaemItem? issue;
       if (this.issueypeList?.length == 1) {
         issue = this.issueypeList?.first;
@@ -122,7 +123,7 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          error: response.$2 ?? ("errors_server_error_1").tr()));
+          error: response.item2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -136,12 +137,12 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
       GetDaemSubMunicipalitiesEvent e, Emitter emitter) async {
     emitter(state.copyWith(status: BlocStatus.loading));
 
-    (bool?, String?, DaemSubMunicipalityResponse?) response =
+    Tuple3<bool?, String?, DaemSubMunicipalityResponse?> response =
         await _repository.getBaladiat(amanaID: e.municipality.id ?? "");
     emitter(state.copyWith(status: BlocStatus.loaded));
-    List<DaemItem>? subMunnicipalities = response.$3?.getList();
-    if (response.$1 != null &&
-        response.$1! &&
+    List<DaemItem>? subMunnicipalities = response.item3?.getList();
+    if (response.item1 != null &&
+        response.item1! &&
         subMunnicipalities != null &&
         subMunnicipalities.isNotEmpty) {
       this.subMunicipalities = subMunnicipalities;
@@ -153,7 +154,7 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          error: response.$2 ?? ("errors_server_error_1".tr())));
+          error: response.item2 ?? ("errors_server_error_1".tr())));
     }
   }
 
@@ -189,7 +190,7 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
     String IdNumber = CommonProperties.userInfo?.idNo ?? "";
     String contactEmail = CommonProperties.userInfo?.getEmail() ?? "";
 
-    (bool?, String?, DaemCreateTicket?) response =
+    Tuple3<bool?, String?, DaemCreateTicket?> response =
         await _repository.createTicket(
             IdNumber: IdNumber,
             phone: phone,
@@ -204,17 +205,17 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
             description: description);
 
     emitter(state.copyWith(status: BlocStatus.loaded));
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.incidentId != null &&
-        response.$3!.incidentId!.isNotEmpty) {
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.incidentId != null &&
+        response.item3!.incidentId!.isNotEmpty) {
       emitter(state.copyWith(
-          status: BlocStatus.success, daemId: response.$3!.incidentId!));
+          status: BlocStatus.success, daemId: response.item3!.incidentId!));
       add(UploadTicketFilesEvent());
     } else {
       emitter(state.copyWith(
           status: BlocStatus.failure,
-          error: response.$2 ?? ("errors_server_error_1").tr()));
+          error: response.item2 ?? ("errors_server_error_1").tr()));
     }
   }
 
@@ -308,17 +309,17 @@ class NewDaemTicketBloc extends Bloc<NewDaemTicketEvent, NewDaemTicketState> {
       String? lastMemo,
       String? pyDescription,
       String? categoery}) async {
-    (bool?, String?, UploadFileResult?) response;
+    Tuple3<bool?, String?, UploadFileResult?> response;
     try {
       response = await _repository.uploadFile(caseID, fileName, fileBase64,
           fileMemo, lastMemo, pyDescription, categoery);
 
-      if (response.$1 == true) {
+      if (response.item1 == true) {
         return Future.value(true);
       } else {
         response = await _repository.uploadFile(caseID, fileName, fileBase64,
             fileMemo, lastMemo, pyDescription, categoery);
-        if (response.$1 == true) {
+        if (response.item1 == true) {
           return Future.value(true);
         } else {
           return Future.value(false);

@@ -2,7 +2,7 @@ import 'dart:typed_data';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:tuple/tuple.dart';
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../transaction_inquiry/presentation/core/models/gis_location_result.dart';
@@ -71,18 +71,18 @@ class HealthLicenseViewModel extends BaseViewModel {
     selectedLicesnseType = null;
   }
 
-  Future<(bool?, String?, GisLocationResult?)> getGisInfo(
+  Future<Tuple3<bool?, String?, GisLocationResult?>> getGisInfo(
       LatLng location) async {
     showLoading();
 
-    (bool?, String?, GisLocationResult?) response =
+    Tuple3<bool?, String?, GisLocationResult?> response =
         await _rpository.getGisLocation(location);
     hideLoading();
     return Future.value(response);
-    if (response.$3 != null &&
-        response.$3?.isSuccessfull != null &&
-        response.$3!.isSuccessfull!) {
-      gisLocationResult = response.$3;
+    if (response.item3 != null &&
+        response.item3?.isSuccessfull != null &&
+        response.item3!.isSuccessfull!) {
+      gisLocationResult = response.item3;
       //  return true;
     }
     // return false;
@@ -97,20 +97,20 @@ class HealthLicenseViewModel extends BaseViewModel {
     showLoading();
     String muncipalityid = result?.MUNICIPALITYUNIQUECODE ?? "";
     // muncipalityid = "013001002";
-    (bool?, String?, ValidateHealthCertificateResponse?) response =
+    Tuple3<bool?, String?, ValidateHealthCertificateResponse?> response =
         await _rpository.validateHealthCertificate(
             userId, idType, birthDate, muncipalityid, isSaudi,
             isRenew: isRenew);
     hideLoading();
-    if (response.$3 != null &&
-        response.$3?.data != null &&
-        response.$1 != null &&
-        response.$1!) {
+    if (response.item3 != null &&
+        response.item3?.data != null &&
+        response.item1 != null &&
+        response.item1!) {
       gisLocationResult = result;
-      validateHealthCertificateResponse = response.$3;
+      validateHealthCertificateResponse = response.item3;
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
     return false;
@@ -126,7 +126,7 @@ class HealthLicenseViewModel extends BaseViewModel {
 
       showLoading();
       String muncipalityid = gisLocationResult?.MUNICIPALITYUNIQUECODE ?? "";
-      (bool?, String?, List<String>?) response =
+      Tuple3<bool?, String?, List<String>?> response =
           await _rpository.getTerms(
               userId,
               idType,
@@ -138,15 +138,15 @@ class HealthLicenseViewModel extends BaseViewModel {
                       true,
               isRenew: isRenew);
       hideLoading();
-      terms = response.$3;
-      if (response.$3 != null && response.$1 != null && response.$1!) {
-        terms = response.$3;
-        return response.$3;
+      terms = response.item3;
+      if (response.item3 != null && response.item1 != null && response.item1!) {
+        terms = response.item3;
+        return response.item3;
       } else {
-        showError(response.$2 ?? "");
+        showError(response.item2 ?? "");
       }
 
-      return response.$3;
+      return response.item3;
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -178,7 +178,7 @@ class HealthLicenseViewModel extends BaseViewModel {
         false) {}
     showLoading();
 
-    (bool?, String?, ApplyNewHealthRequest?) response =
+    Tuple3<bool?, String?, ApplyNewHealthRequest?> response =
         await _rpository.applyHealthCertificate(
             userId,
             idType,
@@ -198,14 +198,14 @@ class HealthLicenseViewModel extends BaseViewModel {
             isRenew: isRenew);
     hideLoading();
     ApplyNewHealthRequest? applyNewHealthRequest;
-    if (response.$3 != null &&
-        response.$3?.data != null &&
-        response.$1 != null &&
-        response.$1!) {
-      applyNewHealthRequest = response.$3;
+    if (response.item3 != null &&
+        response.item3?.data != null &&
+        response.item1 != null &&
+        response.item1!) {
+      applyNewHealthRequest = response.item3;
       return applyNewHealthRequest;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
     return applyNewHealthRequest;
@@ -220,17 +220,17 @@ class HealthLicenseViewModel extends BaseViewModel {
 
     showLoading();
 
-    (bool?, String?, CancelHealthCertificateResponse?) response =
+    Tuple3<bool?, String?, CancelHealthCertificateResponse?> response =
         await _rpository.cancelHealthCertificate(
             userId, idType, birthDate, mobile, certificateNumber);
     hideLoading();
-    if (response.$3 != null &&
-        response.$3?.data != null &&
-        response.$1 != null &&
-        response.$1!) {
-      return response.$3;
+    if (response.item3 != null &&
+        response.item3?.data != null &&
+        response.item1 != null &&
+        response.item1!) {
+      return response.item3;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
     return null;
@@ -240,16 +240,16 @@ class HealthLicenseViewModel extends BaseViewModel {
       {bool? renewLicense}) async {
     showLoading();
     bool renew = renewLicense ?? isRenew;
-    (bool?, String?, SubmitNewRequestResponse?) response =
+    Tuple3<bool?, String?, SubmitNewRequestResponse?> response =
         await _rpository.submitRequest(requestId, isRenew: renew);
     hideLoading();
-    if (response.$3 != null &&
-        response.$3?.data != null &&
-        response.$1 != null &&
-        response.$1!) {
-      return response.$3;
+    if (response.item3 != null &&
+        response.item3?.data != null &&
+        response.item1 != null &&
+        response.item1!) {
+      return response.item3;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
     return null;
@@ -258,85 +258,85 @@ class HealthLicenseViewModel extends BaseViewModel {
   Future<DeleteRequestResponse?> deleteHealthRequest(int requestNumber) async {
     showLoading();
 
-    (bool?, String?, DeleteRequestResponse?) response =
+    Tuple3<bool?, String?, DeleteRequestResponse?> response =
         await _rpository.deleteRequest(requestNumber);
     hideLoading();
-    if (response.$3 != null &&
-        response.$3?.data != null &&
-        response.$1 != null &&
-        response.$1!) {
-      return response.$3;
+    if (response.item3 != null &&
+        response.item3?.data != null &&
+        response.item1 != null &&
+        response.item1!) {
+      return response.item3;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
     return null;
   }
 
-  Future<(Uint8List?, String?)> downloadAttachments(String id) async {
+  Future<Tuple2<Uint8List?, String?>> downloadAttachments(String id) async {
     showLoading();
 
-    (bool?, String?, Uint8List?, String?) response =
+    Tuple4<bool?, String?, Uint8List?, String?> response =
         await _rpository.downLoadAttachments(id);
     hideLoading();
-    if (response.$3 != null && response.$1 != null && response.$1!) {
-      return (
-        response.$3,
-        response.$4,
+    if (response.item3 != null && response.item1 != null && response.item1!) {
+      return Tuple2<Uint8List?, String?>(
+        response.item3,
+        response.item4,
       );
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
-    return (
-      response.$3,
-      response.$4,
+    return Tuple2<Uint8List?, String?>(
+      response.item3,
+      response.item4,
     );
   }
 
-  Future<(Uint8List?, String?)> downloadLicense(String id) async {
+  Future<Tuple2<Uint8List?, String?>> downloadLicense(String id) async {
     showLoading();
 
-    (bool?, String?, Uint8List?, String?) response =
+    Tuple4<bool?, String?, Uint8List?, String?> response =
         await _rpository.downLoadLicense(id);
     hideLoading();
 
-    if (response.$3 != null && response.$1 != null && response.$1!) {
-      return (response.$3, response.$4);
+    if (response.item3 != null && response.item1 != null && response.item1!) {
+      return Tuple2<Uint8List?, String?>(response.item3, response.item4);
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
-    return (response.$3, response.$4);
+    return Tuple2<Uint8List?, String?>(response.item3, response.item4);
   }
 
-  Future<(Uint8List?, String?)> downloadCanceledLicense(String id) async {
+  Future<Tuple2<Uint8List?, String?>> downloadCanceledLicense(String id) async {
     showLoading();
 
-    (bool?, String?, Uint8List?, String?) response =
+    Tuple4<bool?, String?, Uint8List?, String?> response =
         await _rpository.downLoadCanceledLicense(id);
     hideLoading();
-    if (response.$3 != null && response.$1 != null && response.$1!) {
-      return (response.$3, response.$4);
+    if (response.item3 != null && response.item1 != null && response.item1!) {
+      return Tuple2<Uint8List?, String?>(response.item3, response.item4);
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
 
-    return (response.$3, response.$4);
+    return Tuple2<Uint8List?, String?>(response.item3, response.item4);
   }
 
   Future<bool> getCrInfo(String crNumber) async {
     showLoading();
 
-    (bool?, String?, CrInformationResponse?) response =
+    Tuple3<bool?, String?, CrInformationResponse?> response =
         await _rpository.getCrInformation(crNumber);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result?.crInfo != null) {
-      crInformation = response.$3;
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result?.crInfo != null) {
+      crInformation = response.item3;
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -345,50 +345,50 @@ class HealthLicenseViewModel extends BaseViewModel {
       String licenseId, String licenseType) async {
     showLoading();
     // int requestType = isRenew ? 1303 : 1301;
-    (bool?, String?, LicenseForHealthInformationResponse?) response =
+    Tuple3<bool?, String?, LicenseForHealthInformationResponse?> response =
         await _rpository.getLicenseInformation(licenseId, licenseType);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      licenseForHealthInformationResponse = response.$3;
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      licenseForHealthInformationResponse = response.item3;
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
 
   Future<bool> getCities(String id) async {
     showLoading();
-    (bool?, String?, ListResponse?) response =
+    Tuple3<bool?, String?, ListResponse?> response =
         await _rpository.getCities(id);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null &&
-        response.$3!.data!.result!.isNotEmpty) {
-      cities = response.$3?.data?.result ?? [];
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null &&
+        response.item3!.data!.result!.isNotEmpty) {
+      cities = response.item3?.data?.result ?? [];
 
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
 
   Future<bool> getCenters(String cityId) async {
     showLoading();
-    (bool?, String?, ListResponse?) response =
+    Tuple3<bool?, String?, ListResponse?> response =
         await _rpository.getHealthCenters(cityId);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      healthCentres = response.$3?.data?.result ?? [];
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      healthCentres = response.item3?.data?.result ?? [];
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
