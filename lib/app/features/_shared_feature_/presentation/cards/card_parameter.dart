@@ -7,8 +7,9 @@ class CardParameter extends StatelessWidget {
   final String title;
   final String value;
   Color? bgColor;
+  int? lines;
   CardParameter(
-      {super.key, required this.title, required this.value, this.bgColor});
+      {super.key, required this.title, required this.value, this.bgColor,this.lines});
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +31,7 @@ class CardParameter extends StatelessWidget {
           const SizedBox(height: 8),
           CustomTextWidget(
             value,
+            maxLines: lines,
             textStyle: AppStyle.personalInfoParameterValueTextStyle,
           ),
         ],

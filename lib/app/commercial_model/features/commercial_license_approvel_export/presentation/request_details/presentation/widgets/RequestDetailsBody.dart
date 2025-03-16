@@ -5,13 +5,17 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license_det
 import 'package:balady_plus/app/commercial_model/features/request_commercial_license_details/data/models/commercial_license_details_model.dart';
 import 'package:balady_plus/app/commercial_model/features/request_commercial_license_details/presentation/bloc/request_commercial_license_details_cubit.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 
+import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
+import '../../../../../../../features/calendar/presentation/pages/calendar_details_page.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 import '../../domain/entity/request_note_info.dart';
 import 'ConclusionWidget.dart';
@@ -58,8 +62,8 @@ class _RequestDetailsBodyState
             ),
           );
         } else if (state.requestDetails != null) {
-          final requestCommercialLicenseDetails =
-          state.requestDetails!;
+          final requestCommercialLicenseDetails = state.requestDetails!;
+
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -90,6 +94,7 @@ class _RequestDetailsBodyState
                               textStyle: AppStyle.tagTextStyle,
                             ),
                           ],
+
                         ),
                       ),
                     ),
@@ -117,6 +122,26 @@ class _RequestDetailsBodyState
                       requestCommercialLicenseDetails.requestStatus?.name??"",
                     ),
 
+                    requestCommercialLicenseDetails.requestStatus?.id == 362?
+                    CardParameter(
+                      title: 'remainingValidityPeriod'.tr(),
+                      value: "${requestCommercialLicenseDetails.remainingValidityPeriod} ${"lbl_day".tr()}",
+                    ):Container(),
+
+                    CardParameter(
+                      title: 'municipalAdvisorLicenseYears'.tr(),
+                      value:
+                      requestCommercialLicenseDetails.activities?.mainActivity?.maxYears.toString() ??"",
+                    ),
+
+
+                    requestCommercialLicenseDetails.rejectionInfo != null && requestCommercialLicenseDetails.rejectionInfo?.rejectionReason != null?
+                    CardParameter(
+                      title: 'rejectionReason'.tr(),
+                      value: requestCommercialLicenseDetails.rejectionInfo?.rejectionReason??"",
+                      lines: 4,
+                    ):Container(),
+
                     CardParameter(
                       title: 'objection_date'.tr(),
                       value:
@@ -126,6 +151,11 @@ class _RequestDetailsBodyState
                     CardParameter(
                       title: 'request_type'.tr(),
                       value: requestCommercialLicenseDetails.requestType?.name??"",
+                    ),
+
+                    CardParameter(
+                      title: 'approvalType'.tr(),
+                      value: requestCommercialLicenseDetails.workFlow?.name??"",
                     ),
 
                     
@@ -194,7 +224,6 @@ class _RequestDetailsBodyState
           ),
         ],
         ),
-
                 MainActivityInfoWidget(activityInfo: requestCommercialLicenseDetails.activities,),
                 ExtraActivitiesInfoWidget(additionalActivities:requestCommercialLicenseDetails.activities?.addedActivities),
                 ExpandableCard(
@@ -267,6 +296,9 @@ class _RequestDetailsBodyState
                 ),
                 /////////////////////////////////////////////////
                 const SizedBox(height: 24),
+
+
+
               ],
             ),
           );

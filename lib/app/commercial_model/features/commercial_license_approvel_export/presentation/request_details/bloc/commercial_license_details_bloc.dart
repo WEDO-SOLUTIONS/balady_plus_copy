@@ -1,9 +1,4 @@
-import 'package:balady_plus/app/app.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_debts/presentation/bloc/check_debts/commercial_check_debts_cubit.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/domain/entities/save_location_response.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/intial_approval/step1/page/cr_step1_applicant_data.dart';
-import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/presentation/intial_approval/step2/page/step2_intial_approval__activity_data.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_response.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +7,6 @@ import 'package:meta/meta.dart';
 
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
-import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 
 import '../../../../../../core/errors/failures.dart';
@@ -165,7 +159,7 @@ class CommercialLicenseDetailsBloc
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "requestFlow".tr();
 
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="requirements".tr();
       section.value=[];
       requestFlow.asMap().forEach((index, value) {
@@ -180,7 +174,7 @@ class CommercialLicenseDetailsBloc
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "permits".tr();
 
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="permits".tr();
       section.value=[];
       allowedPermits.asMap().forEach((index, value) {
@@ -194,7 +188,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "municipalAdvisorCivilDefenseTitle".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="municipalAdvisorCivilDefenseTitle".tr();
       section.value=[];
       civilDefenseDocuments.asMap().forEach((index, value) {
@@ -208,7 +202,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "municipalAdvisorCleaningMechanismsTitle".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="municipalAdvisorCleaningMechanismsTitle".tr();
       section.value=[];
       cleaningOptions.asMap().forEach((index, value) {
@@ -222,7 +216,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "preDefinedConditionTypesTitle".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="preDefinedConditionTypesTitle".tr();
       section.value=[];
       preDefinedConditionTypes.asMap().forEach((index, value) {
@@ -236,7 +230,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "PreDefinedConditionsByTypeTitle".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="PreDefinedConditionsByTypeTitle".tr();
       section.value=[];
       lstPreDefinedConditionsByType.asMap().forEach((index, value) {
@@ -250,7 +244,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "boardContractRequirementMessage".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="boardContractRequirementMessage".tr();
       section.value=[];
       lstboardContractRequirementMessage.asMap().forEach((index, value) {
@@ -264,7 +258,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "fastFlowConditions".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="fastFlowConditions".tr();
       section.value=[];
       lstFastFlowConditions.asMap().forEach((index, value) {
@@ -280,7 +274,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "SupervisingAuthorities".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="SupervisingAuthorities".tr();
       section.value=[];
       lstSupervisingAuthorities[0].supervisions?.asMap().forEach((index, value) {
@@ -294,7 +288,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "commercialOffice".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="commercialOffice".tr();
       section.offices=[];
       commercialOffices.asMap().forEach((index, value) {
@@ -308,7 +302,7 @@ class CommercialLicenseDetailsBloc
     {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "municipalAdvisorEngineeringOfficesTitle".tr();
-      Content section = Content();
+      ConSectionContent section = ConSectionContent();
       section.label="municipalAdvisorEngineeringOfficesTitle".tr();
       section.offices=[];
       engOffices.asMap().forEach((index, value) {

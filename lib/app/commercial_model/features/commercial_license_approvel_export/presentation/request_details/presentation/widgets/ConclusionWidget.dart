@@ -3,6 +3,7 @@ import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -14,13 +15,14 @@ import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
 import '../../../../../../../core/utils/constants/app_style.dart';
+import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../domain/entities/conclusion_section.dart';
-import '../../../intial_approval/step3/widgets/calculator.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 import 'Fees.dart';
+
 
 
 
@@ -72,7 +74,8 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
 
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
 
-                // ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(requestFlow:state.issueCommercialConculsionEntity?.requestFlow),),
+                ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,),
+
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstSupervisingAuthorities:state.issueCommercialConculsionEntity?.supervisingAuthoritiesForActivities),),
@@ -127,8 +130,9 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
 class ExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
   final String? note;
+  final bool? isUnderLine;
 
-  const ExpansionSectionItem({super.key, required this.term,this.note});
+  const ExpansionSectionItem({super.key, required this.term,this.note,this.isUnderLine});
 
   @override
   Widget build(BuildContext context) {
@@ -136,7 +140,7 @@ class ExpansionSectionItem extends StatelessWidget {
     Column(
       children: [
 
-        ConditionItem(name:  term!.sectionName, values:  term?.sectionContent?.value ?? [],note: note,),
+        ConditionItem(name:  term!.sectionName, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine: isUnderLine,),
         const SizedBox(height: 15,),
       ],
     ):Container();
@@ -147,7 +151,8 @@ class ConditionItem extends StatelessWidget {
   final String? name;
   final String? note;
   final List<String>? values;
-  const ConditionItem({super.key, this.name, this.values,this.note});
+  final bool? isUnderLine;
+  const ConditionItem({super.key, this.name, this.values,this.note,this.isUnderLine});
 
   @override
   Widget build(BuildContext context) {
@@ -174,7 +179,27 @@ class ConditionItem extends StatelessWidget {
           if (name != null && name!.isNotEmpty)
             const CustomVerticalSpace(height: 4),
 
-          if ((values?.length ?? 0) <= 1)
+
+          ((values?.length ?? 0) <= 1)?
+
+          isUnderLine==true? Text.rich(
+            TextSpan(
+              text: name,
+              style: AppStyle.lightTextStyle.copyWith(
+                decoration: TextDecoration.underline,
+                fontSize: 15,
+                color: AppColor.blue
+              ),
+              recognizer: TapGestureRecognizer()
+                ..onTap = () {
+                  CommonFunctions.externalLaunch(
+                    "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010",
+
+                  );
+                },
+            ),
+          ):
+
             Html(
               data: values?.firstOrNull ?? "",
               style: {
@@ -188,7 +213,8 @@ class ConditionItem extends StatelessWidget {
               onLinkTap: (url, attributes, element) {
                 CommonFunctions.openBaladyWebView(url);
               },
-            ),
+
+            ):Container(),
           if ((values?.length ?? 0) > 1)
             ListView.builder(
                 shrinkWrap: true,

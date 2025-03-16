@@ -1744,6 +1744,35 @@ class CommonFunctions {
       return true;
     return false;
   }
+
+
+  static String? hijriToGregorian(String? hijriDate ) {
+
+    try
+    {
+      if(hijriDate != null && hijriDate.isNotEmpty) {
+
+        List<int> dateSplitted =
+        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
+            .split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        var gDate = HijriCalendar();
+        DateTime gorgianDate = gDate.hijriToGregorian(
+            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+        String? gorgian  = DateFormat('yyyy/MM/dd').format(gorgianDate);
+
+
+        return CommonFunctions.padHijriDate(gorgian);
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
 }
 
 class CommonProperties {
