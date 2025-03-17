@@ -24,13 +24,15 @@ class NewAppointmentBloc
 
   late List pagesList = [
     NewAppointmentFirstStepScreen(),
-    BookNewAppointmentDateTimeScreen(),
+    const BookNewAppointmentDateTimeScreen(),
   ];
 
   NewAppointmentBloc(
       {bool? withPreviousTransaction, AppointmentItemInfo? editedItem})
       : super(NewAppointmentState(
             withPreviousTransaction: false, editedItemInfo: editedItem)) {
+    locator<NewAppointmentViewModel>().init();
+
     on<NewAppointmentEvent>((event, emit) {
       controller.addListener(() {});
     });
@@ -69,7 +71,8 @@ class NewAppointmentBloc
         }
         if (isSuccess) {
           await controller.animateToPage(nextPage,
-              duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+              duration: const Duration(milliseconds: 400),
+              curve: Curves.easeIn);
 
           emitter(state.copyWith(
               status: BlocStatus.success,
@@ -84,7 +87,7 @@ class NewAppointmentBloc
         dataModel.saveAppointment();
       } else {
         await controller.animateToPage(nextPage,
-            duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+            duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
 
         emitter(state.copyWith(
             status: BlocStatus.success,
@@ -106,7 +109,7 @@ class NewAppointmentBloc
         status: BlocStatus.performing,
       ));
       await controller.animateToPage(prvoiusPage,
-          duration: Duration(milliseconds: 400), curve: Curves.easeIn);
+          duration: const Duration(milliseconds: 400), curve: Curves.easeIn);
       emitter(state.copyWith(
           status: BlocStatus.success,
           currentPageValue: prvoiusPage,

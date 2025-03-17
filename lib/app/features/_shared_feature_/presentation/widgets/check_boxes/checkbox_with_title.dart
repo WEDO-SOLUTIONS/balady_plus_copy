@@ -14,6 +14,7 @@ class CheckBoxWithTitle extends StatelessWidget {
   const CheckBoxWithTitle(
       {Key? key,
       required this.title,
+      this.maxlines,
       this.subTitle,
       required this.onChanged,
       this.forceSelection,
@@ -24,6 +25,7 @@ class CheckBoxWithTitle extends StatelessWidget {
       : super(key: key);
 
   final String title;
+  final int? maxlines;
   final String? subTitle;
   final Function(bool? value) onChanged;
   final bool? initialValue;
@@ -61,6 +63,7 @@ class CheckBoxWithTitle extends StatelessWidget {
                 Flexible(
                     child: CustomTextWidget(
                   title,
+                  maxLines: maxlines,
                   fontSize: fontSize ?? 12,
                   fontWeight: AppFontWeight.semiBold,
                   fontColor: AppColor.blackModern500Light,

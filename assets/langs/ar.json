@@ -961,7 +961,7 @@
   "appointmentDetailsCancelAppointmentWord": "إلغاء الموعد",
   "appointmentDetailsConfirmAppointmentWord": "تأكيد الموعد",
   "did_visit_wakeel":"تم زيارة الوكيل المعني سابقاً",
-  "accepted_agreement":"إقرار صيغة التعهد",
+  "accepted_agreement":"أقر وأتعهد بأن جميع البيانات المدخلة والمرفقة سليمة ونظامية وذلك لتقديمها لمن يهمه الأمر واتحمل كامل المسؤولية نظاماً",
   "visit_wakeel_is_manadatory":"يجب حجز موعد لدى الوكيل المعني مسبقاً",
   "CRMRequestsTypes": "CRMRequests",
   "inc_title": "البلاغات",
