@@ -87,14 +87,13 @@ class Step3ConclusionCubit extends Bloc<ConclusionEvent,Step3ConclusionState> {
 
   }
 
-
   ConclusionSection? getConclusionSection({List<RequestFlow>? requestFlow,List<AllowedPermits>? allowedPermits
     ,List<CivilDefenseAllowedDocuments>? civilDefenseDocuments,List<CleaningOptions>? cleaningOptions,
     List<CommercialOffices>? commercialOffices, List<EngOffices>? engOffices,
     List<PreDefinedConditionTypes>? preDefinedConditionTypes,
     List<SupervisingAuthoritiesForActivities>? lstSupervisingAuthorities,
     List<String>? lstPreDefinedConditionsByType,
-    List<FastFlowConditions>? lstFastFlowConditions,List<String>? lstboardContractRequirementMessage
+    List<FastFlowConditions>? lstFastFlowConditions,List<EngOffices>? lstboardContractRequirementMessage
 
   }) {
 
@@ -191,11 +190,12 @@ class Step3ConclusionCubit extends Bloc<ConclusionEvent,Step3ConclusionState> {
       obj.sectionName = "boardContractRequirementMessage".tr();
       ConSectionContent section = ConSectionContent();
       section.label="boardContractRequirementMessage".tr();
-      section.value=[];
+      section.offices=[];
       lstboardContractRequirementMessage.asMap().forEach((index, value) {
-        section.value?.add(value);
+        section.offices?.add(OfficeSection(officeName:value.officeName,officeMobile: value.officeMobile,cityName: value.cityName));
       });
       obj.sectionContent = section;
+
       return obj;
     }
 

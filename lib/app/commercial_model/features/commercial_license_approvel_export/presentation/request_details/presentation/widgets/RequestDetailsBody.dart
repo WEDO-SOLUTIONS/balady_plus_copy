@@ -13,6 +13,7 @@ import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
 
+import '../../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../../../../../features/calendar/presentation/pages/calendar_details_page.dart';
@@ -62,7 +63,7 @@ class _RequestDetailsBodyState
             ),
           );
         } else if (state.requestDetails != null) {
-          final requestCommercialLicenseDetails = state.requestDetails!;
+          final requestDetails = state.requestDetails!;
 
           return SingleChildScrollView(
             child: Column(
@@ -75,7 +76,7 @@ class _RequestDetailsBodyState
                     ),
                     const SizedBox(width: 4),
                     CustomTextWidget(
-                      requestCommercialLicenseDetails.creationDate ??"",
+                      requestDetails.creationDate ??"",
                       textStyle: AppStyle.dateTextStyle,
                     ),
                     const Spacer(),
@@ -90,7 +91,7 @@ class _RequestDetailsBodyState
                         child: Row(
                           children: [
                             CustomTextWidget(
-                              requestCommercialLicenseDetails.requestStatus?.name??"",
+                              requestDetails.requestStatus?.name??"",
                               textStyle: AppStyle.tagTextStyle,
                             ),
                           ],
@@ -103,7 +104,7 @@ class _RequestDetailsBodyState
 
 
                 SubmitterInfoWidget(
-                  submitterName: requestCommercialLicenseDetails.submitter?.name,submitterType:requestCommercialLicenseDetails.submitterType?.name,CRNumber: requestCommercialLicenseDetails.owner?.crNumber,
+                  submitterName: requestDetails.submitter?.name,submitterType:requestDetails.submitterType?.name,CRNumber: requestDetails.owner?.crNumber,
                 ),
 
                 ExpandableCard(
@@ -114,51 +115,52 @@ class _RequestDetailsBodyState
                     CardParameter(
                       title: 'request_no'.tr(),
                       value:
-                      requestCommercialLicenseDetails.requestId.toString(),
+                      requestDetails.requestId.toString(),
                     ),
                     CardParameter(
                       title: 'request_status'.tr(),
                       value:
-                      requestCommercialLicenseDetails.requestStatus?.name??"",
+                      requestDetails.requestStatus?.name??"",
                     ),
 
-                    requestCommercialLicenseDetails.requestStatus?.id == 362?
+                    requestDetails.requestStatus?.id == 362?
                     CardParameter(
                       title: 'remainingValidityPeriod'.tr(),
-                      value: "${requestCommercialLicenseDetails.remainingValidityPeriod} ${"lbl_day".tr()}",
+                      value: "${requestDetails.remainingValidityPeriod} ${"lbl_day".tr()}",
                     ):Container(),
 
                     CardParameter(
                       title: 'municipalAdvisorLicenseYears'.tr(),
                       value:
-                      requestCommercialLicenseDetails.activities?.mainActivity?.maxYears.toString() ??"",
+                      requestDetails.activities?.mainActivity?.maxYears.toString() ??"",
                     ),
 
 
-                    requestCommercialLicenseDetails.rejectionInfo != null && requestCommercialLicenseDetails.rejectionInfo?.rejectionReason != null?
+                    requestDetails.rejectionInfo != null && requestDetails.rejectionInfo?.rejectionReason != null?
                     CardParameter(
                       title: 'rejectionReason'.tr(),
-                      value: requestCommercialLicenseDetails.rejectionInfo?.rejectionReason??"",
+                      value: requestDetails.rejectionInfo?.rejectionReason??"",
                       lines: 4,
                     ):Container(),
 
                     CardParameter(
                       title: 'objection_date'.tr(),
                       value:
-                      requestCommercialLicenseDetails.creationDate??"",
+                      requestDetails.creationDate??"",
                     ),
 
                     CardParameter(
                       title: 'request_type'.tr(),
-                      value: requestCommercialLicenseDetails.requestType?.name??"",
+                      value: requestDetails.requestType?.name??"",
                     ),
 
                     CardParameter(
                       title: 'approvalType'.tr(),
-                      value: requestCommercialLicenseDetails.workFlow?.name??"",
+                      value: requestDetails.workFlow?.name??"",
                     ),
 
-                    
+                    if(requestDetails.requestStatus?.id == 12)
+                      NotesWidget(notes: [requestDetails.objectionMessage],marginBottom: 0,),
                   ],
                 ),
 
@@ -167,18 +169,18 @@ class _RequestDetailsBodyState
         icon: IconPath.qrLocationIcon,
         children: [
         const SizedBox(height: 16),
-        requestCommercialLicenseDetails.location?.latitude != null && requestCommercialLicenseDetails.location?.longitude != null
+        requestDetails.location?.latitude != null && requestDetails.location?.longitude != null
         ? SizedBox(
         height: 250,
         child:
         UrbiMapSection(
         readOnly: true,
-        currentUserLocation:LatLng(latitude: double.parse(requestCommercialLicenseDetails.location!.latitude!),longitude: double.parse(requestCommercialLicenseDetails.location!.longitude!)),
-        incidentLocation:LatLng(latitude: double.parse(requestCommercialLicenseDetails.location!.latitude!),longitude: double.parse(requestCommercialLicenseDetails.location!.longitude!)),
+        currentUserLocation:LatLng(latitude: double.parse(requestDetails.location!.latitude!),longitude: double.parse(requestDetails.location!.longitude!)),
+        incidentLocation:LatLng(latitude: double.parse(requestDetails.location!.latitude!),longitude: double.parse(requestDetails.location!.longitude!)),
         onCameraIdle: (bool isIdle) {
         mapController?.moveCamera(
         CameraPositionMessage(
-        point: GeoPointMessage(latitude:  double.parse(requestCommercialLicenseDetails.location!.latitude!), longitude: double.parse(requestCommercialLicenseDetails.location!.longitude!)),
+        point: GeoPointMessage(latitude:  double.parse(requestDetails.location!.latitude!), longitude: double.parse(requestDetails.location!.longitude!)),
         zoom: 16.0,
         tilt: 0.0,
         bearing: 0.0,
@@ -201,31 +203,31 @@ class _RequestDetailsBodyState
           CardParameter(
             title: 'municipalityName'.tr(),
             value:
-            requestCommercialLicenseDetails.location?.municipality?.name??"",
+            requestDetails.location?.municipality?.name??"",
           ),
 
           CardParameter(
             title: 'subMunicipalityName'.tr(),
             value:
-            requestCommercialLicenseDetails.location?.subMunicipality?.name??"",
+            requestDetails.location?.subMunicipality?.name??"",
           ),
 
 
           CardParameter(
             title: 'district'.tr(),
             value:
-            requestCommercialLicenseDetails.location?.district?.name??"",
+            requestDetails.location?.district?.name??"",
           ),
 
           CardParameter(
             title: 'street'.tr(),
             value:
-            requestCommercialLicenseDetails.location?.street?.name??"",
+            requestDetails.location?.street?.name??"",
           ),
         ],
         ),
-                MainActivityInfoWidget(activityInfo: requestCommercialLicenseDetails.activities,),
-                ExtraActivitiesInfoWidget(additionalActivities:requestCommercialLicenseDetails.activities?.addedActivities),
+                MainActivityInfoWidget(activityInfo: requestDetails.activities,),
+                ExtraActivitiesInfoWidget(additionalActivities:requestDetails.activities?.addedActivities),
                 ExpandableCard(
                   title: 'municipalAdvisorRequirementsTitle'.tr(),
                   icon: IconPath.notificationStatusIcon,
@@ -235,18 +237,18 @@ class _RequestDetailsBodyState
                 ),
 
                 ExpandableCard(
-                  title: 'responses_request'.tr(),
+                  title: 'requestNotes'.tr(),
                   icon: IconPath.notificationStatusIcon,
                   children: [
-                    requestCommercialLicenseDetails.notes != null
+                    requestDetails.notes != null
                         ? ListView.builder(
-                      itemCount: requestCommercialLicenseDetails
+                      itemCount: requestDetails
                           .notes?.length??0,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) {
                         RequestNoteInfo requestNotesInfo =
-                        requestCommercialLicenseDetails
+                        requestDetails
                             .notes![index];
                         return Card(
                           color: AppColor.primary100Light,
@@ -296,6 +298,28 @@ class _RequestDetailsBodyState
                 ),
                 /////////////////////////////////////////////////
                 const SizedBox(height: 24),
+
+                if(requestDetails.isRelatedToCommercialRequest==true)
+                EnhancedCustomElevatedButtonWidget(
+                  btnColor: AppColor.primary900Light,
+                  btnTextColor:  AppColor.white,
+                  btnPressed: (){
+
+                    NavigationService.navigatorKey.currentState!.pushNamed(
+                        RouteName.requestCommercialLicenseDetails
+                        ,
+                        arguments: {
+                        "requestNumber": requestDetails.relatedCommercialRequestId.toString(),
+                        },
+                    );
+
+                  },
+                  btnRadius: 8,
+                  btnText:"relatedCommercialRequestDetails".tr(),
+                  btnTextSize: 16,
+                  btnTextWeight: AppFontWeight.bold,
+                  btnHeight: 56,
+                )
 
 
 

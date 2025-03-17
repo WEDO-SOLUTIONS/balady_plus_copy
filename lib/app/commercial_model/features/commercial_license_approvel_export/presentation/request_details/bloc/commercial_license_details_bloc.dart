@@ -149,7 +149,7 @@ class CommercialLicenseDetailsBloc
     List<PreDefinedConditionTypes>? preDefinedConditionTypes,
     List<SupervisingAuthoritiesForActivities>? lstSupervisingAuthorities,
     List<String>? lstPreDefinedConditionsByType,
-    List<FastFlowConditions>? lstFastFlowConditions,List<String>? lstboardContractRequirementMessage
+    List<FastFlowConditions>? lstFastFlowConditions,List<EngOffices>? lstboardContractRequirementMessage
 
   }) {
 
@@ -240,19 +240,7 @@ class CommercialLicenseDetailsBloc
       return obj;
     }
 
-    else  if(lstboardContractRequirementMessage != null&& lstboardContractRequirementMessage.isNotEmpty)
-    {
-      ConclusionSection obj = ConclusionSection();
-      obj.sectionName = "boardContractRequirementMessage".tr();
-      ConSectionContent section = ConSectionContent();
-      section.label="boardContractRequirementMessage".tr();
-      section.value=[];
-      lstboardContractRequirementMessage.asMap().forEach((index, value) {
-        section.value?.add(value);
-      });
-      obj.sectionContent = section;
-      return obj;
-    }
+
 
     else  if(lstFastFlowConditions != null&& lstFastFlowConditions.isNotEmpty)
     {
@@ -312,6 +300,23 @@ class CommercialLicenseDetailsBloc
 
       return obj;
     }
+    else  if(lstboardContractRequirementMessage != null&& lstboardContractRequirementMessage.isNotEmpty)
+    {
+      ConclusionSection obj = ConclusionSection();
+      obj.sectionName = "boardContractRequirementMessage".tr();
+      ConSectionContent section = ConSectionContent();
+      section.label="boardContractRequirementMessage".tr();
+      section.offices=[];
+      lstboardContractRequirementMessage.asMap().forEach((index, value) {
+        section.offices?.add(OfficeSection(officeName:value.officeName,officeMobile: value.officeMobile,cityName: value.cityName));
+      });
+      obj.sectionContent = section;
+
+      return obj;
+    }
+
+
+
 
     return null;
 

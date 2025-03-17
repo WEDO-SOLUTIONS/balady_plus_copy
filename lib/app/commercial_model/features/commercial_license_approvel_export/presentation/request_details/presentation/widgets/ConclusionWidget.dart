@@ -75,6 +75,8 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
 
                 ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,),
+                ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,),
+
 
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
@@ -85,10 +87,10 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
 
                 OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
                 OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
+                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),),
 
                 ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),),
 
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),),
 
                 state.issueCommercialConculsionEntity?.calculateStandardFees != null?
                 // CustomExpansionPanelWidget(

@@ -43,6 +43,7 @@ class CommercialLicenseExportBloc
             (failure) {
 
               emit(state.copyWith(detailsStatus: BlocStatus.failure,));
+              CommonFunctions.showError(failure.toString());
 
             }
 

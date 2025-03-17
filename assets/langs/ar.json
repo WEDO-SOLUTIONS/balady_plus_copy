@@ -4233,7 +4233,11 @@
   "max_shop_area": "مساحة المحل يجب ان لا تزيد عن ",
   "intial_approval_fees": "رسوم طلب الموافقة المبدئية",
   "rejectionReason": "سبب الرفض",
-  "remainingValidityPeriod": "مدة سريان طلب"
+  "remainingValidityPeriod": "مدة سريان طلب",
+  "requestNotes":"الملاحظات على الطلب",
+  "relatedCommercialRequestDetails": "تفاصيل طلب اصدار الرخصة التجارية",
+  "Viewmunicipalrequirements": "عرض الاشتراطات البلدية"
+
 
 
 }

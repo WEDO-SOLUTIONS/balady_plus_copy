@@ -10,12 +10,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:provider/provider.dart';
-import 'package:screenshot/screenshot.dart';
+
+
 
 import '../../../../../../../core/services/local/navigation_services.dart';
+import '../../../../../../../core/utils/EncryptionHelper.dart';
+import '../../../../../../../core/utils/common_functions.dart';
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/dialog_names.dart';
+import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
@@ -27,14 +30,17 @@ import '../../bloc/commercial_license_details_bloc.dart';
 class RequestDetailsPage extends StatelessWidget {
    RequestDetailsPage({super.key});
    CommercialLicenseDetailsBloc?  bloc;
+   String? hashingRequestNumber;
 
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
 
+
     return BlocProvider(
       create: (context)
         {
+          hashingRequestNumber= data["hashingRequestNumber"];
        bloc= CommercialLicenseDetailsBloc(int.parse(data['requestNumber']));
         return bloc!;
         }
@@ -97,7 +103,18 @@ class RequestDetailsPage extends StatelessWidget {
 
                                       break;
 
-                                    case "print":
+                                    case "apply-objection":
+                                      {
+                                       // String hashedRequestId = EncryptionHelper.hashString("${state.requestDetails?.requestId}");
+                                       // print(hashedRequestId); // Encrypted URL with prefix
+                                      //  CommonFunctions.openWebView(context: context, title:"objection_apply".tr() , URL: "${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/create/bldyPrm4E246D3263EF0826AD249A73FB98BB317D7B2C18964EA9C5A7A2DF8FB016DF43");
+                                       if(hashingRequestNumber != null)
+                                        CommonFunctions.openBaldyWithRefreshCookie("${RemoteConfig.baladyBaseUrl}/dashboardclient/requests/create/$hashingRequestNumber");
+
+
+
+                                      }
+
 
                                       break;
                                     case "cancel":

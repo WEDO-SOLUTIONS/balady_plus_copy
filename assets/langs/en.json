@@ -4492,5 +4492,8 @@
   "max_shop_area": "The shop area should not exceed ",
   "intial_approval_fees": "Initial approval application fees",
   "rejectionReason": "Rejection Reason",
-  "remainingValidityPeriod": "Remaining Validity Period"
+  "remainingValidityPeriod": "Remaining Validity Period",
+  "requestNotes": "Request Notes",
+  "relatedCommercialRequestDetails": "Related Commercial Request Details",
+  "Viewmunicipalrequirements": "View Municipal Requirements"
 }
