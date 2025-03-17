@@ -7,6 +7,7 @@ import '../../data/models/initialApproval/conclusion_response_entity.dart';
 import '../../data/models/initialApproval/fees_request.dart';
 import '../../data/models/initialApproval/isics_main_activity.dart';
 import '../../data/models/initialApproval/request_details_model.dart';
+import '../../data/models/initialApproval/save_activity_and_location_response_model.dart';
 import '../../data/models/initialApproval/save_com_submitter_and_owner_request_model.dart';
 import '../../data/models/initialApproval/sub_activity_details_data.dart';
 
@@ -20,7 +21,7 @@ abstract class Repository {
   Future<Either<Failure, List<LookupsModel>>> getAccommodationTypes();
   Future<Either<Failure, int>> saveComSubmitterAndOwner(SubmitterAndOwnerRequestModel? params);
   Future<Either<Failure, int>> applyLicenseExport(int request);
-  Future<Either<Failure, int>> saveActivityDetails(SubmitActivityDetailRequest? params);
+  Future<Either<Failure, ResponseBodyModel<SaveActivityAndLocationResponseModel>>> saveActivityDetails(SubmitActivityDetailRequest? params);
   Future<Either<Failure, SaveLocationResponseModel>> saveLocationDetails(SaveLocationDataRequest? params);
   Future<Either<Failure, CalculateFeesResponseModel>> crCalculateFee({required CrCalculateFeesRequest params});
 

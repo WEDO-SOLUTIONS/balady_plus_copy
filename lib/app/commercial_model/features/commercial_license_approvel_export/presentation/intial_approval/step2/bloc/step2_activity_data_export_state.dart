@@ -154,7 +154,8 @@ class Step2ActivityDataExportState extends Equatable {
         final SaveLocationResponse? locationResponse,
         final String? landNo,
         final String? mapNo,
-        final String? splNotification
+        final String? splNotification,
+
 
       }) {
     return Step2ActivityDataExportState(
@@ -211,7 +212,8 @@ class Step2ActivityDataExportState extends Equatable {
       locationResponse: locationResponse ?? this.locationResponse,
       landNo: landNo ?? this.landNo,
       mapNo: mapNo ?? this.mapNo,
-        splNotification:splNotification??this.splNotification
+        splNotification:splNotification??this.splNotification,
+
 
     );
   }
@@ -240,11 +242,25 @@ class Step2ActivityDataExportState extends Equatable {
         landNo != null &&
         landNo!.trim().isNotEmpty &&
         mapNo != null &&
-        mapNo!.trim().isNotEmpty) &&(showArea()==true? totalArea != null && totalArea != 0:true); ;
+        mapNo!.trim().isNotEmpty) &&(showArea()==true? totalArea != null && totalArea != 0 && checkMinMaxArea():true); ;
   }
 
   bool showHotel() {
     return subActivityDetails?.showHotelSection==true;
+  }
+  bool checkMinMaxArea()
+  {
+    if(totalArea != null && subActivityDetails != null&& subActivityDetails!.minArea != null)
+      {
+        if(totalArea! <subActivityDetails!.minArea!)
+          return false;
+      }
+    if(totalArea != null && subActivityDetails != null&& subActivityDetails!.maxArea != null)
+    {
+      if(totalArea! >subActivityDetails!.maxArea!)
+        return false;
+    }
+    return true;
   }
 
   bool showArea() {

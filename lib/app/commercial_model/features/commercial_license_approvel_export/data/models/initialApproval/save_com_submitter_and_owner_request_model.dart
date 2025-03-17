@@ -2,7 +2,6 @@ import 'dart:convert';
 
 class SubmitterAndOwnerRequestModel {
   String? crNumber;
-
   int? crType;
 
   SubmitterAndOwnerRequestModel(
@@ -11,7 +10,6 @@ class SubmitterAndOwnerRequestModel {
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
       'crNumber': crNumber,
-
       'crType': crType,
     };
   }

@@ -4,6 +4,7 @@ class Step3ConclusionState extends Equatable {
   final BlocStatus status;
   final int? requestId;
   final String errorMessage;
+  final    String? workFlowName;
   final IssueCommercialConculsionEntity? issueCommercialConculsionEntity;
 
   const Step3ConclusionState({
@@ -11,6 +12,7 @@ class Step3ConclusionState extends Equatable {
     this.requestId,
     this.issueCommercialConculsionEntity,
     this.errorMessage = '',
+    this.workFlowName,
   });
 
 
@@ -18,13 +20,14 @@ class Step3ConclusionState extends Equatable {
 
   @override
   List<Object?> get props =>
-      [errorMessage, status,issueCommercialConculsionEntity];
+      [errorMessage, status,issueCommercialConculsionEntity,workFlowName];
 
   Step3ConclusionState copyWith({
     BlocStatus? status,
     IssueCommercialConculsionEntity? issueCommercialConculsionEntity,
     int? requestId,
     String? errorMessage,
+    String? workFlowName
   }) {
     return Step3ConclusionState(
 
@@ -32,7 +35,7 @@ class Step3ConclusionState extends Equatable {
         errorMessage: errorMessage ?? this.errorMessage,
         requestId: requestId ?? this.requestId,
         issueCommercialConculsionEntity: issueCommercialConculsionEntity ?? this.issueCommercialConculsionEntity,
-
+        workFlowName:workFlowName??this.workFlowName,
         status: status ?? this.status);
   }
 

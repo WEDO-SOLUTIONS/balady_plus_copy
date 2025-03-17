@@ -26,7 +26,7 @@ class IssueCommercialConculsionEntity {
   List<FastFlowConditions>? lstFastFlowConditions;
 
   List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities;
-  List<String>? lstboardContractRequirementMessage;
+  List<EngOffices>? lstboardContractRequirementMessage;
 
 
 
@@ -41,7 +41,7 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
   List<String>? lstPreDefinedConditionsByType,
   List<FastFlowConditions>? lstFastFlowConditions,
   List<SupervisingAuthoritiesForActivities>? supervisingAuthoritiesForActivities,
-  List<String>? lstboardContractRequirementMessage,
+  List<EngOffices>? lstboardContractRequirementMessage,
 }) => IssueCommercialConculsionEntity( allowedPermits: allowedPermits ?? this.allowedPermits,
   calculateStandardFees: calculateStandardFees ?? this.calculateStandardFees,
   civilDefenseAllowedDocuments: civilDefenseAllowedDocuments ?? this.civilDefenseAllowedDocuments,

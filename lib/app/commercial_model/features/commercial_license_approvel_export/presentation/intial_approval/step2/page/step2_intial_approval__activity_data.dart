@@ -64,7 +64,7 @@ class _Step2IntialApprovalActivityDataState extends State<Step2IntialApprovalAct
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            // CRHeaderDesc(header: "step2_header".tr()),
+                             NotesWidget(notes: ["issuing_using_minstery_activities".tr()],),
                             const SizedBox(height: 12),
                             BlocBuilder<Step1ApplicantDataExportCubit,
                                 Step1ApplicantDataExportState>(
@@ -145,6 +145,26 @@ class _Step2IntialApprovalActivityDataState extends State<Step2IntialApprovalAct
                                 fontColor: AppColor.blackModern400Light,
                               ),
                               bottomMargin: 24,
+                              onValidate: (value){
+                                if(value != null && value.isNotEmpty) {
+                                  if (state.subActivityDetails != null &&
+                                      state.subActivityDetails?.minArea !=
+                                          null && double.parse(value) <
+                                      state.subActivityDetails!.minArea!) {
+                                    return "${"min_shop_area".tr()}${state
+                                        .subActivityDetails!.minArea!}";
+                                  }
+                                  else if (
+                                      state.subActivityDetails != null &&
+                                      state.subActivityDetails?.maxArea !=
+                                          null && double.parse(value) >
+                                      state.subActivityDetails!.maxArea!) {
+                                    return "${"max_shop_area".tr()}${state
+                                        .subActivityDetails!.maxArea!}";
+                                  }
+                                }
+                                return null;
+                              },
                               onChanged: (value) {
                                 context
                                     .read<Step2ActivityDataExportCubit>()
@@ -274,7 +294,7 @@ class _Step2IntialApprovalActivityDataState extends State<Step2IntialApprovalAct
                     onPressed: () {
                       context
                           .read<Step2ActivityDataExportCubit>()
-                          .saveSiteAndActivities();
+                          .saveSiteAndActivities(context);
                     },
                   ),
           ],

@@ -1,6 +1,6 @@
 class ConclusionSection {
   String? sectionName;
-  Content? sectionContent;
+  ConSectionContent? sectionContent;
 
   ConclusionSection({
     this.sectionName,
@@ -8,11 +8,11 @@ class ConclusionSection {
   });
 }
 
-class Content {
+class ConSectionContent {
   String? label;
   List<String>? value;
   List<OfficeSection>? offices;
-  Content({
+  ConSectionContent({
     this.label,
     this.value,
     this.offices
