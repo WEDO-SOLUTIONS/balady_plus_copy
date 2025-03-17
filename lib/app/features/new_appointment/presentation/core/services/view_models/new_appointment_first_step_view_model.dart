@@ -460,6 +460,7 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
     setAppointmentTypeItem = null;
     dataModel.appointmentTypeList = null;
+    dataModel.atttachmentItems = [];
   }
 
   void resetIfSelectSubClass() {
