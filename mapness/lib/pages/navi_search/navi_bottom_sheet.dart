@@ -62,6 +62,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
     _setupTapListener();
     WidgetsBinding.instance.addObserver(this);
+
+    _bottomSheetController.addListener(() {
+      if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+        _unfocusSearchField();
+      }
+    });
   }
 
   @override
@@ -175,7 +181,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   }
 
   void _unfocusSearchField() {
-    if (_kbVisibilityController.isVisible) {
+    if (_kbVisibilityController.isVisible && _bottomSheetController.interpolation == 0) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
   }
@@ -192,7 +198,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
     // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
     // we will get set wrong [Expansion] value
-    Future.delayed(Durations.short2).then((_) {
+    Future.delayed(Durations.short4).then((_) {
       _bottomSheetController.setState(ThreeStateBottomSheet.expanded);
     });
   }
