@@ -2,12 +2,12 @@ import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/landing/widgets/compass_control.dart';
-import 'package:mapness/_features/landing/widgets/complience_building_legend.dart';
-import 'package:mapness/_features/landing/widgets/follow_control.dart';
-import 'package:mapness/_features/landing/widgets/layers_control.dart';
-import 'package:mapness/_features/landing/widgets/zoom_control.dart';
-import 'package:mapness/widgets/landing/ui/traffic_control.dart';
+import 'package:mapness/widgets/landing/compass_control.dart';
+import 'package:mapness/widgets/landing/complience_building_legend.dart';
+import 'package:mapness/widgets/landing/follow_control.dart';
+import 'package:mapness/widgets/landing/layers_control.dart';
+import 'package:mapness/widgets/landing/traffic_control.dart';
+import 'package:mapness/widgets/landing/zoom_control.dart';
 
 class NaviSearchSheetControls extends ConsumerStatefulWidget {
   final uikit.StatefulBottomSheetController scrollController;
