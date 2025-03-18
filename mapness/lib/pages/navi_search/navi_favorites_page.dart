@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -42,6 +43,12 @@ class NaviFavoritesPage extends HookConsumerWidget {
       ),
       data: (data) {
         final state = data.value;
+        final allFav = <FavouriteItem>[
+          if (state.home != null) state.home!,
+          if (state.work != null) state.work!,
+          ...List.of(state.items),
+        ];
+
         return Scaffold(
           appBar: BaladyTopBar.iconAndText(
             systemUiOverlayStyle: SystemUiOverlayStyle.dark,
@@ -61,7 +68,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                 SliverToBoxAdapter(
                   child: Spacing.$4x.heightBox,
                 ),
-                if (state.items.isEmpty)
+                if (allFav.isEmpty)
                   SliverToBoxAdapter(
                     child: Container(
                         decoration: BoxDecoration(
@@ -102,10 +109,10 @@ class NaviFavoritesPage extends HookConsumerWidget {
                         )),
                   ),
                 SliverList.separated(
-                  itemCount: state.items.length,
+                  itemCount: allFav.length,
                   separatorBuilder: (_, __) => const Divider(height: 1),
                   itemBuilder: (_, index) {
-                    final item = state.items[index];
+                    final item = allFav[index];
                     const radius = Radius.circular(RadiusBorder.l);
                     return Container(
                       clipBehavior: Clip.hardEdge,
