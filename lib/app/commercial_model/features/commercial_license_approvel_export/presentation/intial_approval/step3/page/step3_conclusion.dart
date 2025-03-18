@@ -83,7 +83,7 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
 
                   ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
 
-                  ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,),
+                  ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.webSiteUrl}/${translator.activeLanguageCode}/Services/DownloadUserGuide/218"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,),
                   ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,),
 
 
