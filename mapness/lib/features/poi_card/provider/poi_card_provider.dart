@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:dgis_map/library.dart';
@@ -11,6 +12,7 @@ import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
+import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/directory_object_message_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -110,6 +112,8 @@ class PoiCardProvider extends _$PoiCardProvider {
         return null;
       },
     );
+
+    await ref.watch(poiPhotoProvider(objectId).future);
 
     if (result != null) {
       ref.read(paddingConfigProvider(
