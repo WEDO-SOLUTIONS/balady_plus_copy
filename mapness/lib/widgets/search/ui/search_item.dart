@@ -38,6 +38,7 @@ class SearchItem extends ConsumerWidget {
   final Language language;
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
+  final Color? contentColor;
 
   final void Function() onTap;
 
@@ -46,6 +47,7 @@ class SearchItem extends ConsumerWidget {
     required this.onTap,
     required this.language,
     this.myLocation,
+    this.contentColor,
     super.key,
   });
 
@@ -71,7 +73,7 @@ class SearchItem extends ConsumerWidget {
     }
 
     return Material(
-      color: context.colorsV2.backgroundSurface4,
+      color: contentColor ?? context.colorsV2.backgroundSurface4,
       shape: smoothBorder(RadiusBorder.xl),
       child: SearchTapHandler(
         onTap: onTap,
@@ -85,9 +87,13 @@ class SearchItem extends ConsumerWidget {
                 title: result.title,
                 titleOptions: const ContentRowTextOption(isBold: true),
                 subtitle: subtitle,
+                subtitleOptions: ContentRowTextOption(
+                  baseColor: context.colorsV3.foregroundDefault,
+                ),
                 subtitleExtra: result.makeAddress(),
-                subtitleExtraOptions: const ContentRowTextOption(
+                subtitleExtraOptions: ContentRowTextOption(
                   maxLines: 3,
+                  baseColor: context.colorsV3.foregroundSoft,
                 ),
               ),
               trailing: ContentRowCustomTrailingOptions(
@@ -104,7 +110,11 @@ class SearchItem extends ConsumerWidget {
                         return const SizedBox.shrink();
                       }
                       return ContentRowTrailingText(
-                        options: ContentRowTextTrailingOptions(text: (distanceKm * 1000).formatDistance(context.l10n)),
+                        options: ContentRowTextTrailingOptions(
+                          text: (distanceKm * 1000).formatDistance(context.l10n),
+                          textStyle:
+                              context.textStyleV3.bodySmallSemiBold.copyWith(color: context.colorsV3.foregroundSoft),
+                        ),
                       );
                     },
                   ),

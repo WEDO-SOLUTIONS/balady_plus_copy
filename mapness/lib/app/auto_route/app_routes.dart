@@ -64,6 +64,10 @@ class AppRouter extends RootStackRouter {
               page: SearchRoute.page,
             ),
             AppRoute(
+              path: 'navi_search',
+              page: NaviSearchRoute.page,
+            ),
+            AppRoute(
               path: 'routingMap',
               page: RoutingMapSelectRoute.page,
             ),

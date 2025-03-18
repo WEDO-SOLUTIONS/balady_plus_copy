@@ -1,3 +1,5 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -22,6 +24,38 @@ enum QuickFilter {
   shopping,
 }
 
+enum QuickFilterType {
+  navi,
+  quickSearch,
+}
+
+abstract class QuickFilterBase {
+  QuickFilterBase();
+
+  factory QuickFilterBase.getListOf(QuickFilterType type) => switch (type) {
+        QuickFilterType.navi => NaviQuickFilterList(),
+        QuickFilterType.quickSearch => QuickFilterList(),
+      };
+
+  List<QuickFilter> get list;
+}
+
+class QuickFilterList extends QuickFilterBase {
+  @override
+  List<QuickFilter> get list => QuickFilter.values;
+}
+
+class NaviQuickFilterList extends QuickFilterBase {
+  @override
+  List<QuickFilter> get list => [
+        QuickFilter.gasStation,
+        QuickFilter.eatOut,
+        QuickFilter.markets,
+        QuickFilter.hotels,
+        QuickFilter.mosques,
+      ];
+}
+
 extension QuickFilterExtension on QuickFilter {
   String title(AppLocalizations locale) => switch (this) {
         QuickFilter.mosques => locale.mosques,
@@ -40,6 +74,15 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.eatOut => locale.eatOut,
         QuickFilter.barbershops => locale.barbershops,
         QuickFilter.shopping => locale.placesToShop,
+      };
+
+  IconData? get icon => switch (this) {
+        QuickFilter.mosques => PlacesIcons.mosquesFilled,
+        QuickFilter.gasStation => PlacesIcons.gasstationFilled,
+        QuickFilter.hotels => PlacesIcons.hotelsFilled,
+        QuickFilter.markets => PlacesIcons.marketsFilled,
+        QuickFilter.eatOut => PlacesIcons.restaurantFilled,
+        _ => null,
       };
 
   MapMarkersType? get markerType => switch (this) {

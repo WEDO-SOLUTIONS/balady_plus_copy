@@ -212,6 +212,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                   Center(
                     child: RoadPanel(
                       isLoading: isLoading,
+                      onSearch: () => context.router.push(NaviSearchRoute()),
                       onEndTrip: () => ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context),
                       onOpenSheet: () => context.router.push(const RoadPanelSheetRoute()),
                     ),
