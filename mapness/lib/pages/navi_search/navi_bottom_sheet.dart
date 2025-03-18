@@ -23,6 +23,7 @@ import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 
@@ -47,6 +48,9 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   void initState() {
     super.initState();
+
+    ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
+    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
 
     _bottomSheetController = StatefulBottomSheetController<ThreeStateBottomSheet>(
       behavior: MultiSnappingBehavior(
@@ -75,6 +79,13 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     if (state == AppLifecycleState.inactive) {
       _unfocusSearchField();
     }
+  }
+
+  @override
+  void deactivate() {
+    ref.read(dgisControllerProvider).valueOrNull?.startFollowNavigation();
+    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
+    super.deactivate();
   }
 
   @override
