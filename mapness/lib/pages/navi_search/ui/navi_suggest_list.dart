@@ -66,24 +66,22 @@ class NaviSuggestList extends ConsumerWidget {
             clipBehavior: Clip.antiAlias,
             borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
             color: context.colorsV3.backgroundSurface1,
-            child: Padding(
+            child: ListView.builder(
               padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                itemBuilder: (context, index) => SuggestItem(
-                  iconColor: context.colorsV3.foregroundMuted,
-                  tralingTextColor: context.colorsV3.foregroundSoft,
-                  suggest: suggests[index],
-                  myLocation: myLocation == null
-                      ? null
-                      : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-                  isLast: index == suggests.length - 1,
-                  onObjectTap: onObjectTap,
-                ),
-                itemCount: suggests.length,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              itemBuilder: (context, index) => SuggestItem(
+                iconColor: context.colorsV3.foregroundMuted,
+                tralingTextColor: context.colorsV3.foregroundSoft,
+                suggest: suggests[index],
+                myLocation: myLocation == null
+                    ? null
+                    : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+                isLast: index == suggests.length - 1,
+                onObjectTap: onObjectTap,
               ),
+              itemCount: suggests.length,
             ),
           ),
           Padding(

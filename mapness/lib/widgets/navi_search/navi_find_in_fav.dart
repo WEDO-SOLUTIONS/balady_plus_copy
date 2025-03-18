@@ -1,17 +1,26 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/auth/auth_methods.dart';
 
-class NaviFindInFav extends StatelessWidget {
+class NaviFindInFav extends ConsumerWidget {
   const NaviFindInFav({super.key});
 
   @override
-  Widget build(BuildContext context) => Padding(
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: Spacing.$3x),
         child: ContentWrapper(
           color: context.colorsV3.backgroundSurface1,
           children: [
             ContentRowV2(
+              onTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
+                    context,
+                    callback: () => context.router.push(const NaviFavoritesRoute()),
+                  ),
               leading: Icon(
                 SystemIcons.bookmark,
                 color: context.colorsV3.accentDefault,
@@ -20,9 +29,7 @@ class NaviFindInFav extends StatelessWidget {
                 icon: SystemIcons.arrowCornerRightLarge,
                 iconColor: context.colorsV3.foregroundMuted,
               ),
-              text: const ContentRowTextOptions(
-                title: 'Find in Favorites',
-              ),
+              text: ContentRowTextOptions(title: context.l10n.findInFav),
             ),
           ],
         ),

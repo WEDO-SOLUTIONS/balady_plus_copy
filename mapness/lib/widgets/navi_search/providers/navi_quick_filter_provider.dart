@@ -15,7 +15,7 @@ List<FilterItemModel> naviQuickFilter(Ref ref) {
   return QuickFilterBase.getListOf(QuickFilterType.navi)
       .list
       .map((filter) => FilterItemModel(
-            title: filter.title(l10n),
+            title: filter.title(l10n, isShort: true),
             isSelected: false,
             query: filter.query[lang] ?? '',
             icon: filter.icon,

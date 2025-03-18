@@ -57,9 +57,9 @@ class NaviQuickFilterList extends QuickFilterBase {
 }
 
 extension QuickFilterExtension on QuickFilter {
-  String title(AppLocalizations locale) => switch (this) {
+  String title(AppLocalizations locale, {bool isShort = false}) => switch (this) {
         QuickFilter.mosques => locale.mosques,
-        QuickFilter.gasStation => locale.gasStations,
+        QuickFilter.gasStation => isShort ? locale.fuel : locale.gasStations,
         QuickFilter.parks => locale.parks,
         QuickFilter.hospitals => locale.hospitals,
         QuickFilter.schools => locale.schools,
@@ -70,7 +70,7 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.recreationCenters => locale.recreationalCenters,
         QuickFilter.sportClubs => locale.sportClubs,
         QuickFilter.carServices => locale.carServices,
-        QuickFilter.markets => locale.markets,
+        QuickFilter.markets => isShort ? locale.market : locale.markets,
         QuickFilter.eatOut => locale.eatOut,
         QuickFilter.barbershops => locale.barbershops,
         QuickFilter.shopping => locale.placesToShop,

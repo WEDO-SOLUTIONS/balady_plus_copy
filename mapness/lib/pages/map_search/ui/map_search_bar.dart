@@ -18,14 +18,16 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchBar extends ConsumerStatefulWidget {
+  final bool requestFocus;
+  final VoidCallback onClose;
+  final bool isCloseButton;
+
   const MapSearchBar({
     required this.requestFocus,
     required this.onClose,
+    this.isCloseButton = false,
     super.key,
   });
-
-  final bool requestFocus;
-  final VoidCallback onClose;
 
   @override
   ConsumerState<MapSearchBar> createState() => _MapSearchBarState();
@@ -130,14 +132,23 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           textStyle: context.textStyleV3.bodySmallRegular,
         ),
       ),
-      option: SearchTextBackOption(
-        text: context.l10n.cancel,
-        onPressed: () {
-          FocusScope.of(context).unfocus();
-          searcher.clear();
-          widget.onClose();
-        },
-      ),
+      option: widget.isCloseButton
+          ? SearchIconBackOption(
+              icon: SystemIcons.close,
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                searcher.clear();
+                widget.onClose();
+              },
+            )
+          : SearchTextBackOption(
+              text: context.l10n.cancel,
+              onPressed: () {
+                FocusScope.of(context).unfocus();
+                searcher.clear();
+                widget.onClose();
+              },
+            ),
     );
   }
 }

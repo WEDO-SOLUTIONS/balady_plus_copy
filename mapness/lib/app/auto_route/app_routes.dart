@@ -172,6 +172,10 @@ class AppRouter extends RootStackRouter {
               page: FavouritesRoute.page,
             ),
             CustomRoute(
+              path: 'navi_search_favorites',
+              page: NaviFavoritesRoute.page,
+            ),
+            CustomRoute(
               path: 'search',
               page: FavouritesSearchRoute.page,
             ),

@@ -1,6 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/pages/navi_search/navi_search_sheet.dart';
+import 'package:mapness/pages/navi_search/navi_bottom_sheet.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 
 @RoutePage()
@@ -17,12 +17,5 @@ class NaviSearchPage extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constrains) => MapSearchSheet(
-          withClustering: withClustering,
-          biggestHeight: constrains.biggest.height,
-          requestFocus: requestFocus,
-          expansion: expansion,
-        ),
-      );
+  Widget build(BuildContext context) => const NaviBottomSheet();
 }
