@@ -202,7 +202,6 @@ class AppRouter extends RootStackRouter {
               page: DarkMapLandscapeRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
               fullscreenDialog: true,
-              barrierColor: Colors.black45,
               opaque: false,
             ),
             CustomRoute(
@@ -210,23 +209,22 @@ class AppRouter extends RootStackRouter {
               page: NavigatorSettingsLandscapeRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
               fullscreenDialog: true,
-              barrierColor: Colors.black45,
               opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
               path: 'sound_settings_landscape',
               page: SoundSettingsLandscapeRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
               fullscreenDialog: true,
-              barrierColor: Colors.black45,
               opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
               path: 'voice_settings_landscape',
               page: VoiceLandscapeRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
               fullscreenDialog: true,
-              barrierColor: Colors.black45,
               opaque: false,
             ),
             CustomRoute(
