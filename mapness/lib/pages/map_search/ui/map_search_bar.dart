@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
@@ -90,6 +91,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onTap: () {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             _controller.selection = TextSelection.fromPosition(
               TextPosition(
                 offset: _controller.text.length,

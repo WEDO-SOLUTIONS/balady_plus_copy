@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../core/base/base_view_model.dart';
 import '../../../../core/remote_services/api_constants.dart';
@@ -13,7 +13,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class WalletRepository {
   final webServices = locator<PegaWebService>();
 
-  Future<Tuple3<bool?, String?, WalletResponse?>> getWalletItems() async {
+  Future<(bool?, String?, WalletResponse?)> getWalletItems() async {
     Map<String, dynamic> queryParms = {};
 
     //  queryParms = {"": ""};
@@ -53,10 +53,10 @@ class WalletRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, WalletResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadLicense(
+  Future<(bool?, String?, Uint8List?, String?)> downLoadLicense(
       String uuid) async {
     String query = "$uuid";
 
@@ -100,7 +100,6 @@ class WalletRepository {
       ),
     );
   }
-    return Tuple4<bool?, String?, Uint8List?, String?>(
-        state, error, result, contentType);
+    return (state, error, result, contentType);
   }
 }

@@ -92,7 +92,7 @@ class _DashboardMenu extends ConsumerWidget {
                     icon: 'assets/icons/svg/quick_filters/free_roam.svg',
                     onTap: () {
                       ref.read(locationProvider.notifier).checkLocationPermission();
-                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
                       context.router.push(const FreeRoamRoute());
                     },
                   ),
@@ -123,7 +123,7 @@ class DashboardHeader extends ConsumerWidget {
                 group: MetricsConstants.exploreTag,
               );
 
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field

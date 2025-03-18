@@ -1,5 +1,5 @@
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../models/health_request_details.dart';
@@ -17,15 +17,15 @@ class MainHealthLicenseViewModel extends BaseViewModel {
       {bool showErrorAndLoad = true}) async {
     if (showErrorAndLoad) showLoading();
     HealthRequestDetails? result;
-    Tuple3<bool?, String?, HealthRequestDetails?> response =
+    (bool?, String?, HealthRequestDetails?) response =
         await _rpository.getHealthRequestDetails(requestId);
     if (showErrorAndLoad) hideLoading();
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.data?.result != null) {
-      result = response.item3;
+    if (response.$1 != null &&
+        response.$1! &&
+        response.$3?.data?.result != null) {
+      result = response.$3;
     } else {
-      if (showErrorAndLoad) showError(response.item2 ?? "");
+      if (showErrorAndLoad) showError(response.$2 ?? "");
     }
     return result;
   }
@@ -33,16 +33,16 @@ class MainHealthLicenseViewModel extends BaseViewModel {
   Future<bool> getNewServiceRating() async {
     // showLoading();
     if (newRatingResponse != null) return true;
-    Tuple3<bool?, String?, RatingInfoResponse?> response =
+    (bool?, String?, RatingInfoResponse?) response =
         await _rpository.getRatingInfo("1301");
     // hideLoading();
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.data?.result != null) {
-      newRatingResponse = response.item3;
+    if (response.$1 != null &&
+        response.$1! &&
+        response.$3?.data?.result != null) {
+      newRatingResponse = response.$3;
       return true;
     } else {
-      //  showError(response.item2 ?? "");
+      //  showError(response.$2 ?? "");
     }
     return false;
   }
@@ -50,16 +50,16 @@ class MainHealthLicenseViewModel extends BaseViewModel {
   Future<bool> getReNewServiceRating() async {
     // showLoading();
     if (renewRatingResponse != null) return true;
-    Tuple3<bool?, String?, RatingInfoResponse?> response =
+    (bool?, String?, RatingInfoResponse?) response =
         await _rpository.getRatingInfo("1303");
     // hideLoading();
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.data?.result != null) {
-      renewRatingResponse = response.item3;
+    if (response.$1 != null &&
+        response.$1! &&
+        response.$3?.data?.result != null) {
+      renewRatingResponse = response.$3;
       return true;
     } else {
-      //  showError(response.item2 ?? "");
+      //  showError(response.$2 ?? "");
     }
     return false;
   }
@@ -67,16 +67,16 @@ class MainHealthLicenseViewModel extends BaseViewModel {
   Future<bool> getCancelServiceRating() async {
     // showLoading();
     if (cancelRatingResponse != null) return true;
-    Tuple3<bool?, String?, RatingInfoResponse?> response =
+    (bool?, String?, RatingInfoResponse?) response =
         await _rpository.getRatingInfo("1302");
     // hideLoading();
-    if (response.item1 != null &&
-        response.item1! &&
-        response.item3?.data?.result != null) {
-      cancelRatingResponse = response.item3;
+    if (response.$1 != null &&
+        response.$1! &&
+        response.$3?.data?.result != null) {
+      cancelRatingResponse = response.$3;
       return true;
     } else {
-      //  showError(response.item2 ?? "");
+      //  showError(response.$2 ?? "");
     }
     return false;
   }

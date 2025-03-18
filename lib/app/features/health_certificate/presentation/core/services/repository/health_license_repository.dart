@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/dependency_injection/injection_container.dart';
@@ -32,7 +32,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class HealthLicenseRepository {
   final webServices = locator<PegaWebService>();
-  Future<Tuple3<bool?, String?, GisLocationResult?>> getGisLocation(
+  Future<(bool?, String?, GisLocationResult?)> getGisLocation(
       LatLng location) async {
     var res = await sl<web.WebService>().dio.get(ApiUrl.gis,
         queryParameters: {"x": location.longitude, "y": location.latitude});
@@ -45,7 +45,7 @@ class HealthLicenseRepository {
 
       GisLocationResult response = GisLocationResult.fromJson(x);
       print("DONEE");
-      return Tuple3<bool?, String?, GisLocationResult?>(true, "", response);
+      return (true, "", response);
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -54,8 +54,7 @@ class HealthLicenseRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return Tuple3<bool?, String?, GisLocationResult?>(
-          false, ("errors_server_error_1").tr(), null);
+      return (false, ("errors_server_error_1").tr(), null);
     }
 
     /*bool state = body['state'];
@@ -96,7 +95,7 @@ class HealthLicenseRepository {
     //  return Tuple3<bool?, String?, GisLocationResult?>(state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, ValidateHealthCertificateResponse?>>
+  Future<(bool?, String?, ValidateHealthCertificateResponse?)>
       validateHealthCertificate(String userId, String idType, String birthDate,
           String municipalityId, bool isSaudi,
           {bool isRenew = false}) async {
@@ -152,11 +151,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, ValidateHealthCertificateResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, List<String>?>> getTerms(
+  Future<(bool?, String?, List<String>?)> getTerms(
       String userId,
       String idType,
       String birthDate,
@@ -213,10 +211,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, List<String>?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, ApplyNewHealthRequest?>> applyHealthCertificate(
+  Future<(bool?, String?, ApplyNewHealthRequest?)> applyHealthCertificate(
       String userId,
       String idType,
       String birthDate,
@@ -289,10 +287,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, ApplyNewHealthRequest?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, CancelHealthCertificateResponse?>>
+  Future<(bool?, String?, CancelHealthCertificateResponse?)>
       cancelHealthCertificate(
     String userId,
     String idType,
@@ -343,11 +341,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, CancelHealthCertificateResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, SubmitNewRequestResponse?>> submitRequest(
+  Future<(bool?, String?, SubmitNewRequestResponse?)> submitRequest(
       int requestId,
       {bool isRenew = false}) async {
     final String url = isRenew
@@ -392,11 +389,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, SubmitNewRequestResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, CrInformationResponse?>> getCrInformation(
+  Future<(bool?, String?, CrInformationResponse?)> getCrInformation(
       String crNumber) async {
     String query = crNumber;
 
@@ -439,10 +435,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, CrInformationResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, LicenseForHealthInformationResponse?>>
+  Future<(bool?, String?, LicenseForHealthInformationResponse?)>
       getLicenseInformation(
     String licenseId,
     String licenseType,
@@ -487,11 +483,10 @@ class HealthLicenseRepository {
     );
   }
     }
-    return Tuple3<bool?, String?, LicenseForHealthInformationResponse?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, HealthRequestDetails?>> getHealthRequestDetails(
+  Future<(bool?, String?, HealthRequestDetails?)> getHealthRequestDetails(
       int requestId) async {
     String query = "$requestId";
 
@@ -520,10 +515,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, HealthRequestDetails?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, DeleteRequestResponse?>> deleteRequest(
+  Future<(bool?, String?, DeleteRequestResponse?)> deleteRequest(
       int requestId) async {
     String query = "$requestId";
 
@@ -551,10 +546,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, DeleteRequestResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadAttachments(
+  Future<(bool?, String?, Uint8List?, String?)> downLoadAttachments(
       String id) async {
     String query = "$id";
 
@@ -585,11 +580,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple4<bool?, String?, Uint8List?, String?>(
-        state, error, result, contentType);
+    return (state, error, result, contentType);
   }
 
-  Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadLicense(
+  Future<(bool?, String?, Uint8List?, String?)> downLoadLicense(
       String id) async {
     String query = "$id";
 
@@ -618,11 +612,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple4<bool?, String?, Uint8List?, String?>(
-        state, error, result, contentType);
+    return (state, error, result, contentType);
   }
 
-  Future<Tuple4<bool?, String?, Uint8List?, String?>>
+  Future<(bool?, String?, Uint8List?, String?)>
       downloadLicenseClientImage() async {
     String query =
         "${(CommonProperties.userInfo?.idNo ?? "")}/${(CommonProperties.userInfo?.getIdType() ?? "")}";
@@ -651,11 +644,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple4<bool?, String?, Uint8List?, String?>(
-        state, error, result, contentType);
+    return (state, error, result, contentType);
   }
 
-  Future<Tuple4<bool?, String?, Uint8List?, String?>> downLoadCanceledLicense(
+  Future<(bool?, String?, Uint8List?, String?)> downLoadCanceledLicense(
       String id) async {
     String query = "$id";
 
@@ -686,11 +678,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple4<bool?, String?, Uint8List?, String?>(
-        state, error, result, contentType);
+    return (state, error, result, contentType);
   }
 
-  Future<Tuple3<bool?, String?, RatingInfoResponse?>> getRatingInfo(
+  Future<(bool?, String?, RatingInfoResponse?)> getRatingInfo(
       String serviceId) async {
     String query = "$serviceId";
 
@@ -718,10 +709,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, RatingInfoResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, ListResponse?>> getCities(
+  Future<(bool?, String?, ListResponse?)> getCities(
       String baladiyahID) async {
     String query = "$baladiyahID";
 
@@ -753,10 +744,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, ListResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, ListResponse?>> getHealthCenters(
+  Future<(bool?, String?, ListResponse?)> getHealthCenters(
       String baladiyahID) async {
     String query = "$baladiyahID";
 
@@ -785,10 +776,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, ListResponse?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, CheckUpdateClientPhoto?>> checkUpdatedPhoto(
+  Future<(bool?, String?, CheckUpdateClientPhoto?)> checkUpdatedPhoto(
       int requestId) async {
     final body = await webServices.getApigeeRequest(
         ApiConstants.updatedPersonalPhoto(requestId),
@@ -815,11 +806,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, CheckUpdateClientPhoto?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, SendOtpCertificateResult?>> sendOTPCertificate(
+  Future<(bool?, String?, SendOtpCertificateResult?)> sendOTPCertificate(
       String requestId) async {
     final body = await webServices.postApigeeRequest(
       ApiConstants.sendOTPCertificate(requestId),
@@ -846,11 +836,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, SendOtpCertificateResult?>(
-        state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, bool?>> verifyOTPCertificate(
+  Future<(bool?, String?, bool?)> verifyOTPCertificate(
       {required String requestId,
       required String otp,
       required String otpKey}) async {
@@ -879,10 +868,10 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, bool?>(state, error, result);
+    return (state, error, result);
   }
 
-  Future<Tuple3<bool?, String?, UpdatePhotoResponse?>> updatePhoto(
+  Future<(bool?, String?, UpdatePhotoResponse?)> updatePhoto(
       {required String licenseNo,
       required String birthDate,
       required String otpToken,
@@ -916,6 +905,6 @@ class HealthLicenseRepository {
       ),
     );
   }
-    return Tuple3<bool?, String?, UpdatePhotoResponse?>(state, error, result);
+    return (state, error, result);
   }
 }

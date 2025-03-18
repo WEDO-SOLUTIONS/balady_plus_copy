@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/services/local/navigation_services.dart';
@@ -124,26 +124,26 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
         showSearchPaddingScreen: true,
         currentLocation: selectedLocation,
         onLocationChanged: (SelectedLocation selectedLocation) async {
-          Tuple3<bool?, String?, GisLocationResult?> response =
+          (bool?, String?, GisLocationResult?) response =
               await dataModel.getGisInfo(selectedLocation.selectedLocation!);
 
           bool isGISSuccess = false;
-          if (response.item3 != null &&
-              response.item3?.isSuccessfull != null &&
-              response.item3!.isSuccessfull!) {
+          if (response.$3 != null &&
+              response.$3?.isSuccessfull != null &&
+              response.$3!.isSuccessfull!) {
             isGISSuccess = true;
-            //   dataModel.gisLocationResult = response.item3!;
+            //   dataModel.gisLocationResult = response.$3!;
           }
           print("HFRSDFVDSVCDSVDSVDS");
           if (isGISSuccess) {
             bool isValidMunicipality =
-                await dataModel.validateHealthCertificate(response.item3);
+                await dataModel.validateHealthCertificate(response.$3);
 
             bool isCitiesRetrived = isCenterRequired()
-                ? await getCities(response.item3?.MUNICIPALITYUNIQUECODE ?? "")
+                ? await getCities(response.$3?.MUNICIPALITYUNIQUECODE ?? "")
                 : true;
 
-            bool isInRiyadh = response.item3?.adminMunicipalityId == "004";
+            bool isInRiyadh = response.$3?.adminMunicipalityId == "004";
 
             if (isInRiyadh) {
               showDialog(
@@ -183,7 +183,7 @@ class NewDetailsHealthLicenseViewModel extends BaseViewModel {
               navigation.currentState?.pop();
             }
           } else {
-            if (response.item2 != null) showError(response.item2!);
+            if (response.$2 != null) showError(response.$2!);
           }
           return true;
         },

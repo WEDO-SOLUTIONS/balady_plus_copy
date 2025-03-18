@@ -23,13 +23,13 @@ class ZoomControl extends ConsumerWidget {
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
             if (zoomState.zoomInEnabled) {
               zoomNotifier.onTapUp(ZoomControlType.zoomIn);
             }
           },
           onTapDown: (_) {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
@@ -45,7 +45,7 @@ class ZoomControl extends ConsumerWidget {
         ),
         MapButton(
           onTapUp: (_) {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );
@@ -54,7 +54,7 @@ class ZoomControl extends ConsumerWidget {
             }
           },
           onTapDown: (_) {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
             ref.read(urbiAnalyticsProvider).track(
                   'mapInteraction',
                 );

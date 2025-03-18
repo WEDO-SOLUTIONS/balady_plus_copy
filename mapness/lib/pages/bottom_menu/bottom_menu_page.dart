@@ -26,7 +26,7 @@ class BottomMenuPage extends ConsumerWidget {
         onNavigate: (tab) {
           // Send event to analytics when route is Selected
           if (tab.activeIndex == 1) {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingRoute);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
           }
         },
         builder: (_, tabsRouter, route) => Column(

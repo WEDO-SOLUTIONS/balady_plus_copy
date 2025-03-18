@@ -3,7 +3,7 @@ import 'package:collection/collection.dart';
 
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:tuple/tuple.dart';
+
 
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/utils/constants/ux_cam_events.dart';
@@ -109,7 +109,7 @@ class NewInquiryViewModel extends BaseViewModel {
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.General_Inquiries_Send_Request_Event);
 
-    Tuple3<bool?, String?, CreateIncidentResult?> response;
+    (bool?, String?, CreateIncidentResult?) response;
     String error = ("server_error_1").tr();
     try {
       showLoading();
@@ -170,12 +170,12 @@ class NewInquiryViewModel extends BaseViewModel {
       };
       response = await _repositry.createINQRequest(body);
       hideLoading();
-      error = response.item2 ?? error;
+      error = response.$2 ?? error;
 
-      if (response.item1 == true &&
-          response.item3 != null &&
-          response.item3?.pyId != null) {
-        incidentResult = response.item3;
+      if (response.$1 == true &&
+          response.$3 != null &&
+          response.$3?.pyId != null) {
+        incidentResult = response.$3;
         bool Function(Route<dynamic>) predicate =
             ModalRoute.withName(RouteName.bottomNavigation);
         navigation.currentState!.pushNamedAndRemoveUntil(
@@ -191,11 +191,11 @@ class NewInquiryViewModel extends BaseViewModel {
 
         return Future.value(true);
       } else {
-        if (response.item3?.errors != null &&
-            response.item3!.errors!.isNotEmpty) {
-          String? errorId = response.item3!.errors![0].id;
-          String duplicateRequestId = response.item3!.errors![0].pyID ?? "";
-          error = response.item3!.errors![0].message ?? error;
+        if (response.$3?.errors != null &&
+            response.$3!.errors!.isNotEmpty) {
+          String? errorId = response.$3!.errors![0].id;
+          String duplicateRequestId = response.$3!.errors![0].pyID ?? "";
+          error = response.$3!.errors![0].message ?? error;
           if (errorId == "CS_API_001") {
             error = ("duplicate_inq_error")
                 .tr()
@@ -205,7 +205,7 @@ class NewInquiryViewModel extends BaseViewModel {
             showError(error);
           }
         } else {
-          showError(response.item2 ?? "");
+          showError(response.$2 ?? "");
         }
         return Future.value(false);
       }
@@ -228,14 +228,14 @@ class NewInquiryViewModel extends BaseViewModel {
     _repositry.getMainAndSubClassficiation(splClass.id!).then((value) {
       hideLoading();
 
-      if (value.item3 != null) {
+      if (value.$3 != null) {
         setSPLClassificationType(splClass);
-        mainAndSubClassificationItem = value.item3;
+        mainAndSubClassificationItem = value.$3;
         splDescription = "";
 
         notifyListeners();
       } else {
-        showError(value.item2 ?? "");
+        showError(value.$2 ?? "");
         notifyListeners();
       }
       validateForm();
