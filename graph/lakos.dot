@@ -256,12 +256,6 @@ digraph "" {
   "/lib/_features/lifestyle_layers/data/lifestyle_repository.dart" [label="lifestyle_repository"];
   "/lib/_features/lifestyle_layers/data/common_function.dart" [label="common_function"];
   "/lib/_features/lifestyle_layers/data/map_enums.dart" [label="map_enums"];
-<<<<<<< HEAD
-=======
-  "/lib/_features/profile/providers/_index.dart" [label="_index"];
-  "/lib/_features/profile/providers/profile_image_provider.dart" [label="profile_image_provider"];
-  "/lib/_features/profile/domain/user_profile_data.dart" [label="user_profile_data"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/_features/common/providers/ui_direction.dart" [label="ui_direction"];
   "/lib/_features/common/providers/network_status.dart" [label="network_status"];
   "/lib/_features/common/providers/user_state.dart" [label="user_state"];
@@ -466,8 +460,6 @@ digraph "" {
   "/lib/pages/navigator_settings/components/voice_row_widget.dart" [label="voice_row_widget"];
   "/lib/pages/navigator_settings/components/language_pick_sheet.dart" [label="language_pick_sheet"];
   "/lib/pages/navigator_settings/components/language_row_widget.dart" [label="language_row_widget"];
-<<<<<<< HEAD
-=======
   "/lib/pages/navi_search/navi_bottom_sheet.dart" [label="navi_bottom_sheet"];
   "/lib/pages/navi_search/navi_favorites_page.dart" [label="navi_favorites_page"];
   "/lib/pages/navi_search/ui/navi_search_results.dart" [label="navi_search_results"];
@@ -478,7 +470,6 @@ digraph "" {
   "/lib/pages/navi_search/ui/navi_suggest_list.dart" [label="navi_suggest_list"];
   "/lib/pages/navi_search/ui/navi_search_header.dart" [label="navi_search_header"];
   "/lib/pages/navi_search/navi_search_page.dart" [label="navi_search_page"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/share_eta/eta_route_page.dart" [label="eta_route_page"];
   "/lib/pages/map/map_page.dart" [label="map_page"];
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" [label="app_feedback_input_sheet"];
@@ -501,16 +492,9 @@ digraph "" {
   "/lib/pages/iwish/iwish_place_card.dart" [label="iwish_place_card"];
   "/lib/pages/iwish/iwish_feedback_comment.dart" [label="iwish_feedback_comment"];
   "/lib/pages/iwish/iwish_feedback.dart" [label="iwish_feedback"];
-<<<<<<< HEAD
   "/lib/pages/feedback/feedback_sheet_widget.dart" [label="feedback_sheet_widget"];
   "/lib/pages/feedback/feedback_failure_widget.dart" [label="feedback_failure_widget"];
   "/lib/pages/feedback/feedback_sent_page.dart" [label="feedback_sent_page"];
-=======
-  "/lib/pages/feedback/feedback_failure_widget.dart" [label="feedback_failure_widget"];
-  "/lib/pages/feedback/feedback_sent_page.dart" [label="feedback_sent_page"];
-  "/lib/pages/feedback/feedback_loading_widget.dart" [label="feedback_loading_widget"];
-  "/lib/pages/feedback/feedback_success_widget.dart" [label="feedback_success_widget"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" [label="feedback_select_options_component_widget"];
   "/lib/pages/feedback/components/feedback_field_widget.dart" [label="feedback_field_widget"];
   "/lib/pages/feedback/components/feedback_form_widget.dart" [label="feedback_form_widget"];
@@ -574,14 +558,11 @@ digraph "" {
   "/lib/widgets/quick_filters/models/filter_item.dart" [label="filter_item"];
   "/lib/widgets/quick_filters/ui/quick_filters.dart" [label="quick_filters"];
   "/lib/widgets/quick_filters/ui/quick_filter.dart" [label="quick_filter"];
-<<<<<<< HEAD
-=======
   "/lib/widgets/navi_search/navi_quick_filter.dart" [label="navi_quick_filter"];
   "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" [label="navi_quick_filter_provider"];
   "/lib/widgets/navi_search/models/filter_item_model.dart" [label="filter_item_model"];
   "/lib/widgets/navi_search/navi_find_in_fav.dart" [label="navi_find_in_fav"];
   "/lib/widgets/navi_search/vertical_chip.dart" [label="vertical_chip"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/messages/errror_message.dart" [label="errror_message"];
   "/lib/widgets/app_feedback/app_feedback_input.dart" [label="app_feedback_input"];
   "/lib/widgets/app_feedback/app_feedback_card.dart" [label="app_feedback_card"];
@@ -623,17 +604,12 @@ digraph "" {
   "/lib/widgets/favourites/favourite_item_widget.dart" [label="favourite_item_widget"];
   "/lib/widgets/favourites/screen/search_screen.dart" [label="search_screen"];
   "/lib/widgets/favourites/favourites_toggle.dart" [label="favourites_toggle"];
-<<<<<<< HEAD
   "/lib/widgets/profile/profile_edited_photo.dart" [label="profile_edited_photo"];
   "/lib/widgets/profile/log_out_sheet.dart" [label="log_out_sheet"];
   "/lib/widgets/profile/profile_header.dart" [label="profile_header"];
   "/lib/widgets/profile/logout_cell.dart" [label="logout_cell"];
   "/lib/widgets/profile/personal_data.dart" [label="personal_data"];
   "/lib/widgets/profile/slide_to_log_out.dart" [label="slide_to_log_out"];
-=======
-  "/lib/widgets/profile/logout_cell.dart" [label="logout_cell"];
-  "/lib/widgets/profile/personal_data.dart" [label="personal_data"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/profile/profile_menu.dart" [label="profile_menu"];
   "/lib/widgets/profile/expandable_cell.dart" [label="expandable_cell"];
   "/lib/widgets/profile/profile_image/default_profile_image.dart" [label="default_profile_image"];
@@ -678,10 +654,6 @@ digraph "" {
   "/lib/widgets/feedback/images/feedback_image_item.dart" [label="feedback_image_item"];
   "/lib/widgets/feedback/images/feedback_images.dart" [label="feedback_images"];
   "/lib/widgets/feedback/images/feedback_image_widget.dart" [label="feedback_image_widget"];
-<<<<<<< HEAD
-=======
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" [label="feedback_images_action_error_sheet"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/feedback/images/feedback_error_image_item.dart" [label="feedback_error_image_item"];
   "/lib/widgets/feedback/feedback_type_item_widget.dart" [label="feedback_type_item_widget"];
   "/lib/widgets/search/lib/build_suggest_title.dart" [label="build_suggest_title"];
@@ -737,10 +709,7 @@ digraph "" {
   "/lib/entities/favourites/favourites_state.dart" [label="favourites_state"];
   "/lib/entities/favourites/favourite_item.dart" [label="favourite_item"];
   "/lib/entities/favourites/favourite_search_item.dart" [label="favourite_search_item"];
-<<<<<<< HEAD
   "/lib/entities/profile/user_profile_data.dart" [label="user_profile_data"];
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/entities/iwish/models/iwish_feedback_entity.dart" [label="iwish_feedback_entity"];
   "/lib/entities/iwish/models/iwish_marker.dart" [label="iwish_marker"];
   "/lib/entities/iwish/models/iwish_entity.dart" [label="iwish_entity"];
@@ -764,10 +733,6 @@ digraph "" {
   "/lib/entities/feedback/fields_entity/feedback_text_type_entity.dart" [label="feedback_text_type_entity"];
   "/lib/entities/feedback/fields_entity/feedback_image_input_entity.dart" [label="feedback_image_input_entity"];
   "/lib/entities/feedback/fields_entity/feedback_chips_entity.dart" [label="feedback_chips_entity"];
-<<<<<<< HEAD
-=======
-  "/lib/entities/feedback/feedback_image_action_error.dart" [label="feedback_image_action_error"];
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/entities/feedback/page_params/feedback_route_params.dart" [label="feedback_route_params"];
   "/lib/entities/feedback/feedback_object_type.dart" [label="feedback_object_type"];
   "/lib/entities/feedback/feedback_category.dart" [label="feedback_category"];
@@ -1046,17 +1011,7 @@ digraph "" {
         }
         subgraph "cluster~/lib/features/profile" {
           label="profile";
-<<<<<<< HEAD
           "/lib/features/profile/profile_image_provider.dart";
-=======
-          subgraph "cluster~/lib/features/profile/widgets" {
-            label="widgets";
-            "/lib/features/profile/widgets/profile_edited_photo.dart";
-            "/lib/features/profile/widgets/log_out_sheet.dart";
-            "/lib/features/profile/widgets/profile_header.dart";
-            "/lib/features/profile/widgets/slide_to_log_out.dart";
-          }
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
         }
         subgraph "cluster~/lib/features/stories" {
           label="stories";
@@ -1352,21 +1307,6 @@ digraph "" {
             "/lib/_features/lifestyle_layers/data/map_enums.dart";
           }
         }
-<<<<<<< HEAD
-=======
-        subgraph "cluster~/lib/_features/profile" {
-          label="profile";
-          subgraph "cluster~/lib/_features/profile/providers" {
-            label="providers";
-            "/lib/_features/profile/providers/_index.dart";
-            "/lib/_features/profile/providers/profile_image_provider.dart";
-          }
-          subgraph "cluster~/lib/_features/profile/domain" {
-            label="domain";
-            "/lib/_features/profile/domain/user_profile_data.dart";
-          }
-        }
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
         subgraph "cluster~/lib/_features/common" {
           label="common";
           subgraph "cluster~/lib/_features/common/providers" {
@@ -1739,8 +1679,6 @@ digraph "" {
             "/lib/pages/navigator_settings/components/language_row_widget.dart";
           }
         }
-<<<<<<< HEAD
-=======
         subgraph "cluster~/lib/pages/navi_search" {
           label="navi_search";
           "/lib/pages/navi_search/navi_bottom_sheet.dart";
@@ -1757,7 +1695,6 @@ digraph "" {
             "/lib/pages/navi_search/ui/navi_search_header.dart";
           }
         }
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
         subgraph "cluster~/lib/pages/share_eta" {
           label="share_eta";
           "/lib/pages/share_eta/eta_route_page.dart";
@@ -1806,16 +1743,9 @@ digraph "" {
         }
         subgraph "cluster~/lib/pages/feedback" {
           label="feedback";
-<<<<<<< HEAD
           "/lib/pages/feedback/feedback_sheet_widget.dart";
           "/lib/pages/feedback/feedback_failure_widget.dart";
           "/lib/pages/feedback/feedback_sent_page.dart";
-=======
-          "/lib/pages/feedback/feedback_failure_widget.dart";
-          "/lib/pages/feedback/feedback_sent_page.dart";
-          "/lib/pages/feedback/feedback_loading_widget.dart";
-          "/lib/pages/feedback/feedback_success_widget.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
           "/lib/pages/feedback/feedback_page.dart";
           "/lib/pages/feedback/feedback_select_type_page.dart";
           "/lib/pages/feedback/quick_feedback_page.dart";
@@ -1958,8 +1888,6 @@ digraph "" {
             "/lib/widgets/quick_filters/ui/quick_filter.dart";
           }
         }
-<<<<<<< HEAD
-=======
         subgraph "cluster~/lib/widgets/navi_search" {
           label="navi_search";
           "/lib/widgets/navi_search/navi_quick_filter.dart";
@@ -1974,7 +1902,6 @@ digraph "" {
             "/lib/widgets/navi_search/models/filter_item_model.dart";
           }
         }
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
         subgraph "cluster~/lib/widgets/messages" {
           label="messages";
           "/lib/widgets/messages/errror_message.dart";
@@ -2045,17 +1972,12 @@ digraph "" {
         }
         subgraph "cluster~/lib/widgets/profile" {
           label="profile";
-<<<<<<< HEAD
           "/lib/widgets/profile/profile_edited_photo.dart";
           "/lib/widgets/profile/log_out_sheet.dart";
           "/lib/widgets/profile/profile_header.dart";
           "/lib/widgets/profile/logout_cell.dart";
           "/lib/widgets/profile/personal_data.dart";
           "/lib/widgets/profile/slide_to_log_out.dart";
-=======
-          "/lib/widgets/profile/logout_cell.dart";
-          "/lib/widgets/profile/personal_data.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
           "/lib/widgets/profile/profile_menu.dart";
           "/lib/widgets/profile/expandable_cell.dart";
           "/lib/widgets/profile/contact_info.dart";
@@ -2130,10 +2052,6 @@ digraph "" {
             "/lib/widgets/feedback/images/feedback_image_item.dart";
             "/lib/widgets/feedback/images/feedback_images.dart";
             "/lib/widgets/feedback/images/feedback_image_widget.dart";
-<<<<<<< HEAD
-=======
-            "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
             "/lib/widgets/feedback/images/feedback_error_image_item.dart";
           }
         }
@@ -2253,13 +2171,10 @@ digraph "" {
           "/lib/entities/favourites/favourite_item.dart";
           "/lib/entities/favourites/favourite_search_item.dart";
         }
-<<<<<<< HEAD
         subgraph "cluster~/lib/entities/profile" {
           label="profile";
           "/lib/entities/profile/user_profile_data.dart";
         }
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
         subgraph "cluster~/lib/entities/iwish" {
           label="iwish";
           subgraph "cluster~/lib/entities/iwish/models" {
@@ -2275,10 +2190,6 @@ digraph "" {
           label="feedback";
           "/lib/entities/feedback/iset_weekday_extension.dart";
           "/lib/entities/feedback/feedback_base_entity.dart";
-<<<<<<< HEAD
-=======
-          "/lib/entities/feedback/feedback_image_action_error.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
           "/lib/entities/feedback/feedback_object_type.dart";
           "/lib/entities/feedback/feedback_category.dart";
           "/lib/entities/feedback/feedback_form_payload_entity.dart";
@@ -2381,15 +2292,9 @@ digraph "" {
   "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/ui/balady_logo/balady_logo.dart";
   "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
   "/lib/features/sso_auth/domain/mappers/auth_token_response.dart" -> "/lib/features/sso_auth/domain/entity/sso_token_info.dart";
-<<<<<<< HEAD
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/entry_point.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/features/profile/profile_image_provider.dart";
-=======
-  "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/_features/profile/providers/profile_image_provider.dart";
-  "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/entry_point.dart";
-  "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/features/weather/provider/forecast_weather_provider.dart" -> "/lib/entities/weather/weather_info.dart";
@@ -2720,7 +2625,6 @@ digraph "" {
   "/lib/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart" -> "/lib/_generated/protocol/protocol.pb.dart";
   "/lib/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/features/favourites/mappers/delete_favourite_items_request_item_mapper.dart" -> "/lib/features/favourites/mappers/favourite_item_marker_type_mapper.dart";
-<<<<<<< HEAD
   "/lib/features/profile/profile_image_provider.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/features/profile/profile_image_provider.dart" -> "/lib/_generated/protocol/protocol.pb.dart";
   "/lib/features/profile/profile_image_provider.dart" -> "/lib/entities/profile/user_profile_data.dart";
@@ -2728,15 +2632,6 @@ digraph "" {
   "/lib/features/profile/profile_image_provider.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/features/profile/profile_image_provider.dart" -> "/lib/shared/providers/base_dio.dart";
   "/lib/features/profile/profile_image_provider.dart" -> "/lib/shared/providers/dgis_network.dart";
-=======
-  "/lib/features/profile/widgets/profile_edited_photo.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/features/profile/widgets/profile_edited_photo.dart" -> "/lib/widgets/profile/profile_image/profile_image_widget.dart";
-  "/lib/features/profile/widgets/log_out_sheet.dart" -> "/lib/features/profile/widgets/slide_to_log_out.dart";
-  "/lib/features/profile/widgets/log_out_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
-  "/lib/features/profile/widgets/profile_header.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
-  "/lib/features/profile/widgets/profile_header.dart" -> "/lib/widgets/profile/authorized_widget.dart";
-  "/lib/features/profile/widgets/profile_header.dart" -> "/lib/widgets/profile/unathorized_profile.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/stories/providers/stories_repo.dart" -> "/lib/_generated/protocol/protocol.pb.dart";
   "/lib/features/stories/providers/stories_repo.dart" -> "/lib/entry_point.dart";
   "/lib/features/stories/providers/stories_repo.dart" -> "/lib/shared/lib/common_functions.dart";
@@ -2768,13 +2663,9 @@ digraph "" {
   "/lib/features/stories/ui/frame/story_frame_widget.dart" -> "/lib/features/stories/ui/story_args_provider.dart";
   "/lib/features/stories/ui/frame/story_frame_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/stories/ui/frame/story_frame_widget.dart" -> "/lib/shared/ui/loading_image/loading_shimmer_image.dart";
-<<<<<<< HEAD
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/models/story_data.dart";
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/models/story_frame_action.dart";
-=======
-  "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/models/story_data.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/models/story_frame_controller.dart";
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/features/stories/ui/story_frames_player.dart" -> "/lib/features/stories/providers/story_service.dart";
@@ -2837,10 +2728,7 @@ digraph "" {
   "/lib/features/feedback/quick_feedback_provider.dart" -> "/lib/pages/feedback/quick_feedback_page.dart";
   "/lib/features/feedback/submit_feedback.dart" -> "/lib/entities/feedback/dto/feedback_form_payload_dto.dart";
   "/lib/features/feedback/submit_feedback.dart" -> "/lib/entities/feedback/feedback_object_type.dart";
-<<<<<<< HEAD
   "/lib/features/feedback/submit_feedback.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/feedback/submit_feedback.dart" -> "/lib/features/feedback/feedback_dio.dart";
   "/lib/features/feedback/submit_feedback.dart" -> "/lib/features/feedback/poi_feedback.dart";
   "/lib/features/feedback/submit_feedback.dart" -> "/lib/features/feedback/submit_feedback_payload.dart";
@@ -2913,10 +2801,7 @@ digraph "" {
   "/lib/features/search/ui/search_history.dart" -> "/lib/widgets/search/ui/search_history_empty.dart";
   "/lib/features/search/ui/add_place_item.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/search/ui/search_scope.dart" -> "/lib/features/search/models/search_scope.dart";
-<<<<<<< HEAD
   "/lib/features/search/ui/search_results.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/search/ui/search_results.dart" -> "/lib/features/search/providers/search_pagination.dart";
   "/lib/features/search/ui/search_results.dart" -> "/lib/features/search/ui/add_place_item.dart";
   "/lib/features/search/ui/search_results.dart" -> "/lib/pages/map_search/ui/map_search_empty.dart";
@@ -2939,11 +2824,7 @@ digraph "" {
   "/lib/features/free_roam/free_roam_manager.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/features/free_roam/free_roam_animation_mixin.dart" -> "/lib/entities/free_roam/free_roam_start_state.dart";
   "/lib/features/free_roam/free_roam_animation_mixin.dart" -> "/lib/features/free_roam/free_roam_starter.dart";
-<<<<<<< HEAD
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/entities/profile/user_profile_data.dart";
-=======
-  "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/_features/profile/domain/user_profile_data.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/features/poi_card/provider/poi_my_location_provider.dart" -> "/lib/shared/lib/make_address.dart";
@@ -3034,10 +2915,7 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_card_header/tab.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
   "/lib/features/poi_card/widgets/poi_card_header/tab.dart" -> "/lib/features/poi_card/widgets/poi_tabs.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog_button.dart" -> "/lib/shared/config/package_config.dart";
-<<<<<<< HEAD
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/extensions/organizations_ext.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/shared/constants/metrics_constants.dart";
@@ -3069,15 +2947,8 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/shared/ui/loading_image/loading_shimmer_image.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
-<<<<<<< HEAD
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
-=======
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/features/poi_card/widgets/poi_favorite_dialog_button.dart";
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
-  "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/loading_sheet.dart";
   "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
@@ -3127,13 +2998,8 @@ digraph "" {
   "/lib/features/poi_card/my_location_poi/content_deeplink.dart" -> "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart";
   "/lib/features/poi_card/my_location_poi/content_deeplink.dart" -> "/lib/shared/ui/bottom_sheet/ui/disable_overscroll_behavior.dart";
   "/lib/features/poi_card/my_location_poi/content_deeplink.dart" -> "/lib/shared/ui/sheets/card_header.dart";
-<<<<<<< HEAD
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/entities/profile/user_profile_data.dart";
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/features/profile/profile_image_provider.dart";
-=======
-  "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/_features/profile/domain/user_profile_data.dart";
-  "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/_features/profile/providers/profile_image_provider.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/features/poi_card/my_location_poi/my_location_image.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/features/poi_card/data/poi_data_service.dart" -> "/lib/features/poi_card/domain/model/organization_item.dart";
@@ -3177,11 +3043,8 @@ digraph "" {
   "/lib/features/path_nav/providers/path_nav_maneuver.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/path_nav/providers/path_nav_sound_provider.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/features/path_nav/providers/path_nav_sound_provider.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
-<<<<<<< HEAD
   "/lib/features/advert_metrics/advert_metrics.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/features/advert_metrics/advert_metrics.dart" -> "/lib/shared/lib/urbi_metrics_utils.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/features/map_tap_handler/map_tap_handler_provider.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/features/map_tap_handler/map_tap_handler_provider.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/features/map_tap_handler/map_tap_handler_provider.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
@@ -3259,18 +3122,6 @@ digraph "" {
   "/lib/_features/lifestyle_layers/data/lifestyle_repository.dart" -> "/lib/_features/lifestyle_layers/domain/investment_sites.dart";
   "/lib/_features/lifestyle_layers/data/lifestyle_repository.dart" -> "/lib/_features/lifestyle_layers/domain/map_requests_params.dart";
   "/lib/_features/lifestyle_layers/data/lifestyle_repository.dart" -> "/lib/_features/lifestyle_layers/domain/white_lands.dart";
-<<<<<<< HEAD
-=======
-  "/lib/_features/profile/providers/_index.dart" -> "/lib/_features/profile/providers/profile_image_provider.dart" [style=dashed];
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/_features/profile/domain/user_profile_data.dart";
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/_generated/protocol/protocol.pb.dart";
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/entry_point.dart";
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/shared/lib/urbi_metrics.dart";
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/shared/providers/base_dio.dart";
-  "/lib/_features/profile/providers/profile_image_provider.dart" -> "/lib/shared/providers/dgis_network.dart";
-  "/lib/_features/profile/domain/user_profile_data.dart" -> "/lib/shared/providers/app_language.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/_features/common/providers/ui_direction.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/_features/common/providers/route_onboarding.dart" -> "/lib/shared/providers/hive.dart";
   "/lib/_features/common/providers/eager_init.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
@@ -3336,10 +3187,7 @@ digraph "" {
   "/lib/shared/providers/map/bearing_state.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/shared/providers/map/bearing_state.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/extensions/markers_from_search.dart";
-<<<<<<< HEAD
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/extensions/string_ext.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/dark_mode.dart";
   "/lib/shared/providers/map/point_of_interest.dart" -> "/lib/shared/providers/map/directory_object_from_dgis_id.dart";
@@ -3480,10 +3328,7 @@ digraph "" {
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/extensions/change_marker_options_ext.dart";
-<<<<<<< HEAD
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/extensions/string_ext.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/ui/markers/markers.dart";
   "/lib/shared/test_utils/test_material_app.dart" -> "/lib/_features/common/providers/color_scheme.dart";
@@ -3528,15 +3373,10 @@ digraph "" {
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/widgets/search/ui/search_item.dart";
-<<<<<<< HEAD
   "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
-=======
-  "/lib/pages/map_search/ui/map_search_empty.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/features/search/ui/suggest_item.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/shared/constants/metrics_constants.dart";
@@ -3556,10 +3396,7 @@ digraph "" {
   "/lib/pages/map_search/ui/map_search_controls.dart" -> "/lib/widgets/landing/traffic_control.dart";
   "/lib/pages/map_search/ui/map_search_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/entities/search/models/search_history.dart";
-<<<<<<< HEAD
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/features/landing/search_in_rect.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/features/search/models/search_scope.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/features/search/models/search_state.dart";
@@ -3593,15 +3430,11 @@ digraph "" {
   "/lib/pages/routing/routing_favourites.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/routing/routing_favourites.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/_features/lifestyle_layers/providers/layers_controls.dart";
-<<<<<<< HEAD
   "/lib/pages/routing/routing_points.dart" -> "/lib/entities/favourites/favourite_item.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/routing/routing_points.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/entities/routing/route_point.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
-<<<<<<< HEAD
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/features/search/ui/search_scope.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_header_delegate.dart";
@@ -3610,12 +3443,6 @@ digraph "" {
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/lib/urbi_metrics.dart";
-=======
-  "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_header_delegate.dart";
-  "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_history.dart";
-  "/lib/pages/routing/routing_points.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
-  "/lib/pages/routing/routing_points.dart" -> "/lib/shared/extensions/build_context_ext.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/routing/routing_points.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/_features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/routing/routing_routes.dart" -> "/lib/entities/routing/route_params_point.dart";
@@ -3634,7 +3461,6 @@ digraph "" {
   "/lib/pages/routing/routing_routes.dart" -> "/lib/widgets/path_nav/ui/layout_size_wrapper.dart";
   "/lib/pages/routing/lib/route_point_extension.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/pages/routing/lib/route_point_extension.dart" -> "/lib/entities/routing/route_search_point.dart";
-<<<<<<< HEAD
   "/lib/pages/routing/routing_search.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/ui/search_scope.dart";
@@ -3642,14 +3468,6 @@ digraph "" {
   "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_bar.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_content.dart";
   "/lib/pages/routing/routing_search.dart" -> "/lib/widgets/landing/dashboard/map_dashboard_controls.dart";
-=======
-  "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/providers/search.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/features/search/ui/search_scope.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_map_controls.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_content.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/pages/routing/ui/routing_search_header_delegate.dart";
-  "/lib/pages/routing/routing_search.dart" -> "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/routing/ui/routing_favourites.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/routing/ui/routing_favourites.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/pages/routing/ui/routing_favourites.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
@@ -3702,17 +3520,7 @@ digraph "" {
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/shared/providers/media_query.dart";
   "/lib/pages/routing/ui/routing_info.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/entities/favourites/favourite_item.dart";
-<<<<<<< HEAD
   "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/pages/routing/ui/routing_favourites.dart";
-=======
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/entities/routing/route_point.dart";
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/features/search/providers/search.dart";
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/features/search/ui/search_scope.dart";
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/pages/routing/ui/routing_favourites.dart";
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/shared/constants/metrics_constants.dart";
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/routing/ui/routing_header_delegate.dart" -> "/lib/shared/lib/urbi_metrics.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/routing/ui/routing_history.dart" -> "/lib/entities/routing/route_point.dart";
   "/lib/pages/routing/ui/routing_history.dart" -> "/lib/features/search/providers/search_history.dart";
   "/lib/pages/routing/ui/routing_history.dart" -> "/lib/features/search/ui/search_scope.dart";
@@ -3739,10 +3547,7 @@ digraph "" {
   "/lib/pages/routing/ui/routing_change_path_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/routing/ui/routing_change_path_sheet.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/routing/ui/routing_search_bar.dart" -> "/lib/entities/search/models/search_history.dart";
-<<<<<<< HEAD
   "/lib/pages/routing/ui/routing_search_bar.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/routing/ui/routing_search_bar.dart" -> "/lib/features/search/models/search_scope.dart";
   "/lib/pages/routing/ui/routing_search_bar.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/routing/ui/routing_search_bar.dart" -> "/lib/features/search/providers/search_history.dart";
@@ -3804,8 +3609,6 @@ digraph "" {
   "/lib/pages/navigator_settings/components/language_row_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/components/language_row_widget.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/pages/navigator_settings/components/language_row_widget.dart" -> "/lib/shared/providers/map/sound_settings.dart";
-<<<<<<< HEAD
-=======
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/landing/search_in_rect.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
@@ -3820,9 +3623,11 @@ digraph "" {
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/dark_mode.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/rubric_marker_type_mapper.dart";
   "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -3881,7 +3686,6 @@ digraph "" {
   "/lib/pages/navi_search/ui/navi_search_header.dart" -> "/lib/pages/map_search/ui/map_search_bar.dart";
   "/lib/pages/navi_search/navi_search_page.dart" -> "/lib/pages/navi_search/navi_bottom_sheet.dart";
   "/lib/pages/navi_search/navi_search_page.dart" -> "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/share_eta/eta_route_page.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/share_eta/eta_route_page.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
   "/lib/pages/share_eta/eta_route_page.dart" -> "/lib/features/share_eta/helpers/constants.dart";
@@ -3913,23 +3717,12 @@ digraph "" {
   "/lib/pages/app_feedback/app_feedback_sheet.dart" -> "/lib/widgets/app_feedback/v2/app_feedback_main.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/_features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
-<<<<<<< HEAD
   "/lib/pages/landing/landing_page.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/lib/urbi_metrics_utils.dart";
-=======
-  "/lib/pages/landing/landing_page.dart" -> "/lib/features/stories/providers/stories_open_state.dart";
-  "/lib/pages/landing/landing_page.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
-  "/lib/pages/landing/landing_page.dart" -> "/lib/shared/lib/urbi_metrics_utils.dart";
-  "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/beta_notification.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/map/camera_padding.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/media_query.dart";
-<<<<<<< HEAD
-=======
-  "/lib/pages/landing/landing_page.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/landing/landing_page.dart" -> "/lib/widgets/landing/dashboard/dashboard.dart";
   "/lib/pages/favourites/favourites_page.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/pages/favourites/favourites_page.dart" -> "/lib/entities/favourites/favourite_item.dart";
@@ -3944,10 +3737,7 @@ digraph "" {
   "/lib/pages/favourites/favourites_page.dart" -> "/lib/widgets/favourites/favourites_toggle.dart";
   "/lib/pages/favourites/favourites_page.dart" -> "/lib/widgets/favourites/pinned_place_card.dart";
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/entities/favourites/favourite_item.dart";
-<<<<<<< HEAD
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/features/favourites/mappers/directory_object_message_mapper.dart";
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/features/search/ui/search_scope.dart";
@@ -3961,25 +3751,15 @@ digraph "" {
   "/lib/pages/favourites/favourites_picker.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
   "/lib/pages/favourites/favourites_picker.dart" -> "/lib/widgets/favourites/empty_result_widget.dart";
   "/lib/pages/favourites/favourites_picker.dart" -> "/lib/widgets/favourites/favourite_item_widget.dart";
-<<<<<<< HEAD
   "/lib/pages/profile/image_editor_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-=======
-  "/lib/pages/profile/profile_page.dart" -> "/lib/features/profile/widgets/log_out_sheet.dart";
-  "/lib/pages/profile/profile_page.dart" -> "/lib/features/profile/widgets/profile_header.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/profile/profile_page.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-<<<<<<< HEAD
   "/lib/pages/profile/profile_page.dart" -> "/lib/widgets/profile/log_out_sheet.dart";
   "/lib/pages/profile/profile_page.dart" -> "/lib/widgets/profile/profile_header.dart";
   "/lib/pages/profile/change_profile_photo_page.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/profile/change_profile_photo_page.dart" -> "/lib/features/profile/profile_image_provider.dart";
-=======
-  "/lib/pages/profile/change_profile_photo_page.dart" -> "/lib/_features/common/widgets/dragger.dart";
-  "/lib/pages/profile/change_profile_photo_page.dart" -> "/lib/_features/profile/providers/profile_image_provider.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/profile/change_profile_photo_page.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/pages/profile/change_profile_photo_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/profile/about_balady_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
@@ -4040,7 +3820,6 @@ digraph "" {
   "/lib/pages/iwish/iwish_feedback.dart" -> "/lib/shared/ui/sheets/loading_thanks_sheet.dart";
   "/lib/pages/iwish/iwish_feedback.dart" -> "/lib/widgets/iwish/ui/iwish_feedback_mood.dart";
   "/lib/pages/iwish/iwish_feedback.dart" -> "/lib/widgets/iwish/ui/iwish_feedback_tags.dart";
-<<<<<<< HEAD
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_sheet_widget.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
@@ -4049,18 +3828,6 @@ digraph "" {
   "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/ui/error_widget/fullscreen_error_widget.dart";
   "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/features/feedback/submit_feedback.dart";
   "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_sheet_widget.dart";
-=======
-  "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/feedback/feedback_failure_widget.dart" -> "/lib/shared/ui/error_widget/fullscreen_error_widget.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/features/feedback/submit_feedback.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_failure_widget.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_loading_widget.dart";
-  "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_success_widget.dart";
-  "/lib/pages/feedback/feedback_loading_widget.dart" -> "/lib/widgets/feedback/feedback_form_container.dart";
-  "/lib/pages/feedback/feedback_success_widget.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
-  "/lib/pages/feedback/feedback_success_widget.dart" -> "/lib/shared/config/package_config.dart";
-  "/lib/pages/feedback/feedback_success_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/entities/feedback/feedback_category.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/entities/feedback/feedback_object_type.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/features/feedback/feedback_categories.dart";
@@ -4078,23 +3845,12 @@ digraph "" {
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/images/feedback_images.dart";
   "/lib/pages/feedback/components/feedback_form_widget.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/pages/feedback/components/feedback_form_widget.dart" -> "/lib/pages/feedback/components/feedback_field_widget.dart";
-<<<<<<< HEAD
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/entities/feedback/feedback_category.dart";
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/entities/feedback/fields_entity/feedback_text_type_entity.dart";
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/features/feedback/submit_feedback_payload.dart";
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/pages/feedback/components/feedback_form_widget.dart";
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/shared/utils/text_utils/phone_number_formatter.dart";
-=======
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/entities/feedback/feedback_category.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/entities/feedback/feedback_object_type.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/features/feedback/feedback_categories.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/features/feedback/poi_feedback.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/features/feedback/submit_feedback_payload.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/pages/feedback/components/feedback_form_widget.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/pages/feedback/feedback_failure_widget.dart";
-  "/lib/pages/feedback/feedback_page.dart" -> "/lib/pages/feedback/feedback_loading_widget.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/pages/feedback/feedback_page.dart" -> "/lib/widgets/feedback/feedback_form_container.dart";
   "/lib/pages/feedback/feedback_select_type_page.dart" -> "/lib/pages/feedback/components/feedback_select_options_component_widget.dart";
   "/lib/pages/feedback/feedback_select_type_page.dart" -> "/lib/pages/feedback/feedback_failure_widget.dart";
@@ -4334,8 +4090,6 @@ digraph "" {
   "/lib/widgets/quick_filters/ui/quick_filters.dart" -> "/lib/widgets/quick_filters/ui/quick_filter.dart";
   "/lib/widgets/quick_filters/ui/quick_filter.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/quick_filters/ui/quick_filter.dart" -> "/lib/widgets/quick_filters/models/filter_item.dart";
-<<<<<<< HEAD
-=======
   "/lib/widgets/navi_search/navi_quick_filter.dart" -> "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart";
   "/lib/widgets/navi_search/navi_quick_filter.dart" -> "/lib/widgets/navi_search/vertical_chip.dart";
   "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" -> "/lib/entities/quick_filters/quick_filter.dart";
@@ -4344,7 +4098,6 @@ digraph "" {
   "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" -> "/lib/widgets/navi_search/models/filter_item_model.dart";
   "/lib/widgets/navi_search/navi_find_in_fav.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/navi_search/navi_find_in_fav.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
@@ -4529,7 +4282,6 @@ digraph "" {
   "/lib/widgets/favourites/favourites_toggle.dart" -> "/lib/_features/lifestyle_layers/providers/layers_state.dart";
   "/lib/widgets/favourites/favourites_toggle.dart" -> "/lib/features/favourites/providers/favourite_markers.dart";
   "/lib/widgets/favourites/favourites_toggle.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-<<<<<<< HEAD
   "/lib/widgets/profile/profile_edited_photo.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/profile/profile_edited_photo.dart" -> "/lib/widgets/profile/profile_image/profile_image_widget.dart";
   "/lib/widgets/profile/log_out_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
@@ -4540,20 +4292,11 @@ digraph "" {
   "/lib/widgets/profile/logout_cell.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/profile/logout_cell.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/profile/personal_data.dart" -> "/lib/entities/profile/user_profile_data.dart";
-=======
-  "/lib/widgets/profile/logout_cell.dart" -> "/lib/shared/config/package_config.dart";
-  "/lib/widgets/profile/logout_cell.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/profile/personal_data.dart" -> "/lib/_features/profile/domain/user_profile_data.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/profile/personal_data.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/profile/personal_data.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/widgets/profile/profile_menu.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/profile/expandable_cell.dart" -> "/lib/shared/config/package_config.dart";
-<<<<<<< HEAD
   "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/features/profile/profile_image_provider.dart";
-=======
-  "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/_features/profile/providers/profile_image_provider.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/profile/profile_image/profile_image_widget.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/widgets/profile/contact_info.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/widgets/profile/contact_info.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -4563,11 +4306,7 @@ digraph "" {
   "/lib/widgets/profile/language_picker.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/widgets/profile/language_picker.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/profile/language_picker.dart" -> "/lib/shared/providers/app_language.dart";
-<<<<<<< HEAD
   "/lib/widgets/profile/authorized_widget.dart" -> "/lib/widgets/profile/profile_edited_photo.dart";
-=======
-  "/lib/widgets/profile/authorized_widget.dart" -> "/lib/features/profile/widgets/profile_edited_photo.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/profile/user_state_picker.dart" -> "/lib/_features/common/providers/user_state.dart";
   "/lib/widgets/profile/user_state_picker.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/stories/lib/stories_row.dart" -> "/lib/_features/common/scroll/no_glowing_scroll_behavior.dart";
@@ -4657,31 +4396,15 @@ digraph "" {
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/shared/utils/text_utils/phone_number_formatter.dart";
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/widgets/feedback/feedback_input.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
-<<<<<<< HEAD
-=======
-  "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/feedback_image_action_error.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/extensions/int_extention.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/lib/file_upload.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/lib/image_denied_dialog.dart";
-<<<<<<< HEAD
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/widgets/feedback/images/feedback_image_widget.dart";
   "/lib/widgets/feedback/images/feedback_image_widget.dart" -> "/lib/features/feedback/feedback_upload_image.dart";
   "/lib/widgets/feedback/images/feedback_image_widget.dart" -> "/lib/shared/lib/file_upload.dart";
-=======
-  "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/widgets/feedback/images/feedback_image_widget.dart";
-  "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart";
-  "/lib/widgets/feedback/images/feedback_image_widget.dart" -> "/lib/features/feedback/feedback_upload_image.dart";
-  "/lib/widgets/feedback/images/feedback_image_widget.dart" -> "/lib/shared/lib/file_upload.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/entities/feedback/feedback_image_action_error.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/shared/extensions/int_extention.dart";
-  "/lib/widgets/feedback/images/feedback_images_action_error_sheet.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/search/ui/search_history_collapsible.dart" -> "/lib/shared/ui/dismissible/app_dismissible.dart";
@@ -4765,10 +4488,7 @@ digraph "" {
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_geo_subscriber.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_service_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_timer_indicator.dart";
-<<<<<<< HEAD
-=======
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_websocket_status_provider.dart";
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/share_eta_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/websocket_type_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/stories/providers/stories_open_state.dart";
@@ -4816,10 +4536,7 @@ digraph "" {
   "/lib/entities/city_contain/dto/city_rect.dart" -> "/lib/entities/city_contain/dto/location_point.dart";
   "/lib/entities/favourites/favourites_state.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/entities/favourites/favourite_item.dart" -> "/lib/shared/entities/coordinates.dart";
-<<<<<<< HEAD
   "/lib/entities/profile/user_profile_data.dart" -> "/lib/shared/providers/app_language.dart";
-=======
->>>>>>> e16ac169a7 (chore: update lakos graph for 1599/merge)
   "/lib/entities/iwish/models/iwish_feedback_entity.dart" -> "/lib/widgets/iwish/ui/iwish_feedback_mood.dart";
   "/lib/entities/iwish/models/iwish_marker.dart" -> "/lib/entities/iwish/models/iwish_entity.dart";
   "/lib/entities/iwish/models/iwish_entity.dart" -> "/lib/entities/iwish/models/iwish_entity_variant.dart";
