@@ -13,9 +13,9 @@ class VerticalChip extends StatelessWidget {
   Widget build(BuildContext context) => GestureDetector(
         onTap: onTap,
         child: Container(
-          width: 70,
-          height: 94,
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$1x, vertical: Spacing.$3x),
+          width: 94,
+          height: 70,
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$2x, vertical: Spacing.$3x),
           decoration: BoxDecoration(
             color: context.colorsV3.accentSecondaryContainerSoft,
             borderRadius: BorderRadius.circular(RadiusBorder.m),
