@@ -3649,7 +3649,6 @@ digraph "" {
   "/lib/pages/navigator_settings/pages/voice_page/voice_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" -> "/lib/pages/navigator_settings/components/voice_row_widget.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" -> "/lib/shared/providers/map/sound_settings.dart";
-  "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/features/poi_card/widgets/poi_card_header/header_info_component.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
