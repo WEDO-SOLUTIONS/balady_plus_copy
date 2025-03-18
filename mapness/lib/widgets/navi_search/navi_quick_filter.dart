@@ -28,7 +28,10 @@ class NaviQuickFilter extends ConsumerWidget {
             final isLast = index == quickFilters.length - 1;
 
             return Container(
-              margin: EdgeInsetsDirectional.only(start: isFirst ? 16.0 : 8.0, end: isLast ? 16.0 : 0.0),
+              margin: EdgeInsetsDirectional.only(
+                start: isFirst ? Spacing.$4x : Spacing.$2x,
+                end: isLast ? Spacing.$4x : 0.0,
+              ),
               child: VerticalChip(
                 icon: filter.icon!,
                 title: filter.title,

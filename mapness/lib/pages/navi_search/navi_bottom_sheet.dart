@@ -84,9 +84,6 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   @override
   Widget build(BuildContext context) {
-    // final bottomSafeArea = MediaQuery.of(context).padding.bottom;
-    // final collapsedHeight = Spacing.$8x + bottomSafeArea;
-
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
         named: _settings.name,

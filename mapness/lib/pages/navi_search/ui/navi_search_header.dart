@@ -22,9 +22,7 @@ class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> 
 
   @override
   Widget build(BuildContext context, ThreeStateBottomSheet state, double interpolation) {
-    final multiplier = 1 - interpolation;
-    final bottomPadding =
-        state == ThreeStateBottomSheet.hidden ? (multiplier * Spacing.$8x) : (multiplier * Spacing.$4x);
+    final bottomPadding = interpolation == 0.0 && state == ThreeStateBottomSheet.hidden ? (Spacing.$8x) : (Spacing.$4x);
 
     return Consumer(
       builder: (context, ref, child) {
@@ -54,7 +52,7 @@ class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> 
                   width: double.infinity,
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: Padding(padding: EdgeInsets.only(top: 8.0), child: Dragger()),
+                    child: Padding(padding: EdgeInsets.only(top: Spacing.$2x), child: Dragger()),
                   ),
                 ),
               ),
@@ -63,7 +61,7 @@ class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> 
                 child: MapSearchBar(
                   requestFocus: requestFocus,
                   onClose: onClose,
-                  isCloseButton: state == ThreeStateBottomSheet.hidden,
+                  isCloseButton: interpolation == 0.0 && state == ThreeStateBottomSheet.hidden,
                 ),
               ),
             ],
