@@ -29,6 +29,8 @@ import '../../../../../../../features/_shared_feature_/presentation/widgets/cust
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../../../features/objectable_transactions/domain/entities/create_objection_page_params.dart';
 import '../../../../../../commercial_routes/commercial_route_names.dart';
+import '../../../../domain/use_cases/step1_License_export_apply.dart';
+import '../../../export_commercial_license/license_export_intiation/blocs/commercial_license_export_bloc.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 
 class RequestDetailsPage extends StatelessWidget {
@@ -97,11 +99,38 @@ class RequestDetailsPage extends StatelessWidget {
                                                 );
                                                 break;
                                               case "apply-commercial-issuing-request":
-                                                Navigator.of(context).pushNamed(
-                                                  CommercialRouteName
-                                                      .LicenseExportStartServicePage,
-                                                  arguments: state.requestId,
-                                                );
+                                                {
+
+
+                                                  LicenseExportApply  _LicenseExportApply = LicenseExportApply(repository: sl());
+                                                  _LicenseExportApply(state.requestId!).then((response){
+
+                                                    response.fold(
+                                                            (failure) {
+
+                                                          CommonFunctions.showError(failure.toString());
+
+                                                        }
+
+
+                                                        , (res) {
+
+
+                                                      Navigator.of(context)
+                                                          .pushNamed(
+                                                        CommercialRouteName
+                                                            .LicenseExportStartServicePage,
+                                                        arguments: state.requestId,
+                                                      );
+
+                                                    });
+                                                  });
+                                               ;
+
+
+
+
+                                                }
 
                                                 break;
 
