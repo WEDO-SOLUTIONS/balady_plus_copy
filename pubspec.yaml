@@ -185,12 +185,8 @@ dependencies:
 
   # Mapness
   balady_uikit:
-    git:
-      url: https://github.com/urbi-ae/balady_uikit.git
-      ref: feature/sliver-align-box-widget
-    # TODO: change then 3.3.0 will be released
-    # hosted: https://baladyapp-unpub.urbi.ae/
-    # version: 3.3.0
+    hosted: https://baladyapp-unpub.urbi.ae/
+    version: 3.3.0
 
   mapness:
     path: mapness
