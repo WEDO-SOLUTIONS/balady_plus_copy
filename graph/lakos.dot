@@ -451,10 +451,18 @@ digraph "" {
   "/lib/pages/routing/ui/routing_search_bar.dart" [label="routing_search_bar"];
   "/lib/pages/routing/ui/routing_search_results.dart" [label="routing_search_results"];
   "/lib/pages/routing/routing_map_select.dart" [label="routing_map_select"];
-  "/lib/pages/navigator_settings/pages/voice_page.dart" [label="voice_page"];
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" [label="navigator_settings_page"];
-  "/lib/pages/navigator_settings/pages/dark_map_page.dart" [label="dark_map_page"];
-  "/lib/pages/navigator_settings/pages/sound_settings_page.dart" [label="sound_settings_page"];
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart" [label="dark_map_page_content"];
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page.dart" [label="dark_map_page"];
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_landscape_page.dart" [label="dark_map_landscape_page"];
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_landscape_page.dart" [label="navigator_settings_landscape_page"];
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" [label="navigator_settings_page_content"];
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page.dart" [label="navigator_settings_page"];
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_landscape_page.dart" [label="sound_settings_landscape_page"];
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" [label="sound_settings_page_content"];
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page.dart" [label="sound_settings_page"];
+  "/lib/pages/navigator_settings/pages/voice_page/voice_page.dart" [label="voice_page"];
+  "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" [label="voice_page_content"];
+  "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" [label="voice_landscape_page"];
   "/lib/pages/navigator_settings/utils/sound_type_extension.dart" [label="sound_type_extension"];
   "/lib/pages/navigator_settings/components/dark_map_mode_row_widget.dart" [label="dark_map_mode_row_widget"];
   "/lib/pages/navigator_settings/components/voice_row_widget.dart" [label="voice_row_widget"];
@@ -677,6 +685,9 @@ digraph "" {
   "/lib/widgets/path_nav/ui/eta_sheet.dart" [label="eta_sheet"];
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" [label="parking_bottom_sheet"];
   "/lib/widgets/path_nav/ui/continue_button.dart" [label="continue_button"];
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" [label="navi_panel_landscape"];
+  "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart" [label="base_landscape_bottom_sheet"];
+  "/lib/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart" [label="path_nav_orientation_redirect_wrapper"];
   "/lib/widgets/scopes/global_scopes.dart" [label="global_scopes"];
   "/lib/widgets/bottom_menu/app_bottom_navigation_bar_item.dart" [label="app_bottom_navigation_bar_item"];
   "/lib/widgets/bottom_menu/default_label.dart" [label="default_label"];
@@ -1663,10 +1674,30 @@ digraph "" {
           label="navigator_settings";
           subgraph "cluster~/lib/pages/navigator_settings/pages" {
             label="pages";
-            "/lib/pages/navigator_settings/pages/voice_page.dart";
-            "/lib/pages/navigator_settings/pages/navigator_settings_page.dart";
-            "/lib/pages/navigator_settings/pages/dark_map_page.dart";
-            "/lib/pages/navigator_settings/pages/sound_settings_page.dart";
+            subgraph "cluster~/lib/pages/navigator_settings/pages/dark_map_page" {
+              label="dark_map_page";
+              "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart";
+              "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page.dart";
+              "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_landscape_page.dart";
+            }
+            subgraph "cluster~/lib/pages/navigator_settings/pages/navigator_settings_page" {
+              label="navigator_settings_page";
+              "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_landscape_page.dart";
+              "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart";
+              "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page.dart";
+            }
+            subgraph "cluster~/lib/pages/navigator_settings/pages/sound_settings_page" {
+              label="sound_settings_page";
+              "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_landscape_page.dart";
+              "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart";
+              "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page.dart";
+            }
+            subgraph "cluster~/lib/pages/navigator_settings/pages/voice_page" {
+              label="voice_page";
+              "/lib/pages/navigator_settings/pages/voice_page/voice_page.dart";
+              "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart";
+              "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart";
+            }
           }
           subgraph "cluster~/lib/pages/navigator_settings/utils" {
             label="utils";
@@ -2099,6 +2130,12 @@ digraph "" {
             "/lib/widgets/path_nav/ui/eta_sheet.dart";
             "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart";
             "/lib/widgets/path_nav/ui/continue_button.dart";
+            subgraph "cluster~/lib/widgets/path_nav/ui/landscape" {
+              label="landscape";
+              "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart";
+              "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
+              "/lib/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart";
+            }
           }
         }
         subgraph "cluster~/lib/widgets/scopes" {
@@ -3580,26 +3617,42 @@ digraph "" {
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/widgets/landing/follow_control.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/widgets/landing/traffic_control.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/widgets/landing/zoom_control.dart";
-  "/lib/pages/navigator_settings/pages/voice_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
-  "/lib/pages/navigator_settings/pages/voice_page.dart" -> "/lib/pages/navigator_settings/components/voice_row_widget.dart";
-  "/lib/pages/navigator_settings/pages/voice_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/navigator_settings/pages/voice_page.dart" -> "/lib/shared/providers/app_language.dart";
-  "/lib/pages/navigator_settings/pages/voice_page.dart" -> "/lib/shared/providers/map/sound_settings.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/features/free_roam/free_roam_autostart_settings.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/features/routing/providers/routes.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/shared/providers/map/navigator_auto_enable_parking.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/shared/providers/map/navigator_route_settings.dart";
-  "/lib/pages/navigator_settings/pages/navigator_settings_page.dart" -> "/lib/shared/providers/map/navigator_speed_cameras_settings.dart";
-  "/lib/pages/navigator_settings/pages/dark_map_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
-  "/lib/pages/navigator_settings/pages/dark_map_page.dart" -> "/lib/pages/navigator_settings/components/dark_map_mode_row_widget.dart";
-  "/lib/pages/navigator_settings/pages/dark_map_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/navigator_settings/pages/dark_map_page.dart" -> "/lib/shared/providers/dark_mode.dart";
-  "/lib/pages/navigator_settings/pages/sound_settings_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
-  "/lib/pages/navigator_settings/pages/sound_settings_page.dart" -> "/lib/pages/navigator_settings/utils/sound_type_extension.dart";
-  "/lib/pages/navigator_settings/pages/sound_settings_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/navigator_settings/pages/sound_settings_page.dart" -> "/lib/shared/providers/map/sound_settings.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart" -> "/lib/pages/navigator_settings/components/dark_map_mode_row_widget.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart" -> "/lib/shared/providers/dark_mode.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page.dart" -> "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page.dart" -> "/lib/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_landscape_page.dart" -> "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_landscape_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/dark_map_page/dark_map_landscape_page.dart" -> "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_landscape_page.dart" -> "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_landscape_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_landscape_page.dart" -> "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" -> "/lib/features/free_roam/free_roam_autostart_settings.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" -> "/lib/features/routing/providers/routes.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" -> "/lib/shared/providers/map/navigator_auto_enable_parking.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" -> "/lib/shared/providers/map/navigator_route_settings.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart" -> "/lib/shared/providers/map/navigator_speed_cameras_settings.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page.dart" -> "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page.dart" -> "/lib/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_landscape_page.dart" -> "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_landscape_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_landscape_page.dart" -> "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/pages/navigator_settings/utils/sound_type_extension.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/shared/providers/map/sound_settings.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page.dart" -> "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_page.dart" -> "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" -> "/lib/pages/navigator_settings/components/voice_row_widget.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" -> "/lib/shared/providers/map/sound_settings.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/features/poi_card/widgets/poi_card_header/header_info_component.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navigator_settings/pages/voice_page/voice_landscape_page.dart" -> "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
   "/lib/pages/navigator_settings/utils/sound_type_extension.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/components/dark_map_mode_row_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/components/dark_map_mode_row_widget.dart" -> "/lib/shared/providers/dark_mode.dart";
@@ -3944,6 +3997,7 @@ digraph "" {
   "/lib/pages/onboard/onboard_page.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/pages/onboard/onboard_page.dart" -> "/lib/pages/stories/stories_page.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/lifestyle_layers/providers/active_layer.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/lifestyle_layers/providers/layers_state.dart";
@@ -3969,6 +4023,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/eta_continue.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/eta_finished.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/eta_sheet.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/layout_size_wrapper.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/parking_bottom_banner.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart";
@@ -4484,6 +4539,15 @@ digraph "" {
   "/lib/widgets/path_nav/ui/continue_button.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/widgets/path_nav/ui/continue_button.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/widgets/path_nav/ui/continue_button.dart" -> "/lib/widgets/path_nav/ui/path_nav_continue_trip.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/_features/common/providers/ui_direction.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/entities/path_nav/models/path_nav_state.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/widgets/path_nav/ui/eta_continue.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/widgets/path_nav/ui/eta_finished.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/widgets/path_nav/ui/eta_sheet.dart";
+  "/lib/widgets/path_nav/ui/landscape/navi_panel_landscape.dart" -> "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart";
+  "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
+  "/lib/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart" -> "/lib/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/_features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/metro/metro_layer_provider.dart";
