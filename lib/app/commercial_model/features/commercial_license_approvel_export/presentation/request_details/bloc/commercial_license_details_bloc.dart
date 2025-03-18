@@ -126,7 +126,7 @@ class CommercialLicenseDetailsBloc
 
   void  getConclusion() async {
 
-   // emit(state.copyWith(status: BlocStatus.loading));
+    emit(state.copyWith(status: BlocStatus.loading));
     final response = await _getCommercialConclusion(state.requestId!);
 
     response.fold(

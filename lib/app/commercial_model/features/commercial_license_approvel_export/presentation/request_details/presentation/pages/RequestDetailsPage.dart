@@ -24,6 +24,7 @@ import '../../../../../../../core/utils/constants/route_names.dart';
 import '../../../../../../../features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/components/bottom_sheets/bottom_sheet_with_actions.dart';
 import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../../../../features/objectable_transactions/domain/entities/create_objection_page_params.dart';
@@ -53,16 +54,17 @@ class RequestDetailsPage extends StatelessWidget {
             BlocBuilder<CommercialLicenseDetailsBloc,
                 CommercialLicenseDetailsState>(
               builder: (_, state) {
-                if (state.status == BlocStatus.loading) {
-                  return const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
-                    child: ShimmerEffectWidget(
-                      width: 40,
-                      height: 30,
-                      borderRadius: 25,
-                    ),
-                  );
-                }
+                // if (state.status == BlocStatus.loading) {
+                //   return Center(child: CustomCircularLoadingWidget());
+                //   // return const Padding(
+                //   //   padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8),
+                //   //   child: ShimmerEffectWidget(
+                //   //     width: 40,
+                //   //     height: 30,
+                //   //     borderRadius: 25,
+                //   //   ),
+                //   // );
+                // }
                 return Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   margin: const EdgeInsets.symmetric(vertical: 8),

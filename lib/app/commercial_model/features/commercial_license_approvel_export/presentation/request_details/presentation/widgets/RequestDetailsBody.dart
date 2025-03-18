@@ -16,7 +16,9 @@ import 'package:provider/provider.dart';
 import '../../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../../features/calendar/presentation/pages/calendar_details_page.dart';
+import '../../../../data/models/initialApproval/request_details_model.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 import '../../domain/entity/request_note_info.dart';
 import 'ConclusionWidget.dart';
@@ -53,18 +55,8 @@ class _RequestDetailsBodyState
         }
       },
       builder: (context, state) {
-        if (state.status == BlocStatus.loading) {
-          return ListView.builder(
-            itemCount: 3,
-            itemBuilder: (_, __) => Container(
-              height: 200,
-              margin: const EdgeInsets.only(top: 16),
-              child: const ShimmerEffectWidget(),
-            ),
-          );
-        } else if (state.requestDetails != null) {
-          final requestDetails = state.requestDetails!;
 
+        RequestDetailsModel? requestDetails = state.requestDetails;
           return SingleChildScrollView(
             child: Column(
               children: [
@@ -76,7 +68,7 @@ class _RequestDetailsBodyState
                     ),
                     const SizedBox(width: 4),
                     CustomTextWidget(
-                      requestDetails.creationDate ??"",
+                      requestDetails?.creationDate ??"",
                       textStyle: AppStyle.dateTextStyle,
                     ),
                     const Spacer(),
@@ -91,7 +83,7 @@ class _RequestDetailsBodyState
                         child: Row(
                           children: [
                             CustomTextWidget(
-                              requestDetails.requestStatus?.name??"",
+                              requestDetails?.requestStatus?.name??"",
                               textStyle: AppStyle.tagTextStyle,
                             ),
                           ],
@@ -101,10 +93,8 @@ class _RequestDetailsBodyState
                     ),
                   ],
                 ),
-
-
                 SubmitterInfoWidget(
-                  submitterName: requestDetails.submitter?.name,submitterType:requestDetails.submitterType?.name,CRNumber: requestDetails.owner?.crNumber,
+                  submitterName: requestDetails?.submitter?.name,submitterType:requestDetails?.submitterType?.name,CRNumber: requestDetails?.owner?.crNumber,
                 ),
 
                 ExpandableCard(
@@ -115,52 +105,52 @@ class _RequestDetailsBodyState
                     CardParameter(
                       title: 'request_no'.tr(),
                       value:
-                      requestDetails.requestId.toString(),
+                      requestDetails?.requestId.toString()??"",
                     ),
                     CardParameter(
                       title: 'request_status'.tr(),
                       value:
-                      requestDetails.requestStatus?.name??"",
+                      requestDetails?.requestStatus?.name??"",
                     ),
 
-                    requestDetails.requestStatus?.id == 362?
+                    requestDetails?.requestStatus?.id == 362?
                     CardParameter(
                       title: 'remainingValidityPeriod'.tr(),
-                      value: "${requestDetails.remainingValidityPeriod} ${"lbl_day".tr()}",
+                      value: "${requestDetails?.remainingValidityPeriod} ${"lbl_day".tr()}",
                     ):Container(),
 
                     CardParameter(
                       title: 'municipalAdvisorLicenseYears'.tr(),
                       value:
-                      requestDetails.activities?.mainActivity?.maxYears.toString() ??"",
+                      requestDetails?.activities?.mainActivity?.maxYears.toString() ??"",
                     ),
 
 
-                    requestDetails.rejectionInfo != null && requestDetails.rejectionInfo?.rejectionReason != null?
+                    requestDetails?.rejectionInfo != null && requestDetails?.rejectionInfo?.rejectionReason != null?
                     CardParameter(
                       title: 'rejectionReason'.tr(),
-                      value: requestDetails.rejectionInfo?.rejectionReason??"",
+                      value: requestDetails?.rejectionInfo?.rejectionReason??"",
                       lines: 4,
                     ):Container(),
 
                     CardParameter(
                       title: 'objection_date'.tr(),
                       value:
-                      requestDetails.creationDate??"",
+                      requestDetails?.creationDate??"",
                     ),
 
                     CardParameter(
                       title: 'request_type'.tr(),
-                      value: requestDetails.requestType?.name??"",
+                      value: requestDetails?.requestType?.name??"",
                     ),
 
                     CardParameter(
                       title: 'approvalType'.tr(),
-                      value: requestDetails.workFlow?.name??"",
+                      value: requestDetails?.workFlow?.name??"",
                     ),
 
-                    if(requestDetails.requestStatus?.id == 12)
-                      NotesWidget(notes: [requestDetails.objectionMessage],marginBottom: 0,),
+                    if(requestDetails?.requestStatus?.id == 12)
+                      NotesWidget(notes: [requestDetails?.objectionMessage],marginBottom: 0,),
                   ],
                 ),
 
@@ -169,13 +159,13 @@ class _RequestDetailsBodyState
         icon: IconPath.qrLocationIcon,
         children: [
         const SizedBox(height: 16),
-        requestDetails.location?.latitude != null && requestDetails.location?.longitude != null
+        requestDetails?.location?.latitude != null && requestDetails?.location?.longitude != null
         ? SizedBox(
         height: 250,
         child:
         UrbiMapSection(
         readOnly: true,
-        currentUserLocation:LatLng(latitude: double.parse(requestDetails.location!.latitude!),longitude: double.parse(requestDetails.location!.longitude!)),
+        currentUserLocation:LatLng(latitude: double.parse(requestDetails!.location!.latitude!),longitude: double.parse(requestDetails.location!.longitude!)),
         incidentLocation:LatLng(latitude: double.parse(requestDetails.location!.latitude!),longitude: double.parse(requestDetails.location!.longitude!)),
         onCameraIdle: (bool isIdle) {
         mapController?.moveCamera(
@@ -203,31 +193,31 @@ class _RequestDetailsBodyState
           CardParameter(
             title: 'municipalityName'.tr(),
             value:
-            requestDetails.location?.municipality?.name??"",
+            requestDetails?.location?.municipality?.name??"",
           ),
 
           CardParameter(
             title: 'subMunicipalityName'.tr(),
             value:
-            requestDetails.location?.subMunicipality?.name??"",
+            requestDetails?.location?.subMunicipality?.name??"",
           ),
 
 
           CardParameter(
             title: 'district'.tr(),
             value:
-            requestDetails.location?.district?.name??"",
+            requestDetails?.location?.district?.name??"",
           ),
 
           CardParameter(
             title: 'street'.tr(),
             value:
-            requestDetails.location?.street?.name??"",
+            requestDetails?.location?.street?.name??"",
           ),
         ],
         ),
-                MainActivityInfoWidget(activityInfo: requestDetails.activities,),
-                ExtraActivitiesInfoWidget(additionalActivities:requestDetails.activities?.addedActivities),
+                MainActivityInfoWidget(activityInfo: requestDetails?.activities,),
+                ExtraActivitiesInfoWidget(additionalActivities:requestDetails?.activities?.addedActivities),
                 ExpandableCard(
                   title: 'municipalAdvisorRequirementsTitle'.tr(),
                   icon: IconPath.notificationStatusIcon,
@@ -240,16 +230,14 @@ class _RequestDetailsBodyState
                   title: 'requestNotes'.tr(),
                   icon: IconPath.notificationStatusIcon,
                   children: [
-                    requestDetails.notes != null
+                    requestDetails?.notes != null
                         ? ListView.builder(
-                      itemCount: requestDetails
-                          .notes?.length??0,
+                      itemCount: requestDetails?.notes?.length??0,
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemBuilder: (ctx, index) {
-                        RequestNoteInfo requestNotesInfo =
-                        requestDetails
-                            .notes![index];
+                        RequestNoteInfo? requestNotesInfo =
+                        requestDetails?.notes![index];
                         return Card(
                           color: AppColor.primary100Light,
                           margin: const EdgeInsets.only(top: 16),
@@ -270,7 +258,7 @@ class _RequestDetailsBodyState
                                     ),
                                     const Spacer(),
                                     CustomTextWidget(
-                                      requestNotesInfo.date??"",
+                                      requestNotesInfo?.date??"",
                                       fontSize: 12,
                                       fontColor:
                                       AppColor.blackModern500Light,
@@ -281,7 +269,7 @@ class _RequestDetailsBodyState
                                 ),
                                 const SizedBox(height: 16),
                                 CustomTextWidget(
-                                  requestNotesInfo.note??"",
+                                  requestNotesInfo?.note??"",
                                   fontSize: 12,
                                   maxLines: 100,
                                   fontColor: AppColor.blackModern600Light,
@@ -299,7 +287,7 @@ class _RequestDetailsBodyState
                 /////////////////////////////////////////////////
                 const SizedBox(height: 24),
 
-                if(requestDetails.isRelatedToCommercialRequest==true)
+                if(requestDetails?.isRelatedToCommercialRequest==true)
                 EnhancedCustomElevatedButtonWidget(
                   btnColor: AppColor.primary900Light,
                   btnTextColor:  AppColor.white,
@@ -309,7 +297,7 @@ class _RequestDetailsBodyState
                         RouteName.requestCommercialLicenseDetails
                         ,
                         arguments: {
-                        "requestNumber": requestDetails.relatedCommercialRequestId.toString(),
+                        "requestNumber": requestDetails?.relatedCommercialRequestId.toString(),
                         },
                     );
 
@@ -319,21 +307,17 @@ class _RequestDetailsBodyState
                   btnTextSize: 16,
                   btnTextWeight: AppFontWeight.bold,
                   btnHeight: 56,
-                )
+                ),
+                if (state.status == BlocStatus.loading)
+                  Center(child: CustomCircularLoadingWidget())
 
 
 
               ],
             ),
           );
-        }
-        return Center(
-          child: ReloadWidget(
-            onTab: () {
-              bloc.getCommercialRequestData();
-            },
-          ),
-        );
+
+
       },
     );
   }
