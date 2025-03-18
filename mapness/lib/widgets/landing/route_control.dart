@@ -9,9 +9,6 @@ class RouteControl extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MapButton(
         onTap: onTap,
-        child: const Icon(
-          GeneralIcons.route,
-          size: 24,
-        ),
+        child: GeneralIcons.route.icon(),
       );
 }
