@@ -282,6 +282,8 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
         await dataModel.getServiceConfig(subMunicipalityType!.id!, item.id!);
     if (isSuccess) {
       subClassType = item;
+      dataModel.atttachmentItems = [];
+
       resetIfSelectSubClass();
     }
 
@@ -460,7 +462,6 @@ class NewAppointmentFirstStepViewModel extends BaseViewModel {
 
     setAppointmentTypeItem = null;
     dataModel.appointmentTypeList = null;
-    dataModel.atttachmentItems = [];
   }
 
   void resetIfSelectSubClass() {
