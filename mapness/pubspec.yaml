@@ -120,6 +120,7 @@ dependencies:
   vector_math: 2.1.4
   fast_immutable_collections: 11.0.0
   adjust_sdk: 5.0.2
+  flutter_animate: ^4.3.0
 
   # TODO: upgrade after pdfx will be updated
   device_info_plus: 11.1.1
