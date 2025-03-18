@@ -253,6 +253,7 @@ dependency_overrides:
   # https://github.com/flutter/packages/pull/8656
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
+  geolocator_android: 4.6.1
 
 dev_dependencies:
   build_runner: ^2.4.12
