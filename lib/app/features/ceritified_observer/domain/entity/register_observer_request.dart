@@ -1,6 +1,5 @@
 import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
 
-
 class RegisterObserverRequest {
   RegisterObserverRequest({
     this.iDNumber,
@@ -15,8 +14,9 @@ class RegisterObserverRequest {
     this.city,
     this.district,
     this.iban,
-    this.bankName,
-    this.bankID,
+    this.bankInfo,
+    // this.bankName,
+    // this.bankID,
     this.email,
     this.mobileNumber,
     this.academicQualification,
@@ -85,10 +85,12 @@ class RegisterObserverRequest {
   LookUpItem? academicQualification;
   LookUpItem? maritalStatus;
 
-
+  //// Bank Info
+  LookUpItem? bankInfo;
   String? iban;
-  String? bankName;
-  String? bankID;
+
+  // String? bankName;
+  // String? bankID;
   String? email;
   String? mobileNumber;
   bool? surveyQuestion1;
@@ -126,6 +128,7 @@ class RegisterObserverRequest {
     String? freelanceCertificateNumber,
     String? freelanceCertificateExpiryDate,
     List<DistrictList>? districtList,
+    LookUpItem? bankInfo,
   }) =>
       RegisterObserverRequest(
         iDNumber: iDNumber ?? this.iDNumber,
@@ -140,8 +143,9 @@ class RegisterObserverRequest {
         city: city ?? this.city,
         district: district ?? this.district,
         iban: iban ?? this.iban,
-        bankName: bankName ?? this.bankName,
-        bankID: bankID ?? this.bankID,
+        bankInfo: bankInfo ?? this.bankInfo,
+        // bankName: bankName ?? this.bankName,
+        // bankID: bankID ?? this.bankID,
         email: email ?? this.email,
         mobileNumber: mobileNumber ?? this.mobileNumber,
         academicQualification:
@@ -173,8 +177,8 @@ class RegisterObserverRequest {
     map['CityCode'] = city?.strId;
     map['CityCode'] = city?.strId;
     map['IBAN'] = iban;
-    map['BankName'] = bankName;
-    map['BankID'] = bankID;
+    map['BankName'] = bankInfo?.name;
+    map['BankID'] = bankInfo?.id;
     map['Email'] = email;
     map['MobileNumber'] = mobileNumber;
     map['AcademicQualification'] = academicQualification?.name;

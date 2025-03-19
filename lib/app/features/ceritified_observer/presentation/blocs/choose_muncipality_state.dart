@@ -85,6 +85,13 @@ class ChooseMuncipalityState extends CertifiedObserverState {
     //// Personal Info
         requestData?.maritalStatus,
         requestData?.academicQualification,
+    //// Bank Info
+        requestData?.bankInfo,
+        requestData?.iban,
+    //// User Data applicant
+        requestData?.email,
+        requestData?.mobileNumber,
+    //////////
         isAcceptNewObservers,
         pagesList,
         currentPageValue,
