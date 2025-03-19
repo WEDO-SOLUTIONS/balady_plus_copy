@@ -408,6 +408,7 @@ digraph "" {
   "/lib/shared/extensions/media_query_data_ext.dart" [label="media_query_data_ext"];
   "/lib/shared/extensions/change_marker_options_ext.dart" [label="change_marker_options_ext"];
   "/lib/shared/extensions/polygon_contiurs_ext.dart" [label="polygon_contiurs_ext"];
+  "/lib/shared/extensions/bottom_sheet_controller_helper_extension.dart" [label="bottom_sheet_controller_helper_extension"];
   "/lib/shared/extensions/build_context_ext.dart" [label="build_context_ext"];
   "/lib/shared/extensions/time_of_day_extension.dart" [label="time_of_day_extension"];
   "/lib/shared/extensions/markers_from_search.dart" [label="markers_from_search"];
@@ -1579,6 +1580,7 @@ digraph "" {
           "/lib/shared/extensions/media_query_data_ext.dart";
           "/lib/shared/extensions/change_marker_options_ext.dart";
           "/lib/shared/extensions/polygon_contiurs_ext.dart";
+          "/lib/shared/extensions/bottom_sheet_controller_helper_extension.dart";
           "/lib/shared/extensions/build_context_ext.dart";
           "/lib/shared/extensions/time_of_day_extension.dart";
           "/lib/shared/extensions/markers_from_search.dart";
@@ -2355,6 +2357,7 @@ digraph "" {
   "/lib/features/routing/ui/brief_route_widgets.dart" -> "/lib/shared/providers/app_features.dart";
   "/lib/features/routing/ui/brief_route_widgets.dart" -> "/lib/shared/providers/map/find_brief_route_info.dart";
   "/lib/features/quick_filters/ui/quick_filters.dart" -> "/lib/entities/favourites/favourite_item.dart";
+  "/lib/features/quick_filters/ui/quick_filters.dart" -> "/lib/entities/quick_filters/quick_filter.dart";
   "/lib/features/quick_filters/ui/quick_filters.dart" -> "/lib/entities/quick_filters/quick_filter.dart";
   "/lib/features/quick_filters/ui/quick_filters.dart" -> "/lib/entities/routing/route_params_point.dart";
   "/lib/features/quick_filters/ui/quick_filters.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
@@ -3621,6 +3624,7 @@ digraph "" {
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/pages/navi_search/ui/navi_search_controls.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/pages/navi_search/ui/navi_search_header.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/extensions/bottom_sheet_controller_helper_extension.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/app_language.dart";
