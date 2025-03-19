@@ -120,7 +120,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                         color: context.colorsV3.backgroundSurface2,
                         borderRadius: BorderRadius.vertical(
                           top: index == 0 ? radius : Radius.zero,
-                          bottom: index == state.items.length - 1 ? radius : Radius.zero,
+                          bottom: index == allFav.length - 1 ? radius : Radius.zero,
                         ),
                       ),
                       child: FavouriteItemWidget(
@@ -133,7 +133,7 @@ class NaviFavoritesPage extends HookConsumerWidget {
                         ),
                         key: ValueKey(item.id),
                         isFirst: index == 0,
-                        isLast: index == state.items.length - 1,
+                        isLast: index == allFav.length - 1,
                         onTap: () => context.router.replaceOrPush(
                           route: PoiCardWidgetRoute(
                             objectId: DgisObjectIdMessage(
