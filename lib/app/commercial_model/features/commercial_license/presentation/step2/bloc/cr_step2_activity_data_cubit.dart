@@ -396,8 +396,6 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
   void initDraft() async {
     bool isDraft = sl<CommercialLicenseBloc>().state.isDraft ?? false;
     bool draftLoaded = state.draftLoaded ?? false;
-    print(isDraft);
-    print(draftLoaded);
     if (draftLoaded == false && isDraft) {
       emit(state.copyWith(
      //   draftStatus: BlocStatus.success,
