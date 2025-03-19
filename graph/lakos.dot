@@ -190,6 +190,7 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_loading_sheet.dart" [label="poi_loading_sheet"];
   "/lib/features/poi_card/widgets/poi_photos_row.dart" [label="poi_photos_row"];
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" [label="poi_favorite_dialog"];
+  "/lib/features/poi_card/widgets/poi_photo_button.dart" [label="poi_photo_button"];
   "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart" [label="poi_card_map_controls_wrapper"];
   "/lib/features/poi_card/widgets/poi_inbuilding_sliver.dart" [label="poi_inbuilding_sliver"];
   "/lib/features/poi_card/extensions/week_day_ext.dart" [label="week_day_ext"];
@@ -1174,6 +1175,7 @@ digraph "" {
             "/lib/features/poi_card/widgets/poi_loading_sheet.dart";
             "/lib/features/poi_card/widgets/poi_photos_row.dart";
             "/lib/features/poi_card/widgets/poi_favorite_dialog.dart";
+            "/lib/features/poi_card/widgets/poi_photo_button.dart";
             "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart";
             "/lib/features/poi_card/widgets/poi_inbuilding_sliver.dart";
             subgraph "cluster~/lib/features/poi_card/widgets/footer" {
@@ -2973,6 +2975,7 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
+  "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/features/poi_card/widgets/poi_photo_button.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/pages/feedback/quick_feedback_page.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/shared/ui/feedback_banner_card.dart";
@@ -3001,6 +3004,9 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/ui/sheets/loading_sheet.dart";
+  "/lib/features/poi_card/widgets/poi_photo_button.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
+  "/lib/features/poi_card/widgets/poi_photo_button.dart" -> "/lib/pages/feedback/quick_feedback_page.dart";
+  "/lib/features/poi_card/widgets/poi_photo_button.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart" -> "/lib/features/poi_card/widgets/poi_card_map_controls.dart";
   "/lib/features/poi_card/widgets/poi_inbuilding_sliver.dart" -> "/lib/features/poi_card/domain/model/organization_item.dart";
