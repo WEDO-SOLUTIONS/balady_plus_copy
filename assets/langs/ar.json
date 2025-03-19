@@ -4217,5 +4217,45 @@
 
   "degree": "المؤهل العلمي",
   "field_mandatory": "هذا الحقل إجباري، يجب  إدخاله.",
-    "marital_status" : "الحالة الإجتماعية"
+  "marital_status" : "الحالة الإجتماعية",
+
+
+
+  "married": "متزوج",
+  "unmarried": "غير متزوج",
+  "primary": "ابتدائي",
+  "intermediate": "متوسط",
+  "secondary": "ثانوي",
+  "university": "جامعي",
+  "masters": "ماجستير",
+
+  "alAhliSaudiBank": "البنك الأهلي السعودي",
+  "alRajhiBank": "مصرف الراجحي",
+  "RiyadhBank": "بنك الرياض",
+  "SaudiBritishBank": "البنك السعودي البريطاني",
+  "ArabNationalBank": "البنك العربي الوطني",
+  "AlinmaBank": "مصرف الإنماء",
+  "SaudiFransiBank": "البنك السعودي الفرنسي",
+  "SaudiInvestmentBank": "البنك السعودي للاستثمار",
+  "BankAlJazira": "بنك الجزيرة",
+  "BankAlBilad": "بنك البلاد",
+  "GulfBankOfSaudiArabia": "بنك الخليج السعودي",
+  "EmiratesNBD": "بنك الإمارات دبي الوطني",
+  "BahrainNationalBank": "بنك البحرين الوطني",
+  "NationalBankOfKuwait": "بنك الكويت الوطني",
+  "BankMuscat": "بنك مسقط",
+  "DeutscheBank": "دويتشه بنك",
+  "BNPParibas": "بي إن باريبا",
+  "JPMorganChaseNA": "جي بي مورغان تشيز إن ايه",
+  "NationalBankOfPakistan": "بنك باكستان الوطني",
+  "ZiraatBankasi": "بانك زراعات بنكاسي",
+  "IndustrialAndCommercialBankOfChina": "بنك الصين للصناعة والتجارة",
+  "QNBGroup": "بنك قطر الوطني",
+  "MizuhoFG": "ميزوهو فاينانشال جروب",
+  "FirstAbuDhabiBank": "بنك أبوظبي الأول",
+  "CreditSuisseBank": "بنك كريدي سويس",
+  "StandardCharteredBank": "بنك ستاندرد تشارترد",
+  "NationalBankOfIraq": "البنك الوطني العراقي",
+  "TradeBankOfIraq": "المصرف العراقي للتجارة"
+
 }

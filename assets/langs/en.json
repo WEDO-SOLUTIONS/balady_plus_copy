@@ -4466,5 +4466,47 @@
   "services_categories": "Services Categories",
   "service_lase_teen": "Services",
   "invalid_license": "License number is incorrect",
-  "enter_license_id": "Please enter the license number"
+  "enter_license_id": "Please enter the license number",
+
+
+
+  "married": "Married",
+  "unmarried": "Unmarried",
+  "primary": "Primary",
+  "intermediate": "Intermediate",
+  "secondary": "Secondary",
+  "university": "University",
+  "masters": "Masters",
+
+
+  "alAhliSaudiBank": "Al Ahli Saudi Bank",
+  "alRajhiBank": "Al Rajhi Bank",
+  "RiyadhBank": "Riyadh Bank",
+  "SaudiBritishBank": "Saudi British Bank",
+  "ArabNationalBank": "Arab National Bank",
+  "AlinmaBank": "Alinma Bank",
+  "SaudiFransiBank": "Saudi Fransi Bank",
+  "SaudiInvestmentBank": "Saudi Investment Bank",
+  "BankAlJazira": "Bank AlJazira",
+  "BankAlBilad": "Bank Al Bilad",
+  "GulfBankOfSaudiArabia": "Gulf Bank of Saudi Arabia",
+  "EmiratesNBD": "Emirates NBD",
+  "BahrainNationalBank": "Bahrain National Bank",
+  "NationalBankOfKuwait": "National Bank of Kuwait",
+  "BankMuscat": "Bank Muscat",
+  "DeutscheBank": "Deutsche Bank",
+  "BNPParibas": "BNP Paribas",
+  "JPMorganChaseNA": "JPMorgan Chase N.A.",
+  "NationalBankOfPakistan": "National Bank of Pakistan",
+  "ZiraatBankasi": "Ziraat Bankasi",
+  "IndustrialAndCommercialBankOfChina": "Industrial and Commercial Bank of China",
+  "QNBGroup": "QNB Group",
+  "MizuhoFG": "Mizuho Financial Group",
+  "FirstAbuDhabiBank": "First Abu Dhabi Bank",
+  "CreditSuisseBank": "Credit Suisse Bank",
+  "StandardCharteredBank": "Standard Chartered Bank",
+  "NationalBankOfIraq": "National Bank of Iraq",
+  "TradeBankOfIraq": "Trade Bank of Iraq"
+
+
 }
