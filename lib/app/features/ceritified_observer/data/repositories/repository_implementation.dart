@@ -104,7 +104,6 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
   @override
   Future<Either<Failure, ResponseBodyModel<List<CityEntity>>>> getCityList(String municipalityId)async {
     try {
-
       final data = await remoteDataSource.getCityList(municipalityId);
       return Right(data);
     } on NoDataFoundException catch (error, stackTrace) {
@@ -127,4 +126,34 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
       return Left(ServerFailure(error.errorMessage));
     }
   }
+
+
+  @override
+  Future<Either<Failure, List<DistrictsEntity>>> getDistrictByCityIdList(String cityId) async {
+    try {
+      final data = await remoteDataSource.getDistrictByCityIdList(cityId);
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+
+
 }

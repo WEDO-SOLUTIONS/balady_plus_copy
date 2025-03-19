@@ -57,8 +57,7 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                   CustomLookUpLongDialog(
                     showOptional: false,
                     items: state.lstMunicipalityLookUp ?? [],
-                    value: state
-                        .getMuncipalityById(state.requestData?.municipalityID),
+                    value: state.requestData?.municipality,
                     onEmptyList: () async {
                       return context
                           .read<ChooseMuncipalityBloc>()
@@ -66,10 +65,12 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                     },
                     onChangeType: (LookUpItem? item) {
                       if (item != null) {
+                        state.requestData!.district = null;
+                        state.requestData!.city = null;
                         context.read<ChooseMuncipalityBloc>().add(
-                              setRequestDataEvent(
+                              SetRequestDataEvent(
                                 dataModel: RegisterObserverRequest(
-                                  municipalityID: item.strId!,
+                                  municipality: item,
                                 ),
                               ),
                             );
@@ -86,6 +87,7 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                 ],
               ),
               const Spacer(),
+
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -106,7 +108,7 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                   btnHeight: 56,
                   text: "next".tr(),
                   onPressed: () {
-                    if (state.requestData?.municipalityID != null) {
+                    if (state.requestData?.municipality != null) {
                       context
                           .read<ChooseMuncipalityBloc>()
                           .checkMuncipalityAcceptance();

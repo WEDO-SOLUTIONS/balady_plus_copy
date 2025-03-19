@@ -21,7 +21,7 @@ class LocationInfoWidget extends StatelessWidget {
           showOptional: false,
           isDisbaled: true,
           items: state.lstMunicipalityLookUp ?? [],
-          value: state.getMuncipalityById(state.requestData?.municipalityID),
+          value: state.requestData?.municipality,
           onEmptyList: () async {},
           onChangeType: (LookUpItem? item) {
             if (item != null) {}
@@ -32,18 +32,25 @@ class LocationInfoWidget extends StatelessWidget {
         CustomLookUpLongDialog(
           showOptional: false,
           items: state.lstCitesLookUp ?? [],
-          value: state.getCityById(state.requestData?.cityCode),
+          value: state.requestData?.city,
           onEmptyList: () async {
-            return context.read<ChooseMuncipalityBloc>().getCityList();
+            return context.read<ChooseMuncipalityBloc>().getCityList(
+                  state.requestData!.municipality!.strId!,
+                );
           },
           onChangeType: (LookUpItem? item) {
             if (item != null) {
+              state.requestData!.district = null;
               context.read<ChooseMuncipalityBloc>().add(
-                    setRequestDataEvent(
-                      dataModel: RegisterObserverRequest(
-                        cityCode: item.strId,
+                    SetRequestDataEvent(
+                      dataModel: state.requestData!.copyWith(
+                        city: item,
                       ),
                     ),
+                  );
+
+              context.read<ChooseMuncipalityBloc>().getDistrictByCityIdList(
+                    item.strId!,
                   );
             }
           },
@@ -52,25 +59,26 @@ class LocationInfoWidget extends StatelessWidget {
         ),
         CustomLookUpLongDialog(
           showOptional: false,
-          items: state.lstDegrees ?? [],
-          value:
-              state.getDegreeByName(state.requestData?.academicQualification),
+          items: state.lstDistrictLookUp ?? [],
+          value: state.requestData?.district,
           onEmptyList: () async {
-            return context.read<ChooseMuncipalityBloc>().getDegreeList();
+            context.read<ChooseMuncipalityBloc>().getCityList(
+                  state.requestData!.municipality!.strId!,
+                );
           },
           onChangeType: (LookUpItem? item) {
             if (item != null) {
               context.read<ChooseMuncipalityBloc>().add(
-                    setRequestDataEvent(
-                      dataModel: RegisterObserverRequest(
-                        academicQualification: item.name,
+                    SetRequestDataEvent(
+                      dataModel: state.requestData!.copyWith(
+                        district: item,
                       ),
                     ),
                   );
             }
           },
-          label: "degree".tr(),
-          hint: "degree".tr(),
+          label: "district".tr(),
+          hint: "district".tr(),
         ),
       ],
     );

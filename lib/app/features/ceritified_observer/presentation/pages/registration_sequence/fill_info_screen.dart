@@ -66,7 +66,7 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                   btnHeight: 56,
                   text: "next".tr(),
                   onPressed: () {
-                    if (state.requestData?.municipalityID != null) {
+                    if (state.requestData?.municipality != null) {
                       context
                           .read<ChooseMuncipalityBloc>()
                           .checkMuncipalityAcceptance();

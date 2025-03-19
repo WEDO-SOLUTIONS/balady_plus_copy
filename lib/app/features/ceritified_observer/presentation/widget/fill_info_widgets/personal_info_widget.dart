@@ -31,7 +31,7 @@ class PersonalInfoWidget extends StatelessWidget {
           onChangeType: (LookUpItem? item) {
             if (item != null) {
               context.read<ChooseMuncipalityBloc>().add(
-                setRequestDataEvent(
+                SetRequestDataEvent(
                   dataModel: RegisterObserverRequest(
                     academicQualification: item.name,
                   ),
@@ -55,7 +55,7 @@ class PersonalInfoWidget extends StatelessWidget {
           onChangeType: (LookUpItem? item) {
             if (item != null) {
               context.read<ChooseMuncipalityBloc>().add(
-                setRequestDataEvent(
+                SetRequestDataEvent(
                   dataModel: RegisterObserverRequest(
                     maritalStatus: item.name,
                   ),

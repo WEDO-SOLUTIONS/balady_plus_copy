@@ -26,6 +26,7 @@ class ChooseMuncipalityBloc
   final GetRegisteredObserverStatus _getRegisteredObserverStatus;
   final GetMuncipalityList _getMuncipalityList;
   final GetCityList _getCityList;
+  final GetDistrictList _getDistrictList;
 
   final CheckMuncipalityAcceptance _checkMuncipalityAcceptance;
 
@@ -35,10 +36,11 @@ class ChooseMuncipalityBloc
       : _getRegisteredObserverStatus =
             GetRegisteredObserverStatus(repository: sl()),
         _getCityList = GetCityList(repository: sl()),
+        _getDistrictList = GetDistrictList(repository: sl()),
         _getMuncipalityList = GetMuncipalityList(repository: sl()),
         _checkMuncipalityAcceptance =
             CheckMuncipalityAcceptance(repository: sl()),
-        super(ChooseMuncipalityState(pagesList: [])) {
+        super(ChooseMuncipalityState(pagesList: const [])) {
     // getObserverStatus("1006966525");
 
     on<GetObserverStatusEvent>(_etObserverStatus);
@@ -46,7 +48,7 @@ class ChooseMuncipalityBloc
     add(GetObserverStatusEvent(identityNumber: "1006966525"));
 
     ///////////////////////////////////////////////////////////
-    on<setRequestDataEvent>(_setRequestDataHandler);
+    on<SetRequestDataEvent>(_setRequestDataHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
     on<GoToNextPageEvent>(_goToNextPageHandler);
   }
@@ -123,14 +125,13 @@ class ChooseMuncipalityBloc
     }
   }
 
-  Future<void> getCityList() async {
+  Future<void> getCityList(String municipalityID) async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
       emit(
         state.copyWith(status: BlocStatus.loading),
       );
-      final failureOrSuccess =
-          await _getCityList(state.requestData?.municipalityID);
+      final failureOrSuccess = await _getCityList(municipalityID);
       failureOrSuccess.fold(
         (failure) {
           emit(
@@ -139,7 +140,8 @@ class ChooseMuncipalityBloc
             ),
           );
           CommonFunctions.showError(
-              failure is ServerFailure ? (failure).errorMessage : "");
+            failure is ServerFailure ? (failure).errorMessage : "",
+          );
         },
         (response) {
           List<LookUpItem> lstCites = [];
@@ -147,13 +149,55 @@ class ChooseMuncipalityBloc
               response.data!.result != null &&
               response.data!.result!.isNotEmpty) {
             for (var item in response.data!.result!) {
-              lstCites.add(LookUpItem(strId: item.cityID, name: item.cityName));
+              lstCites.add(
+                LookUpItem(
+                  strId: item.cityID,
+                  name: item.cityName,
+                ),
+              );
             }
           }
           emit(
             state.copyWith(
               status: BlocStatus.success,
               lstCitesLookUp: lstCites,
+            ),
+          );
+        },
+      );
+    }
+  }
+
+  Future<void> getDistrictByCityIdList(String cityId) async {
+    if (state is ChooseMuncipalityState) {
+      ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
+      emit(state.copyWith(status: BlocStatus.loading));
+      final failureOrSuccess = await _getDistrictList(cityId);
+      failureOrSuccess.fold(
+        (failure) {
+          emit(state.copyWith(status: BlocStatus.failure));
+          CommonFunctions.showError(
+            failure is ServerFailure ? (failure).errorMessage : "",
+          );
+        },
+        (response) {
+          List<LookUpItem> lstDistrict = [];
+          if (response.isNotEmpty) {
+            for (var item in response) {
+              lstDistrict.add(
+                LookUpItem(
+                  strId: item.districtID,
+                  name: item.districtName,
+                ),
+              );
+            }
+          }
+
+          ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
+          emit(
+            state.copyWith(
+              status: BlocStatus.success,
+              lstDistrictLookUp: lstDistrict,
             ),
           );
         },
@@ -208,19 +252,10 @@ class ChooseMuncipalityBloc
   }
 
   Future<void> _setRequestDataHandler(
-      setRequestDataEvent e, Emitter emitter) async {
+      SetRequestDataEvent e, Emitter emitter) async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
-      RegisterObserverRequest? data = state.requestData;
-      data ??= RegisterObserverRequest();
-      data = data.copyWith(
-        municipalityID: e.dataModel?.municipalityID,
-        academicQualification: e.dataModel?.academicQualification,
-        maritalStatus: e.dataModel?.maritalStatus,
-        cityCode: e.dataModel?.cityCode,
-      );
-
-      emitter(state.copyWith(requestData: data));
+      emitter(state.copyWith(requestData: e.dataModel));
     }
   }
 
@@ -231,7 +266,7 @@ class ChooseMuncipalityBloc
         state.copyWith(status: BlocStatus.loading),
       );
       final failureOrSuccess = await _checkMuncipalityAcceptance(
-        state.requestData?.municipalityID,
+        state.requestData?.municipality!.strId,
       );
       failureOrSuccess.fold(
         (failure) {
@@ -252,7 +287,7 @@ class ChooseMuncipalityBloc
               isAcceptNewObservers: (response.data!.result) as bool,
             ),
           );
-
+          _getCityList(state.requestData?.municipality!.strId);
           if (response.data!.result == true) {
             add(const GoToNextPageEvent());
           }

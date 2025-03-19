@@ -7,9 +7,9 @@ abstract class ChooseMuncipalityEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class setRequestDataEvent extends ChooseMuncipalityEvent {
+class SetRequestDataEvent extends ChooseMuncipalityEvent {
   final RegisterObserverRequest? dataModel;
-  const setRequestDataEvent({this.dataModel});
+  const SetRequestDataEvent({this.dataModel});
 }
 
 class GoToNextPageEvent extends ChooseMuncipalityEvent {

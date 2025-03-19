@@ -1,3 +1,6 @@
+import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+
+
 class RegisterObserverRequest {
   RegisterObserverRequest({
     this.iDNumber,
@@ -8,8 +11,9 @@ class RegisterObserverRequest {
     this.familyName,
     this.gender,
     this.externalEntityID,
-    this.municipalityID,
-    this.cityCode,
+    this.municipality,
+    this.city,
+    this.district,
     this.iban,
     this.bankName,
     this.bankID,
@@ -27,39 +31,41 @@ class RegisterObserverRequest {
     this.districtList,
   });
 
-  RegisterObserverRequest.fromJson(dynamic json) {
-    iDNumber = json['IDNumber'];
-    birthDate = json['BirthDate'];
-    firstName = json['FirstName'];
-    fatherName = json['FatherName'];
-    grandFatherName = json['GrandFatherName'];
-    familyName = json['FamilyName'];
-    gender = json['Gender'];
-    externalEntityID = json['ExternalEntityID'];
-    municipalityID = json['MunicipalityID'];
-    cityCode = json['CityCode'];
-    iban = json['IBAN'];
-    bankName = json['BankName'];
-    bankID = json['BankID'];
-    email = json['Email'];
-    mobileNumber = json['MobileNumber'];
-    academicQualification = json['AcademicQualification'];
-    maritalStatus = json['MaritalStatus'];
-    surveyQuestion1 = json['SurveyQuestion1'];
-    surveyQuestion2 = json['SurveyQuestion2'];
-    surveyQuestion3 = json['SurveyQuestion3'];
-    surveyQuestion4 = json['SurveyQuestion4'];
-    qualificationStatus = json['QualificationStatus'];
-    freelanceCertificateNumber = json['FreelanceCertificateNumber'];
-    freelanceCertificateExpiryDate = json['FreelanceCertificateExpiryDate'];
-    if (json['DistrictList'] != null) {
-      districtList = [];
-      json['DistrictList'].forEach((v) {
-        districtList?.add(DistrictList.fromJson(v));
-      });
-    }
-  }
+  // RegisterObserverRequest.fromJson(dynamic json) {
+  //   iDNumber = json['IDNumber'];
+  //   birthDate = json['BirthDate'];
+  //   firstName = json['FirstName'];
+  //   fatherName = json['FatherName'];
+  //   grandFatherName = json['GrandFatherName'];
+  //   familyName = json['FamilyName'];
+  //   gender = json['Gender'];
+  //   externalEntityID = json['ExternalEntityID'];
+  //   municipalityID = json['MunicipalityID'];
+  //   cityCode = json['CityCode'];
+  //   cityCode = json['CityCode'];
+  //   iban = json['IBAN'];
+  //   bankName = json['BankName'];
+  //   bankID = json['BankID'];
+  //   email = json['Email'];
+  //   mobileNumber = json['MobileNumber'];
+  //   academicQualification = json['AcademicQualification'];
+  //   maritalStatus = json['MaritalStatus'];
+  //   surveyQuestion1 = json['SurveyQuestion1'];
+  //   surveyQuestion2 = json['SurveyQuestion2'];
+  //   surveyQuestion3 = json['SurveyQuestion3'];
+  //   surveyQuestion4 = json['SurveyQuestion4'];
+  //   qualificationStatus = json['QualificationStatus'];
+  //   freelanceCertificateNumber = json['FreelanceCertificateNumber'];
+  //   freelanceCertificateExpiryDate = json['FreelanceCertificateExpiryDate'];
+  //   if (json['DistrictList'] != null) {
+  //     districtList = [];
+  //     json['DistrictList'].forEach((v) {
+  //       districtList?.add(DistrictList.fromJson(v));
+  //     });
+  //   }
+  // }
 
+  //// User Data Applicant
   int? iDNumber;
   String? birthDate;
   String? firstName;
@@ -68,8 +74,15 @@ class RegisterObserverRequest {
   String? familyName;
   String? gender;
   String? externalEntityID;
-  String? municipalityID;
-  String? cityCode;
+
+  //// Location Info
+  LookUpItem? municipality;
+  LookUpItem? city;
+  LookUpItem? district;
+  List<DistrictList>? districtList;
+
+
+
   String? iban;
   String? bankName;
   String? bankID;
@@ -84,7 +97,6 @@ class RegisterObserverRequest {
   String? qualificationStatus;
   String? freelanceCertificateNumber;
   String? freelanceCertificateExpiryDate;
-  List<DistrictList>? districtList;
 
   RegisterObserverRequest copyWith({
     int? iDNumber,
@@ -95,8 +107,9 @@ class RegisterObserverRequest {
     String? familyName,
     String? gender,
     String? externalEntityID,
-    String? municipalityID,
-    String? cityCode,
+    LookUpItem? municipalityID,
+    LookUpItem? city,
+    LookUpItem? district,
     String? iban,
     String? bankName,
     String? bankID,
@@ -122,8 +135,9 @@ class RegisterObserverRequest {
         familyName: familyName ?? this.familyName,
         gender: gender ?? this.gender,
         externalEntityID: externalEntityID ?? this.externalEntityID,
-        municipalityID: municipalityID ?? this.municipalityID,
-        cityCode: cityCode ?? this.cityCode,
+        municipality: municipalityID ?? this.municipality,
+        city: city ?? this.city,
+        district: district ?? this.district,
         iban: iban ?? this.iban,
         bankName: bankName ?? this.bankName,
         bankID: bankID ?? this.bankID,
@@ -154,8 +168,9 @@ class RegisterObserverRequest {
     map['FamilyName'] = familyName;
     map['Gender'] = gender;
     map['ExternalEntityID'] = externalEntityID;
-    map['MunicipalityID'] = municipalityID;
-    map['CityCode'] = cityCode;
+    map['MunicipalityID'] = municipality?.strId;
+    map['CityCode'] = city?.strId;
+    map['CityCode'] = city?.strId;
     map['IBAN'] = iban;
     map['BankName'] = bankName;
     map['BankID'] = bankID;
