@@ -112,15 +112,12 @@ class RequestDetailsPage extends StatelessWidget {
 
                                                         }
 
-
                                                         , (res) {
 
 
                                                       Navigator.of(context)
                                                           .pushNamed(
-                                                        CommercialRouteName
-                                                            .LicenseExportStartServicePage,
-                                                        arguments: state.requestId,
+                                                        CommercialRouteName.LicenseExportStartServicePage, arguments: {"initialApprovalRequestId":state.requestId,"issuingRequestId":res},
                                                       );
 
                                                     });
@@ -184,6 +181,13 @@ class RequestDetailsPage extends StatelessWidget {
                                                       .pop(true);
                                                   bloc?.cancelIntialApproval();
                                                 });
+
+                                                break;
+                                              case "print":
+                                                {
+
+                                                  CommonFunctions.openBaladyWebView("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber");
+                                                }
 
                                                 break;
                                               case "reply-on-notes":

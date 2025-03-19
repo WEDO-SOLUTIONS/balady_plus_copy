@@ -33,28 +33,30 @@ class CommercialLicenseExportBloc
 
 
 
-  Future<void> applyLicenseExport(int? requestId) async {
-    emit(state.copyWith(
-      detailsStatus: BlocStatus.loading,
-    ));
+  Future<void> applyLicenseExport(int? issuingRequestId) async {
+    emit(state.copyWith(detailsStatus: BlocStatus.success,requestId: Nullable(issuingRequestId)));
 
-    final response = await _LicenseExportApply(requestId!);
-    response.fold(
-            (failure) {
-
-              emit(state.copyWith(detailsStatus: BlocStatus.failure,));
-              CommonFunctions.showError(failure.toString());
-
-            }
-
-
-        , (res) {
-         emit(state.copyWith(detailsStatus: BlocStatus.success,requestId: Nullable(res)));
-
-
-        // getCommercialRequestData(state.requestId!);
-
-    });
+    // emit(state.copyWith(
+    //   detailsStatus: BlocStatus.loading,
+    // ));
+    //
+    // final response = await _LicenseExportApply(requestId!);
+    // response.fold(
+    //         (failure) {
+    //
+    //           emit(state.copyWith(detailsStatus: BlocStatus.failure,));
+    //           CommonFunctions.showError(failure.toString());
+    //
+    //         }
+    //
+    //
+    //     , (res) {
+    //      emit(state.copyWith(detailsStatus: BlocStatus.success,requestId: Nullable(res)));
+    //
+    //
+    //     // getCommercialRequestData(state.requestId!);
+    //
+    // });
 
 
   }

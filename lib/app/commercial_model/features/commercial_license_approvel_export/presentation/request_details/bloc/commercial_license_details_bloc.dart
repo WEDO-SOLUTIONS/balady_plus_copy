@@ -71,7 +71,17 @@ class CommercialLicenseDetailsBloc
                 {
                   model = res.data?.result;
                   model?.allowedActions!.removeWhere((item) => item.id == "view-details");
-                  model?.allowedActions!.removeWhere((item) => item.id == "print");
+
+                 var index= model?.allowedActions!.indexWhere((item) => item.id == "print");
+                  if(index != null && index != -1)
+                    {
+                      AllowedActions? item= model!.allowedActions?[index];
+                      if(item != null) {
+                        item.name = "viewForPrint".tr();
+                        model.allowedActions?.removeAt(index);
+                        model.allowedActions?.insert(index, item);
+                      }
+                    }
                 }
               emit(state.copyWith(requestDetails: model,status:BlocStatus.success ));
     });
