@@ -139,10 +139,7 @@ class _TrafficControl extends StatelessWidget {
       TrafficControl(
         opacity: isVisable ? 1 : 0,
         isEnabled: isEnabled,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(RadiusBorder.ml),
-          topRight: Radius.circular(RadiusBorder.ml),
-        ),
+        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
         onTap: () {
           Metrics.logEventAdvanced(
             MetricsConstants.exploreKeys.trafficLightButton,

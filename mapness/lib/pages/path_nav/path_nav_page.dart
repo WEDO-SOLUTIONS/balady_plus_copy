@@ -227,19 +227,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         child: OrientationBuilder(
           builder: (context, orientation) => Stack(
             children: [
-              ValueListenableBuilder(
-                valueListenable: _navigationState,
-                builder: (context, state, _) {
-                  final isShowRoute = state == PathNavState.running;
-
-                  return PathNavMapControls(
-                    bottomHeightNotifier: _bottomHeightNotifier,
-                    navigationState: _navigationState,
-                    expansionNotifier: _expansionNotifier,
-                    navType: widget.navType,
-                    onRoutePressed: isShowRoute ? _onShowRoutePressed : null,
-                  );
-                },
+              PathNavMapControls(
+                bottomHeightNotifier: _bottomHeightNotifier,
+                navigationState: _navigationState,
+                expansionNotifier: _expansionNotifier,
+                navType: widget.navType,
+                onRoutePressed: _onShowRoutePressed,
               ),
               if (orientation == Orientation.portrait)
                 Consumer(
