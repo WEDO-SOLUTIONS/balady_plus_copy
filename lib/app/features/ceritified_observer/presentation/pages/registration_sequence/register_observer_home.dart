@@ -3,9 +3,9 @@ import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
-import '../blocs/choose_muncipality_bloc.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
+import '../../blocs/choose_muncipality_bloc.dart';
 
 class RegisterObserverHome extends StatefulWidget {
   const RegisterObserverHome({super.key});

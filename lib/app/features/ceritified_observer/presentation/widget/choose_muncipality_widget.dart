@@ -33,7 +33,7 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
   Widget build(BuildContext context) {
     return BlocBuilder<ChooseMuncipalityBloc, CertifiedObserverState>(
       builder: (context, state) {
-        if(state is ChooseMuncipalityState) {
+        if (state is ChooseMuncipalityState) {
           return Column(
             children: [
               ExpandableCard(
@@ -66,9 +66,12 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                     onChangeType: (LookUpItem? item) {
                       if (item != null) {
                         context.read<ChooseMuncipalityBloc>().add(
-                            setRequestDataEvent(
+                              setRequestDataEvent(
                                 dataModel: RegisterObserverRequest(
-                                    municipalityID: item.strId!)));
+                                  municipalityID: item.strId!,
+                                ),
+                              ),
+                            );
                       }
                     },
                     label: "license_health_municipality".tr(),
@@ -76,8 +79,8 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                   ),
                   state.isAcceptNewObservers == false
                       ? NotesWidget(
-                    notes: ['muncipality_not_accept'.tr()],
-                  )
+                          notes: ['muncipality_not_accept'.tr()],
+                        )
                       : Container(),
                 ],
               ),
@@ -90,7 +93,8 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                   ),
                   color: Colors.white,
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                 child: CustomElevatedButtonWidget(
                   btnColor: AppColor.primary800Light,
                   textStyle: AppStyle.elevatedButtonStyle.copyWith(

@@ -2,24 +2,24 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import '../../../../core/utils/constants/app_colors.dart';
-import '../../../../core/utils/constants/app_style.dart';
-import '../../../_shared_feature_/presentation/cards/expandable_card.dart';
-import '../../../_shared_feature_/presentation/fields/read_only_field.dart';
-import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import '../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
-import '../../../new_appointment/presentation/core/models/lookup_list_model.dart';
-import '../../domain/entity/register_observer_request.dart';
-import '../blocs/choose_muncipality_bloc.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
+import '../../../../../core/utils/constants/app_style.dart';
+import '../../../../_shared_feature_/presentation/cards/expandable_card.dart';
+import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
+import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
+import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../domain/entity/register_observer_request.dart';
+import '../../blocs/choose_muncipality_bloc.dart';
 
-class ApplicantInfoWidget extends StatefulWidget {
-  const ApplicantInfoWidget({Key? key}) : super(key: key);
+class FillInfoScreen extends StatefulWidget {
+  const FillInfoScreen({Key? key}) : super(key: key);
 
   @override
-  State<ApplicantInfoWidget> createState() => _ApplicantInfoWidgetState();
+  State<FillInfoScreen> createState() => _FillInfoScreenState();
 }
 
-class _ApplicantInfoWidgetState extends State<ApplicantInfoWidget> {
+class _FillInfoScreenState extends State<FillInfoScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChooseMuncipalityBloc, CertifiedObserverState>(

@@ -56,8 +56,7 @@ import '../../features/_shared_feature_/presentation/pages/view_apigee_image_scr
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
-import '../../features/ceritified_observer/presentation/pages/choose_municipality.dart';
-import '../../features/ceritified_observer/presentation/pages/register_observer_home.dart';
+import '../../features/ceritified_observer/presentation/pages/registration_sequence/register_observer_home.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
 import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';

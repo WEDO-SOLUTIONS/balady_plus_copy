@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/fill_info_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -14,7 +15,6 @@ import '../../domain/use_cases/check_muncipality_acceptance.dart';
 import '../../domain/use_cases/get_city_list.dart';
 import '../../domain/use_cases/get_muncipality_list.dart';
 import '../../domain/use_cases/get_registered_observer_status.dart';
-import '../widget/applicant_info_widget.dart';
 import '../widget/choose_muncipality_widget.dart';
 
 part 'choose_muncipality_state.dart';
@@ -71,7 +71,7 @@ class ChooseMuncipalityBloc
               status: BlocStatus.success,
               pagesList: const [
                 ChooseMuncipalityWidget(),
-                ApplicantInfoWidget()
+                FillInfoScreen()
               ],
               observerStatusEntity: obj,
             ),
