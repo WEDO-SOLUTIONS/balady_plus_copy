@@ -76,6 +76,7 @@ class ChooseMuncipalityBloc
               observerStatusEntity: obj,
             ),
           );
+          getMuncipalityList();
         } else {
           if (response.data!.result?.qualification == "Waiting for approval") {
             emitter(
