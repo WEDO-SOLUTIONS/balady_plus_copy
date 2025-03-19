@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
-import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
@@ -27,6 +26,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -219,21 +219,25 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
 
-    ref.listen(debugStateProvider, (previous, next) {
-      if (!next || (previous ?? false)) {
-        return;
-      }
+    ref
+      // listen for changes in car connection state. But do not rebuild widget
+      ..listen(carEnableFreeRoamProvider, (previous, next) {})
+      // listen for changes in debug state provider to show/hide the debug overlay
+      ..listen(debugStateProvider, (previous, next) {
+        if (!next || (previous ?? false)) {
+          return;
+        }
 
-      _debugOverlay = OverlayEntry(
-        builder: (context) => Theme(
-          data: Theme.of(context),
-          child: const ProviderScope(
-            child: DebugOverlay(),
+        _debugOverlay = OverlayEntry(
+          builder: (context) => Theme(
+            data: Theme.of(context),
+            child: const ProviderScope(
+              child: DebugOverlay(),
+            ),
           ),
-        ),
-      );
-      Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
-    });
+        );
+        Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
+      });
 
     return DefaultTextHeightBehavior(
       textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
