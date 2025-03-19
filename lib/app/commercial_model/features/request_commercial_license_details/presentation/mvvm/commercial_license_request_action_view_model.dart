@@ -17,6 +17,7 @@ import 'package:balady_plus/app/commercial_model/commercial_model_end_points.dar
 class RequestCommercialLicenseActionViewModel extends BaseViewModel {
   final WebService webService;
   final int requestId;
+  final bool isFromInitialApproval;
   final requestTypeId;
   final ReasonCancel? reasonCancel;
   final bool availableCloseDate;
@@ -26,6 +27,7 @@ class RequestCommercialLicenseActionViewModel extends BaseViewModel {
   RequestCommercialLicenseActionViewModel({
     required this.webService,
     required this.requestId,
+    required this.isFromInitialApproval,
     required this.reasonCancel,
     this.requestTypeId,
     required this.availableCloseDate,

@@ -46,12 +46,16 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                                 .renewCommercialLicenseSubmitForm,
                                             arguments: provider.requestId,
                                           );
-                                        } else if (provider.requestTypeId ==
-                                            1004) {
+                                        } else if (provider.requestTypeId == 1004) {
+
+                                          // fawzi check if it from
                                           Navigator.of(context).pushNamed(
                                             CommercialRouteName.commercialLicensePage,
-                                            arguments: RequestInfoArragments(requestId: provider.requestId,isFromIntialApproval: false),
+                                            arguments: RequestInfoArragments(requestId: provider.requestId,isFromIntialApproval: provider.isFromInitialApproval),
                                           );
+
+
+
                                         } else {
                                           try {
                                             Navigator.of(context)

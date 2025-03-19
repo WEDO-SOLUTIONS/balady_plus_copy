@@ -42,10 +42,10 @@ class RequestDetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Map data = ModalRoute.of(context)!.settings.arguments as Map;
-
+    hashingRequestNumber = data["hashingRequestNumber"];
     return BlocProvider(
       create: (context) {
-        hashingRequestNumber = data["hashingRequestNumber"];
+
         bloc = CommercialLicenseDetailsBloc(int.parse(data['requestNumber']));
         return bloc!;
       },
