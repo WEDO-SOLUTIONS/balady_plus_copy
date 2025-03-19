@@ -14,6 +14,7 @@ digraph "" {
   "/lib/features/sso_auth/domain/mappers/auth_token_response.dart" [label="auth_token_response"];
   "/lib/features/sso_auth/data/auth_provider.dart" [label="auth_provider"];
   "/lib/features/sso_auth/data/token_provider.dart" [label="token_provider"];
+  "/lib/features/car/car_enable_free_roam.dart" [label="car_enable_free_roam"];
   "/lib/features/weather/provider/forecast_weather_provider.dart" [label="forecast_weather_provider"];
   "/lib/features/weather/provider/weather_map_controller.dart" [label="weather_map_controller"];
   "/lib/features/weather/provider/current_weather_provider.dart" [label="current_weather_provider"];
@@ -825,6 +826,10 @@ digraph "" {
             "/lib/features/sso_auth/data/auth_provider.dart";
             "/lib/features/sso_auth/data/token_provider.dart";
           }
+        }
+        subgraph "cluster~/lib/features/car" {
+          label="car";
+          "/lib/features/car/car_enable_free_roam.dart";
         }
         subgraph "cluster~/lib/features/weather" {
           label="weather";
@@ -2338,6 +2343,9 @@ digraph "" {
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/features/profile/profile_image_provider.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/features/car/car_enable_free_roam.dart" -> "/lib/app/auto_route/app_routes.dart";
+  "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/car_connection.dart";
+  "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/weather/provider/forecast_weather_provider.dart" -> "/lib/entities/weather/weather_info.dart";
   "/lib/features/weather/provider/forecast_weather_provider.dart" -> "/lib/features/weather/data/repository/weather_repository.dart";
   "/lib/features/weather/provider/forecast_weather_provider.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
@@ -4638,6 +4646,7 @@ digraph "" {
   "/lib/entry_point.dart" -> "/lib/app/auto_route/others/routes_observer.dart";
   "/lib/entry_point.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/entry_point.dart" -> "/lib/entities/search/models/search_history.dart";
+  "/lib/entry_point.dart" -> "/lib/features/car/car_enable_free_roam.dart";
   "/lib/entry_point.dart" -> "/lib/features/favourites/data/models/favorite_cache_item.dart";
   "/lib/entry_point.dart" -> "/lib/features/path_nav/lib/extensions.dart";
   "/lib/entry_point.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
