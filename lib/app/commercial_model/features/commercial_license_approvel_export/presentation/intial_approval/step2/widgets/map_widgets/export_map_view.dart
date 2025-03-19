@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import '../../../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../bloc/step2_activity_data_export_cubit.dart';
 import 'map_address_card.dart';
@@ -95,9 +96,10 @@ class _ExportMapViewState extends State<ExportMapView> {
                     MapAddressCard(
                       address: state.gisResponse?.getFullAddress(),
                       submitLocation: () {
+                        if(state.status == BlocStatus.loading) return;
                         context
                             .read<Step2ActivityDataExportCubit>()
-                            .add(GetGISDataExportEvent(params: state.location!));
+                            .add(GetGISDataExportEvent(params: state.location!,gisResponse: state.gisResponse ));
                       },
                       isValidLocation: true,
                     ),

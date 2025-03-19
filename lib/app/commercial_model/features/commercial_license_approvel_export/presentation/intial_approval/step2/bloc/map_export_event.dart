@@ -12,9 +12,11 @@ class GetGISDataExportEvent extends MapExportEvent {
   final GISParams params;
   final bool popPage;
   final bool refreshLocation;
-  const GetGISDataExportEvent(
+  GISResponse? gisResponse;
+   GetGISDataExportEvent(
       {required this.params,
       this.popPage = true,
+        this.gisResponse,
       this.refreshLocation = false});
 }
 

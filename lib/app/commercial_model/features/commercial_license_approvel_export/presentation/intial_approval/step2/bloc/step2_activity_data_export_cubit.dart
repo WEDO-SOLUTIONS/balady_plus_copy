@@ -517,7 +517,45 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
 
   Future<void> _getGisDataHandler(GetGISDataExportEvent e, Emitter emitter) async {
    if ((state.status == BlocStatus.loading)) return;
-    emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+   if(e.gisResponse != null)
+     {
+       emitter(state.copyWith(
+         status: BlocStatus.success,
+         gisResponse: e.gisResponse,
+         mapNo: !e.refreshLocation
+             ? e.gisResponse?.planNo != "Null"
+             ? e.gisResponse?.planNo ?? ""
+             : state.mapNo??""
+             : null,
+         landNo: !e.refreshLocation
+             ? e.gisResponse?.parcelNo != "Null"
+             ? e.gisResponse?.parcelNo ?? ""
+             : ""
+             : null,
+         errorMessage: "",
+       ));
+
+       if (e.popPage) {
+
+         mapNpController.text =
+         e.gisResponse?.planNo != "Null" ? e.gisResponse?.planNo ?? "" : "";
+         landNpController.text =
+         e.gisResponse?.parcelNo != "Null" ? e.gisResponse?.parcelNo ?? "" : "";
+         String? url = await getImageUrl(e.params);
+
+         if (url != null) {
+           e.gisResponse?.locationURL = url;
+
+           NavigationService.navigatorKey.currentState
+               ?.pop(MapScreenParams(gisParams: e.params, gisResponse: e.gisResponse));
+         }
+
+         calculateFeesInteractivly();
+         _handleSPLNotication();
+       }
+       return;
+     }
+   emitter(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
     GISParams params = e.params;
 
     if (e.popPage) params.requestNo = state.requestNo;
@@ -530,6 +568,8 @@ class Step2ActivityDataExportCubit extends   Bloc<MapExportEvent, Step2ActivityD
         errorMessage: (failure as ServerFailure).errorMessage,
       ));
     }, (success) async {
+
+
       emitter(state.copyWith(
         status: BlocStatus.success,
         gisResponse: success,
