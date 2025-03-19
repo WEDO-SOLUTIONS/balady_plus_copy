@@ -232,14 +232,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 builder: (context, state, _) {
                   final isShowRoute = state == PathNavState.running;
 
-                  returnPathNavMapControls(
-                bottomHeightNotifier: _bottomHeightNotifier,
-                navigationState: _navigationState,
-                expansionNotifier: _expansionNotifier,
-                navType: widget.navType,
-              onRoutePressed: isShowRoute ? _onShowRoutePressed : null,
+                  return PathNavMapControls(
+                    bottomHeightNotifier: _bottomHeightNotifier,
+                    navigationState: _navigationState,
+                    expansionNotifier: _expansionNotifier,
+                    navType: widget.navType,
+                    onRoutePressed: isShowRoute ? _onShowRoutePressed : null,
                   );
-                }),
+                },
+              ),
               if (orientation == Orientation.portrait)
                 Consumer(
                   builder: (_, ref, __) {
@@ -332,6 +333,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                       onContinuePressed: _onContinuePressed,
                       endTripAndShowHome: _endTripAndShowHome,
                       endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
+                      onSearchPressed: _onSearchPressed,
                     ),
                   ),
                 ),

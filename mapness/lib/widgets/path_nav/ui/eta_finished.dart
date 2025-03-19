@@ -52,7 +52,6 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
                   onTap: widget.onBuildAnotherRoutePressed,
                 ),
               ],
-              onSearchTap: () {},
             ),
           ),
         ),

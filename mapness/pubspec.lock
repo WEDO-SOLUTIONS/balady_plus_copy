@@ -208,11 +208,10 @@ packages:
   balady_uikit:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "feature/update-navi-road-panel"
-      resolved-ref: "6e6f3a0253108479f635d63e82fc071072ae9c8d"
-      url: "git@github.com:urbi-ae/balady_uikit.git"
-    source: git
+      name: balady_uikit
+      sha256: "3efcb073d3edc4ba5bb3fff370ce8c52c9cdf8a475b9236e170e3fb05b3eda18"
+      url: "https://baladyapp-unpub.urbi.ae"
+    source: hosted
     version: "3.3.0"
   battery_plus:
     dependency: transitive
@@ -750,7 +749,7 @@ packages:
     source: hosted
     version: "1.0.1"
   equatable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: equatable
       sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
@@ -1531,13 +1530,13 @@ packages:
     source: hosted
     version: "13.0.1"
   geolocator_android:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: geolocator_android
-      sha256: fcb1760a50d7500deca37c9a666785c047139b5f9ee15aa5469fae7dbbe3170d
+      sha256: "7aefc530db47d90d0580b552df3242440a10fe60814496a979aa67aa98b1fd47"
       url: "https://pub.dev"
     source: hosted
-    version: "4.6.2"
+    version: "4.6.1"
   geolocator_apple:
     dependency: transitive
     description:

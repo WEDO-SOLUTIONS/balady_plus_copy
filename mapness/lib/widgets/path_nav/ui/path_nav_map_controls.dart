@@ -116,7 +116,6 @@ class PathNavMapControls extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Expanded(child: maneuverAndLimitWidget),
-                  // $8x in design, but BaladyManeuverAndLimit already has symmetric(horizontal: 12)
                   uikit.Spacing.$5x.widthBox,
                   Column(
                     children: [
@@ -173,22 +172,25 @@ class PathNavMapControls extends StatelessWidget {
                     child: zoomControlWidget,
                   ),
                   const Spacer(),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      if (onRoutePressed != null)
-                        RouteControl(
-                          onTap: onRoutePressed!,
+                  Padding(
+                    padding: padding,
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        if (onRoutePressed != null)
+                          RouteControl(
+                            onTap: onRoutePressed!,
+                          ),
+                        const Spacer(),
+                        const Column(
+                          children: [
+                            compassControlWidget,
+                            SizedBox(height: 8),
+                            pathNavFollowControlWidget,
+                          ],
                         ),
-                      const Spacer(),
-                      const Column(
-                        children: [
-                          compassControlWidget,
-                          SizedBox(height: 8),
-                          pathNavFollowControlWidget,
-                        ],
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   ValueListenableBuilder(
                     valueListenable: bottomHeightNotifier,

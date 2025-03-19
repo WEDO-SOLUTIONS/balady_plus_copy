@@ -16,6 +16,7 @@ class NaviPanelLandscape extends ConsumerStatefulWidget {
   final VoidCallback onShowRoutePressed;
   final Function(BuildContext context) acceptBetterRoute;
   final Function(BuildContext context) rejectBetterRoute;
+  final Function(BuildContext context) onSearchPressed;
   final ValueNotifier<int?> betterRouteDurationProfit;
   final Function(Size size) onSizeChanged;
   final VoidCallback onContinuePressed;
@@ -34,6 +35,7 @@ class NaviPanelLandscape extends ConsumerStatefulWidget {
     required this.onContinuePressed,
     required this.endTripAndShowHome,
     required this.endTripAndBuildAnotherRoute,
+    required this.onSearchPressed,
     super.key,
   });
 
@@ -68,7 +70,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
                   case PathNavState.running:
                     return EtaSheet(
                       onEndTripPressed: () => widget.endTripAndShowFeedback(context),
-                      onRoutePressed: widget.onShowRoutePressed,
+                      onSearchPressed: () => widget.onSearchPressed(context),
                       onBetterRouteAccept: () => widget.acceptBetterRoute(context),
                       onBetterRouteReject: () => widget.rejectBetterRoute(context),
                       betterRouteDurationProfit: widget.betterRouteDurationProfit,
@@ -85,6 +87,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
                       onEndTripPressed: widget.endTripAndShowHome,
                       onBuildAnotherRoutePressed: widget.endTripAndBuildAnotherRoute,
                       onSizeChanged: widget.onSizeChanged,
+                      onSearchPressed: () => widget.onSearchPressed(context),
                     );
                 }
               },
