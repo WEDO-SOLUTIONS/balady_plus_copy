@@ -1344,6 +1344,12 @@ abstract class MapApi {
   void followNavigation();
 
   @async
+  void startFollowNavigation();
+
+  @async
+  void stopFollowNavigation();
+
+  @async
   void selectIndoorLevel(int index);
 
   @async

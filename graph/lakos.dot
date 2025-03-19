@@ -460,6 +460,16 @@ digraph "" {
   "/lib/pages/navigator_settings/components/voice_row_widget.dart" [label="voice_row_widget"];
   "/lib/pages/navigator_settings/components/language_pick_sheet.dart" [label="language_pick_sheet"];
   "/lib/pages/navigator_settings/components/language_row_widget.dart" [label="language_row_widget"];
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" [label="navi_bottom_sheet"];
+  "/lib/pages/navi_search/navi_favorites_page.dart" [label="navi_favorites_page"];
+  "/lib/pages/navi_search/ui/navi_search_results.dart" [label="navi_search_results"];
+  "/lib/pages/navi_search/ui/navi_search_content.dart" [label="navi_search_content"];
+  "/lib/pages/navi_search/ui/navi_search_history.dart" [label="navi_search_history"];
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" [label="navi_search_controls"];
+  "/lib/pages/navi_search/ui/navi_search_empty.dart" [label="navi_search_empty"];
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" [label="navi_suggest_list"];
+  "/lib/pages/navi_search/ui/navi_search_header.dart" [label="navi_search_header"];
+  "/lib/pages/navi_search/navi_search_page.dart" [label="navi_search_page"];
   "/lib/pages/share_eta/eta_route_page.dart" [label="eta_route_page"];
   "/lib/pages/map/map_page.dart" [label="map_page"];
   "/lib/pages/app_feedback/app_feedback_input_sheet.dart" [label="app_feedback_input_sheet"];
@@ -548,6 +558,11 @@ digraph "" {
   "/lib/widgets/quick_filters/models/filter_item.dart" [label="filter_item"];
   "/lib/widgets/quick_filters/ui/quick_filters.dart" [label="quick_filters"];
   "/lib/widgets/quick_filters/ui/quick_filter.dart" [label="quick_filter"];
+  "/lib/widgets/navi_search/navi_quick_filter.dart" [label="navi_quick_filter"];
+  "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" [label="navi_quick_filter_provider"];
+  "/lib/widgets/navi_search/models/filter_item_model.dart" [label="filter_item_model"];
+  "/lib/widgets/navi_search/navi_find_in_fav.dart" [label="navi_find_in_fav"];
+  "/lib/widgets/navi_search/vertical_chip.dart" [label="vertical_chip"];
   "/lib/widgets/messages/errror_message.dart" [label="errror_message"];
   "/lib/widgets/app_feedback/app_feedback_input.dart" [label="app_feedback_input"];
   "/lib/widgets/app_feedback/app_feedback_card.dart" [label="app_feedback_card"];
@@ -569,6 +584,7 @@ digraph "" {
   "/lib/widgets/landing/indoor_control.dart" [label="indoor_control"];
   "/lib/widgets/landing/traffic_control.dart" [label="traffic_control"];
   "/lib/widgets/landing/dashboard_header.dart" [label="dashboard_header"];
+  "/lib/widgets/landing/route_control.dart" [label="route_control"];
   "/lib/widgets/landing/qibla_card.dart" [label="qibla_card"];
   "/lib/widgets/landing/compliance_card.dart" [label="compliance_card"];
   "/lib/widgets/landing/complience_building_legend.dart" [label="complience_building_legend"];
@@ -1664,6 +1680,22 @@ digraph "" {
             "/lib/pages/navigator_settings/components/language_row_widget.dart";
           }
         }
+        subgraph "cluster~/lib/pages/navi_search" {
+          label="navi_search";
+          "/lib/pages/navi_search/navi_bottom_sheet.dart";
+          "/lib/pages/navi_search/navi_favorites_page.dart";
+          "/lib/pages/navi_search/navi_search_page.dart";
+          subgraph "cluster~/lib/pages/navi_search/ui" {
+            label="ui";
+            "/lib/pages/navi_search/ui/navi_search_results.dart";
+            "/lib/pages/navi_search/ui/navi_search_content.dart";
+            "/lib/pages/navi_search/ui/navi_search_history.dart";
+            "/lib/pages/navi_search/ui/navi_search_controls.dart";
+            "/lib/pages/navi_search/ui/navi_search_empty.dart";
+            "/lib/pages/navi_search/ui/navi_suggest_list.dart";
+            "/lib/pages/navi_search/ui/navi_search_header.dart";
+          }
+        }
         subgraph "cluster~/lib/pages/share_eta" {
           label="share_eta";
           "/lib/pages/share_eta/eta_route_page.dart";
@@ -1857,6 +1889,20 @@ digraph "" {
             "/lib/widgets/quick_filters/ui/quick_filter.dart";
           }
         }
+        subgraph "cluster~/lib/widgets/navi_search" {
+          label="navi_search";
+          "/lib/widgets/navi_search/navi_quick_filter.dart";
+          "/lib/widgets/navi_search/navi_find_in_fav.dart";
+          "/lib/widgets/navi_search/vertical_chip.dart";
+          subgraph "cluster~/lib/widgets/navi_search/providers" {
+            label="providers";
+            "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart";
+          }
+          subgraph "cluster~/lib/widgets/navi_search/models" {
+            label="models";
+            "/lib/widgets/navi_search/models/filter_item_model.dart";
+          }
+        }
         subgraph "cluster~/lib/widgets/messages" {
           label="messages";
           "/lib/widgets/messages/errror_message.dart";
@@ -1889,6 +1935,7 @@ digraph "" {
           "/lib/widgets/landing/indoor_control.dart";
           "/lib/widgets/landing/traffic_control.dart";
           "/lib/widgets/landing/dashboard_header.dart";
+          "/lib/widgets/landing/route_control.dart";
           "/lib/widgets/landing/qibla_card.dart";
           "/lib/widgets/landing/compliance_card.dart";
           "/lib/widgets/landing/complience_building_legend.dart";
@@ -3564,6 +3611,83 @@ digraph "" {
   "/lib/pages/navigator_settings/components/language_row_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/components/language_row_widget.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/pages/navigator_settings/components/language_row_widget.dart" -> "/lib/shared/providers/map/sound_settings.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/app/auto_route/app_routes.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/landing/search_in_rect.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/search/models/search_state.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/features/search/ui/search_scope.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/pages/navi_search/ui/navi_search_content.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/pages/navi_search/ui/navi_search_controls.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/pages/navi_search/ui/navi_search_header.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/extensions/markers_from_search.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/dark_mode.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/object_manager.dart";
+  "/lib/pages/navi_search/navi_bottom_sheet.dart" -> "/lib/shared/providers/map/rubric_marker_type_mapper.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/entities/favourites/favourite_item.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/shared/config/package_config.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
+  "/lib/pages/navi_search/navi_favorites_page.dart" -> "/lib/widgets/favourites/favourite_item_widget.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/features/search/ui/search_results.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/shared/providers/location.dart";
+  "/lib/pages/navi_search/ui/navi_search_results.dart" -> "/lib/widgets/search/ui/search_item.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/_features/common/providers/network_status.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/features/search/models/search_state.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/pages/map_search/ui/map_lost_internet.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/pages/navi_search/ui/navi_search_empty.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/pages/navi_search/ui/navi_search_history.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/pages/navi_search/ui/navi_search_results.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/pages/navi_search/ui/navi_suggest_list.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/shared/providers/urbi_analytics.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/widgets/navi_search/navi_find_in_fav.dart";
+  "/lib/pages/navi_search/ui/navi_search_content.dart" -> "/lib/widgets/navi_search/navi_quick_filter.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/features/search/providers/search_history.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/features/search/ui/search_history.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/pages/navi_search/ui/navi_search_history.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" -> "/lib/widgets/landing/compass_control.dart";
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" -> "/lib/widgets/landing/complience_building_legend.dart";
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" -> "/lib/widgets/landing/follow_control.dart";
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" -> "/lib/widgets/landing/layers_control.dart";
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" -> "/lib/widgets/landing/traffic_control.dart";
+  "/lib/pages/navi_search/ui/navi_search_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
+  "/lib/pages/navi_search/ui/navi_search_empty.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/features/search/ui/suggest_item.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/providers/location.dart";
+  "/lib/pages/navi_search/ui/navi_search_header.dart" -> "/lib/features/search/models/search_state.dart";
+  "/lib/pages/navi_search/ui/navi_search_header.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/navi_search/ui/navi_search_header.dart" -> "/lib/features/search/ui/search_scope.dart";
+  "/lib/pages/navi_search/ui/navi_search_header.dart" -> "/lib/pages/map_search/ui/map_search_bar.dart";
+  "/lib/pages/navi_search/navi_search_page.dart" -> "/lib/pages/navi_search/navi_bottom_sheet.dart";
+  "/lib/pages/navi_search/navi_search_page.dart" -> "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart";
   "/lib/pages/share_eta/eta_route_page.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/share_eta/eta_route_page.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
   "/lib/pages/share_eta/eta_route_page.dart" -> "/lib/features/share_eta/helpers/constants.dart";
@@ -3968,6 +4092,14 @@ digraph "" {
   "/lib/widgets/quick_filters/ui/quick_filters.dart" -> "/lib/widgets/quick_filters/ui/quick_filter.dart";
   "/lib/widgets/quick_filters/ui/quick_filter.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/quick_filters/ui/quick_filter.dart" -> "/lib/widgets/quick_filters/models/filter_item.dart";
+  "/lib/widgets/navi_search/navi_quick_filter.dart" -> "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart";
+  "/lib/widgets/navi_search/navi_quick_filter.dart" -> "/lib/widgets/navi_search/vertical_chip.dart";
+  "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" -> "/lib/entities/quick_filters/quick_filter.dart";
+  "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" -> "/lib/shared/ui/toast/app_locale.dart";
+  "/lib/widgets/navi_search/providers/navi_quick_filter_provider.dart" -> "/lib/widgets/navi_search/models/filter_item_model.dart";
+  "/lib/widgets/navi_search/navi_find_in_fav.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/navi_search/navi_find_in_fav.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/config/package_config.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
@@ -4316,6 +4448,7 @@ digraph "" {
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/shared/extensions/path_nav_ext.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/compass_control.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/indoor_control.dart";
+  "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/route_control.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/path_nav/ui/path_nav_follow_control.dart";
   "/lib/widgets/path_nav/ui/eta_sheet_wrapper.dart" -> "/lib/shared/config/package_config.dart";
@@ -4358,6 +4491,7 @@ digraph "" {
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_geo_subscriber.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_service_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_timer_indicator.dart";
+  "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/eta_websocket_status_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/share_eta_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/share_eta/providers/websocket_type_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/stories/providers/stories_open_state.dart";

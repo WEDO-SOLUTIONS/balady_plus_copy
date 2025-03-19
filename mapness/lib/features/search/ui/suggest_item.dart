@@ -18,6 +18,8 @@ class SuggestItem extends ConsumerWidget {
   final SuggestMessage suggest;
   final GeoPointMessage? myLocation;
   final bool isLast;
+  final Color? iconColor;
+  final Color? tralingTextColor;
   final Function(DirectoryObjectMessage) onObjectTap;
 
   const SuggestItem({
@@ -25,6 +27,8 @@ class SuggestItem extends ConsumerWidget {
     required this.onObjectTap,
     this.myLocation,
     this.isLast = false,
+    this.iconColor,
+    this.tralingTextColor,
     super.key,
   });
 
@@ -68,10 +72,10 @@ class SuggestItem extends ConsumerWidget {
     }
 
     return ContentRowV2(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       onTap: _onSuggestTap,
       isDividerEnabled: !isLast,
-      leading: SystemIcons.search.icon(color: context.colorsV2.foregroundDefault),
+      leading: SystemIcons.search.icon(color: iconColor ?? context.colorsV2.foregroundDefault),
       text: ContentRowTextOptions(
         title: suggest.title.text,
         titleOptions: ContentRowTextOption(
@@ -85,6 +89,9 @@ class SuggestItem extends ConsumerWidget {
       trailing: distanceKm != null
           ? ContentRowTextTrailingOptions(
               text: (distanceKm * 1000).formatDistance(context.l10n),
+              textStyle: tralingTextColor != null
+                  ? context.textStyleV3.bodySmallSemiBold.copyWith(color: tralingTextColor)
+                  : null,
             )
           : null,
     );

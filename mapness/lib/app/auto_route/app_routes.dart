@@ -64,6 +64,10 @@ class AppRouter extends RootStackRouter {
               page: SearchRoute.page,
             ),
             AppRoute(
+              path: 'navi_search',
+              page: NaviSearchRoute.page,
+            ),
+            AppRoute(
               path: 'routingMap',
               page: RoutingMapSelectRoute.page,
             ),
@@ -166,6 +170,10 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'favourites',
               page: FavouritesRoute.page,
+            ),
+            CustomRoute(
+              path: 'navi_search_favorites',
+              page: NaviFavoritesRoute.page,
             ),
             CustomRoute(
               path: 'search',

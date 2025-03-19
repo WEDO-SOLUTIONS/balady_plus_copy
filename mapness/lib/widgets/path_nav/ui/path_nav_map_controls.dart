@@ -12,6 +12,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
+import 'package:mapness/widgets/landing/route_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 
@@ -20,6 +21,7 @@ class PathNavMapControls extends StatelessWidget {
   final ValueNotifier<PathNavState> navigationState;
   final ValueNotifier<bool> expansionNotifier;
   final RouteSearchOptionsMessage navType;
+  final VoidCallback? onRoutePressed;
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -28,6 +30,7 @@ class PathNavMapControls extends StatelessWidget {
     required this.navigationState,
     required this.expansionNotifier,
     required this.navType,
+    this.onRoutePressed,
     super.key,
   });
 
@@ -122,14 +125,25 @@ class PathNavMapControls extends StatelessWidget {
                   ),
                 ),
                 const Spacer(),
-                const Padding(
+                Padding(
                   padding: padding,
-                  child: CompassControl(),
-                ),
-                const SizedBox(height: 8),
-                const Padding(
-                  padding: padding,
-                  child: PathNavFollowControl(),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      if (onRoutePressed != null)
+                        RouteControl(
+                          onTap: onRoutePressed!,
+                        ),
+                      const Spacer(),
+                      const Column(
+                        children: [
+                          CompassControl(),
+                          SizedBox(height: 8),
+                          PathNavFollowControl(),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
                 ValueListenableBuilder(
                   valueListenable: bottomHeightNotifier,
