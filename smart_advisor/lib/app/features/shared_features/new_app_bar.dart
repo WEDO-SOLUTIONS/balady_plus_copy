@@ -18,6 +18,7 @@ class NewAppBar extends StatelessWidget {
         padding: EdgeInsets.only(
             top: MediaQuery.of(context).padding.top,
             bottom: 12,
+            right: showClose ? 45 : 0,
             left: showClose ? 14 : 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -27,24 +28,18 @@ class NewAppBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                IconButton(
-                  onPressed: () {
-                    NavigationService.navigatorKey.currentState!.pop(context);
-                  },
-                  icon: showClose
-                      ? SvgPicture.asset(
-                          IconPath.close,
-                          width: 14,
-                          height: 14,
-                          color: AppColor.textPrimaryColor, //statusAccentColor,
-                        )
-                      : SvgPicture.asset(
-                          IconPath.newBackIcon,
-                          width: 24,
-                          height: 24,
-                          color: AppColor.textPrimaryColor, //statusAccentColor,
-                        ),
-                ),
+                if (!showClose)
+                  IconButton(
+                    onPressed: () {
+                      NavigationService.navigatorKey.currentState!.pop(context);
+                    },
+                    icon: SvgPicture.asset(
+                      IconPath.newBackIcon,
+                      width: 24,
+                      height: 24,
+                      color: AppColor.textPrimaryColor, //statusAccentColor,
+                    ),
+                  ),
                 Expanded(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -61,6 +56,18 @@ class NewAppBar extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (showClose)
+                  IconButton(
+                      onPressed: () {
+                        NavigationService.navigatorKey.currentState!
+                            .pop(context);
+                      },
+                      icon: SvgPicture.asset(
+                        IconPath.close,
+                        width: 14,
+                        height: 14,
+                        color: AppColor.textPrimaryColor, //statusAccentColor,
+                      )),
               ],
             ),
           ],

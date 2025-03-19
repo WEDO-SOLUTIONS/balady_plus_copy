@@ -15,31 +15,33 @@ class SubmitRatingRequest {
   final String? businessActivityId;
   final String? municipalityId;
   final String? subMunicipalityId;
+  final int? licenseNumber;
   final List<InspectionSubClausesList>? inspectionSubClausesList;
 
-  SubmitRatingRequest({
-    this.selfEvaluationType,
-    this.businessActivityId,
-    this.municipalityId,
-    this.subMunicipalityId,
-    this.inspectionSubClausesList,
-  });
+  SubmitRatingRequest(
+      {this.selfEvaluationType,
+      this.businessActivityId,
+      this.municipalityId,
+      this.subMunicipalityId,
+      this.inspectionSubClausesList,
+      this.licenseNumber});
 
   SubmitRatingRequest copyWith({
     String? selfEvaluationType,
     String? businessActivityId,
     String? municipalityId,
     String? subMunicipalityId,
+    int? licenseNumber,
     List<InspectionSubClausesList>? inspectionSubClausesList,
   }) =>
       SubmitRatingRequest(
-        selfEvaluationType: selfEvaluationType ?? this.selfEvaluationType,
-        businessActivityId: businessActivityId ?? this.businessActivityId,
-        municipalityId: municipalityId ?? this.municipalityId,
-        subMunicipalityId: subMunicipalityId ?? this.subMunicipalityId,
-        inspectionSubClausesList:
-            inspectionSubClausesList ?? this.inspectionSubClausesList,
-      );
+          selfEvaluationType: selfEvaluationType ?? this.selfEvaluationType,
+          businessActivityId: businessActivityId ?? this.businessActivityId,
+          municipalityId: municipalityId ?? this.municipalityId,
+          subMunicipalityId: subMunicipalityId ?? this.subMunicipalityId,
+          inspectionSubClausesList:
+              inspectionSubClausesList ?? this.inspectionSubClausesList,
+          licenseNumber: licenseNumber ?? this.licenseNumber);
 
   factory SubmitRatingRequest.fromJson(Map<String, dynamic> json) =>
       SubmitRatingRequest(
@@ -55,6 +57,7 @@ class SubmitRatingRequest {
       );
 
   Map<String, dynamic> toJson() => {
+        "LicenseNumber": licenseNumber,
         "SelfEvaluationType": selfEvaluationType,
         "BusinessActivityID": businessActivityId,
         "MunicipalityID": municipalityId,
@@ -126,9 +129,9 @@ class InspectionSubClausesList {
         "NonComplianceReasonList": nonComplianceReasonList,
         "SubClauseNo": subClauseNo,
         "InspectionTypeNo": inspectionTypeNo,
-        "SubClauseName": "",
+        //  "SubClauseName": subClauseName?.replaceAll("/", "").replaceAll("&", ""),
         "ClauseNo": clauseNo,
-        "ClauseName": "",
+        "ClauseName": clauseName,
         "CommentForNonCompliance": commentForNonCompliance,
         "ComplianceStatus": complianceStatus,
       };

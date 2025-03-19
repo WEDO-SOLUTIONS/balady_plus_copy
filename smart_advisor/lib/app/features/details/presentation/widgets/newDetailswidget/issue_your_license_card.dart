@@ -9,13 +9,18 @@ import 'package:smart_advisor/app/features/details/presentation/bloc/details_blo
 import 'package:smart_advisor/app/features/details/presentation/bloc/details_state.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
+import 'package:smart_advisor/app/features/select_activity/presentation/blocs/main_flow_bloc/main_flow_bloc.dart';
+import 'package:smart_advisor/app/features/select_activity/presentation/pages/more_info.dart';
+
 import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../fees_calculator/presentation/pages/calculator_page.dart';
+import '../../../../select_activity/domain/entities/activity_details_page_params.dart';
 //import 'package:easy_stepper/easy_stepper.dart';
 
 class IssueYourLicenseCard extends StatelessWidget {
   final int number;
-  IssueYourLicenseCard({super.key, required this.number});
+  ActivityDetailsPageParams? args;
+  IssueYourLicenseCard({super.key, required this.number, this.args});
 
   final List<Map<String, String?>> steps = [
     {
@@ -263,7 +268,24 @@ class IssueYourLicenseCard extends StatelessWidget {
                                   ),
                                   GestureDetector(
                                     onTap: () {
-                                      BaladyServices.openIssueLicense();
+                                      if (BaladyServices.isLoggedIn()) {
+                                        args?.mainFlowBloc
+                                            ?.add(GetDelegatorsEvent());
+                                        NavigationService
+                                            .navigatorKey.currentState!
+                                            .push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                BlocProvider.value(
+                                              value: args!.mainFlowBloc!,
+                                              child: MoreInfoPage(),
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        BaladyServices.openIssueLicense();
+                                      }
+                                      return;
                                     },
                                     child: Row(
                                       mainAxisAlignment:

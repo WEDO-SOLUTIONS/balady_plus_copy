@@ -116,7 +116,14 @@ class Language {
   static String welcome = "مرحباً بك في المستشار الذكي";
   static String doYouNeedadvice = "  مالذي تحتاج إلى استشارة فيه؟";
   static String needSpecialAdvice = "مالذي تحتاج إلى استشارة فيه؟";
-  static String previousConsultations = "استشارات سابقه";
+  static String previousConsultations = "استشارات سابقة";
+  static String smartAdvisor = "المستشار الذكي";
+  static String scanQR = "مسح الرمز";
+  static String scanQrDetails =
+      "قم بمسح الرمز الآن للوصول السريع إلى التفاصيل والمعلومات المطلوبة!";
+
+  static String smartPopDesc = "انا المساعد الذكي كيف يمكني مساعدتك ";
+  static String smartPopTitle = "مرحبا !";
 
   //Previous consultations
 
@@ -230,6 +237,12 @@ class Language {
     "doYouNeedadvice": doYouNeedadvice,
     "needSpecialAdvice": needSpecialAdvice,
     "previousConsultations": previousConsultations,
+    "smartAdvisor": smartAdvisor,
+    "scanQR": scanQR,
+    "scanQrDetails": scanQrDetails,
+    "smartPopDesc": smartPopDesc,
+    "smartPopTitle": smartPopTitle
+
     //needadvice
   };
 

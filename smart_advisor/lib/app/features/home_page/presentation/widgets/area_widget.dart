@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_advisor/app/core/utils/constants/app_colors.dart';
@@ -5,18 +6,23 @@ import 'package:smart_advisor/app/core/utils/constants/app_style.dart';
 
 class AreaWidget extends StatefulWidget {
   final String title;
-  final String description;
+  final String? description;
   final bool isSelected;
   final bool isActive;
   final Function onSelect;
+  final bool hasBorder;
+  final double? height;
 
-  const AreaWidget(
-      {super.key,
-      required this.title, // Defining title
-      required this.description, // Defining description
-      required this.isSelected, // Defining isSelected
-      required this.isActive, // Defining isActive
-      required this.onSelect});
+  const AreaWidget({
+    super.key,
+    required this.title, // Defining title
+    this.description, // Defining description
+    required this.isSelected, // Defining isSelected
+    required this.isActive, // Defining isActive
+    required this.onSelect,
+    this.height,
+    this.hasBorder = false,
+  });
 
   @override
   State<AreaWidget> createState() => _AreaWidgetState();
@@ -32,17 +38,21 @@ class _AreaWidgetState extends State<AreaWidget> {
         }
       },
       child: Container(
-        height: 105,
+        height: widget.height ?? 120,
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: widget.isActive ? Colors.white : Colors.white,
           borderRadius: BorderRadius.circular(10),
+          border: Border.all(
+              color: widget.hasBorder && widget.isSelected
+                  ? const Color(0xff568F64)
+                  : const Color(0xffE9EEF5)),
         ),
         child: Row(
           children: [
             FittedBox(
               fit: BoxFit.fill,
-              child: Container(
+              child: SizedBox(
                 height: 22,
                 width: 22,
                 child: SvgPicture.asset(
@@ -60,6 +70,7 @@ class _AreaWidgetState extends State<AreaWidget> {
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
                     widget.title,
@@ -70,17 +81,20 @@ class _AreaWidgetState extends State<AreaWidget> {
                     ),
                   ),
                   const SizedBox(height: 2),
-                  Flexible(
-                    child: Text(
-                      widget.description,
-                      style: AppStyle.footNoteRomanStyle.copyWith(
-                        color: widget.isActive
-                            ? AppColor.textSecondaryColor
-                            : const Color(0xffD9DBDD),
-                        height: 1.6,
-                      ),
-                    ),
-                  ),
+                  widget.description != null
+                      ? Flexible(
+                          child: AutoSizeText(
+                            widget.description!,
+                            style: AppStyle.footNoteRomanStyle.copyWith(
+                              color: widget.isActive
+                                  ? AppColor.textSecondaryColor
+                                  : const Color(0xffD9DBDD),
+                              height: 1.6,
+                            ),
+                            maxLines: 10,
+                          ),
+                        )
+                      : const SizedBox.shrink(),
                 ],
               ),
             ),

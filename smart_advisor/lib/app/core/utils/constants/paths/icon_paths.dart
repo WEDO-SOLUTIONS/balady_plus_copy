@@ -123,6 +123,34 @@ class IconPath {
       "packages/smart_advisor/smart_advisor_assets/icons/svg/area_1.svg";
   static const doubleCard =
       "packages/smart_advisor/smart_advisor_assets/icons/svg/dublecard.svg";
+  static const fileFill =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/file-x-fill.svg";
+  static const webIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/web.svg";
+  static const warning =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/warning1.svg";
+  static const penEdit =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/edit_pen.svg";
+  static const time =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/clock-countdown-fill.svg";
+  static const fileCancel =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/file-x-fill.svg";
+  static const handShake =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/handshake-fill.svg";
+  static const checkbox =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/checkbox.svg";
+  static const editing =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/editing.svg";
+  static const finance =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/finance.svg";
+  static const note_blank =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/note_blank.svg";
+  static const note =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/note.svg";
+  static const purchased =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/purchased.svg";
+  static const calenderIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/svg/calendar.svg";
 
   static const filterIcon =
       "packages/smart_advisor/smart_advisor_assets/icons/svg/filter.svg";
@@ -132,4 +160,28 @@ class IconPath {
 
   static const close =
       "packages/smart_advisor/smart_advisor_assets/icons/svg/close.svg";
+
+  static const licensebg =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/license_card_bg.png";
+
+  static const licensebg2 =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/license_card_bg2.png";
+
+  static const errorIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/ph_x-circle-fill.png";
+
+  static const stopIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/ph_minus-circle-fill.png";
+
+  static const checkIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/check_step.png";
+
+  static const dateIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/ph_calendar-dots.png";
+
+  static const addIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/ph_plus-circle-fill.png";
+
+  static const switchIcon =
+      "packages/smart_advisor/smart_advisor_assets/icons/png/switch.png";
 }

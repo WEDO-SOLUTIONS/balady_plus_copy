@@ -1,6 +1,8 @@
 /*import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
@@ -11,9 +13,6 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:provider/provider.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 
 class MapSearchHistory extends ConsumerWidget {
   const MapSearchHistory({super.key});
@@ -39,16 +38,11 @@ class MapSearchHistory extends ConsumerWidget {
                 action: MetricAction.tap.toString(),
                 props: {'objectId': item.objectId});
 
-            ref.read(appRouterProvider).push(
-                  PoiCardWidgetRoute(
-                      objectId: DgisObjectIdMessage(
-                        objectId: int.tryParse(item.objectId ?? '') ?? 0,
-                        entranceId: int.tryParse(item.entranceId ?? '') ?? 0,
-                      ),
-                      cameraConfig: PoiCameraConfig(
-                        zoom: 18,
-                      )),
-                );
+            PoiMapRoute.open(
+              ref.read(goRouterProvider),
+              int.parse(item.objectId!),
+              zoom: 18,
+            );
             // ignore: avoid_catches_without_on_clauses
           } catch (e) {
             final result = await showDialog(
