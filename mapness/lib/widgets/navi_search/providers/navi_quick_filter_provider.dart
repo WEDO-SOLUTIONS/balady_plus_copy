@@ -12,7 +12,7 @@ List<FilterItemModel> naviQuickFilter(Ref ref) {
   final l10n = ref.watch(appLocaleProvider);
   final lang = ref.watch(appLanguageProvider);
 
-  return QuickFilterBase.getListOf(QuickFilterType.navi)
+  return NaviQuickFilterList()
       .list
       .map((filter) => FilterItemModel(
             title: filter.title(l10n, isShort: true),

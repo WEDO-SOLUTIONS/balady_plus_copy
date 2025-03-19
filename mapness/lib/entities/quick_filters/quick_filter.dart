@@ -24,18 +24,8 @@ enum QuickFilter {
   shopping,
 }
 
-enum QuickFilterType {
-  navi,
-  quickSearch,
-}
-
-abstract class QuickFilterBase {
-  QuickFilterBase();
-
-  factory QuickFilterBase.getListOf(QuickFilterType type) => switch (type) {
-        QuickFilterType.navi => NaviQuickFilterList(),
-        QuickFilterType.quickSearch => QuickFilterList(),
-      };
+sealed class QuickFilterBase {
+  const QuickFilterBase();
 
   List<QuickFilter> get list;
 }

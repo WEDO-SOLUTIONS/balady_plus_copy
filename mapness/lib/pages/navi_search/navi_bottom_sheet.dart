@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -19,6 +18,7 @@ import 'package:mapness/pages/navi_search/ui/navi_search_content.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_controls.dart';
 import 'package:mapness/pages/navi_search/ui/navi_search_header.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -129,21 +129,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         SearchScope(
           named: SearchScopeEnum.map,
           child: StatefulBottomSheet<ThreeStateBottomSheet>(
-            outsideOpacityDelegate: (controller) {
-              final aspectRatio = controller.aspectRatio;
-              final interpolation = controller.interpolation;
-              final state = controller.state;
-
-              final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-              final isSheetStateOpen = state == ThreeStateBottomSheet.open;
-              final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
-
-              final isFull =
-                  (!_bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-                      isSheetCoversHalfOfTheScreen;
-
-              return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-            },
+            outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
             outside: NaviSearchSheetControls(_bottomSheetController),
             scrollController: _bottomSheetController,
             safeAreaColor: context.colorsV3.backgroundSurface2,

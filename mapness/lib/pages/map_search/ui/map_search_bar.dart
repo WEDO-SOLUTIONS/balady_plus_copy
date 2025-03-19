@@ -12,9 +12,9 @@ import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
 import 'package:provider/provider.dart';
 
 class MapSearchBar extends ConsumerStatefulWidget {
@@ -83,10 +83,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-            Metrics.logEventAdvanced(
-              MetricsConstants.searchKeys.searchField,
-              group: MetricsConstants.searchTag,
-              action: MetricAction.type.toString(),
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
               props: {
                 'query': query,
               },
@@ -101,10 +101,10 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onSubmitted: (query) async {
-            Metrics.logEventAdvanced(
-              MetricsConstants.searchKeys.searchField,
-              group: MetricsConstants.searchTag,
-              action: MetricAction.type.toString(),
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
               props: {
                 'query': query,
               },
@@ -135,20 +135,18 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       option: widget.isCloseButton
           ? SearchIconBackOption(
               icon: SystemIcons.close,
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                searcher.clear();
-                widget.onClose();
-              },
+              onPressed: () => _onBackPressed(searcher),
             )
           : SearchTextBackOption(
               text: context.l10n.cancel,
-              onPressed: () {
-                FocusScope.of(context).unfocus();
-                searcher.clear();
-                widget.onClose();
-              },
+              onPressed: () => _onBackPressed(searcher),
             ),
     );
+  }
+
+  void _onBackPressed(Search searcher) {
+    FocusScope.of(context).unfocus();
+    searcher.clear();
+    widget.onClose();
   }
 }
