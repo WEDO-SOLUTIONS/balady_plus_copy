@@ -77,6 +77,7 @@ class _NewAppointmentBody extends State<NewAppointmentBody> {
                     ? CheckBoxWithTitle(
                         title: "accepted_agreement".tr(),
                         maxlines: 5,
+                        height: 1.2,
                         onChanged: (value) {
                           if (value != null) model.setAgreementStatus = value;
                           model.validateForm();
@@ -275,7 +276,6 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           },
           inputFormatter: [
             FilteringTextInputFormatter.allow(RegExp(r'[\u0600-\u06FF0-9]')),
-            FilteringTextInputFormatter.deny(RegExp(r'[٠-٩]')),
             LengthLimitingTextInputFormatter(50)
           ],
           validator: (text) {
