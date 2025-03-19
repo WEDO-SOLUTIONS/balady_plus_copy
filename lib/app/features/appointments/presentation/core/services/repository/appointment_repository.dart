@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:tuple/tuple.dart';
 import '../../../../../../core/base/base_view_model.dart';
 import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../core/errors/exceptions.dart';
@@ -21,7 +22,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 class AppointmentRepository {
   final webServices = locator<PegaWebService>();
 
-  Future<(bool?, String?, MyAppointmentsResponse?)> getMyAppointments(
+  Future<Tuple3<bool?, String?, MyAppointmentsResponse?>> getMyAppointments(
       {int pageSize = 20,
       int pageIndex = 0,
       bool upcomingAppointments = true,
@@ -70,10 +71,11 @@ class AppointmentRepository {
     );
   }
     }
-    return (state, error, result);
+    return Tuple3<bool?, String?, MyAppointmentsResponse?>(
+        state, error, result);
   }
 
-  Future<(bool?, String?, AppointmentDetails?)> getAppointmentDetails(
+  Future<Tuple3<bool?, String?, AppointmentDetails?>> getAppointmentDetails(
       int appointmentId) async {
     String query = appointmentId.toString();
 
@@ -85,7 +87,7 @@ class AppointmentRepository {
 
       AppointmentDetails response = AppointmentDetails.fromJson(res.data);
 
-      return (true, "", response);
+      return Tuple3<bool?, String?, AppointmentDetails?>(true, "", response);
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -107,11 +109,12 @@ class AppointmentRepository {
           stackTrace: stackTrace.toString(),
         ),
       );
-      return (false, error.toString(), null);
+      return Tuple3<bool?, String?, AppointmentDetails?>(
+          false, error.toString(), null);
     }
   }
 
-  Future<(bool?, String?, Uint8List?, String?)> printAppointment(
+  Future<Tuple4<bool?, String?, Uint8List?, String?>> printAppointment(
       int id) async {
     String query = "$id";
 
@@ -150,10 +153,11 @@ class AppointmentRepository {
     );
   }
     }
-    return (state, error, result, contentType);
+    return Tuple4<bool?, String?, Uint8List?, String?>(
+        state, error, result, contentType);
   }
 
-  Future<(bool?, String?, CancelAppointmentResponse?)> cancelAppointment(
+  Future<Tuple3<bool?, String?, CancelAppointmentResponse?>> cancelAppointment(
       int requestId) async {
     String query = "$requestId";
 
@@ -195,10 +199,11 @@ class AppointmentRepository {
     );
   }
     }
-    return (state, error, result);
+    return Tuple3<bool?, String?, CancelAppointmentResponse?>(
+        state, error, result);
   }
 
-  Future<(bool?, String?, ConfirmAppointmentResponse?)>
+  Future<Tuple3<bool?, String?, ConfirmAppointmentResponse?>>
       confirmAppointment(String requestId) async {
     String query = "$requestId";
 
@@ -242,10 +247,11 @@ class AppointmentRepository {
     );
   }
     }
-    return (state, error, result);
+    return Tuple3<bool?, String?, ConfirmAppointmentResponse?>(
+        state, error, result);
   }
 
-  Future<(bool?, String?, SaveAppointmentResponse?)> saveAppointment(
+  Future<Tuple3<bool?, String?, SaveAppointmentResponse?>> saveAppointment(
       var reqBody) async {
     final body = await webServices
         .postApigeeRequest(ApiConstants.AppointmentSave, body: reqBody);
@@ -285,7 +291,8 @@ class AppointmentRepository {
     );
   }
     }
-    return (state, error, result);
+    return Tuple3<bool?, String?, SaveAppointmentResponse?>(
+        state, error, result);
   }
 
 /*

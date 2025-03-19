@@ -5,7 +5,7 @@ import 'package:balady_plus/app/features/facility_qr/presentation/core/repositor
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:collection/collection.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+import 'package:tuple/tuple.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../../core/base/base_view_model.dart';
@@ -82,18 +82,18 @@ class FacilityQRDetailsViewModel extends BaseViewModel {
   Future<bool> getRatingsData() async {
     if (ratingItems.isNotEmpty) return true;
 
-    final (bool?, String?, LicenseRatingItems?) response =
+    final Tuple3<bool?, String?, LicenseRatingItems?> response =
         await _repositry.getLicenseRatingitems();
 
-    if (response.$3 != null && response.$1 == true) {
+    if (response.item3 != null && response.item1 == true) {
       // ratingsData = response;
-      ratingItems = response.$3?.data?.result ?? [];
+      ratingItems = response.item3?.data?.result ?? [];
       // setPreviousRatings();
       notifyListeners();
       return true;
     } else {
       // show Error
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
       return false;
     }
   }

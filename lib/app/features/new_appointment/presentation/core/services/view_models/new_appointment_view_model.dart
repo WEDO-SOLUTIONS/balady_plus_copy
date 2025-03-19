@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mime/mime.dart';
-
+import 'package:tuple/tuple.dart';
 
 import 'dart:async';
 
@@ -206,26 +206,26 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   Future<bool> getLookUpList(String type, {bool showLoad = false}) async {
     if (showLoad) showLoading();
-    (bool?, String?, LookUpList?) response =
+    Tuple3<bool?, String?, LookUpList?> response =
         await _repository.getLookupList(type);
     if (showLoad) hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
       if (type == "SUBMITTER_TYPE") {
-        submitterTypeList = response.$3;
+        submitterTypeList = response.item3;
       }
       if (type == "SPECIAL_CONDITION") {
-        specialConditionTypeList = response.$3!;
+        specialConditionTypeList = response.item3!;
       }
 
       if (type == "service-category") {
-        categoryTypeResponse = response.$3!;
+        categoryTypeResponse = response.item3!;
       }
 
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -240,16 +240,16 @@ class NewAppointmentViewModel extends BaseViewModel {
   Future<bool> getMunicipalities({bool showLoad = false}) async {
     // if (municipalitiesList.isNotEmpty) return true;
     if (showLoad) showLoading();
-    (bool?, String?, Municipality?) response =
+    Tuple3<bool?, String?, Municipality?> response =
         await _repository.getMunicipalities();
     if (showLoad) hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      setMunicipalities(response.$3);
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setMunicipalities(response.item3);
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -271,16 +271,16 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   Future<bool> getSubMunicipalities(String municipalityId) async {
     showLoading();
-    (bool?, String?, SubMunicipality?) response =
+    Tuple3<bool?, String?, SubMunicipality?> response =
         await _repository.getSubMunicipalities(municipalityId);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      setSubMunicipalities(response.$3);
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setSubMunicipalities(response.item3);
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -311,16 +311,16 @@ class NewAppointmentViewModel extends BaseViewModel {
 
   Future<bool> getDepartments(String subMunicipalityId) async {
     showLoading();
-    (bool?, String?, DepartmentList?) response =
+    Tuple3<bool?, String?, DepartmentList?> response =
         await _repository.getDepartments(subMunicipalityId);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      setDepartments(response.$3);
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setDepartments(response.item3);
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -328,22 +328,22 @@ class NewAppointmentViewModel extends BaseViewModel {
   Future<bool> getAvailableDates(int serviceId,
       {String? currentDraftTime}) async {
     showLoading();
-    (bool?, String?, AvailableDatesResponse?) response = await _repository
+    Tuple3<bool?, String?, AvailableDatesResponse?> response = await _repository
         .getAppointmentDates(serviceId, currentDraftTime: currentDraftTime);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
       print("SAAAVED  $saveDate");
       if (saveDate != true) {
         selectedDate = null;
         selectedTime = null;
       }
 
-      availableDatesResponse = response.$3;
+      availableDatesResponse = response.item3;
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -351,15 +351,15 @@ class NewAppointmentViewModel extends BaseViewModel {
   Future<bool> checkRealStateRequest() async {
     if (realEstateRequestId?.isEmpty ?? true) return false;
     showLoading();
-    (bool?, String?, RequeestRealStateResponseModel?) response =
+    Tuple3<bool?, String?, RequeestRealStateResponseModel?> response =
         await _repository.checkRealStateRequest(realEstateRequestId ?? "");
     hideLoading();
-    if (response.$1 != null && response.$1!) {
+    if (response.item1 != null && response.item1!) {
       requestRealStateVerified = true;
       notifyListeners();
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     requestRealStateVerified = false;
     notifyListeners();
@@ -371,29 +371,29 @@ class NewAppointmentViewModel extends BaseViewModel {
     Tuple3<bool?, String?, AvailableTimesResponse?> response =
         await _repository.getAppointmentTimes(serviceId, date);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      availableTimesResponse = response.$3;
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      availableTimesResponse = response.item3;
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }*/
 
   Future<bool> getMainClassifications(String subMunicipalityId) async {
     showLoading();
-    (bool?, String?, MainClassResponse?) response =
+    Tuple3<bool?, String?, MainClassResponse?> response =
         await _repository.getMainClassifications(subMunicipalityId);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      setMainClassifications(response.$3);
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setMainClassifications(response.item3);
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -401,16 +401,16 @@ class NewAppointmentViewModel extends BaseViewModel {
   Future<bool> getSublassifications(
       String subMunicipalityId, String mainClassId) async {
     showLoading();
-    (bool?, String?, SubClassResponse?) response =
+    Tuple3<bool?, String?, SubClassResponse?> response =
         await _repository.getSubClassifications(subMunicipalityId, mainClassId);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      setSubClassifications(response.$3);
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      setSubClassifications(response.item3);
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -428,7 +428,7 @@ class NewAppointmentViewModel extends BaseViewModel {
     String birthDate = CommonProperties.userInfo?.getHijriBirthDate() ?? "";
     String mobile = CommonProperties.userInfo?.phone ?? "";
     showLoading();
-    (bool?, String?, SaveAppointmentResponse?) response =
+    Tuple3<bool?, String?, SaveAppointmentResponse?> response =
         await _repository.saveAppointment({
       "serviceCategoryId": selectedCategoryType?.id,
       "appointmentDetails": appointmentDetails,
@@ -467,22 +467,22 @@ class NewAppointmentViewModel extends BaseViewModel {
       }
     });
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
       NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
           RouteName.successRoute,
           ModalRoute.withName(RouteName.bottomNavigation),
           arguments: SuccessScreenArgs(
               type: PAGE_TYPE.appointmentScreen,
-              idNumber: response.$3?.data?.result?.id.toString() ?? "",
+              idNumber: response.item3?.data?.result?.id.toString() ?? "",
               fromHomePage: true));
       CommonFunctions.sendUXCamEvent(
           UXCamEvents.Appointment_Booking_Open_Success_Page_Event);
 
-      return response.$3;
+      return response.item3;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return null;
   }
@@ -498,7 +498,7 @@ class NewAppointmentViewModel extends BaseViewModel {
 
     showLoading();
     try {
-      (bool?, String?, SaveAppointmentResponse?) response =
+      Tuple3<bool?, String?, SaveAppointmentResponse?> response =
           await _repository.updateAppointment({
         "serviceCategoryId": selectedCategoryType?.id,
         "appointmentDetails": appointmentDetails,
@@ -530,7 +530,7 @@ class NewAppointmentViewModel extends BaseViewModel {
         }
       }, editedItem!.id!);
       hideLoading();
-      if (response.$1 == true) {
+      if (response.item1 == true) {
         NavigationService.navigatorKey.currentState!.pushNamedAndRemoveUntil(
             RouteName.successRoute,
             ModalRoute.withName(RouteName.bottomNavigation),
@@ -541,9 +541,9 @@ class NewAppointmentViewModel extends BaseViewModel {
         /* CommonFunctions.sendUXCamEvent(
           UXCamEvents.Appointment_Booking_Open_Success_Page_Event);
 */
-        return response.$3;
+        return response.item3;
       } else {
-        showError(response.$2 ?? "");
+        showError(response.item2 ?? "");
       }
       return null;
     } catch (error, stackTrace) {
@@ -562,13 +562,13 @@ class NewAppointmentViewModel extends BaseViewModel {
   Future<bool> getServiceConfig(
       String subMunicipalityId, String subClassId) async {
     showLoading();
-    (bool?, String?, ServiceConfigResponse?) response =
+    Tuple3<bool?, String?, ServiceConfigResponse?> response =
         await _repository.getServiceConfig(subMunicipalityId, subClassId);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result != null) {
-      serviceConfigResponse = response.$3;
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result != null) {
+      serviceConfigResponse = response.item3;
       appointmentTypeList = serviceConfigResponse?.data?.result?[0].visitType;
       if (appointmentTypeList?.length == 1) {
         appointmentTypeItem = appointmentTypeList?[0];
@@ -578,7 +578,7 @@ class NewAppointmentViewModel extends BaseViewModel {
 
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -587,17 +587,17 @@ class NewAppointmentViewModel extends BaseViewModel {
   Future<bool> deleteAttachment(String udid) async {
 
     showLoading();
-    (bool?, String?, SaveAppointmentResponse?) response =
+    Tuple3<bool?, String?, SaveAppointmentResponse?> response =
     await _repository.deleteAttachment(udid);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result?.uuid != null) {
-      var attachmentUuid = response.$3?.data?.result?.uuid;
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result?.uuid != null) {
+      var attachmentUuid = response.item3?.data?.result?.uuid;
 
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }
@@ -607,14 +607,14 @@ class NewAppointmentViewModel extends BaseViewModel {
     final mimeType = lookupMimeType(attachmentPath ?? ""); // 'image/jpeg'
 
     showLoading();
-    (bool?, String?, UploadFileResponse?) response =
+    Tuple3<bool?, String?, UploadFileResponse?> response =
         await _repository.uploadFile(
             attachmentBase64, attachmentFileName, attachmentPath, mimeType,attachmentId!);
     hideLoading();
-    if (response.$1 != null &&
-        response.$1! &&
-        response.$3?.data?.result?.uuid != null) {
-      var attachmentUuid = response.$3?.data?.result?.uuid;
+    if (response.item1 != null &&
+        response.item1! &&
+        response.item3?.data?.result?.uuid != null) {
+      var attachmentUuid = response.item3?.data?.result?.uuid;
 
 
 
@@ -643,7 +643,7 @@ class NewAppointmentViewModel extends BaseViewModel {
       }
       return true;
     } else {
-      showError(response.$2 ?? "");
+      showError(response.item2 ?? "");
     }
     return false;
   }

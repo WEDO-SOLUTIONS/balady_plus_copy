@@ -8,7 +8,7 @@ import 'package:balady_plus/app/features/facility_qr/data/qr_details_response.da
 import 'package:balady_plus/app/features/facility_qr/data/submit_rating_response.dart';
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-
+import 'package:tuple/tuple.dart';
 
 import '../../../../../core/base/base_view_model.dart';
 import '../../../../../core/errors/exceptions.dart';
@@ -111,7 +111,7 @@ class FacilityQRRepository {
     }
   }
 
-  Future<(bool?, String?, LicenseRatingItems?)>
+  Future<Tuple3<bool?, String?, LicenseRatingItems?>>
       getLicenseRatingitems() async {
     final body = await webServices.getApigeeRequest(
         ApiConstants.QrLicenseRatingItemsUrl,
@@ -148,10 +148,10 @@ class FacilityQRRepository {
     );
   }
     }
-    return (state, error, result);
+    return Tuple3<bool?, String?, LicenseRatingItems?>(state, error, result);
   }
 
-  Future<(bool?, String?, SubmitRatingResponse?)> postLicenseRatingitems(
+  Future<Tuple3<bool?, String?, SubmitRatingResponse?>> postLicenseRatingitems(
       String licenseId, List<RatingItem> ratingItems) async {
     String errorMsg = "";
     SubmitRatingResponse? result;
@@ -206,6 +206,7 @@ class FacilityQRRepository {
   }
     }
 
-    return (result != null, errorMsg, result);
+    return Tuple3<bool?, String?, SubmitRatingResponse?>(
+        result != null, errorMsg, result);
   }
 }
