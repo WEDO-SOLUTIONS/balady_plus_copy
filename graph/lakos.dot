@@ -584,6 +584,7 @@ digraph "" {
   "/lib/widgets/landing/indoor_control.dart" [label="indoor_control"];
   "/lib/widgets/landing/traffic_control.dart" [label="traffic_control"];
   "/lib/widgets/landing/dashboard_header.dart" [label="dashboard_header"];
+  "/lib/widgets/landing/route_control.dart" [label="route_control"];
   "/lib/widgets/landing/qibla_card.dart" [label="qibla_card"];
   "/lib/widgets/landing/compliance_card.dart" [label="compliance_card"];
   "/lib/widgets/landing/complience_building_legend.dart" [label="complience_building_legend"];
@@ -1934,6 +1935,7 @@ digraph "" {
           "/lib/widgets/landing/indoor_control.dart";
           "/lib/widgets/landing/traffic_control.dart";
           "/lib/widgets/landing/dashboard_header.dart";
+          "/lib/widgets/landing/route_control.dart";
           "/lib/widgets/landing/qibla_card.dart";
           "/lib/widgets/landing/compliance_card.dart";
           "/lib/widgets/landing/complience_building_legend.dart";
@@ -4446,6 +4448,7 @@ digraph "" {
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/shared/extensions/path_nav_ext.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/compass_control.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/indoor_control.dart";
+  "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/route_control.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
   "/lib/widgets/path_nav/ui/path_nav_map_controls.dart" -> "/lib/widgets/path_nav/ui/path_nav_follow_control.dart";
   "/lib/widgets/path_nav/ui/eta_sheet_wrapper.dart" -> "/lib/shared/config/package_config.dart";

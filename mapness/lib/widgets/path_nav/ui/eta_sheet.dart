@@ -25,8 +25,8 @@ import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 import 'layout_size_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
+  final VoidCallback onSearchPressed;
   final VoidCallback onEndTripPressed;
-  final VoidCallback onRoutePressed;
   final VoidCallback onBetterRouteAccept;
   final VoidCallback onBetterRouteReject;
   final OnWidgetSizeChange onSizeChanged;
@@ -34,11 +34,11 @@ class EtaSheet extends ConsumerStatefulWidget {
 
   const EtaSheet({
     required this.onEndTripPressed,
-    required this.onRoutePressed,
     required this.onBetterRouteAccept,
     required this.onBetterRouteReject,
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
+    required this.onSearchPressed,
     super.key,
   });
 
@@ -190,7 +190,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             )
           ],
           onTapBurger: toggle,
-          onTapRoute: eta != null ? widget.onRoutePressed : () {},
+          onTapSearch: widget.onSearchPressed,
         ),
       ),
     );
