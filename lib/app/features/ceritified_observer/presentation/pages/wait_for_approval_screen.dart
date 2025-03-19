@@ -3,31 +3,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../etmam_app/core/utils/constants/app_config.dart';
 import '../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../core/utils/constants/app_colors.dart';
 import '../../../../core/utils/constants/app_style.dart';
-import '../../../../core/utils/constants/constants.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class WaitForApprovalWidget extends StatefulWidget {
-  const WaitForApprovalWidget({Key? key}) : super(key: key);
+class WaitForApprovalScreen extends StatefulWidget {
+  const WaitForApprovalScreen({Key? key}) : super(key: key);
 
   @override
-  State<WaitForApprovalWidget> createState() => _WaitForApprovalWidgetState();
+  State<WaitForApprovalScreen> createState() => _WaitForApprovalScreenState();
 }
 
-class _WaitForApprovalWidgetState extends State<WaitForApprovalWidget> {
+class _WaitForApprovalScreenState extends State<WaitForApprovalScreen> {
   @override
   Widget build(BuildContext context) {
-
-    return Expanded(
-      child: Column(
-
-        children: [
-
-          Expanded(
+    return Scaffold(
+      body: Expanded(
+        child: Column(
+          children: [
+            Expanded(
               child: Container(
                 width: double.infinity,
                 margin: EdgeInsets.symmetric(horizontal: 14),
@@ -37,8 +33,7 @@ class _WaitForApprovalWidgetState extends State<WaitForApprovalWidget> {
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     SvgPicture.asset("assets/icons/svg/sucess.svg"),
-      
-                    CustomVerticalSpace(height: 12),
+                    const CustomVerticalSpace(height: 12),
                     CustomTextWidget(
                       "waitingForApprovalMessage".tr(),
                       fontSize: 16,
@@ -48,30 +43,24 @@ class _WaitForApprovalWidgetState extends State<WaitForApprovalWidget> {
                       maxLines: 4,
                     ),
                     CustomVerticalSpace(height: 32),
-      
-      
-      
                   ],
                 ),
               ),
             ),
-      
-          CustomElevatedButtonWidget(
-
-            btnColor: AppColor.primary800Light,
-            textStyle: AppStyle.elevatedButtonStyle.copyWith(
-              color: AppColor.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
+            CustomElevatedButtonWidget(
+              btnColor: AppColor.primary800Light,
+              textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                color: AppColor.white,
+                fontWeight: FontWeight.w700,
+                fontSize: 16,
+              ),
+              btnHeight: 56,
+              text: "start_training".tr(),
+              onPressed: () {},
             ),
-            btnHeight: 56,
-            text: "start_training".tr(),
-            onPressed: () {
-
-            },
-          ),
-          SizedBox(height: 20,)
-        ],
+            const SizedBox(height: 20)
+          ],
+        ),
       ),
     );
   }

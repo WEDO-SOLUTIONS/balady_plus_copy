@@ -24,25 +24,22 @@ class ChooseMuncipalityWidget extends StatefulWidget {
   const ChooseMuncipalityWidget({Key? key}) : super(key: key);
 
   @override
-  State<ChooseMuncipalityWidget> createState() => _ChooseMuncipalityWidgetState();
+  State<ChooseMuncipalityWidget> createState() =>
+      _ChooseMuncipalityWidgetState();
 }
 
 class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
   @override
   Widget build(BuildContext context) {
-
-    return BlocConsumer<ChooseMuncipalityBloc, ChooseMuncipalityState>(
-        listener: (context, state) {},
-
-        builder: (context, state) {
-
-          return  Column(
-
+    return BlocBuilder<ChooseMuncipalityBloc, CertifiedObserverState>(
+      builder: (context, state) {
+        if(state is ChooseMuncipalityState) {
+          return Column(
             children: [
-
-              ExpandableCard(title: 'location'.tr(), children: [
-
-                  SizedBox(height: 5,),
+              ExpandableCard(
+                title: 'location'.tr(),
+                children: [
+                  const SizedBox(height: 5),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
@@ -56,11 +53,11 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                       ),
                     ],
                   ),
-
                   CustomLookUpLongDialog(
-                    showOptional:false,
+                    showOptional: false,
                     items: state.lstMunicipalityLookUp ?? [],
-                    value: state.getMuncipalityById(state.requestData?.municipalityID),
+                    value: state
+                        .getMuncipalityById(state.requestData?.municipalityID),
                     onEmptyList: () async {
                       return context
                           .read<ChooseMuncipalityBloc>()
@@ -68,20 +65,23 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                     },
                     onChangeType: (LookUpItem? item) {
                       if (item != null) {
-
-                        context.read<ChooseMuncipalityBloc>().add(setRequestDataEvent(dataModel: RegisterObserverRequest(municipalityID: item.strId!)));
-
+                        context.read<ChooseMuncipalityBloc>().add(
+                            setRequestDataEvent(
+                                dataModel: RegisterObserverRequest(
+                                    municipalityID: item.strId!)));
                       }
                     },
                     label: "license_health_municipality".tr(),
                     hint: "license_health_municipality".tr(),
                   ),
-
-
-                state.isAcceptNewObservers==false? NotesWidget(notes: ['muncipality_not_accept'.tr()],):Container(),
-                ],),
-
-              Spacer(),
+                  state.isAcceptNewObservers == false
+                      ? NotesWidget(
+                    notes: ['muncipality_not_accept'.tr()],
+                  )
+                      : Container(),
+                ],
+              ),
+              const Spacer(),
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -90,10 +90,8 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                   ),
                   color: Colors.white,
                 ),
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 18, vertical: 26),
+                padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                 child: CustomElevatedButtonWidget(
-
                   btnColor: AppColor.primary800Light,
                   textStyle: AppStyle.elevatedButtonStyle.copyWith(
                     color: AppColor.white,
@@ -103,13 +101,11 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
                   btnHeight: 56,
                   text: "next".tr(),
                   onPressed: () {
-
-                    if(state.requestData?.municipalityID != null)
-                      {
-                        context.read<ChooseMuncipalityBloc>().checkMuncipalityAcceptance();
-
-                      }
-
+                    if (state.requestData?.municipalityID != null) {
+                      context
+                          .read<ChooseMuncipalityBloc>()
+                          .checkMuncipalityAcceptance();
+                    }
                   },
                 ),
               ),
@@ -117,8 +113,8 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
           );
         }
 
-
-
+        return const Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

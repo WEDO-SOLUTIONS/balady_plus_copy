@@ -20,4 +20,9 @@ class GoToPreviousPageEvent extends ChooseMuncipalityEvent {
   const GoToPreviousPageEvent();
 }
 
+class GetObserverStatusEvent extends ChooseMuncipalityEvent {
+  final String identityNumber;
+  const GetObserverStatusEvent({required this.identityNumber});
+}
+
 
