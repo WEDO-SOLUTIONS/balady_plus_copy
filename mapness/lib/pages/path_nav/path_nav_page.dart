@@ -303,7 +303,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                     onSizeChanged: _onSizeChanged,
                                   );
                                 case PathNavState.finished:
-                                  return EtaFinished(onSearchPressed: () => _onSearchPressed(context),
+                                  return EtaFinished(
+                                    onSearchPressed: () => _onSearchPressed(context),
                                     expansionNotifier: _expansionNotifier,
                                     onEndTripPressed: _endTripAndShowHome,
                                     onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
@@ -334,6 +335,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                       endTripAndShowHome: _endTripAndShowHome,
                       endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
                       onSearchPressed: _onSearchPressed,
+                      onTapRoute: _onShowRoutePressed,
                     ),
                   ),
                 ),

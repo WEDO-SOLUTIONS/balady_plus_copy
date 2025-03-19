@@ -21,6 +21,7 @@ class NaviPanelLandscape extends ConsumerStatefulWidget {
   final Function(Size size) onSizeChanged;
   final VoidCallback onContinuePressed;
   final VoidCallback endTripAndShowHome;
+  final VoidCallback onTapRoute;
   final VoidCallback endTripAndBuildAnotherRoute;
 
   const NaviPanelLandscape({
@@ -36,6 +37,7 @@ class NaviPanelLandscape extends ConsumerStatefulWidget {
     required this.endTripAndShowHome,
     required this.endTripAndBuildAnotherRoute,
     required this.onSearchPressed,
+    required this.onTapRoute,
     super.key,
   });
 
@@ -71,6 +73,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
                     return EtaSheet(
                       onEndTripPressed: () => widget.endTripAndShowFeedback(context),
                       onSearchPressed: () => widget.onSearchPressed(context),
+                      onTapRoute: widget.onTapRoute,
                       onBetterRouteAccept: () => widget.acceptBetterRoute(context),
                       onBetterRouteReject: () => widget.rejectBetterRoute(context),
                       betterRouteDurationProfit: widget.betterRouteDurationProfit,

@@ -9,6 +9,7 @@ import 'layout_size_wrapper.dart';
 class EtaFinished extends ConsumerStatefulWidget {
   final VoidCallback onEndTripPressed;
   final VoidCallback onSearchPressed;
+  final VoidCallback? onTapRoute;
   final VoidCallback onBuildAnotherRoutePressed;
   final OnWidgetSizeChange onSizeChanged;
   final ValueNotifier<bool> expansionNotifier;
@@ -19,6 +20,7 @@ class EtaFinished extends ConsumerStatefulWidget {
     required this.onSizeChanged,
     required this.expansionNotifier,
     required this.onSearchPressed,
+    this.onTapRoute,
     super.key,
   });
 
@@ -35,7 +37,8 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
           onSizeChanged: widget.onSizeChanged,
           child: BaseRoadPanel(
             roadPanelModel: RoadPanelModelArrived(
-              onSearchTap: widget.onSearchPressed,enabledHeader: value,
+              onSearchTap: widget.onSearchPressed,
+              enabledHeader: value,
               title: context.l10n.youArrived,
               onTapBurger: toggle,
               buttons: [
@@ -52,6 +55,7 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
                   onTap: widget.onBuildAnotherRoutePressed,
                 ),
               ],
+              onTapRoute: widget.onTapRoute,
             ),
           ),
         ),

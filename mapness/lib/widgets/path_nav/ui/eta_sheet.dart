@@ -27,6 +27,7 @@ import 'layout_size_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
   final VoidCallback onSearchPressed;
+  final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
   final VoidCallback onBetterRouteAccept;
   final VoidCallback onBetterRouteReject;
@@ -40,6 +41,7 @@ class EtaSheet extends ConsumerStatefulWidget {
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
     required this.onSearchPressed,
+    this.onTapRoute,
     super.key,
   });
 
@@ -205,6 +207,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
           ],
           onTapBurger: toggle,
           onTapSearch: widget.onSearchPressed,
+          onTapRoute: widget.onTapRoute,
         ),
       ),
     );
