@@ -137,7 +137,6 @@ class ExpansionSectionItem extends StatelessWidget {
     return term != null?
     Column(
       children: [
-
         ConditionItem(name:  term!.sectionName, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine: isUnderLine,),
         const SizedBox(height: 15,),
       ],
@@ -194,7 +193,7 @@ class ConditionItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          note != null?NotesWidget(notes: [note!],marginBottom: 10,):Container(),
+          note != null?NotesWidget(notes: [note!], marginBottom: 10,showText: true,padding: 10,separatorHeight: 2,):Container(),
 
 
           if (name != null && name!.isNotEmpty)

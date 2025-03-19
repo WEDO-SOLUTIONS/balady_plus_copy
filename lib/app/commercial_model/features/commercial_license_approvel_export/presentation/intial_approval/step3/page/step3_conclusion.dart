@@ -56,9 +56,10 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          
-          
-          const SizedBox(height: 16),
+
+          SizedBox(height: 10,),
+          NotesWidget(notes: [state.workFlowName!], marginBottom: 0,showText: true,padding: 10,separatorHeight: 1,BgColor: AppColor.lightOrange100,),
+          SizedBox(height: 16,),
           CustomTextWidget(
             "municipalAdvisorRequirementsTitle".tr(),
             fontColor: AppColor.primary700Light,
@@ -79,9 +80,12 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  if(state.workFlowName != null)
 
 
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),sectionName: "PreDefinedConditionsByTypeTitle".tr(),),
+
+
+                 ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),sectionName: "PreDefinedConditionsByTypeTitle".tr(),),
 
                   ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.webSiteUrl}/${translator.activeLanguageCode}/Services/DownloadUserGuide/218"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,sectionName: "",),
                   ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,sectionName: "",),
@@ -120,14 +124,7 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
               ? const Center(child: CustomCircularLoadingWidget()):Container(),
 
 
-          if(state.workFlowName != null)
 
-              Column(
-                children: [
-                  SizedBox(height: 10,),
-                  NotesWidget(notes: [state.workFlowName!], marginBottom: 0,),
-                ],
-              ),
 
 
           IntialApprovalPreviousNextButtons(
