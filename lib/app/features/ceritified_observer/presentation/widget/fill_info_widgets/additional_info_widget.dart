@@ -14,7 +14,7 @@ class AdditionalInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandableCard(
-      title: 'bank_info'.tr(),
+      title: 'additional_info'.tr(),
       children: [
         const SizedBox(height: 20),
         ReadOnlyField(
