@@ -6,6 +6,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_photo_button.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/feedback_banner_card.dart';
@@ -165,25 +166,31 @@ class PoiPhotoCardSliver extends ConsumerWidget {
         ),
       );
     }
-    return MultiSliver(
-      children: [
-        if (photos.hasValue && photos.requireValue.items.isEmpty)
-          SliverToBoxAdapter(
-            child: FeedbackBannerCard(
-              imageAssetName: 'add_photo.png',
-              title: context.l10n.addPhotoPOICardTitle,
-              subtitle: context.l10n.addPhotosDescription,
-              gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
-              onTap: () => context.router.push(
-                QuickFeedbackRoute(
-                  type: QuickFeedbackType.addPhoto,
-                  params: FeedbackObjectIdParams(objectId),
+
+    return SliverAlignBox(
+      alignment: AlignmentDirectional.bottomEnd,
+      padding: const EdgeInsetsDirectional.only(bottom: Spacing.$4x, end: Spacing.$2x),
+      sliver: MultiSliver(
+        children: [
+          if (photos.hasValue && photos.requireValue.items.isEmpty)
+            SliverToBoxAdapter(
+              child: FeedbackBannerCard(
+                imageAssetName: 'add_photo.png',
+                title: context.l10n.addPhotoPOICardTitle,
+                subtitle: context.l10n.addPhotosDescription,
+                gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
+                onTap: () => context.router.push(
+                  QuickFeedbackRoute(
+                    type: QuickFeedbackType.addPhoto,
+                    params: FeedbackObjectIdParams(objectId),
+                  ),
                 ),
               ),
             ),
-          ),
-        sliverContent,
-      ],
+          sliverContent,
+        ],
+      ),
+      child: PoiPhotoButton(objectId: objectId),
     );
   }
 }

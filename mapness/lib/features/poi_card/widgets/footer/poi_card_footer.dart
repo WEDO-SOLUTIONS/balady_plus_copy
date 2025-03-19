@@ -15,7 +15,7 @@ import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
-  static const double padding = 8;
+  static const double padding = 12;
 
   final DirectoryObjectMessage? data;
   final VoidCallback share;
