@@ -185,7 +185,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.3.0
+    version: 3.3.1
 
   mapness:
     path: mapness
@@ -207,6 +207,7 @@ dependencies:
   preload_page_view: ^0.2.0
   flutter_linkify: ^6.0.0
   screenshot: ^2.1.0
+  flutter_animate: ^4.3.0
   # To scroll list to specific index and do not calculate width and height by ourselves
   scrollable_positioned_list: ^0.3.8
 
@@ -252,6 +253,7 @@ dependency_overrides:
   # https://github.com/flutter/packages/pull/8656
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
+  geolocator_android: 4.6.1
 
 dev_dependencies:
   build_runner: ^2.4.12

@@ -36,15 +36,19 @@ class EtaSheetWrapper extends StatelessWidget {
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
     double bottomPadding = media.padding.bottom;
+
     if (Platform.isAndroid) {
       bottomPadding += Spacing.$6x;
     }
+
     return MeasureSize(
       onChange: (size) {
         // This method called only if we want to rebuild (expand) our widget
         onSizeChanged?.call(size);
       },
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        mainAxisSize: MainAxisSize.min,
         children: [
           if (betterRouteDurationProfit != null)
             ValueListenableBuilder(
@@ -64,21 +68,29 @@ class EtaSheetWrapper extends StatelessWidget {
                     )
                   : const SizedBox.shrink(),
             ),
-          Material(
-            color: isExpanded ? backgroundColor ?? Colors.white : Colors.transparent,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(16),
-              topRight: Radius.circular(16),
-            ),
-            child: AnimatedPadding(
-              padding: EdgeInsets.only(
-                left: isExpanded ? 0 : Spacing.$4x,
-                right: isExpanded ? 0 : Spacing.$4x,
-                bottom: bottomPadding,
+          Flexible(
+            child: Padding(
+              padding: EdgeInsets.only(top: isExpanded ? Spacing.$3x : 0),
+              child: Material(
+                color: isExpanded ? backgroundColor ?? Colors.white : Colors.transparent,
+                borderRadius: const BorderRadius.only(
+                  topLeft: Radius.circular(16),
+                  topRight: Radius.circular(16),
+                ),
+                child: AnimatedPadding(
+                  padding: EdgeInsets.only(
+                    left: isExpanded ? 0 : Spacing.$4x,
+                    right: isExpanded ? 0 : Spacing.$4x,
+                    bottom: bottomPadding,
+                  ),
+                  duration: duration,
+                  curve: curve,
+                  child: SizedBox(
+                    width: double.infinity,
+                    child: child,
+                  ),
+                ),
               ),
-              duration: duration,
-              curve: curve,
-              child: child,
             ),
           ),
         ],
