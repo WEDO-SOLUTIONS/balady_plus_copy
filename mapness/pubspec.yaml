@@ -40,7 +40,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.3.0
+    version: 3.3.1
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -120,6 +120,7 @@ dependencies:
   vector_math: 2.1.4
   fast_immutable_collections: 11.0.0
   adjust_sdk: 5.0.2
+  flutter_animate: ^4.3.0
 
   # TODO: upgrade after pdfx will be updated
   device_info_plus: 11.1.1
@@ -141,6 +142,7 @@ dependencies:
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
     version: 1.0.17
+  equatable: 2.0.7
 
 dependency_overrides:
   # for dio_http_cache
@@ -171,6 +173,7 @@ dev_dependencies:
   cached_build_runner: 0.0.7
   auto_route_generator: 9.0.0
   custom_lint: ^0.7.0
+  geolocator_android: 4.6.1
 
 flutter:
   assets:
