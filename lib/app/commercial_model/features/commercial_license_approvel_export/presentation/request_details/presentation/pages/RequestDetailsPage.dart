@@ -186,7 +186,7 @@ class RequestDetailsPage extends StatelessWidget {
                                               case "print":
                                                 {
 
-                                                  CommonFunctions.openBaladyWebView("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber");
+                                                  CommonFunctions.openBaladyWebView("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber?isPrintAllowed=true");
                                                 }
 
                                                 break;
@@ -195,7 +195,7 @@ class RequestDetailsPage extends StatelessWidget {
                                                             .notes !=
                                                         null &&
                                                     state.requestDetails!.notes!
-                                                        .isNotEmpty)
+                                                        .isNotEmpty) {
                                                   BottomSheetDialog.showDraggableSheet(
                                                       NavigationService
                                                           .navigatorKey
@@ -210,6 +210,7 @@ class RequestDetailsPage extends StatelessWidget {
                                                               bloc: bloc!,
                                                               noteId:
                                                                   "${state.requestDetails!.notes?[0].id}")));
+                                                }
                                                 break;
                                             }
                                           },
