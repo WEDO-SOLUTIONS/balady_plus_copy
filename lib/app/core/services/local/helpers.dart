@@ -114,7 +114,7 @@ class Helpers {
   static Future<LatLng?> getCurrentLocation(
       {geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
-      bool isHuawei = await CommonFunctions.isHawaiiDevice();
+      bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
         final latLng = await CommonFunctions.getCurrentLocationHuawei();
         debugPrint(
