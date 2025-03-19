@@ -38,6 +38,7 @@ class _ChooseMuncipalityWidgetState extends State<ChooseMuncipalityWidget> {
             children: [
               ExpandableCard(
                 title: 'location'.tr(),
+                isExpandedByDefault: true,
                 children: [
                   const SizedBox(height: 5),
                   Row(

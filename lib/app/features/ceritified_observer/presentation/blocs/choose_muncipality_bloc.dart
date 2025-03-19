@@ -69,10 +69,7 @@ class ChooseMuncipalityBloc
           emitter(
             ChooseMuncipalityState(
               status: BlocStatus.success,
-              pagesList: const [
-                ChooseMuncipalityWidget(),
-                FillInfoScreen()
-              ],
+              pagesList: const [ChooseMuncipalityWidget(), FillInfoScreen()],
               observerStatusEntity: obj,
             ),
           );
@@ -217,10 +214,11 @@ class ChooseMuncipalityBloc
       RegisterObserverRequest? data = state.requestData;
       data ??= RegisterObserverRequest();
       data = data.copyWith(
-          municipalityID: e.dataModel?.municipalityID,
-          academicQualification: e.dataModel?.academicQualification,
-          maritalStatus: e.dataModel?.maritalStatus,
-          cityCode: e.dataModel?.cityCode);
+        municipalityID: e.dataModel?.municipalityID,
+        academicQualification: e.dataModel?.academicQualification,
+        maritalStatus: e.dataModel?.maritalStatus,
+        cityCode: e.dataModel?.cityCode,
+      );
 
       emitter(state.copyWith(requestData: data));
     }
@@ -232,16 +230,20 @@ class ChooseMuncipalityBloc
       emit(
         state.copyWith(status: BlocStatus.loading),
       );
-      final failureOrSuccess =
-          await _checkMuncipalityAcceptance(state.requestData?.municipalityID);
+      final failureOrSuccess = await _checkMuncipalityAcceptance(
+        state.requestData?.municipalityID,
+      );
       failureOrSuccess.fold(
         (failure) {
-          emit(state.copyWith(
-            status: BlocStatus.failure,
-            isAcceptNewObservers: false,
-          ));
+          emit(
+            state.copyWith(
+              status: BlocStatus.failure,
+              isAcceptNewObservers: false,
+            ),
+          );
           CommonFunctions.showError(
-              failure is ServerFailure ? (failure).errorMessage : "");
+            failure is ServerFailure ? (failure).errorMessage : "",
+          );
         },
         (response) {
           emit(
