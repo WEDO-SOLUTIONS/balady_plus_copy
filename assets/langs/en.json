@@ -4506,7 +4506,12 @@
   "CreditSuisseBank": "Credit Suisse Bank",
   "StandardCharteredBank": "Standard Chartered Bank",
   "NationalBankOfIraq": "National Bank of Iraq",
-  "TradeBankOfIraq": "Trade Bank of Iraq"
+  "TradeBankOfIraq": "Trade Bank of Iraq",
 
 
+
+  "surveyQuestion1": "Are you an employee or worker in the ministry, Amana, municipality, or someone who is participating in detecting violations or performing inspection tasks, or (a spouse, in-law, or first-degree relative)?",
+  "surveyQuestion2": "Do you have any physical or mental disabilities that may affect your ability to perform field-inspection tasks?",
+  "surveyQuestion3": "Do you have a reliable and constant internet connection?",
+  "surveyQuestion4": "Do you have a smart device that supports “Momtathel” application?"
 }

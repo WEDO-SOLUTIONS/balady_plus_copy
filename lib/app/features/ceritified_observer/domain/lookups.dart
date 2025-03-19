@@ -32,7 +32,6 @@ enum Bank {
   TradeBankOfIraq,
 }
 
-
 enum Degree {
   primary,
   intermediate,
@@ -45,4 +44,12 @@ enum Degree {
 enum MaritalStatus {
   married,
   unmarried;
+}
+
+
+enum SurveyQuestion {
+  surveyQuestion1,
+  surveyQuestion2,
+  surveyQuestion3,
+  surveyQuestion4;
 }
