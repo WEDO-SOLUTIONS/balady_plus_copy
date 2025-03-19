@@ -1,7 +1,9 @@
 
 
 import 'package:balady_plus/app/commercial_model/features/commercial_license_approvel_export/data/models/initialApproval/sub_activity_details_data.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 
+import '../../../../../../features/objectable_transactions/domain/entities/objectable_transaction_entity.dart';
 import '../../../presentation/request_details/domain/entity/request_note_info.dart';
 import '../lookups_model.dart';
 
@@ -239,6 +241,41 @@ class RequestDetailsModel {
     map['cancelled'] = cancelled;
     return map;
   }
+
+
+  // ObjectableTransactionsEntity getObjectableTransactionsEntity() {
+  //   return ObjectableTransactionsEntity(
+  //
+  //     serviceTypeId: 1,
+  //     transactionId: "${requestId}",
+  //     violationStatusName: requestStatus?.name,
+  //     violationStatusId: requestStatus?.id,
+  //
+  //     isAllowedObjection: true,
+  //
+  //     municipalityId: "${location?.municipality?.id}",
+  //     municipalityName: location?.municipality?.name,
+  //     subMunicipalityId: "${location?.subMunicipality?.id}",
+  //     subMunicipalityName: location?.subMunicipality?.name,
+  //     ownerIdentityNo: "${submitter?.identityNumber}",
+  //     ownerName: submitter?.name,
+  //     ownerIdentityTypeId: "1",
+  //     ownerIdentityTypeName: "هوية وطنية",
+  //     objectionTypeId: "",
+  //     objectionTypeName: null,
+  //     applicationId: applicationId,
+  //     applicationName: applicationName,
+  //     serviceId: serviceId,
+  //     serviceName: serviceName,
+  //     transactionNumber: violationNumber,
+  //
+  //     originalOwnerIdentityTypeId: null,
+  //     originalMunicipalityId: "${location?.municipality?.id}",
+  //     originalSubMunicipalityId: "${location?.subMunicipality?.id}",
+  //   );
+  // }
+
+
 
 }
 

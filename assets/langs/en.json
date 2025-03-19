@@ -2613,7 +2613,7 @@
   "step4label7": "Mall",
   "contractEntry": "How to enter the contract",
   "ahmadfaisal": "Ahmed Al-Faisal",
-  "step4label8": "Floor",
+  "step4label8": "Floor 'Number (1) means the ground floor, and Number (2) means the first floor'",
   "step4hint8": "Enter the floor",
   "elevator_comment": "There is a long-established fact that the readable content of a page will distract the reader from focusing on the final format of the text or the way paragraphs are arranged on the page he is reading",
   "step4text": "I pledge all of the above.",
@@ -4495,5 +4495,6 @@
   "remainingValidityPeriod": "Remaining Validity Period",
   "requestNotes": "Request Notes",
   "relatedCommercialRequestDetails": "Related Commercial Request Details",
-  "Viewmunicipalrequirements": "View Municipal Requirements"
+  "Viewmunicipalrequirements": "View Municipal Requirements",
+  "viewForPrint": "View For Print"
 }

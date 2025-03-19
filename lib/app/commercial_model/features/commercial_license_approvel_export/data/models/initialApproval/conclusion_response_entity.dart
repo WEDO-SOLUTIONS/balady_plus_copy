@@ -111,8 +111,14 @@ IssueCommercialConculsionEntity copyWith({  List<AllowedPermits>? allowedPermits
       });
     }
 
+    if (json['boardContractRequirementMessage'] != null) {
+      lstboardContractRequirementMessage = [];
+      json['boardContractRequirementMessage'].forEach((v) {
+        lstboardContractRequirementMessage?.add(EngOffices.fromJson(v));
+      });
+    }
 
-      lstboardContractRequirementMessage = json['boardContractRequirementMessage'] != null ? json['boardContractRequirementMessage'].cast<String>() : [];
+     // lstboardContractRequirementMessage = json['boardContractRequirementMessage'] != null ? json['boardContractRequirementMessage'].cast<String>() : [];
 
     // if (json['preDefinedConditionsByType'] != null) {
     //   lstPreDefinedConditionsByType = [];

@@ -73,6 +73,7 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                               RequestCommercialLicenseActionViewModel(
                             webService: sl(),
                             requestId: int.parse(data['requestNumber']),
+                          isFromInitialApproval:  state.requestCommercialLicenseDetails!.isFromInitialApproval,
                             requestTypeId:
                                 state.requestCommercialLicenseDetails!.typeId,
                             reasonCancel: state.requestCommercialLicenseDetails!
@@ -95,6 +96,7 @@ class RequestCommercialLicenseDetailsPage extends StatelessWidget {
                         height: MediaQuery.of(context).size.height * 0.47,
                       );
                     },
+
                     child: const CircleIcon(
                       backgroundColor: AppColor.primary50Light,
                       icon: IconPath.settings,

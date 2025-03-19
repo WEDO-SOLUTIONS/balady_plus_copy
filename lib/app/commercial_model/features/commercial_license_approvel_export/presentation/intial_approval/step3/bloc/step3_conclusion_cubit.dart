@@ -51,8 +51,6 @@ class Step3ConclusionCubit extends Bloc<ConclusionEvent,Step3ConclusionState> {
 
 
             (res) {
-            // res= res.copyWith(engOffices: [EngOffices(cityName: "riyadh",officeName: "test1",officeMobile: "0562718752"),EngOffices(cityName: "riyadh",officeName: "test2",officeMobile: "0562718752")]);
-            // res= res.copyWith(commercialOffices: [CommercialOffices(cityName: "riyadh",officeName: "test1 com",officeMobile: "0562718752"),CommercialOffices(cityName: "riyadh",officeName: "test2 com",officeMobile: "0562718752")]);
               emit(state.copyWith(issueCommercialConculsionEntity:res,status: BlocStatus.success));
 
         });

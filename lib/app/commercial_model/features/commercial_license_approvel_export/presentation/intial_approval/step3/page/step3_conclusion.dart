@@ -81,24 +81,22 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
                 children: [
 
 
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),sectionName: "PreDefinedConditionsByTypeTitle".tr(),),
 
-                  ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,),
-                  ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,),
+                  ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.webSiteUrl}/${translator.activeLanguageCode}/Services/DownloadUserGuide/218"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,sectionName: "",),
+                  ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,sectionName: "",),
 
 
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstSupervisingAuthorities:state.issueCommercialConculsionEntity?.supervisingAuthoritiesForActivities),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),sectionName: "permits".tr(),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),sectionName:  "municipalAdvisorCivilDefenseTitle".tr(),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstSupervisingAuthorities:state.issueCommercialConculsionEntity?.supervisingAuthoritiesForActivities),sectionName: "SupervisingAuthorities".tr(),),
 
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
-                  // ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(preDefinedConditionTypes:state.issueCommercialConculsionEntity?.preDefinedConditionTypes),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),sectionName: "municipalAdvisorCleaningMechanismsTitle".tr()),
 
-                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
-                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
-                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),),
-
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),),
+                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),sectionName: "municipalAdvisorEngineeringOfficesTitle".tr(),),
+                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),sectionName: "commercialOffice".tr(),),
+                  OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),sectionName: "boardContractRequirementMessage".tr(),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),sectionName: "fastFlowConditions".tr(),),
 
 
                   state.issueCommercialConculsionEntity?.calculateStandardFees != null?  CustomExpansionPanelWidget(
@@ -158,8 +156,9 @@ class ExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
   final String? note;
   final bool? isUnderLine;
+  final String sectionName;
 
-  const ExpansionSectionItem({super.key, required this.term,this.note,this.isUnderLine});
+  const ExpansionSectionItem({super.key, required this.term,required this.sectionName,this.note,this.isUnderLine});
 
   @override
   Widget build(BuildContext context) {
@@ -176,9 +175,35 @@ class ExpansionSectionItem extends StatelessWidget {
         ),
         const SizedBox(height: 15,),
       ],
-    ):Container();
+    ): Column(
+      children: [
+        CustomExpansionPanelWidget(
+            title: sectionName,
+            leading: SvgPicture.asset(IconPath.serviceCardDesc),
+          children:[ Container(
+            padding: EdgeInsets.all(8),
+            margin: EdgeInsets.only(bottom: 20),
+            decoration: BoxDecoration(
+                color: Color(0x80E6EFEF),
+                borderRadius: BorderRadius.all(Radius.circular(8))),
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const CustomVerticalSpace(height: 4),
+                Text("noData".tr())
+
+              ],
+            ),
+          ),]
+
+        ),
+        const SizedBox(height: 15,),
+      ],
+    );
   }
 }
+
 
 class ConditionItem extends StatelessWidget {
   final String? name;
@@ -290,8 +315,9 @@ class ConditionItem extends StatelessWidget {
 
 class OfficeExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
+  final String sectionName;
 
-  const OfficeExpansionSectionItem({super.key, required this.term});
+   OfficeExpansionSectionItem({super.key, required this.term, required this.sectionName});
 
   @override
   Widget build(BuildContext context) {
@@ -306,7 +332,33 @@ class OfficeExpansionSectionItem extends StatelessWidget {
         ),
         const SizedBox(height: 15,),
       ],
-    ):Container();
+    ): Column(
+      children: [
+        CustomExpansionPanelWidget(
+            title: sectionName,
+            leading: SvgPicture.asset(IconPath.serviceCardDesc),
+            children:[ Container(
+              padding: EdgeInsets.all(8),
+              margin: EdgeInsets.only(bottom: 20),
+              decoration: BoxDecoration(
+                  color: Color(0x80E6EFEF),
+                  borderRadius: BorderRadius.all(Radius.circular(8))),
+              width: MediaQuery.of(context).size.width,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  const CustomVerticalSpace(height: 4),
+                  Text("noData".tr())
+
+                ],
+              ),
+            ),]
+
+        ),
+        const SizedBox(height: 15,),
+      ],
+    );
   }
 
 

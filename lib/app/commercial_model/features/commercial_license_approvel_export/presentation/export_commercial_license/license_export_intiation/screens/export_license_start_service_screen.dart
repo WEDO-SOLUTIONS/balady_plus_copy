@@ -31,7 +31,8 @@ class LicenseExportStartServicePage extends StatefulWidget {
 
 class _LicenseExportStartServicePageState extends State<LicenseExportStartServicePage> {
 
-  int? requestId ;
+  int? initialApprovalRequestId;
+  int? issuingRequestId;
 
   @override
   void initState() {
@@ -43,13 +44,18 @@ class _LicenseExportStartServicePageState extends State<LicenseExportStartServic
     CommonFunctions.sendUXCamEvent(
         UXCamEvents.CommercialLicense_Open_Service_Card_Event);
     Future.microtask(() {
-      sl<CommercialLicenseExportBloc>().applyLicenseExport(requestId);
+      sl<CommercialLicenseExportBloc>().applyLicenseExport(issuingRequestId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-     requestId = ModalRoute.of(context)!.settings.arguments as int?;
+     var data = ModalRoute.of(context)!.settings.arguments as Map?;
+     if(data != null)
+       {
+         initialApprovalRequestId = data["initialApprovalRequestId"] as int?;
+         issuingRequestId = data["issuingRequestId"] as int?;
+       }
 
 
     return
@@ -123,7 +129,7 @@ class _LicenseExportStartServicePageState extends State<LicenseExportStartServic
                                                 null) {
                                               Navigator.of(context).pushNamed(
                                                 CommercialRouteName.commercialLicensePage,
-                                                arguments: RequestInfoArragments(requestId:requestId,isFromIntialApproval: true),
+                                                arguments: RequestInfoArragments(requestId:initialApprovalRequestId,isFromIntialApproval: true),
                                               );
                                             } else {
                                               await BottomSheetDialog
@@ -181,7 +187,7 @@ class _LicenseExportStartServicePageState extends State<LicenseExportStartServic
                             ),
                             ReloadWidget(
                               onTab: () {
-                                sl<CommercialLicenseExportBloc>().applyLicenseExport(requestId,);
+                                sl<CommercialLicenseExportBloc>().applyLicenseExport(initialApprovalRequestId,);
                               },
                             ),
                           ],

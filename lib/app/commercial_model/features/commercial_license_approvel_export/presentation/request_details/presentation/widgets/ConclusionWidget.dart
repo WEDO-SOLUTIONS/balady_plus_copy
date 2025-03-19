@@ -72,32 +72,27 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
               mainAxisSize: MainAxisSize.max,
               children: [
 
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),sectionName: "PreDefinedConditionsByTypeTitle".tr(),),
 
-                ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,),
-                ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,),
+                ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.webSiteUrl}/${translator.activeLanguageCode}/Services/DownloadUserGuide/218"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,sectionName: "",),
+                ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,sectionName: "",),
 
 
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),),
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),),
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstSupervisingAuthorities:state.issueCommercialConculsionEntity?.supervisingAuthoritiesForActivities),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(allowedPermits:state.issueCommercialConculsionEntity?.allowedPermits),note: "premits_limit".tr(),sectionName: "permits".tr(),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(civilDefenseDocuments:state.issueCommercialConculsionEntity?.civilDefenseAllowedDocuments),sectionName:  "municipalAdvisorCivilDefenseTitle".tr(),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstSupervisingAuthorities:state.issueCommercialConculsionEntity?.supervisingAuthoritiesForActivities),sectionName: "SupervisingAuthorities".tr(),),
 
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),),
-               // ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(preDefinedConditionTypes:state.issueCommercialConculsionEntity?.preDefinedConditionTypes),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(cleaningOptions:state.issueCommercialConculsionEntity?.cleaningOptions),sectionName: "municipalAdvisorCleaningMechanismsTitle".tr()),
 
-                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),),
-                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),),
-                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),),
+                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),sectionName: "municipalAdvisorEngineeringOfficesTitle".tr(),),
+                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),sectionName: "commercialOffice".tr(),),
+                OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),sectionName: "boardContractRequirementMessage".tr(),),
 
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),sectionName: "fastFlowConditions".tr(),),
 
 
                 state.issueCommercialConculsionEntity?.calculateStandardFees != null?
-                // CustomExpansionPanelWidget(
-                //     title:"fee_calculator_license".tr(),
-                //     leading: SvgPicture.asset(IconPath.serviceCardDesc),
-                //     children: [FeesWidget(),]
-                // )
+
                 FeesWidget():Container(),
                 const SizedBox(height: 15,),
 
@@ -132,9 +127,10 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
 class ExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
   final String? note;
+  final String sectionName;
   final bool? isUnderLine;
 
-  const ExpansionSectionItem({super.key, required this.term,this.note,this.isUnderLine});
+  const ExpansionSectionItem({super.key, required this.term,required this.sectionName,this.note,this.isUnderLine});
 
   @override
   Widget build(BuildContext context) {
@@ -145,7 +141,36 @@ class ExpansionSectionItem extends StatelessWidget {
         ConditionItem(name:  term!.sectionName, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine: isUnderLine,),
         const SizedBox(height: 15,),
       ],
-    ):Container();
+    ):
+
+    Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+          color: Color(0x80E6EFEF),
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+            CustomTextWidget(
+              sectionName,
+              fontColor: AppColor.primary700Light,
+              fontSize: 12,
+              fontWeight: AppFontWeight.bold,
+            ),
+
+            const CustomVerticalSpace(height: 4),
+          Text("noData".tr())
+
+        ],
+      ),
+    );
+
+
+
+
+
   }
 }
 
@@ -158,7 +183,8 @@ class ConditionItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return
+      Container(
       padding: EdgeInsets.all(8),
       margin: EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
@@ -195,9 +221,10 @@ class ConditionItem extends StatelessWidget {
               recognizer: TapGestureRecognizer()
                 ..onTap = () {
                   CommonFunctions.externalLaunch(
-                    "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010",
-
+                    values?[0],
                   );
+
+
                 },
             ),
           ):
@@ -258,109 +285,148 @@ class ConditionItem extends StatelessWidget {
   }
 }
 
-
 class OfficeExpansionSectionItem extends StatelessWidget {
   final ConclusionSection? term;
+  String sectionName;
 
-  const OfficeExpansionSectionItem({super.key, required this.term});
+
+   OfficeExpansionSectionItem({super.key, required this.term, required this.sectionName});
+
 
   @override
   Widget build(BuildContext context) {
     return term != null?Column(
       children: [
+        OfficeItem(values:  term?.sectionContent?.offices ?? [],name: term?.sectionName,),
 
-        CustomExpansionPanelWidget(
-          title: term?.sectionName,
-          leading: SvgPicture.asset(IconPath.serviceCardDesc),
-          children: [OfficeItem(values:  term?.sectionContent?.offices ?? [])]
-          ,
-        ),
         const SizedBox(height: 15,),
       ],
-    ):Container();
+    ):
+    Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(bottom: 20),
+      decoration: BoxDecoration(
+          color: Color(0x80E6EFEF),
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomTextWidget(
+            sectionName,
+            fontColor: AppColor.primary700Light,
+            fontSize: 12,
+            fontWeight: AppFontWeight.bold,
+          ),
+
+          const CustomVerticalSpace(height: 4),
+          Text("noData".tr())
+
+        ],
+      ),
+    );
   }
 
 
 }
 
 class OfficeItem extends StatelessWidget {
-
+  final String? name;
   final List<OfficeSection>? values;
-  const OfficeItem({super.key, this.values});
+  const OfficeItem({super.key, this.values,required this.name});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
+    return Container(
+      padding: EdgeInsets.all(8),
+      margin: EdgeInsets.only(bottom: 8),
+      decoration: BoxDecoration(
+          color: Color(0x80E6EFEF),
+          borderRadius: BorderRadius.all(Radius.circular(8))),
+      width: MediaQuery.of(context).size.width,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
 
-        ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: values?.length ?? 0,
-            itemBuilder: (context, index) {
-              return Container(
-                padding: EdgeInsets.all(8),
-                margin: EdgeInsets.only(bottom: 20),
-                decoration: BoxDecoration(
-                    color: Color(0x80E6EFEF),
-                    borderRadius: BorderRadius.all(Radius.circular(8))),
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    const CustomVerticalSpace(height: 15),
-                    CustomTextWidget(
-                      "officeName".tr(),
-                      fontColor: AppColor.primary700Light,
-                      fontSize: 14,
-                      fontWeight: AppFontWeight.bold,
-                    ),
-                    const CustomVerticalSpace(height: 10),
-                    CustomTextWidget(
-                      values![index].officeName??"",
-                      fontColor: AppColor.black,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.bold,
-                    ),
-                    const CustomVerticalSpace(height: 20),
+          if (name != null && name!.isNotEmpty)
+            CustomTextWidget(
+              name!,
+              fontColor: AppColor.primary700Light,
+              fontSize: 12,
+              fontWeight: AppFontWeight.bold,
+            ),
+          if (name != null && name!.isNotEmpty)
+            const CustomVerticalSpace(height: 20),
 
-                    CustomTextWidget(
-                      "complianace_eng_office_mobile".tr(),
-                      fontColor: AppColor.primary700Light,
-                      fontSize: 14,
-                      fontWeight: AppFontWeight.bold,
-                    ),
-                    const CustomVerticalSpace(height: 10),
-                    CustomTextWidget(
-                      values![index].officeMobile??"",
-                      fontColor: AppColor.black,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.bold,
-                    ),
 
-                    const CustomVerticalSpace(height: 20),
-                    CustomTextWidget(
-                      "order_city".tr(),
-                      fontColor: AppColor.primary700Light,
-                      fontSize: 14,
-                      fontWeight: AppFontWeight.bold,
-                    ),
-                    const CustomVerticalSpace(height: 10),
-                    CustomTextWidget(
-                      values![index].cityName??"",
-                      fontColor: AppColor.black,
-                      fontSize: 12,
-                      fontWeight: AppFontWeight.bold,
-                    ),
+          ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: values?.length ?? 0,
+              itemBuilder: (context, index) {
+                return Container(
+                  padding: EdgeInsets.all(8),
+                  margin: EdgeInsets.only(bottom: 20),
+                  decoration: BoxDecoration(
+                      color: AppColor.white,
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      const CustomVerticalSpace(height: 15),
+                      CustomTextWidget(
+                        "officeName".tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 10),
+                      CustomTextWidget(
+                        values![index].officeName??"",
+                        fontColor: AppColor.black,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 20),
 
-                    // const CustomVerticalSpace(height: 8)
-                  ],
-                ),
-              );
-            }),
-      ],
+                      CustomTextWidget(
+                        "complianace_eng_office_mobile".tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 10),
+                      CustomTextWidget(
+                        values![index].officeMobile??"",
+                        fontColor: AppColor.black,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+
+                      const CustomVerticalSpace(height: 20),
+                      CustomTextWidget(
+                        "order_city".tr(),
+                        fontColor: AppColor.primary700Light,
+                        fontSize: 14,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+                      const CustomVerticalSpace(height: 10),
+                      CustomTextWidget(
+                        values![index].cityName??"",
+                        fontColor: AppColor.black,
+                        fontSize: 12,
+                        fontWeight: AppFontWeight.bold,
+                      ),
+
+                      // const CustomVerticalSpace(height: 8)
+                    ],
+                  ),
+                );
+              }),
+        ],
+      ),
     );
   }
 }
