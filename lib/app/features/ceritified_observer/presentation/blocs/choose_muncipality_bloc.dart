@@ -1,9 +1,12 @@
+import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/fill_info_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/services/local/navigation_services.dart';
@@ -73,6 +76,7 @@ class ChooseMuncipalityBloc
               status: BlocStatus.success,
               pagesList: const [ChooseMuncipalityWidget(), FillInfoScreen()],
               observerStatusEntity: obj,
+              requestData: RegisterObserverRequest(),
             ),
           );
           getMuncipalityList();
@@ -87,6 +91,7 @@ class ChooseMuncipalityBloc
     );
   }
 
+  ///// Start Location   Functions
   Future<void> getMuncipalityList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
@@ -205,12 +210,18 @@ class ChooseMuncipalityBloc
     }
   }
 
+  ///// End Location   Functions
   Future<void> getMaritalStatusList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
-      List<LookUpItem>? lstMaritalStatus = [];
-      lstMaritalStatus.add(LookUpItem(id: 1, name: "single"));
-      lstMaritalStatus.add(LookUpItem(id: 2, name: "married"));
+      List<LookUpItem>? lstMaritalStatus = MaritalStatus.values
+          .map(
+            (maritalStatus) => LookUpItem(
+              id: maritalStatus.index,
+              name: maritalStatus.name.tr(),
+            ),
+          )
+          .toList();
       emit(
         state.copyWith(
           status: BlocStatus.success,
@@ -220,32 +231,40 @@ class ChooseMuncipalityBloc
     }
   }
 
-  Future<void> getBanksList() async {
+  Future<void> getDegreeList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
-      List<LookUpItem>? lstBanks = [];
-      lstBanks.add(LookUpItem(id: 1, name: "rajahi"));
-      lstBanks.add(LookUpItem(id: 2, name: "balad"));
-      lstBanks.add(LookUpItem(id: 3, name: "anb"));
+      List<LookUpItem>? lstDegrees = Degree.values
+          .map(
+            (degree) => LookUpItem(id: degree.index, name: degree.name.tr()),
+          )
+          .toList();
       emit(
         state.copyWith(
           status: BlocStatus.success,
-          lstBanks: lstBanks,
+          lstDegrees: lstDegrees,
         ),
       );
     }
   }
 
-  Future<void> getDegreeList() async {
+  ////// Bank Functions
+
+  Future<void> getBanksList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
-      List<LookUpItem>? lstDegrees = [];
-      lstDegrees.add(LookUpItem(id: 1, name: "BC"));
-      lstDegrees.add(LookUpItem(id: 2, name: "PHD"));
+      List<LookUpItem>? lstBanks = Bank.values
+          .map(
+            (bank) => LookUpItem(
+              id: (bank.index + 1),
+              name: bank.name.tr(),
+            ),
+          )
+          .toList();
       emit(
         state.copyWith(
           status: BlocStatus.success,
-          lstDegrees: lstDegrees,
+          lstBanks: lstBanks,
         ),
       );
     }

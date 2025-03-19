@@ -1,6 +1,5 @@
 import 'package:balady_plus/app/features/_shared_feature_/presentation/cards/expandable_card.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
-import 'package:balady_plus/app/features/ceritified_observer/domain/entity/register_observer_request.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/blocs/choose_muncipality_bloc.dart';
 import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:flutter/material.dart';
@@ -21,8 +20,7 @@ class PersonalInfoWidget extends StatelessWidget {
         CustomLookUpLongDialog(
           showOptional: false,
           items: state.lstDegrees ?? [],
-          value: state.getDegreeByName(
-              state.requestData?.academicQualification),
+          value: state.requestData?.academicQualification,
           onEmptyList: () async {
             return context
                 .read<ChooseMuncipalityBloc>()
@@ -32,8 +30,8 @@ class PersonalInfoWidget extends StatelessWidget {
             if (item != null) {
               context.read<ChooseMuncipalityBloc>().add(
                 SetRequestDataEvent(
-                  dataModel: RegisterObserverRequest(
-                    academicQualification: item.name,
+                  dataModel: state.requestData!.copyWith(
+                    academicQualification: item,
                   ),
                 ),
               );
@@ -45,8 +43,7 @@ class PersonalInfoWidget extends StatelessWidget {
         CustomLookUpLongDialog(
           showOptional: false,
           items: state.lstMaritalStatus ?? [],
-          value: state.getMaritalStatusByName(
-              state.requestData?.maritalStatus),
+          value: state.requestData?.maritalStatus,
           onEmptyList: () async {
             return context
                 .read<ChooseMuncipalityBloc>()
@@ -56,8 +53,8 @@ class PersonalInfoWidget extends StatelessWidget {
             if (item != null) {
               context.read<ChooseMuncipalityBloc>().add(
                 SetRequestDataEvent(
-                  dataModel: RegisterObserverRequest(
-                    maritalStatus: item.name,
+                  dataModel: state.requestData!.copyWith(
+                    maritalStatus: item,
                   ),
                 ),
               );

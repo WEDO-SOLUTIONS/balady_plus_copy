@@ -45,7 +45,6 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                 ),
               ),
 
-
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(

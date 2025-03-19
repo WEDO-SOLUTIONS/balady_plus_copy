@@ -78,9 +78,13 @@ class ChooseMuncipalityState extends CertifiedObserverState {
         errorMessage,
         observerStatusEntity,
         lstMunicipalityLookUp,
+    //// Location Info
         requestData?.municipality,
         requestData?.city,
         requestData?.district,
+    //// Personal Info
+        requestData?.maritalStatus,
+        requestData?.academicQualification,
         isAcceptNewObservers,
         pagesList,
         currentPageValue,

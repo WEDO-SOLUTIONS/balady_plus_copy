@@ -81,6 +81,9 @@ class RegisterObserverRequest {
   LookUpItem? district;
   List<DistrictList>? districtList;
 
+  //// Personal Info
+  LookUpItem? academicQualification;
+  LookUpItem? maritalStatus;
 
 
   String? iban;
@@ -88,8 +91,6 @@ class RegisterObserverRequest {
   String? bankID;
   String? email;
   String? mobileNumber;
-  String? academicQualification;
-  String? maritalStatus;
   bool? surveyQuestion1;
   bool? surveyQuestion2;
   bool? surveyQuestion3;
@@ -115,8 +116,8 @@ class RegisterObserverRequest {
     String? bankID,
     String? email,
     String? mobileNumber,
-    String? academicQualification,
-    String? maritalStatus,
+    LookUpItem? academicQualification,
+    LookUpItem? maritalStatus,
     bool? surveyQuestion1,
     bool? surveyQuestion2,
     bool? surveyQuestion3,
@@ -176,8 +177,8 @@ class RegisterObserverRequest {
     map['BankID'] = bankID;
     map['Email'] = email;
     map['MobileNumber'] = mobileNumber;
-    map['AcademicQualification'] = academicQualification;
-    map['MaritalStatus'] = maritalStatus;
+    map['AcademicQualification'] = academicQualification?.name;
+    map['MaritalStatus'] = maritalStatus?.name;
     map['SurveyQuestion1'] = surveyQuestion1;
     map['SurveyQuestion2'] = surveyQuestion2;
     map['SurveyQuestion3'] = surveyQuestion3;
