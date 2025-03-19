@@ -13,6 +13,8 @@ class DarkMapPageContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dark = ref.watch(darkModeProvider);
+    const darkMapPreview = 'assets/images/dark_map_preview.jpg';
+    const lightMapPreview = 'assets/images/light_map_preview.jpg';
 
     return SingleChildScrollView(
       child: Padding(
@@ -25,9 +27,7 @@ class DarkMapPageContent extends ConsumerWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
                 child: Image.asset(
-                  dark.valueOrNull?.isDark ?? false
-                      ? 'assets/images/dark_map_preview.jpg'
-                      : 'assets/images/light_map_preview.jpg',
+                  dark.valueOrNull?.isDark ?? false ? darkMapPreview : lightMapPreview,
                   fit: BoxFit.cover,
                   filterQuality: FilterQuality.high,
                 ),
