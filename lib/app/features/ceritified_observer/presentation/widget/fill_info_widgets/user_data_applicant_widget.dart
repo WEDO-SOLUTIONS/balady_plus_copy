@@ -29,6 +29,26 @@ class UserDataApplicantWidget extends StatelessWidget {
         ),
         ReadOnlyField(
           hieght: 55,
+          title: "cemetry_dob_hijri".tr(),
+          subTitle: CommonProperties.userInfo?.getHijriBirthDate(),
+          subTitleColor: AppColor.grey1000.withOpacity(0.5),
+          decoration: BoxDecoration(
+            color: AppColor.blackModern300Light.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        ReadOnlyField(
+          hieght: 55,
+          title: "sex".tr(),
+          subTitle: CommonProperties.userInfo?.getGender(),
+          subTitleColor: AppColor.grey1000.withOpacity(0.5),
+          decoration: BoxDecoration(
+            color: AppColor.blackModern300Light.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        ReadOnlyField(
+          hieght: 55,
           title: "user_data_applicant_name".tr(),
           subTitle: CommonProperties.userInfo?.arName,
           subTitleColor: AppColor.grey1000.withOpacity(0.5),
