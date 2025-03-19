@@ -4472,11 +4472,11 @@
 
   "married": "Married",
   "unmarried": "Unmarried",
-  "primary": "Primary",
-  "intermediate": "Intermediate",
-  "secondary": "Secondary",
-  "university": "University",
-  "masters": "Masters",
+  "primary": "Elementary  School",
+  "intermediate": "Intermediate School",
+  "secondary": "High School",
+  "university": "Bachelor's Dgree",
+  "masters": "Master's Dgree",
 
 
   "alAhliSaudiBank": "Al Ahli Saudi Bank",
