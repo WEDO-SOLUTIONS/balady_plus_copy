@@ -5,6 +5,7 @@ import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../repo/saudi_pass_repository.dart';
+import '../repo/verifying_key_interceptor.dart';
 
 part 'saudi_pass_repository_riverpod.g.dart';
 
@@ -26,7 +27,9 @@ class SaudiPassRepositoryRiverpod extends _$SaudiPassRepositoryRiverpod {
 
     _copyXLanguageToAcceptedLanguage(saudiPassDio.options);
 
-    saudiPassDio.interceptors.addAll(dio.interceptors);
+    saudiPassDio.interceptors
+      ..addAll(dio.interceptors)
+      ..add(VerifyingKeyInterceptor());
 
     return saudiPassDio;
   }
