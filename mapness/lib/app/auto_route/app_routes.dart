@@ -203,6 +203,7 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.slideBottom,
               fullscreenDialog: true,
               opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
             CustomRoute(
               path: 'navigator_settings_landscape',

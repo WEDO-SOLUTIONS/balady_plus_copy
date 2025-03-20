@@ -16,45 +16,40 @@ class DarkMapPageContent extends ConsumerWidget {
     const darkMapPreview = 'assets/images/dark_map_preview.jpg';
     const lightMapPreview = 'assets/images/light_map_preview.jpg';
 
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-              width: double.infinity,
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(RadiusBorder.xl),
-                child: Image.asset(
-                  dark.valueOrNull?.isDark ?? false ? darkMapPreview : lightMapPreview,
-                  fit: BoxFit.cover,
-                  filterQuality: FilterQuality.high,
-                ),
-              ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        SizedBox(
+          width: double.infinity,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(RadiusBorder.xl),
+            child: Image.asset(
+              dark.valueOrNull?.isDark ?? false ? darkMapPreview : lightMapPreview,
+              fit: BoxFit.cover,
+              filterQuality: FilterQuality.high,
             ),
-            ContentWrapper(
-              color: context.colorsV2.backgroundSurface1,
-              children: DarkMapStateEnum.values
-                  .map<Widget>(
-                    (e) => DarkMapModeRowWidget(
-                      currentMode: e,
-                    ),
-                  )
-                  .insertBetween(
-                    Divider(
-                      height: 0.5,
-                      color: context.colorsV2.borderSoft,
-                      thickness: 1,
-                      indent: Spacing.$4x,
-                      endIndent: 0,
-                    ),
-                  )
-                  .toList(),
-            ),
-          ].insertBetween(Spacing.$4x.heightBox).toList(),
+          ),
         ),
-      ),
+        ContentWrapper(
+          color: context.colorsV2.backgroundSurface1,
+          children: DarkMapStateEnum.values
+              .map<Widget>(
+                (e) => DarkMapModeRowWidget(
+                  currentMode: e,
+                ),
+              )
+              .insertBetween(
+                Divider(
+                  height: 0.5,
+                  color: context.colorsV2.borderSoft,
+                  thickness: 1,
+                  indent: Spacing.$4x,
+                  endIndent: 0,
+                ),
+              )
+              .toList(),
+        ),
+      ].insertBetween(Spacing.$4x.heightBox).toList(),
     );
   }
 }
