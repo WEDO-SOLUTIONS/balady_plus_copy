@@ -9,7 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_eta.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class _PathNavEta extends _$PathNavEta {
   @override
   PathNavEta? build() {
@@ -19,8 +19,6 @@ class _PathNavEta extends _$PathNavEta {
   }
 
   Future<void> _subscribe() async {
-    ref.keepAlive();
-
     final mapController = await ref.read(dgisControllerProvider.future);
     final subspcription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
