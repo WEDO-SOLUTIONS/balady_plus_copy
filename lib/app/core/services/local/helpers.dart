@@ -224,7 +224,7 @@ class Helpers {
     String e = email ?? "";
     e = e.replaceAll("\u200e", '').replaceAll("\u200f", '').trim();
     if (e.isEmpty) {
-      return ('empty_mail_field_error').tr();
+      return ('lbl_email_err1').tr();
     } else if (!emailPattern.hasMatch(e)) {
       return ('lbl_email_err1').tr();
     }
