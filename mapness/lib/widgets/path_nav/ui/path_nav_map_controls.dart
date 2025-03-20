@@ -177,10 +177,16 @@ class PathNavMapControls extends StatelessWidget {
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        if (onRoutePressed != null)
-                          RouteControl(
-                            onTap: onRoutePressed!,
-                          ),
+                        ValueListenableBuilder(
+                            valueListenable: navigationState,
+                            builder: (context, state, _) {
+                              if (state == PathNavState.finished || onRoutePressed == null) {
+                                return const SizedBox.shrink();
+                              }
+                              return RouteControl(
+                                onTap: onRoutePressed!,
+                              );
+                            }),
                         const Spacer(),
                         const Column(
                           children: [
