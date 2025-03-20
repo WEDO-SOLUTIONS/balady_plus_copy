@@ -79,7 +79,7 @@ class AppRouter extends RootStackRouter {
               path: 'deeplink',
               page: DeeplinkRoute.page,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
             ),
