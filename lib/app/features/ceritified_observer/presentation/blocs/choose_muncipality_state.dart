@@ -91,7 +91,12 @@ class ChooseMuncipalityState extends CertifiedObserverState {
     //// User Data applicant
         requestData?.email,
         requestData?.mobileNumber,
-    //////////
+    //// Additional Info
+        requestData?.surveyQuestion1,
+        requestData?.surveyQuestion2,
+        requestData?.surveyQuestion3,
+        requestData?.surveyQuestion4,
+    ////////////////////
         isAcceptNewObservers,
         pagesList,
         currentPageValue,
