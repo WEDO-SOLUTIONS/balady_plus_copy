@@ -72,7 +72,6 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
                   case PathNavState.running:
                     return EtaSheet(
                       onEndTripPressed: () => widget.endTripAndShowFeedback(context),
-                      onSearchPressed: () => widget.onSearchPressed(context),
                       onTapRoute: widget.onTapRoute,
                       onBetterRouteAccept: () => widget.acceptBetterRoute(context),
                       onBetterRouteReject: () => widget.rejectBetterRoute(context),
