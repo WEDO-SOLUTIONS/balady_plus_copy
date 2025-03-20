@@ -4518,5 +4518,35 @@
 
   "please_fill_all_required_fields": "Please fill all required fields",
 
-  "please_enter_valid_iban": "Please enter a valid IBAN"
+  "please_enter_valid_iban": "Please enter a valid IBAN",
+
+
+  "pledge1_title" : "",
+  "pledge1_description": "",
+  "pledge2_title" : "",
+  "pledge2_description": "",
+  "pledge3_title" : "",
+  "pledge3_description": "",
+  "pledge4_title" : "",
+  "pledge4_description": "",
+  "pledge5_title" : "",
+  "pledge5_description": "",
+  "pledge6_title" : "",
+  "pledge6_description": "",
+  "pledge7_title" : "",
+  "pledge7_description": "",
+  "pledge8_title" : "",
+  "pledge8_description": "",
+  "pledge9_title" : "",
+  "pledge9_description": "",
+  "pledge10_title" : "",
+  "pledge10_description": "",
+  "pledge11_title" : "",
+  "pledge11_description": "",
+  "pledge12_title" : "",
+  "pledge12_description": "",
+  "pledge13_title" : "",
+  "pledge13_description": "",
+  "pledge14_title" : "",
+  "pledge14_description": ""
 }

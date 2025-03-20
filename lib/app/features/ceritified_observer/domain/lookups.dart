@@ -53,3 +53,21 @@ enum SurveyQuestion {
   surveyQuestion3,
   surveyQuestion4;
 }
+
+enum PledgeQuestion {
+  pledge1,
+  pledge2,
+  pledge3,
+  pledge4,
+  pledge5,
+  pledge6,
+  pledge7,
+  pledge8,
+  pledge9,
+  pledge10,
+  pledge11,
+  pledge12,
+  pledge13,
+  pledge14,
+  pledge15;
+}

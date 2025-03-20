@@ -29,6 +29,7 @@ class RegisterObserverRequest {
     this.freelanceCertificateNumber,
     this.freelanceCertificateExpiryDate,
     this.districtList,
+    this.pledgeQuestion = false,
   });
 
   // RegisterObserverRequest.fromJson(dynamic json) {
@@ -101,6 +102,12 @@ class RegisterObserverRequest {
   String? freelanceCertificateNumber;
   String? freelanceCertificateExpiryDate;
 
+
+
+  ////////////
+   bool pledgeQuestion;
+
+
   RegisterObserverRequest copyWith({
     int? iDNumber,
     String? birthDate,
@@ -129,6 +136,7 @@ class RegisterObserverRequest {
     String? freelanceCertificateExpiryDate,
     List<DistrictList>? districtList,
     LookUpItem? bankInfo,
+    bool? pledgeQuestion,
   }) =>
       RegisterObserverRequest(
         iDNumber: iDNumber ?? this.iDNumber,
@@ -161,6 +169,7 @@ class RegisterObserverRequest {
         freelanceCertificateExpiryDate: freelanceCertificateExpiryDate ??
             this.freelanceCertificateExpiryDate,
         districtList: districtList ?? this.districtList,
+        pledgeQuestion: pledgeQuestion ?? this.pledgeQuestion,
       );
 
   Map<String, dynamic> toJson() {

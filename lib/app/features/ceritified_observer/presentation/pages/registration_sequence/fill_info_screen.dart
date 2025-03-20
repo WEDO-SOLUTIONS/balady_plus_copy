@@ -24,14 +24,17 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final GlobalKey locationSection = GlobalKey();
-  final ExpandableController locationExpandableController = ExpandableController();
+  final ExpandableController locationExpandableController =
+      ExpandableController();
   final GlobalKey personalSection = GlobalKey();
-  final ExpandableController personalExpandableController = ExpandableController();
+  final ExpandableController personalExpandableController =
+      ExpandableController();
   final GlobalKey bankSection = GlobalKey();
   final ExpandableController bankExpandableController = ExpandableController();
   final GlobalKey additionalInfoSection = GlobalKey();
-  final ExpandableController additionalInfoExpandableController = ExpandableController();
-  
+  final ExpandableController additionalInfoExpandableController =
+      ExpandableController();
+
   bool isCompleted = false;
 
   @override
@@ -73,10 +76,9 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                         AdditionalInfoWidget(
                           key: additionalInfoSection,
                           state: state,
-                          expandableController: additionalInfoExpandableController,
+                          expandableController:
+                              additionalInfoExpandableController,
                         ),
-
-
                       ],
                     ),
                   ),
@@ -102,18 +104,17 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                   btnHeight: 56,
                   text: "next".tr(),
                   onPressed: () {
-
                     ///// First check if the Location Info is filled
                     if (state.requestData?.municipality == null ||
                         state.requestData?.city == null ||
                         state.requestData?.district == null) {
                       moveToTheNotCompletedSection(locationSection);
-                      if(!locationExpandableController.expanded) {
+                      if (!locationExpandableController.expanded) {
                         locationExpandableController.toggle();
                       }
                       isCompleted = false;
                     } else {
-                      if(locationExpandableController.expanded) {
+                      if (locationExpandableController.expanded) {
                         locationExpandableController.toggle();
                       }
                     }
@@ -124,12 +125,12 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                         state.requestData?.academicQualification == null ||
                         state.requestData?.maritalStatus == null) {
                       moveToTheNotCompletedSection(personalSection);
-                      if(!personalExpandableController.expanded) {
+                      if (!personalExpandableController.expanded) {
                         personalExpandableController.toggle();
                       }
                       isCompleted = false;
                     } else {
-                      if(personalExpandableController.expanded) {
+                      if (personalExpandableController.expanded) {
                         personalExpandableController.toggle();
                       }
                     }
@@ -138,17 +139,15 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                     if (state.requestData?.bankInfo == null ||
                         state.requestData?.iban == null) {
                       moveToTheNotCompletedSection(bankSection);
-                      if(!bankExpandableController.expanded) {
+                      if (!bankExpandableController.expanded) {
                         bankExpandableController.toggle();
                       }
                       isCompleted = false;
                     } else {
-                      if(bankExpandableController.expanded) {
+                      if (bankExpandableController.expanded) {
                         bankExpandableController.toggle();
                       }
                     }
-
-
 
                     ///// Fourth check if the Additional Info is filled
                     if (state.requestData?.surveyQuestion1 == null ||
@@ -156,19 +155,23 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                         state.requestData?.surveyQuestion3 == null ||
                         state.requestData?.surveyQuestion4 == null) {
                       moveToTheNotCompletedSection(additionalInfoSection);
-                      if(!additionalInfoExpandableController.expanded) {
+                      if (!additionalInfoExpandableController.expanded) {
                         additionalInfoExpandableController.toggle();
                       }
                       isCompleted = false;
                     } else {
-                      if(additionalInfoExpandableController.expanded) {
+                      if (additionalInfoExpandableController.expanded) {
                         additionalInfoExpandableController.toggle();
                       }
                     }
 
-
                     if (isCompleted) {
                       /// TODO : Navigate to the next screen
+                      CommonFunctions.showSuccess("Done".tr());
+
+                      context.read<ChooseMuncipalityBloc>().add(
+                            const GoToNextPageEvent(),
+                          );
                     } else {
                       formKey.currentState!.validate();
                       CommonFunctions.showError("please_fill_all_fields".tr());
@@ -190,7 +193,7 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
   bool oneMove = false;
 
   void moveToTheNotCompletedSection(GlobalKey key) {
-    if(!oneMove) {
+    if (!oneMove) {
       Scrollable.ensureVisible(
         key.currentContext!,
         duration: const Duration(seconds: 1),

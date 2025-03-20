@@ -99,6 +99,8 @@ class ChooseMuncipalityState extends CertifiedObserverState {
         requestData?.surveyQuestion3,
         requestData?.surveyQuestion4,
         ////////////////////
+        requestData?.pledgeQuestion,
+        ////////////////////
         isAcceptNewObservers,
         pagesList,
         currentPageValue,

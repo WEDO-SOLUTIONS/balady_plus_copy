@@ -1,8 +1,8 @@
-import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/fill_info_screen.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/pledge_question_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -43,7 +43,7 @@ class ChooseMuncipalityBloc
         _getMuncipalityList = GetMuncipalityList(repository: sl()),
         _checkMuncipalityAcceptance =
             CheckMuncipalityAcceptance(repository: sl()),
-        super(ChooseMuncipalityState(pagesList: const [])) {
+        super(const LoadingApprovalState()) {
     // getObserverStatus("1006966525");
 
     on<GetObserverStatusEvent>(_etObserverStatus);
@@ -74,7 +74,11 @@ class ChooseMuncipalityBloc
           emitter(
             ChooseMuncipalityState(
               status: BlocStatus.success,
-              pagesList: const [ChooseMuncipalityWidget(), FillInfoScreen()],
+              pagesList: const [
+                ChooseMuncipalityWidget(),
+                FillInfoScreen(),
+                PledgeQuestionScreen(),
+              ],
               observerStatusEntity: obj,
               requestData: RegisterObserverRequest(),
             ),
