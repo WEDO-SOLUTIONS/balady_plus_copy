@@ -1,5 +1,5 @@
-import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
-import 'package:mapness/_features/lifestyle_layers/data/map_enums.dart';
+import 'package:mapness/features/lifestyle_layers/models/map_enums.dart';
+import 'package:mapness/shared/utils/common_function.dart';
 
 class MapRequestParams {
   final GISMapLayers? layer;

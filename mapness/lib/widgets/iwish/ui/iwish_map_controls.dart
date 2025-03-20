@@ -8,10 +8,10 @@ import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 
-class MapControls extends ConsumerWidget {
+class IwishMapControls extends ConsumerWidget {
   final double? bottomExtent;
 
-  const MapControls({
+  const IwishMapControls({
     super.key,
     this.bottomExtent,
   });

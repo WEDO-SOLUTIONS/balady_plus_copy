@@ -1,10 +1,10 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/change_marker_options_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
@@ -195,6 +195,7 @@ extension BigIconPath on String {
 
   // Because we need to replace only this markers with big icons
   // If you need to add more icons, please add it in this list
+  // ignore: unused_field
   static const _markersList = [
     'ic_markets.svg',
     'ic_beach.svg',
@@ -218,6 +219,7 @@ extension BigIconPath on String {
     'ic_beauty.svg',
   ];
 
+  // ignore: prefer_expression_function_bodies
   String? get bigIconPath {
     final iconName = split('/').last;
     if (_markersList.contains(iconName)) {

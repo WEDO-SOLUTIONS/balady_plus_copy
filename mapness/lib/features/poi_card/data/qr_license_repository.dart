@@ -1,10 +1,10 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/features/poi_card/data/qr_license_datasource.dart';
 import 'package:mapness/features/poi_card/data/qr_license_service.dart';
 import 'package:mapness/features/poi_card/domain/model/qr_trade_license.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
+import 'package:mapness/shared/utils/common_function.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'qr_license_repository.g.dart';
