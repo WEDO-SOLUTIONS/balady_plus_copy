@@ -174,7 +174,7 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                           );
                     } else {
                       formKey.currentState!.validate();
-                      CommonFunctions.showError("please_fill_all_fields".tr());
+                      CommonFunctions.showError("please_fill_all_required_fields".tr());
                       isCompleted = true;
                     }
 

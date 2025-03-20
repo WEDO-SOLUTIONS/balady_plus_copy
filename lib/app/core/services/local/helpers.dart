@@ -213,7 +213,7 @@ class Helpers {
     RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
 
     if (!phoneReg.hasMatch(iban ?? "")) {
-      return ('mobile_err').tr();
+      return ('please_enter_valid_iban').tr();
     }
 
     return null;
