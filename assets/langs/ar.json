@@ -4237,7 +4237,8 @@
   "requestNotes":"الملاحظات على الطلب",
   "relatedCommercialRequestDetails": "تفاصيل طلب اصدار الرخصة التجارية",
   "Viewmunicipalrequirements": "عرض الاشتراطات البلدية",
-  "viewForPrint": "استعراض  للطباعة"
+  "viewForPrint": "استعراض  للطباعة",
+  "ErrOnlyQaseem": "هذا النوع من البلاغات مفعل فقط في امانة القصيم"
 
 
 
