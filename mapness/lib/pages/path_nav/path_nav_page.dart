@@ -436,7 +436,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
-    await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
+    // We don't show the feedback page in landscape mode
+    if (MediaQuery.of(context).orientation != Orientation.landscape) {
+      await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
+    }
 
     if (!ctx.mounted) {
       return;
