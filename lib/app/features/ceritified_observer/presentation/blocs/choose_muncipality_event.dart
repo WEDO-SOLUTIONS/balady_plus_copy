@@ -8,8 +8,9 @@ abstract class ChooseMuncipalityEvent extends Equatable {
 }
 
 class SetRequestDataEvent extends ChooseMuncipalityEvent {
-  final RegisterObserverRequest? dataModel;
-  const SetRequestDataEvent({this.dataModel});
+  final RegisterObserverRequest dataModel;
+
+  const SetRequestDataEvent({required this.dataModel});
 }
 
 class GoToNextPageEvent extends ChooseMuncipalityEvent {
@@ -22,7 +23,6 @@ class GoToPreviousPageEvent extends ChooseMuncipalityEvent {
 
 class GetObserverStatusEvent extends ChooseMuncipalityEvent {
   final String identityNumber;
+
   const GetObserverStatusEvent({required this.identityNumber});
 }
-
-

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
@@ -7,6 +8,7 @@ import 'package:balady_plus/app/features/ceritified_observer/presentation/widget
 import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/fill_info_widgets/location_info_widget.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/fill_info_widgets/personal_info_widget.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/fill_info_widgets/user_data_applicant_widget.dart';
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -19,6 +21,19 @@ class FillInfoScreen extends StatefulWidget {
 }
 
 class _FillInfoScreenState extends State<FillInfoScreen> {
+  GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  final GlobalKey locationSection = GlobalKey();
+  final ExpandableController locationExpandableController = ExpandableController();
+  final GlobalKey personalSection = GlobalKey();
+  final ExpandableController personalExpandableController = ExpandableController();
+  final GlobalKey bankSection = GlobalKey();
+  final ExpandableController bankExpandableController = ExpandableController();
+  final GlobalKey additionalInfoSection = GlobalKey();
+  final ExpandableController additionalInfoExpandableController = ExpandableController();
+  
+  bool isCompleted = false;
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ChooseMuncipalityBloc, CertifiedObserverState>(
@@ -28,23 +43,45 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      // User Data applicant
-                      UserDataApplicantWidget(state: state),
-                      // Location Info
-                      LocationInfoWidget(state: state),
-                      // Personal Info
-                      PersonalInfoWidget(state: state),
-                      // Bank Info
-                      BankInfoWidget(state: state),
-                      // Additional Info
-                      AdditionalInfoWidget(state: state),
-                    ],
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                      children: [
+                        // User Data applicant
+                        UserDataApplicantWidget(
+                          state: state,
+                        ),
+                        // Location Info
+                        LocationInfoWidget(
+                          key: locationSection,
+                          state: state,
+                          expandableController: locationExpandableController,
+                        ),
+                        // Personal Info
+                        PersonalInfoWidget(
+                          key: personalSection,
+                          state: state,
+                          expandableController: personalExpandableController,
+                        ),
+                        // Bank Info
+                        BankInfoWidget(
+                          key: bankSection,
+                          state: state,
+                          expandableController: bankExpandableController,
+                        ),
+                        // Additional Info
+                        AdditionalInfoWidget(
+                          key: additionalInfoSection,
+                          state: state,
+                          expandableController: additionalInfoExpandableController,
+                        ),
+
+
+                      ],
+                    ),
                   ),
                 ),
               ),
-
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(
@@ -54,7 +91,7 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                   color: Colors.white,
                 ),
                 padding:
-                const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
+                    const EdgeInsets.symmetric(horizontal: 18, vertical: 26),
                 child: CustomElevatedButtonWidget(
                   btnColor: AppColor.primary800Light,
                   textStyle: AppStyle.elevatedButtonStyle.copyWith(
@@ -65,20 +102,101 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                   btnHeight: 56,
                   text: "next".tr(),
                   onPressed: () {
-                    if (state.requestData?.municipality != null) {
-                      context
-                          .read<ChooseMuncipalityBloc>()
-                          .checkMuncipalityAcceptance();
+
+                    ///// First check if the Location Info is filled
+                    if (state.requestData?.municipality == null ||
+                        state.requestData?.city == null ||
+                        state.requestData?.district == null) {
+                      moveToTheNotCompletedSection(locationSection);
+                      if(!locationExpandableController.expanded) {
+                        locationExpandableController.toggle();
+                      }
+                      isCompleted = false;
+                    } else {
+                      if(locationExpandableController.expanded) {
+                        locationExpandableController.toggle();
+                      }
                     }
+
+                    ///// Second check if the Personal Info is filled
+                    if (state.requestData?.mobileNumber == null ||
+                        state.requestData?.email == null ||
+                        state.requestData?.academicQualification == null ||
+                        state.requestData?.maritalStatus == null) {
+                      moveToTheNotCompletedSection(personalSection);
+                      if(!personalExpandableController.expanded) {
+                        personalExpandableController.toggle();
+                      }
+                      isCompleted = false;
+                    } else {
+                      if(personalExpandableController.expanded) {
+                        personalExpandableController.toggle();
+                      }
+                    }
+
+                    ///// Third check if the Bank Info is filled
+                    if (state.requestData?.bankInfo == null ||
+                        state.requestData?.iban == null) {
+                      moveToTheNotCompletedSection(bankSection);
+                      if(!bankExpandableController.expanded) {
+                        bankExpandableController.toggle();
+                      }
+                      isCompleted = false;
+                    } else {
+                      if(bankExpandableController.expanded) {
+                        bankExpandableController.toggle();
+                      }
+                    }
+
+
+
+                    ///// Fourth check if the Additional Info is filled
+                    if (state.requestData?.surveyQuestion1 == null ||
+                        state.requestData?.surveyQuestion2 == null ||
+                        state.requestData?.surveyQuestion3 == null ||
+                        state.requestData?.surveyQuestion4 == null) {
+                      moveToTheNotCompletedSection(additionalInfoSection);
+                      if(!additionalInfoExpandableController.expanded) {
+                        additionalInfoExpandableController.toggle();
+                      }
+                      isCompleted = false;
+                    } else {
+                      if(additionalInfoExpandableController.expanded) {
+                        additionalInfoExpandableController.toggle();
+                      }
+                    }
+
+
+                    if (isCompleted) {
+                      /// TODO : Navigate to the next screen
+                    } else {
+                      formKey.currentState!.validate();
+                      CommonFunctions.showError("please_fill_all_fields".tr());
+                      isCompleted = true;
+                    }
+
+                    oneMove = false;
                   },
                 ),
               ),
             ],
           );
         }
-
         return const Center(child: CircularProgressIndicator());
       },
     );
+  }
+
+  bool oneMove = false;
+
+  void moveToTheNotCompletedSection(GlobalKey key) {
+    if(!oneMove) {
+      Scrollable.ensureVisible(
+        key.currentContext!,
+        duration: const Duration(seconds: 1),
+        curve: Curves.easeInOut,
+      );
+      oneMove = true;
+    }
   }
 }

@@ -24,20 +24,21 @@ class ChooseMuncipalityState extends CertifiedObserverState {
   final List? pagesList;
   int currentPageValue;
 
-  ChooseMuncipalityState(
-      {this.status = BlocStatus.initial,
-      this.errorMessage,
-      this.observerStatusEntity,
-      this.lstMunicipalityLookUp,
-      this.requestData,
-      this.isAcceptNewObservers,
-      this.pagesList,
-      this.currentPageValue = 0,
-      this.lstDegrees,
-      this.lstMaritalStatus,
-      this.lstBanks,
-      this.lstCitesLookUp,
-      this.lstDistrictLookUp});
+  ChooseMuncipalityState({
+    this.status = BlocStatus.initial,
+    this.errorMessage,
+    this.observerStatusEntity,
+    this.lstMunicipalityLookUp,
+    this.requestData,
+    this.isAcceptNewObservers,
+    this.pagesList,
+    this.currentPageValue = 0,
+    this.lstDegrees,
+    this.lstMaritalStatus,
+    this.lstBanks,
+    this.lstCitesLookUp,
+    this.lstDistrictLookUp,
+  });
 
   @override
   CertifiedObserverState copyWith({
@@ -56,20 +57,21 @@ class ChooseMuncipalityState extends CertifiedObserverState {
     List<LookUpItem>? lstDistrictLookUp,
   }) {
     return ChooseMuncipalityState(
-        status: status ?? this.status,
-        errorMessage: errorMessage ?? this.errorMessage,
-        observerStatusEntity: observerStatusEntity ?? this.observerStatusEntity,
-        lstMunicipalityLookUp:
-            lstMunicipalityLookUp ?? this.lstMunicipalityLookUp,
-        requestData: requestData ?? this.requestData,
-        isAcceptNewObservers: isAcceptNewObservers ?? this.isAcceptNewObservers,
-        pagesList: pagesList ?? this.pagesList,
-        currentPageValue: currentPageValue ?? this.currentPageValue,
-        lstDegrees: lstDegrees ?? this.lstDegrees,
-        lstMaritalStatus: lstMaritalStatus ?? this.lstMaritalStatus,
-        lstBanks: lstBanks ?? this.lstBanks,
-        lstCitesLookUp: lstCitesLookUp ?? this.lstCitesLookUp,
-        lstDistrictLookUp: lstDistrictLookUp ?? this.lstDistrictLookUp);
+      status: status ?? this.status,
+      errorMessage: errorMessage ?? this.errorMessage,
+      observerStatusEntity: observerStatusEntity ?? this.observerStatusEntity,
+      lstMunicipalityLookUp:
+          lstMunicipalityLookUp ?? this.lstMunicipalityLookUp,
+      requestData: requestData ?? this.requestData,
+      isAcceptNewObservers: isAcceptNewObservers ?? this.isAcceptNewObservers,
+      pagesList: pagesList ?? this.pagesList,
+      currentPageValue: currentPageValue ?? this.currentPageValue,
+      lstDegrees: lstDegrees ?? this.lstDegrees,
+      lstMaritalStatus: lstMaritalStatus ?? this.lstMaritalStatus,
+      lstBanks: lstBanks ?? this.lstBanks,
+      lstCitesLookUp: lstCitesLookUp ?? this.lstCitesLookUp,
+      lstDistrictLookUp: lstDistrictLookUp ?? this.lstDistrictLookUp,
+    );
   }
 
   @override
