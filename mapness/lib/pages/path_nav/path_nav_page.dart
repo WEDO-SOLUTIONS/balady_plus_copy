@@ -109,6 +109,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
+
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -125,6 +126,13 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   void deactivate() {
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
     super.deactivate();
+  }
+
+  @override
+  void didChangeDependencies() {
+    final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
+    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
+    super.didChangeDependencies();
   }
 
   @override
@@ -520,12 +528,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Set padding to the camera to avoid the sheet overlaying the map
   void _setPaddingToCamera(double padding) {
-    final pixelSize = MediaQuery.of(context).devicePixelRatio;
-    ref.read(cameraPaddingProvider.notifier).setPadding(
-          CameraSetPaddingMessage(
-            bottomPadding: (pixelSize * padding).floor(),
-          ),
-        );
+    if (MediaQuery.of(context).orientation == Orientation.portrait) {
+      final pixelSize = MediaQuery.of(context).devicePixelRatio;
+      ref.read(cameraPaddingProvider.notifier).setPadding(
+            CameraSetPaddingMessage(
+              bottomPadding: (pixelSize * padding).floor(),
+            ),
+          );
+    }
   }
 
   Future<void> _acceptBetterRoute(BuildContext context) async {
