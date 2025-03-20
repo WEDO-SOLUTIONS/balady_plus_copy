@@ -203,6 +203,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           styleZoomValue: 16.5,
         ),
       );
+      await _moveCameraToUser();
       await saveNavigationState();
     }
   }
