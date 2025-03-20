@@ -29,6 +29,7 @@ class NaviSearchResults extends ConsumerWidget {
     final myLocation = ref.watch(locationProvider);
 
     return SearchResults(
+      isShowAddPlace: false,
       results: results,
       scrollController: scrollController,
       loaderBuilder: (context) => Padding(
