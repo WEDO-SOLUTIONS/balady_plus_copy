@@ -33,6 +33,27 @@ class AppRoute<T> extends CustomRoute<T> {
         );
 }
 
+enum RouteBarrierColor {
+  transparent,
+  // default color
+  dimming40,
+  dimming60,
+  dimming90;
+
+  Color getColor(BuildContext context) {
+    switch (this) {
+      case RouteBarrierColor.transparent:
+        return Colors.transparent;
+      case RouteBarrierColor.dimming40:
+        return context.colorsV3.screenOverlayDimming40;
+      case RouteBarrierColor.dimming60:
+        return context.colorsV3.screenOverlayDimming60;
+      case RouteBarrierColor.dimming90:
+        return context.colorsV3.screenOverlayDimming90;
+    }
+  }
+}
+
 class RouteBuilders {
   /// Creates a modal bottom sheet route (ModalBottomSheetRoute),
   /// using colors from the UI kit for the modal surface.
@@ -52,13 +73,13 @@ class RouteBuilders {
     BuildContext context,
     Widget child,
     AutoRoutePage<T> page, {
-    bool isTransparent = false,
+    RouteBarrierColor background = RouteBarrierColor.dimming40,
   }) =>
       ModalBottomSheetRoute(
         settings: page,
         builder: (context) => child,
         isScrollControlled: true,
-        modalBarrierColor: isTransparent ? Colors.transparent : context.staticColor.surfaceOverlayModal,
+        modalBarrierColor: background.getColor(context),
         backgroundColor: Colors.transparent,
       );
 
