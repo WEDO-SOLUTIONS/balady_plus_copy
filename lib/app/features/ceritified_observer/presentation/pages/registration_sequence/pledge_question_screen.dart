@@ -42,9 +42,25 @@ class _PledgeQuestionScreenState extends State<PledgeQuestionScreen> {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              SizedBox(width: double.maxFinite),
-                              Text("${pledge.name}_title".tr()),
-                              Text("${pledge.name}_description".tr()),
+                              const SizedBox(
+                                width: double.maxFinite,
+                              ),
+                              Text(
+                                "${pledge.name}_title".tr(),
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                "${pledge.name}_description".tr(),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Color(0xFF292D32),
+                                ),
+                              ),
+                              const SizedBox(height: 12),
                             ],
                           );
                         },
@@ -83,7 +99,7 @@ class _PledgeQuestionScreenState extends State<PledgeQuestionScreen> {
                           },
                         ),
                         Text(
-                          "data".tr(),
+                          "pledge_certified_observer".tr(),
                           style: const TextStyle(
                             color: Color(0xFF447F91),
                             fontSize: 16,
