@@ -5,6 +5,7 @@ import '../../../_shared_feature_/data/models/response_body_model.dart';
 import '../entity/MunicipalityLookUp.dart';
 import '../entity/city_entity.dart';
 import '../entity/observer_status_entity.dart';
+import '../entity/register_observer_request.dart';
 
 abstract class CertifiedObserverRepository {
   Future<Either<Failure, ResponseBodyModel<ObserverStatusEntity>>>
@@ -20,4 +21,6 @@ abstract class CertifiedObserverRepository {
       String municipalityId);
 
   Future<Either<Failure, List<DistrictsEntity>>> getDistrictByCityIdList(String cityId);
+  Future<Either<Failure, bool>> registrationObserver(RegisterObserverRequest request);
+
 }
