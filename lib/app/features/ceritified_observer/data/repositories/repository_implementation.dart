@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/entity/MunicipalityLookUp.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/entity/city_entity.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/entity/register_observer_request.dart';
 
 import 'package:dartz/dartz.dart';
 import '../../../_shared_feature_/data/models/response_body_model.dart';
@@ -132,6 +133,32 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
   Future<Either<Failure, List<DistrictsEntity>>> getDistrictByCityIdList(String cityId) async {
     try {
       final data = await remoteDataSource.getDistrictByCityIdList(cityId);
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> registrationObserver(RegisterObserverRequest request) async{
+    try {
+      final data = await remoteDataSource.registrationObserver(request);
       return Right(data);
     } on NoDataFoundException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
