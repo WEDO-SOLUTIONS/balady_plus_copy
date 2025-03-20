@@ -5,6 +5,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -48,6 +49,10 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
 
     ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
@@ -90,6 +95,13 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   @override
   void dispose() {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
     _bottomSheetController.dispose();
     _keyboardVisible.cancel();
 
