@@ -180,7 +180,9 @@ class PathNavMapControls extends StatelessWidget {
                         ValueListenableBuilder(
                             valueListenable: navigationState,
                             builder: (context, state, _) {
-                              if (state == PathNavState.finished || onRoutePressed == null) {
+                              if (state == PathNavState.finished ||
+                                  state == PathNavState.paused ||
+                                  onRoutePressed == null) {
                                 return const SizedBox.shrink();
                               }
                               return RouteControl(
