@@ -8,6 +8,8 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_insider/flutter_insider.dart';
+
 
 import 'navigation_services.dart';
 
@@ -198,29 +200,39 @@ class NotificationService {
     //       msg['notification']['body'], notificationDetails);
     // }
 
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+  Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+  print("Background Message Received: ${message.notification?.title}");
+}
+
+// Register Background Handler
+FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       RemoteNotification? notification = message.notification;
       AndroidNotification? android = message.notification?.android;
 
       if (notification != null && android != null) {
-        _notifications.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                CommonFunctions.generateUUID(),
-                "Notification",
-                channelDescription: "Notification",
+        // _notifications.show(
+        //     notification.hashCode,
+        //     notification.title,
+        //     notification.body,
+        //     NotificationDetails(
+        //       android: AndroidNotificationDetails(
+        //         CommonFunctions.generateUUID(),
+        //         "Notification",
+        //         channelDescription: "Notification",
 
-                playSound: true,
+        //         playSound: true,
 
 
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                icon: 'mipmap/ic_launcher',
-              ),
-            ));
+        //         // TODO add a proper drawable resource to android, for now using
+        //         //      one that already exists in example app.
+        //         icon: 'mipmap/ic_launcher',
+        //       ),
+        //     ));
+                  await FlutterInsider.Instance.handleNotification(message.data);
+
       }
     });
 
