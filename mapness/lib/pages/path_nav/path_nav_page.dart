@@ -130,11 +130,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void didChangeDependencies() {
-    if (MediaQuery.of(context).orientation == Orientation.landscape) {
-      ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.6, y: 0.85));
-    } else {
-      ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
-    }
+    final x = MediaQuery.of(context).orientation == Orientation.landscape ? 0.6 : 0.5;
+    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: x, y: 0.85));
     super.didChangeDependencies();
   }
 
