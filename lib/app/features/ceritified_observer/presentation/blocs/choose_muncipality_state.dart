@@ -78,20 +78,25 @@ class ChooseMuncipalityState extends CertifiedObserverState {
         errorMessage,
         observerStatusEntity,
         lstMunicipalityLookUp,
-    //// Location Info
+        //// Location Info
         requestData?.municipality,
         requestData?.city,
         requestData?.district,
-    //// Personal Info
-        requestData?.maritalStatus,
-        requestData?.academicQualification,
-    //// Bank Info
-        requestData?.bankInfo,
-        requestData?.iban,
-    //// User Data applicant
+        //// Personal Info
         requestData?.email,
         requestData?.mobileNumber,
-    //////////
+        requestData?.maritalStatus,
+        requestData?.academicQualification,
+        //// Bank Info
+        requestData?.bankInfo,
+        requestData?.iban,
+        //// User Data applicant
+        //// Additional Info
+        requestData?.surveyQuestion1,
+        requestData?.surveyQuestion2,
+        requestData?.surveyQuestion3,
+        requestData?.surveyQuestion4,
+        ////////////////////
         isAcceptNewObservers,
         pagesList,
         currentPageValue,
