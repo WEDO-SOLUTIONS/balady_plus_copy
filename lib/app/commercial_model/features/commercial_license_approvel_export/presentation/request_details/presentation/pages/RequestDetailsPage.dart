@@ -184,8 +184,7 @@ class RequestDetailsPage extends StatelessWidget {
                                                 break;
                                               case "print":
                                                 {
-
-                                                  CommonFunctions.openBaladyWebView("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber?isPrintAllowed=true");
+                                                  CommonFunctions.openBaldyWithRefreshCookie("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber?isPrintAllowed=true");
                                                 }
 
                                                 break;

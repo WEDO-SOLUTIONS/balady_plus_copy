@@ -29,9 +29,11 @@ class _ExportMapViewState extends State<ExportMapView> {
   bool mapLoading = true;
   bool locationLoading = false;
   LatLng? movedPosition;
+  bool isconfirm=false;
   @override
   void initState() {
     super.initState();
+    isconfirm = false;
   }
 
   @override
@@ -95,11 +97,15 @@ class _ExportMapViewState extends State<ExportMapView> {
                   if (widget.readOnly != true)
                     MapAddressCard(
                       address: state.gisResponse?.getFullAddress(),
-                      submitLocation: () {
-                        if(state.status == BlocStatus.loading) return;
-                        context
-                            .read<Step2ActivityDataExportCubit>()
-                            .add(GetGISDataExportEvent(params: state.location!,gisResponse: state.gisResponse ));
+                      submitLocation: () async{
+
+                        await Future.delayed(const Duration(seconds: 2));
+                          context
+                              .read<Step2ActivityDataExportCubit>()
+                              .add(GetGISDataExportEvent(
+                              params: state.location!,
+                              gisResponse: state.gisResponse));
+
                       },
                       isValidLocation: true,
                     ),
