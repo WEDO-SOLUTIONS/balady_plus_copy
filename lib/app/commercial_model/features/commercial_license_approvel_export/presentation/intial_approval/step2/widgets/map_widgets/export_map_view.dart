@@ -114,15 +114,6 @@ class _ExportMapViewState extends State<ExportMapView> {
                 onSearchResult: (LatLng location) {
 
 
-                  // context.read<Step2ActivityDataExportCubit>().mapController.animateCamera(
-                  //       CameraUpdate.newCameraPosition(
-                  //         CameraPosition(
-                  //             target:
-                  //                 LatLng(location.latitude, location.longitude),
-                  //             zoom: 16.0),
-                  //       ),
-                  //     );
-
                   context.read<Step2ActivityDataExportCubit>().mapController.moveCamera(
                     CameraPositionMessage(
                       point: GeoPointMessage(latitude: location.latitude, longitude: location.longitude),

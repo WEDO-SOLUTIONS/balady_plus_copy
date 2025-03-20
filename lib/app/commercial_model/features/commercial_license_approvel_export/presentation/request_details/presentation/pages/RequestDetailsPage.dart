@@ -177,8 +177,7 @@ class RequestDetailsPage extends StatelessWidget {
                                                         ("do_you_want_to_cancel")
                                                             .tr(),
                                                         primaryBtn: () {
-                                                  Navigator.of(context)
-                                                      .pop(true);
+                                                  Navigator.of(context).pop(true);
                                                   bloc?.cancelIntialApproval();
                                                 });
 

@@ -14,12 +14,14 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/constants.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 
+import '../../../../../../../core/services/local/navigation_services.dart';
 import '../../../../../../../core/utils/constants/app_style.dart';
 import '../../../../../../../core/utils/constants/remote_config.dart';
 import '../../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import '../../../../domain/entities/conclusion_section.dart';
+import '../../../intial_approval/step3/widgets/print_preview.dart';
 import '../../bloc/commercial_license_details_bloc.dart';
 import 'Fees.dart';
 
@@ -88,7 +90,7 @@ class _ConclusionWidgetState extends State<ConclusionWidget> {
                 OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),sectionName: "commercialOffice".tr(),),
                 OfficeExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),sectionName: "boardContractRequirementMessage".tr(),),
 
-                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),sectionName: "fastFlowConditions".tr(),),
+                ExpansionSectionItem(term: context.read<CommercialLicenseDetailsBloc>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),sectionName: "fastFlowConditions".tr(),showPrint: true,),
 
 
                 state.issueCommercialConculsionEntity?.calculateStandardFees != null?
@@ -129,15 +131,16 @@ class ExpansionSectionItem extends StatelessWidget {
   final String? note;
   final String sectionName;
   final bool? isUnderLine;
+  final bool? showPrint;
 
-  const ExpansionSectionItem({super.key, required this.term,required this.sectionName,this.note,this.isUnderLine});
+  const ExpansionSectionItem({super.key, required this.term,required this.sectionName,this.note,this.isUnderLine,this.showPrint});
 
   @override
   Widget build(BuildContext context) {
     return term != null?
     Column(
       children: [
-        ConditionItem(name:  term!.sectionName, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine: isUnderLine,),
+        ConditionItem(name:  term!.sectionName, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine: isUnderLine,showPrint: showPrint,),
         const SizedBox(height: 15,),
       ],
     ):
@@ -178,7 +181,8 @@ class ConditionItem extends StatelessWidget {
   final String? note;
   final List<String>? values;
   final bool? isUnderLine;
-  const ConditionItem({super.key, this.name, this.values,this.note,this.isUnderLine});
+  final bool? showPrint;
+  const ConditionItem({super.key, this.name, this.values,this.note,this.isUnderLine,this.showPrint});
 
   @override
   Widget build(BuildContext context) {
@@ -197,11 +201,36 @@ class ConditionItem extends StatelessWidget {
 
 
           if (name != null && name!.isNotEmpty)
-            CustomTextWidget(
-              name!,
-              fontColor: AppColor.primary700Light,
-              fontSize: 12,
-              fontWeight: AppFontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  name!,
+                  fontColor: AppColor.primary700Light,
+                  fontSize: 12,
+                  fontWeight: AppFontWeight.bold,
+                ),
+                if(showPrint==true)
+                Text.rich(
+                  TextSpan(
+                    text: "issue_commercial_print".tr(),
+                    style: AppStyle.lightTextStyle.copyWith(
+                        decoration: TextDecoration.underline,
+                        fontSize: 15,
+                        color: AppColor.blue
+                    ),
+                    recognizer: TapGestureRecognizer()
+                      ..onTap = () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) =>  PrintPreview(values?.join(" ")??"" )),
+                        );
+                        //Navigator.of(context).push(PrintPreview)
+                       // NavigationService.navigatorKey.currentContext.push();
+                      },
+                  ),
+                )
+              ],
             ),
           if (name != null && name!.isNotEmpty)
             const CustomVerticalSpace(height: 4),
