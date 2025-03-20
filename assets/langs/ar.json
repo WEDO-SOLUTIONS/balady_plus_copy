@@ -4268,6 +4268,8 @@
   "surveyQuestion3": ". هل لديك اتصال إنترنت موثوق ودائم؟",
   "surveyQuestion4": "هل لديك جهاز ذكي يدعم تطبيق منصة \"ممتثل\"؟",
 
-  "please_fill_all_required_fields": "يرجى ملء جميع الحقول المطلوبة"
+  "please_fill_all_required_fields": "يرجى ملء جميع الحقول المطلوبة",
+
+  "please_enter_valid_iban": "يرجى إدخال رقم آيبان صحيح"
 
 }

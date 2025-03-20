@@ -208,6 +208,17 @@ class Helpers {
     }
   }
 
+
+  static String? validateIBAN(String? iban) {
+    RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
+
+    if (!phoneReg.hasMatch(iban ?? "")) {
+      return ('mobile_err').tr();
+    }
+
+    return null;
+  }
+
   static String? validateMobile(String? phone) {
     RegExp phoneReg = RegExp(r'^(05)([0-9]{8})$');
 

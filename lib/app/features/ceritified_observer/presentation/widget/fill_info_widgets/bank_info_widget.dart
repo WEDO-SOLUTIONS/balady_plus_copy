@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/blocs/choose_muncipality_bloc.dart';
@@ -62,9 +63,7 @@ class BankInfoWidget extends StatelessWidget {
                       ),
                     );
               },
-              onValidate: (text) => text?.isEmpty ?? true
-                  ? "${"bank_iban".tr()} ${"required".tr()}"
-                  : null,
+              onValidate: Helpers.validateIBAN,
               // decoration: BoxDecoration(
               //   color: AppColor.blackModern300Light.withOpacity(0.4),
               //   borderRadius: BorderRadius.circular(8),

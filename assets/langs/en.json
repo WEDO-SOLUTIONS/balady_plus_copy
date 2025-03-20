@@ -4516,5 +4516,7 @@
   "surveyQuestion4": "Do you have a smart device that supports “Momtathel” application?",
 
 
-  "please_fill_all_required_fields": "Please fill all required fields"
+  "please_fill_all_required_fields": "Please fill all required fields",
+
+  "please_enter_valid_iban": "Please enter a valid IBAN"
 }
