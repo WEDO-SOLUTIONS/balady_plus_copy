@@ -47,7 +47,7 @@ class AppRouter extends RootStackRouter {
                 context,
                 child,
                 page,
-                isTransparent: true,
+                background: RouteBarrierColor.transparent,
               ),
             ),
             CustomRoute(
