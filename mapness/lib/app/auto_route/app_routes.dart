@@ -47,7 +47,7 @@ class AppRouter extends RootStackRouter {
                 context,
                 child,
                 page,
-                isTransparent: true,
+                background: RouteBarrierColor.transparent,
               ),
             ),
             CustomRoute(
@@ -64,6 +64,10 @@ class AppRouter extends RootStackRouter {
               page: SearchRoute.page,
             ),
             AppRoute(
+              path: 'navi_search',
+              page: NaviSearchRoute.page,
+            ),
+            AppRoute(
               path: 'routingMap',
               page: RoutingMapSelectRoute.page,
             ),
@@ -75,7 +79,7 @@ class AppRouter extends RootStackRouter {
               path: 'deeplink',
               page: DeeplinkRoute.page,
             ),
-            CustomRoute(
+            AppRoute(
               path: 'routingRoutes',
               page: RoutingRoutesRoute.page,
             ),
@@ -168,6 +172,10 @@ class AppRouter extends RootStackRouter {
               page: FavouritesRoute.page,
             ),
             CustomRoute(
+              path: 'navi_search_favorites',
+              page: NaviFavoritesRoute.page,
+            ),
+            CustomRoute(
               path: 'search',
               page: FavouritesSearchRoute.page,
             ),
@@ -188,6 +196,37 @@ class AppRouter extends RootStackRouter {
               path: 'feedback/edit',
               page: AppFeedbackInputSheet.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'dark_map_landscape',
+              page: DarkMapLandscapeRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              fullscreenDialog: true,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'navigator_settings_landscape',
+              page: NavigatorSettingsLandscapeRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              fullscreenDialog: true,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'sound_settings_landscape',
+              page: SoundSettingsLandscapeRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              fullscreenDialog: true,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'voice_settings_landscape',
+              page: VoiceLandscapeRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              fullscreenDialog: true,
+              opaque: false,
             ),
             CustomRoute(
               path: 'poi_favorite_dialog',

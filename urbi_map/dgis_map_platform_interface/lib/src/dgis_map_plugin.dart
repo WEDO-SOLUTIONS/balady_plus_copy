@@ -204,6 +204,16 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.followNavigation();
   }
 
+  /// Start follow in navigation mode.
+  Future<void> startFollowNavigation() {
+    return _api.startFollowNavigation();
+  }
+
+  /// Stop follow in navigation mode.
+  Future<void> stopFollowNavigation() {
+    return _api.stopFollowNavigation();
+  }
+
   StreamSubscription _initEventChannel() {
     return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
       (event) {

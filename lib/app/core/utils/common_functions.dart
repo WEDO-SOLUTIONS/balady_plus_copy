@@ -227,7 +227,7 @@ class CommonFunctions {
     entryPointBridge(params);
   }
 
-  static Future<bool> isHawaiiDevice() async {
+  static Future<bool> isHuaweiDevice() async {
     return await FlutterHmsGmsAvailability.isHmsAvailable;
   }
 

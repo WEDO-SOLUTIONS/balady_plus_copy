@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -25,8 +26,9 @@ import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 import 'layout_size_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
+  final VoidCallback? onSearchPressed;
+  final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
-  final VoidCallback onRoutePressed;
   final VoidCallback onBetterRouteAccept;
   final VoidCallback onBetterRouteReject;
   final OnWidgetSizeChange onSizeChanged;
@@ -34,11 +36,12 @@ class EtaSheet extends ConsumerStatefulWidget {
 
   const EtaSheet({
     required this.onEndTripPressed,
-    required this.onRoutePressed,
     required this.onBetterRouteAccept,
     required this.onBetterRouteReject,
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
+    this.onSearchPressed,
+    this.onTapRoute,
     super.key,
   });
 
@@ -67,6 +70,8 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
   @override
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
+    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     _isExpanded = eta?.isExpanded ?? false;
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
@@ -92,7 +97,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
-      backgroundColor: colorsV2.backgroundSurface4,
+      backgroundColor: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           contentColor: colorsV2.backgroundSurface4,
@@ -110,11 +115,37 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             title: eta != null ? eta.timeEta : '--',
           ),
           contentRows: [
+            Spacing.$3x.heightBox,
             ShareEtaBtn(
               durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
             ),
+            if (widget.onSearchPressed != null)
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: Spacing.$3x,
+                ),
+                child: ContentRow(
+                  onTap: () => widget.onTapRoute?.call(),
+                  options: ContentRowOptions(
+                    wrapperColor: color.surfaceBaseTertiary,
+                    wrapperEnabled: true,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    title: l10n.route,
+                    actionWidget: ContentRowActionOptions(
+                      actionIcon: AppIcons(
+                        iconData: GeneralIcons.route,
+                        color: context.colorsV3.foregroundMuted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => const SoundSettingsRoute().push(context),
+              onTap: () => context.router.push(switch (MediaQuery.orientationOf(context)) {
+                Orientation.portrait => const SoundSettingsRoute(),
+                Orientation.landscape => const SoundSettingsLandscapeRoute(),
+              }),
               options: ContentRowOptions(
                 subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                   color: color.textAndIconsBaseSecondary,
@@ -133,7 +164,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
-                    color: color.textAndIconsBaseTertiary,
+                    color: context.colorsV3.foregroundMuted,
                   ),
                 ),
                 bottomWidget: SegmentTabsButton(
@@ -151,8 +182,14 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
               ),
             ),
+            Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => context.router.push(const NavigatorSettingsRoute()),
+              onTap: () => context.router.push(
+                switch (MediaQuery.orientationOf(context)) {
+                  Orientation.portrait => const NavigatorSettingsRoute(),
+                  Orientation.landscape => const NavigatorSettingsLandscapeRoute(),
+                },
+              ),
               options: ContentRowOptions(
                 titleStyle: textStyleV3.bodyLargeRegular.copyWith(
                   color: colorsV2.foregroundDefault,
@@ -171,26 +208,28 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
-                    color: color.textAndIconsBaseTertiary,
+                    color: context.colorsV3.foregroundMuted,
                   ),
                 ),
               ),
             ),
+            Spacing.$3x.heightBox,
           ],
           buttons: [
-            AppButton(
-              padding: const EdgeInsets.only(
-                left: Spacing.$4x,
-                right: Spacing.$4x,
-                bottom: Spacing.$3x,
+            Container(
+              color: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
+              padding: const EdgeInsets.all(Spacing.$4x),
+              child: AppButton(
+                buttonColorScheme: ButtonColorScheme.warning,
+                primaryLabel: l10n.endTrip,
+                onTap: widget.onEndTripPressed,
               ),
-              buttonColorScheme: ButtonColorScheme.warning,
-              primaryLabel: l10n.endTrip,
-              onTap: widget.onEndTripPressed,
             )
           ],
           onTapBurger: toggle,
-          onTapRoute: eta != null ? widget.onRoutePressed : () {},
+          // TODO(scroollocker): discuss with team and create here correct logic
+          onTapSearch: widget.onSearchPressed ?? () {},
+          onTapRoute: widget.onSearchPressed != null ? null : widget.onTapRoute,
         ),
       ),
     );

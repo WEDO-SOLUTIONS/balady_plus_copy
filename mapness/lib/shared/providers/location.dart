@@ -72,7 +72,7 @@ class _Location extends _$Location {
         return false;
       } else {
         if (state == null) {
-          final isHuawei = await CommonFunctions.isHawaiiDevice();
+          final isHuawei = await CommonFunctions.isHuaweiDevice();
           Position? userLocation;
 
           if (isHuawei) {
