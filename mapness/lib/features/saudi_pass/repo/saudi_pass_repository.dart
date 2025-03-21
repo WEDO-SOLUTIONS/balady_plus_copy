@@ -1,8 +1,7 @@
 import 'package:dio/dio.dart';
-
-import 'lookups_body.dart';
-import 'offer_details_body.dart';
-import 'promotions_body.dart';
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
+import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 
 class SaudiPassRepository {
   final Dio _dio;

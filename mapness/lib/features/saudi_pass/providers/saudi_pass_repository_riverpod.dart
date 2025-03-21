@@ -1,11 +1,10 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
+import 'package:mapness/features/saudi_pass/repo/verifying_key_interceptor.dart';
 import 'package:mapness/shared/config/environment_config.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-import '../repo/saudi_pass_repository.dart';
-import '../repo/verifying_key_interceptor.dart';
 
 part 'saudi_pass_repository_riverpod.g.dart';
 

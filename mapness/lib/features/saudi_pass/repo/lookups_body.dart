@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:json_annotation/json_annotation.dart';
-
-import 'momra_body.dart';
+import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
 
 part 'lookups_body.g.dart';
 

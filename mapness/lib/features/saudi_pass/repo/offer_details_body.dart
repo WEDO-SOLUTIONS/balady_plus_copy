@@ -1,8 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-
-import 'lookups_body.dart';
-import 'momra_body.dart';
-import 'promotions_body.dart';
+import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 
 part 'offer_details_body.g.dart';
 
