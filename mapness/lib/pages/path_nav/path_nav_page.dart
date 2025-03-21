@@ -296,6 +296,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                       onBetterRouteAccept: () => _acceptBetterRoute(context),
                                       onBetterRouteReject: () => _rejectBetterRoute(context),
                                       betterRouteDurationProfit: _betterRouteDurationProfit,
+                                      onTapRoute: _onShowRoutePressed,
                                       onSizeChanged: _onSizeChanged,
                                     ),
                                   );
@@ -471,6 +472,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       action: MetricAction.tap.toString(),
     );
 
+    ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
     _betterRouteDurationProfit.value = null;
     _navigationState.value = PathNavState.paused;
     await ref.read(cameraPositionProvider.notifier).animateToRoute();

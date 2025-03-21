@@ -26,7 +26,7 @@ import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 import 'layout_size_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
-  final VoidCallback onSearchPressed;
+  final VoidCallback? onSearchPressed;
   final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
   final VoidCallback onBetterRouteAccept;
@@ -40,7 +40,7 @@ class EtaSheet extends ConsumerStatefulWidget {
     required this.onBetterRouteReject,
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
-    required this.onSearchPressed,
+    this.onSearchPressed,
     this.onTapRoute,
     super.key,
   });
@@ -119,6 +119,27 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ShareEtaBtn(
               durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
             ),
+            if (widget.onSearchPressed != null)
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: Spacing.$3x,
+                ),
+                child: ContentRow(
+                  onTap: () => widget.onTapRoute?.call(),
+                  options: ContentRowOptions(
+                    wrapperColor: color.surfaceBaseTertiary,
+                    wrapperEnabled: true,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    title: l10n.route,
+                    actionWidget: ContentRowActionOptions(
+                      actionIcon: AppIcons(
+                        iconData: GeneralIcons.route,
+                        color: context.colorsV3.foregroundMuted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             Spacing.$3x.heightBox,
             ContentRow(
               onTap: () => context.router.push(switch (MediaQuery.orientationOf(context)) {
@@ -143,7 +164,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
-                    color: color.textAndIconsBaseTertiary,
+                    color: context.colorsV3.foregroundMuted,
                   ),
                 ),
                 bottomWidget: SegmentTabsButton(
@@ -187,7 +208,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
-                    color: color.textAndIconsBaseTertiary,
+                    color: context.colorsV3.foregroundMuted,
                   ),
                 ),
               ),
@@ -206,8 +227,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             )
           ],
           onTapBurger: toggle,
-          onTapSearch: widget.onSearchPressed,
-          onTapRoute: widget.onTapRoute,
+          // TODO(scroollocker): discuss with team and create here correct logic
+          onTapSearch: widget.onSearchPressed ?? () {},
+          onTapRoute: widget.onSearchPressed != null ? null : widget.onTapRoute,
         ),
       ),
     );
