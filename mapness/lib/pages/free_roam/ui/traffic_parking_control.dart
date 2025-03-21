@@ -49,6 +49,7 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
               isEnabled: isTrafficEnabled,
               trafficState: trafficNotifier,
               isVisable: isTrafficVisable,
+              parkingVisible: widget.parkingVisible,
             ),
           if (widget.parkingVisible)
             Consumer(
@@ -125,11 +126,13 @@ class _TrafficControl extends StatelessWidget {
   final bool isEnabled;
   final bool isVisable;
   final TrafficState trafficState;
+  final bool parkingVisible;
 
   const _TrafficControl({
     required this.isEnabled,
     required this.isVisable,
     required this.trafficState,
+    required this.parkingVisible,
   });
 
   @override
@@ -139,7 +142,12 @@ class _TrafficControl extends StatelessWidget {
       TrafficControl(
         opacity: isVisable ? 1 : 0,
         isEnabled: isEnabled,
-        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
+        borderRadius: BorderRadius.only(
+          topLeft: const Radius.circular(RadiusBorder.ml),
+          topRight: const Radius.circular(RadiusBorder.ml),
+          bottomRight: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+          bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+        ),
         onTap: () {
           Metrics.logEventAdvanced(
             MetricsConstants.exploreKeys.trafficLightButton,
