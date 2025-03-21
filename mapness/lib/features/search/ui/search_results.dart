@@ -8,18 +8,20 @@ import 'package:mapness/features/search/ui/add_place_item.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 
 class SearchResults extends ConsumerStatefulWidget {
+  final SearchResultMessage results;
+  final ScrollController scrollController;
+  final Widget Function(BuildContext) loaderBuilder;
+  final Widget Function(BuildContext, DirectoryObjectMessage) itemBuilder;
+  final bool? isShowAddPlace;
+
   const SearchResults({
     required this.results,
     required this.scrollController,
     required this.loaderBuilder,
     required this.itemBuilder,
+    this.isShowAddPlace,
     super.key,
   });
-
-  final SearchResultMessage results;
-  final ScrollController scrollController;
-  final Widget Function(BuildContext) loaderBuilder;
-  final Widget Function(BuildContext, DirectoryObjectMessage) itemBuilder;
 
   @override
   ConsumerState<SearchResults> createState() => _SearchResultsState();
@@ -28,6 +30,7 @@ class SearchResults extends ConsumerStatefulWidget {
 class _SearchResultsState extends ConsumerState<SearchResults> {
   bool _hasNext = true;
   bool _isLoading = false;
+  late final bool _isShowAddPlace = widget.isShowAddPlace ?? true;
 
   @override
   void initState() {
@@ -65,10 +68,10 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
   Widget build(BuildContext context) {
     final results = ref.watch(searchPaginationProvider(widget.results));
     if (results.isEmpty) {
-      return const MapSearchEmpty();
+      return MapSearchEmpty(isShowAddPlaceButton: _isShowAddPlace);
     }
     // If the result list is not empty add AddPlaceItem at the end of the list
-    final totalCount = results.length + 1;
+    final totalCount = results.length + (_isShowAddPlace ? 1 : 0);
 
     return ListView.separated(
       shrinkWrap: true,
@@ -79,7 +82,7 @@ class _SearchResultsState extends ConsumerState<SearchResults> {
       ),
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
-        if (index == results.length) {
+        if (index == results.length && _isShowAddPlace) {
           if (_hasNext) {
             return widget.loaderBuilder(context);
           }
