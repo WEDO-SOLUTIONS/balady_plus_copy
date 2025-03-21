@@ -30,8 +30,11 @@ import 'package:mapness/shared/providers/map/rubric_marker_type_mapper.dart';
 
 /// Search sheet that is shown on the explore screen.
 class NaviBottomSheet extends ConsumerStatefulWidget {
+  final bool isPathNavScreen;
+
   const NaviBottomSheet({
     super.key,
+    this.isPathNavScreen = false,
   });
 
   @override
@@ -49,10 +52,12 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
   @override
   void initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    if (widget.isPathNavScreen) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
 
     ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
@@ -95,12 +100,14 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
 
   @override
   void dispose() {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeRight,
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    if (widget.isPathNavScreen) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
 
     _bottomSheetController.dispose();
     _keyboardVisible.cancel();
