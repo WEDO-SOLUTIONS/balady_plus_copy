@@ -28,6 +28,7 @@ class SaudiPassRepository {
     Sort? recencySort,
     Sort? ratingSort,
     Sort? discountSort,
+    bool? favorites,
   }) async {
     final queryParameters = <String, Object?>{
       'city-id': city.id,
@@ -42,6 +43,7 @@ class SaudiPassRepository {
       'recency': recencySort?.name,
       'rating': ratingSort?.name,
       'discount': discountSort?.name,
+      'favorites': favorites,
     }..removeWhere((_, value) => value == null);
 
     final response = await _dio.get('/promotions', queryParameters: queryParameters);

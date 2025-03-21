@@ -57,12 +57,31 @@ class OfferDetails extends Offer {
   factory OfferDetails.fromJson(Map<String, dynamic> json) => _$OfferDetailsFromJson(json);
 }
 
+/// Promotion Type Details (Can be coupon or vouchers) [OfferType.id]
 @noRenameNoToJson
 class TypeDetails {
-  final int ratio;
-  final String code;
+  /// Promotion Amount (Vouchers)
+  final num? amount;
 
-  TypeDetails({required this.ratio, required this.code});
+  /// Promotion Number (Vouchers)
+  final String? number;
+
+  /// Promotion discount ratio (Coupon)
+  final num? ratio;
+
+  /// Promotion max discount ratio (Coupon)
+  final num? maxRatio;
+
+  /// Promotion discount code (Coupon)
+  final String? code;
+
+  TypeDetails({
+    this.amount,
+    this.number,
+    this.ratio,
+    this.maxRatio,
+    this.code,
+  });
 
   factory TypeDetails.fromJson(Map<String, dynamic> json) => _$TypeDetailsFromJson(json);
 }
