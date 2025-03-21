@@ -20,7 +20,7 @@ class SaudiPassRepositoryRiverpod extends _$SaudiPassRepositoryRiverpod {
   }
 
   Dio _createDio(Dio dio, EnvironmentConfig env) {
-    late final _saudiPassServicesPath = '${env.weatherApi}/v1/balady-business-saudi-pass-services/user';
+    final _saudiPassServicesPath = '${env.weatherApi}/v1/balady-business-saudi-pass-services/user';
 
     final saudiPassDio = Dio(dio.options.copyWith(baseUrl: _saudiPassServicesPath));
 

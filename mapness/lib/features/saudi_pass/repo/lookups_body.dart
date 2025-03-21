@@ -42,13 +42,10 @@ class Lookups {
   factory Lookups.fromJson(Map<String, dynamic> json) => _$LookupsFromJson(json);
 }
 
-Object? fallbackToHardcodedLang(Map map, String string) => map[string] ?? map['${string}Ar'] ?? map['${string}En'];
-
 @immutable
 @noRenameNoToJson
 class _NameId {
   final String id;
-  // @JsonKey(readValue: fallbackToHardcodedLang)
   final String name;
 
   const _NameId({required this.id, required this.name});
