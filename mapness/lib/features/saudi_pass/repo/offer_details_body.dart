@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 

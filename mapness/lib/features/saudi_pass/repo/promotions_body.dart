@@ -59,6 +59,13 @@ class Offer {
   final String number;
   final String name;
   final String description;
+
+  // При разбитии на несколько файлов сгенерированная приватная функция _$FromJson в одном part файле
+  // не видит сгенерированные приватные функции из других part файлов _$FromJson.
+  // Варианты:
+  // √ 1. @JsonKey(fromJson:) явное указание функции десериализации
+  //   2. держать всё в одном файле (большая когнитивная нагрузка)
+  //   3. научить JsonSerializable делать публичные функции $FromJson
   @JsonKey(fromJson: OfferType.fromJson)
   final OfferType type;
   @JsonKey(fromJson: OfferProvider.fromJson)
