@@ -190,7 +190,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
           sliverContent,
         ],
       ),
-      child: PoiPhotoButton(objectId: objectId),
+      child: PoiPhotoButton(objectId: objectId, photosItems: photos.requireValue.items),
     );
   }
 }
