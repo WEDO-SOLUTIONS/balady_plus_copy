@@ -19,7 +19,7 @@ class EtaSheetWrapper extends StatelessWidget {
   final Color? backgroundColor;
 
   static const curve = BaseRoadPanel.animationCurve;
-  static const duration = BaseRoadPanel.animationDuration;
+  static const duration = Duration(milliseconds: 700);
 
   const EtaSheetWrapper({
     required this.child,

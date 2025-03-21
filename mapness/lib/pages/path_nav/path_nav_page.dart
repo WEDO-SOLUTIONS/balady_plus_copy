@@ -203,6 +203,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           styleZoomValue: 16.5,
         ),
       );
+      await _moveCameraToUser();
       await saveNavigationState();
     }
   }
@@ -569,7 +570,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ).notifier);
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
-    await context.router.push(NaviSearchRoute());
+    await context.router.push(NaviSearchRoute(isPathNavScreen: true));
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: false);
   }
 
