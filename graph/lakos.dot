@@ -2964,6 +2964,7 @@ digraph "" {
   "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/features/poi_card/domain/model/organizations_response.dart";
   "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/features/poi_card/domain/model/qr_trade_license.dart";
+  "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
   "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/shared/extensions/directory_object_message_ext.dart";
   "/lib/features/poi_card/provider/poi_card_provider.dart" -> "/lib/shared/providers/app_language.dart";
