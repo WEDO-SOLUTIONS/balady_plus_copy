@@ -8,8 +8,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'saudi_pass_repository_riverpod.g.dart';
 
+final saudiPassRepositoryProvider = _saudiPassRepositoryRiverpodProvider;
+
 @riverpod
-class SaudiPassRepositoryRiverpod extends _$SaudiPassRepositoryRiverpod {
+class _SaudiPassRepositoryRiverpod extends _$SaudiPassRepositoryRiverpod {
   @override
   Future<SaudiPassRepository> build() async {
     final dio = await ref.watch(dGisHttpService.future);
