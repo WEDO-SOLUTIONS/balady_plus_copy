@@ -4,35 +4,39 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
+import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class PoiPhotoButton extends StatefulWidget {
+class PoiPhotoButton extends StatelessWidget {
   final int objectId;
+  final List<Item> photosItems;
 
   const PoiPhotoButton({
     required this.objectId,
+    required this.photosItems,
     super.key,
   });
 
   @override
-  State<PoiPhotoButton> createState() => _PoiPhotoButtonState();
-}
+  Widget build(BuildContext context) {
+    if (photosItems.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-class _PoiPhotoButtonState extends State<PoiPhotoButton> {
-  @override
-  Widget build(BuildContext context) => AppButton(
-        buttonColorScheme: ButtonColorScheme.onColor,
-        onTap: () => context.router.push(
-          QuickFeedbackRoute(
-            type: QuickFeedbackType.addPhoto,
-            params: FeedbackObjectIdParams(widget.objectId),
-          ),
+    return AppButton(
+      buttonColorScheme: ButtonColorScheme.onColor,
+      onTap: () => context.router.push(
+        QuickFeedbackRoute(
+          type: QuickFeedbackType.addPhoto,
+          params: FeedbackObjectIdParams(objectId),
         ),
-        size: ButtonSize.small,
-        primaryIcon: General16Icons.photoSolid,
-        primaryLabel: context.l10n.addPhoto,
-        textColor: context.colorsV3.accentDefault,
-        iconColor: context.colorsV3.accentDefault,
-      );
+      ),
+      size: ButtonSize.small,
+      primaryIcon: General16Icons.photoSolid,
+      primaryLabel: context.l10n.addPhoto,
+      textColor: context.colorsV3.accentDefault,
+      iconColor: context.colorsV3.accentDefault,
+    );
+  }
 }

@@ -209,10 +209,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: c032e814dc18a7c35e81325efd917746d7d1f1e260028fc87325713169954cfb
+      sha256: "00b26e0275cfdaa99ae3979f902a0adc6ff9f2404eb8af990bd67fed778592de"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.3.1"
+    version: "3.3.2"
   battery_plus:
     dependency: transitive
     description:
@@ -1541,18 +1541,18 @@ packages:
     dependency: transitive
     description:
       name: geolocator_apple
-      sha256: "419e50f754281d3606750af07b198ecfe938e8648d3e30a898d3ac342ab717e6"
+      sha256: dbdd8789d5aaf14cf69f74d4925ad1336b4433a6efdf2fce91e8955dc921bf22
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.12"
+    version: "2.3.13"
   geolocator_platform_interface:
     dependency: transitive
     description:
       name: geolocator_platform_interface
-      sha256: "722db30c0a2caa82a59d6655f04ef0a492da003036b880342cc67e6f1abc188f"
+      sha256: "30cb64f0b9adcc0fb36f628b4ebf4f731a2961a0ebd849f4b56200205056fe67"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.5"
+    version: "4.2.6"
   geolocator_web:
     dependency: transitive
     description:
@@ -3157,10 +3157,10 @@ packages:
     dependency: transitive
     description:
       name: timing
-      sha256: "70a3b636575d4163c477e6de42f247a23b315ae20e86442bebe32d3cabf61c32"
+      sha256: "62ee18aca144e4a9f29d212f5a4c6a053be252b895ab14b5821996cff4ed90fe"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.2"
   tuple:
     dependency: transitive
     description:
