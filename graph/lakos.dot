@@ -3745,7 +3745,6 @@ digraph "" {
   "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/features/poi_card/domain/model/poi_camera_config.dart";
   "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/features/search/ui/suggest_item.dart";
   "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/constants/metrics_constants.dart";
-  "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/navi_search/ui/navi_suggest_list.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/navi_search/ui/navi_search_header.dart" -> "/lib/features/search/models/search_state.dart";
