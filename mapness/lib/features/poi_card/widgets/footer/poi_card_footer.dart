@@ -18,7 +18,7 @@ class PoiCardFooter extends HookConsumerWidget {
   static const double padding = 12;
 
   final DirectoryObjectMessage? data;
-  final VoidCallback share;
+  final Future Function() share;
   final VoidCallback? callPhone;
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
@@ -86,7 +86,7 @@ class PoiCardFooter extends HookConsumerWidget {
 
     return ThrottledCallbackWidget(
       callback: share,
-      throttleDuration: const Duration(seconds: 2),
+      resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
         displayShadow: displayShadow.value,
         items: [

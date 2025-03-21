@@ -69,7 +69,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
                   'closest_point': '${closestPoint?.latitude},${closestPoint?.longitude}'
                 });
 
-            poiActions.share(
+            return poiActions.share(
               objectId: objectId,
               markerCoords: closestPoint,
             );

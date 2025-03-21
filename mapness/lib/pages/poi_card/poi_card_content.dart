@@ -145,7 +145,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                   });
 
-              poiActions.share(
+              return poiActions.share(
                 objectId: objectId,
                 markerCoords: widget.closestPoint,
               );
