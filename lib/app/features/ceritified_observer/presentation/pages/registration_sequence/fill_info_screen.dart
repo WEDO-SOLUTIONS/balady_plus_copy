@@ -166,15 +166,13 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                     }
 
                     if (isCompleted) {
-                      /// TODO : Navigate to the next screen
-                      CommonFunctions.showSuccess("Done".tr());
-
                       context.read<ChooseMuncipalityBloc>().add(
                             const GoToNextPageEvent(),
                           );
                     } else {
                       formKey.currentState!.validate();
-                      CommonFunctions.showError("please_fill_all_required_fields".tr());
+                      CommonFunctions.showError(
+                          "please_fill_all_required_fields".tr());
                       isCompleted = true;
                     }
 
