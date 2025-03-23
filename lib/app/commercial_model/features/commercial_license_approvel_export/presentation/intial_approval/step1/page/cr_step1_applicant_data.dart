@@ -25,7 +25,7 @@ class CRStep1ApplicantData extends StatelessWidget {
         if (state.recordStatus == BlocStatus.failure ||
             state.status == BlocStatus.failure ||
             state.addIsicActivitiesStatus == BlocStatus.failure) {
-          CommonFunctions.showError(state.errorMessage);
+          CommonFunctions.showError(state.errorMessage,true);
         }
       },
       builder: (context, state) {

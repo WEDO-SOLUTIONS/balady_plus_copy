@@ -104,11 +104,12 @@ class Step1ApplicantDataExportCubit extends Cubit<Step1ApplicantDataExportState>
               crType: int.parse(CommonProperties.selectedDelegator!.crType)));
 
       response.fold(
-              (failure) =>
-              emit(state.copyWith(
-                status: BlocStatus.failure,
-                errorMessage: (failure as ServerFailure).errorMessage,
-              )), (success) {
+              (failure) {
+
+              emit(state.copyWith(status: BlocStatus.failure));
+              CommonFunctions.showError((failure as ServerFailure).errorMessage,true);
+
+                  }, (success) {
         sl<CommercialLicenseInitialAprrovalBloc>().add((UpdateFieldEvent(requestId: success)));
 
         emit(state.copyWith(status: BlocStatus.success, requestId: success));
