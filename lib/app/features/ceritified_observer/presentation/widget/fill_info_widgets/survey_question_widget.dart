@@ -11,7 +11,6 @@ class SurveyQuestionWidget extends StatelessWidget {
     required this.name,
     required this.groupValue,
     required this.onChange,
-
   });
 
   @override
@@ -26,36 +25,50 @@ class SurveyQuestionWidget extends StatelessWidget {
           Row(
             children: [
               Expanded(
+                child: InkWell(
+                  onTap: () {
+                    if (groupValue != true) {
+                      onChange(true);
+                    }
+                  },
+                  child: Card(
+                    color: Colors.grey.shade100,
+                    child: Row(
+                      children: [
+                        Radio(
+                          value: true,
+                          groupValue: groupValue,
+                          onChanged: (value) {
+                            onChange(value);
+                          },
+                        ),
+                        Text("yes".tr()),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                  child: InkWell(
+                onTap: () {
+                  if (groupValue != false) {
+                    onChange(false);
+                  }
+                },
                 child: Card(
                   color: Colors.grey.shade100,
                   child: Row(
                     children: [
                       Radio(
-                        value: true,
+                        value: false,
                         groupValue: groupValue,
                         onChanged: (value) {
                           onChange(value);
                         },
                       ),
-                      Text("yes".tr()),
+                      Text("no".tr()),
                     ],
                   ),
-                ),
-              ),
-              Expanded(
-                  child: Card(
-                color: Colors.grey.shade100,
-                child: Row(
-                  children: [
-                    Radio(
-                      value: false,
-                      groupValue: groupValue,
-                      onChanged: (value) {
-                        onChange(value);
-                      },
-                    ),
-                    Text("no".tr()),
-                  ],
                 ),
               ))
             ],

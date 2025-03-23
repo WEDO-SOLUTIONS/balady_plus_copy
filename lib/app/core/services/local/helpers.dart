@@ -210,7 +210,7 @@ class Helpers {
 
 
   static String? validateIBAN(String? iban) {
-    RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
+    RegExp phoneReg = RegExp(r'^([0-9]{24})$');
 
     if (!phoneReg.hasMatch(iban ?? "")) {
       return ('please_enter_valid_iban').tr();

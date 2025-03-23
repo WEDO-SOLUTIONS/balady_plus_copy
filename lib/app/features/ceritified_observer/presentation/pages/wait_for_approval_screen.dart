@@ -26,7 +26,7 @@ class _WaitForApprovalScreenState extends State<WaitForApprovalScreen> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                margin: EdgeInsets.symmetric(horizontal: 14),
+                margin: const EdgeInsets.symmetric(horizontal: 14),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.center,

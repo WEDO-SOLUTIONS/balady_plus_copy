@@ -54,6 +54,7 @@ class BankInfoWidget extends StatelessWidget {
               textFieldVerticalPadding: 14,
               label: "bank_iban".tr(),
               hintText: "bank_iban".tr(),
+              controller: state.bankIbanController,
               onChanged: (text) {
                 context.read<ChooseMuncipalityBloc>().add(
                       SetRequestDataEvent(

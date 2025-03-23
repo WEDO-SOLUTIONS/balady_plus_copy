@@ -27,9 +27,11 @@ abstract class CertifiedObserverRemoteDataSource {
       String municipalityId);
 
   Future<List<DistrictsEntity>> getDistrictByCityIdList(String cityId);
+
   Future<bool> registrationObserver(RegisterObserverRequest request);
 
-
+  Future<Map<String, dynamic>> getAvailabilityOfFreelancerCertificateUser(
+      ObserverStatusEntity request);
 }
 
 class CertifiedObserverRemoteDataSourceImplementation
@@ -317,16 +319,13 @@ class CertifiedObserverRemoteDataSourceImplementation
   }
 
   @override
-  Future<bool> registrationObserver(RegisterObserverRequest request)async {
-
+  Future<bool> registrationObserver(RegisterObserverRequest request) async {
     var response;
     try {
-      response = await webService.dio.post(ApiUrl.registerObserver,
-        data: request.toJson()
-      );
+      response = await webService.dio
+          .post(ApiUrl.registerObserver, data: request.toJson());
 
-
-      return response.data["data"] != null?true:false;
+      return response.data["data"] != null ? true : false;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -363,6 +362,54 @@ class CertifiedObserverRemoteDataSourceImplementation
         );
       }
     }
+  }
 
+  @override
+  Future<Map<String, dynamic>> getAvailabilityOfFreelancerCertificateUser(
+      ObserverStatusEntity request) async {
+    var response;
+    try {
+      response = await webService.dio.post(
+        ApiUrl.registerObserver,
+        data: request.toJson(),
+      );
+
+      return response.data["data"];
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
   }
 }

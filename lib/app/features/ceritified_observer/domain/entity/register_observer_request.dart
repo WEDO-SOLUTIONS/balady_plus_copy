@@ -188,8 +188,9 @@ class RegisterObserverRequest {
 
 
     ////////////
-    map['ExternalEntityID'] = "";
-    map['QualificationStatus'] = "Waiting for approval";
+    map['ExternalEntityID'] = "AGC-0032";
+
+    map['QualificationStatus'] = "";
     map['FreelanceCertificateNumber'] = "";
     map['FreelanceCertificateExpiryDate'] = "";
 

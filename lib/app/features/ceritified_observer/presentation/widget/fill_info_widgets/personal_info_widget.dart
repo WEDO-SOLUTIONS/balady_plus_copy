@@ -31,6 +31,7 @@ class PersonalInfoWidget extends StatelessWidget {
             textFieldVerticalPadding: 14,
             label: "mobile_number".tr(),
             hintText: "mobile_number".tr(),
+            controller: state.phoneController,
             onChanged: (text) {
               context.read<ChooseMuncipalityBloc>().add(
                 SetRequestDataEvent(
@@ -47,6 +48,7 @@ class PersonalInfoWidget extends StatelessWidget {
             textFieldVerticalPadding: 14,
             label: "email".tr(),
             hintText: "email".tr(),
+            controller: state.emailController,
             onChanged: (text) {
               context.read<ChooseMuncipalityBloc>().add(
                 SetRequestDataEvent(

@@ -97,6 +97,11 @@ class ChooseMuncipalityBloc
               requestData: RegisterObserverRequest(
                 mobileNumber: CommonProperties.userInfo?.phone ?? "",
               ),
+              bankIbanController: TextEditingController(),
+              emailController: TextEditingController(),
+              phoneController: TextEditingController(
+                text: CommonProperties.userInfo?.phone ?? "",
+              ),
             ),
           );
           getMaritalStatusList();

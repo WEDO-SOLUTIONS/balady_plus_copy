@@ -24,9 +24,16 @@ class ChooseMuncipalityState extends CertifiedObserverState {
   final List? pagesList;
   int currentPageValue;
 
+  TextEditingController bankIbanController;
+  TextEditingController phoneController;
+  TextEditingController emailController;
+
   ChooseMuncipalityState({
     this.status = BlocStatus.initial,
     this.errorMessage,
+    required this.bankIbanController,
+    required this.emailController,
+    required this.phoneController,
     this.observerStatusEntity,
     this.lstMunicipalityLookUp,
     this.requestData,
@@ -71,6 +78,9 @@ class ChooseMuncipalityState extends CertifiedObserverState {
       lstBanks: lstBanks ?? this.lstBanks,
       lstCitesLookUp: lstCitesLookUp ?? this.lstCitesLookUp,
       lstDistrictLookUp: lstDistrictLookUp ?? this.lstDistrictLookUp,
+      bankIbanController: bankIbanController,
+      emailController: emailController,
+      phoneController: phoneController,
     );
   }
 
