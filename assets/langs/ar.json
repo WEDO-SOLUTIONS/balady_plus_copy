@@ -4238,5 +4238,9 @@
   "relatedCommercialRequestDetails": "تفاصيل طلب اصدار الرخصة التجارية",
   "Viewmunicipalrequirements": "عرض الاشتراطات البلدية",
   "viewForPrint": "استعراض  للطباعة",
-  "intial_approve_cancelled": "تم الغاء الطلب بنجاح"
+  "intial_approve_cancelled": "تم الغاء الطلب بنجاح",
+  "ErrOnlyQaseem": "هذا النوع من البلاغات مفعل فقط في امانة القصيم"
+
+
+
 }

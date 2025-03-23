@@ -4497,5 +4497,6 @@
   "relatedCommercialRequestDetails": "Related Commercial Request Details",
   "Viewmunicipalrequirements": "View Municipal Requirements",
   "viewForPrint": "View For Print",
-  "intial_approve_cancelled": "Request canceled successfully"
+  "intial_approve_cancelled": "Request canceled successfully",
+  "ErrOnlyQaseem":"This category of Incident only allow in AL-Qaseem Municipality"
 }
