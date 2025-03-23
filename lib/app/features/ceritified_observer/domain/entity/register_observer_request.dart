@@ -8,7 +8,7 @@ class RegisterObserverRequest {
     this.grandFatherName,
     this.familyName,
     this.gender,
-    this.externalEntityID,
+    // this.externalEntityID,
     this.municipality,
     this.city,
     this.district,
@@ -72,7 +72,7 @@ class RegisterObserverRequest {
   String? grandFatherName;
   String? familyName;
   String? gender;
-  String? externalEntityID;
+  // String? externalEntityID;
 
   //// Location Info
   LookUpItem? municipality;
@@ -110,7 +110,7 @@ class RegisterObserverRequest {
     String? grandFatherName,
     String? familyName,
     String? gender,
-    String? externalEntityID,
+    // String? externalEntityID,
     LookUpItem? municipalityID,
     LookUpItem? city,
     LookUpItem? district,
@@ -139,7 +139,7 @@ class RegisterObserverRequest {
         grandFatherName: grandFatherName ?? this.grandFatherName,
         familyName: familyName ?? this.familyName,
         gender: gender ?? this.gender,
-        externalEntityID: externalEntityID ?? this.externalEntityID,
+        // externalEntityID: externalEntityID ?? this.externalEntityID,
         municipality: municipalityID ?? this.municipality,
         city: city ?? this.city,
         district: district ?? this.district,
@@ -167,15 +167,7 @@ class RegisterObserverRequest {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    // map['BirthDate'] = birthDate;
-    // map['FirstName'] = firstName;
-    // map['FatherName'] = fatherName;
-    // map['GrandFatherName'] = grandFatherName;
-    // map['FamilyName'] = familyName;
-    // map['Gender'] = gender;
-    map['ExternalEntityID'] = externalEntityID;
     map['MunicipalityID'] = municipality?.strId;
-    // map['CityCode'] = city?.strId;
     map['CityCode'] = city?.strId;
     map['IBAN'] = iban;
     map['BankName'] = bankInfo?.name;
@@ -188,15 +180,18 @@ class RegisterObserverRequest {
     map['SurveyQuestion2'] = surveyQuestion2;
     map['SurveyQuestion3'] = surveyQuestion3;
     map['SurveyQuestion4'] = surveyQuestion4;
-    map['QualificationStatus'] = "002";
-
-    map['FreelanceCertificateNumber'] = freelanceCertificateNumber;
-    map['FreelanceCertificateExpiryDate'] = freelanceCertificateExpiryDate;
     if (district != null) {
       map['DistrictList'] = [
         {"DistrictID": district?.strId, "DistrictName": district?.name}
       ];
     }
+
+
+    ////////////
+    map['ExternalEntityID'] = "";
+    map['QualificationStatus'] = "Waiting for approval";
+    map['FreelanceCertificateNumber'] = "";
+    map['FreelanceCertificateExpiryDate'] = "";
 
     return map;
   }
