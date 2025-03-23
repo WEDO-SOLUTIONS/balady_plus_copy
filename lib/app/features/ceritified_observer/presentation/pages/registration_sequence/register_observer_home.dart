@@ -25,13 +25,18 @@ class _RegisterObserverHomeState extends State<RegisterObserverHome> {
     return BlocProvider(
       create: (context) => ChooseMuncipalityBloc(),
       child: BlocConsumer<ChooseMuncipalityBloc, CertifiedObserverState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if (state is ChooseMuncipalityState) {
+            if(state.status == BlocStatus.failure ) {
+              CommonFunctions.showError(state.errorMessage ?? "");
+            }
+          }
+        },
         builder: (context, state) {
           if (state is LoadingApprovalState) {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is FailureApprovalState) {
-            /// TODO : show error message and action button to retry
             return Text(state.failure);
           }
           if (state is WaitingApprovalState) {
