@@ -96,13 +96,12 @@ class ChooseMuncipalityBloc
               observerStatusEntity: obj,
               requestData: RegisterObserverRequest(
                 mobileNumber: CommonProperties.userInfo?.phone ?? "",
-                externalEntityID: obj.iDNumber,
-                freelanceCertificateExpiryDate:
-                    obj.freelanceCertificateExpiryDate,
-                freelanceCertificateNumber: obj.freelanceCertificateNumber,
               ),
             ),
           );
+          getMaritalStatusList();
+          getDegreeList();
+          getBanksList();
           getMuncipalityList();
         } else {
           if (response.data!.result?.qualification == "Waiting for approval") {
@@ -235,7 +234,7 @@ class ChooseMuncipalityBloc
   }
 
   ///// End Location   Functions
-  Future<void> getMaritalStatusList() async {
+  void getMaritalStatusList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
       List<LookUpItem>? lstMaritalStatus = MaritalStatus.values
@@ -255,7 +254,7 @@ class ChooseMuncipalityBloc
     }
   }
 
-  Future<void> getDegreeList() async {
+  void getDegreeList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
       List<LookUpItem>? lstDegrees = Degree.values
@@ -274,7 +273,7 @@ class ChooseMuncipalityBloc
 
   ////// Bank Functions
 
-  Future<void> getBanksList() async {
+  void getBanksList() async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
       List<LookUpItem>? lstBanks = Bank.values
