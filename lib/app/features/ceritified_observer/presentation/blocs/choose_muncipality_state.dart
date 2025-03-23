@@ -189,9 +189,9 @@ class FailureApprovalState extends CertifiedObserverState {
 }
 
 class WaitingApprovalState extends CertifiedObserverState {
-  final ObserverStatusEntity observerStatusEntity;
+  final ObserverStatusEntity? observerStatusEntity;
 
-  const WaitingApprovalState({required this.observerStatusEntity});
+  const WaitingApprovalState({this.observerStatusEntity});
 
   @override
   CertifiedObserverState copyWith({
