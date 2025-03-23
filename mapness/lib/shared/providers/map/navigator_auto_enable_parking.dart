@@ -1,5 +1,5 @@
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -30,10 +30,10 @@ class RoutingHeaderDelegate extends SliverPersistentHeaderDelegate {
   final void Function(FavouriteItem point) onFavouritesTap;
 
   @override
-  double get maxExtent => 196;
+  double get maxExtent => 64;
 
   @override
-  double get minExtent => 196;
+  double get minExtent => 64;
 
   @override
   bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;

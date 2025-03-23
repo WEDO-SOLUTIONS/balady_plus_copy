@@ -16,7 +16,7 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-version: 3.30.1+335
+version: 3.30.1+339
 #version: 3.12.3+268
 
 environment:
@@ -49,7 +49,7 @@ dependencies:
   # Form representation and validation in a generic way
   formz: ^0.6.0
   # Equality Comparisons among objects
-  equatable: ^2.0.5
+  equatable: 2.0.7
   # Dependency Injection Service Locator
   get_it: ^7.2.0
   ##! Internet
@@ -101,6 +101,7 @@ dependencies:
   #mobile_scanner: ^2.1.0
   # Location
   geolocator: ^13.0.1
+  geolocator_android: 4.6.1
   # Permissions
   permission_handler: ^11.0.1
   # Get current device information
@@ -186,7 +187,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.2.8
+    version: 3.3.2
 
   mapness:
     path: mapness
@@ -209,6 +210,7 @@ dependencies:
   flutter_linkify: ^6.0.0
   screenshot: ^2.1.0
   flutter_typeahead: ^5.2.0
+  flutter_animate: ^4.3.0
   # To scroll list to specific index and do not calculate width and height by ourselves
   scrollable_positioned_list: ^0.3.8
 

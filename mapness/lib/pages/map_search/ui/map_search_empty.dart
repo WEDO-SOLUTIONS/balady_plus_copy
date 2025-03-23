@@ -8,7 +8,9 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MapSearchEmpty extends ConsumerWidget {
-  const MapSearchEmpty({super.key});
+  final bool isShowAddPlaceButton;
+
+  const MapSearchEmpty({super.key, this.isShowAddPlaceButton = true});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
@@ -29,16 +31,17 @@ class MapSearchEmpty extends ConsumerWidget {
               style: context.textStyleV3.bodySmallRegular,
             ),
             const SizedBox(height: Spacing.$4x),
-            AppButton(
-              buttonColorScheme: ButtonColorScheme.primary,
-              primaryIcon: GeneralIcons.plusCircle,
-              // for the first iteration all buttons have same label. Will be changed later
-              primaryLabel: context.l10n.addPlace,
-              onTap: () {
-                ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
-                context.router.push(QuickFeedbackRoute());
-              },
-            ),
+            if (isShowAddPlaceButton)
+              AppButton(
+                buttonColorScheme: ButtonColorScheme.primary,
+                primaryIcon: GeneralIcons.plusCircle,
+                // for the first iteration all buttons have same label. Will be changed later
+                primaryLabel: context.l10n.addPlace,
+                onTap: () {
+                  ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiSearch);
+                  context.router.push(QuickFeedbackRoute());
+                },
+              ),
           ],
         ),
       );

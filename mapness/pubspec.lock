@@ -204,15 +204,15 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "3.12.3+268"
+    version: "3.30.1+335"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "36a29147b9108def6e6907124de9d0e4eb31a4145a3b94e881a73b501cf67d74"
+      sha256: "00b26e0275cfdaa99ae3979f902a0adc6ff9f2404eb8af990bd67fed778592de"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.8"
+    version: "3.3.2"
   battery_plus:
     dependency: transitive
     description:
@@ -749,7 +749,7 @@ packages:
     source: hosted
     version: "1.0.1"
   equatable:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: equatable
       sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
@@ -962,7 +962,7 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_animate:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_animate
       sha256: "7befe2d3252728afb77aecaaea1dec88a89d35b9b1d2eea6d04479e8af9117b5"
@@ -1538,7 +1538,7 @@ packages:
     source: hosted
     version: "13.0.1"
   geolocator_android:
-    dependency: transitive
+    dependency: "direct dev"
     description:
       name: geolocator_android
       sha256: "7aefc530db47d90d0580b552df3242440a10fe60814496a979aa67aa98b1fd47"

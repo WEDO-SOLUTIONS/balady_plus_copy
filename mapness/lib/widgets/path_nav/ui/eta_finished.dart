@@ -8,6 +8,8 @@ import 'layout_size_wrapper.dart';
 
 class EtaFinished extends ConsumerStatefulWidget {
   final VoidCallback onEndTripPressed;
+  final VoidCallback onSearchPressed;
+  final VoidCallback? onTapRoute;
   final VoidCallback onBuildAnotherRoutePressed;
   final OnWidgetSizeChange onSizeChanged;
   final ValueNotifier<bool> expansionNotifier;
@@ -17,6 +19,8 @@ class EtaFinished extends ConsumerStatefulWidget {
     required this.onBuildAnotherRoutePressed,
     required this.onSizeChanged,
     required this.expansionNotifier,
+    required this.onSearchPressed,
+    this.onTapRoute,
     super.key,
   });
 
@@ -29,30 +33,32 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
   Widget build(BuildContext context) => ValueListenableBuilder(
         valueListenable: widget.expansionNotifier,
         builder: (context, value, child) => EtaSheetWrapper(
-            isExpanded: value,
-            onSizeChanged: widget.onSizeChanged,
-            child: BaseRoadPanel(
-              roadPanelModel: RoadPanelModelArrived(
-                enabledHeader: value,
-                title: context.l10n.youArrived,
-                onTapBurger: toggle,
-                buttons: [
-                  AppButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    buttonColorScheme: ButtonColorScheme.primary,
-                    primaryLabel: context.l10n.endTrip,
-                    onTap: widget.onEndTripPressed,
-                  ),
-                  AppButton(
-                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                    buttonColorScheme: ButtonColorScheme.tertiary,
-                    primaryLabel: context.l10n.buildAnotherRoute,
-                    onTap: widget.onBuildAnotherRoutePressed,
-                  ),
-                ],
-              ),
+          isExpanded: value,
+          onSizeChanged: widget.onSizeChanged,
+          child: BaseRoadPanel(
+            roadPanelModel: RoadPanelModelArrived(
+              onSearchTap: widget.onSearchPressed,
+              enabledHeader: value,
+              title: context.l10n.youArrived,
+              onTapBurger: toggle,
+              buttons: [
+                AppButton(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  buttonColorScheme: ButtonColorScheme.primary,
+                  primaryLabel: context.l10n.endTrip,
+                  onTap: widget.onEndTripPressed,
+                ),
+                AppButton(
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                  buttonColorScheme: ButtonColorScheme.tertiary,
+                  primaryLabel: context.l10n.buildAnotherRoute,
+                  onTap: widget.onBuildAnotherRoutePressed,
+                ),
+              ],
+              onTapRoute: widget.onTapRoute,
             ),
           ),
+        ),
       );
 
   void toggle() {

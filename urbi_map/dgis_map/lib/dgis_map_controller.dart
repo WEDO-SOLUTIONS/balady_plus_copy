@@ -164,6 +164,12 @@ class DgisMapController {
   /// Changes state of location follow in navigation mode.
   Future<void> followNavigation() => _instance.followNavigation();
 
+  /// Changes state of location follow in navigation mode.
+  Future<void> stopFollowNavigation() => _instance.stopFollowNavigation();
+
+  /// Changes state of location follow in navigation mode.
+  Future<void> startFollowNavigation() => _instance.startFollowNavigation();
+
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) => _instance.selectIndoorLevel(level.levelIndex);
 
