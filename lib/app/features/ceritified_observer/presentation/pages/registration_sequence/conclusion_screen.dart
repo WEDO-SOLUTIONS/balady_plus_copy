@@ -3,7 +3,11 @@ import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
-import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/conclusion_widget/conclusion_additional_info_widget.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/conclusion_widget/conclusion_bank_info_widget.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/conclusion_widget/conclusion_location_info_widget.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/conclusion_widget/conclusion_personal_info_widget.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/widget/conclusion_widget/conclusion_user_data_applicant_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,17 +38,22 @@ class _ConclusionScreenState extends State<ConclusionScreen> {
             children: [
               Expanded(
                 child: Padding(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
                   child: SingleChildScrollView(
                     child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: []),
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        UserDataApplicantConclusionWidget(state: state),
+                        PersonalInfoConclusionWidget(state: state),
+                        LocationInfoConclusionWidget(state: state),
+                        BankInfoConclusionWidget(state: state),
+                        AdditionalInfoConclusionWidget(state: state),
+                      ],
+                    ),
                   ),
                 ),
               ),
-
               //// Button Action
-
               Container(
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.only(

@@ -54,7 +54,10 @@ class ChooseMuncipalityBloc
 
     on<GetObserverStatusEvent>(_etObserverStatus);
 
-    add(GetObserverStatusEvent(identityNumber: "1006966525"));
+    add(GetObserverStatusEvent(
+      // identityNumber: "1006966525",
+      identityNumber: CommonProperties.userInfo?.idNo ?? "",
+    ));
 
     ///////////////////////////////////////////////////////////
     on<SetRequestDataEvent>(_setRequestDataHandler);
@@ -80,7 +83,7 @@ class ChooseMuncipalityBloc
       (response) {
         ObserverStatusEntity obj =
             (response.data!.result) as ObserverStatusEntity;
-        if (obj.isCertifiedObserver == true) {
+        if (!obj.isCertifiedObserver) {
           emitter(
             ChooseMuncipalityState(
               status: BlocStatus.success,
@@ -91,7 +94,13 @@ class ChooseMuncipalityBloc
                 ConclusionScreen(),
               ],
               observerStatusEntity: obj,
-              requestData: RegisterObserverRequest(),
+              requestData: RegisterObserverRequest(
+                mobileNumber: CommonProperties.userInfo?.phone ?? "",
+                externalEntityID: obj.iDNumber,
+                freelanceCertificateExpiryDate:
+                    obj.freelanceCertificateExpiryDate,
+                freelanceCertificateNumber: obj.freelanceCertificateNumber,
+              ),
             ),
           );
           getMuncipalityList();
@@ -388,10 +397,15 @@ class ChooseMuncipalityBloc
       final failureOrSuccess = await _registerObserver(event.dataModel);
       failureOrSuccess.fold(
         (failure) {
-          print("object");
-          emit(state.copyWith(status: BlocStatus.failure));
+          emit(
+            state.copyWith(
+              status: BlocStatus.failure,
+              errorMessage: failure.toString(),
+            ),
+          );
         },
         (response) {
+          /// TODO : Need Creat New States and send hear .
           print("object");
           emit(state.copyWith(status: BlocStatus.success));
         },

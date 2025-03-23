@@ -3,22 +3,22 @@ class ObserverStatusEntity {
     this.qualification,
     this.freelanceCertificateNumber,
     this.freelanceCertificateExpiryDate,
-    this.isCertifiedObserver,
+    required this.isCertifiedObserver,
     this.iDNumber,
   });
 
-  ObserverStatusEntity.fromJson(dynamic json) {
-    qualification = json['Qualification'];
-    freelanceCertificateNumber = json['FreelanceCertificateNumber'];
-    freelanceCertificateExpiryDate = json['FreelanceCertificateExpiryDate'];
-    isCertifiedObserver = json['IsCertifiedObserver'];
-    iDNumber = json['IDNumber'];
-  }
+  factory ObserverStatusEntity.fromJson(dynamic json) => ObserverStatusEntity(
+        qualification: json['Qualification'],
+        freelanceCertificateNumber: json['FreelanceCertificateNumber'],
+        freelanceCertificateExpiryDate: json['FreelanceCertificateExpiryDate'],
+        isCertifiedObserver: json['IsCertifiedObserver'] ?? false,
+        iDNumber: json['IDNumber'],
+      );
 
   String? qualification;
   String? freelanceCertificateNumber;
   String? freelanceCertificateExpiryDate;
-  bool? isCertifiedObserver;
+  bool isCertifiedObserver;
   String? iDNumber;
 
   ObserverStatusEntity copyWith({

@@ -2,7 +2,6 @@ import '../../../new_appointment/presentation/core/models/lookup_list_model.dart
 
 class RegisterObserverRequest {
   RegisterObserverRequest({
-    this.iDNumber,
     this.birthDate,
     this.firstName,
     this.fatherName,
@@ -67,7 +66,6 @@ class RegisterObserverRequest {
   // }
 
   //// User Data Applicant
-  int? iDNumber;
   String? birthDate;
   String? firstName;
   String? fatherName;
@@ -106,7 +104,6 @@ class RegisterObserverRequest {
   bool pledgeQuestion;
 
   RegisterObserverRequest copyWith({
-    int? iDNumber,
     String? birthDate,
     String? firstName,
     String? fatherName,
@@ -136,7 +133,6 @@ class RegisterObserverRequest {
     bool? pledgeQuestion,
   }) =>
       RegisterObserverRequest(
-        iDNumber: iDNumber ?? this.iDNumber,
         birthDate: birthDate ?? this.birthDate,
         firstName: firstName ?? this.firstName,
         fatherName: fatherName ?? this.fatherName,
@@ -171,7 +167,6 @@ class RegisterObserverRequest {
 
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
-    map['IDNumber'] = iDNumber;
     // map['BirthDate'] = birthDate;
     // map['FirstName'] = firstName;
     // map['FatherName'] = fatherName;
@@ -193,7 +188,8 @@ class RegisterObserverRequest {
     map['SurveyQuestion2'] = surveyQuestion2;
     map['SurveyQuestion3'] = surveyQuestion3;
     map['SurveyQuestion4'] = surveyQuestion4;
-    map['QualificationStatus'] = qualificationStatus;
+    map['QualificationStatus'] = "002";
+
     map['FreelanceCertificateNumber'] = freelanceCertificateNumber;
     map['FreelanceCertificateExpiryDate'] = freelanceCertificateExpiryDate;
     if (district != null) {
