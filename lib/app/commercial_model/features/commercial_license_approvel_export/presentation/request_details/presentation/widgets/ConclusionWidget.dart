@@ -223,7 +223,7 @@ class ConditionItem extends StatelessWidget {
                       ..onTap = () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) =>  PrintPreview(values?.join(" ")??"" )),
+                          MaterialPageRoute(builder: (context) =>  PrintPreview(values?.join("\n")??"" )),
                         );
                         //Navigator.of(context).push(PrintPreview)
                        // NavigationService.navigatorKey.currentContext.push();

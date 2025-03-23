@@ -1,10 +1,15 @@
+import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:pdf/pdf.dart';
-import 'package:pdf/widgets.dart' as pw;
+
 import 'package:printing/printing.dart';
+
+
+import 'package:pdf/widgets.dart' as pw;
 
 import '../../../../../../../features/_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 
@@ -27,31 +32,15 @@ class PrintPreview extends StatelessWidget {
   }
 
   Future<Uint8List> _generatePdf(PdfPageFormat format, String title) async {
-    final pdf = pw.Document(version: PdfVersion.pdf_1_5, compress: true);
-    final font = await PdfGoogleFonts.iBMPlexSansArabicMedium();
-    final image = await imageFromAssetBundle('assets/images/splash-screen.gif');
-
-    pdf.addPage(
-      pw.Page(
-        pageFormat: format,
-        build: (context) {
-          return pw.Column(
-            children: [
-
-              pw.SizedBox(
-                width: double.infinity,
-
-                  child: pw.Text(title, style: pw.TextStyle(font: font,fontSize:23),textDirection: pw.TextDirection.ltr),
-
-              ),
-              // pw.SizedBox(height: 20),
-              // pw.Flexible(child: pw.Image(image)),
-            ],
-          );
-        },
-      ),
-    );
-
-    return pdf.save();
+    final pdf = pw.Document();
+    var data = await rootBundle.load("fonts/FrutigerLTArabic45Light.ttf");
+    final ttf = pw.Font.ttf(data.buffer.asByteData());
+    pdf.addPage(pw.Page(
+        pageFormat: PdfPageFormat.a4,
+        textDirection: pw.TextDirection.rtl,
+        build: (pw.Context context) {
+          return pw.Text(title, style: pw.TextStyle(font:ttf ,fontSize: 40)); // Center
+        }));
+    return await pdf.save();
   }
 }

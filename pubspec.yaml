@@ -245,6 +245,7 @@ dependencies:
 
 #  For Load the variable from local file  .env
   flutter_dotenv: ^5.2.1
+  pdf: ^3.11.3
 
 dependency_overrides:
   # for dio_http_cache
