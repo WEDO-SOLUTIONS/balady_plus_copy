@@ -54,6 +54,7 @@ class ChooseMuncipalityBloc
 
     on<GetObserverStatusEvent>(_etObserverStatus);
 
+
     add(GetObserverStatusEvent(
       // identityNumber: "1006966525",
       identityNumber: CommonProperties.userInfo?.idNo ?? "",

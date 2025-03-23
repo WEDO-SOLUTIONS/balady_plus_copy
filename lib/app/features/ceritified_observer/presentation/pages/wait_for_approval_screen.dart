@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/app.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,46 +21,51 @@ class _WaitForApprovalScreenState extends State<WaitForApprovalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       body: Expanded(
-        child: Column(
-          children: [
-            Expanded(
-              child: Container(
-                width: double.infinity,
-                margin: const EdgeInsets.symmetric(horizontal: 14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    SvgPicture.asset("assets/icons/svg/sucess.svg"),
-                    const CustomVerticalSpace(height: 12),
-                    CustomTextWidget(
-                      "waitingForApprovalMessage".tr(),
-                      fontSize: 16,
-                      fontWeight: AppFontWeight.medium,
-                      fontColor: AppColor.black500,
-                      height: 1.4,
-                      maxLines: 4,
-                    ),
-                    CustomVerticalSpace(height: 32),
-                  ],
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  margin: const EdgeInsets.symmetric(horizontal: 14),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.max,
+                    children: [
+                      SvgPicture.asset("assets/icons/svg/sucess.svg"),
+                      const CustomVerticalSpace(height: 12),
+                      CustomTextWidget(
+                        "waitingForApprovalMessage".tr(),
+                        fontSize: 16,
+                        fontWeight: AppFontWeight.medium,
+                        fontColor: AppColor.black500,
+                        height: 1.4,
+                        maxLines: 4,
+                        textAlign: TextAlign.center,
+                      ),
+                      CustomVerticalSpace(height: 32),
+                    ],
+                  ),
                 ),
               ),
-            ),
-            CustomElevatedButtonWidget(
-              btnColor: AppColor.primary800Light,
-              textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                color: AppColor.white,
-                fontWeight: FontWeight.w700,
-                fontSize: 16,
+              CustomElevatedButtonWidget(
+                btnColor: AppColor.primary800Light,
+                textStyle: AppStyle.elevatedButtonStyle.copyWith(
+                  color: AppColor.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 16,
+                ),
+                btnHeight: 56,
+                text: "start_training".tr(),
+                onPressed: () {},
               ),
-              btnHeight: 56,
-              text: "start_training".tr(),
-              onPressed: () {},
-            ),
-            const SizedBox(height: 20)
-          ],
+              const SizedBox(height: 20)
+            ],
+          ),
         ),
       ),
     );
