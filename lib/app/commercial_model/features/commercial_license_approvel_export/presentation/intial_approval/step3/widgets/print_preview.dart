@@ -39,7 +39,7 @@ class PrintPreview extends StatelessWidget {
         pageFormat: PdfPageFormat.a4,
         textDirection: pw.TextDirection.rtl,
         build: (pw.Context context) {
-          return pw.Text(title, style: pw.TextStyle(font:ttf ,fontSize: 30)); // Center
+          return pw.Text(title, style: pw.TextStyle(font:ttf ,fontSize: 28)); // Center
         }));
     return await pdf.save();
   }
