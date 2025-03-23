@@ -23,6 +23,7 @@ import '../../../../domain/entities/conclusion_section.dart';
 import '../../commercial_license/widgets/intial_approval_previous_next_button.dart';
 import '../bloc/step3_conclusion_cubit.dart';
 import '../widgets/calculator.dart';
+import '../widgets/print_preview.dart';
 
 
 class Step3ConclusionPage extends StatefulWidget {
@@ -56,9 +57,10 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: [
-          
-          
-          const SizedBox(height: 16),
+
+          SizedBox(height: 10,),
+          NotesWidget(notes: [state.workFlowName!], marginBottom: 0,showText: true,padding: 10,separatorHeight: 1,BgColor: AppColor.lightOrange100,),
+          SizedBox(height: 16,),
           CustomTextWidget(
             "municipalAdvisorRequirementsTitle".tr(),
             fontColor: AppColor.primary700Light,
@@ -79,9 +81,12 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
               child: Column(
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  if(state.workFlowName != null)
 
 
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),sectionName: "PreDefinedConditionsByTypeTitle".tr(),),
+
+
+                 ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstPreDefinedConditionsByType:state.issueCommercialConculsionEntity?.lstPreDefinedConditionsByType),sectionName: "PreDefinedConditionsByTypeTitle".tr(),),
 
                   ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "municipalAdvisorBoardsRequirements".tr(),value: [  "${RemoteConfig.webSiteUrl}/${translator.activeLanguageCode}/Services/DownloadUserGuide/218"]) ,sectionName: "municipalAdvisorBoardsRequirements".tr()),isUnderLine: true,sectionName: "",),
                   ExpansionSectionItem(term:ConclusionSection(sectionContent:ConSectionContent(label: "Viewmunicipalrequirements".tr(),value: [  "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010"]) ,sectionName: "Viewmunicipalrequirements".tr()),isUnderLine: true,sectionName: "",),
@@ -96,7 +101,7 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(engOffices:state.issueCommercialConculsionEntity?.engOffices),sectionName: "municipalAdvisorEngineeringOfficesTitle".tr(),),
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(commercialOffices:state.issueCommercialConculsionEntity?.commercialOffices),sectionName: "commercialOffice".tr(),),
                   OfficeExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstboardContractRequirementMessage:state.issueCommercialConculsionEntity?.lstboardContractRequirementMessage),sectionName: "boardContractRequirementMessage".tr(),),
-                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),sectionName: "fastFlowConditions".tr(),),
+                  ExpansionSectionItem(term: context.read<Step3ConclusionCubit>().getConclusionSection(lstFastFlowConditions:state.issueCommercialConculsionEntity?.lstFastFlowConditions),sectionName: "fastFlowConditions".tr(),showPrint: true,),
 
 
                   state.issueCommercialConculsionEntity?.calculateStandardFees != null?  CustomExpansionPanelWidget(
@@ -120,14 +125,7 @@ class _Step3ConclusionPageState extends State<Step3ConclusionPage> {
               ? const Center(child: CustomCircularLoadingWidget()):Container(),
 
 
-          if(state.workFlowName != null)
 
-              Column(
-                children: [
-                  SizedBox(height: 10,),
-                  NotesWidget(notes: [state.workFlowName!], marginBottom: 0,),
-                ],
-              ),
 
 
           IntialApprovalPreviousNextButtons(
@@ -157,8 +155,9 @@ class ExpansionSectionItem extends StatelessWidget {
   final String? note;
   final bool? isUnderLine;
   final String sectionName;
+  final bool? showPrint;
 
-  const ExpansionSectionItem({super.key, required this.term,required this.sectionName,this.note,this.isUnderLine});
+  const ExpansionSectionItem({super.key, required this.term,required this.sectionName,this.note,this.isUnderLine,this.showPrint});
 
   @override
   Widget build(BuildContext context) {
@@ -170,7 +169,7 @@ class ExpansionSectionItem extends StatelessWidget {
           leading: SvgPicture.asset(IconPath.serviceCardDesc),
           children: [
 
-            ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine:isUnderLine)]
+            ConditionItem(name: term?.sectionContent?.label, values:  term?.sectionContent?.value ?? [],note: note,isUnderLine:isUnderLine,showPrint: showPrint,)]
           ,
         ),
         const SizedBox(height: 15,),
@@ -210,7 +209,8 @@ class ConditionItem extends StatelessWidget {
   final String? note;
   final bool? isUnderLine;
   final List<String>? values;
-  const ConditionItem({super.key, this.name, this.values,this.note,this. isUnderLine});
+  final bool? showPrint;
+  const ConditionItem({super.key, this.name, this.values,this.note,this. isUnderLine,this.showPrint});
 
   @override
   Widget build(BuildContext context) {
@@ -228,17 +228,45 @@ class ConditionItem extends StatelessWidget {
 
 
           if (name != null && name!.isNotEmpty)
-            CustomTextWidget(
-              name!,
-              fontColor: AppColor.primary700Light,
-              fontSize: 12,
-              fontWeight: AppFontWeight.bold,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                CustomTextWidget(
+                  name!,
+                  fontColor: AppColor.primary700Light,
+                  fontSize: 12,
+                  fontWeight: AppFontWeight.bold,
+                ),
+                if(showPrint==true)
+                  Text.rich(
+                    TextSpan(
+                      text: "issue_commercial_print".tr(),
+                      style: AppStyle.lightTextStyle.copyWith(
+                          decoration: TextDecoration.underline,
+                          fontSize: 15,
+                          color: AppColor.blue
+                      ),
+                      recognizer: TapGestureRecognizer()
+                        ..onTap = () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) =>  PrintPreview(values?.join("\n")??"" )),
+                          );
+                          //Navigator.of(context).push(PrintPreview)
+                          // NavigationService.navigatorKey.currentContext.push();
+                        },
+                    ),
+                  )
+
+
+              ],
             ),
           if (name != null && name!.isNotEmpty)
             const CustomVerticalSpace(height: 4),
 
           ((values?.length ?? 0) <= 1)?
-            isUnderLine==true? Text.rich(
+            isUnderLine==true?
+            Text.rich(
               TextSpan(
                 text: name,
                 style: AppStyle.lightTextStyle.copyWith(
@@ -249,7 +277,7 @@ class ConditionItem extends StatelessWidget {
                 recognizer: TapGestureRecognizer()
                   ..onTap = () {
                     CommonFunctions.externalLaunch(
-                      "${RemoteConfig.baladyBaseUrl}/LicenseStandard/Default?sid=7010",
+                      values?[0],
 
                     );
                   },

@@ -194,25 +194,25 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: b77ab001eaf2657853fb3b7e281bcaf2066a87cbfea7b94f740277e2ddb5c9b5
+      sha256: "2db4936e45f77752557fb1a7f2062d0211c4969e7a4d0c88d24347072398ca47"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.46"
+    version: "0.0.49"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.1+327"
+    version: "3.30.1+334"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "992f88372b562827e09fcc7d464a65e59037da942dbf6220ca609d49d50ef06f"
+      sha256: "7a4b62c77741ac6b13049cc891aa757ee60be7c0bb919ff72b23e18d241066f9"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.5"
+    version: "3.2.7"
   battery_plus:
     dependency: transitive
     description:
@@ -973,18 +973,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_appauth
-      sha256: "84e8753fe20864da241892823ff7dbd252baa34f1649d6feb48118e8ae829ed1"
+      sha256: "61cc577797bbc66dce7f9d09b469a2755f06393d19473605e236bf2c58008957"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "9.0.0"
   flutter_appauth_platform_interface:
     dependency: transitive
     description:
       name: flutter_appauth_platform_interface
-      sha256: "0959824b401f3ee209c869734252bd5d4d4aab804b019c03815c56e3b9a4bc34"
+      sha256: fd2920b853d09741aff2e1178e044ea2ade0c87799cd8e63f094ab35b00fdf70
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.1"
+    version: "9.0.0"
   flutter_bloc:
     dependency: "direct main"
     description:
@@ -1294,26 +1294,26 @@ packages:
     dependency: transitive
     description:
       name: flutter_local_notifications
-      sha256: "49eeef364fddb71515bc78d5a8c51435a68bccd6e4d68e25a942c5e47761ae71"
+      sha256: ef41ae901e7529e52934feba19ed82827b11baa67336829564aeab3129460610
       url: "https://pub.dev"
     source: hosted
-    version: "17.2.3"
+    version: "18.0.1"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
       name: flutter_local_notifications_linux
-      sha256: c49bd06165cad9beeb79090b18cd1eb0296f4bf4b23b84426e37dd7c027fc3af
+      sha256: "8f685642876742c941b29c32030f6f4f6dacd0e4eaecb3efbb187d6a3812ca01"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "5.0.0"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
       name: flutter_local_notifications_platform_interface
-      sha256: "85f8d07fe708c1bdcf45037f2c0109753b26ae077e9d9e899d55971711a4ea66"
+      sha256: "6c5b83c86bf819cdb177a9247a3722067dd8cc6313827ce7c77a4b238a26fd52"
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "8.0.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -1762,6 +1762,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.14.2+300"
+  huawei_push:
+    dependency: transitive
+    description:
+      name: huawei_push
+      sha256: "6783d65050a6d4b93478c059a63f1341048cbedd1a7971803a934f4d26dc4873"
+      url: "https://pub.dev"
+    source: hosted
+    version: "6.12.0+303"
   image:
     dependency: "direct main"
     description:
@@ -2680,10 +2688,10 @@ packages:
     dependency: transitive
     description:
       name: screenshot
-      sha256: "455284ff1f5b911d94a43c25e1385485cf6b4f288293eba68f15dad711c7b81c"
+      sha256: "63817697a7835e6ce82add4228e15d233b74d42975c143ad8cfe07009fab866b"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.0"
+    version: "3.0.0"
   scrollable_positioned_list:
     dependency: "direct main"
     description:

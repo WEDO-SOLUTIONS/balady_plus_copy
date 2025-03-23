@@ -177,16 +177,14 @@ class RequestDetailsPage extends StatelessWidget {
                                                         ("do_you_want_to_cancel")
                                                             .tr(),
                                                         primaryBtn: () {
-                                                  Navigator.of(context)
-                                                      .pop(true);
+                                                  Navigator.of(context).pop(true);
                                                   bloc?.cancelIntialApproval();
                                                 });
 
                                                 break;
                                               case "print":
                                                 {
-
-                                                  CommonFunctions.openBaladyWebView("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber?isPrintAllowed=true");
+                                                  CommonFunctions.openBaldyWithRefreshCookie("${RemoteConfig.baladyCommercialUrl}/InitialApproval/Issuing/Edit/details/$hashingRequestNumber?isPrintAllowed=true");
                                                 }
 
                                                 break;

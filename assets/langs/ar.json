@@ -4237,8 +4237,6 @@
   "requestNotes":"الملاحظات على الطلب",
   "relatedCommercialRequestDetails": "تفاصيل طلب اصدار الرخصة التجارية",
   "Viewmunicipalrequirements": "عرض الاشتراطات البلدية",
-  "viewForPrint": "استعراض  للطباعة"
-
-
-
+  "viewForPrint": "استعراض  للطباعة",
+  "intial_approve_cancelled": "تم الغاء الطلب بنجاح"
 }

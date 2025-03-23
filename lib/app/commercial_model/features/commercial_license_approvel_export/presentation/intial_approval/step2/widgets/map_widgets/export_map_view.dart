@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import '../../../../../../../../core/utils/enums/bloc_status.dart';
 import '../../../../../../../../features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../bloc/step2_activity_data_export_cubit.dart';
 import 'map_address_card.dart';
@@ -28,9 +29,11 @@ class _ExportMapViewState extends State<ExportMapView> {
   bool mapLoading = true;
   bool locationLoading = false;
   LatLng? movedPosition;
+  bool isconfirm=false;
   @override
   void initState() {
     super.initState();
+    isconfirm = false;
   }
 
   @override
@@ -94,10 +97,15 @@ class _ExportMapViewState extends State<ExportMapView> {
                   if (widget.readOnly != true)
                     MapAddressCard(
                       address: state.gisResponse?.getFullAddress(),
-                      submitLocation: () {
-                        context
-                            .read<Step2ActivityDataExportCubit>()
-                            .add(GetGISDataExportEvent(params: state.location!));
+                      submitLocation: () async{
+
+                        await Future.delayed(const Duration(seconds: 2));
+                          context
+                              .read<Step2ActivityDataExportCubit>()
+                              .add(GetGISDataExportEvent(
+                              params: state.location!,
+                              gisResponse: state.gisResponse));
+
                       },
                       isValidLocation: true,
                     ),
@@ -111,15 +119,6 @@ class _ExportMapViewState extends State<ExportMapView> {
                  currentUserLocation: state.userLocation?.getLatLng(),
                 onSearchResult: (LatLng location) {
 
-
-                  // context.read<Step2ActivityDataExportCubit>().mapController.animateCamera(
-                  //       CameraUpdate.newCameraPosition(
-                  //         CameraPosition(
-                  //             target:
-                  //                 LatLng(location.latitude, location.longitude),
-                  //             zoom: 16.0),
-                  //       ),
-                  //     );
 
                   context.read<Step2ActivityDataExportCubit>().mapController.moveCamera(
                     CameraPositionMessage(

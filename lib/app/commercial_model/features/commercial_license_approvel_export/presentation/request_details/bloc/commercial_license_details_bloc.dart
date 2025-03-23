@@ -101,7 +101,7 @@ class CommercialLicenseDetailsBloc
 
         , (res) {
 
-      CommonFunctions.showSuccess("commerical_add_activity_sucessfull".tr());
+      CommonFunctions.showSuccess("intial_approve_cancelled".tr());
       emit(state.copyWith(status:BlocStatus.success ));
 
     });
