@@ -102,11 +102,8 @@ class RegisterObserverRequest {
   String? freelanceCertificateNumber;
   String? freelanceCertificateExpiryDate;
 
-
-
   ////////////
-   bool pledgeQuestion;
-
+  bool pledgeQuestion;
 
   RegisterObserverRequest copyWith({
     int? iDNumber,
@@ -175,19 +172,19 @@ class RegisterObserverRequest {
   Map<String, dynamic> toJson() {
     final map = <String, dynamic>{};
     map['IDNumber'] = iDNumber;
-    map['BirthDate'] = birthDate;
-    map['FirstName'] = firstName;
-    map['FatherName'] = fatherName;
-    map['GrandFatherName'] = grandFatherName;
-    map['FamilyName'] = familyName;
-    map['Gender'] = gender;
+    // map['BirthDate'] = birthDate;
+    // map['FirstName'] = firstName;
+    // map['FatherName'] = fatherName;
+    // map['GrandFatherName'] = grandFatherName;
+    // map['FamilyName'] = familyName;
+    // map['Gender'] = gender;
     map['ExternalEntityID'] = externalEntityID;
     map['MunicipalityID'] = municipality?.strId;
-    map['CityCode'] = city?.strId;
+    // map['CityCode'] = city?.strId;
     map['CityCode'] = city?.strId;
     map['IBAN'] = iban;
     map['BankName'] = bankInfo?.name;
-    map['BankID'] = bankInfo?.id;
+    map['BankID'] = (bankInfo?.id ?? 0) + 1;
     map['Email'] = email;
     map['MobileNumber'] = mobileNumber;
     map['AcademicQualification'] = academicQualification?.name;
@@ -199,9 +196,12 @@ class RegisterObserverRequest {
     map['QualificationStatus'] = qualificationStatus;
     map['FreelanceCertificateNumber'] = freelanceCertificateNumber;
     map['FreelanceCertificateExpiryDate'] = freelanceCertificateExpiryDate;
-    if (districtList != null) {
-      map['DistrictList'] = districtList?.map((v) => v.toJson()).toList();
+    if (district != null) {
+      map['DistrictList'] = [
+        {"DistrictID": district?.strId, "DistrictName": district?.name}
+      ];
     }
+
     return map;
   }
 }

@@ -1,7 +1,4 @@
 import 'package:app_popup_menu/app_popup_menu.dart';
-import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
-import 'package:balady_plus/app/core/utils/constants/app_style.dart';
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -98,32 +95,32 @@ class _PledgeQuestionScreenState extends State<PledgeQuestionScreen> {
                                 );
                           },
                         ),
-                        Text(
-                          "pledge_certified_observer".tr(),
-                          style: const TextStyle(
-                            color: Color(0xFF447F91),
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
+                        Flexible(
+                          fit: FlexFit.tight,
+                          child: Text(
+                            "pledge_certified_observer".tr(),
+                            style: const TextStyle(
+                              color: Color(0xFF447F91),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+
                           ),
                         ),
                       ],
                     ),
-                    CustomElevatedButtonWidget(
-                      btnColor: AppColor.primary800Light,
-                      textStyle: AppStyle.elevatedButtonStyle.copyWith(
-                        color: AppColor.white,
-                        fontWeight: FontWeight.w700,
-                        fontSize: 16,
+                    SizedBox(
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: state.requestData?.pledgeQuestion ?? false
+                            ? () {
+                                context
+                                    .read<ChooseMuncipalityBloc>()
+                                    .add(const GoToNextPageEvent());
+                              }
+                            : null,
+                        child: Text("next".tr()),
                       ),
-                      btnHeight: 56,
-                      text: "next".tr(),
-                      onPressed: () {
-                        if (state.requestData?.pledgeQuestion ?? false) {
-                          context
-                              .read<ChooseMuncipalityBloc>()
-                              .add(const GoToNextPageEvent());
-                        }
-                      },
                     ),
                   ],
                 ),

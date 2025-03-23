@@ -1,6 +1,10 @@
+import 'dart:async';
+
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/use_cases/register_observer.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/conclusion_screen.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/fill_info_screen.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/pledge_question_screen.dart';
 import 'package:flutter/cupertino.dart';
@@ -30,6 +34,7 @@ class ChooseMuncipalityBloc
   final GetMuncipalityList _getMuncipalityList;
   final GetCityList _getCityList;
   final GetDistrictList _getDistrictList;
+  final RegisterObserver _registerObserver;
 
   final CheckMuncipalityAcceptance _checkMuncipalityAcceptance;
 
@@ -41,6 +46,7 @@ class ChooseMuncipalityBloc
         _getCityList = GetCityList(repository: sl()),
         _getDistrictList = GetDistrictList(repository: sl()),
         _getMuncipalityList = GetMuncipalityList(repository: sl()),
+        _registerObserver = RegisterObserver(repository: sl()),
         _checkMuncipalityAcceptance =
             CheckMuncipalityAcceptance(repository: sl()),
         super(const LoadingApprovalState()) {
@@ -54,6 +60,10 @@ class ChooseMuncipalityBloc
     on<SetRequestDataEvent>(_setRequestDataHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
     on<GoToNextPageEvent>(_goToNextPageHandler);
+
+    /////////////////////////////////////////////
+
+    on<SubmitCertifiedObserverRequestEvent>(_submitCertifiedObserverRequest);
   }
 
   Future<void> _etObserverStatus(
@@ -78,6 +88,7 @@ class ChooseMuncipalityBloc
                 ChooseMuncipalityWidget(),
                 FillInfoScreen(),
                 PledgeQuestionScreen(),
+                ConclusionScreen(),
               ],
               observerStatusEntity: obj,
               requestData: RegisterObserverRequest(),
@@ -366,5 +377,25 @@ class ChooseMuncipalityBloc
 
   hideKeyboard() {
     FocusManager.instance.primaryFocus?.unfocus();
+  }
+
+  FutureOr<void> _submitCertifiedObserverRequest(
+      SubmitCertifiedObserverRequestEvent event,
+      Emitter<CertifiedObserverState> emit) async {
+    if (state is ChooseMuncipalityState) {
+      ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
+      emit(state.copyWith(status: BlocStatus.loading));
+      final failureOrSuccess = await _registerObserver(event.dataModel);
+      failureOrSuccess.fold(
+        (failure) {
+          print("object");
+          emit(state.copyWith(status: BlocStatus.failure));
+        },
+        (response) {
+          print("object");
+          emit(state.copyWith(status: BlocStatus.success));
+        },
+      );
+    }
   }
 }

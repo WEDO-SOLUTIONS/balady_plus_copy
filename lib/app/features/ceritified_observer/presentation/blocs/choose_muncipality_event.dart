@@ -13,6 +13,12 @@ class SetRequestDataEvent extends ChooseMuncipalityEvent {
   const SetRequestDataEvent({required this.dataModel});
 }
 
+class SubmitCertifiedObserverRequestEvent extends ChooseMuncipalityEvent {
+  final RegisterObserverRequest dataModel;
+
+  const SubmitCertifiedObserverRequestEvent({required this.dataModel});
+}
+
 class GoToNextPageEvent extends ChooseMuncipalityEvent {
   const GoToNextPageEvent();
 }

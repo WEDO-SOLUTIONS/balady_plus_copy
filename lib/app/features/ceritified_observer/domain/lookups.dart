@@ -68,6 +68,5 @@ enum PledgeQuestion {
   pledge11,
   pledge12,
   pledge13,
-  pledge14,
-  pledge15;
+  pledge14;
 }
