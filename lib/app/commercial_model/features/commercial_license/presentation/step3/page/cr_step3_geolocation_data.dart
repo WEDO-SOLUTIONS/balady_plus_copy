@@ -31,8 +31,9 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
   Widget build(BuildContext context) {
     return BlocConsumer<MapBloc, MapState>(listener: (context, state) {
       if (state.status == BlocStatus.failure) {
-        CommonFunctions.showError(state.errorMessage ?? "");
+        CommonFunctions.showError(state.errorMessage ?? "",true);
       }
+
 
     }, builder: (context, state) {
       return Stack(

@@ -1010,7 +1010,8 @@ class CommonFunctions {
 
   static showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
-      if (error.contains("https")) {
+
+      if (error.contains("https")||error.toLowerCase().contains("momra.gov.sa")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
             NavigationService.navigatorKey.currentContext!,
             error,
