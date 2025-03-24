@@ -59,6 +59,45 @@ class SaudiPassRepository {
 
     return OfferDetailsBody.fromJson(response.data).dataOrThrow();
   }
+
+  ({String url, Map<String, String> headers}) getPromotionsImagesUri({required String imageId}) {
+    final options = Options();
+
+    final requestOptions = options.compose(
+      _dio.options,
+      '/promotions/images/$imageId',
+      sourceStackTrace: StackTrace.current,
+    );
+
+    final requestOptionsIntercepted = _RequestInterceptorHandler(_dio).combine(requestOptions);
+
+    final requestHeaders = requestOptionsIntercepted.headers..removeWhere((key, value) => value is! String);
+
+    return (url: requestOptionsIntercepted.uri.toString(), headers: requestHeaders.cast());
+  }
 }
 
 enum Sort { asc, desc }
+
+class _RequestInterceptorHandler extends RequestInterceptorHandler {
+  final Dio dio;
+
+  _RequestInterceptorHandler(this.dio);
+
+  late RequestOptions effectiveRequestOptions;
+
+  @override
+  void next(RequestOptions requestOptions) => effectiveRequestOptions = requestOptions;
+
+  RequestOptions combine(RequestOptions requestOptions) {
+    effectiveRequestOptions = requestOptions;
+
+    final iterator = dio.interceptors.iterator;
+
+    while (iterator.moveNext()) {
+      iterator.current.onRequest(requestOptions, this);
+    }
+
+    return effectiveRequestOptions;
+  }
+}
