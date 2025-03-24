@@ -20,7 +20,7 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
   });
 
   @override
-  Future<Either<Failure, ResponseBodyModel<ObserverStatusEntity>>> getObserverStatus(String identityNumber) async {
+  Future<Either<Failure, ObserverStatusEntity>> getObserverStatus(String identityNumber) async {
     try {
 
       final data = await remoteDataSource.getObserverStatus(identityNumber);

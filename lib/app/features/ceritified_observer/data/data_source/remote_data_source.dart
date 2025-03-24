@@ -16,8 +16,7 @@ import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import '../../domain/entity/register_observer_request.dart';
 
 abstract class CertifiedObserverRemoteDataSource {
-  Future<ResponseBodyModel<ObserverStatusEntity>> getObserverStatus(
-      String identityNumber);
+  Future<ObserverStatusEntity> getObserverStatus(String identityNumber);
 
   Future<ResponseBodyModel<List<MunicipalityLookUp>>> getMuncipalityList();
 
@@ -41,7 +40,7 @@ class CertifiedObserverRemoteDataSourceImplementation
   CertifiedObserverRemoteDataSourceImplementation({required this.webService});
 
   @override
-  Future<ResponseBodyModel<ObserverStatusEntity>> getObserverStatus(
+  Future<ObserverStatusEntity> getObserverStatus(
       String identityNumber) async {
     var response;
     try {
@@ -52,11 +51,11 @@ class CertifiedObserverRemoteDataSourceImplementation
       var parsedResult = data != null
           ? ObserverStatusEntity.fromJson(data["data"]["result"])
           : null;
-      final decodedResponse = ResponseBodyModel<ObserverStatusEntity>.fromMap(
-          response.data,
-          parsedResult: parsedResult);
 
-      return decodedResponse.toFuture();
+      if(parsedResult != null) {
+        return parsedResult;
+      }
+      throw ServerException("no_data".tr());
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

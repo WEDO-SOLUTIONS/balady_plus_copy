@@ -8,7 +8,7 @@ import '../entity/observer_status_entity.dart';
 import '../entity/register_observer_request.dart';
 
 abstract class CertifiedObserverRepository {
-  Future<Either<Failure, ResponseBodyModel<ObserverStatusEntity>>>
+  Future<Either<Failure, ObserverStatusEntity>>
       getObserverStatus(String identityNumber);
 
   Future<Either<Failure, ResponseBodyModel<List<MunicipalityLookUp>>>>

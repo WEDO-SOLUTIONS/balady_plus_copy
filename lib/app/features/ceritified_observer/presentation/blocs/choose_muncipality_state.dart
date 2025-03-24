@@ -202,3 +202,12 @@ class WaitingApprovalState extends CertifiedObserverState {
     );
   }
 }
+class NoHaveFreelanceCertificate extends CertifiedObserverState {
+
+  const NoHaveFreelanceCertificate();
+
+  @override
+  NoHaveFreelanceCertificate copyWith() {
+    return const NoHaveFreelanceCertificate();
+  }
+}

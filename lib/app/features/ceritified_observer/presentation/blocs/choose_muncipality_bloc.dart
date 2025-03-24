@@ -54,7 +54,6 @@ class ChooseMuncipalityBloc
 
     on<GetObserverStatusEvent>(_etObserverStatus);
 
-
     add(GetObserverStatusEvent(
       // identityNumber: "1006966525",
       identityNumber: CommonProperties.userInfo?.idNo ?? "",
@@ -81,9 +80,8 @@ class ChooseMuncipalityBloc
           FailureApprovalState(failure: failure.toString()),
         );
       },
-      (response) {
-        ObserverStatusEntity obj =
-            (response.data!.result) as ObserverStatusEntity;
+      (obj) {
+        // check if the user is registered observer or not
         if (!obj.isCertifiedObserver) {
           emitter(
             ChooseMuncipalityState(
@@ -110,7 +108,20 @@ class ChooseMuncipalityBloc
           getBanksList();
           getMuncipalityList();
         } else {
-          if (response.data!.result?.qualification == "Waiting for approval") {
+          // Hear The User is finished form the training and is Certified Observer
+          if (obj.qualification == "Qualified") {
+            /// TODO : hear check if the user have the Freelance certificate
+            if(obj.freelanceCertificateNumber != null) {
+              /// TODO : if have show need check expiry date and states of the certificate
+            } else {
+              /// TODO : if not have show show button create new Freelance certificate
+              emitter(
+                const NoHaveFreelanceCertificate(),
+              );
+            }
+          } else {
+            //response.data!.result?.qualification == "Waiting for approval" ||
+            //response.data!.result?.qualification == "Not qualified"
             emitter(
               WaitingApprovalState(observerStatusEntity: obj),
             );
