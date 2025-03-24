@@ -174,15 +174,18 @@ class PoiPhotoCardSliver extends ConsumerWidget {
         children: [
           if (photos.hasValue && photos.requireValue.items.isEmpty)
             SliverToBoxAdapter(
-              child: FeedbackBannerCard(
-                imageAssetName: 'add_photo.png',
-                title: context.l10n.addPhotoPOICardTitle,
-                subtitle: context.l10n.addPhotosDescription,
-                gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
-                onTap: () => context.router.push(
-                  QuickFeedbackRoute(
-                    type: QuickFeedbackType.addPhoto,
-                    params: FeedbackObjectIdParams(objectId),
+              child: Padding(
+                padding: const EdgeInsets.only(top: Spacing.$4x),
+                child: FeedbackBannerCard(
+                  imageAssetName: 'add_photo.png',
+                  title: context.l10n.addPhotoPOICardTitle,
+                  subtitle: context.l10n.addPhotosDescription,
+                  gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
+                  onTap: () => context.router.push(
+                    QuickFeedbackRoute(
+                      type: QuickFeedbackType.addPhoto,
+                      params: FeedbackObjectIdParams(objectId),
+                    ),
                   ),
                 ),
               ),
