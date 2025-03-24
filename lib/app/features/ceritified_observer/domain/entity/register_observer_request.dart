@@ -171,7 +171,7 @@ class RegisterObserverRequest {
     map['CityCode'] = city?.strId;
     map['IBAN'] = iban;
     map['BankName'] = bankInfo?.name;
-    map['BankID'] = (bankInfo?.id ?? 0) + 1;
+    map['BankID'] = bankInfo?.id;
     map['Email'] = email;
     map['MobileNumber'] = mobileNumber;
     map['AcademicQualification'] = academicQualification?.name;
@@ -189,10 +189,6 @@ class RegisterObserverRequest {
 
     ////////////
     map['ExternalEntityID'] = "AGC-0032";
-
-    map['QualificationStatus'] = "";
-    map['FreelanceCertificateNumber'] = "";
-    map['FreelanceCertificateExpiryDate'] = "";
 
     return map;
   }
