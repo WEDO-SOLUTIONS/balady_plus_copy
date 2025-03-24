@@ -18,7 +18,7 @@ class VerifyingKeyInterceptor extends QueuedInterceptorsWrapper {
         headers: {...options.headers, 'verifyingKEY': verifyingKEY},
       );
 
-      handler.next(modifiedOptions);
+      return handler.next(modifiedOptions);
     }
 
     handler.next(options);
