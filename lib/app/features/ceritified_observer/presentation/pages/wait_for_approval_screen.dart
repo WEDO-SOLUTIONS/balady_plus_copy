@@ -1,4 +1,4 @@
-import 'package:balady_plus/app/app.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -10,14 +10,9 @@ import '../../../../core/utils/constants/app_style.dart';
 import '../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 
-class WaitForApprovalScreen extends StatefulWidget {
+class WaitForApprovalScreen extends StatelessWidget {
   const WaitForApprovalScreen({Key? key}) : super(key: key);
 
-  @override
-  State<WaitForApprovalScreen> createState() => _WaitForApprovalScreenState();
-}
-
-class _WaitForApprovalScreenState extends State<WaitForApprovalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,7 +56,11 @@ class _WaitForApprovalScreenState extends State<WaitForApprovalScreen> {
                 ),
                 btnHeight: 56,
                 text: "start_training".tr(),
-                onPressed: () {},
+                onPressed: () {
+                  CommonFunctions.openBaladyWebView(
+                    'https://stgacademyapi.momrah.gov.sa/call-back',
+                  );
+                },
               ),
               const SizedBox(height: 20)
             ],
