@@ -202,12 +202,12 @@ class WaitingApprovalState extends CertifiedObserverState {
     );
   }
 }
-class NoHaveFreelanceCertificate extends CertifiedObserverState {
+class NoHaveFreelanceCertificateState extends CertifiedObserverState {
 
-  const NoHaveFreelanceCertificate();
+  const NoHaveFreelanceCertificateState();
 
   @override
-  NoHaveFreelanceCertificate copyWith() {
-    return const NoHaveFreelanceCertificate();
+  NoHaveFreelanceCertificateState copyWith() {
+    return const NoHaveFreelanceCertificateState();
   }
 }

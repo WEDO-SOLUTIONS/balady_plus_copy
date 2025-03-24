@@ -116,7 +116,7 @@ class ChooseMuncipalityBloc
             } else {
               /// TODO : if not have show show button create new Freelance certificate
               emitter(
-                const NoHaveFreelanceCertificate(),
+                const NoHaveFreelanceCertificateState(),
               );
             }
           } else {
