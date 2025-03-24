@@ -15,30 +15,34 @@ class SaudiPassRepository {
   }
 
   Future<Promotions> getPromotions({
-    required City city,
+    required Set<City> cities,
     int pageNumber = 0,
     int pageSize = 10,
-    String? licenseId,
+    Set<String> licenseIds = const {},
     bool? applyPreference,
     String? rubricId,
-    RecommendedType? recommendedType,
+    Set<RecommendedType> recommendedTypes = const {},
     Sort? sort,
-    Category? category,
+    Set<Category> categories = const {},
     Sort? recencySort,
     Sort? ratingSort,
     Sort? discountSort,
     bool? favorites,
   }) async {
+    if (cities.isEmpty) {
+      throw Exception('Cities MUST NOT be empty');
+    }
+
     final queryParameters = <String, Object?>{
-      'city-id': city.id,
+      'city-id': [for (final city in cities) city.id],
       'page-no': pageNumber + 1,
       'page-size': pageSize,
-      'license-id': licenseId,
+      'license-id': [...licenseIds],
       'apply-pref': applyPreference,
       'rubric-id': rubricId,
-      'recommended-type': recommendedType?.id,
+      'recommended-type': [for (final recommendedType in recommendedTypes) recommendedType.id],
       'sort': sort?.name,
-      'category-id': category?.id,
+      'category-id': [for (final category in categories) category.id],
       'recency': recencySort?.name,
       'rating': ratingSort?.name,
       'discount': discountSort?.name,
