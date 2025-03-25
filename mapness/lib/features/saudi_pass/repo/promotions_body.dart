@@ -74,6 +74,7 @@ class Offer {
   final String crNumber;
   final bool favorite;
   final bool redeemed;
+  final TypeDetails typeDetails;
 
   Offer({
     required this.id,
@@ -95,9 +96,22 @@ class Offer {
     required this.crNumber,
     required this.favorite,
     required this.redeemed,
+    required this.typeDetails,
   });
 
   factory Offer.fromJson(Map<String, dynamic> json) => _$OfferFromJson(json);
+
+  String? get barcode => switch (type.id) {
+        TypeDetails.vouchers => typeDetails.number,
+        TypeDetails.coupons => typeDetails.code,
+        _ => null,
+      };
+
+  num? get discount => switch (type.id) {
+        TypeDetails.vouchers => typeDetails.amount,
+        TypeDetails.coupons => typeDetails.ratio,
+        _ => null,
+      };
 }
 
 @noRenameNoToJson
@@ -108,4 +122,36 @@ class Location {
   const Location({required this.latitude, required this.longitude});
 
   factory Location.fromJson(Map<String, dynamic> json) => _$LocationFromJson(json);
+}
+
+/// Promotion Type Details (Can be coupon or vouchers) [OfferType.id]
+@noRenameNoToJson
+class TypeDetails {
+  static const vouchers = 'vouchers';
+  static const coupons = 'coupons';
+
+  /// Promotion Amount (Vouchers)
+  final num? amount;
+
+  /// Promotion Number (Vouchers)
+  final String? number;
+
+  /// Promotion discount ratio (Coupon)
+  final num? ratio;
+
+  /// Promotion max discount ratio (Coupon)
+  final num? maxRatio;
+
+  /// Promotion discount code (Coupon)
+  final String? code;
+
+  TypeDetails({
+    this.amount,
+    this.number,
+    this.ratio,
+    this.maxRatio,
+    this.code,
+  });
+
+  factory TypeDetails.fromJson(Map<String, dynamic> json) => _$TypeDetailsFromJson(json);
 }
