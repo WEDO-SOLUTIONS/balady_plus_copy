@@ -5,31 +5,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mapness/pages/navigator_settings/pages/dark_map_page/dark_map_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart';
 
 @RoutePage()
 class DarkMapPage extends StatelessWidget {
   const DarkMapPage({super.key});
 
   @override
-  Widget build(BuildContext context) => PathNavOrientationRedirectWrapper(
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.dark,
-          child: Scaffold(
-            backgroundColor: context.colorsV2.backgroundSurface4,
-            appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-              title: context.l10n.darkMap,
-              textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                color: context.colorsV2.foregroundDefault,
-              ),
-              leading: ActionModel(
-                onPressed: () => context.router.popForced(),
-                icon: SystemIcons.arrowCornerLeftLarge,
-              ),
+  Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Scaffold(
+          backgroundColor: context.colorsV2.backgroundSurface4,
+          appBar: BaladyTopBar.iconAndText(
+            systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+            title: context.l10n.darkMap,
+            textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
+              color: context.colorsV2.foregroundDefault,
             ),
-            body: const DarkMapPageContent(),
+            leading: ActionModel(
+              onPressed: () => context.router.popForced(),
+              icon: SystemIcons.arrowCornerLeftLarge,
+            ),
           ),
+          body: const SafeArea(child: DarkMapPageContent()),
         ),
       );
 }

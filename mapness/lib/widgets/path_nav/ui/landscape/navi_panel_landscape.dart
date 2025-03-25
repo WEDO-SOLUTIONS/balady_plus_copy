@@ -7,7 +7,6 @@ import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/widgets/path_nav/ui/landscape/base_landscape_bottom_sheet.dart';
 
 class NaviPanelLandscape extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
@@ -46,6 +45,8 @@ class NaviPanelLandscape extends ConsumerStatefulWidget {
 }
 
 class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
+  final _landscapeWidth = 370.0;
+
   @override
   void initState() {
     super.initState();
@@ -62,7 +63,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
   Widget build(BuildContext context) => SafeArea(
         bottom: false,
         child: SizedBox(
-          width: landscapeWidth,
+          width: _landscapeWidth,
           child: Directionality(
             textDirection: ref.watch(uiDirectionProvider),
             child: ValueListenableBuilder<PathNavState>(
