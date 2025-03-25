@@ -1,8 +1,17 @@
 diff --git a/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart b/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart
-index 37088a42df..439a1c1175 100644
+index 37088a42df..c80d7a0e9d 100644
 --- a/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart
 +++ b/lib/app/features/bottom_navigation/presentation/pages/bottom_navigation_page.dart
-@@ -29,13 +29,13 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
+@@ -17,6 +17,8 @@ import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
+ import 'mapness_page.dart';
+ 
+ import 'package:balady_authorization/auth_package.dart';
++import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
++import 'package:balady_authorization/src/utils/injection/injection_container.dart';
+ 
+ class BottomNavigationPage extends StatefulWidget {
+   const BottomNavigationPage({super.key});
+@@ -29,13 +31,14 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
    @override
    void initState() {
      super.initState();
@@ -13,6 +22,7 @@ index 37088a42df..439a1c1175 100644
 -        );
 -      },
 -    );
++    slAuthentication<AuthenticationBloc>().add(CheckLoginAuthentication());
 +    // WidgetsBinding.instance.addPostFrameCallback(
 +    //   (_) {
 +    //     Navigator.of(context).pushNamed(
