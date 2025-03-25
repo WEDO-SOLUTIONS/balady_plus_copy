@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
@@ -31,6 +32,11 @@ abstract class CertifiedObserverRemoteDataSource {
 
   Future<Map<String, dynamic>> getFreelancerCertificateStatus(
       String certificateNumber);
+
+  Future<Map<String, dynamic>> createNewFreelancerCertificate(
+      String certificateNumber);
+
+  Future<Map<String, dynamic>> registerFreelancerCertificate();
 }
 
 class CertifiedObserverRemoteDataSourceImplementation
@@ -40,8 +46,7 @@ class CertifiedObserverRemoteDataSourceImplementation
   CertifiedObserverRemoteDataSourceImplementation({required this.webService});
 
   @override
-  Future<ObserverStatusEntity> getObserverStatus(
-      String identityNumber) async {
+  Future<ObserverStatusEntity> getObserverStatus(String identityNumber) async {
     var response;
     try {
       response =
@@ -52,7 +57,7 @@ class CertifiedObserverRemoteDataSourceImplementation
           ? ObserverStatusEntity.fromJson(data["data"]["result"])
           : null;
 
-      if(parsedResult != null) {
+      if (parsedResult != null) {
         return parsedResult;
       }
       throw ServerException("no_data".tr());
@@ -205,8 +210,7 @@ class CertifiedObserverRemoteDataSourceImplementation
   }
 
   @override
-  Future<ResponseBodyModel<List<CityEntity>>> getCityList(
-      String municipalityId) async {
+  Future<ResponseBodyModel<List<CityEntity>>> getCityList(String municipalityId) async {
     var response;
     try {
       response =
@@ -321,10 +325,18 @@ class CertifiedObserverRemoteDataSourceImplementation
   Future<bool> registrationObserver(RegisterObserverRequest request) async {
     var response;
     try {
-      response = await webService.dio
-          .post(ApiUrl.registerObserver, data: request.toJson());
 
-      return response.data["data"] != null ? true : false;
+
+      // Map<String,dynamic> isRegister = await registerFreelancerCertificate();
+      //
+      //
+      // print(isRegister["status"]);
+      response = await webService.dio.post(
+        ApiUrl.registerObserver,
+        data: request.toJson(),
+      );
+
+      return  true;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -364,8 +376,7 @@ class CertifiedObserverRemoteDataSourceImplementation
   }
 
   @override
-  Future<Map<String, dynamic>> getFreelancerCertificateStatus(
-      String certificateNumber) async {
+  Future<Map<String, dynamic>> getFreelancerCertificateStatus(String certificateNumber) async {
     var response;
     try {
       response = await webService.dio.post(
@@ -374,7 +385,114 @@ class CertifiedObserverRemoteDataSourceImplementation
           "certificateNumber": certificateNumber,
         },
       );
+      return response.data["data"];
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
 
+  @override
+  Future<Map<String, dynamic>> registerFreelancerCertificate() async {
+    var response;
+    try {
+      response = await webService.dio.post(
+        ApiUrl.registerNewFreelancer,
+        data: {
+          "fullNameEn": CommonProperties.userInfo?.enName,
+          "mobileNumber": CommonProperties.userInfo?.phone,
+          "nationalId": CommonProperties.userInfo?.idNo,
+          "dateOfBirth": CommonProperties.userInfo
+              ?.getHijriBirthDate()
+              .replaceAll('/', "-"), //"1394-02-04"
+        },
+      );
+      return response.data["data"]["result"];
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> createNewFreelancerCertificate(
+      String certificateNumber) async {
+    var response;
+    try {
+      response = await webService.dio.post(
+        ApiUrl.createNewFreelancerCertificate,
+        data: {
+          "nationalId": CommonProperties.userInfo?.idNo,
+          // whats the specialityCode for Certified Observer
+          "specialityCode": "561050",
+          "issueAt": DateTime.now().toString(),
+          "expiryDate": DateTime.now().add(const Duration(days: 365)).toString(),
+        },
+      );
       return response.data["data"];
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

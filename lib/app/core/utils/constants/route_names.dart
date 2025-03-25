@@ -388,6 +388,8 @@ class RouteName {
 
   static const Observer_Choose_Municipality = 'Observer_Choose_Municipality';
 
+  static String trainingScreen = "trainingScreen";
+
 }
 
 class EtmamRoutesNames {

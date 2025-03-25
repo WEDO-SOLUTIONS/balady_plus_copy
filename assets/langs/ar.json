@@ -4209,8 +4209,8 @@
   "service_lase_teen": "خدمة",
   "invalid_license":"رقم الرخصة غير صحيح",
   "enter_license_id":"ادخل رقم الرخصة",
-  "waitingForApprovalMessage": "عزيزي المستخدم تم استلام طلبك بنجاح، يعتمد قبول طلبك بشكل نهائي على اجتيازك مرحلة التدريب للدخول لمنصة التدريب:",
- "start_training" :"بدء التدريب",
+  "waitingForApprovalMessage": "عزيزي المستخدم تم استلام طلبك بنجاح، يعتمد قبول طلبك بشكل نهائي على اجتيازك مرحلة التدريب للدخول لمنصة التدريب",
+  "start_training" :"بدء التدريب",
   "certified_observer": "الراصد المعتمد",
   "choose_muncipality": "يجب تحديد الأمانة التي تود العمل بها",
   "muncipality_not_accept": "عفوا، غير متاح حاليا التسجيل كراصد معتمد جديد في الأمانة التي تم اختيارها",
@@ -4300,6 +4300,13 @@
   "pledge13_description": "أتعهد بمراجعة البلاغات التي أقدمها لضمان خلوها من الأخطاء أو المغالطات، وأدرك أن تقديم بلاغات خاطئة قد يؤدي إلى إيقاف حسابي.",
   "pledge14_title" : "الالتزام بالشروط والإجراءات",
   "pledge14_description": " أتعهد بالالتزام بكافة الشروط والإجراءات التي وضعتها الوزارة للحصول على المكافأة، وأدرك أن عدم الامتثال لهذه الشروط قد يؤدي إلى فقدان حقي في المطالبة بالمكافأة.",
-  "pledge_certified_observer": "أتعهد بأن كافة المعلومات المقدمة صحيحة ومحدثة، كما أتعهد بأن التزم بكافة تفاصيل التعهد"
+  "pledge_certified_observer": "أتعهد بأن كافة المعلومات المقدمة صحيحة ومحدثة، كما أتعهد بأن التزم بكافة تفاصيل التعهد",
 
+
+  "no_have_freelancer_certificate_certified_observer": "عزيزي المستخدم يجب إصدار شهادة عمل حر لبدأ رحلة الرقابة كراصد معتمد",
+  "issue_new_freelancer_certificate_certified_observer": "إصدار شهادة العمل الحر كراصد معتمد",
+  "expired_freelancer_certificate_certified_observer": "عزيزي المستخدم لقد انتهت صلاحية شهادة العمل الحر كراصد معتمد، يلزم تجديد الشهادة لاستكمال عملية الرقابة",
+  "renew_freelancer_certificate_certified_observer": "تجديد شهادة العمل الحر كراصد معتمد",
+  "states_not_active_freelancer_certificate_certified_observer": "عفوا، حالة شهادة العمل الحر كراصد معتمد غير مفعلة",
+  "reissue_new_freelancer_certificate_certified_observer": "إصدار شهادة جديدة"
 }

@@ -640,6 +640,8 @@ class ApiUrl {
 
 
   static  String registerObserver = 'v2/cis-certified-observers-services/external-inspector/registration';
+  static  String registerNewFreelancer = 'v1/freelancer-services/register';
+  static  String createNewFreelancerCertificate = 'v1/freelancer-services/certificate';
   static  String freelancerCertificateStatus = 'v1/freelancer-services/certificate-status';
 
 

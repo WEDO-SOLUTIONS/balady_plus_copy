@@ -4550,7 +4550,16 @@
   "pledge14_title" : "",
   "pledge14_description": "",
 
-  "pledge_certified_observer": ""
+  "pledge_certified_observer": "",
+
+
+
+  "no_have_freelancer_certificate_certified_observer": "عزيزي المستخدم يجب إصدار شهادة عمل حر لبدأ رحلة الرقابة كراصد معتمد",
+  "issue_new_freelancer_certificate_certified_observer": "Issue a new freelancer certificate as an certified observer",
+  "expired_freelancer_certificate_certified_observer": "عزيزي المستخدم لقد انتهت صلاحية شهادة العمل الحر كراصد معتمد، يلزم تجديد الشهادة لاستكمال عملية الرقابة",
+  "renew_freelancer_certificate_certified_observer": "Renew the freelance certificate as an certified observer",
+  "states_not_active_freelancer_certificate_certified_observer": "عفوا، حالة شهادة العمل الحر كراصد معتمد غير مفعلة",
+  "reissue_new_freelancer_certificate_certified_observer": "Issue a new freelancer certificate as an certified observer"
 
 
 }
