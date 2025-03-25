@@ -30,15 +30,6 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
 }
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform);
-
-  await FirebaseMessaging.instance
-      .setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
 
   if (message.data['source'] == 'Insider') {
     FlutterInsider.Instance.handleNotification(
@@ -136,6 +127,7 @@ class NotificationService {
     }
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
+
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: true,
@@ -185,32 +177,62 @@ class NotificationService {
     });
 
 
-    Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-      await Firebase.initializeApp();
-      print("Background Message Received: ${message.notification?.title}");
 
-    }
 
     // Register Background Handler
-    FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
-
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
 
       if (message.data['source'] == 'Insider') {
         FlutterInsider.Instance.handleNotification(
-            <String, dynamic> {
+            <String, dynamic>{
               "data": message.data
             }
         );
+      }
+      else
+        {
 
+        RemoteNotification? notification = message.notification;
+
+        AndroidNotification? android = message.notification?.android;
+
+        if (notification != null && android != null) {
+
+          _notifications.show(
+
+              notification.hashCode,
+
+              notification.title,
+
+              notification.body,
+
+              NotificationDetails(
+
+                android: AndroidNotificationDetails(
+
+                  CommonFunctions.generateUUID(),
+
+                  "Notification",
+
+                  channelDescription: "Notification",
+                  playSound: true,
+                  icon: 'mipmap/ic_launcher',
+
+                ),
+
+              ));
+
+        }
 
 
     }
-       FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-     handleMessage(message);
-    });
 
   });
 
-    }
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      handleMessage(message);
+    });
+
+
+  }
 }
