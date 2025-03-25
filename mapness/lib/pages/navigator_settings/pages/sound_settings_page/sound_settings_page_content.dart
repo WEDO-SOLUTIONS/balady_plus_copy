@@ -80,10 +80,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                   ),
                 ),
                 ContentRow(
-                  onTap: () => context.router.push(switch (MediaQuery.orientationOf(context)) {
-                    Orientation.portrait => const VoiceSettingsRoute(),
-                    Orientation.landscape => const VoiceLandscapeRoute(),
-                  }),
+                  onTap: () => context.router.push(const VoiceSettingsRoute()),
                   options: ContentRowOptions(
                     wrapperColor: color.surfaceBaseTertiary,
                     wrapperEnabled: true,
