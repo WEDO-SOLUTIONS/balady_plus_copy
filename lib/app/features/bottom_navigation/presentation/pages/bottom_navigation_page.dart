@@ -17,6 +17,8 @@ import '../../bottom_navigation_exports.dart' show BottomNavBarCubit;
 import 'mapness_page.dart';
 
 import 'package:balady_authorization/auth_package.dart';
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/utils/injection/injection_container.dart';
 
 class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({super.key});
@@ -29,13 +31,14 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        Navigator.of(context).pushNamed(
-          RouteName.splashScreen,
-        );
-      },
-    );
+    slAuthentication<AuthenticationBloc>().add(CheckLoginAuthentication());
+    // WidgetsBinding.instance.addPostFrameCallback(
+    //   (_) {
+    //     Navigator.of(context).pushNamed(
+    //       RouteName.splashScreen,
+    //     );
+    //   },
+    // );
   }
 
   @override
