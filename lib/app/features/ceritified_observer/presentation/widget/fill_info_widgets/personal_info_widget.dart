@@ -26,24 +26,6 @@ class PersonalInfoWidget extends StatelessWidget {
       title: 'vd_user_info'.tr(),
       expanded: Column(
         children: [
-          const SizedBox(height: 20),
-          CustomTextFieldWidget(
-            textFieldVerticalPadding: 14,
-            label: "mobile_number".tr(),
-            hintText: "mobile_number".tr(),
-            controller: state.phoneController,
-            onChanged: (text) {
-              context.read<ChooseMuncipalityBloc>().add(
-                SetRequestDataEvent(
-                  dataModel: state.requestData!.copyWith(
-                    mobileNumber: text,
-                  ),
-                ),
-              );
-            },
-            onValidate: Helpers.validateMobile,
-          ),
-          const SizedBox(height: 12),
           CustomTextFieldWidget(
             textFieldVerticalPadding: 14,
             label: "email".tr(),

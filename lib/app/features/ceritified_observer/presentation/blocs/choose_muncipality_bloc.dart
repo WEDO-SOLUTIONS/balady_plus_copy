@@ -103,9 +103,6 @@ class ChooseMuncipalityBloc
               ),
               bankIbanController: TextEditingController(),
               emailController: TextEditingController(),
-              phoneController: TextEditingController(
-                text: CommonProperties.userInfo?.phone ?? "",
-              ),
             ),
           );
           getMaritalStatusList();

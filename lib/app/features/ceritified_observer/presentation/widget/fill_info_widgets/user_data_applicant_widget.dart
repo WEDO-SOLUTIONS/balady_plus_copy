@@ -29,6 +29,16 @@ class UserDataApplicantWidget extends StatelessWidget {
         ),
         ReadOnlyField(
           hieght: 55,
+          title: "mobile_number".tr(),
+          subTitle: CommonProperties.userInfo?.phone,
+          subTitleColor: AppColor.grey1000.withOpacity(0.5),
+          decoration: BoxDecoration(
+            color: AppColor.blackModern300Light.withOpacity(0.4),
+            borderRadius: BorderRadius.circular(8),
+          ),
+        ),
+        ReadOnlyField(
+          hieght: 55,
           title: "cemetry_dob_hijri".tr(),
           subTitle: CommonProperties.userInfo?.getHijriBirthDate(),
           subTitleColor: AppColor.grey1000.withOpacity(0.5),
@@ -56,7 +66,7 @@ class UserDataApplicantWidget extends StatelessWidget {
             color: AppColor.blackModern300Light.withOpacity(0.4),
             borderRadius: BorderRadius.circular(8),
           ),
-        )
+        ),
       ],
     );
   }
