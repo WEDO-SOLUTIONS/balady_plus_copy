@@ -643,6 +643,7 @@ class ApiUrl {
   static  String registerNewFreelancer = 'v1/freelancer-services/register';
   static  String createNewFreelancerCertificate = 'v1/freelancer-services/certificate';
   static  String freelancerCertificateStatus = 'v1/freelancer-services/certificate-status';
+  static  String updateFreelancerCertificate = 'v1/freelancer-services/update-certificate';
 
 
 
