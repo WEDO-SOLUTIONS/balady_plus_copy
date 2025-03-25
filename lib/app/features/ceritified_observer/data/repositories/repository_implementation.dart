@@ -156,9 +156,35 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
   }
 
   @override
-  Future<Either<Failure, bool>> registrationObserver(RegisterObserverRequest request) async{
+  Future<Either<Failure, bool>> registrationObserver(RegisterObserverRequest request) async {
     try {
       final data = await remoteDataSource.registrationObserver(request);
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, Map<String,dynamic>>> getFreelancerCertificateStatus(String  certificateNumber) async {
+    try {
+      final data = await remoteDataSource.getFreelancerCertificateStatus(certificateNumber);
       return Right(data);
     } on NoDataFoundException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

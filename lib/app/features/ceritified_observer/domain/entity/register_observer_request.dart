@@ -187,7 +187,8 @@ class RegisterObserverRequest {
     }
 
 
-    ////////////
+    //////////// AGC-0032
+    //////////// AGC-3235
     map['ExternalEntityID'] = "AGC-0032";
 
     return map;

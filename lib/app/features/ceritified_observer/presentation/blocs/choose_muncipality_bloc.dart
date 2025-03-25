@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:balady_plus/app/core/errors/failures.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/use_cases/freelancer_certificate.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/use_cases/register_observer.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/conclusion_screen.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/registration_sequence/fill_info_screen.dart';
@@ -35,8 +36,10 @@ class ChooseMuncipalityBloc
   final GetCityList _getCityList;
   final GetDistrictList _getDistrictList;
   final RegisterObserver _registerObserver;
-
   final CheckMuncipalityAcceptance _checkMuncipalityAcceptance;
+
+  ////// For freelancer certificate
+  GetFreelancerCertificateStatus _getFreelancerCertificateStatus;
 
   PageController controller = PageController();
 
@@ -49,6 +52,8 @@ class ChooseMuncipalityBloc
         _registerObserver = RegisterObserver(repository: sl()),
         _checkMuncipalityAcceptance =
             CheckMuncipalityAcceptance(repository: sl()),
+        _getFreelancerCertificateStatus =
+            GetFreelancerCertificateStatus(repository: sl()),
         super(const LoadingApprovalState()) {
     // getObserverStatus("1006966525");
 
@@ -111,7 +116,7 @@ class ChooseMuncipalityBloc
           // Hear The User is finished form the training and is Certified Observer
           if (obj.qualification == "Qualified") {
             /// TODO : hear check if the user have the Freelance certificate
-            if(obj.freelanceCertificateNumber != null) {
+            if (obj.freelanceCertificateNumber != null) {
               /// TODO : if have show need check expiry date and states of the certificate
             } else {
               /// TODO : if not have show show button create new Freelance certificate
@@ -122,6 +127,23 @@ class ChooseMuncipalityBloc
           } else {
             //response.data!.result?.qualification == "Waiting for approval" ||
             //response.data!.result?.qualification == "Not qualified"
+
+            _getFreelancerCertificateStatus(
+                    obj.freelanceCertificateNumber ?? "")
+                .then((respons) {
+
+                  respons.fold((error) {
+                    print(error);
+                    print(error);
+                    print(error);
+
+                  },  (seccs){
+                    print(seccs);
+                    print(seccs);
+                    print(seccs);
+                    print(seccs);
+                  });
+            });
             emitter(
               WaitingApprovalState(observerStatusEntity: obj),
             );

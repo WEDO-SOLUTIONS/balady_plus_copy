@@ -1,11 +1,13 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/freelance_certificate_state_screen.dart';
 import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/wait_for_approval_screen.dart';
+import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/reload_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
-import '../../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
-import '../../blocs/choose_muncipality_bloc.dart';
+import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
+import '../../../vd/presentation/widgets/details_widgets/details_app_bar_two.dart';
+import '../blocs/choose_muncipality_bloc.dart';
 
 class RegisterObserverHome extends StatefulWidget {
   const RegisterObserverHome({super.key});
@@ -27,7 +29,7 @@ class _RegisterObserverHomeState extends State<RegisterObserverHome> {
       child: BlocConsumer<ChooseMuncipalityBloc, CertifiedObserverState>(
         listener: (context, state) {
           if (state is ChooseMuncipalityState) {
-            if(state.status == BlocStatus.failure ) {
+            if (state.status == BlocStatus.failure) {
               CommonFunctions.showError(state.errorMessage ?? "");
             }
           }
@@ -37,10 +39,30 @@ class _RegisterObserverHomeState extends State<RegisterObserverHome> {
             return const Center(child: CircularProgressIndicator());
           }
           if (state is FailureApprovalState) {
-            return Text(state.failure);
+            return Scaffold(
+              body: Center(
+                child: ReloadWidget(
+                  onTab: () {
+
+                    context.read<ChooseMuncipalityBloc>().add(
+                          GetObserverStatusEvent(
+                            // identityNumber: "1006966525",
+                            identityNumber:
+                                CommonProperties.userInfo?.idNo ?? "",
+                          ),
+                        );
+                  },
+                ),
+              ),
+            );
           }
           if (state is WaitingApprovalState) {
             return const WaitForApprovalScreen();
+          }
+          //////////////////////////////////////////////////////////////////////////////
+
+          if (state is FreelanceCertificateState) {
+            return FreelanceCertificateStateScreen(state: state);
           }
 
           //////////////////////////////////////////////////////////////////////////////

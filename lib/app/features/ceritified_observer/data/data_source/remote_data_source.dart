@@ -29,8 +29,8 @@ abstract class CertifiedObserverRemoteDataSource {
 
   Future<bool> registrationObserver(RegisterObserverRequest request);
 
-  Future<Map<String, dynamic>> getAvailabilityOfFreelancerCertificateUser(
-      ObserverStatusEntity request);
+  Future<Map<String, dynamic>> getFreelancerCertificateStatus(
+      String certificateNumber);
 }
 
 class CertifiedObserverRemoteDataSourceImplementation
@@ -364,13 +364,15 @@ class CertifiedObserverRemoteDataSourceImplementation
   }
 
   @override
-  Future<Map<String, dynamic>> getAvailabilityOfFreelancerCertificateUser(
-      ObserverStatusEntity request) async {
+  Future<Map<String, dynamic>> getFreelancerCertificateStatus(
+      String certificateNumber) async {
     var response;
     try {
       response = await webService.dio.post(
-        ApiUrl.registerObserver,
-        data: request.toJson(),
+        ApiUrl.freelancerCertificateStatus,
+        data: {
+          "certificateNumber": certificateNumber,
+        },
       );
 
       return response.data["data"];

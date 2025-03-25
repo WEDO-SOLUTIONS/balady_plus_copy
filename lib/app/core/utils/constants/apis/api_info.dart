@@ -638,10 +638,9 @@ class ApiUrl {
   static  String getMuncipalityCites(String municipalityId) => 'v1/cis-certified-observers-services/cities/$municipalityId';
   static  String urlDistrictsList = 'v1/cis-certified-observers-services/districts';
 
+
   static  String registerObserver = 'v2/cis-certified-observers-services/external-inspector/registration';
-  static  String checkFreelancerCertificateUser = 'https://mcpstg.momrah.gov.sa/prweb/api/CISObserverreward/V1/GetAvailabilityOfFreelancerCertificateUser/';
-
-
+  static  String freelancerCertificateStatus = 'v1/freelancer-services/certificate-status';
 
 
 
