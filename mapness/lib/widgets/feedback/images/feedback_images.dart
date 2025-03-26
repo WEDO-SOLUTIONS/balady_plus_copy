@@ -143,9 +143,8 @@ class FeedbackImages extends StatelessWidget {
       return;
     }
 
-    // Work only IOS
     final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage(limit: field.maxImages - selectedImages.length);
+    final images = await _pickedImage();
     if (images.isEmpty) {
       return;
     }
@@ -200,7 +199,7 @@ class FeedbackImages extends StatelessWidget {
       }
     }
 
-    if (filteredImages.length > field.maxImages) {
+    if (filteredImages.length >= field.maxImages - selectedImages.length) {
       filteredImages.removeRange(field.maxImages - selectedImages.length, filteredImages.length);
     }
 
@@ -224,11 +223,10 @@ class FeedbackImages extends StatelessWidget {
     return filteredImages;
   }
 
-  Future<List<XFile>> _pickedImage({int? limit}) async {
+  Future<List<XFile>> _pickedImage() async {
     final images = await ImagePicker().pickMultiImage(
       maxWidth: _maxImageResolution.toDouble(),
       maxHeight: _maxImageResolution.toDouble(),
-      limit: limit,
     );
 
     return images;
