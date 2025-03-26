@@ -199,7 +199,7 @@ class FeedbackImages extends StatelessWidget {
       }
     }
 
-    if (filteredImages.length > field.maxImages - selectedImages.length) {
+    if (filteredImages.length >= field.maxImages - selectedImages.length) {
       filteredImages.removeRange(field.maxImages - selectedImages.length, filteredImages.length);
     }
 
