@@ -458,6 +458,9 @@ class IconPath {
 
 
 
+  static const medalIcon = '${_svgIconPath}medal_06$_svg';
+  static const elementsIcon = '${_svgIconPath}elements$_svg';
+
 
 
 

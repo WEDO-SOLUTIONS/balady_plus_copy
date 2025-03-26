@@ -68,5 +68,15 @@ enum PledgeQuestion {
   pledge11,
   pledge12,
   pledge13,
-  pledge14;
+  pledge14,
+  pledge15;
 }
+
+Map specialityCode = {
+  "prod":"S615",
+
+  "dev":"AS615",
+  "pre":"AS615",
+  "stg":"AS615",
+  "urbiPre":"AS615",
+};

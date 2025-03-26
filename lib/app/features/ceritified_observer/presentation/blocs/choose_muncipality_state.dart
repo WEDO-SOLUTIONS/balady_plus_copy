@@ -203,22 +203,76 @@ class WaitingApprovalState extends CertifiedObserverState {
 ///////////// Freelance Certificate State /////////////
 
 class FreelanceCertificateState extends CertifiedObserverState {
+  final bool isLoading;
+  final String? errorMessage;
 
-  const FreelanceCertificateState();
+  final String title;
+  final String description;
+  final String icon;
+  final String textAction;
+
+  const FreelanceCertificateState({
+    required this.title,
+    required this.description,
+    required this.textAction,
+    required this.icon,
+    this.isLoading = false,
+    this.errorMessage,
+  });
 
   @override
-  FreelanceCertificateState copyWith() {
-    return const FreelanceCertificateState();
+  FreelanceCertificateState copyWith({bool? isLoading, String? errorMessage}) {
+    return FreelanceCertificateState(
+      isLoading: isLoading ?? this.isLoading,
+      errorMessage: errorMessage ?? this.errorMessage,
+      title: title,
+      description: description,
+      icon: icon,
+      textAction: textAction,
+    );
   }
 }
 
-
 class NoHaveFreelanceCertificateState extends FreelanceCertificateState {
-
-  const NoHaveFreelanceCertificateState();
+  const NoHaveFreelanceCertificateState({
+    super.errorMessage,
+    super.isLoading,
+    required super.title,
+    required super.description,
+    required super.textAction,
+    required super.icon,
+  });
 
   @override
-  NoHaveFreelanceCertificateState copyWith() {
-    return const NoHaveFreelanceCertificateState();
+  List<Object?> get props => [super.errorMessage, super.isLoading];
+}
+
+class HaveFreelanceCertificateState extends FreelanceCertificateState {
+
+  const HaveFreelanceCertificateState({
+    super.errorMessage,
+    super.isLoading,
+    required super.title,
+    required super.description,
+    required super.textAction,
+    required super.icon,
+  });
+
+  @override
+  HaveFreelanceCertificateState copyWith({
+    String? certificateNumber,
+    String? certificateStatus,
+    String? certificateDate,
+    bool? isLoading,
+    String? errorMessage,
+  }) {
+    return HaveFreelanceCertificateState(
+      isLoading: isLoading ?? super.isLoading,
+      errorMessage: errorMessage ?? super.errorMessage,
+      title: super.title,
+      description: super.description,
+      textAction: super.textAction,
+      icon: super.icon,
+    );
   }
 }

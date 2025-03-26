@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
+import 'package:balady_plus/app/core/utils/constants/apis/env_types.dart';
 import 'package:balady_plus/app/core/utils/extensions/delay.dart';
 import 'package:balady_plus/app/features/_shared_feature_/data/models/response_body_model.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/entity/user_certificates.dart';
+import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
 import 'package:dio/dio.dart' show DioError;
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
@@ -31,18 +35,16 @@ abstract class CertifiedObserverRemoteDataSource {
 
   Future<bool> registrationObserver(RegisterObserverRequest request);
 
-
   ////////////////// For Freelancer Certificate //////////////////
 
   Future<Map<String, dynamic>> createNewFreelancerCertificate();
 
   Future<Map<String, dynamic>> registerFreelancerCertificate();
 
+  Future<Map<String, dynamic>> getFreelancerCertificateStatus();
 
-  Future<Map<String, dynamic>> getFreelancerCertificateStatus(String certificateNumber);
-
-  Future<Map<String, dynamic>> updateFreelancerCertificate(String certificateNumber);
-
+  Future<Map<String, dynamic>> updateFreelancerCertificate(
+      String certificateNumber);
 }
 
 class CertifiedObserverRemoteDataSourceImplementation
@@ -216,7 +218,8 @@ class CertifiedObserverRemoteDataSourceImplementation
   }
 
   @override
-  Future<ResponseBodyModel<List<CityEntity>>> getCityList(String municipalityId) async {
+  Future<ResponseBodyModel<List<CityEntity>>> getCityList(
+      String municipalityId) async {
     var response;
     try {
       response =
@@ -331,13 +334,12 @@ class CertifiedObserverRemoteDataSourceImplementation
   Future<bool> registrationObserver(RegisterObserverRequest request) async {
     var response;
     try {
-
       response = await webService.dio.post(
         ApiUrl.registerObserver,
         data: request.toJson(),
       );
 
-      return  true;
+      return true;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
@@ -376,8 +378,6 @@ class CertifiedObserverRemoteDataSourceImplementation
     }
   }
 
-
-
   ////////////////// For Freelancer Certificate //////////////////
 
   @override
@@ -390,7 +390,9 @@ class CertifiedObserverRemoteDataSourceImplementation
           "fullNameEn": CommonProperties.userInfo?.enName,
           "mobileNumber": CommonProperties.userInfo?.phone,
           "nationalId": CommonProperties.userInfo?.idNo,
-          "dateOfBirth": CommonProperties.userInfo?.getHijriBirthDate().replaceAll("/", "-"), //"1394-02-04"
+          "dateOfBirth": CommonProperties.userInfo
+              ?.getHijriBirthDate()
+              .replaceAll("/", "-"), //"1394-02-04"
         },
       );
       return response.data["data"]["result"];
@@ -436,8 +438,24 @@ class CertifiedObserverRemoteDataSourceImplementation
   Future<Map<String, dynamic>> createNewFreelancerCertificate() async {
     var response;
     try {
-      // await registerFreelancerCertificate();
-      DateTime dateTime = (await  CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
+      DateTime dateTime =
+      (await CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
+      await registerFreelancerCertificate();
+      UserCertificates userCertificates = await getAllFreelancerCertificate();
+      if (userCertificates.certificate.isNotEmpty) {
+        for (var certificate in userCertificates.certificate) {
+            if (certificate.speciality?.code == specialityCode[sl<EnvType>().name]) {
+              if(certificate.status == "ACTIVE" && dateTime.isBefore(certificate.expiryDate!)) {
+                return {
+                  "certificateNumber": certificate.number,
+                  "certificateExpiryDate": certificate.expiryDate,
+                  "certificateStatus": "ACTIVE",
+                };
+              }
+            }
+          }
+      }
+
       String issueAt = DateFormat("yyyy-MM-dd").format(
         dateTime,
       );
@@ -449,7 +467,8 @@ class CertifiedObserverRemoteDataSourceImplementation
         data: {
           "nationalId": CommonProperties.userInfo?.idNo,
           // whats the specialityCode for Certified Observer
-          "specialityCode": "561050",
+          // For Stg -> AS615 , For Prodcaction -> S615
+          "specialityCode": specialityCode[sl<EnvType>().name],
           "issueAt": issueAt,
           "expiryDate": expiryDate,
         },
@@ -494,13 +513,86 @@ class CertifiedObserverRemoteDataSourceImplementation
   }
 
   @override
-  Future<Map<String, dynamic>> getFreelancerCertificateStatus(String certificateNumber) async {
+  Future<Map<String, dynamic>> getFreelancerCertificateStatus() async {
     var response;
     try {
+      DateTime dateTime =
+      (await CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
+      await registerFreelancerCertificate();
+      UserCertificates userCertificates = await getAllFreelancerCertificate();
+      if (userCertificates.certificate.isNotEmpty) {
+        for (var certificate in userCertificates.certificate) {
+          if (certificate.speciality?.code == specialityCode[sl<EnvType>().name]) {
+            if(certificate.status == "ACTIVE" && dateTime.isBefore(certificate.expiryDate!)) {
+              return {
+                "certificateNumber": certificate.number,
+                "certificateExpiryDate": certificate.expiryDate,
+                "certificateStatus": "ACTIVE",
+              };
+            }
+          }
+        }
+      }
+      return response.data["data"];
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<Map<String, dynamic>> updateFreelancerCertificate(
+      String certificateNumber) async {
+    var response;
+    try {
+      DateTime dateTime =
+          (await CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
+      String issueAt = DateFormat("YYYY-MM-DD").format(
+        dateTime,
+      );
+      String expiryDate = DateFormat("yyyy-MM-dd").format(
+        dateTime.add(const Duration(days: 365)),
+      );
       response = await webService.dio.post(
-        ApiUrl.freelancerCertificateStatus,
+        ApiUrl.updateFreelancerCertificate,
         data: {
           "certificateNumber": certificateNumber,
+          "nationalId": CommonProperties.userInfo?.idNo,
+          "message": "",
+          "status": "",
+          "expiryDate": expiryDate,
         },
       );
       return response.data["data"];
@@ -542,28 +634,14 @@ class CertifiedObserverRemoteDataSourceImplementation
     }
   }
 
-  @override
-  Future<Map<String, dynamic>> updateFreelancerCertificate(String certificateNumber) async {
+  Future<UserCertificates> getAllFreelancerCertificate() async {
     var response;
     try {
-      DateTime dateTime = (await  CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
-      String issueAt = DateFormat("YYYY-MM-DD").format(
-        dateTime,
+      response = await webService.dio.get(
+        ApiUrl.getFreelancerCertificate,
+        data: {},
       );
-      String expiryDate = DateFormat("yyyy-MM-dd").format(
-        dateTime.add(const Duration(days: 365)),
-      );
-      response = await webService.dio.post(
-        ApiUrl.updateFreelancerCertificate,
-        data: {
-          "certificateNumber": certificateNumber,
-          "nationalId": CommonProperties.userInfo?.idNo,
-          "message": "",
-          "status": "",
-          "expiryDate": expiryDate,
-        },
-      );
-      return response.data["data"];
+      return UserCertificates.fromJson(response.data["data"]['result']);
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

@@ -26,6 +26,19 @@ abstract class CertifiedObserverRepository {
   Future<Either<Failure, bool>> registrationObserver(
       RegisterObserverRequest request);
 
-  Future<Either<Failure, Map<String, dynamic>>> getFreelancerCertificateStatus(
+
+
+  ////////////////// For Freelancer Certificate //////////////////
+
+
+
+  Future<Either<Failure, Map<String, dynamic>>> createNewFreelancerCertificate();
+
+
+  Future<Either<Failure, Map<String, dynamic>>> getFreelancerCertificateStatus();
+
+
+  Future<Either<Failure, Map<String, dynamic>>> updateFreelancerCertificate(
       String certificateNumber);
+
 }

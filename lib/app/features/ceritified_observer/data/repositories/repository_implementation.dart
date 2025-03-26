@@ -181,10 +181,63 @@ class CertifiedObserverRepositoryImplementation implements CertifiedObserverRepo
     }
   }
 
+
+  ////////////////// For Freelancer Certificate //////////////////
+
   @override
-  Future<Either<Failure, Map<String,dynamic>>> getFreelancerCertificateStatus(String  certificateNumber) async {
+  Future<Either<Failure, Map<String,dynamic>>> createNewFreelancerCertificate() async {
     try {
-      final data = await remoteDataSource.getFreelancerCertificateStatus(certificateNumber);
+      final data = await remoteDataSource.createNewFreelancerCertificate();
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  @override
+  Future<Either<Failure, Map<String,dynamic>>> getFreelancerCertificateStatus() async {
+    try {
+      final data = await remoteDataSource.getFreelancerCertificateStatus();
+      return Right(data);
+    } on NoDataFoundException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.toString()));
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+  @override
+  Future<Either<Failure, Map<String,dynamic>>> updateFreelancerCertificate(String  certificateNumber) async {
+    try {
+      final data = await remoteDataSource.updateFreelancerCertificate(certificateNumber);
       return Right(data);
     } on NoDataFoundException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

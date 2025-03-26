@@ -19,6 +19,23 @@ class SubmitCertifiedObserverRequestEvent extends ChooseMuncipalityEvent {
   const SubmitCertifiedObserverRequestEvent({required this.dataModel});
 }
 
+////// For Freelancer Certificate //////
+
+
+
+class CreateNewFreelancerCertificateEvent extends ChooseMuncipalityEvent {
+  const CreateNewFreelancerCertificateEvent();
+}
+
+class CheckOnStateOfFreelancerCertificate extends ChooseMuncipalityEvent {
+  final ObserverStatusEntity observerStatus;
+
+  const CheckOnStateOfFreelancerCertificate({required this.observerStatus});
+}
+
+
+
+
 class GoToNextPageEvent extends ChooseMuncipalityEvent {
   const GoToNextPageEvent();
 }

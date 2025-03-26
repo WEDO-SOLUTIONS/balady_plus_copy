@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:balady_plus/app/core/errors/failures.dart';
+import 'package:balady_plus/app/core/services/local/use_case.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/lookups.dart';
 import 'package:balady_plus/app/features/ceritified_observer/domain/use_cases/freelancer_certificate.dart';
@@ -39,7 +41,9 @@ class ChooseMuncipalityBloc
   final CheckMuncipalityAcceptance _checkMuncipalityAcceptance;
 
   ////// For freelancer certificate
+  CreateNewFreelancerCertificate _createNewFreelancerCertificateStatus;
   GetFreelancerCertificateStatus _getFreelancerCertificateStatus;
+  UpdateFreelancerCertificate _updateFreelancerCertificateStatus;
 
   PageController controller = PageController();
 
@@ -52,8 +56,13 @@ class ChooseMuncipalityBloc
         _registerObserver = RegisterObserver(repository: sl()),
         _checkMuncipalityAcceptance =
             CheckMuncipalityAcceptance(repository: sl()),
+        ////// For freelancer certificate
+        _createNewFreelancerCertificateStatus =
+            CreateNewFreelancerCertificate(repository: sl()),
         _getFreelancerCertificateStatus =
             GetFreelancerCertificateStatus(repository: sl()),
+        _updateFreelancerCertificateStatus =
+            UpdateFreelancerCertificate(repository: sl()),
         super(const LoadingApprovalState()) {
     // getObserverStatus("1006966525");
 
@@ -70,8 +79,14 @@ class ChooseMuncipalityBloc
     on<GoToNextPageEvent>(_goToNextPageHandler);
 
     /////////////////////////////////////////////
-
     on<SubmitCertifiedObserverRequestEvent>(_submitCertifiedObserverRequest);
+    /////////////////////////////////////////////
+
+    ///////// For Freelancer Certificate //////////
+
+    on<CheckOnStateOfFreelancerCertificate>(
+        _checkOnStateOfFreelancerCertificate);
+    on<CreateNewFreelancerCertificateEvent>(_createNewFreelancerCertificate);
   }
 
   Future<void> _etObserverStatus(
@@ -88,6 +103,24 @@ class ChooseMuncipalityBloc
       (obj) {
         // check if the user is registered observer or not
         if (!obj.isCertifiedObserver) {
+          // emitter(
+          //   HaveFreelanceCertificateState(
+          //     title: 'completing_the_certified_observer_request',
+          //     description: 'no_have_freelancer_certificate_certified_observer',
+          //     textAction: 'agree',
+          //     icon: IconPath.elementsIcon,
+          //   ),
+          // );
+
+          // emitter(
+          //   const HaveFreelanceCertificateState(
+          //     title: 'title_congratulations_certified_observer',
+          //     description: 'description_monitoring_process_momtathel',
+          //     textAction: 'open_momtathl_app',
+          //     icon: IconPath.medalIcon,
+          //   ),
+          // );
+
           emitter(
             ChooseMuncipalityState(
               status: BlocStatus.success,
@@ -110,41 +143,7 @@ class ChooseMuncipalityBloc
           getBanksList();
           getMuncipalityList();
         } else {
-          // Hear The User is finished form the training and is Certified Observer
-          if (obj.qualification == "Qualified") {
-            /// TODO : hear check if the user have the Freelance certificate
-            if (obj.freelanceCertificateNumber != null) {
-              /// TODO : if have show need check expiry date and states of the certificate
-            } else {
-              /// TODO : if not have show show button create new Freelance certificate
-              emitter(
-                const NoHaveFreelanceCertificateState(),
-              );
-            }
-          } else {
-            //response.data!.result?.qualification == "Waiting for approval" ||
-            //response.data!.result?.qualification == "Not qualified"
-
-            _getFreelancerCertificateStatus(
-                    obj.freelanceCertificateNumber ?? "")
-                .then((respons) {
-
-                  respons.fold((error) {
-                    print(error);
-                    print(error);
-                    print(error);
-
-                  },  (seccs){
-                    print(seccs);
-                    print(seccs);
-                    print(seccs);
-                    print(seccs);
-                  });
-            });
-            emitter(
-              WaitingApprovalState(observerStatusEntity: obj),
-            );
-          }
+          add(CheckOnStateOfFreelancerCertificate(observerStatus: obj));
         }
       },
     );
@@ -440,10 +439,97 @@ class ChooseMuncipalityBloc
           );
         },
         (response) {
-          /// TODO : Need Creat New States and send hear .
-          print("object");
           emit(
             const WaitingApprovalState(),
+          );
+        },
+      );
+    }
+  }
+
+  FutureOr<void> _checkOnStateOfFreelancerCertificate(
+      CheckOnStateOfFreelancerCertificate event,
+      Emitter<CertifiedObserverState> emitter) async {
+    // Hear The User is finished form the training and is Certified Observer
+    if (event.observerStatus.qualification != "Qualified") {
+      /// TODO : hear check if the user have the Freelance certificate
+      if (event.observerStatus.freelanceCertificateNumber?.isNotEmpty ??
+          false) {
+        /// TODO : if have show need check expiry date and states of the certificate
+        var respons = await _getFreelancerCertificateStatus(NoParams());
+        respons.fold((error) {
+          emitter(
+            const NoHaveFreelanceCertificateState(
+              title: 'completing_the_certified_observer_request',
+              description: 'no_have_freelancer_certificate_certified_observer',
+              textAction: 'agree',
+              icon: IconPath.elementsIcon,
+            ),
+          );
+        }, (seccs) {
+          emitter(
+            const HaveFreelanceCertificateState(
+              title: 'title_congratulations_certified_observer',
+              description: 'description_monitoring_process_momtathel',
+              textAction: 'open_momtathl_app',
+              icon: IconPath.medalIcon,
+            ),
+          );
+        });
+      } else {
+        /// TODO : if not have show show button create new Freelance certificate
+        emitter(
+          const NoHaveFreelanceCertificateState(
+            title: 'completing_the_certified_observer_request',
+            description: 'no_have_freelancer_certificate_certified_observer',
+            textAction: 'agree',
+            icon: IconPath.elementsIcon,
+          ),
+        );
+      }
+    } else {
+      //response.data!.result?.qualification == "Waiting for approval" ||
+      //response.data!.result?.qualification == "Not qualified"
+      emitter(
+        WaitingApprovalState(observerStatusEntity: event.observerStatus),
+      );
+    }
+  }
+
+  FutureOr<void> _createNewFreelancerCertificate(
+      CreateNewFreelancerCertificateEvent event,
+      Emitter<CertifiedObserverState> emit) async {
+    if (state is NoHaveFreelanceCertificateState) {
+      NoHaveFreelanceCertificateState state =
+          this.state as NoHaveFreelanceCertificateState;
+      emit(
+        state.copyWith(
+          isLoading: true,
+        ),
+      );
+      final failureOrSuccess =
+          await _createNewFreelancerCertificateStatus(NoParams());
+      failureOrSuccess.fold(
+        (failure) {
+          emit(
+            NoHaveFreelanceCertificateState(
+              isLoading: false,
+              errorMessage: failure.toString(),
+              icon: state.icon,
+              title: state.title,
+              description: state.description,
+              textAction: state.textAction,
+            ),
+          );
+        },
+        (response) {
+          emit(
+            const HaveFreelanceCertificateState(
+              title: 'title_congratulations_certified_observer',
+              description: 'description_monitoring_process_momtathel',
+              textAction: 'open_momtathl_app',
+              icon: IconPath.medalIcon,
+            ),
           );
         },
       );

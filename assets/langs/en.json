@@ -4521,41 +4521,66 @@
   "please_enter_valid_iban": "Please enter a valid IBAN",
 
 
-  "pledge1_title" : "النزاهة والشفافية",
-  "pledge1_description": "أتعهد بالعمل بنزاهة وشفافية تامة في جميع البلاغات التي أقدمها، وعدم استغلال النظام لتحقيق مصالح شخصية أو مكاسب غير مشروعة.",
-  "pledge2_title" : "عدم تضارب المصالح ",
-  "pledge2_description": "أتعهد بأنني لست من أحد الموظفين أو العاملين في الوزارة أو الأمانة أو البلدية، أو من المستعان بهم في شأن ضبط المخالفات أو أداء مهمات الرقابة أو التفتيش، وأنني لا أرتبط بأي علاقة قرابة من الدرجة الأولى أو زوج، أو صهرا لهم.",
-  "pledge3_title" : "الالتزام بالأخلاقيات المهنية",
-  "pledge3_description": " أتعهد بعدم افتعال أي مخالفة كيدية بغرض تقديم بلاغ كيدي للحصول على مكافأة أو لتحقيق أي هدف آخر، وأتحمل المسؤولية القانونية الكاملة في حال تم اكتشاف ذلك.",
-  "pledge4_title" : "المصداقية في البلاغات",
-  "pledge4_description": " أتعهد بتقديم بلاغات دقيقة وموثوقة عن المخالفات التي أرصدها، وأدرك أنه لا يحق لي المطالبة بالمكافأة في حال كانت المخالفة المرصودة كان لها بلاغات سابقة.",
-  "pledge5_title" : "التعاون مع الجهات المعنية",
-  "pledge5_description": "أتعهد بالتعاون الكامل مع الجهات المعنية في الوزارة لتوفير المعلومات المطلوبة وتسهيل إجراءات التحقق من صحة البلاغات في حال جهة هذه الجهات لذلك.",
-  "pledge6_title" : "عدم استغلال النظام",
-  "pledge6_description": " أتعهد بعدم استغلال النظام لتحقيق مكاسب مالية غير مستحقة (كافتعال المخالفات للغير بقصد رصدها والحصول على مكافأة) أو للتأثير على قرارات الجهات المختصة بأي شكل من الأشكال.",
-  "pledge7_title" : "المسؤولية القانونية ",
-  "pledge7_description": "أتعهد بتحمل المسؤولية القانونية الكاملة عن أي بلاغ كيدي أو معلومات غير دقيقة أقدمها عبر المنصة",
-  "pledge8_title" : "قبول شروط المكافأة",
-  "pledge8_description": " أتعهد بعدم المطالبة بالمكافأة إلا بعد اعتماد المخالفة وسداد الغرامة المستحقة بشكل كامل من قبل المخالف، وأدرك أن قيمة المكافأة لا تتجاوز 25 % من قيمة المخالفة.",
-  "pledge9_title" : "التعامل مع تصحيح المخالفات",
-  "pledge9_description": " أتعهد بأنه في حال قمت برصد مخالفة وقام المخالف بتصحيحها قبل وصول المراقب لاعتمادها، فإنه لا يحق لي المطالبة بالمكافأة.",
-  "pledge10_title" : "سرية المعلومات",
-  "pledge10_description": "أتعهد بالمحافظة على سرية المعلومات التي أتعامل معها وعدم الإفصاح عنها لأي طرف غير معني.",
-  "pledge11_title" : "الالتزام بالأنظمة واللوائح",
-  "pledge11_description": " أتعهد بالالتزام بكافة الأنظمة واللوائح المتعلقة بعملي كراصد معتمد، وأدرك أن الوزارة تحتفظ بالحق في اتخاذ أي إجراءات قانونية ضدي في حال مخالفة ذلك.",
-  "pledge12_title" : "التحديث المستمر للمعرفة",
-  "pledge12_description": "أتعهد بتحديث معرفتي بشكل مستمر فيما يخص الأنظمة واللوائح والإجراءات المعتمدة من قبل الوزارة لضمان تقديم بلاغات دقيقة وموثوقة.",
-  "pledge13_title" : "المراجعة الذاتية",
-  "pledge13_description": "أتعهد بمراجعة البلاغات التي أقدمها لضمان خلوها من الأخطاء أو المغالطات، وأدرك أن تقديم بلاغات خاطئة قد يؤدي إلى إيقاف حسابي.",
-  "pledge14_title" : "الالتزام بالشروط والإجراءات",
-  "pledge14_description": " أتعهد بالالتزام بكافة الشروط والإجراءات التي وضعتها الوزارة للحصول على المكافأة، وأدرك أن عدم الامتثال لهذه الشروط قد يؤدي إلى فقدان حقي في المطالبة بالمكافأة.",
-
-  "pledge_certified_observer": "أتعهد بأن كافة المعلومات المقدمة صحيحة ومحدثة، كما أتعهد بأن التزم بكافة تفاصيل التعهد",
 
 
 
+  "pledge1_title" : "Integrity and Transparency",
+  "pledge1_description": "I commit to acting with complete integrity and transparency in all reports I submit and will not exploit the system for personal gain or illicit benefits.",
 
-  "no_have_freelancer_certificate_certified_observer": "Dear user, your freelance work certificate as a certified observer has expired. You need to renew the certificate to continue the monitoring process.",
+  "pledge2_title" : "No Conflict of Interest",
+  "pledge2_description": "I confirm that I am not an employee or worker in the ministry, municipality, or affiliated with those engaged in monitoring violations, inspections, or related tasks, nor am I related by the first degree (spouse, in-law, or close relative) to any of these individuals.",
+
+  "pledge3_title" : "Adherence to Professional Ethics",
+  "pledge3_description": "I commit to not fabricating any malicious violations with the intent of submitting false reports to obtain a reward or for any other purpose, and I accept full legal responsibility if this is discovered.",
+
+  "pledge4_title" : "Accuracy in Reporting",
+  "pledge4_description": "I commit to submitting accurate and reliable reports on violations and understand that I am not entitled to claim a reward if the reported violation has been previously reported.",
+
+  "pledge5_title" : "Compliance with Competency Standards",
+  "pledge5_description": "I commit to adhering to the competency standards set by the ministry and understand that the ministry reserves the right to suspend my account on the Certified Observer platform if these standards are not met.",
+
+  "pledge6_title" : "Cooperation with Relevant Authorities",
+  "pledge6_description": "I commit to fully cooperating with the relevant authorities within the ministry by providing the necessary information and facilitating the verification of reports.",
+
+  "pledge7_title" : "Non-Exploitation of the System",
+  "pledge7_description": "I commit to not exploiting the system for unearned financial gains or to influence the decisions of the relevant authorities in any way.",
+
+  "pledge8_title" : "Legal Responsibility",
+  "pledge8_description": "I accept full legal responsibility for any false reports or inaccurate information I submit through the platform.",
+
+  "pledge9_title" : "Acceptance of Reward Terms",
+  "pledge9_description": "I commit to not claiming any reward until the violation has been confirmed and the penalty has been fully paid by the violator. I understand that the reward amount does not exceed 25% of the violation's value.",
+
+  "pledge10_title" : "Handling Corrected Violations",
+  "pledge10_description": "I acknowledge that if I report a violation and the violator corrects it before the inspector arrives to verify it, I am not entitled to claim a reward.",
+
+  "pledge11_title" : "Confidentiality of Information",
+  "pledge11_description": "I commit to maintaining the confidentiality of all information I handle and not disclosing it to any unauthorized party.",
+
+  "pledge12_title" : "Compliance with Laws and Regulations",
+  "pledge12_description": "I commit to adhering to all laws and regulations related to my role as a Certified Observer and understand that the ministry reserves the right to take any legal action against me in case of violation.",
+
+  "pledge13_title" : "Continuous Knowledge Updating",
+  "pledge13_description": "I commit to continuously updating my knowledge regarding the laws, regulations, and procedures approved by the ministry to ensure the submission of accurate and reliable reports.",
+
+  "pledge14_title" : "Self-Review",
+  "pledge14_description": "I commit to reviewing the reports I submit to ensure they are free from errors or inaccuracies. I understand that submitting incorrect reports may result in my account being suspended.",
+
+  "pledge15_title" : "Adherence to Terms and Procedures",
+  "pledge15_description": "I commit to complying with all terms and procedures set by the ministry for obtaining the reward, and I understand that non-compliance with these terms may result in the loss of my right to claim the reward.",
+
+
+"pledge_certified_observer": "I pledge that all the information provided is accurate and up-to-date, and I further pledge to comply with all the details of the commitment.",
+
+
+
+
+  "completing_the_certified_observer_request": "Completing the Certified Observer Request",
+  "renewal_the_certified_observer_request": "Renewal of Freelance Work Certificate",
+  "no_have_freelancer_certificate_certified_observer": "Dear user, a Freelance Work Certificate must be issued to begin your monitoring journey as a Certified Observer.",
+
+
+
   "issue_new_freelancer_certificate_certified_observer": "Issue a new freelancer certificate as an certified observer",
   "expired_freelancer_certificate_certified_observer": "Sorry, the status of your freelance work certificate as a certified observer is inactive.",
   "renew_freelancer_certificate_certified_observer": "Renew the freelance certificate as an certified observer",
@@ -4575,8 +4600,11 @@
   "bank_info": "Bank Info",
   "additional_info": "Additional Info",
   "bank_name": "Bank Name",
-  "bank_iban": "Bank Iban"
+  "bank_iban": "Bank Iban",
 
 
+  "title_congratulations_certified_observer":"Congratulations, you have been accepted as a Certified Observer",
+  "description_monitoring_process_momtathel": "Congratulations! You have been accepted as a Certified Observer. You can now begin the monitoring process through the Compliant Application.",
+  "open_momtathl_app" : "Proceed to the Compliant Application"
 
 }
