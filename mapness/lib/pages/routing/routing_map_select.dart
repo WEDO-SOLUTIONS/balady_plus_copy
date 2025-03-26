@@ -16,15 +16,35 @@ import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/lib/geo_point_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
 @RoutePage()
-class RoutingMapSelectPage extends HookConsumerWidget {
+class RoutingMapSelectPage extends StatefulHookConsumerWidget {
   const RoutingMapSelectPage({super.key});
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<RoutingMapSelectPage> createState() => _RoutingMapSelectState();
+}
+
+class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final follow = ref.read(followStateProvider);
+      if (follow.type != LocationFollowType.off) {
+        ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
     final mediaQuery = ref.read(mediaQueryInfoProvider);
     final mediaQueryTop = mediaQuery?.viewPadding.top ?? 0;
