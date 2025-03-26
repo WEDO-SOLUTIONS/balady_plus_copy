@@ -23,7 +23,7 @@ import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
 @RoutePage()
-class RoutingMapSelectPage extends HookConsumerWidget {
+class RoutingMapSelectPage extends StatefulHookConsumerWidget {
   const RoutingMapSelectPage({super.key});
 
   @override
@@ -36,7 +36,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final follow = ref.watch(followStateProvider);
+      final follow = ref.read(followStateProvider);
       if (follow.type != LocationFollowType.off) {
         ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
       }
@@ -44,7 +44,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final nearestObject = ref.watch(nearestObjectProvider);
     final mediaQuery = ref.read(mediaQueryInfoProvider);
     final mediaQueryTop = mediaQuery?.viewPadding.top ?? 0;
