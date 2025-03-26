@@ -197,20 +197,23 @@ class CommonFunctions {
     entryPointBridge(params);
   }
 
-  static Future<bool> isHuaweiDevice() async {
-    return await FlutterHmsGmsAvailability.isHmsAvailable;
+  static Future<bool> isHuaweiDevice() {
+    return FlutterHmsGmsAvailability.isHmsAvailable;
   }
 
-  static final locationService = hms.FusedLocationProviderClient();
+  static late final locationService = hms.FusedLocationProviderClient();
 
   static Stream<hms.Location>? listenToHMSStream() {
     return locationService.onLocationData;
   }
 
   static Future<geo_locator.Position?> getLastLocationHuawei() async {
-    await locationService.initFusedLocationService();
-    final location = await locationService.getLastLocation();
-    if (location.latitude != null && location.longitude != null) {
+    try {
+      await locationService.initFusedLocationService();
+      final location = await locationService.getLastLocation();
+
+      if (location.latitude == null || location.longitude == null) return null;
+
       return geo_locator.Position(
         longitude: location.longitude!,
         latitude: location.latitude!,
@@ -223,34 +226,46 @@ class CommonFunctions {
         speed: location.speed ?? 0,
         speedAccuracy: location.speedAccuracyMetersPerSecond ?? 0,
       );
+    } catch (error, stackTrace) {
+      debugPrint("Error in getLastLocationHuawei: $error");
+      // return handelLocationCatch(true, error, stackTrace);
     }
-
     return null;
   }
 
   static Future<LatLng?> getCurrentLocationHuawei() async {
     try {
       await locationService.initFusedLocationService();
-      final request = hms.LocationRequest();
-      request.priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY;
-      request.interval = 13000;
+      final request = hms.LocationRequest()
+        ..priority = hms.LocationRequest.PRIORITY_HIGH_ACCURACY
+        ..interval = 10000;
 
-      final settings = hms.LocationSettingsRequest(requests: [request], needBle: true, alwaysShow: true);
+      final settings = hms.LocationSettingsRequest(
+        requests: [request],
+        needBle: true,
+        alwaysShow: true,
+      );
+
       try {
         await locationService.checkLocationSettings(settings);
       } catch (e) {
-        debugPrint(e.toString());
+        debugPrint("Location settings error: $e");
       }
 
       final location = await locationService.getLastLocation();
-
       if (location.latitude != null && location.longitude != null) {
         return LatLng(location.latitude!, location.longitude!);
-      } else {
-        await locationService.requestLocationUpdates(request);
+      }
+
+      await locationService.requestLocationUpdates(request);
+      await Future.delayed(const Duration(seconds: 3));
+
+      final updatedLocation = await locationService.getLastLocation();
+      if (updatedLocation.latitude != null && updatedLocation.longitude != null) {
+        return LatLng(updatedLocation.latitude!, updatedLocation.longitude!);
       }
     } catch (error, stackTrace) {
-      debugPrint(error.toString());
+      debugPrint("Error in getCurrentLocationHuawei: $error");
       return handelLocationCatch(true, error, stackTrace);
     }
     return null;
@@ -271,8 +286,7 @@ class CommonFunctions {
           return LatLng(position.latitude!, position.longitude!);
         }
       } else {
-        geo_locator.Position? position;
-        position = await geo_locator.Geolocator.getLastKnownPosition();
+        final position = await geo_locator.Geolocator.getLastKnownPosition();
         if (position?.latitude != null && position?.longitude != null) {
           return LatLng(position!.latitude, position.longitude);
         }

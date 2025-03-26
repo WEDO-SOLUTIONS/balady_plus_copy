@@ -46,6 +46,7 @@ class FusedLocationSource(private val context: Context) : LocationSource {
             is GoogleLocationProvider -> (locationProvider as GoogleLocationProvider).stopLocationUpdates()
             is HuaweiLocationProvider -> (locationProvider as HuaweiLocationProvider).stopLocationUpdates()
         }
+        listener?.onAvailabilityChanged(false)
         listener = null
     }
 
@@ -63,6 +64,8 @@ class FusedLocationSource(private val context: Context) : LocationSource {
 
     private fun updateSource() {
         val listener = this.listener ?: return
+        Log.d("HuaweiLocationProvider", "Huawei Location  isAvailable $isAvailable")
+
         if (isAvailable) {
             val (priority, interval) = when (accuracy) {
                 DesiredAccuracy.HIGH -> Pair(100, 100L)
@@ -78,9 +81,6 @@ class FusedLocationSource(private val context: Context) : LocationSource {
                     .requestLocationUpdates(priority, interval) { processLocationResult(it) }
             }
             listener.onAvailabilityChanged(true)
-        } else {
-            deactivate()
-            listener.onAvailabilityChanged(false)
         }
     }
 

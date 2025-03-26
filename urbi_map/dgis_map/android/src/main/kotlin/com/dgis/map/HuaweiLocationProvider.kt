@@ -34,6 +34,11 @@ class HuaweiLocationProvider(private val context: Context) {
         client?.requestLocationUpdates(request, callback, thread.looper)
     }
     fun getLastKnownLocation(): Location? {
+        Log.d("HuaweiLocationProvider", "Huawei Location ${client?.lastLocation?.result}")
+        Log.d("HuaweiLocationProvider", "Huawei Location ${client?.lastLocation?.exception}")
+
+        print("amr: ${client?.lastLocation?.result}");
+
         return client?.lastLocation?.result
     }
 

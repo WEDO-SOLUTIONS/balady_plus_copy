@@ -30,20 +30,25 @@ class _Location extends _$Location {
       final isHMS = await CommonFunctions.isHuaweiDevice();
       if (isHMS) {
         try {
-          CommonFunctions.listenToHMSStream()?.listen(
-            (event) => state = Position(
-              longitude: event.longitude!,
-              latitude: event.latitude!,
-              timestamp: DateTime.now(),
-              accuracy: event.verticalAccuracyMeters ?? 0,
-              altitude: event.altitude ?? 0,
-              altitudeAccuracy: 0,
-              heading: 0,
-              headingAccuracy: 0,
-              speed: event.speed ?? 0,
-              speedAccuracy: 0,
-            ),
+          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen(
+            (event) async {
+              state = await _getLocation(Position(
+                longitude: event.longitude!,
+                latitude: event.latitude!,
+                timestamp: DateTime.now(),
+                accuracy: event.horizontalAccuracyMeters ?? 0,
+                altitude: event.altitude ?? 0,
+                altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
+                heading: event.bearing ?? 0,
+                headingAccuracy: event.bearingAccuracyDegrees ?? 0,
+                speed: event.speed ?? 0,
+                speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
+              ));
+            },
           );
+          if (locationSubscription != null) {
+            ref.onDispose(locationSubscription.cancel);
+          }
         } catch (ex) {
           debugPrint(ex.toString());
         }
