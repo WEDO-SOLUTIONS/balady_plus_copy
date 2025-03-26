@@ -3616,6 +3616,8 @@ digraph "" {
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/lib/geo_point_ext.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/providers/map/camera_padding.dart";
+  "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/providers/map/follow_state.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/providers/media_query.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/pages/routing/routing_map_select.dart" -> "/lib/shared/ui/markers/markers.dart";
