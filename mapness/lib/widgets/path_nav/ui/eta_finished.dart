@@ -30,36 +30,40 @@ class EtaFinished extends ConsumerStatefulWidget {
 
 class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
-  Widget build(BuildContext context) => ValueListenableBuilder(
-        valueListenable: widget.expansionNotifier,
-        builder: (context, value, child) => EtaSheetWrapper(
-          isExpanded: value,
-          onSizeChanged: widget.onSizeChanged,
-          child: BaseRoadPanel(
-            roadPanelModel: RoadPanelModelArrived(
-              onSearchTap: widget.onSearchPressed,
-              enabledHeader: value,
-              title: context.l10n.youArrived,
-              onTapBurger: toggle,
-              buttons: [
-                AppButton(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  buttonColorScheme: ButtonColorScheme.primary,
-                  primaryLabel: context.l10n.endTrip,
-                  onTap: widget.onEndTripPressed,
-                ),
-                AppButton(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  buttonColorScheme: ButtonColorScheme.tertiary,
-                  primaryLabel: context.l10n.buildAnotherRoute,
-                  onTap: widget.onBuildAnotherRoutePressed,
-                ),
-              ],
-              onTapRoute: widget.onTapRoute,
-            ),
+  Widget build(BuildContext context) {
+    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    return ValueListenableBuilder(
+      valueListenable: widget.expansionNotifier,
+      builder: (context, value, child) => EtaSheetWrapper(
+        isExpanded: value,
+        onSizeChanged: widget.onSizeChanged,
+        child: BaseRoadPanel(
+          roadPanelModel: RoadPanelModelArrived(
+            isLeadingIconAvailable: !landscape,
+            onSearchTap: widget.onSearchPressed,
+            enabledHeader: value,
+            title: context.l10n.youArrived,
+            onTapBurger: toggle,
+            buttons: [
+              AppButton(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                buttonColorScheme: ButtonColorScheme.primary,
+                primaryLabel: context.l10n.endTrip,
+                onTap: widget.onEndTripPressed,
+              ),
+              AppButton(
+                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                buttonColorScheme: ButtonColorScheme.tertiary,
+                primaryLabel: context.l10n.buildAnotherRoute,
+                onTap: widget.onBuildAnotherRoutePressed,
+              ),
+            ],
+            onTapRoute: widget.onTapRoute,
           ),
         ),
-      );
+      ),
+    );
+  }
 
   void toggle() {
     final _isExpanded = widget.expansionNotifier.value;

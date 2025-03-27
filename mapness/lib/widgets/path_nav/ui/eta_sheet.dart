@@ -200,9 +200,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             )
           ],
           onTapBurger: toggle,
-          // TODO(scroollocker): discuss with team and create here correct logic
-          onTapSearch: widget.onSearchPressed ?? () {},
-          onTapRoute: widget.onSearchPressed != null ? null : widget.onTapRoute,
+          isSearchShowing: !landscape,
+          onTapSearch: widget.onSearchPressed,
+          onTapRoute: widget.onTapRoute,
         ),
       ),
     );
