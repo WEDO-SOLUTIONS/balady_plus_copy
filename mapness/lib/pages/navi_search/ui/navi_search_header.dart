@@ -1,11 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/search/models/search_state.dart';
-import 'package:mapness/features/search/providers/search.dart';
-import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 
 class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> {
@@ -25,49 +21,38 @@ class NaviSearchHeader extends BottomSheetStateComponent<ThreeStateBottomSheet> 
     final bottomPadding = interpolation == 0.0 && state == ThreeStateBottomSheet.hidden ? (Spacing.$8x) : (Spacing.$4x);
 
     return Consumer(
-      builder: (context, ref, child) {
-        final searchState = ref.watch(searchProvider(SearchScopeEnum.map.value));
-
-        final color = state == ThreeStateBottomSheet.hidden
-            ? backgroundColor
-            : switch (searchState) {
-                SearchStateHistory() => backgroundColor,
-                _ => context.colorsV3.backgroundSurface4,
-              };
-
-        return Container(
-          decoration: BoxDecoration(
-            color: color,
-            borderRadius: const BorderRadius.only(
-              topRight: Radius.circular(16),
-              topLeft: Radius.circular(16),
+      builder: (context, ref, child) => Container(
+        decoration: BoxDecoration(
+          color: backgroundColor,
+          borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(16),
+            topLeft: Radius.circular(16),
+          ),
+        ),
+        child: Column(
+          children: [
+            ColoredBox(
+              color: backgroundColor,
+              child: const SizedBox(
+                height: 24,
+                width: double.infinity,
+                child: Align(
+                  alignment: Alignment.topCenter,
+                  child: Padding(padding: EdgeInsets.only(top: Spacing.$2x), child: Dragger()),
+                ),
+              ),
             ),
-          ),
-          child: Column(
-            children: [
-              ColoredBox(
-                color: color,
-                child: const SizedBox(
-                  height: 24,
-                  width: double.infinity,
-                  child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Padding(padding: EdgeInsets.only(top: Spacing.$2x), child: Dragger()),
-                  ),
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: bottomPadding),
+              child: MapSearchBar(
+                requestFocus: requestFocus,
+                onClose: onClose,
+                isCloseButton: interpolation == 0.0 && state == ThreeStateBottomSheet.hidden,
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: bottomPadding),
-                child: MapSearchBar(
-                  requestFocus: requestFocus,
-                  onClose: onClose,
-                  isCloseButton: interpolation == 0.0 && state == ThreeStateBottomSheet.hidden,
-                ),
-              ),
-            ],
-          ),
-        );
-      },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
