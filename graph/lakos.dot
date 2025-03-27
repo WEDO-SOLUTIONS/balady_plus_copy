@@ -3983,6 +3983,7 @@ digraph "" {
   "/lib/pages/onboard/onboard_page.dart" -> "/lib/pages/stories/stories_page.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/entities/app_feedback/app_feedback_payload.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/entities/path_nav/models/path_nav_state.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
