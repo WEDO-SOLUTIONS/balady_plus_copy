@@ -353,6 +353,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _endTrip({VoidCallback? action}) async {
     _navigatorAlreadyStopped = true;
     await _stopActiveSharing();
+    await ref.read(cameraPaddingProvider.notifier).resetPadding();
 
     if (_navigationState.value != PathNavState.finished) {
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingHalfway);
