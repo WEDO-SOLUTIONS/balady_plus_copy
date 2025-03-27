@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
@@ -109,7 +110,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   @override
   void initState() {
     super.initState();
-
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.landscapeRight,
       DeviceOrientation.landscapeLeft,
@@ -124,7 +124,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   @override
   void deactivate() {
-    ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+    final appRouter = ref.read(appRouterProvider);
+    // Reset camera position to the center of the screen if the user navigates to another screen only
+    if (!appRouter.isRouteActive(PathNavRoute.name)) {
+      ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
+    }
     super.deactivate();
   }
 
@@ -191,7 +195,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     final dgisController = await ref.read(dgisControllerProvider.future);
 
     _naviEventsListener = dgisController.navigationEvents.listen(_naviEvent);
-    await dgisController.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.85));
     if (widget.initAction == PathNavPageInitAction.restoreFromState) {
       await restoreNavigationState();
     } else if (widget.initAction == PathNavPageInitAction.startNavigation) {
@@ -355,6 +358,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Future<void> _endTrip({VoidCallback? action}) async {
     _navigatorAlreadyStopped = true;
     await _stopActiveSharing();
+    await ref.read(cameraPaddingProvider.notifier).resetPadding();
 
     if (_navigationState.value != PathNavState.finished) {
       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingHalfway);
@@ -509,9 +513,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _moveCameraToUser() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
+    await dgisController.startFollowNavigation();
     if (position != null) {
       await cameraProvider.animateTo(
         CameraPositionMessage(
@@ -534,13 +540,18 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
   // Set padding to the camera to avoid the sheet overlaying the map
   void _setPaddingToCamera(double padding) {
-    if (MediaQuery.of(context).orientation == Orientation.portrait) {
-      final pixelSize = MediaQuery.of(context).devicePixelRatio;
-      ref.read(cameraPaddingProvider.notifier).setPadding(
-            CameraSetPaddingMessage(
-              bottomPadding: (pixelSize * padding).floor(),
-            ),
-          );
+    switch (MediaQuery.of(context).orientation) {
+      case Orientation.portrait:
+        {
+          final pixelSize = MediaQuery.of(context).devicePixelRatio;
+          ref.read(cameraPaddingProvider.notifier).setPadding(
+                CameraSetPaddingMessage(
+                  bottomPadding: (pixelSize * padding).floor(),
+                ),
+              );
+        }
+      case Orientation.landscape:
+        ref.read(cameraPaddingProvider.notifier).setPadding(CameraSetPaddingMessage());
     }
   }
 

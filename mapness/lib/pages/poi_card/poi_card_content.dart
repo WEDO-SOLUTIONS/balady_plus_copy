@@ -229,6 +229,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     PoiTabsType.info => SliverList(
                         delegate: SliverChildListDelegate(
                           [
+                            const SizedBox(height: Spacing.$4x),
                             FeedbackBannerCard(
                               imageAssetName: 'city_expert.png',
                               title: context.l10n.cityExpert,

@@ -112,16 +112,28 @@ class PathNavMapControls extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.all(uikit.Spacing.$4x).copyWith(top: uikit.Spacing.$3x),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Expanded(child: maneuverAndLimitWidget),
-                  uikit.Spacing.$5x.widthBox,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        maneuverAndLimitWidget,
+                        const Spacer(),
+                        if (navType == RouteSearchOptionsMessage.pedestrian)
+                          const Padding(
+                            padding: padding,
+                            child: IndoorControl(),
+                          ),
+                        const Spacer(flex: 3),
+                      ],
+                    ),
+                  ),
                   Column(
                     children: [
                       const TrafficParkingControl(parkingVisible: false),
                       const Spacer(),
-                      zoomControlWidget,
+                      const ZoomControl(),
                       const Spacer(),
                       compassControlWidget,
                       uikit.Spacing.$2x.heightBox,

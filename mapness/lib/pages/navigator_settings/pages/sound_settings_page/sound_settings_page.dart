@@ -26,21 +26,23 @@ class _SettingsPageState extends ConsumerState<SoundSettingsPage> {
       value: SystemUiOverlayStyle.dark,
       child: Material(
         color: colorsV2.backgroundSurface4,
-        child: Padding(
-          padding: const EdgeInsets.only(top: Spacing.$4x),
-          child: Scaffold(
-            appBar: BaladyTopBar.iconAndText(
-              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-              title: l10n.soundSettings,
-              textStyle: textStyleV3.bodyLargeSemiBold.copyWith(
-                color: colorsV2.foregroundDefault,
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x),
+            child: Scaffold(
+              appBar: BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                title: l10n.soundSettings,
+                textStyle: textStyleV3.bodyLargeSemiBold.copyWith(
+                  color: colorsV2.foregroundDefault,
+                ),
+                leading: ActionModel(
+                  onPressed: () => context.router.popForced(),
+                  icon: SystemIcons.arrowCornerLeftLarge,
+                ),
               ),
-              leading: ActionModel(
-                onPressed: () => context.router.popForced(),
-                icon: SystemIcons.arrowCornerLeftLarge,
-              ),
+              body: const SoundSettingsPageContent(),
             ),
-            body: const SoundSettingsPageContent(),
           ),
         ),
       ),
