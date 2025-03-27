@@ -233,6 +233,11 @@ class CommonFunctions {
 
   static final locationService = hms.FusedLocationProviderClient();
 
+
+  static Stream<hms.Location>? listenToHMSStream() {
+    return locationService.onLocationData;
+  }
+
   static Future<geo_locator.Position?> getLastLocationHuawei() async {
     await locationService.initFusedLocationService();
     final location = await locationService.getLastLocation();
@@ -1254,6 +1259,7 @@ class CommonFunctions {
     }
     return replaceArabicNumberWithEnglish(formattedDate);
   }
+
 
   static void launchMap(LatLng? location) async {
     if (location != null) {
