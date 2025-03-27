@@ -6,18 +6,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/pages/navigator_settings/pages/navigator_settings_page/navigator_settings_page_content.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/path_nav/ui/landscape/path_nav_orientation_redirect_wrapper.dart';
 
 @RoutePage()
 class NavigatorSettingsPage extends ConsumerWidget {
   const NavigatorSettingsPage({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => PathNavOrientationRedirectWrapper(
-        child: AnnotatedRegion<SystemUiOverlayStyle>(
-          value: SystemUiOverlayStyle.dark,
-          child: Material(
-            color: context.colorsV2.backgroundSurface4,
+  Widget build(BuildContext context, WidgetRef ref) => AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Material(
+          color: context.colorsV2.backgroundSurface4,
+          child: SafeArea(
             child: Padding(
               padding: const EdgeInsets.only(top: Spacing.$4x),
               child: Scaffold(

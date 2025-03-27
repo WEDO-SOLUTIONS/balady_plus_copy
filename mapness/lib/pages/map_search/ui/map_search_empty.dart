@@ -26,7 +26,7 @@ class MapSearchEmpty extends ConsumerWidget {
             ),
             const SizedBox(height: Spacing.$3x),
             Text(
-              context.l10n.searchTryToSearchForADifferentLocation,
+              context.l10n.addPlaceToMap,
               textAlign: TextAlign.center,
               style: context.textStyleV3.bodySmallRegular,
             ),

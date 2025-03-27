@@ -139,12 +139,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
               headerTitle: context.l10n.mapStyle,
               content: [
                 ContentRow(
-                  onTap: () => context.router.push(
-                    switch (MediaQuery.orientationOf(context)) {
-                      Orientation.portrait => const DarkMapRoute(),
-                      Orientation.landscape => const DarkMapLandscapeRoute(),
-                    },
-                  ),
+                  onTap: () => context.router.push(const DarkMapRoute()),
                   options: ContentRowOptions(
                     wrapperColor: context.color.surfaceBaseTertiary,
                     wrapperEnabled: true,
@@ -164,10 +159,7 @@ class NavigatorSettingsPageContent extends ConsumerWidget {
               headerTitle: context.l10n.soundAndAlerts,
               content: [
                 ContentRow(
-                  onTap: () => context.router.push(switch (MediaQuery.orientationOf(context)) {
-                    Orientation.portrait => const SoundSettingsRoute(),
-                    Orientation.landscape => const SoundSettingsLandscapeRoute(),
-                  }),
+                  onTap: () => context.router.push(const SoundSettingsRoute()),
                   options: ContentRowOptions(
                     titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
                       color: context.colorsV2.foregroundDefault,

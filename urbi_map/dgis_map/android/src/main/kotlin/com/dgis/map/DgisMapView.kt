@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import com.dgis.map.control_handlers.*
 import com.dgis.map.extensions.*
 import com.dgis.map.map_api.*
+import android.util.Log
 import io.flutter.FlutterInjector
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -923,6 +924,7 @@ class DgisMapView(
             desiredAccuracy: DesiredAccuracyMessage,
             callback: (Result<Unit>) -> Unit
     ) {
+        Log.d("HuaweiLocationProvider", "Huawei Location  onLocationPermissionGranted")
         locationSource.onPermissionGranted()
         locationSource.setDesiredAccuracy(desiredAccuracy.toSdkAccuracy())
         callback(Result.success(Unit))

@@ -1,14 +1,10 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
@@ -51,21 +47,6 @@ class EtaSheet extends ConsumerStatefulWidget {
 
 class _EtaSheetState extends ConsumerState<EtaSheet> {
   bool _isExpanded = false;
-
-  ///TODO: discuss to team and move to riverpod provider all the same cases
-  StreamSubscription<TapEvent>? _streamSubscription;
-
-  @override
-  void initState() {
-    _setupTapListener();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _streamSubscription?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,10 +123,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
               ),
             Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => context.router.push(switch (MediaQuery.orientationOf(context)) {
-                Orientation.portrait => const SoundSettingsRoute(),
-                Orientation.landscape => const SoundSettingsLandscapeRoute(),
-              }),
+              onTap: () => context.router.push(const SoundSettingsRoute()),
               options: ContentRowOptions(
                 subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                   color: color.textAndIconsBaseSecondary,
@@ -184,12 +162,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ),
             Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => context.router.push(
-                switch (MediaQuery.orientationOf(context)) {
-                  Orientation.portrait => const NavigatorSettingsRoute(),
-                  Orientation.landscape => const NavigatorSettingsLandscapeRoute(),
-                },
-              ),
+              onTap: () => context.router.push(const NavigatorSettingsRoute()),
               options: ContentRowOptions(
                 titleStyle: textStyleV3.bodyLargeRegular.copyWith(
                   color: colorsV2.foregroundDefault,
@@ -227,9 +200,9 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             )
           ],
           onTapBurger: toggle,
-          // TODO(scroollocker): discuss with team and create here correct logic
-          onTapSearch: widget.onSearchPressed ?? () {},
-          onTapRoute: widget.onSearchPressed != null ? null : widget.onTapRoute,
+          isSearchShowing: !landscape,
+          onTapSearch: widget.onSearchPressed,
+          onTapRoute: widget.onTapRoute,
         ),
       ),
     );
@@ -243,15 +216,5 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
         props: {
           'isExpanded': _isExpanded,
         });
-  }
-
-  void _setupTapListener() {
-    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
-      if (context.router.isRouteActive(PathNavRoute.name)) {
-        if (_isExpanded) {
-          ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-        }
-      }
-    });
   }
 }

@@ -1,6 +1,6 @@
-import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/src/components/text_input/input_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
@@ -116,51 +116,36 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     _inputErrorState =
         (hasNoFocusWithError || exceedsMaxLength) ? BaladyInputState.error : BaladyInputState.defaultValue;
 
-    return Column(
-      children: [
-        Row(
-          children: [
-            Flexible(
-              child: WidgetLabel(
-                isRequired: widget.isRequired,
-                label: widget.labelText,
-                labelStyle: context.textStyleV3.captionMediumRegular.copyWith(
-                  color: context.colorsV2.foregroundDefault,
-                ),
-              ),
-            ),
+    return Directionality(
+      textDirection: direction,
+      child: BaladyTextInput(
+        label: widget.labelText != null ? BaladyInputLabel(text: widget.labelText!) : null,
+        inputState: _inputErrorState,
+        controller: _controller,
+        config: BaladyInputConfig(
+          isDisposed: false,
+          textAlign: textAlign,
+          focusNode: widget.focusNode,
+          hintText: widget.hintText,
+          background: BaladyInputBackground.color,
+          fillColor: context.colorsV2.neutralContainerDefault,
+          autovalidateMode: AutovalidateMode.onUnfocus,
+          allowedInputPattern: widget.allowedInputPattern,
+          maxLines: widget.maxLines,
+          keyboardType: widget.keyboardType,
+          onChanged: _onChanged,
+          inputFormatters: [
+            if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
           ],
         ),
-        Directionality(
-          textDirection: direction,
-          child: BaladyTextInput(
-            inputState: _inputErrorState,
-            controller: _controller,
-            config: BaladyInputConfig(
-              isDisposed: false,
-              textAlign: textAlign,
-              focusNode: widget.focusNode,
-              hintText: widget.hintText,
-              fillColor: context.colorsV2.backgroundSurface1,
-              autovalidateMode: AutovalidateMode.onUnfocus,
-              allowedInputPattern: widget.allowedInputPattern,
-              maxLines: widget.maxLines,
-              keyboardType: widget.keyboardType,
-              onChanged: _onChanged,
-              inputFormatters: [
-                if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
-              ],
-            ),
-            suffixConfig: widget.type == FeedbackTextType.phone
-                ? const BaladyInputAffixWidget(widget: SizedBox.shrink(), width: 0)
-                : null,
-            supportingText: BaladySupportingText(
-              maxLength: widget.maxLength,
-              text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText,
-            ),
-          ),
+        suffixConfig: widget.type == FeedbackTextType.phone
+            ? const BaladyInputAffixWidget(widget: SizedBox.shrink(), width: 0)
+            : null,
+        supportingText: BaladySupportingText(
+          maxLength: widget.maxLength,
+          text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText,
         ),
-      ],
+      ),
     );
   }
 }
