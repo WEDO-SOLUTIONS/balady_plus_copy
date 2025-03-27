@@ -2,7 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
-/// Saudi Pass color¬s overriding for [Chips] from uikit
+/// Saudi Pass colors overriding for [Chips] from uikit
 class ChipsLocalWidget extends StatelessWidget {
   const ChipsLocalWidget({
     required this.onTap,
