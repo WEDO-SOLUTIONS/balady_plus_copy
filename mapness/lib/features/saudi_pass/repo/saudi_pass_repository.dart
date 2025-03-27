@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
@@ -74,6 +75,12 @@ class SaudiPassRepository {
     final requestHeaders = requestOptionsIntercepted.headers..removeWhere((key, value) => value is! String);
 
     return (url: requestOptionsIntercepted.uri.toString(), headers: requestHeaders.cast());
+  }
+
+  Future<Preferences> getPreferences() async {
+    final response = await _dio.get('/preferences');
+
+    return GetPreferencesBody.fromJson(response.data).dataOrThrow();
   }
 }
 

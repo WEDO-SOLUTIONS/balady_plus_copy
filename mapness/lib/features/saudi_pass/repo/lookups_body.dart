@@ -44,18 +44,18 @@ class Lookups {
 
 @immutable
 @noRenameNoToJson
-class _NameId {
+class NameId {
   final String id;
   final String name;
 
-  const _NameId({required this.id, required this.name});
+  const NameId({required this.id, required this.name});
 
-  _NameId._fromInstance(_NameId nameId)
+  NameId._fromInstance(NameId nameId)
       : id = nameId.id,
         name = nameId.name;
 
   @override
-  bool operator ==(covariant _NameId other) =>
+  bool operator ==(covariant NameId other) =>
       identical(this, other) || runtimeType == other.runtimeType && id == other.id;
 
   @override
@@ -65,32 +65,32 @@ class _NameId {
   String toString() => '{id: $id, name: $name}';
 }
 
-class AgeRange extends _NameId {
+class AgeRange extends NameId {
   AgeRange.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
-class City extends _NameId {
+class City extends NameId {
   City.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
-class RecommendedType extends _NameId {
+class RecommendedType extends NameId {
   RecommendedType.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
-class Gender extends _NameId {
+class Gender extends NameId {
   Gender.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
-class Category extends _NameId {
+class Category extends NameId {
   Category.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
-class OfferType extends _NameId {
+class OfferType extends NameId {
   OfferType.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
 @noRenameNoToJson
-class OfferProvider extends _NameId {
+class OfferProvider extends NameId {
   final String logo;
 
   const OfferProvider({required this.logo, required super.id, required super.name});
