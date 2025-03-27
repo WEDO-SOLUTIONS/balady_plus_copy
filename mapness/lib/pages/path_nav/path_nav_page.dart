@@ -507,9 +507,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   }
 
   Future<void> _moveCameraToUser() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
     final position = ref.read(locationProvider);
     final cameraProvider = ref.read(cameraPositionProvider.notifier);
 
+    await dgisController.startFollowNavigation();
     if (position != null) {
       await cameraProvider.animateTo(
         CameraPositionMessage(
