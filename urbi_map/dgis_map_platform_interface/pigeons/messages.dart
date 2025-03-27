@@ -1426,6 +1426,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1436,6 +1437,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1446,6 +1448,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1456,6 +1459,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1472,6 +1476,7 @@ abstract class MapApi {
     String queryText,
     List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
+    String? locale,
   );
 
   @async

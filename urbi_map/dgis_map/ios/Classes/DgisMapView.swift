@@ -501,7 +501,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             completion: completion
         )
     }
-    func searchByCategory(category: SearchCategoryMessage, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
+    func searchByCategory(category: SearchCategoryMessage, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64, locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
   
         guard let searchHandler = self.searchHandler else {
             completion(  Result.failure( FlutterError(
@@ -520,6 +520,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 weekTimeMessage: weekTime,
                 sortingType: sortingType,
                 pageSize: Int32(pageSize),
+                locale: locale,
                 completion: completion
             )
             return
@@ -533,6 +534,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
                 weekTimeMessage: weekTime,
                 sortingType: sortingType,
                 pageSize: Int32(pageSize),
+                locale: locale,
                 completion: completion
             )
             return
@@ -545,11 +547,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: Int32(pageSize),
+            locale: locale,
             completion: completion
         )
     }
 
-    func searchByRubrics(rubrics: [Int64], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
+    func searchByRubrics(rubrics: [Int64], spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64,  locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
         guard let searchHandler = self.searchHandler else {
             completion(  Result.failure( FlutterError(
                 code: "IllegalArgumentException",
@@ -566,6 +569,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: Int32(pageSize),
+            locale: locale,
             completion: completion
         )
     }
@@ -590,7 +594,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         )
     }
     
-    func search(queryText: String, categories: SearchCategoriesMessage?, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
+    func search(queryText: String, categories: SearchCategoriesMessage?, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64,  locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
         guard let searchHandler = self.searchHandler else {
             completion(
                 Result.failure(
@@ -612,11 +616,12 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: Int32(pageSize),
+            locale: locale,
             completion: completion
         )
     }
     
-    func searchByQuery(query: SearchQueryMessage, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
+    func searchByQuery(query: SearchQueryMessage, spatialRestriction: [GeoPointMessage]?, weekTime: WeekTimeSearchMessage?, searchRect: GeoRectMessage?, sortingType: SortingTypeMessage, pageSize: Int64,  locale: String?, completion: @escaping (Result<SearchResultMessage, any Error>) -> Void) {
         guard let searchHandler = self.searchHandler else {
             completion(
                 Result.failure(
@@ -635,6 +640,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             weekTimeMessage: weekTime,
             sortingType: sortingType,
             pageSize: Int32(pageSize),
+            locale: locale,
             completion: completion
         )
     }
@@ -686,7 +692,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         searchHandler.releasePage(pageId, completion: completion)
     }
     
-    func fetchSuggests(queryText: String, allowedResultTypes: [SuggestedTypeMessage_]?, searchRect: GeoRectMessage?, completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void) {
+    func fetchSuggests(queryText: String, allowedResultTypes: [SuggestedTypeMessage_]?, searchRect: GeoRectMessage?,  locale: String?, completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void) {
 
         guard let searchHandler = self.searchHandler else {
             completion(
@@ -704,6 +710,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             queryText: queryText,
             allowedResultTypes: allowedResultTypes,
             searchGeoRect: searchRect?.geoRect,
+            locale: locale,
             completion: completion
         )
     }

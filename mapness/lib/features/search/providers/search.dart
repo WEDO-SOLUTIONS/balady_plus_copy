@@ -63,7 +63,6 @@ class Search extends _$Search {
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
     _currentQueryLocale = null;
-    resetLocale();
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -87,7 +86,7 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
-      // await _setUpLocale(query);
+      await _setUpLocale(query);
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -112,6 +111,7 @@ class Search extends _$Search {
         dgisController.fetchSuggest(
           query,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -144,6 +144,7 @@ class Search extends _$Search {
     }
     try {
       state = SearchStateLoading(searchText: searchQuery);
+      await _setUpLocale(searchQuery);
 
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
@@ -171,6 +172,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -201,6 +203,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query);
+      await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
       _previousQuery = query;
@@ -228,6 +231,7 @@ class Search extends _$Search {
           // TODO(Dmitrii): Search improved but we have to test it more so we could return `_getRestrictionFromRect()` here
           spatialRestriction: _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -256,6 +260,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
+      await _setUpLocale(text);
 
       _previousType = SearchType.searchByQuery;
       _previousQuery = text;
@@ -283,6 +288,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -420,24 +426,11 @@ class Search extends _$Search {
   }
 
   Future<void> _setUpLocale(String query) async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
     final currentLang = ref.read(appLanguageProvider).languageCode;
     final localeOfRequest = LanguageDetector.detectLanguageConLocale(query, currentLang);
 
     if (localeOfRequest != _currentQueryLocale) {
       _currentQueryLocale = localeOfRequest;
-      if (localeOfRequest != SearchRequestLang.unknown) {
-        final localeOfRequestStr = localeOfRequest.localeForSDK;
-        if (localeOfRequestStr != null) {
-          await dgisController.overrideLocales([localeOfRequestStr]);
-        }
-      }
     }
-  }
-
-  Future<void> resetLocale() async {
-    final dgisController = await ref.read(dgisControllerProvider.future);
-    final currentLang = ref.read(appLanguageProvider).languageCode;
-    await dgisController.overrideLocales([currentLang]);
   }
 }

@@ -494,6 +494,7 @@ class DgisMapView(
             searchRect: GeoRectMessage?,
             sortingType: SortingTypeMessage,
             pageSize: Long,
+            locale: String?,
             callback: (Result<SearchResultMessage>) -> Unit
     ) {
         searchHandler?.search(
@@ -504,6 +505,7 @@ class DgisMapView(
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
+                locale = locale,
                 callback = callback
         )
     }
@@ -515,6 +517,7 @@ class DgisMapView(
             searchRect: GeoRectMessage?,
             sortingType: SortingTypeMessage,
             pageSize: Long,
+            locale: String?,
             callback: (Result<SearchResultMessage>) -> Unit
     ) {
         searchHandler?.searchByQuery(
@@ -524,6 +527,7 @@ class DgisMapView(
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
+                locale = locale,
                 callback = callback
         )
     }
@@ -535,6 +539,7 @@ class DgisMapView(
             searchRect: GeoRectMessage?,
             sortingType: SortingTypeMessage,
             pageSize: Long,
+            locale: String?,
             callback: (Result<SearchResultMessage>) -> Unit
     ) {
         if (category == SearchCategoryMessage.PARKS) {
@@ -544,6 +549,7 @@ class DgisMapView(
                     weekTimeMessage = weekTime,
                     sortingType = sortingType,
                     pageSize = pageSize.toInt(),
+                    locale = locale,
                     callback = callback
             )
             return
@@ -556,6 +562,7 @@ class DgisMapView(
                     weekTimeMessage = weekTime,
                     sortingType = sortingType,
                     pageSize = pageSize.toInt(),
+                    locale = locale,
                     callback = callback
             )
             return
@@ -568,6 +575,7 @@ class DgisMapView(
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
+                locale = locale,
                 callback = callback
         )
     }
@@ -579,6 +587,7 @@ class DgisMapView(
             searchRect: GeoRectMessage?,
             sortingType: SortingTypeMessage,
             pageSize: Long,
+            locale: String?,
             callback: (Result<SearchResultMessage>) -> Unit
     ) {
         searchHandler?.searchByCategories(
@@ -588,6 +597,7 @@ class DgisMapView(
                 weekTimeMessage = weekTime,
                 sortingType = sortingType,
                 pageSize = pageSize.toInt(),
+                locale = locale,
                 callback = callback
         )
     }
@@ -608,12 +618,14 @@ class DgisMapView(
             queryText: String,
             allowedResultTypes: List<SuggestedTypeMessage_>?,
             searchRect: GeoRectMessage?,
+            locale: String?,
             callback: (Result<SuggestResultMessage>) -> Unit
     ) {
         searchHandler?.fetchSuggests(
                 queryText = queryText,
                 allowedResultTypes = allowedResultTypes,
                 searchGeoRect = searchRect?.toGeoRect(),
+                locale = locale,
                 callback = callback
         )
     }
