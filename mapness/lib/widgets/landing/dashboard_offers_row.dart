@@ -16,7 +16,7 @@ class DashboardOffersRow extends StatelessWidget {
         children: [
           GestureDetector(
             onTap: () {
-              // TODO(Sergei): open offers page
+              // TODO: open offers page
             },
             child: Row(
               children: [
@@ -47,7 +47,7 @@ class DashboardOffersRow extends StatelessWidget {
                   return _DashboardOffersCard(
                       offersGroup: group,
                       onTap: () {
-                        // TODO(Sergei): open offers page with offers group
+                        // TODO: open offers page with offers group(categories)
                       });
                 },
                 separatorBuilder: (context, index) => Spacing.$2x.widthBox,
