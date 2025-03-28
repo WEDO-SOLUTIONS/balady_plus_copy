@@ -50,6 +50,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
     final eta = ref.watch(pathNavEtaProvider);
     final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
@@ -81,6 +82,10 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       backgroundColor: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
+          padding: EdgeInsets.only(
+              left: _isExpanded ? 0 : Spacing.$4x,
+              right: _isExpanded ? 0 : Spacing.$4x,
+              bottom: _isExpanded ? 0 : bottomPadding),
           contentColor: colorsV2.backgroundSurface4,
           enabledHeader: _isExpanded,
           distanceChild: NaviChildModel(
@@ -135,10 +140,6 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 wrapperEnabled: true,
                 title: l10n.voiceInstruction,
                 subtitle: _subtitleVoiceInstruction,
-                padding: const EdgeInsets.symmetric(
-                  vertical: Spacing.$4x,
-                  horizontal: Spacing.$4x,
-                ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
@@ -174,10 +175,6 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                   SystemIcons.settings,
                   color: color.textAndIconsBaseSecondary,
                 ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: Spacing.$3x,
-                  horizontal: Spacing.$4x,
-                ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
@@ -186,18 +183,17 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
               ),
             ),
-            Spacing.$3x.heightBox,
           ],
           buttons: [
             Container(
               color: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
-              padding: const EdgeInsets.all(Spacing.$4x),
+              padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: bottomPadding),
               child: AppButton(
                 buttonColorScheme: ButtonColorScheme.warning,
                 primaryLabel: l10n.endTrip,
                 onTap: widget.onEndTripPressed,
               ),
-            )
+            ),
           ],
           onTapBurger: toggle,
           isSearchShowing: !landscape,

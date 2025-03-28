@@ -32,6 +32,8 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
   Widget build(BuildContext context) {
     final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final bottomPadding = MediaQuery.of(context).padding.bottom;
+
     return ValueListenableBuilder(
       valueListenable: widget.expansionNotifier,
       builder: (context, value, child) => EtaSheetWrapper(
@@ -39,6 +41,7 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
         onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
+            padding: EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding),
             isLeadingIconAvailable: !landscape,
             onSearchTap: widget.onSearchPressed,
             enabledHeader: value,

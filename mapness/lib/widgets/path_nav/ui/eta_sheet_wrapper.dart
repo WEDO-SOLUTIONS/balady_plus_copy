@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
@@ -18,9 +17,6 @@ class EtaSheetWrapper extends StatelessWidget {
   final VoidCallback? onBetterRouteReject;
   final Color? backgroundColor;
 
-  static const curve = BaseRoadPanel.animationCurve;
-  static const duration = Duration(milliseconds: 700);
-
   const EtaSheetWrapper({
     required this.child,
     required this.isExpanded,
@@ -33,70 +29,39 @@ class EtaSheetWrapper extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
-    final media = MediaQuery.of(context);
-    double bottomPadding = media.padding.bottom;
-
-    if (Platform.isAndroid) {
-      bottomPadding += Spacing.$6x;
-    }
-
-    return MeasureSize(
-      onChange: (size) {
-        // This method called only if we want to rebuild (expand) our widget
-        onSizeChanged?.call(size);
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (betterRouteDurationProfit != null)
-            ValueListenableBuilder(
-              valueListenable: betterRouteDurationProfit!,
-              builder: (context, duration, child) => duration != null
-                  ? Padding(
-                      padding: const EdgeInsets.only(
-                        left: Spacing.$4x,
-                        right: Spacing.$4x,
-                        bottom: Spacing.$3x,
-                      ),
-                      child: _BetterRouteButton(
-                        title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
-                        onTap: onBetterRouteAccept,
-                        onCloseTap: onBetterRouteReject,
-                      ),
-                    )
-                  : const SizedBox.shrink(),
-            ),
-          Flexible(
-            child: Padding(
-              padding: EdgeInsets.only(top: isExpanded ? Spacing.$3x : 0),
-              child: Material(
-                color: isExpanded ? backgroundColor ?? Colors.white : Colors.transparent,
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(16),
-                  topRight: Radius.circular(16),
-                ),
-                child: AnimatedPadding(
-                  padding: EdgeInsets.only(
-                    left: isExpanded ? 0 : Spacing.$4x,
-                    right: isExpanded ? 0 : Spacing.$4x,
-                    bottom: bottomPadding,
-                  ),
-                  duration: duration,
-                  curve: curve,
-                  child: SizedBox(
-                    width: double.infinity,
-                    child: child,
-                  ),
-                ),
+  Widget build(BuildContext context) => MeasureSize(
+        onChange: (size) {
+          // This method called only if we want to rebuild (expand) our widget
+          onSizeChanged?.call(size);
+        },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (betterRouteDurationProfit != null)
+              ValueListenableBuilder(
+                valueListenable: betterRouteDurationProfit!,
+                builder: (context, duration, child) => duration != null
+                    ? Padding(
+                        padding: const EdgeInsets.only(
+                          left: Spacing.$4x,
+                          right: Spacing.$4x,
+                          bottom: Spacing.$3x,
+                        ),
+                        child: _BetterRouteButton(
+                          title: context.l10n.betterRouteFound(max((duration / 60).round(), 1)),
+                          onTap: onBetterRouteAccept,
+                          onCloseTap: onBetterRouteReject,
+                        ),
+                      )
+                    : const SizedBox.shrink(),
               ),
+            Material(
+              color: Colors.transparent,
+              child: child,
             ),
-          ),
-        ],
-      ),
-    );
-  }
+          ],
+        ),
+      );
 }
 
 // TODO(Sergei): legacy designed local component, replace with uikit component (will be created in future)
