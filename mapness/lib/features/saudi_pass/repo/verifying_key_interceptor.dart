@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:mapness/_features/lifestyle_layers/data/common_function.dart';
+import 'package:mapness/shared/utils/common_function.dart';
 
 class VerifyingKeyInterceptor extends QueuedInterceptorsWrapper {
   VerifyingKeyInterceptor();
