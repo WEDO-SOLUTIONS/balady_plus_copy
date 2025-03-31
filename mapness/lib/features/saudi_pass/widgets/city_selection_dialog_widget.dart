@@ -1,33 +1,32 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/city_selection_dialog.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
-class CitySelectionDialogWidget extends StatefulWidget {
+class CitySelectionDialogWidget extends HookWidget {
   final CitySelectionDialog citySelectionDialog;
 
   const CitySelectionDialogWidget(this.citySelectionDialog, {super.key});
 
   @override
-  State<CitySelectionDialogWidget> createState() => _CitySelectionDialogWidgetState();
-}
-
-class _CitySelectionDialogWidgetState extends State<CitySelectionDialogWidget> {
-  CitySelectionDialog get citySelectionDialog => widget.citySelectionDialog;
-
-  late final scrollController = StatelessBottomSheetController(
-    onClose: (_) => citySelectionDialog.onCrossTap(),
-    heightModel: BottomSheetAspectRatioHeightModel(1.0),
-  );
-
-  late final textEditingController = TextEditingController()..addListener(inputListener);
-
-  void inputListener() => citySelectionDialog.onSearchInput(textEditingController.text);
-
-  @override
   Widget build(BuildContext context) {
+    final scrollController = useStatelessBottomsheetController(
+      onClose: (_) => citySelectionDialog.onCrossTap(),
+      heightModel: BottomSheetAspectRatioHeightModel(1.0),
+    );
+
+    final textEditingController = useTextEditingController();
+
+    useEffect(() {
+      void inputListener() => citySelectionDialog.onSearchInput(textEditingController.text);
+      textEditingController.addListener(inputListener);
+      return textEditingController.dispose;
+    }, [textEditingController]);
+
     final headerWidget = Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
