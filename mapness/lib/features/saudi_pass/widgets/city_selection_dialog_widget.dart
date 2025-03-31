@@ -1,0 +1,160 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
+import 'package:mapness/features/saudi_pass/views/city_selection_dialog.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
+
+class CitySelectionDialogWidget extends StatefulWidget {
+  final CitySelectionDialog citySelectionDialog;
+
+  const CitySelectionDialogWidget(this.citySelectionDialog, {super.key});
+
+  @override
+  State<CitySelectionDialogWidget> createState() => _CitySelectionDialogWidgetState();
+}
+
+class _CitySelectionDialogWidgetState extends State<CitySelectionDialogWidget> {
+  CitySelectionDialog get citySelectionDialog => widget.citySelectionDialog;
+
+  late final scrollController = StatelessBottomSheetController(
+    onClose: (_) => citySelectionDialog.onCrossTap(),
+    heightModel: BottomSheetAspectRatioHeightModel(1.0),
+  );
+
+  late final textEditingController = TextEditingController()..addListener(inputListener);
+
+  void inputListener() => citySelectionDialog.onSearchInput(textEditingController.text);
+
+  @override
+  Widget build(BuildContext context) {
+    final headerWidget = Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyleV3.h2SemiBold),
+        CustomCloseButton(onClose: citySelectionDialog.onCrossTap),
+      ],
+    );
+
+    final inputWidget = BaladySearchWithBackButton(
+      searchInput: BaladyInput.searchV2(
+        controller: textEditingController,
+        hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
+      ),
+    );
+
+    final listWidget = ListenableBuilder(
+      listenable: citySelectionDialog,
+      builder: (context, _) {
+        final searchViews = citySelectionDialog.searchViews;
+
+        return ListView.builder(
+          itemBuilder: (_, index) => SearchViewWidget(searchViews.elementAt(index), citySelectionDialog),
+          itemCount: searchViews.length,
+        );
+      },
+    );
+
+    const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
+
+    Color backgroundColorDelegate(StatelessBottomSheetController controller) => context.colorsV3.screenOverlayDimming40
+        .withOpacity(Curves.easeIn.transform(controller.aspectRatio.clamp(0, 1)) * 0.7);
+
+    return SafeArea(
+      child: StatelessBottomSheet(
+        backgroundColorDelegate: backgroundColorDelegate,
+        startConfig: BottomSheetStart.instant,
+        scrollController: scrollController,
+        header: Padding(
+          padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
+          child: headerWidget,
+        ),
+        sliverBeforeContent: SliverFillRemaining(
+          child: Column(
+            children: [
+              Padding(padding: horizontalPadding, child: inputWidget),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$4x),
+                  child: listWidget,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchViewWidget extends StatelessWidget {
+  final CitySelectionDialog citySelectionDialog;
+
+  final SearchView view;
+
+  const SearchViewWidget(this.view, this.citySelectionDialog, {super.key});
+
+  @override
+  Widget build(BuildContext context) => SizedBox(
+        height: AppSizes.l,
+        child: ContentRowV2(
+          onTap: view.onTap,
+          leading: Icon(
+            SystemIcons.search,
+            color: view.isMagnifierVisible ? context.colorsV2.foregroundMuted : Colors.transparent,
+          ),
+          text: ContentRowTextOptions(
+            titleOptions: ContentRowTextOption(
+              builder: (context) {
+                final color = context.colorsV2.foregroundDefault;
+                return Text.rich(
+                  TextSpan(
+                    children: highlightedTextSpans(
+                      source: view.title,
+                      search: citySelectionDialog.search,
+                      highlightStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: color),
+                      baseStyle: context.textStyleV3.bodySmallRegular.copyWith(color: color),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          isDividerEnabled: true,
+          supportTitleRTL: true,
+        ),
+      );
+}
+
+List<TextSpan> highlightedTextSpans({
+  required String source,
+  required String search,
+  required TextStyle highlightStyle,
+  required TextStyle baseStyle,
+}) {
+  if (search.isEmpty || !source.toLowerCase().contains(search.toLowerCase())) {
+    return [TextSpan(text: source, style: baseStyle)];
+  }
+
+  final matches = search.toLowerCase().allMatches(source.toLowerCase());
+
+  int lastMatchEnd = 0;
+
+  final List<TextSpan> children = [];
+  for (var i = 0; i < matches.length; i++) {
+    final match = matches.elementAt(i);
+
+    if (match.start != lastMatchEnd) {
+      children.add(TextSpan(text: source.substring(lastMatchEnd, match.start), style: baseStyle));
+    }
+
+    children.add(TextSpan(text: source.substring(match.start, match.end), style: highlightStyle));
+
+    if (i == matches.length - 1 && match.end != source.length) {
+      children.add(TextSpan(text: source.substring(match.end, source.length), style: baseStyle));
+    }
+
+    lastMatchEnd = match.end;
+  }
+  return children;
+}
