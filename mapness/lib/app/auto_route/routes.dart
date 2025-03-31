@@ -67,6 +67,11 @@ class Routes {
           page: PhotoViewerRoute.page,
         ),
         CustomRoute(
+          page: CitySelectionDialogRoute.page,
+          path: '/saudi_pass_city_selection_dialog',
+          opaque: false,
+        ),
+        CustomRoute(
           path: '/language_pick_sheet',
           page: LanguagePickSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
