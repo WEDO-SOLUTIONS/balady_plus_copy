@@ -1,4 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/entities/saudi_pass/offers_group_mapper.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
 
@@ -112,6 +114,11 @@ class Offer {
         TypeDetails.coupons => typeDetails.ratio,
         _ => null,
       };
+
+  OffersGroup get offerGroup {
+    final categoryIds = categories.map((e) => e.id).toList();
+    return OffersGroupMapper.fromCategoryIds(categoryIds);
+  }
 }
 
 @noRenameNoToJson

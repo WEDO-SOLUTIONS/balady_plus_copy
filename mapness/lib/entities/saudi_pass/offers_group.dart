@@ -3,47 +3,47 @@ import 'dart:ui';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum OffersGroup {
-  foodAndDrinks,
+  food,
   shopping,
   homeAndAuto,
   beautyAndHealth,
-  travelAndEntertainments,
+  entertainment,
   services,
 }
 
-extension OffersCategoryExtension on OffersGroup {
+extension OffersGroupExtension on OffersGroup {
   String title(AppLocalizations locale) => switch (this) {
-        OffersGroup.foodAndDrinks => locale.tastyDeals,
+        OffersGroup.food => locale.tastyDeals,
         OffersGroup.shopping => locale.styleForLess,
         OffersGroup.homeAndAuto => locale.homeAndAuto,
         OffersGroup.beautyAndHealth => locale.selfCare,
-        OffersGroup.travelAndEntertainments => locale.timeToRelax,
+        OffersGroup.entertainment => locale.timeToRelax,
         OffersGroup.services => locale.usefulServices,
       };
 
   String description(AppLocalizations locale) => switch (this) {
-        OffersGroup.foodAndDrinks => locale.tastyDealsDescription,
+        OffersGroup.food => locale.tastyDealsDescription,
         OffersGroup.shopping => locale.styleForLessDescription,
         OffersGroup.homeAndAuto => locale.homeAndAutoDescription,
         OffersGroup.beautyAndHealth => locale.selfCareDescription,
-        OffersGroup.travelAndEntertainments => locale.timeToRelaxDescription,
+        OffersGroup.entertainment => locale.timeToRelaxDescription,
         OffersGroup.services => locale.usefulServicesDescription,
       };
 
   String get imagePath {
     const pathPrefix = 'packages/mapness/assets/images';
     return switch (this) {
-      OffersGroup.foodAndDrinks => '$pathPrefix/basket.png',
+      OffersGroup.food => '$pathPrefix/basket.png',
       OffersGroup.shopping => '$pathPrefix/clock.png',
       OffersGroup.homeAndAuto => '$pathPrefix/car.png',
       OffersGroup.beautyAndHealth => '$pathPrefix/hearts.png',
-      OffersGroup.travelAndEntertainments => '$pathPrefix/plane.png',
+      OffersGroup.entertainment => '$pathPrefix/plane.png',
       OffersGroup.services => '$pathPrefix/books.png',
     };
   }
 
   List<Color> get color => switch (this) {
-        OffersGroup.foodAndDrinks => const [
+        OffersGroup.food => const [
             Color(0xFFF19F2F),
             Color(0xFFD6650E),
           ],
@@ -59,7 +59,7 @@ extension OffersCategoryExtension on OffersGroup {
             Color(0xFF3DC4BA),
             Color(0xFF04756D),
           ],
-        OffersGroup.travelAndEntertainments => const [
+        OffersGroup.entertainment => const [
             Color(0xFFB180E8),
             Color(0xFF7035AE),
           ],

@@ -82,6 +82,13 @@ class Gender extends NameId {
 }
 
 class Category extends NameId {
+  static const food = 'food';
+  static const shopping = 'shopping';
+  static const entertainment = 'entertainment';
+  static const beautyAndHealth = 'beautyAndHealth';
+  static const homeAndAuto = 'homeAndAuto';
+  static const services = 'services';
+
   Category.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
