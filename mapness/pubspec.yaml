@@ -121,6 +121,7 @@ dependencies:
   fast_immutable_collections: 11.0.0
   adjust_sdk: 5.0.2
   flutter_animate: ^4.3.0
+  flutter_gen: ^5.4.0
 
   # TODO: upgrade after pdfx will be updated
   device_info_plus: 11.1.1
@@ -164,6 +165,7 @@ dev_dependencies:
   random_string: 2.3.1
   flutter_lints: 5.0.0
   # a tool for running code generators
+  flutter_gen_runner:
   build_runner: 2.4.13
   # the code generator
   riverpod_generator: 2.6.3
