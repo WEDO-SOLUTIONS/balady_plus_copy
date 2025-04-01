@@ -13,6 +13,7 @@ import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 
@@ -65,7 +66,7 @@ class MapSuggestList extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            'Suggested searches',
+            context.l10n.suggestedSearches,
             style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
           ),
           Padding(
@@ -98,7 +99,7 @@ class MapSuggestList extends ConsumerWidget {
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.secondary,
               primaryIcon: uikit.SystemIcons.search,
-              primaryLabel: 'Search more',
+              primaryLabel: context.l10n.searchMore,
               onTap: () {
                 final scope = context.read<SearchScope>();
                 final search = ref.read(searchProvider(scope.value).notifier);
