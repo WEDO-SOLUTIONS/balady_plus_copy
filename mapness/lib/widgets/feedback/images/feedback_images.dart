@@ -18,6 +18,7 @@ import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -100,7 +101,7 @@ class FeedbackImages extends StatelessWidget {
                     children: [
                       if (value.length < field.maxImages)
                         _AddImageButton(
-                          onTap: () => _handlePickImage(context, fieldState),
+                          onTap: () => _showImageSelectorDialog(context, fieldState),
                           size: size,
                         ),
                       ...value.indexed.map(
@@ -137,14 +138,37 @@ class FeedbackImages extends StatelessWidget {
         ],
       );
 
-  Future<void> _handlePickImage(BuildContext context, FormFieldState<IList<FileUpload>> fieldState) async {
-    if (await _isGalleryPermissionDenied()) {
-      await showPermissionDeniedDialog(context);
+  Future<void> _showImageSelectorDialog(BuildContext context, FormFieldState<IList<FileUpload>> fieldState) async {
+    final result = await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      showDragHandle: false,
+      builder: (context) => const FeedbackImageSelectorSheet(),
+    );
+
+    if (result == null) {
+      return;
+    }
+
+    if (!context.mounted) {
+      return;
+    }
+
+    await _handlePickImage(context: context, fieldState: fieldState, type: result);
+  }
+
+  Future<void> _handlePickImage(
+      {required BuildContext context,
+      required FormFieldState<IList<FileUpload>> fieldState,
+      required FeedbackImageSelectorType type}) async {
+    if (await _isPermissionDenied(type)) {
+      await showPermissionDeniedDialog(context, type);
       return;
     }
 
     final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage();
+    final images = await _pickedImage(type);
     if (images.isEmpty) {
       return;
     }
@@ -216,18 +240,35 @@ class FeedbackImages extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ),
-          onRetry: () => _handlePickImage(context, fieldState),
+          onRetry: () => _showImageSelectorDialog(context, fieldState),
         ),
       );
     }
     return filteredImages;
   }
 
-  Future<List<XFile>> _pickedImage() async {
-    final images = await ImagePicker().pickMultiImage(
+  Future<List<XFile>> _pickFromGallery() async => ImagePicker().pickMultiImage(
+        maxWidth: _maxImageResolution.toDouble(),
+        maxHeight: _maxImageResolution.toDouble(),
+      );
+
+  Future<List<XFile>> _pickFromCamera() async {
+    final image = await ImagePicker().pickImage(
+      source: ImageSource.camera,
       maxWidth: _maxImageResolution.toDouble(),
       maxHeight: _maxImageResolution.toDouble(),
     );
+    if (image == null) {
+      return [];
+    }
+    return [image];
+  }
+
+  Future<List<XFile>> _pickedImage(FeedbackImageSelectorType type) async {
+    final images = switch (type) {
+      FeedbackImageSelectorType.gallery => await _pickFromGallery(),
+      FeedbackImageSelectorType.camera => await _pickFromCamera(),
+    };
 
     return images;
   }
@@ -255,22 +296,25 @@ class FeedbackImages extends StatelessWidget {
     }
   }
 
-  Future<bool> _isGalleryPermissionDenied() async {
-    final Permission permission;
-
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if (androidInfo.version.sdkInt <= 32) {
-        permission = Permission.storage;
-      } else {
-        permission = Permission.photos;
-      }
-    } else {
-      permission = Permission.photos;
-    }
+  Future<bool> _isPermissionDenied(FeedbackImageSelectorType type) async {
+    final permission = await _getPermissionForType(type);
 
     final permissionStatus = await permission.request();
+
     return permissionStatus.isDenied || permissionStatus.isPermanentlyDenied;
+  }
+
+  Future<Permission> _getPermissionForType(FeedbackImageSelectorType type) async {
+    switch (type) {
+      case FeedbackImageSelectorType.camera:
+        return Permission.camera;
+      case FeedbackImageSelectorType.gallery:
+        if (Platform.isAndroid) {
+          final androidInfo = await DeviceInfoPlugin().androidInfo;
+          return androidInfo.version.sdkInt <= 32 ? Permission.storage : Permission.photos;
+        }
+        return Permission.photos;
+    }
   }
 }
 
@@ -296,7 +340,7 @@ class _AddImageButton extends StatelessWidget {
               color: context.colorsV2.backgroundSurface1,
               child: Center(
                 child: Icon(
-                  GeneralIcons.plusCircle,
+                  GeneralIcons.photo,
                   color: context.colorsV2.accentDefault,
                   size: size * .4,
                 ),
