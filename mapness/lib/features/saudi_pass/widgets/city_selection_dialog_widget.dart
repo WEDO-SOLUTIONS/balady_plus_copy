@@ -27,33 +27,6 @@ class CitySelectionDialogWidget extends HookWidget {
       return textEditingController.dispose;
     }, [textEditingController]);
 
-    final headerWidget = Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyleV3.h2SemiBold),
-        CustomCloseButton(onClose: citySelectionDialog.onCrossTap),
-      ],
-    );
-
-    final inputWidget = BaladySearchWithBackButton(
-      searchInput: BaladyInput.searchV2(
-        controller: textEditingController,
-        hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
-      ),
-    );
-
-    final listWidget = ListenableBuilder(
-      listenable: citySelectionDialog,
-      builder: (context, _) {
-        final searchViews = citySelectionDialog.searchViews;
-
-        return ListView.builder(
-          itemBuilder: (_, index) => SearchViewWidget(searchViews.elementAt(index), citySelectionDialog),
-          itemCount: searchViews.length,
-        );
-      },
-    );
-
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
     Color backgroundColorDelegate(StatelessBottomSheetController controller) => context.colorsV3.screenOverlayDimming40
@@ -66,16 +39,40 @@ class CitySelectionDialogWidget extends HookWidget {
         scrollController: scrollController,
         header: Padding(
           padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
-          child: headerWidget,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyleV3.h2SemiBold),
+              CustomCloseButton(onClose: citySelectionDialog.onCrossTap),
+            ],
+          ),
         ),
         sliverBeforeContent: SliverFillRemaining(
           child: Column(
             children: [
-              Padding(padding: horizontalPadding, child: inputWidget),
+              Padding(
+                padding: horizontalPadding,
+                child: BaladySearchWithBackButton(
+                  searchInput: BaladyInput.searchV2(
+                    controller: textEditingController,
+                    hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
+                  ),
+                ),
+              ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$4x),
-                  child: listWidget,
+                  child: ListenableBuilder(
+                    listenable: citySelectionDialog,
+                    builder: (context, _) {
+                      final searchViews = citySelectionDialog.searchViews;
+
+                      return ListView.builder(
+                        itemBuilder: (_, index) => SearchViewWidget(searchViews.elementAt(index), citySelectionDialog),
+                        itemCount: searchViews.length,
+                      );
+                    },
+                  ),
                 ),
               ),
             ],
