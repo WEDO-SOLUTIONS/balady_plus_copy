@@ -1,10 +1,11 @@
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 
-extension RouteParamsPointMapper on RouteParamsPoint {
+extension RouteParamsPointWithLabelMapper on RouteParamsPointWithLabel {
   EtaRoutePoint get etaPoint => EtaRoutePoint(
-        lat: latitude,
-        lon: longitude,
+        lat: value?.latitude,
+        lon: value?.longitude,
+        label: label,
       );
 }
 
@@ -15,4 +16,6 @@ extension EtaRoutePointMapper on EtaRoutePoint {
           latitude: lat!,
           longitude: lon!,
         );
+
+  String get analyticsLabel => label ?? '$lat,$lon';
 }

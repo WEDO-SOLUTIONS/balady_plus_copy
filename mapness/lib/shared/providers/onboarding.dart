@@ -16,7 +16,7 @@ class Onboarding extends _$Onboarding {
       setIsOnboardingShown(isOnboardingShown: false);
     }
 
-    return isOnboardingShown ?? false;
+    return false;
   }
 
   void setIsOnboardingShown({required bool isOnboardingShown}) {

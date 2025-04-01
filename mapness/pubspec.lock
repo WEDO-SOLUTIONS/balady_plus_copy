@@ -194,25 +194,25 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: b77ab001eaf2657853fb3b7e281bcaf2066a87cbfea7b94f740277e2ddb5c9b5
+      sha256: "59dbf4562d9e7de40ba265a15d760007fab911586bed329223058ef7501d88c8"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.46"
+    version: "0.0.52"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.1+327"
+    version: "3.12.3+268"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "992f88372b562827e09fcc7d464a65e59037da942dbf6220ca609d49d50ef06f"
+      sha256: "7a4b62c77741ac6b13049cc891aa757ee60be7c0bb919ff72b23e18d241066f9"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.2.5"
+    version: "3.2.7"
   battery_plus:
     dependency: transitive
     description:
@@ -1226,6 +1226,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
+  flutter_insider:
+    dependency: "direct main"
+    description:
+      name: flutter_insider
+      sha256: ea84c78fde10dc4aa02835d24a1f8c768a4b7ffba78d52a36dcd4ace048a2563
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.15.2+nh"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:
@@ -1294,26 +1302,26 @@ packages:
     dependency: transitive
     description:
       name: flutter_local_notifications
-      sha256: "49eeef364fddb71515bc78d5a8c51435a68bccd6e4d68e25a942c5e47761ae71"
+      sha256: ef41ae901e7529e52934feba19ed82827b11baa67336829564aeab3129460610
       url: "https://pub.dev"
     source: hosted
-    version: "17.2.3"
+    version: "18.0.1"
   flutter_local_notifications_linux:
     dependency: transitive
     description:
       name: flutter_local_notifications_linux
-      sha256: c49bd06165cad9beeb79090b18cd1eb0296f4bf4b23b84426e37dd7c027fc3af
+      sha256: "8f685642876742c941b29c32030f6f4f6dacd0e4eaecb3efbb187d6a3812ca01"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "5.0.0"
   flutter_local_notifications_platform_interface:
     dependency: transitive
     description:
       name: flutter_local_notifications_platform_interface
-      sha256: "85f8d07fe708c1bdcf45037f2c0109753b26ae077e9d9e899d55971711a4ea66"
+      sha256: "6c5b83c86bf819cdb177a9247a3722067dd8cc6313827ce7c77a4b238a26fd52"
       url: "https://pub.dev"
     source: hosted
-    version: "7.2.0"
+    version: "8.0.0"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -2244,6 +2252,14 @@ packages:
       url: "https://github.com/urbi-ae/open_file_plus"
     source: git
     version: "3.4.1+1"
+  otp_autofill:
+    dependency: transitive
+    description:
+      name: otp_autofill
+      sha256: "081a8366475db40c44f0582a34a779dbda0f54ac1f40a9b99dcd4b4546f025c2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   package_config:
     dependency: transitive
     description:
