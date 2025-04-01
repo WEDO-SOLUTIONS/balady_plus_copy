@@ -59,7 +59,7 @@ class PrefsContentWidget extends ConsumerWidget {
           if (prefsOffersView.isSetPreferencesOrOffersVisible) {
             return Padding(
               padding: const EdgeInsets.only(top: Spacing.$3x),
-              child: SetPreferencesPlaceholderWidget(action: auth.doAuth),
+              child: SetPreferencesPlaceholderWidget(action: prefsOffersView.tapGotoPreferences),
             );
           } else {
             return Column(

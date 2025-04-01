@@ -28,6 +28,8 @@ abstract class PrefsOffersView implements Listenable {
 
   void tapIconEdit();
 
+  void tapGotoPreferences();
+
   AsyncIterable<OfferView> get asyncIterableOffers;
 }
 

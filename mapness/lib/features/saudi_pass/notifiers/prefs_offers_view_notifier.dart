@@ -18,6 +18,11 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
     // TODO open user prefs
   }
 
+  @override
+  void tapGotoPreferences() {
+    // TODO open user prefs
+  }
+
   AsyncIterable<OfferView> createOffersAsyncIterable() {
     final chunked = OffersChunkedAsyncIterable.byPrefs(
       saudiPassRepository: saudiPassRepository,
