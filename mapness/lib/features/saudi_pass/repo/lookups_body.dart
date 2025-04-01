@@ -70,6 +70,8 @@ class AgeRange extends NameId {
 }
 
 class City extends NameId {
+  const City({required super.id, required super.name});
+
   City.fromJson(Map<String, dynamic> json) : super._fromInstance(_$NameIdFromJson(json));
 }
 
