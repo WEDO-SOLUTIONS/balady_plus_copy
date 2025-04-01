@@ -92,6 +92,33 @@ class Routes {
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
+        CustomRoute(
+          path: '/saudi_pass_offers_screen',
+          page: OffersScreenRoute.page,
+        ),
+        CustomRoute(
+          path: '/saudi_pass_favourite_offers_screen}',
+          page: FavouriteOffersScreenRoute.page,
+        ),
+        CustomRoute(
+          path: '/saudi_pass_type_selection_dialog',
+          page: TypeSelectionDialogRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: '/saudi_pass_category_selection_dialog',
+          page: CategorySelectionDialogRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: '/saudi_pass_sorting_selection_dialog',
+          page: SortingSelectionDialogRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: '/saudi_pass_settings_screen',
+          page: SettingsScreenRoute.page,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(
