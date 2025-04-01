@@ -1,22 +1,28 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/features/saudi_pass/providers/offers_screen_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class DashboardOffersRow extends StatelessWidget {
+class DashboardOffersRow extends ConsumerWidget {
   const DashboardOffersRow({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => Column(
+  Widget build(BuildContext context, WidgetRef ref) => Column(
         children: [
           GestureDetector(
             onTap: () {
-              // TODO: open offers page
+              context.router.push(
+                OffersScreenRoute(offersScreenNotifier: ref.watch(offersScreenRiverpodProvider())),
+              );
             },
             child: Row(
               children: [
@@ -47,7 +53,11 @@ class DashboardOffersRow extends StatelessWidget {
                   return _DashboardOffersCard(
                       offersGroup: group,
                       onTap: () {
-                        // TODO: open offers page with offers group(categories)
+                        context.router.push(
+                          OffersScreenRoute(
+                            offersScreenNotifier: ref.watch(offersScreenRiverpodProvider(offersGroups: {group})),
+                          ),
+                        );
                       });
                 },
                 separatorBuilder: (context, index) => Spacing.$2x.widthBox,
