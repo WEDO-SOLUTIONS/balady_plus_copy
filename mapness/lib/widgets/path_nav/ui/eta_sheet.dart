@@ -16,12 +16,12 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 
-import 'layout_size_wrapper.dart';
-
 class EtaSheet extends ConsumerStatefulWidget {
+  final AnimationInfo? animationInfo;
   final VoidCallback? onSearchPressed;
   final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
@@ -36,6 +36,7 @@ class EtaSheet extends ConsumerStatefulWidget {
     required this.onBetterRouteReject,
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
+    this.animationInfo,
     this.onSearchPressed,
     this.onTapRoute,
     super.key,
@@ -59,7 +60,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
     final voiceName = soundSettingsModel.voiceName;
     final l10n = context.l10n;
-    final colorsV2 = context.colorsV2;
+    final colorsV3 = context.colorsV3;
     final color = context.color;
     final textStyleV3 = context.textStyleV3;
     ref
@@ -74,20 +75,19 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
         voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
 
     return EtaSheetWrapper(
-      isExpanded: _isExpanded,
       onSizeChanged: widget.onSizeChanged,
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
-      backgroundColor: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           padding: EdgeInsets.only(
               left: _isExpanded ? 0 : Spacing.$4x,
               right: _isExpanded ? 0 : Spacing.$4x,
               bottom: _isExpanded ? 0 : bottomPadding),
-          contentColor: colorsV2.backgroundSurface4,
+          contentColor: landscape ? colorsV3.backgroundSurface1 : colorsV3.backgroundSurface4,
           enabledHeader: _isExpanded,
+          animationInfo: widget.animationInfo,
           distanceChild: NaviChildModel(
             description: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
             title: eta != null ? formatDistance(eta.distanceEta) : '--',
@@ -134,7 +134,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                   color: color.textAndIconsBaseSecondary,
                 ),
                 titleStyle: textStyleV3.bodyLargeMedium.copyWith(
-                  color: colorsV2.foregroundDefault,
+                  color: colorsV3.foregroundDefault,
                 ),
                 wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
@@ -166,7 +166,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
               onTap: () => context.router.push(const NavigatorSettingsRoute()),
               options: ContentRowOptions(
                 titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                  color: colorsV2.foregroundDefault,
+                  color: colorsV3.foregroundDefault,
                 ),
                 wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
@@ -185,14 +185,10 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ),
           ],
           buttons: [
-            Container(
-              color: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
-              padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: bottomPadding),
-              child: AppButton(
-                buttonColorScheme: ButtonColorScheme.warning,
-                primaryLabel: l10n.endTrip,
-                onTap: widget.onEndTripPressed,
-              ),
+            AppButton(
+              buttonColorScheme: ButtonColorScheme.warning,
+              primaryLabel: l10n.endTrip,
+              onTap: widget.onEndTripPressed,
             ),
           ],
           onTapBurger: toggle,

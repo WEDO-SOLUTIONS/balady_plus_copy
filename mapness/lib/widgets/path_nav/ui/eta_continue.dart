@@ -6,9 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
-
-import 'layout_size_wrapper.dart';
 
 class EtaContinue extends ConsumerWidget {
   final VoidCallback onTap;
@@ -34,7 +33,6 @@ class EtaContinue extends ConsumerWidget {
     }
 
     return EtaSheetWrapper(
-      isExpanded: false,
       onSizeChanged: onSizeChanged,
       child: Padding(
         padding: EdgeInsets.only(

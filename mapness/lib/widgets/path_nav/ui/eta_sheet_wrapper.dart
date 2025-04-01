@@ -10,17 +10,13 @@ import 'package:mapness/shared/ui/measure_size.dart';
 
 class EtaSheetWrapper extends StatelessWidget {
   final Widget child;
-  final bool isExpanded;
   final OnWidgetSizeChange? onSizeChanged;
   final ValueNotifier<int?>? betterRouteDurationProfit;
   final VoidCallback? onBetterRouteAccept;
   final VoidCallback? onBetterRouteReject;
-  final Color? backgroundColor;
 
   const EtaSheetWrapper({
     required this.child,
-    required this.isExpanded,
-    this.backgroundColor,
     this.onSizeChanged,
     this.betterRouteDurationProfit,
     this.onBetterRouteAccept,
