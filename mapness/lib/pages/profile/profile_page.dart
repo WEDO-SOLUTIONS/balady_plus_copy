@@ -33,8 +33,8 @@ class ProfilePage extends HookConsumerWidget {
           size: 24,
         );
     final userData = ref.watch(authProvider);
-    final backgroundColor =
-        userData.valueOrNull != null ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
+    final isAuth = userData.valueOrNull != null;
+    final backgroundColor = isAuth ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
 
     final overlay = switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
       Brightness.dark => SystemUiOverlayStyle.light,
@@ -87,20 +87,16 @@ class ProfilePage extends HookConsumerWidget {
                                   child: ContentWrapper(
                                     color: context.colorsV3.backgroundSurface1,
                                     children: [
-                                      userData.maybeWhen(
-                                        orElse: () => const SizedBox.shrink(),
-                                        data: (data) => data == null
-                                            ? const SizedBox.shrink()
-                                            : ContentRowV2(
-                                                isDividerEnabled: true,
-                                                onTap: () => context.router.push(const ProfileInfoRoute()),
-                                                trailing: trailing,
-                                                leading: leadingIconBuilder(GeneralIcons.userCircle),
-                                                text: ContentRowTextOptions(
-                                                  title: context.l10n.account,
-                                                ),
-                                              ),
-                                      ),
+                                      if (isAuth)
+                                        ContentRowV2(
+                                          isDividerEnabled: true,
+                                          onTap: () => context.router.push(const ProfileInfoRoute()),
+                                          trailing: trailing,
+                                          leading: leadingIconBuilder(GeneralIcons.userCircle),
+                                          text: ContentRowTextOptions(
+                                            title: context.l10n.account,
+                                          ),
+                                        ),
                                       ContentRowV2(
                                         onTap: () => context.router.push(const SettingsRoute()),
                                         trailing: trailing,
@@ -112,6 +108,37 @@ class ProfilePage extends HookConsumerWidget {
                                     ],
                                   ),
                                 ),
+                                if (isAuth)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: Spacing.$4x),
+                                    child: ContentWrapper(
+                                      color: context.colorsV3.backgroundSurface1,
+                                      children: [
+                                        ContentRowV2(
+                                          isDividerEnabled: true,
+                                          onTap: () => context.router.push(const ProfilePreferencesRoute()),
+                                          trailing: trailing,
+                                          leading: SvgPicture.asset(
+                                            'assets/icons/svg/percent.svg',
+                                            package: PackageConfig.packageName,
+                                          ),
+                                          text: ContentRowTextOptions(
+                                            title: context.l10n.preferences,
+                                          ),
+                                        ),
+                                        ContentRowV2(
+                                          onTap: () {
+                                            // TODO: open favorites offers page
+                                          },
+                                          trailing: trailing,
+                                          leading: leadingIconBuilder(GeneralIcons.heart),
+                                          text: ContentRowTextOptions(
+                                            title: context.l10n.favoriteOffers,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 const SizedBox(height: Spacing.$4x),
                                 ContentWrapper(
                                   color: context.colorsV3.backgroundSurface1,

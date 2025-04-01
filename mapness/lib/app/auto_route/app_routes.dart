@@ -214,9 +214,19 @@ class AppRouter extends RootStackRouter {
               page: PoiFavoriteDialogRoute.page,
             ),
             CustomRoute(
+              page: CitySelectionDialogRoute.page,
+              path: 'saudi_pass_city_selection_dialog',
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'profile_preferences',
+              page: ProfilePreferencesRoute.page,
             ),
             CustomRoute(
               path: 'delete_parking',

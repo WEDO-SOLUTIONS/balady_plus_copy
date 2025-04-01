@@ -1,0 +1,74 @@
+import 'package:collection/collection.dart';
+import 'package:mapness/features/saudi_pass/providers/get_all_lookups_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/get_profile_preferences_provider.dart';
+import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
+import 'package:mapness/shared/entities/selection.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'profile_preferences_provider.g.dart';
+
+class ProfilePreferencesState {
+  final City? city;
+  final List<Selection<Category>> categories;
+  final List<Selection<RecommendedType>> recommendedTypes;
+
+  ProfilePreferencesState({
+    required this.city,
+    required this.categories,
+    required this.recommendedTypes,
+  });
+
+  ProfilePreferencesState copyWith({
+    City? city,
+    List<Selection<Category>>? categories,
+    List<Selection<RecommendedType>>? recommendedTypes,
+  }) =>
+      ProfilePreferencesState(
+        city: city ?? this.city,
+        categories: categories ?? this.categories,
+        recommendedTypes: recommendedTypes ?? this.recommendedTypes,
+      );
+}
+
+@riverpod
+class ProfilePreferences extends _$ProfilePreferences {
+  @override
+  Future<ProfilePreferencesState> build() async {
+    final [lookups as Lookups, preferences as Preferences] = await Future.wait([
+      ref.watch(getAllLookupsProvider.future),
+      ref.watch(getProfilePreferencesProvider.future),
+    ]);
+    final categories = preferences.categories.toSet();
+    final recommendedTypes = preferences.recommendedTypes.toSet();
+
+    return ProfilePreferencesState(
+      city: lookups.cities.toList().firstWhereOrNull((e) => e == preferences.cities.firstOrNull),
+      categories:
+          lookups.categories.map((e) => Selection<Category>(value: e, selected: categories.contains(e))).toList(),
+      recommendedTypes: lookups.recommendedTypes
+          .map((e) => Selection<RecommendedType>(value: e, selected: recommendedTypes.contains(e)))
+          .toList(),
+    );
+  }
+
+  void changeCategory(Selection<Category> category) {
+    update(
+      (state) => state.copyWith(
+        categories: state.categories.map((e) => e == category ? e.copyWith(selected: !e.selected) : e).toList(),
+      ),
+    );
+  }
+
+  void changeRecommendedType(Selection<RecommendedType> type) {
+    update(
+      (state) => state.copyWith(
+        recommendedTypes: state.recommendedTypes.map((e) => e == type ? e.copyWith(selected: !e.selected) : e).toList(),
+      ),
+    );
+  }
+
+  void setCity(City city) {
+    update((state) => state.copyWith(city: city));
+  }
+}

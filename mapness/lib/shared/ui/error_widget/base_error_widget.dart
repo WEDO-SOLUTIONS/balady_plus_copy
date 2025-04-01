@@ -30,6 +30,9 @@ class BaseErrorWidget extends StatelessWidget {
   /// The padding for the image.
   final EdgeInsetsGeometry paddingForImage;
 
+  /// The background color
+  final Color backgroundColor;
+
   /// Add a close button to the widget. If [null] it will be not displayed.
   final VoidCallback? onClose;
 
@@ -43,6 +46,7 @@ class BaseErrorWidget extends StatelessWidget {
     this.errorTitle,
     this.onClose,
     this.paddingForImage = EdgeInsets.zero,
+    this.backgroundColor = Colors.white,
     super.key,
   });
 
@@ -63,7 +67,7 @@ class BaseErrorWidget extends StatelessWidget {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
 
     return Material(
-      color: Colors.white,
+      color: backgroundColor,
       borderRadius: BorderRadius.circular(16),
       child: Padding(
         padding: const EdgeInsets.only(

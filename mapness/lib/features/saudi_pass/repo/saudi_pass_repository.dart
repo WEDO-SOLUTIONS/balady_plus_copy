@@ -3,6 +3,7 @@ import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
+import 'package:mapness/features/saudi_pass/repo/set_preferences_request.dart';
 
 class SaudiPassRepository {
   final Dio _dio;
@@ -81,6 +82,13 @@ class SaudiPassRepository {
     final response = await _dio.get('/preferences');
 
     return GetPreferencesBody.fromJson(response.data).dataOrThrow();
+  }
+
+  Future<void> setPreferences(SetPreferencesRequest requestModel) async {
+    await _dio.put(
+      '/preferences',
+      data: requestModel.toJson(),
+    );
   }
 }
 
