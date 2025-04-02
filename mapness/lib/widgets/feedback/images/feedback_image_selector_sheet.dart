@@ -3,6 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 
 enum FeedbackImageSelectorType {
@@ -28,7 +29,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
         ContentRow(
           options: ContentRowOptions(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            title: 'Add photo',
+            title: context.l10n.addPhoto,
             titleStyle: context.textStyleV3.h4SemiBold.copyWith(
               color: context.colorsV3.foregroundDefault,
             ),
@@ -51,8 +52,8 @@ class FeedbackImageSelectorSheet extends HookWidget {
                 iconData: GeneralIcons.photo,
                 color: context.colorsV3.accentDefault,
               ),
-              text: const ContentRowTextOptions(
-                title: 'Take a photo',
+              text: ContentRowTextOptions(
+                title: context.l10n.takePhoto,
               ),
               trailing: ContentRowCustomTrailingOptions(
                 builder: (context) => Padding(
@@ -70,8 +71,8 @@ class FeedbackImageSelectorSheet extends HookWidget {
                 iconData: SystemIcons.images,
                 color: context.colorsV3.accentDefault,
               ),
-              text: const ContentRowTextOptions(
-                title: 'Choose from gallery',
+              text: ContentRowTextOptions(
+                title: context.l10n.chooseFromGallery,
               ),
               trailing: ContentRowCustomTrailingOptions(
                 builder: (context) => Padding(

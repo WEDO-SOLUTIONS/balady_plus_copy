@@ -18,13 +18,6 @@ class FeedbackPermissionSheet extends HookWidget {
       onClose: (_) => Navigator.of(context).pop(),
     );
 
-    final _cameraTitle = 'Allow access to camera';
-    final _galleryTitle = 'Allow access to photos';
-
-    final _cameraDescription = 'To take a photo, you need to grant permission to access camera in the device settings';
-    final _galleryDescription =
-        'To upload photos, you need to grant permission to access photos in the device settings';
-
     return StatelessBottomSheet(
       safeAreaColor: context.colorsV3.backgroundSurface4,
       backgroundColor: context.colorsV3.backgroundSurface4,
@@ -35,8 +28,8 @@ class FeedbackPermissionSheet extends HookWidget {
           options: ContentRowOptions(
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             title: switch (type) {
-              FeedbackImageSelectorType.camera => _cameraTitle,
-              FeedbackImageSelectorType.gallery => _galleryTitle,
+              FeedbackImageSelectorType.camera => context.l10n.allowAccessToCamera,
+              FeedbackImageSelectorType.gallery => context.l10n.allowAccessToPhotos,
             },
             titleStyle: context.textStyleV3.h4SemiBold.copyWith(
               color: context.colorsV3.foregroundDefault,
@@ -54,8 +47,8 @@ class FeedbackPermissionSheet extends HookWidget {
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Text(
             switch (type) {
-              FeedbackImageSelectorType.camera => _cameraDescription,
-              FeedbackImageSelectorType.gallery => _galleryDescription,
+              FeedbackImageSelectorType.camera => context.l10n.accessCameraPermissionDesc,
+              FeedbackImageSelectorType.gallery => context.l10n.accessGalleryPermissionDesc,
             },
             style: context.textStyleV3.bodySmallRegular.copyWith(
               color: context.colorsV3.foregroundSoft,
@@ -82,7 +75,7 @@ class FeedbackPermissionSheet extends HookWidget {
                       Navigator.pop(context);
                       openAppSettings();
                     },
-                    primaryLabel: 'Go to settings',
+                    primaryLabel: context.l10n.goToSettings,
                     padding: const EdgeInsets.symmetric(vertical: Spacing.$2x),
                     buttonColorScheme: ButtonColorScheme.primary,
                   ),
