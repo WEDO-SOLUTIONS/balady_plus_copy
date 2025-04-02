@@ -10,7 +10,6 @@ class GetProfilePreferences extends _$GetProfilePreferences {
   @override
   Future<Preferences> build() async {
     final repository = await ref.read(saudiPassRepositoryProvider.future);
-    final preferences = await repository.getPreferences();
-    return preferences;
+    return repository.getPreferences();
   }
 }

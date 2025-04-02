@@ -9,7 +9,6 @@ class GetAllLookups extends _$GetAllLookups {
   @override
   Future<Lookups> build() async {
     final repository = await ref.read(saudiPassRepositoryProvider.future);
-    final lookups = await repository.getAllLookups();
-    return lookups;
+    return repository.getAllLookups();
   }
 }

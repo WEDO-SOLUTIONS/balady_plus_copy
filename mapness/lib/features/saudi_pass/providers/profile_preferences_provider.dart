@@ -39,16 +39,26 @@ class ProfilePreferences extends _$ProfilePreferences {
       ref.watch(getAllLookupsProvider.future),
       ref.watch(getProfilePreferencesProvider.future),
     ]);
-    final categories = preferences.categories.toSet();
-    final recommendedTypes = preferences.recommendedTypes.toSet();
+
+    final categoriesInPreferences = preferences.categories.toSet();
+    final typesInPreferences = preferences.recommendedTypes.toSet();
+
+    final city = lookups.cities.firstWhereOrNull((e) => e == preferences.cities.firstOrNull);
+    final selectionCategories = lookups.categories
+        .map(
+          (e) => Selection<Category>(value: e, selected: categoriesInPreferences.contains(e)),
+        )
+        .toList();
+    final selectionTypes = lookups.recommendedTypes
+        .map(
+          (e) => Selection<RecommendedType>(value: e, selected: typesInPreferences.contains(e)),
+        )
+        .toList();
 
     return ProfilePreferencesState(
-      city: lookups.cities.toList().firstWhereOrNull((e) => e == preferences.cities.firstOrNull),
-      categories:
-          lookups.categories.map((e) => Selection<Category>(value: e, selected: categories.contains(e))).toList(),
-      recommendedTypes: lookups.recommendedTypes
-          .map((e) => Selection<RecommendedType>(value: e, selected: recommendedTypes.contains(e)))
-          .toList(),
+      city: city,
+      categories: selectionCategories,
+      recommendedTypes: selectionTypes,
     );
   }
 
