@@ -4,6 +4,10 @@ import 'package:mapness/features/saudi_pass/async_iterable/chunked_async_iterabl
 
 import 'async_iterable.dart';
 
+/// This implementation flattens chunked iterable
+/// [0,1,2,3,4,5,6,7,8,9]     Some iterable
+/// [[0,1,2,3,4],[5,6,7,8,9]] Chunked iterable
+/// [0,1,2,3,4,5,6,7,8,9]     Flat iterable
 class FlatChunkedAsyncIterable<T> implements AsyncIterable<T> {
   final AsyncIterable<Chunk<T>> chunkedAsyncIterable;
 

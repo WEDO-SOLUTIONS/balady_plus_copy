@@ -1,6 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 
+/// This implementation is client of AsyncIterable to be used with ListView, SliverList, etc
+/// Asks forward [moreItems] and notifies on length updates
 class AsyncIterableListingNotifier<T> extends ChangeNotifier implements AsyncIterable<T> {
   final AsyncIterable<T> decorated;
 

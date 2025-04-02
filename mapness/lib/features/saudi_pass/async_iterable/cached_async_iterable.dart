@@ -1,6 +1,7 @@
 import 'package:async/async.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 
+///This implementation caches queries to decorated [AsyncIterable]
 class CachedAsyncIterable<T> implements AsyncIterable<T> {
   final AsyncIterable<T> decorated;
 

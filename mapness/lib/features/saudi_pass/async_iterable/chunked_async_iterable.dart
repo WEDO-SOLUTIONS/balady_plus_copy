@@ -1,5 +1,8 @@
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 
+/// This is chunked implementation of async iterable
+/// [0,1,2,3,4,5,6,7,8,9]     Some iterable
+/// [[0,1,2,3,4],[5,6,7,8,9]] Chunked iterable
 abstract class ChunkedAsyncIterable<T> implements AsyncIterable<Chunk<T>> {
   int get chunkSize;
 

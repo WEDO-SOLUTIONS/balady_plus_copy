@@ -1,3 +1,6 @@
+/// Interface for async query iterable items
+/// First ask if it [hasElement]
+/// Then query by [elementAt]
 abstract class AsyncIterable<T> {
   int get length;
 

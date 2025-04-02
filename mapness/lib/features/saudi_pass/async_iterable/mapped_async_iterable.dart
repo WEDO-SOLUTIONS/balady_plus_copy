@@ -1,5 +1,7 @@
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 
+/// This implementation maps decorated AsyncIterable<T> to AsyncIterable<O>
+/// [transformation] function used to map T type to O type
 class MappedAsyncIterable<I, O> implements AsyncIterable<O> {
   final AsyncIterable<I> decorated;
   final O Function(I) transformation;
