@@ -3,11 +3,13 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/widgets/decorated_smooth_radius.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
-class SelectionDialogWidget<T> extends StatefulWidget {
+class SelectionDialogWidget<T> extends HookWidget {
   final SelectionDialog<T> selectionDialog;
   final String title;
   final Widget Function(Iterable<SelectionView<T>> views) layoutBuilder;
@@ -22,31 +24,22 @@ class SelectionDialogWidget<T> extends StatefulWidget {
   });
 
   @override
-  State<SelectionDialogWidget> createState() => _SelectionDialogWidgetState<T>();
-}
-
-class _SelectionDialogWidgetState<T> extends State<SelectionDialogWidget<T>> {
-  late final scrollController = StatelessBottomSheetController(
-    onClose: (_) => widget.selectionDialog.tapCross(),
-  );
-
-  SelectionDialog<T> get selectionDialog => widget.selectionDialog;
-
-  @override
   Widget build(BuildContext context) {
+    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialog.tapCross);
+
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
     return StatelessBottomSheet(
       scrollController: scrollController,
-      backgroundColor: widget.backgroundColor,
-      draggerColor: widget.backgroundColor,
+      backgroundColor: backgroundColor,
+      draggerColor: backgroundColor,
       header: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(widget.title, style: context.textStyleV3.h2SemiBold),
-            CustomCloseButton(onClose: widget.selectionDialog.tapCross),
+            Text(title, style: context.textStyleV3.h2SemiBold),
+            CustomCloseButton(onClose: selectionDialog.tapCross),
           ],
         ),
       ),
@@ -55,7 +48,7 @@ class _SelectionDialogWidgetState<T> extends State<SelectionDialogWidget<T>> {
           padding: horizontalPadding,
           child: ListenableBuilder(
             listenable: selectionDialog,
-            builder: (context, _) => widget.layoutBuilder(selectionDialog.selectionViews),
+            builder: (context, _) => layoutBuilder(selectionDialog.selectionViews),
           ),
         ),
       ],
@@ -180,14 +173,7 @@ class SortingItemViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const checkmark = Padding(
-      padding: EdgeInsetsDirectional.only(end: Spacing.$4x),
-      child: Icon(SystemIcons.checkmark),
-    );
-
     const nothing = SizedBox.shrink();
-
-    final trailing = ContentRowCustomTrailingOptions(builder: (context) => view.isHighlighted ? checkmark : nothing);
 
     return ListenableBuilder(
       listenable: view,
@@ -205,7 +191,14 @@ class SortingItemViewWidget extends StatelessWidget {
           isDividerEnabled: hasDivider,
           supportTitleRTL: true,
           backgroundColor: context.colorsV3.backgroundSurface1,
-          trailing: trailing,
+          trailing: ContentRowCustomTrailingOptions(
+            builder: (context) => view.isHighlighted
+                ? const Padding(
+                    padding: EdgeInsetsDirectional.only(end: Spacing.$4x),
+                    child: Icon(SystemIcons.checkmark),
+                  )
+                : nothing,
+          ),
         ),
       ),
     );
