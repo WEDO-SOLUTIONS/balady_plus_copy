@@ -2,7 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/saudi_pass/views/settings_screen.dart';
-import 'package:mapness/features/saudi_pass/widgets/chips_local_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/saudi_pass_chips_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_scaffold.dart';
 import 'package:mapness/features/saudi_pass/widgets/selection_dialog_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -28,7 +28,7 @@ class SettingsScreenWidget extends StatelessWidget {
                     children: [
                       SettingsCardWidget(
                         title: context.l10n.saudiPassCitySelectionPageTitle,
-                        child: ChipsLocalWidget(
+                        child: SaudiPassChipsWidget(
                           title: settingsScreen.cityTitle,
                           onTap: settingsScreen.tapCity,
                           style: ChipsStyle.whiteBackground,

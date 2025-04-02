@@ -2,7 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen.dart';
-import 'package:mapness/features/saudi_pass/widgets/chips_local_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/saudi_pass_chips_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class OffersFiltersViewWidget extends StatelessWidget {
@@ -18,14 +18,14 @@ class OffersFiltersViewWidget extends StatelessWidget {
       listenable: view,
       builder: (context, _) {
         final filters = [
-          ChipsLocalWidget(
+          SaudiPassChipsWidget(
             onTap: view.tapSort,
             isSelected: view.isSortHighlighted,
             leadingIcon: ChipIconData(TransportIcons.verticalChange),
             style: ChipsStyle.colorfulBackground,
             size: ChipsSize.medium,
           ),
-          ChipsLocalWidget(
+          SaudiPassChipsWidget(
             onTap: view.tapSettings,
             leadingIcon: ChipIconData(SystemIcons.tuning),
             isSelected: view.isSettingsHighlighted,
@@ -89,8 +89,7 @@ class FilterWidget extends StatelessWidget {
           },
         );
 
-    // return Chips(
-    return ChipsLocalWidget(
+    return SaudiPassChipsWidget(
       title: filter.title ?? l10nString,
       label: filter.plusMore,
       onTap: onTap,
