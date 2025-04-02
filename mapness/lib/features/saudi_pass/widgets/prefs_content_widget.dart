@@ -69,6 +69,8 @@ class PrefsContentWidget extends ConsumerWidget {
               child: SetPreferencesPlaceholderWidget(action: prefsOffersView.tapGotoPreferences),
             );
           } else {
+            final types = '${prefsOffersView.types} ${pluralTypes(prefsOffersView.types)}';
+            final categories = '${prefsOffersView.categories} ${pluralCategories(prefsOffersView.categories)}';
             return Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -77,7 +79,7 @@ class PrefsContentWidget extends ConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      '${prefsOffersView.cityTitle}, ${prefsOffersView.types} ${pluralTypes(prefsOffersView.types)}, ${prefsOffersView.categories} ${pluralCategories(prefsOffersView.categories)}',
+                      '${prefsOffersView.cityTitle}, $types, $categories',
                       style: prefsTextStyle,
                     ),
                     IconButton(
