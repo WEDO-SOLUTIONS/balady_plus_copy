@@ -21,6 +21,7 @@ import 'package:mapness/features/saudi_pass/views/offers_screen.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog.dart';
 
 part 'offers_filters_view_notifier.dart';
+
 part 'prefs_offers_view_notifier.dart';
 
 class OffersScreenNotifier extends OffersViewNotifier implements OffersScreen {
@@ -28,11 +29,11 @@ class OffersScreenNotifier extends OffersViewNotifier implements OffersScreen {
     required super.saudiPassRepository,
     required super.cityByLocation,
     required super.stackRouter,
-    this.offersGroups = const {},
+    this.offersGroup,
   });
 
   @override
-  final Set<OffersGroup> offersGroups;
+  final OffersGroup? offersGroup;
 
   @override
   late Future<PrefsOffersViewNotifier> prefsOffersViewFuture = createPrefsOffersViewNotifier();

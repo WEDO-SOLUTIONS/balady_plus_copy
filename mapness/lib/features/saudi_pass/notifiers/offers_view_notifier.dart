@@ -20,7 +20,7 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
 
   bool get isFavoritesOnly;
 
-  Set<OffersGroup> get offersGroups => {};
+  OffersGroup? get offersGroup => null;
 
   @override
   late Future<OffersFiltersViewNotifier> offersFiltersFuture = createFiltersAndOffersView();
@@ -46,8 +46,6 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
     );
   }
 
-  Iterable<Category> mapPreSelected(Iterable<Category> categories) {
-    final preSelectedIds = offersGroups.map((it) => it.toCategoryId());
-    return categories.where((category) => preSelectedIds.contains(category.id));
-  }
+  Iterable<Category> mapPreSelected(Iterable<Category> categories) =>
+      categories.where((category) => category.id == offersGroup?.toCategoryId());
 }

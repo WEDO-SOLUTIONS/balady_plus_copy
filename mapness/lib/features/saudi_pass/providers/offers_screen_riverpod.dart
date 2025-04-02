@@ -10,12 +10,12 @@ part 'offers_screen_riverpod.g.dart';
 @riverpod
 class OffersScreenRiverpod extends _$OffersScreenRiverpod {
   @override
-  OffersScreenNotifier build({Iterable<OffersGroup> offersGroups = const {}}) {
+  OffersScreenNotifier build({OffersGroup? offersGroup}) {
     final notifier = OffersScreenNotifier(
       saudiPassRepository: ref.read(saudiPassRepositoryProvider.future),
       stackRouter: ref.read(appRouterProvider),
       cityByLocation: ref.read(saudiPassCityByLocationProvider.future),
-      offersGroups: offersGroups.toSet(),
+      offersGroup: offersGroup,
     );
 
     ref.onDispose(notifier.dispose);

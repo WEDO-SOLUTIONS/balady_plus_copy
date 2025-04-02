@@ -9,7 +9,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
-import 'package:mapness/features/saudi_pass/providers/offers_screen_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class DashboardOffersRow extends ConsumerWidget {
@@ -20,9 +19,7 @@ class DashboardOffersRow extends ConsumerWidget {
         children: [
           GestureDetector(
             onTap: () {
-              context.router.push(
-                OffersScreenRoute(offersScreenNotifier: ref.watch(offersScreenRiverpodProvider())),
-              );
+              context.router.push(OffersScreenRoute());
             },
             child: Row(
               children: [
@@ -53,11 +50,7 @@ class DashboardOffersRow extends ConsumerWidget {
                   return _DashboardOffersCard(
                       offersGroup: group,
                       onTap: () {
-                        context.router.push(
-                          OffersScreenRoute(
-                            offersScreenNotifier: ref.watch(offersScreenRiverpodProvider(offersGroups: {group})),
-                          ),
-                        );
+                        context.router.push(OffersScreenRoute(offersGroup: group));
                       });
                 },
                 separatorBuilder: (context, index) => Spacing.$2x.widthBox,
