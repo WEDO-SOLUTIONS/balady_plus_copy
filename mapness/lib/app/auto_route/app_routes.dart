@@ -214,7 +214,7 @@ class AppRouter extends RootStackRouter {
               page: PoiFavoriteDialogRoute.page,
             ),
             CustomRoute(
-              page: CitySelectionDialogRoute.page,
+              page: CitySelectionDialogViewRoute.page,
               path: 'saudi_pass_city_selection_dialog',
               opaque: false,
               transitionsBuilder: TransitionsBuilders.slideBottom,

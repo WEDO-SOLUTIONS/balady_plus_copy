@@ -1,17 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart' hide Category;
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/saudi_pass/notifiers/category_selection_dialog_notifier.dart';
-import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_notifier.dart';
-import 'package:mapness/features/saudi_pass/notifiers/offers_screen_notifier.dart';
-import 'package:mapness/features/saudi_pass/notifiers/recommended_type_selection_dialog_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/category_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/recommended_type_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
-import 'package:mapness/features/saudi_pass/views/settings_screen.dart';
+import 'package:mapness/features/saudi_pass/views/settings_screen_view.dart';
 
-class SettingsScreenNotifier extends ChangeNotifier implements SettingsScreen {
+class SettingsScreenViewNotifier extends ChangeNotifier implements SettingsScreenView {
   final OffersFiltersViewNotifier parent;
 
-  SettingsScreenNotifier(this.parent);
+  SettingsScreenViewNotifier(this.parent);
 
   StackRouter get stackRouter => parent.stackRouter;
 
@@ -21,12 +21,12 @@ class SettingsScreenNotifier extends ChangeNotifier implements SettingsScreen {
 
   @override
   late final typeSelectionViews = parent.lookups.recommendedTypes.map(
-        (it) => RecommendedTypeSelectionView(it, recommendedTypesSelected),
+    (it) => RecommendedTypeSelectionView(it, recommendedTypesSelected),
   );
 
   @override
   late final categorySelectionViews = parent.lookups.categories.map(
-        (it) => CategorySelectionView(it, categoriesSelected),
+    (it) => CategorySelectionView(it, categoriesSelected),
   );
 
   @override
@@ -37,8 +37,10 @@ class SettingsScreenNotifier extends ChangeNotifier implements SettingsScreen {
 
   @override
   Future<void> tapCity() async {
-    final citySelectionDialog = CitySelectionDialogNotifier(parent.lookups.cities, stackRouter);
-    final city = await stackRouter.push<City>(CitySelectionDialogRoute(citySelectionDialog: citySelectionDialog));
+    final citySelectionDialog = CitySelectionDialogViewNotifier(parent.lookups.cities, stackRouter);
+    final city = await stackRouter.push<City>(
+      CitySelectionDialogViewRoute(citySelectionDialogView: citySelectionDialog),
+    );
     if (city != null) {
       citySelected = city;
       notifyListeners();

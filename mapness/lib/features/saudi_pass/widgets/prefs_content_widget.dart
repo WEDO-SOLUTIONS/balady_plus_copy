@@ -2,7 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/saudi_pass/views/offers_screen.dart';
+import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_list_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/set_preferences_placeholder_widget.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
@@ -10,7 +10,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
 
 class PrefsContentWidget extends ConsumerWidget {
-  final OffersScreen offersListView;
+  final OffersScreenView offersListView;
 
   const PrefsContentWidget(this.offersListView, {super.key});
 

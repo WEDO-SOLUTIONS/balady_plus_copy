@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart' hide Category;
-import 'package:mapness/features/saudi_pass/views/selection_dialog.dart';
+import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 
-abstract class SelectionDialogNotifier<T, S> extends ChangeNotifier implements SelectionDialog<S> {
-  SelectionDialogNotifier({
+abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implements SelectionDialogView<S> {
+  SelectionDialogViewNotifier({
     required this.all,
     required Set<T> selected,
     required this.stackRouter,

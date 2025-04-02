@@ -19,7 +19,7 @@ class DashboardOffersRow extends ConsumerWidget {
         children: [
           GestureDetector(
             onTap: () {
-              context.router.push(OffersScreenRoute());
+              context.router.push(OffersScreenViewRoute());
             },
             child: Row(
               children: [
@@ -50,7 +50,7 @@ class DashboardOffersRow extends ConsumerWidget {
                   return _DashboardOffersCard(
                       offersGroup: group,
                       onTap: () {
-                        context.router.push(OffersScreenRoute(offersGroup: group));
+                        context.router.push(OffersScreenViewRoute(offersGroup: group));
                       });
                 },
                 separatorBuilder: (context, index) => Spacing.$2x.widthBox,

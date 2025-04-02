@@ -2,27 +2,27 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mapness/features/saudi_pass/views/city_selection_dialog.dart';
+import 'package:mapness/features/saudi_pass/views/city_selection_dialog_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
-class CitySelectionDialogWidget extends HookWidget {
-  final CitySelectionDialog citySelectionDialog;
+class CitySelectionDialogViewWidget extends HookWidget {
+  final CitySelectionDialogView citySelectionDialogView;
 
-  const CitySelectionDialogWidget(this.citySelectionDialog, {super.key});
+  const CitySelectionDialogViewWidget(this.citySelectionDialogView, {super.key});
 
   @override
   Widget build(BuildContext context) {
     final scrollController = useStatelessBottomsheetController(
-      onClose: (_) => citySelectionDialog.onCrossTap(),
+      onClose: (_) => citySelectionDialogView.onCrossTap(),
       heightModel: BottomSheetAspectRatioHeightModel(1.0),
     );
 
     final textEditingController = useTextEditingController();
 
     useEffect(() {
-      void inputListener() => citySelectionDialog.onSearchInput(textEditingController.text);
+      void inputListener() => citySelectionDialogView.onSearchInput(textEditingController.text);
       textEditingController.addListener(inputListener);
       return textEditingController.dispose;
     }, [textEditingController]);
@@ -43,7 +43,7 @@ class CitySelectionDialogWidget extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyleV3.h2SemiBold),
-              CustomCloseButton(onClose: citySelectionDialog.onCrossTap),
+              CustomCloseButton(onClose: citySelectionDialogView.onCrossTap),
             ],
           ),
         ),
@@ -63,12 +63,13 @@ class CitySelectionDialogWidget extends HookWidget {
                 child: Padding(
                   padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$4x),
                   child: ListenableBuilder(
-                    listenable: citySelectionDialog,
+                    listenable: citySelectionDialogView,
                     builder: (context, _) {
-                      final searchViews = citySelectionDialog.searchViews;
+                      final searchViews = citySelectionDialogView.searchViews;
 
                       return ListView.builder(
-                        itemBuilder: (_, index) => SearchViewWidget(searchViews.elementAt(index), citySelectionDialog),
+                        itemBuilder: (_, index) =>
+                            SearchViewWidget(searchViews.elementAt(index), citySelectionDialogView),
                         itemCount: searchViews.length,
                       );
                     },
@@ -84,7 +85,7 @@ class CitySelectionDialogWidget extends HookWidget {
 }
 
 class SearchViewWidget extends StatelessWidget {
-  final CitySelectionDialog citySelectionDialog;
+  final CitySelectionDialogView citySelectionDialog;
 
   final SearchView view;
 

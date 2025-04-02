@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-abstract class SelectionDialog<T> implements ResetSaveView, Listenable {
+abstract class SelectionDialogView<T> implements ResetSaveView, Listenable {
   Iterable<SelectionView<T>> get selectionViews;
 
   void tapCross();

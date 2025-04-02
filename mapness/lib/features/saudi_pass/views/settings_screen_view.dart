@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
-import 'package:mapness/features/saudi_pass/views/selection_dialog.dart';
+import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 
-abstract class SettingsScreen implements ResetSaveView, Listenable {
+abstract class SettingsScreenView implements ResetSaveView, Listenable {
   String get cityTitle;
 
   void tapCity();

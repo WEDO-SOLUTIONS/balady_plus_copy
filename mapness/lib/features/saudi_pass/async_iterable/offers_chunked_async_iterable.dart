@@ -4,7 +4,7 @@ import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
-import 'package:mapness/features/saudi_pass/views/selection_dialog.dart';
+import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 
 class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
   final SaudiPassRepository saudiPassRepository;
@@ -27,7 +27,8 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
   OffersChunkedAsyncIterable.byPrefs({
     required this.saudiPassRepository,
     required Preferences this.preferences,
-  })  : recommendedTypes = preferences.recommendedTypes.toSet(),
+  })
+      : recommendedTypes = preferences.recommendedTypes.toSet(),
         categories = preferences.categories.toSet(),
         favorites = null,
         sorting = null,

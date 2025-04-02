@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
-import 'package:mapness/features/saudi_pass/views/offers_screen.dart';
+import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 

@@ -2,7 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable_listing_notifier.dart';
-import 'package:mapness/features/saudi_pass/views/offers_screen.dart';
+import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_view_widget.dart';
 
 class OffersListWidget extends StatefulWidget {

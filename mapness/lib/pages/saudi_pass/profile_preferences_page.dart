@@ -7,7 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_notifier.dart';
+import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/providers/get_all_lookups_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/set_profile_preferences_provider.dart';
@@ -136,8 +136,8 @@ class _Content extends ConsumerWidget {
 
   Future<void> _selectCity(BuildContext context, WidgetRef ref) async {
     final lookups = await ref.read(getAllLookupsProvider.future);
-    final notifier = CitySelectionDialogNotifier(lookups.cities, context.router);
-    final city = await context.router.push<City>(CitySelectionDialogRoute(citySelectionDialog: notifier));
+    final notifier = CitySelectionDialogViewNotifier(lookups.cities, context.router);
+    final city = await context.router.push<City>(CitySelectionDialogViewRoute(citySelectionDialogView: notifier));
     if (city != null) {
       ref.read(profilePreferencesProvider.notifier).setCity(city);
     }

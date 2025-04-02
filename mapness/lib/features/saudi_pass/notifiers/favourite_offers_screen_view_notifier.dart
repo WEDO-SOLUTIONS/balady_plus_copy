@@ -1,9 +1,9 @@
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/saudi_pass/notifiers/offers_view_notifier.dart';
-import 'package:mapness/features/saudi_pass/views/favourite_offers_screen.dart';
+import 'package:mapness/features/saudi_pass/views/favourite_offers_screen_view.dart';
 
-class FavouriteOffersScreenNotifier extends OffersViewNotifier implements FavouriteOffersScreen {
-  FavouriteOffersScreenNotifier({
+class FavouriteOffersScreenViewNotifier extends OffersViewNotifier implements FavouriteOffersScreenView {
+  FavouriteOffersScreenViewNotifier({
     required super.saudiPassRepository,
     required super.cityByLocation,
     required super.stackRouter,
@@ -16,5 +16,5 @@ class FavouriteOffersScreenNotifier extends OffersViewNotifier implements Favour
   void tapBack() => stackRouter.popForced();
 
   @override
-  void tapGotoAllOffers() => stackRouter.push(OffersScreenRoute());
+  void tapGotoAllOffers() => stackRouter.push(OffersScreenViewRoute());
 }

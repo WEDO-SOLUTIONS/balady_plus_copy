@@ -1,4 +1,4 @@
-part of 'offers_screen_notifier.dart';
+part of 'offers_screen_view_notifier.dart';
 
 class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersView {
   City defaultCity;
@@ -49,9 +49,11 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
 
   @override
   Future<void> tapCity() async {
-    final citySelectionDialog = CitySelectionDialogNotifier(lookups.cities, stackRouter);
+    final citySelectionDialog = CitySelectionDialogViewNotifier(lookups.cities, stackRouter);
 
-    final city = await stackRouter.push<City>(CitySelectionDialogRoute(citySelectionDialog: citySelectionDialog));
+    final city = await stackRouter.push<City>(
+      CitySelectionDialogViewRoute(citySelectionDialogView: citySelectionDialog),
+    );
 
     if (city != null && city != citySelected) {
       citySelected = city;
@@ -62,22 +64,22 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
 
   @override
   void tapType() {
-    final selectionDialog = RecommendedTypeSelectionDialogNotifier(this);
-    stackRouter.push(TypeSelectionDialogRoute(selectionDialog: selectionDialog));
+    final selectionDialog = RecommendedTypeSelectionDialogViewNotifier(this);
+    stackRouter.push(TypeSelectionDialogViewRoute(selectionDialog: selectionDialog));
   }
 
   @override
   Future<void> tapCategory() async {
-    final selectionDialog = CategorySelectionDialogNotifier(this);
+    final selectionDialog = CategorySelectionDialogViewNotifier(this);
 
-    if (await stackRouter.push(CategorySelectionDialogRoute(selectionDialog: selectionDialog)) == true) {
+    if (await stackRouter.push(CategorySelectionDialogViewRoute(selectionDialogView: selectionDialog)) == true) {
       createNewListAndNotify();
     }
   }
 
   @override
   void tapSort() {
-    final selectionDialog = SortingSelectionDialogNotifier(this);
+    final selectionDialog = SortingSelectionDialogViewNotifier(this);
     stackRouter.push(SortingSelectionDialogRoute(selectionDialog: selectionDialog));
   }
 
@@ -113,9 +115,9 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
 
   @override
   void tapSettings() {
-    final settingsScreen = SettingsScreenNotifier(this);
+    final settingsScreen = SettingsScreenViewNotifier(this);
 
-    stackRouter.push(SettingsScreenRoute(settingsScreen: settingsScreen));
+    stackRouter.push(SettingsScreenViewRoute(settingsScreenView: settingsScreen));
   }
 
   FilterView mapSelectionToFilterView(Set<NameId> set) {

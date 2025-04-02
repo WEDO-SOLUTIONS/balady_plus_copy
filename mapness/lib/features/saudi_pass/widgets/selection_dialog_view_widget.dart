@@ -4,19 +4,19 @@ import 'package:balady_uikit/core/widgets/decorated_smooth_radius.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:mapness/features/saudi_pass/views/selection_dialog.dart';
+import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
-class SelectionDialogWidget<T> extends HookWidget {
-  final SelectionDialog<T> selectionDialog;
+class SelectionDialogViewWidget<T> extends HookWidget {
+  final SelectionDialogView<T> selectionDialogView;
   final String title;
   final Widget Function(Iterable<SelectionView<T>> views) layoutBuilder;
   final Color? backgroundColor;
 
-  const SelectionDialogWidget({
-    required this.selectionDialog,
+  const SelectionDialogViewWidget({
+    required this.selectionDialogView,
     required this.title,
     required this.layoutBuilder,
     this.backgroundColor,
@@ -25,7 +25,7 @@ class SelectionDialogWidget<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialog.tapCross);
+    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialogView.tapCross);
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
@@ -39,7 +39,7 @@ class SelectionDialogWidget<T> extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title, style: context.textStyleV3.h2SemiBold),
-            CustomCloseButton(onClose: selectionDialog.tapCross),
+            CustomCloseButton(onClose: selectionDialogView.tapCross),
           ],
         ),
       ),
@@ -47,14 +47,14 @@ class SelectionDialogWidget<T> extends HookWidget {
         Padding(
           padding: horizontalPadding,
           child: ListenableBuilder(
-            listenable: selectionDialog,
-            builder: (context, _) => layoutBuilder(selectionDialog.selectionViews),
+            listenable: selectionDialogView,
+            builder: (context, _) => layoutBuilder(selectionDialogView.selectionViews),
           ),
         ),
       ],
       footer: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x, top: Spacing.$6x),
-        child: ResetSaveWidget(selectionDialog),
+        child: ResetSaveWidget(selectionDialogView),
       ),
     );
   }
@@ -134,6 +134,7 @@ class StringItemViewWidget extends StatelessWidget {
           final textColor = view.isHighlighted ? colorsV2.accentOnAccent : colorsV2.foregroundDefault;
 
           return DecoratedSmoothRadius(
+            // TODO extract
             borderRadius: RadiusBorder.m,
             color: view.isHighlighted ? colorsV2.accentSecondaryDefault : colorsV2.neutralContainerDefault,
             child: InkWell(

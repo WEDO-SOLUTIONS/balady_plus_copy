@@ -1,13 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
-import 'package:mapness/features/saudi_pass/views/city_selection_dialog.dart';
+import 'package:mapness/features/saudi_pass/views/city_selection_dialog_view.dart';
 
-class CitySelectionDialogNotifier extends ChangeNotifier implements CitySelectionDialog {
+class CitySelectionDialogViewNotifier extends ChangeNotifier implements CitySelectionDialogView {
   final Iterable<City> cities;
   final StackRouter stackRouter;
 
-  CitySelectionDialogNotifier(this.cities, this.stackRouter);
+  CitySelectionDialogViewNotifier(this.cities, this.stackRouter);
 
   @override
   void onCrossTap() => stackRouter.popForced();
@@ -37,7 +37,7 @@ class CitySelectionDialogNotifier extends ChangeNotifier implements CitySelectio
 }
 
 class CitySearchView implements SearchView {
-  final CitySelectionDialogNotifier parent;
+  final CitySelectionDialogViewNotifier parent;
   final City city;
 
   CitySearchView(this.city, this.parent);

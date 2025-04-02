@@ -3,7 +3,7 @@ import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
 import 'package:mapness/features/saudi_pass/views/offers_view.dart';
 
-abstract class OffersScreen implements OffersView {
+abstract class OffersScreenView implements OffersView {
   void tapBack();
 
   bool get isByPreferencesElseAll;

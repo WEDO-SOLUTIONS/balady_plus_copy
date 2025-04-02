@@ -1,4 +1,4 @@
-part of 'offers_screen_notifier.dart';
+part of 'offers_screen_view_notifier.dart';
 
 class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView {
   PrefsOffersViewNotifier(this.saudiPassRepository, this.stackRouter, this.preferences);

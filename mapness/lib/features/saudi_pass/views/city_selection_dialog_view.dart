@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-abstract class CitySelectionDialog implements Listenable {
+abstract class CitySelectionDialogView implements Listenable {
   Iterable<SearchView> get searchViews;
 
   String get search;

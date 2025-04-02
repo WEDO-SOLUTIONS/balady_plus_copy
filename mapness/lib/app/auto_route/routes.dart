@@ -67,7 +67,7 @@ class Routes {
           page: PhotoViewerRoute.page,
         ),
         CustomRoute(
-          page: CitySelectionDialogRoute.page,
+          page: CitySelectionDialogViewRoute.page,
           path: '/saudi_pass_city_selection_dialog',
           opaque: false,
         ),
@@ -94,20 +94,20 @@ class Routes {
         ),
         CustomRoute(
           path: '/saudi_pass_offers_screen',
-          page: OffersScreenRoute.page,
+          page: OffersScreenViewRoute.page,
         ),
         CustomRoute(
           path: '/saudi_pass_favourite_offers_screen}',
-          page: FavouriteOffersScreenRoute.page,
+          page: FavouriteOffersScreenViewRoute.page,
         ),
         CustomRoute(
           path: '/saudi_pass_type_selection_dialog',
-          page: TypeSelectionDialogRoute.page,
+          page: TypeSelectionDialogViewRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
           path: '/saudi_pass_category_selection_dialog',
-          page: CategorySelectionDialogRoute.page,
+          page: CategorySelectionDialogViewRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
         CustomRoute(
@@ -117,7 +117,7 @@ class Routes {
         ),
         CustomRoute(
           path: '/saudi_pass_settings_screen',
-          page: SettingsScreenRoute.page,
+          page: SettingsScreenViewRoute.page,
         ),
       ];
 

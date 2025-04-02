@@ -1,23 +1,23 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/features/saudi_pass/views/settings_screen.dart';
+import 'package:mapness/features/saudi_pass/views/settings_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_chips_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_scaffold.dart';
-import 'package:mapness/features/saudi_pass/widgets/selection_dialog_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/selection_dialog_view_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
-class SettingsScreenWidget extends StatelessWidget {
-  final SettingsScreen settingsScreen;
+class SettingsScreenViewWidget extends StatelessWidget {
+  final SettingsScreenView settingsScreenView;
 
-  const SettingsScreenWidget({required this.settingsScreen, super.key});
+  const SettingsScreenViewWidget({required this.settingsScreenView, super.key});
 
   @override
   Widget build(BuildContext context) => SaudiPassScaffold(
-        onBackButton: settingsScreen.tapBack,
+        onBackButton: settingsScreenView.tapBack,
         title: context.l10n.saudiPassSettingsPageTitle,
         body: ListenableBuilder(
-          listenable: settingsScreen,
+          listenable: settingsScreenView,
           builder: (context, _) => Padding(
             padding: const EdgeInsets.all(Spacing.$4x),
             child: Column(
@@ -29,26 +29,26 @@ class SettingsScreenWidget extends StatelessWidget {
                       SettingsCardWidget(
                         title: context.l10n.saudiPassCitySelectionPageTitle,
                         child: SaudiPassChipsWidget(
-                          title: settingsScreen.cityTitle,
-                          onTap: settingsScreen.tapCity,
+                          title: settingsScreenView.cityTitle,
+                          onTap: settingsScreenView.tapCity,
                           style: ChipsStyle.whiteBackground,
                         ),
                       ),
                       const SizedBox(height: Spacing.$3x),
                       SettingsCardWidget(
                         title: context.l10n.saudiPassOffersPageFilterType,
-                        child: WrapLayout(settingsScreen.typeSelectionViews),
+                        child: WrapLayout(settingsScreenView.typeSelectionViews),
                       ),
                       const SizedBox(height: Spacing.$3x),
                       SettingsCardWidget(
                         title: context.l10n.saudiPassOffersPageFilterCategory,
-                        child: WrapLayout(settingsScreen.categorySelectionViews),
+                        child: WrapLayout(settingsScreenView.categorySelectionViews),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: Spacing.$3x),
-                ResetSaveWidget(settingsScreen),
+                ResetSaveWidget(settingsScreenView),
               ],
             ),
           ),

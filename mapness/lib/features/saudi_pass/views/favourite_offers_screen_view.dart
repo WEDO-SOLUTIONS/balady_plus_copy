@@ -1,7 +1,7 @@
-import 'package:mapness/features/saudi_pass/views/offers_screen.dart';
+import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/views/offers_view.dart';
 
-abstract class FavouriteOffersScreen implements OffersView {
+abstract class FavouriteOffersScreenView implements OffersView {
   @override
   void tapRetryAll();
 
