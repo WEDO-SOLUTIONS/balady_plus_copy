@@ -88,6 +88,11 @@ class RoutingSearchHistory extends ConsumerWidget {
   }
 
   Future<void> _specifyOnTheMap(BuildContext context) async {
+    final currentFocus = FocusScope.of(context);
+    if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+      FocusManager.instance.primaryFocus?.unfocus();
+    }
+
     final result = await context.router.push(const RoutingMapSelectRoute());
 
     if (result != null) {
