@@ -15,6 +15,13 @@ class OffersViewWidget extends StatelessWidget {
         key: ObjectKey(offersView.offersFiltersFuture),
         future: offersView.offersFiltersFuture,
         builder: (_, allOffersViewSnapshot) {
+          if (allOffersViewSnapshot.hasError) {
+            return Padding(
+              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
+              child: WentWrongPlaceholderWidget(action: offersView.tapRetryAll),
+            );
+          }
+
           final offersFiltersView = allOffersViewSnapshot.data;
 
           if (offersFiltersView != null) {
@@ -38,13 +45,6 @@ class OffersViewWidget extends StatelessWidget {
                   ),
                 ),
               ],
-            );
-          }
-
-          if (allOffersViewSnapshot.hasError) {
-            return Padding(
-              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
-              child: WentWrongPlaceholderWidget(action: offersView.tapRetryAll),
             );
           }
 

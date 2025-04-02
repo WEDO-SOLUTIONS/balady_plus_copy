@@ -53,6 +53,13 @@ class PrefsContentWidget extends ConsumerWidget {
       key: ObjectKey(offersListView.prefsOffersViewFuture),
       future: offersListView.prefsOffersViewFuture,
       builder: (_, snap) {
+        if (snap.hasError) {
+          return Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x),
+            child: WentWrongPlaceholderWidget(action: offersListView.tapRetryPrefs),
+          );
+        }
+
         final prefsOffersView = snap.data;
 
         if (prefsOffersView != null) {
@@ -88,13 +95,6 @@ class PrefsContentWidget extends ConsumerWidget {
               ],
             );
           }
-        }
-
-        if (snap.hasError) {
-          return Padding(
-            padding: const EdgeInsets.only(top: Spacing.$4x),
-            child: WentWrongPlaceholderWidget(action: offersListView.tapRetryPrefs),
-          );
         }
 
         return const Center(child: Loading(size: LoaderSize.large));
