@@ -10,10 +10,11 @@ class Selection<T> {
   Selection<T> copyWith({
     T? value,
     bool? selected,
-  }) => Selection(
-      value: value ?? this.value,
-      selected: selected ?? this.selected,
-    );
+  }) =>
+      Selection(
+        value: value ?? this.value,
+        selected: selected ?? this.selected,
+      );
 
   @override
   bool operator ==(Object other) =>

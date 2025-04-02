@@ -4,7 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'get_profile_preferences_provider.g.dart';
 
-
 @riverpod
 class GetProfilePreferences extends _$GetProfilePreferences {
   @override

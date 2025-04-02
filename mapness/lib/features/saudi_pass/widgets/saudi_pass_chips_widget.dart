@@ -61,6 +61,6 @@ class SaudiPassChipsWidget extends StatelessWidget {
 
 extension ThemeExtensionOverrideExt on ThemeData {
   ThemeData overrideExtension<T extends ThemeExtension<T>>(ThemeExtension<T> style) => copyWith(
-    extensions: {...extensions, T: style}.values,
-  );
+        extensions: {...extensions, T: style}.values,
+      );
 }
