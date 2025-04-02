@@ -35,10 +35,10 @@ class ProfilePreferencesState {
 class ProfilePreferences extends _$ProfilePreferences {
   @override
   Future<ProfilePreferencesState> build() async {
-    final [lookups as Lookups, preferences as Preferences] = await Future.wait([
+    final (lookups, preferences) = await (
       ref.watch(getAllLookupsProvider.future),
       ref.watch(getProfilePreferencesProvider.future),
-    ]);
+    ).wait;
 
     final categoriesInPreferences = preferences.categories.toSet();
     final typesInPreferences = preferences.recommendedTypes.toSet();
