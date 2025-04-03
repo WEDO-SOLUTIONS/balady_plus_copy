@@ -69,8 +69,11 @@ class CitySelectionDialogViewWidget extends HookWidget {
                       final searchViews = citySelectionDialogView.searchViews;
 
                       return ListView.builder(
-                        itemBuilder: (_, index) =>
-                            SearchViewWidget(searchViews.elementAt(index), citySelectionDialogView),
+                        itemBuilder: (_, index) => SearchViewWidget(
+                          view: searchViews.elementAt(index),
+                          citySelectionDialogView: citySelectionDialogView,
+                          isDividerEnabled: index < searchViews.length - 1,
+                        ),
                         itemCount: searchViews.length,
                       );
                     },
@@ -86,11 +89,16 @@ class CitySelectionDialogViewWidget extends HookWidget {
 }
 
 class SearchViewWidget extends StatelessWidget {
-  final CitySelectionDialogView citySelectionDialog;
-
+  final CitySelectionDialogView citySelectionDialogView;
   final SearchView view;
+  final bool isDividerEnabled;
 
-  const SearchViewWidget(this.view, this.citySelectionDialog, {super.key});
+  const SearchViewWidget({
+    required this.view,
+    required this.citySelectionDialogView,
+    required this.isDividerEnabled,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) => SizedBox(
@@ -109,7 +117,7 @@ class SearchViewWidget extends StatelessWidget {
                   TextSpan(
                     children: highlightedTextSpans(
                       source: view.title,
-                      search: citySelectionDialog.search,
+                      search: citySelectionDialogView.search,
                       highlightStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: color),
                       baseStyle: context.textStyleV3.bodySmallRegular.copyWith(color: color),
                     ),
@@ -118,7 +126,7 @@ class SearchViewWidget extends StatelessWidget {
               },
             ),
           ),
-          isDividerEnabled: citySelectionDialog.searchViews.last != view,
+          isDividerEnabled: isDividerEnabled,
           supportTitleRTL: true,
         ),
       );
