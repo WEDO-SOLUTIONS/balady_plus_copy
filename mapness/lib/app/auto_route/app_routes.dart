@@ -225,10 +225,6 @@ class AppRouter extends RootStackRouter {
               transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
-              path: 'profile_preferences',
-              page: ProfilePreferencesRoute.page,
-            ),
-            CustomRoute(
               path: 'delete_parking',
               page: ParkingDialogRoute.page,
               opaque: false,

@@ -67,6 +67,10 @@ class Routes {
           page: PhotoViewerRoute.page,
         ),
         CustomRoute(
+          path: '/profile_preferences',
+          page: ProfilePreferencesRoute.page,
+        ),
+        CustomRoute(
           page: CitySelectionDialogViewRoute.page,
           path: '/saudi_pass_city_selection_dialog',
           opaque: false,
@@ -97,7 +101,7 @@ class Routes {
           page: OffersScreenViewRoute.page,
         ),
         CustomRoute(
-          path: '/saudi_pass_favourite_offers_screen}',
+          path: '/saudi_pass_favourite_offers_screen',
           page: FavouriteOffersScreenViewRoute.page,
         ),
         CustomRoute(
