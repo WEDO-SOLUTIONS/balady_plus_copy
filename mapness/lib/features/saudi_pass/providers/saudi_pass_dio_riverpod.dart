@@ -32,8 +32,8 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
 
     final dio = Dio(
       BaseOptions(
-        // TODO weatherApi should be semantically renamed to apiservicesBalady cause it used wider then only for the Weather
-        baseUrl: '${env.weatherApi}/v1/balady-business-saudi-pass-services/user',
+        // TODO: add to env before release !!!
+        baseUrl: 'https://apiservicesstg.balady.gov.sa/v1/balady-business-saudi-pass-services/user',
         sendTimeout: timeout,
         receiveTimeout: timeout,
         connectTimeout: timeout,
