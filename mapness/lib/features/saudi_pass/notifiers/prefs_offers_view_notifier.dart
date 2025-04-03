@@ -5,7 +5,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
 
   final SaudiPassRepository saudiPassRepository;
   final StackRouter stackRouter;
-  final Preferences preferences;
+  Preferences preferences;
 
   @override
   bool get isSetPreferencesOrOffersVisible => preferences.isNotPopulated;
@@ -14,13 +14,21 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
   late AsyncIterable<OfferView> asyncIterableOffers = createOffersAsyncIterable();
 
   @override
-  void tapIconEdit() {
-    // TODO open user prefs
-  }
+  void tapIconEdit() => openPreferences();
 
   @override
-  void tapGotoPreferences() {
-    // TODO open user prefs
+  void tapGotoPreferences() => openPreferences();
+
+  Future<void> openPreferences() async {
+    final futurePreferences = await stackRouter.push<Future<Preferences>>(const ProfilePreferencesRoute());
+    if (futurePreferences != null) {
+      final returnedPreferences = await futurePreferences;
+      if (returnedPreferences != preferences) {
+        preferences = returnedPreferences;
+        asyncIterableOffers = createOffersAsyncIterable();
+        notifyListeners();
+      }
+    }
   }
 
   AsyncIterable<OfferView> createOffersAsyncIterable() {

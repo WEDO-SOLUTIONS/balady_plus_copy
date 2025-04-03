@@ -1,4 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:collection/collection.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
 
@@ -24,6 +25,7 @@ class PreferencesData extends Data<Preferences> {
 }
 
 @noRenameNoToJson
+@immutable
 class Preferences {
   final String id;
   final String? mobile;
@@ -50,9 +52,40 @@ class Preferences {
     required this.recommendedTypes,
     required this.receiveNearbyDeals,
     required this.receiveNewOpeningDeals,
-  });
+  }) : isNotPopulated = cities.isEmpty;
 
-  bool get isNotPopulated => cities.isEmpty;
+  final bool isNotPopulated;
 
   factory Preferences.fromJson(Map<String, dynamic> json) => _$PreferencesFromJson(json);
+
+  static const iterableEquality = IterableEquality();
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is Preferences &&
+          runtimeType == other.runtimeType &&
+          id == other.id &&
+          mobile == other.mobile &&
+          birthDate == other.birthDate &&
+          gender == other.gender &&
+          saudi == other.saudi &&
+          iterableEquality.equals(cities, other.cities) &&
+          iterableEquality.equals(categories, other.categories) &&
+          iterableEquality.equals(recommendedTypes, other.recommendedTypes) &&
+          receiveNearbyDeals == other.receiveNearbyDeals &&
+          receiveNewOpeningDeals == other.receiveNewOpeningDeals;
+
+  @override
+  int get hashCode =>
+      id.hashCode ^
+      mobile.hashCode ^
+      birthDate.hashCode ^
+      gender.hashCode ^
+      saudi.hashCode ^
+      cities.hashCode ^
+      categories.hashCode ^
+      recommendedTypes.hashCode ^
+      receiveNearbyDeals.hashCode ^
+      receiveNewOpeningDeals.hashCode;
 }

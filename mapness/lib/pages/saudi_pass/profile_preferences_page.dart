@@ -29,9 +29,13 @@ class ProfilePreferencesPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorsV3;
 
+    void popWithPreferences() {
+      context.router.popForced(ref.read(profilePreferencesProvider.future).then((it) => it.preferences));
+    }
+
     ref.listen(setProfilePreferencesProvider, (prev, next) {
       if (next == SetProfilePreferencesState.setSuccess) {
-        context.router.popForced();
+        popWithPreferences();
       }
     });
 
@@ -55,7 +59,7 @@ class ProfilePreferencesPage extends ConsumerWidget {
                 color: colors.foregroundDefault,
               ),
               leading: ActionModel(
-                onPressed: () => context.router.popForced(),
+                onPressed: popWithPreferences,
                 icon: SystemIcons.arrowCornerLeftLarge,
               ),
             ),

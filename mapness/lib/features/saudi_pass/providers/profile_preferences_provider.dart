@@ -12,22 +12,26 @@ class ProfilePreferencesState {
   final City? city;
   final List<Selection<Category>> categories;
   final List<Selection<RecommendedType>> recommendedTypes;
+  final Preferences preferences;
 
   ProfilePreferencesState({
     required this.city,
     required this.categories,
     required this.recommendedTypes,
+    required this.preferences,
   });
 
   ProfilePreferencesState copyWith({
     City? city,
     List<Selection<Category>>? categories,
     List<Selection<RecommendedType>>? recommendedTypes,
+    Preferences? preferences,
   }) =>
       ProfilePreferencesState(
         city: city ?? this.city,
         categories: categories ?? this.categories,
         recommendedTypes: recommendedTypes ?? this.recommendedTypes,
+        preferences: preferences ?? this.preferences,
       );
 }
 
@@ -59,6 +63,7 @@ class ProfilePreferences extends _$ProfilePreferences {
       city: city,
       categories: selectionCategories,
       recommendedTypes: selectionTypes,
+      preferences: preferences,
     );
   }
 

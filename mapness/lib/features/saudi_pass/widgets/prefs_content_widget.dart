@@ -63,40 +63,45 @@ class PrefsContentWidget extends ConsumerWidget {
         final prefsOffersView = snap.data;
 
         if (prefsOffersView != null) {
-          if (prefsOffersView.isSetPreferencesOrOffersVisible) {
-            return Padding(
-              padding: const EdgeInsets.only(top: Spacing.$3x),
-              child: SetPreferencesPlaceholderWidget(action: prefsOffersView.tapGotoPreferences),
-            );
-          } else {
-            final types = '${prefsOffersView.types} ${pluralTypes(prefsOffersView.types)}';
-            final categories = '${prefsOffersView.categories} ${pluralCategories(prefsOffersView.categories)}';
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const SizedBox(height: Spacing.$1x),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          return ListenableBuilder(
+            listenable: prefsOffersView,
+            builder: (context, _) {
+              if (prefsOffersView.isSetPreferencesOrOffersVisible) {
+                return Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$3x),
+                  child: SetPreferencesPlaceholderWidget(action: prefsOffersView.tapGotoPreferences),
+                );
+              } else {
+                final types = '${prefsOffersView.types} ${pluralTypes(prefsOffersView.types)}';
+                final categories = '${prefsOffersView.categories} ${pluralCategories(prefsOffersView.categories)}';
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(
-                      '${prefsOffersView.cityTitle}, $types, $categories',
-                      style: prefsTextStyle,
+                    const SizedBox(height: Spacing.$1x),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          '${prefsOffersView.cityTitle}, $types, $categories',
+                          style: prefsTextStyle,
+                        ),
+                        IconButton(
+                          onPressed: prefsOffersView.tapIconEdit,
+                          icon: const Icon(
+                            General16Icons.edit,
+                            size: 14,
+                          ),
+                          color: context.colorsV3.neutralDefault,
+                        ),
+                      ],
                     ),
-                    IconButton(
-                      onPressed: prefsOffersView.tapIconEdit,
-                      icon: const Icon(
-                        General16Icons.edit,
-                        size: 14,
-                      ),
-                      color: context.colorsV3.neutralDefault,
-                    ),
+                    const SizedBox(height: Spacing.$4x),
+                    Expanded(child: OffersListWidget(prefsOffersView.asyncIterableOffers)),
                   ],
-                ),
-                const SizedBox(height: Spacing.$4x),
-                Expanded(child: OffersListWidget(prefsOffersView.asyncIterableOffers)),
-              ],
-            );
-          }
+                );
+              }
+            },
+          );
         }
 
         return const Center(child: Loading(size: LoaderSize.large));
