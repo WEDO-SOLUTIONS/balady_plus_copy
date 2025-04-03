@@ -1,10 +1,10 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/widgets/decorated_smooth_radius.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
+import 'package:mapness/features/saudi_pass/widgets/small_chip_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
@@ -129,40 +129,11 @@ class StringItemViewWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) => ListenableBuilder(
         listenable: view,
-        builder: (context, _) {
-          final colorsV2 = context.colorsV3;
-          final textColor = view.isHighlighted ? colorsV2.accentOnAccent : colorsV2.foregroundDefault;
-
-          return DecoratedSmoothRadius(
-            // TODO extract
-            borderRadius: RadiusBorder.m,
-            color: view.isHighlighted ? colorsV2.accentSecondaryDefault : colorsV2.neutralContainerDefault,
-            child: InkWell(
-              splashFactory: NoSplash.splashFactory,
-              splashColor: context.color.surfaceOverlayPressed,
-              onTap: view.onTap,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: Spacing.$3x),
-                child: SizedBox(
-                  height: AppSizes.xs,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        view.title,
-                        textHeightBehavior: TextHeightBehavior(
-                          applyHeightToLastDescent: Directionality.of(context) == TextDirection.ltr,
-                        ),
-                        style: context.textStyleV3.bodySmallMedium.copyWith(color: textColor),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
+        builder: (context, _) => SmallChipWidget(
+          title: view.title,
+          isHighlighted: view.isHighlighted,
+          onTap: view.onTap,
+        ),
       );
 }
 
