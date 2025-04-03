@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/views/city_selection_dialog_view.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
@@ -118,7 +119,7 @@ class SearchViewWidget extends StatelessWidget {
               },
             ),
           ),
-          isDividerEnabled: true,
+          isDividerEnabled: citySelectionDialog.searchViews.last != view,
           supportTitleRTL: true,
         ),
       );

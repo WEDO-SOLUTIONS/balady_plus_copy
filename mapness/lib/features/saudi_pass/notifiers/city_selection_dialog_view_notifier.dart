@@ -14,7 +14,7 @@ class CitySelectionDialogViewNotifier extends ChangeNotifier implements CitySele
 
   void onCityTap(City city) => stackRouter.popForced(city);
 
-  late final Iterable<SearchView> _all = cities.map((city) => CitySearchView(city, this));
+  late final Iterable<SearchView> _all = cities.map((city) => CitySearchView(city, this)).toList();
 
   @override
   late Iterable<SearchView> searchViews = _all;
