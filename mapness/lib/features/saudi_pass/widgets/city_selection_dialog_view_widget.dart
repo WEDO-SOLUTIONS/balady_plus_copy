@@ -54,6 +54,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
                 padding: horizontalPadding,
                 child: BaladySearchWithBackButton(
                   searchInput: BaladyInput.searchV2(
+                    autofocus: true,
                     controller: textEditingController,
                     hintText: context.l10n.saudiPassCitySelectionPageSearchHint,
                   ),
