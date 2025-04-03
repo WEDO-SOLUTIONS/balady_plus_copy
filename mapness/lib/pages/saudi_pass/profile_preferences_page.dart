@@ -111,7 +111,7 @@ class _Content extends ConsumerWidget {
               child: Column(
                 children: [
                   SaudiPassCitySelection(
-                    city: preferences.city,
+                    title: preferences.city?.name,
                     onTap: () => _selectCity(context, ref),
                   ),
                   _SelectRecommendedTypes(
