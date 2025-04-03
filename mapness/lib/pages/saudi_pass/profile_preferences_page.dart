@@ -14,8 +14,8 @@ import 'package:mapness/features/saudi_pass/providers/profile_preferences_provid
 import 'package:mapness/features/saudi_pass/providers/set_profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_chips_selection_widget.dart';
-import 'package:mapness/features/saudi_pass/widgets/saudi_pass_chips_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_city_selection_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/small_chip_widget.dart';
 import 'package:mapness/shared/entities/selection.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/error_widget/fullscreen_error_widget.dart';
@@ -239,11 +239,10 @@ class _SelectCategories extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => SaudiPassChipsSelectionWidget<Category>(
         title: context.l10n.saudiPassOffersPageFilterCategory,
         items: items,
-        itemBuilder: (context, item) => SaudiPassChipsWidget(
+        itemBuilder: (context, item) => SmallChipWidget(
           title: item.value.name,
-          isSelected: item.selected,
+          isHighlighted: item.selected,
           onTap: () => onItemTap(item),
-          style: ChipsStyle.colorfulBackground,
         ),
       );
 }
@@ -258,11 +257,10 @@ class _SelectRecommendedTypes extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => SaudiPassChipsSelectionWidget<RecommendedType>(
         title: context.l10n.saudiPassOffersPageFilterType,
         items: items,
-        itemBuilder: (context, item) => SaudiPassChipsWidget(
+        itemBuilder: (context, item) => SmallChipWidget(
           title: item.value.name,
-          isSelected: item.selected,
+          isHighlighted: item.selected,
           onTap: () => onItemTap(item),
-          style: ChipsStyle.colorfulBackground,
         ),
       );
 }
