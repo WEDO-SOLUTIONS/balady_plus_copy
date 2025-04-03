@@ -127,9 +127,7 @@ class ProfilePage extends HookConsumerWidget {
                                           ),
                                         ),
                                         ContentRowV2(
-                                          onTap: () {
-                                            // TODO: open favorites offers page
-                                          },
+                                          onTap: () => context.router.push(const FavouriteOffersScreenViewRoute()),
                                           trailing: trailing,
                                           leading: leadingIconBuilder(GeneralIcons.heart),
                                           text: ContentRowTextOptions(
