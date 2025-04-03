@@ -7,7 +7,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_button.dart';
-import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/feedback_banner_card.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
@@ -182,8 +181,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
                   subtitle: context.l10n.addPhotosDescription,
                   gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
                   onTap: () => context.router.push(
-                    QuickFeedbackRoute(
-                      type: QuickFeedbackType.addPhoto,
+                    QuickFeedbackPhotoRoute(
                       params: FeedbackObjectIdParams(objectId),
                     ),
                   ),

@@ -12,12 +12,14 @@ enum FeedbackImageSelectorType {
 }
 
 class FeedbackImageSelectorSheet extends HookWidget {
-  const FeedbackImageSelectorSheet({super.key});
+  final ValueChanged<FeedbackImageSelectorType?>? onSelect;
+
+  const FeedbackImageSelectorSheet({super.key, this.onSelect});
 
   @override
   Widget build(BuildContext context) {
     final sheetController = useStatelessBottomsheetController(
-      onClose: (_) => Navigator.of(context).pop(),
+      onClose: (_) => onSelect != null ? onSelect?.call(null) : Navigator.of(context).pop(),
     );
 
     return StatelessBottomSheet(
@@ -47,7 +49,9 @@ class FeedbackImageSelectorSheet extends HookWidget {
           child: ContentWrapper(color: context.colorsV3.backgroundSurface1, children: [
             ContentRowV2(
               isDividerEnabled: true,
-              onTap: () => Navigator.of(context).pop(FeedbackImageSelectorType.camera),
+              onTap: () => onSelect != null
+                  ? onSelect?.call(FeedbackImageSelectorType.camera)
+                  : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
               leading: AppIcons(
                 iconData: GeneralIcons.photo,
                 color: context.colorsV3.accentDefault,
@@ -66,7 +70,9 @@ class FeedbackImageSelectorSheet extends HookWidget {
               ),
             ),
             ContentRowV2(
-              onTap: () => Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
+              onTap: () => onSelect != null
+                  ? onSelect?.call(FeedbackImageSelectorType.gallery)
+                  : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
               leading: AppIcons(
                 iconData: SystemIcons.images,
                 color: context.colorsV3.accentDefault,
