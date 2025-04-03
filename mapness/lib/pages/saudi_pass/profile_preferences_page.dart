@@ -9,6 +9,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/providers/get_all_lookups_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/get_profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/set_profile_preferences_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
@@ -30,7 +31,7 @@ class ProfilePreferencesPage extends ConsumerWidget {
     final colors = context.colorsV3;
 
     void popWithPreferences() {
-      context.router.popForced(ref.read(profilePreferencesProvider.future).then((it) => it.preferences));
+      context.router.popForced(ref.read(getProfilePreferencesProvider.future));
     }
 
     ref.listen(setProfilePreferencesProvider, (prev, next) {
