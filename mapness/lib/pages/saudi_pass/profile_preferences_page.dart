@@ -114,14 +114,14 @@ class _Content extends ConsumerWidget {
                     city: preferences.city,
                     onTap: () => _selectCity(context, ref),
                   ),
-                  _SelectCategories(
-                    items: preferences.categories,
-                    onItemTap: (item) => ref.watch(profilePreferencesProvider.notifier).changeCategory(item),
-                  ),
-                  Spacing.$3x.heightBox,
                   _SelectRecommendedTypes(
                     items: preferences.recommendedTypes,
                     onItemTap: (item) => ref.watch(profilePreferencesProvider.notifier).changeRecommendedType(item),
+                  ),
+                  Spacing.$3x.heightBox,
+                  _SelectCategories(
+                    items: preferences.categories,
+                    onItemTap: (item) => ref.watch(profilePreferencesProvider.notifier).changeCategory(item),
                   ),
                   // TODO: uncomment when profile editing page will be implemented
                   // Spacing.$3x.heightBox,
