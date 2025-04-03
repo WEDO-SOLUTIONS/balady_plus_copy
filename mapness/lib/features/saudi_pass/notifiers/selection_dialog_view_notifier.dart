@@ -19,7 +19,7 @@ abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implemen
   final void Function(Set<T> updates) selectionDialogApply;
 
   @override
-  late final Iterable<SelectionView<S>> selectionViews = all.map((it) => createSelectionView(it, selected));
+  late final Iterable<SelectionView<S>> selectionViews = all.map((it) => createSelectionView(it, selected)).toList();
 
   final SelectionView<S> Function(T object, Set<T> selected) createSelectionView;
 

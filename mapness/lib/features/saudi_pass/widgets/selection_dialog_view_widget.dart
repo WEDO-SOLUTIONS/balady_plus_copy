@@ -115,7 +115,12 @@ class ContentRowLayout extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.ml)),
         child: Column(
           children: selectionViews
-              .mapIndexed((index, view) => SortingItemViewWidget(view, hasDivider: index < selectionViews.length - 1))
+              .mapIndexed(
+                (index, view) => ListenableBuilder(
+                  listenable: Listenable.merge(selectionViews),
+                  builder: (_, __) => SortingItemViewWidget(view, hasDivider: index < selectionViews.length - 1),
+                ),
+              )
               .toList(),
         ),
       );
