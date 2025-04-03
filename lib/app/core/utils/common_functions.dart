@@ -255,7 +255,7 @@ class CommonFunctions {
 
       final location = await locationService.getLastLocation();
       if (location.latitude != null && location.longitude != null) {
-        return LatLng(location.latitude!, location.longitude!);
+        return LatLng(latitude: location.latitude!, longitude: location.longitude!);
       }
 
       await locationService.requestLocationUpdates(request);
@@ -263,7 +263,7 @@ class CommonFunctions {
 
       final updatedLocation = await locationService.getLastLocation();
       if (updatedLocation.latitude != null && updatedLocation.longitude != null) {
-        return LatLng(updatedLocation.latitude!, updatedLocation.longitude!);
+        return LatLng(latitude: updatedLocation.latitude!, longitude: updatedLocation.longitude!);
       }
     } catch (error, stackTrace) {
       debugPrint("Error in getCurrentLocationHuawei: $error");
