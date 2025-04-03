@@ -47,7 +47,7 @@ class AppRouter extends RootStackRouter {
                 context,
                 child,
                 page,
-                isTransparent: true,
+                background: RouteBarrierColor.transparent,
               ),
             ),
             CustomRoute(
@@ -62,6 +62,10 @@ class AppRouter extends RootStackRouter {
             AppRoute(
               path: 'search',
               page: SearchRoute.page,
+            ),
+            AppRoute(
+              path: 'navi_search',
+              page: NaviSearchRoute.page,
             ),
             AppRoute(
               path: 'routingMap',
@@ -80,16 +84,18 @@ class AppRouter extends RootStackRouter {
               page: RoutingRoutesRoute.page,
             ),
             AppRoute(
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              durationInMilliseconds: 250,
+              path: 'routingSearch',
+              page: RoutingSearchSheetRoute.page,
+            ),
+            AppRoute(
               path: 'eta_route/:lat/:lon',
               page: EtaRouteRoute.page,
             ),
             AppRoute(
               path: 'weather_router',
               page: WeatherRoute.page,
-            ),
-            AppRoute(
-              path: 'routingSearch',
-              page: RoutingSearchSheetRoute.page,
             ),
             CustomRoute(
               path: 'road_panel_sheet',
@@ -166,6 +172,10 @@ class AppRouter extends RootStackRouter {
               page: FavouritesRoute.page,
             ),
             CustomRoute(
+              path: 'navi_search_favorites',
+              page: NaviFavoritesRoute.page,
+            ),
+            CustomRoute(
               path: 'search',
               page: FavouritesSearchRoute.page,
             ),
@@ -190,7 +200,6 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'poi_favorite_dialog',
               page: PoiFavoriteDialogRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'error_sheet_dialog',

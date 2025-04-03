@@ -114,9 +114,7 @@ class RoadPanelSheetState extends ConsumerState<RoadPanelSheetPage> with SingleT
                               color: color.surfaceBaseTertiary,
                               children: [
                                 ContentRow(
-                                  onTap: () {
-                                    context.router.push(const SoundSettingsRoute());
-                                  },
+                                  onTap: () => context.router.push(const SoundSettingsRoute()),
                                   options: ContentRowOptions(
                                     subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                                       color: color.textAndIconsBaseSecondary,

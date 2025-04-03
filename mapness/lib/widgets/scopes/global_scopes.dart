@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
 import 'package:mapness/features/metro/metro_layer_visible_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/providers/eta_service_provider.dart';
 import 'package:mapness/features/share_eta/providers/eta_timer_indicator.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
@@ -27,6 +28,7 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(mapTapHandlerProvider.select((_) => null))
       ..watch(etaGeoSubscriberProvider.select((_) => null))
       ..watch(websocketTypeProvider.select((_) => null))
+      ..watch(etaWebsocketStatusProvider.select((_) => null))
       ..watch(etaTimerIndicatorProvider.select((_) => null))
       ..watch(shareEtaProvider.select((_) => null))
       ..watch(etaServiceProvider.select((_) => null))

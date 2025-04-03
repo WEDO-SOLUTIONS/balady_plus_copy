@@ -190,6 +190,16 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         self.navigationHandler?.followNavigation()
          completion(Result.success(()))
     }
+
+    func startFollowNavigation(completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.navigationHandler?.startFollowNavigation()
+         completion(Result.success(()))
+    }
+
+    func stopFollowNavigation(completion: @escaping (Result<Void, any Error>) -> Void) {
+        self.navigationHandler?.stopFollowNavigation()
+         completion(Result.success(()))
+    }
     
     func selectIndoorLevel(index: Int64, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.indoorControlHandler?.selectIndoorLevel(index: UInt64(index))

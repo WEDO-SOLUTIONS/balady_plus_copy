@@ -1,6 +1,8 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -43,14 +45,14 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
     final photos = ref.watch(poiPhotoProvider(widget.objectId));
 
     final photoCount = photos.whenOrNull(data: (data) => data.items.length) ?? 0;
-    final organizationsCount = widget.poiCardState?.organizations?.total ?? 0;
+    final organizationsCount = widget.poiCardState?.organizations?.count ?? 0;
 
     return TabBar(
       padding: EdgeInsets.zero,
       controller: widget.tabController,
       indicatorColor: Colors.transparent,
       isScrollable: true,
-      labelPadding: const EdgeInsetsDirectional.only(end: 2),
+      labelPadding: EdgeInsets.zero,
       tabs: [
         Tab(
           iconMargin: EdgeInsets.zero,
@@ -77,9 +79,7 @@ class _PoiTabsState extends ConsumerState<PoiTabs> {
               Metrics.logEventAdvanced(MetricsConstants.poiKeys.tab,
                   group: MetricsConstants.poiTag,
                   action: MetricAction.tap.toString(),
-                  props: {
-                    'tab': context.l10n.photos,
-                  });
+                  props: {'tab': context.l10n.photos});
 
               widget.tabController.animateTo(1);
             },
@@ -122,75 +122,75 @@ class _PoiTabItem extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => Container(
+  Widget build(BuildContext context) {
+    final isActive = this.isActive ?? false;
+    final hasCounter = count != null && count != 0;
+    return Padding(
+      padding: const EdgeInsets.all(Spacing.px),
+      child: DecoratedBox(
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(6),
-          boxShadow: isActive ?? false
-              ? [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.07),
-                    blurRadius: 1,
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 4,
-                    offset: const Offset(0, 2),
-                  ),
-                ]
-              : null,
+          color: isActive ? context.colorsV3.staticWhite : Colors.transparent,
+          borderRadius: BorderRadius.circular(RadiusBorder.m),
+          boxShadow: isActive ? Shadows.s : null,
         ),
-        height: 36,
-        child: Material(
-          color: Colors.transparent,
-          type: MaterialType.transparency,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(6),
-            onTap: onTap,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: Center(
-                child: Row(
-                  children: [
-                    Text(
-                      title,
-                      style: context.textStyle.footNote.copyWith(
-                        color: isActive ?? false
-                            ? context.color.textAndIconsBasePrimary
-                            : context.color.textAndIconsBasePrimary.withOpacity(0.5),
-                      ),
-                    ),
-                    if (count != null && count != 0)
-                      Padding(
-                        padding: const EdgeInsetsDirectional.only(
-                          start: 6,
+        child: SizedBox(
+          height: 36,
+          child: Material(
+            color: Colors.transparent,
+            type: MaterialType.transparency,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(RadiusBorder.m),
+              onTap: onTap,
+              child: Padding(
+                padding: EdgeInsetsDirectional.only(
+                  start: Spacing.$3x,
+                  end: hasCounter ? Spacing.$2x : Spacing.$3x,
+                  top: Spacing.$2x + Spacing.px,
+                  bottom: Spacing.$2x + Spacing.px,
+                ),
+                child: Center(
+                  child: Row(
+                    children: [
+                      Text(
+                        title,
+                        style: context.textStyleV3.bodySmallMedium.copyWith(
+                          color: isActive ? context.colorsV3.foregroundDefault : context.colorsV3.foregroundSoft,
                         ),
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 6,
-                            vertical: 2,
+                      ),
+                      if (hasCounter)
+                        Padding(
+                          padding: const EdgeInsetsDirectional.only(
+                            start: Spacing.$1x + Spacing.$0_5x,
                           ),
-                          decoration: BoxDecoration(
-                            // Fix shape for big numbers
-                            borderRadius: count! < 100 ? null : BorderRadius.circular(50),
-                            shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
-                            color: isActive ?? false
-                                ? context.colorsV2.neutralDefault
-                                : context.colorsV2.staticBlack.withOpacity(0.3),
-                          ),
-                          child: Text(
-                            '$count',
-                            style: context.textStyle.caption.copyWith(
-                              color: Colors.white,
+                          child: DecoratedBox(
+                            decoration: BoxDecoration(
+                              // Fix shape for big numbers
+                              borderRadius: count! < 100 ? null : BorderRadius.circular(50),
+                              shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
+                              color: isActive ? context.colorsV3.neutralDefault : context.colorsV3.neutralMuted,
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 6.5,
+                                vertical: 3,
+                              ),
+                              child: Text(
+                                '$count',
+                                style: context.textStyleV3.captionSmallMedium.copyWith(
+                                  color: context.colorsV3.staticWhite,
+                                ),
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      );
+      ),
+    );
+  }
 }

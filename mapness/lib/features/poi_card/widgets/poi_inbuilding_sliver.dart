@@ -71,12 +71,15 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
   Widget build(BuildContext context) => MultiSliver(
         children: [
           SliverToBoxAdapter(
-            child: FeedbackBannerCard(
-              title: context.l10n.addPlace,
-              subtitle: context.l10n.addNewPlace,
-              imageAssetName: 'add_company.png',
-              gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
-              onTap: () => context.router.push(QuickFeedbackRoute()),
+            child: Padding(
+              padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
+              child: FeedbackBannerCard(
+                title: context.l10n.addPlace,
+                subtitle: context.l10n.addNewPlace,
+                imageAssetName: 'add_company.png',
+                gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
+                onTap: () => context.router.push(QuickFeedbackRoute()),
+              ),
             ),
           ),
           SliverPadding(
@@ -111,7 +114,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
                   },
                 ),
               ),
-              separatorBuilder: (context, index) => Spacing.$4x.heightBox,
+              separatorBuilder: (context, index) => (Spacing.$3x - Spacing.$0_5x).heightBox,
             ),
           ),
         ],
@@ -160,28 +163,25 @@ class OrganizationWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: smoothBorder(RadiusBorder.xl),
         color: context.color.surfaceBasePrimary,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-          child: ContentRow(
-            onTap: () {
-              final itemId = item.id;
+        child: ContentRow(
+          onTap: () {
+            final itemId = item.id;
 
-              if (itemId == null) {
-                return;
-              }
+            if (itemId == null) {
+              return;
+            }
 
-              final id = int.tryParse(itemId);
-              if (id == null) {
-                return;
-              }
-              onTap?.call(id);
-            },
-            options: ContentRowOptions(
-              title: item.title,
-              subtitle: item.rubricsNames,
-              subtitleExtra: item.addressComment,
-              titleStyle: context.textStyleV3.bodyLargeSemiBold,
-            ),
+            final id = int.tryParse(itemId);
+            if (id == null) {
+              return;
+            }
+            onTap?.call(id);
+          },
+          options: ContentRowOptions(
+            title: item.title,
+            subtitle: item.rubricsNames,
+            subtitleExtra: item.addressComment,
+            titleStyle: context.textStyleV3.bodyLargeSemiBold,
           ),
         ),
       );

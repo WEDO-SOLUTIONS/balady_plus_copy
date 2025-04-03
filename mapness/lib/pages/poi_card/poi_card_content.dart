@@ -145,7 +145,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                   });
 
-              poiActions.share(
+              return poiActions.share(
                 objectId: objectId,
                 markerCoords: widget.closestPoint,
               );
@@ -219,9 +219,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             valueListenable: _tabType,
             builder: (context, tabType, _) => DecoratedSliver(
               decoration: BoxDecoration(
-                color: tabType == PoiTabsType.photos
-                    ? context.colorsV2.backgroundSurface1
-                    : context.colorsV2.backgroundSurface4,
+                color: context.colorsV2.backgroundSurface4,
                 borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
               ),
               sliver: SliverFillAfter(
@@ -231,6 +229,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     PoiTabsType.info => SliverList(
                         delegate: SliverChildListDelegate(
                           [
+                            const SizedBox(height: Spacing.$4x),
                             FeedbackBannerCard(
                               imageAssetName: 'city_expert.png',
                               title: context.l10n.cityExpert,

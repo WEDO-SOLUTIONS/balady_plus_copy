@@ -5,6 +5,7 @@ import 'package:custom_image_crop/custom_image_crop.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 @RoutePage()
 class ImageEditorPage extends ConsumerStatefulWidget {
@@ -27,67 +28,64 @@ class _ImageEditorPageState extends ConsumerState<ImageEditorPage> {
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: Material(
-            color: Colors.white,
-            child: Column(
-              children: [
-                const SizedBox(
-                  width: 16,
-                ),
-                Expanded(
-                  child: CustomImageCrop(
-                    cropController: controller,
-                    image: MemoryImage(
-                      widget.image,
-                    ),
+        child: Material(
+          color: Colors.white,
+          child: Column(
+            children: [
+              const SizedBox(
+                width: 16,
+              ),
+              Expanded(
+                child: CustomImageCrop(
+                  cropController: controller,
+                  image: MemoryImage(
+                    widget.image,
                   ),
                 ),
-                Row(
-                  children: [
-                    const Spacer(),
-                    TextButton(
-                      child: const Text('Cancel'),
-                      onPressed: () {
-                        context.router.popForced();
-                      },
-                    ),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.refresh),
-                      onPressed: controller.reset,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.zoom_in),
-                      onPressed: () => controller.addTransition(CropImageData(scale: 1.33)),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.zoom_out),
-                      onPressed: () => controller.addTransition(CropImageData(scale: 0.75)),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.rotate_left),
-                      onPressed: () => controller.addTransition(CropImageData(angle: -pi / 4)),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.rotate_right),
-                      onPressed: () => controller.addTransition(CropImageData(angle: pi / 4)),
-                    ),
-                    const Spacer(),
-                    TextButton(
-                      child: const Text('Accept'),
-                      onPressed: () async {
-                        final image = await controller.onCropImage();
-                        context.router.popForced(image?.bytes);
-                      },
-                    ),
-                    const Spacer(),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).padding.bottom),
-              ],
-            ),
+              ),
+              Row(
+                children: [
+                  const Spacer(),
+                  TextButton(
+                    child: Text(context.l10n.feedbackBreaksSheetClose),
+                    onPressed: () {
+                      context.router.popForced();
+                    },
+                  ),
+                  const Spacer(),
+                  IconButton(
+                    icon: const Icon(Icons.refresh),
+                    onPressed: controller.reset,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.zoom_in),
+                    onPressed: () => controller.addTransition(CropImageData(scale: 1.33)),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.zoom_out),
+                    onPressed: () => controller.addTransition(CropImageData(scale: 0.75)),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.rotate_left),
+                    onPressed: () => controller.addTransition(CropImageData(angle: -pi / 4)),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.rotate_right),
+                    onPressed: () => controller.addTransition(CropImageData(angle: pi / 4)),
+                  ),
+                  const Spacer(),
+                  TextButton(
+                    child: const Text('Accept'),
+                    onPressed: () async {
+                      final image = await controller.onCropImage();
+                      context.router.popForced(image?.bytes);
+                    },
+                  ),
+                  const Spacer(),
+                ],
+              ),
+              SizedBox(height: MediaQuery.of(context).padding.bottom),
+            ],
           ),
         ),
       );

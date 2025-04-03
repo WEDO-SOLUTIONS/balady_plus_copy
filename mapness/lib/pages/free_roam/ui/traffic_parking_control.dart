@@ -4,8 +4,8 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -16,10 +16,12 @@ import 'package:mapness/shared/providers/map/traffic_state.dart';
 
 class TrafficParkingControl extends ConsumerStatefulWidget {
   final bool trafficVisible;
+  final bool parkingVisible;
 
   const TrafficParkingControl({
     super.key,
     this.trafficVisible = true,
+    this.parkingVisible = true,
   });
 
   @override
@@ -47,37 +49,40 @@ class _TrafficParkingState extends ConsumerState<TrafficParkingControl> {
               isEnabled: isTrafficEnabled,
               trafficState: trafficNotifier,
               isVisable: isTrafficVisable,
+              parkingVisible: widget.parkingVisible,
             ),
-          Consumer(
-            builder: (context, ref, child) {
-              final parkingState = ref.watch(parkingStateProvider);
+          if (widget.parkingVisible)
+            Consumer(
+              builder: (context, ref, child) {
+                final parkingState = ref.watch(parkingStateProvider);
 
-              final layersNotifier = ref.watch(layersControlsProvider.notifier);
-              final layers = ref.watch(layersControlsProvider);
-              final isParkingEnabled = parkingState.visible;
+                final layersNotifier = ref.watch(layersControlsProvider.notifier);
+                final layers = ref.watch(layersControlsProvider);
+                final isParkingEnabled = parkingState.visible;
 
-              return _ParkingWidget(
-                isEnabled: isParkingEnabled,
-                isNoTopBorderRadius: isTrafficVisable,
-                onParkingTap: () {
-                  final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
+                return _ParkingWidget(
+                  isEnabled: isParkingEnabled,
+                  isNoTopBorderRadius: isTrafficVisable,
+                  onParkingTap: () {
+                    final autoEnableParking = ref.read(navigatorAutoEnableParkingProvider);
 
-                  if (autoEnableParking == null) {
-                    ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
-                    return;
-                  }
+                    if (autoEnableParking == null) {
+                      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
+                      return;
+                    }
 
-                  final parkingEnabledFreeRoam = sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
+                    final parkingEnabledFreeRoam =
+                        sharedPrefs.getBool(MapnessConstants.parkingEnabledFreeRoam) ?? false;
 
-                  if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
-                    sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
-                  }
+                    if (layers.selectedType != LayerType.parkingLots && parkingEnabledFreeRoam == false) {
+                      sharedPrefs.setBool(MapnessConstants.parkingEnabledFreeRoam, true);
+                    }
 
-                  layersNotifier.toggleParking();
-                },
-              );
-            },
-          )
+                    layersNotifier.toggleParking();
+                  },
+                );
+              },
+            )
         ],
       ),
     );
@@ -121,11 +126,13 @@ class _TrafficControl extends StatelessWidget {
   final bool isEnabled;
   final bool isVisable;
   final TrafficState trafficState;
+  final bool parkingVisible;
 
   const _TrafficControl({
     required this.isEnabled,
     required this.isVisable,
     required this.trafficState,
+    required this.parkingVisible,
   });
 
   @override
@@ -135,9 +142,11 @@ class _TrafficControl extends StatelessWidget {
       TrafficControl(
         opacity: isVisable ? 1 : 0,
         isEnabled: isEnabled,
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(RadiusBorder.ml),
-          topRight: Radius.circular(RadiusBorder.ml),
+        borderRadius: BorderRadius.only(
+          topLeft: const Radius.circular(RadiusBorder.ml),
+          topRight: const Radius.circular(RadiusBorder.ml),
+          bottomRight: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
+          bottomLeft: parkingVisible ? Radius.zero : const Radius.circular(RadiusBorder.ml),
         ),
         onTap: () {
           Metrics.logEventAdvanced(

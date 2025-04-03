@@ -16,7 +16,7 @@ A new Flutter plugin project.
   s.source_files = 'Classes/**/*'
   
   s.dependency 'Flutter'
-  s.dependency 'DGisMobileSDK', '12.4.3-full'
+  s.dependency 'DGisMobileSDK', '12.5.0-full'
   # s.vendored_frameworks = '_DELETE_ME_/DGis.xcframework'
   
   s.platform = :ios, '13.0'
