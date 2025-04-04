@@ -30,75 +30,82 @@ class OfferCodeSheet extends HookConsumerWidget {
       },
     );
 
-    return StatelessBottomSheet(
-      draggerColor: context.colorsV3.backgroundSurface2,
-      backgroundColor: context.colorsV3.backgroundSurface2,
-      content: [
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            title,
-                            style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
-                          ),
-                          Spacing.$1x.heightBox,
-                          Text(
-                            description,
-                            style:
-                                context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Spacing.$3x.widthBox,
-                    AppButton(
-                      buttonColorScheme: ButtonColorScheme.secondary,
-                      size: ButtonSize.small,
-                      onTap: bottomSheetController.close,
-                      primaryIcon: SystemIcons.close,
-                      iconColor: context.colorsV3.neutralOnContainer,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 101,
-                  child: switch (redeemState) {
-                    OfferRedeemState.redeemed => Padding(
-                      padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: context.colorsV3.neutralContainerDefault,
-                          borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                        ),
-                        height: 69,
-                        alignment: Alignment.center,
-                        child: Text(
-                          code,
-                          style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer),
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.of(context).pop(ref.read(offerRedeemProvider(offerId)) == OfferRedeemState.redeemed);
+        return Future.value(false);
+      },
+      child: StatelessBottomSheet(
+        draggerColor: context.colorsV3.backgroundSurface2,
+        backgroundColor: context.colorsV3.backgroundSurface2,
+        content: [
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              child: Column(
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              title,
+                              style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+                            ),
+                            Spacing.$1x.heightBox,
+                            Text(
+                              description,
+                              style:
+                                  context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                            ),
+                          ],
                         ),
                       ),
-                    ),
-                    OfferRedeemState.loading => Center(
-                        child: Loading.large(),
+                      Spacing.$3x.widthBox,
+                      AppButton(
+                        buttonColorScheme: ButtonColorScheme.secondary,
+                        size: ButtonSize.small,
+                        onTap: bottomSheetController.close,
+                        primaryIcon: SystemIcons.close,
+                        iconColor: context.colorsV3.neutralOnContainer,
                       ),
-                    _ => const SizedBox.shrink(),
-                  },
-                ),
-              ],
+                    ],
+                  ),
+                  SizedBox(
+                    height: 101,
+                    child: switch (redeemState) {
+                      OfferRedeemState.redeemed => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: context.colorsV3.neutralContainerDefault,
+                              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                            ),
+                            height: 69,
+                            alignment: Alignment.center,
+                            child: Text(
+                              code,
+                              style:
+                                  context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.neutralOnContainer),
+                            ),
+                          ),
+                        ),
+                      OfferRedeemState.loading => Center(
+                          child: Loading.large(),
+                        ),
+                      _ => const SizedBox.shrink(),
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
-        ),
-      ],
-      scrollController: bottomSheetController,
+        ],
+        scrollController: bottomSheetController,
+      ),
     );
   }
 }
