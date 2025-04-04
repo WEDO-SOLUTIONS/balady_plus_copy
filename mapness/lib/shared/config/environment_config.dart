@@ -25,6 +25,7 @@ class EnvironmentConfig {
   final String appFeedbackApi;
   final String baladyBusinessUrl;
   final String bssApi;
+  final String saudiPassApi;
 
   EnvironmentConfig({
     required this.url,
@@ -40,6 +41,7 @@ class EnvironmentConfig {
     required this.appFeedbackApi,
     required this.baladyBusinessUrl,
     required this.bssApi,
+    required this.saudiPassApi,
   });
 
   factory EnvironmentConfig.fromEnvType(String envType) => switch (envType) {
@@ -64,6 +66,7 @@ class EnvironmentConfig {
         appFeedbackApi: json['appFeedbackApi'] as String,
         baladyBusinessUrl: json['baladyBusinessUrl'] as String,
         bssApi: json['bssApi'] as String,
+        saudiPassApi: json['saudiPassApi'] as String,
       );
 
   Map<String, dynamic> toJson() => {
@@ -79,6 +82,7 @@ class EnvironmentConfig {
         'appFeedbackEnable': appFeedbackEnable,
         'appFeedbackApi': appFeedbackApi,
         'baladyBusinessUrl': baladyBusinessUrl,
+        'saudiPassApi': saudiPassApi,
       };
 
   factory EnvironmentConfig.urbiDev() => EnvironmentConfig(
@@ -97,55 +101,56 @@ class EnvironmentConfig {
         appFeedbackEnable: true,
         bssApi: 'https://s1.bss.2gis.com',
         baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+        saudiPassApi: 'https://apiservicesstg.balady.gov.sa/',
       );
 
   factory EnvironmentConfig.momrahStaging() => EnvironmentConfig(
-        url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
-        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://apiservicesstg.balady.gov.sa/',
-        jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
-        twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
-        baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
-        feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
-        appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
-        appFeedbackEnable: true,
-        proxy: null,
-        bssApi: 'https://s1.bss.2gis.com',
-        baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
-      );
+      url: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/1.0/',
+      meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+      weatherApi: 'https://apiservicesstg.balady.gov.sa/',
+      jobsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1/recruitment-services',
+      twinsApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/v1',
+      baseApiDomain: 'urbi.ae',
+      shareEtaApi: 'https://geostream-urbi-lifestyle-stg.momrah.gov.sa',
+      feedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api/2.0/',
+      appFeedbackApi: 'https://urbi-lifestyle-stg.momrah.gov.sa/api',
+      appFeedbackEnable: true,
+      proxy: null,
+      bssApi: 'https://s1.bss.2gis.com',
+      baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+      saudiPassApi: 'https://apiservicesstg.balady.gov.sa/');
 
   factory EnvironmentConfig.momrahProd() => EnvironmentConfig(
-        url: 'https://urbi-lifestyle.momrah.gov.sa/api/1.0/',
-        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://apiservices.balady.gov.sa/',
-        jobsApi: 'https://urbi-lifestyle.momrah.gov.sa/v1/recruitment-services',
-        twinsApi: 'https://urbi-lifestyle.momrah.gov.sa/v1',
-        baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://geostream-urbi-lifestyle.momrah.gov.sa',
-        feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api/2.0/',
-        appFeedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api',
-        appFeedbackEnable: true,
-        proxy: null,
-        bssApi: 'https://s1.bss.2gis.com',
-        baladyBusinessUrl: 'https://business.balady.gov.sa',
-      );
+      url: 'https://urbi-lifestyle.momrah.gov.sa/api/1.0/',
+      meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+      weatherApi: 'https://apiservices.balady.gov.sa/',
+      jobsApi: 'https://urbi-lifestyle.momrah.gov.sa/v1/recruitment-services',
+      twinsApi: 'https://urbi-lifestyle.momrah.gov.sa/v1',
+      baseApiDomain: 'urbi.ae',
+      shareEtaApi: 'https://geostream-urbi-lifestyle.momrah.gov.sa',
+      feedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api/2.0/',
+      appFeedbackApi: 'https://urbi-lifestyle.momrah.gov.sa/api',
+      appFeedbackEnable: true,
+      proxy: null,
+      bssApi: 'https://s1.bss.2gis.com',
+      baladyBusinessUrl: 'https://business.balady.gov.sa',
+      saudiPassApi: 'https://apiservices.balady.gov.sa/');
 
   factory EnvironmentConfig.urbiPreProd() => EnvironmentConfig(
-        proxy: 'https://sa1.ops.2gis.dev',
-        url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
-        meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
-        weatherApi: 'https://sa1.ops.2gis.dev/',
-        jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
-        twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
-        baseApiDomain: 'urbi.ae',
-        shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
+      proxy: 'https://sa1.ops.2gis.dev',
+      url: 'https://momrah-balady.public-poc.urbi.ae/api/1.0/',
+      meteoblue: 'https://maps-api.meteoblue.com/v1/map/raster/',
+      weatherApi: 'https://sa1.ops.2gis.dev/',
+      jobsApi: 'https://sa1.ops.2gis.dev/v1/recruitment-services',
+      twinsApi: 'https://momrah-twins-api.public-poc.urbi.ae/v1',
+      baseApiDomain: 'urbi.ae',
+      shareEtaApi: 'https://momrah-balady-dev-geo.public-poc.urbi.ae',
 
-        /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
-        feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae/api/2.0/',
-        appFeedbackApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api',
-        appFeedbackEnable: true,
-        bssApi: 'https://s1.bss.2gis.com',
-        baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
-      );
+      /// swagger: https://momrah-balady-discrepancy.public-poc.urbi.ae/docs/
+      feedbackApi: 'https://momrah-balady-discrepancy.public-poc.urbi.ae/api/2.0/',
+      appFeedbackApi: 'https://momrah-balady-dev.public-poc.urbi.ae/api',
+      appFeedbackEnable: true,
+      bssApi: 'https://s1.bss.2gis.com',
+      baladyBusinessUrl: 'https://baladybusiness-stg.momra.gov.sa',
+      saudiPassApi: 'https://apiservicesstg.balady.gov.sa/');
 }
