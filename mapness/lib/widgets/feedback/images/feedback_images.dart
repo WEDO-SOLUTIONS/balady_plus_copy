@@ -176,12 +176,19 @@ class FeedbackImages extends StatelessWidget {
           await _showImageActionErrorSheet(
             context,
             error: BaseErrorWidget(
-              errorLabel: context.l10n.feedbackImageSizeExceedFailure(
+              buttonColorScheme: ButtonColorScheme.primary,
+              errorTitle: context.l10n.photoLimitExceeded,
+              errorLabel: context.l10n.feedbackImageLimitsError(
+                field.maxImages.toString(),
+                '$_maxImageResolution x $_maxImageResolution',
                 field.maxSize.formatAsFileSize(),
               ),
-              buttonLabel: context.l10n.done,
+              buttonLabel: context.l10n.tryAgain,
               onRetry: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
+              },
+              onClose: () {
+                Navigator.of(context).pop(false);
               },
             ),
             onRetry: () => _showImageSelectorDialog(context, ref),
@@ -216,6 +223,9 @@ class FeedbackImages extends StatelessWidget {
       await onRetry();
     }
   }
+
+  ///
+  ///You can upload up to {count} photos, each no larger than {size} and with a resolution up to {resolution} pixels
 }
 
 class _AddImageButton extends StatelessWidget {

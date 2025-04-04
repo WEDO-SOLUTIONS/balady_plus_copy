@@ -20,6 +20,8 @@ import 'package:urbi_analytics/logger.dart';
 
 @RoutePage()
 class QuickFeedbackPhotoPage extends ConsumerWidget {
+  static const _maxImageResolution = 5000;
+
   final FeedbackObjectIdParams params;
 
   const QuickFeedbackPhotoPage({required this.params, super.key});
@@ -85,15 +87,22 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
                       await _showImageActionErrorSheet(
                         context,
                         error: BaseErrorWidget(
-                          errorLabel: context.l10n.feedbackImageSizeExceedFailure(
+                          errorTitle: context.l10n.photoLimitExceeded,
+                          errorLabel: context.l10n.feedbackImageLimitsError(
+                            firstImageField.maxImages.toString(),
+                            '$_maxImageResolution x $_maxImageResolution',
                             firstImageField.maxSize.formatAsFileSize(),
                           ),
                           buttonLabel: context.l10n.done,
                           onRetry: () {
                             Navigator.of(context).pop();
                           },
+                          buttonColorScheme: ButtonColorScheme.primary,
+                          onClose: () {
+                            Navigator.of(context).pop(false);
+                          },
                         ),
-                        onRetry: () => Future(() => context.router.popForced()),
+                        onRetry: () => Future(() => Navigator.of(context).pop()),
                       );
                       break;
                     default:
