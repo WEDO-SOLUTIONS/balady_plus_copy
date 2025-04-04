@@ -127,6 +127,11 @@ class Routes {
           path: '/saudi_pass_offer_page',
           page: OfferRoute.page,
         ),
+        CustomRoute(
+          path: '/saudi_pass_offer_feedback',
+          page: AppFeedbackSheet.page,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(
