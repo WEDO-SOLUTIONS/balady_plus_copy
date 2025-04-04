@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/collect_feedback.dart';
@@ -74,9 +74,11 @@ class AppFeedbackMain extends HookConsumerWidget {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
           child: Text(
-            source == FeedbackSource.navi
-                ? context.l10n.appFeedbackNavigationExperience
-                : context.l10n.appFeedbackAppExperience,
+            switch (source) {
+              FeedbackSourceMain() => context.l10n.appFeedbackAppExperience,
+              FeedbackSourceNavi() => context.l10n.appFeedbackNavigationExperience,
+              FeedbackSourceOffer() => context.l10n.doYouLikeOffer,
+            },
             textAlign: TextAlign.center,
             style: context.textStyleV3.h3SemiBold.copyWith(
               color: context.colorsV2.foregroundDefault,
@@ -98,9 +100,10 @@ class AppFeedbackMain extends HookConsumerWidget {
           child: ValueListenableBuilder(
             valueListenable: rating,
             builder: (context, ratingValue, _) => Text(
-              _ratingText(context.l10n, rating.value),
+              source is FeedbackSourceOffer
+                  ? context.l10n.offerFeedbackMessage
+                  : _ratingText(context.l10n, rating.value),
               textAlign: TextAlign.center,
-              maxLines: 1,
               style: context.textStyleV3.bodyLargeRegular.copyWith(
                 color: context.colorsV2.foregroundSoft,
               ),
@@ -111,11 +114,14 @@ class AppFeedbackMain extends HookConsumerWidget {
           valueListenable: rating,
           builder: (context, ratingValue, _) => AnimatedSwitcher(
               duration: Durations.short3,
-              child: ratingValue > 0
-                  ? TagCloud(
-                      key: ValueKey(ratingValue),
-                      rating: ratingValue,
-                      onTagsChanged: (tags) => selectedTags.value = tags,
+              child: ratingValue > 0 && source is! FeedbackSourceOffer
+                  ? Padding(
+                      padding: const EdgeInsets.only(bottom: Spacing.$4x),
+                      child: TagCloud(
+                        key: ValueKey(ratingValue),
+                        rating: ratingValue,
+                        onTagsChanged: (tags) => selectedTags.value = tags,
+                      ),
                     )
                   : const SizedBox.shrink()),
         ),
@@ -127,7 +133,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             }
             return Padding(
               key: const ValueKey('app-feedback-balady-input'),
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$4x),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
@@ -172,11 +178,11 @@ class AppFeedbackMain extends HookConsumerWidget {
                             final text = feedbackTextController.text;
                             await collectFeedback.collectFeedback(
                               stars: ratingValue,
+                              source: source,
                               // Convert tag labels to source tags
                               tags:
                                   selectedTags.value.map((tag) => AppFeedbackTagMapper.getSourceTagText(tag)).toList(),
                               text: text.isEmpty ? null : feedbackTextController.text,
-                              source: source,
                             );
                           },
                     primaryLabel: context.l10n.appFeedbackSubmitButton,

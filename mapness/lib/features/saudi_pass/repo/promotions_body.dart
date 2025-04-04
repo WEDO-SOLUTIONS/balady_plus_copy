@@ -1,8 +1,10 @@
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/entities/saudi_pass/offers_group_mapper.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
+import 'package:mapness/features/saudi_pass/repo/offer_location.dart';
 
 part 'promotions_body.g.dart';
 
@@ -71,7 +73,7 @@ class Offer {
   final String branchId;
   final String branchName;
   final City city;
-  final Location location;
+  final OfferLocation location;
   final String commercialLicenseNumber;
   final String crNumber;
   final bool favorite;
@@ -103,7 +105,7 @@ class Offer {
 
   factory Offer.fromJson(Map<String, dynamic> json) => _$OfferFromJson(json);
 
-  String? get barcode => switch (type.id) {
+  String? get code => switch (type.id) {
         TypeDetails.vouchers => typeDetails.number,
         TypeDetails.coupons => typeDetails.code,
         _ => null,
@@ -115,20 +117,14 @@ class Offer {
         _ => null,
       };
 
+  bool get willExpiredSoon => publishEndDate.difference(DateTime.now()).inDays < 7;
+
+  String byDate(String languageCode) => DateFormat('MMMMd', languageCode).format(publishEndDate);
+
   OffersGroup get offerGroup {
     final categoryIds = categories.map((e) => e.id).toList();
     return OffersGroupMapper.fromCategoryIds(categoryIds);
   }
-}
-
-@noRenameNoToJson
-class Location {
-  final String latitude;
-  final String longitude;
-
-  const Location({required this.latitude, required this.longitude});
-
-  factory Location.fromJson(Map<String, dynamic> json) => _$LocationFromJson(json);
 }
 
 /// Promotion Type Details (Can be coupon or vouchers) [OfferType.id]

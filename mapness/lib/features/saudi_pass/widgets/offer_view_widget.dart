@@ -120,8 +120,7 @@ class OfferViewWidget extends ConsumerWidget {
               Align(
                 alignment: Alignment.topRight,
                 child: Icon(
-                  // TODO(Sergey Salnikov): uikit does not have filledHeart. Add and update here
-                  offerView.isHeartRedAndFilled ? GeneralIcons.heart : GeneralIcons.heart,
+                  offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
                   color: offerView.isHeartRedAndFilled ? colors.errorSoft : colors.neutralMuted,
                 ),
               ),

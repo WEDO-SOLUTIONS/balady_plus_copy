@@ -168,7 +168,7 @@ class OfferViewImpl implements OfferView {
 
   @override
   void onTap() {
-    throw UnimplementedError('stackRouter.push(OffersDetails page)');
+    stackRouter.push(OfferRoute(offerId: offer.id));
   }
 
   @override
@@ -189,7 +189,7 @@ class OfferViewImpl implements OfferView {
   DateTime get byDate => offer.publishEndDate;
 
   @override
-  bool get isByDateRed => offer.publishEndDate.difference(DateTime.now()).inDays < 7;
+  bool get isByDateRed => offer.willExpiredSoon;
 
   @override
   num? get amount => offer.typeDetails.amount;

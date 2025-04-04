@@ -123,6 +123,10 @@ class Routes {
           path: '/saudi_pass_settings_screen',
           page: SettingsScreenViewRoute.page,
         ),
+        CustomRoute(
+          path: '/saudi_pass_offer_page',
+          page: OfferRoute.page,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(

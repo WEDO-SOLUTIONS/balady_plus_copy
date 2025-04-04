@@ -12,7 +12,7 @@ class VerifyingKeyInterceptor extends QueuedInterceptorsWrapper {
     if (!options.headers.containsKey('Authorization')) {
       final uri = options.uri;
 
-      final verifyingKEY = hashRequest(uri.toString(), options.method, body: options.data);
+      final verifyingKEY = hashRequest(uri.toString(), options.method);
 
       final modifiedOptions = options.copyWith(
         headers: {...options.headers, 'verifyingKEY': verifyingKEY},

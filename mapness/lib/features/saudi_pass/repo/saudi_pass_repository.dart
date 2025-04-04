@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:mapness/entities/saudi_pass/offer_feedback.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
@@ -76,6 +77,17 @@ class SaudiPassRepository {
     final requestHeaders = requestOptionsIntercepted.headers..removeWhere((key, value) => value is! String);
 
     return (url: requestOptionsIntercepted.uri.toString(), headers: requestHeaders.cast());
+  }
+
+  Future<Response> sendFeedback({
+    required String offerId,
+    required OfferFeedback feedbackModel,
+  }) async {
+    final response = await _dio.post(
+      '/promotions/$offerId/feedback',
+      data: feedbackModel.toJson(),
+    );
+    return response;
   }
 
   Future<Preferences> getPreferences() async {

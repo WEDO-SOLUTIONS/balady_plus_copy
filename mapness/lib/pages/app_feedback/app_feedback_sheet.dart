@@ -3,7 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/features/app_feedback/app_feedback_canpop.dart';
 import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart';
 import 'package:mapness/features/app_feedback/send_feedback.dart';
@@ -22,7 +22,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
   const AppFeedbackSheet({
     this.initialRating,
-    this.source = FeedbackSource.main,
+    this.source = const FeedbackSource.main(),
     super.key,
   });
 

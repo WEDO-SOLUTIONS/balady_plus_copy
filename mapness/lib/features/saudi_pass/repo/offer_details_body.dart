@@ -1,6 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/momra_body.dart';
+import 'package:mapness/features/saudi_pass/repo/offer_location.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 
 part 'offer_details_body.g.dart';
@@ -26,6 +27,7 @@ class OfferDetailsData extends Data<OfferDetails> {
 
 @noRenameNoToJson
 class OfferDetails extends Offer {
+  @JsonKey(defaultValue: '')
   final String terms;
 
   OfferDetails({
@@ -51,6 +53,53 @@ class OfferDetails extends Offer {
     required super.typeDetails,
     required this.terms,
   });
+
+  OfferDetails copyWith({
+    String? id,
+    String? number,
+    String? name,
+    String? description,
+    OfferType? type,
+    OfferProvider? provider,
+    Iterable<Category>? categories,
+    Iterable<String>? images,
+    DateTime? publishStartDate,
+    DateTime? publishEndDate,
+    DateTime? lastUpdateTime,
+    String? branchId,
+    String? branchName,
+    City? city,
+    OfferLocation? location,
+    String? commercialLicenseNumber,
+    String? crNumber,
+    bool? favorite,
+    bool? redeemed,
+    TypeDetails? typeDetails,
+    String? terms,
+  }) =>
+      OfferDetails(
+        id: id ?? this.id,
+        number: number ?? this.number,
+        name: name ?? this.name,
+        description: description ?? this.description,
+        type: type ?? this.type,
+        provider: provider ?? this.provider,
+        categories: categories ?? this.categories,
+        images: images ?? this.images,
+        publishStartDate: publishStartDate ?? this.publishStartDate,
+        publishEndDate: publishEndDate ?? this.publishEndDate,
+        lastUpdateTime: lastUpdateTime ?? this.lastUpdateTime,
+        branchId: branchId ?? this.branchId,
+        branchName: branchName ?? this.branchName,
+        city: city ?? this.city,
+        location: location ?? this.location,
+        commercialLicenseNumber: commercialLicenseNumber ?? this.commercialLicenseNumber,
+        crNumber: crNumber ?? this.crNumber,
+        favorite: favorite ?? this.favorite,
+        redeemed: redeemed ?? this.redeemed,
+        typeDetails: typeDetails ?? this.typeDetails,
+        terms: terms ?? this.terms,
+      );
 
   factory OfferDetails.fromJson(Map<String, dynamic> json) => _$OfferDetailsFromJson(json);
 }

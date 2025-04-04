@@ -1,4 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:mapness/entities/app_feedback/feedback_source.dart';
+
+// ignore_for_file: invalid_annotation_target
 
 part 'app_feedback_payload.freezed.dart';
 part 'app_feedback_payload.g.dart';
@@ -7,11 +10,8 @@ enum AppFeedbackLocale { en, ar }
 
 enum AppFeedbackMobileOs { android, ios }
 
-enum FeedbackSource { main, navi }
-
 @freezed
 class AppFeedbackPayload with _$AppFeedbackPayload {
-  // ignore: invalid_annotation_target
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackPayload({
     required final AppFeedbackReview review,
@@ -23,7 +23,6 @@ class AppFeedbackPayload with _$AppFeedbackPayload {
 
 @freezed
 class AppFeedbackReview with _$AppFeedbackReview {
-  // ignore: invalid_annotation_target
   @JsonSerializable(explicitToJson: true)
   factory AppFeedbackReview({
     required final int stars,
@@ -41,9 +40,24 @@ class AppFeedbackContext with _$AppFeedbackContext {
     final AppFeedbackMobileOs? mobileOS,
     final AppFeedbackLocale? locale,
     final String? authId,
-    final FeedbackSource? feedbackSource,
+    @JsonKey(toJson: _sourceToJson, fromJson: _sourceFromJson) final FeedbackSource? feedbackSource,
     final String? deviceId,
   }) = _AppFeedbackContext;
 
   factory AppFeedbackContext.fromJson(Map<String, dynamic> json) => _$AppFeedbackContextFromJson(json);
+
 }
+
+FeedbackSource? _sourceFromJson(String? value) =>
+    switch (value) {
+      'main' => const FeedbackSource.main(),
+      'navi' => const FeedbackSource.navi(),
+      _ => null,
+    };
+
+String? _sourceToJson(FeedbackSource? source) =>
+    switch (source) {
+      FeedbackSourceMain() => 'main',
+      FeedbackSourceNavi() => 'navi',
+      _ => null,
+    };

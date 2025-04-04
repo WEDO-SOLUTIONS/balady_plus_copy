@@ -1,7 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:mapness/features/saudi_pass/providers/get_all_lookups_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/get_profile_preferences_provider.dart';
-import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/shared/entities/selection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
