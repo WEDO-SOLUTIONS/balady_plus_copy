@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 54;
+	objectVersion = 56;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -181,16 +181,16 @@
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
+/* Begin PBXGroup section */
 		C5BBE6752D83010900B4252C /* InsiderNotificationService */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
+			isa = PBXGroup;
 			exceptions = (
 			);
 			path = InsiderNotificationService;
 			sourceTree = "<group>";
 		};
 		C5BBE68F2D83013700B4252C /* InsiderNotificationService */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
+			isa = PBXGroup;
 			exceptions = (
 				C5BBE6962D83013700B4252C /* Exceptions for "InsiderNotificationService" folder in "InsiderNotificationService" target */,
 			);
@@ -198,14 +198,14 @@
 			sourceTree = "<group>";
 		};
 		C5BBE6AD2D83023600B4252C /* InsiderNotificationContent */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
+			isa = PBXGroup;
 			exceptions = (
 				C5BBE6B72D83023600B4252C /* Exceptions for "InsiderNotificationContent" folder in "InsiderNotificationContent" target */,
 			);
 			path = InsiderNotificationContent;
 			sourceTree = "<group>";
 		};
-/* End PBXFileSystemSynchronizedRootGroup section */
+/* End PBXGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
