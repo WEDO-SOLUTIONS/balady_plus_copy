@@ -226,13 +226,13 @@ class _Content extends HookConsumerWidget {
                     Spacing.$2x.widthBox,
                     _FavoriteIconButton(
                       offer: offer,
-                      changeFavorite: ({required favorite}) => _changeFavorite(context, ref, favorite),
+                      changeFavorite: ({required favorite}) => changeFavorite(context, ref, favorite, offerId),
                     ),
                   ],
                 )
               : _FavoriteButton(
                   offer: offer,
-                  changeFavorite: ({required favorite}) => _changeFavorite(context, ref, favorite),
+                  changeFavorite: ({required favorite}) => changeFavorite(context, ref, favorite, offerId),
                 ),
         ),
       ],
@@ -309,29 +309,29 @@ class _Content extends HookConsumerWidget {
       },
     );
   }
+}
 
-  void _changeFavorite(BuildContext context, WidgetRef ref, bool favorite) {
-    ref.read(authMethodsProvider.notifier).authOrOpen(context, callback: () {
-      favorite
-          ? ref.read(offerFavoritesProvider(offerId).notifier).addToFavorites()
-          : _showFavoritesRemovingDialog(context, ref);
-    });
-  }
+void changeFavorite(BuildContext context, WidgetRef ref, bool favorite, String offerId) {
+  ref.read(authMethodsProvider.notifier).authOrOpen(context, callback: () {
+    favorite
+        ? ref.read(offerFavoritesProvider(offerId).notifier).addToFavorites()
+        : _showFavoritesRemovingDialog(context, ref, offerId);
+  });
+}
 
-  Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref) async {
-    await showDialog(
-      context: context,
-      builder: (_) => OfferFavoritesRemovingSheet(
-        title: context.l10n.removeFromFavorites,
-        description: context.l10n.removeFromFavoritesDescription,
-        cancel: context.l10n.cancel,
-        remove: context.l10n.remove,
-        onRemove: () {
-          ref.read(offerFavoritesProvider(offerId).notifier).removeFromFavorites();
-        },
-      ),
-    );
-  }
+Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, String offerId) async {
+  await showDialog(
+    context: context,
+    builder: (_) => OfferFavoritesRemovingSheet(
+      title: context.l10n.removeFromFavorites,
+      description: context.l10n.removeFromFavoritesDescription,
+      cancel: context.l10n.cancel,
+      remove: context.l10n.remove,
+      onRemove: () {
+        ref.read(offerFavoritesProvider(offerId).notifier).removeFromFavorites();
+      },
+    ),
+  );
 }
 
 class _OfferPreviewByGroup extends StatelessWidget {

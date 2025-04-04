@@ -205,4 +205,7 @@ class OfferViewImpl implements OfferView {
 
   @override
   OffersGroup get offersGroup => offer.offerGroup;
+
+  @override
+  String get offerId => offer.id;
 }
