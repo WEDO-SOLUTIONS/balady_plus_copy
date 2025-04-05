@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -13,6 +15,10 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_feedback_banner.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
@@ -120,6 +126,62 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
           ),
         ],
       );
+  Widget build(BuildContext context) {
+    final offers = ref.watch(poiOffersProvider);
+
+    return MultiSliver(
+      children: [
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
+            child: FeedbackBannerCard(
+              title: context.l10n.addPlace,
+              subtitle: context.l10n.addNewPlace,
+              path: Assets.images.addCompany.keyName,
+              gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
+              onTap: () => context.router.push(QuickFeedbackRoute()),
+            ),
+          ),
+        ),
+        SliverPadding(
+          padding:
+              const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x, top: Spacing.$0_5x,),
+          sliver: PagedSliverList<int, OrganizationItem>.separated(
+            shrinkWrapFirstPageIndicators: true,
+            pagingController: pagingController,
+            builderDelegate: PagedChildBuilderDelegate<OrganizationItem>(
+              newPageProgressIndicatorBuilder: (context) => Center(child: Loading.medium()),
+              itemBuilder: (context, item, index) => OrganizationWidget(
+                item: item,
+                hasOffers: offers.containsKey(item.tradeLicense?.license),
+                onTap: (id) {
+                  final id = item.id;
+                  if (id == null) {
+                    return;
+                  }
+                  context.router.replace(
+                    PoiCardWidgetRoute(
+                      objectId: DgisObjectIdMessage(
+                        objectId: int.parse(id),
+                        entranceId: 0,
+                      ),
+                      closestPoint: widget.closestPoint,
+                      cameraConfig: PoiCameraConfig(
+                        zoom: widget.cameraConfig?.zoom,
+                        bearing: widget.cameraConfig?.bearing,
+                        tilt: widget.cameraConfig?.tilt,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+            separatorBuilder: (context, index) => (Spacing.$3x - Spacing.$0_5x).heightBox,
+          ),
+        ),
+      ],
+    );
+  }
 
   Future<void> _fetchPage(int pageKey) async {
     final viewModelProvider = poiCardProviderProvider(
@@ -133,6 +195,11 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
             objectId: widget.objectId.objectId,
             page: pageKey,
           );
+
+      final licenseIds = newItems?.items.map((e) => e.tradeLicense?.license).nonNulls.toSet();
+      if (licenseIds != null && licenseIds.isNotEmpty) {
+        unawaited(ref.read(poiOffersProvider.notifier).fetchOffers(licenseIds));
+      }
 
       final length = pagingController.itemList?.length ?? 0;
       final total = newItems?.count ?? 0;
@@ -151,10 +218,12 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
 
 class OrganizationWidget extends StatelessWidget {
   final OrganizationItem item;
+  final bool hasOffers;
   final void Function(int id)? onTap;
 
   const OrganizationWidget({
     required this.item,
+    this.hasOffers = false,
     this.onTap,
     super.key,
   });
@@ -164,26 +233,37 @@ class OrganizationWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: smoothBorder(RadiusBorder.xl),
         color: context.color.surfaceBasePrimary,
-        child: ContentRow(
-          onTap: () {
-            final itemId = item.id;
+        child: Stack(
+          children: [
+            ContentRow(
+              onTap: () {
+                final itemId = item.id;
 
-            if (itemId == null) {
-              return;
-            }
+                if (itemId == null) {
+                  return;
+                }
 
-            final id = int.tryParse(itemId);
-            if (id == null) {
-              return;
-            }
-            onTap?.call(id);
-          },
-          options: ContentRowOptions(
-            title: item.title,
-            subtitle: item.rubricsNames,
-            subtitleExtra: item.addressComment,
-            titleStyle: context.textStyleV3.bodyLargeSemiBold,
-          ),
+                final id = int.tryParse(itemId);
+                if (id == null) {
+                  return;
+                }
+                onTap?.call(id);
+              },
+              options: ContentRowOptions(
+                title: item.title,
+                subtitle: item.rubricsNames,
+                subtitleExtra: item.addressComment,
+                titleStyle: context.textStyleV3.bodyLargeSemiBold,
+              ),
+            ),
+            if (hasOffers)
+              Positioned.directional(
+                textDirection: Directionality.of(context),
+                top: Spacing.$3x,
+                end: Spacing.$3x,
+                child: const OffersBadge(),
+              )
+          ],
         ),
       );
 }

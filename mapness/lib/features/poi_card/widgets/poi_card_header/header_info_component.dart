@@ -12,11 +12,15 @@ import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:urbi_utils/urbi_utils.dart';
 
 class HeaderInfoComponent extends ConsumerWidget {
   final DirectoryObjectMessage data;
+
   const HeaderInfoComponent({required this.data, super.key});
 
   @override
@@ -37,11 +41,17 @@ class HeaderInfoComponent extends ConsumerWidget {
     );
 
     final workTime = data.getOpeningHoursHeader(context);
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(data.tradeLicense?.license);
+
+    final worktime = data.getOpeningHoursHeader(context);
 
     final fullAddress = data.getFullAddress(briefInfo, context.l10n);
     return _HeaderInfoWidget(
       fullAddress: fullAddress,
       workTime: workTime,
+      worktime: worktime,
+      hasOffers: hasOffers,
     );
   }
 }
@@ -49,10 +59,15 @@ class HeaderInfoComponent extends ConsumerWidget {
 class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
   final PoiContentFullAddressModel fullAddress;
   final ContentWorkTimeModel? workTime;
+  final PoiContentFullAddress fullAddress;
+  final WorkTimeModel? worktime;
+  final bool hasOffers;
 
   const _HeaderInfoWidget({
     required this.fullAddress,
     required this.workTime,
+    required this.worktime,
+    required this.hasOffers,
   }) : super(
           defaultState: PoiCardBottomSheetState.halfOpen,
         );
@@ -68,6 +83,8 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
     if (state == PoiCardBottomSheetState.halfOpen) {
       scale = 1 - interpolation;
     }
+
+    final showBadges = worktime?.poiContentWorkTime != null || hasOffers;
 
     return ContentTransition(
       interpolation: scale,
@@ -99,6 +116,20 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
                     // This file will be deleted in the nearest future
                     // color: worktime!.color,
                     ),
+            if (showBadges)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.$0_5x),
+                child: Row(
+                  children: <Widget>[
+                    if (worktime != null)
+                      BaladyBadge.secondary(
+                        worktime!.poiContentWorkTime.title,
+                        badgeType: BadgeType.success,
+                        iconPosition: BadgeIconPosition.none,
+                      ),
+                    if (hasOffers) const OffersBadge()
+                  ].insertBetween(Spacing.$1x.widthBox).toList(),
+                ),
               )
             else
               Spacing.$5x.heightBox,
