@@ -61,12 +61,13 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       closestPoint: widget.closestPoint,
     );
     final state = ref.watch(viewModelProvider);
-    ref..watch(poiOffersProvider)
-    ..listen(poiCardClosingProvider, (_, shouldClose) {
-      if (shouldClose) {
-        context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
-      }
-    });
+    ref
+      ..watch(poiOffersProvider.select((_) => null))
+      ..listen(poiCardClosingProvider, (_, shouldClose) {
+        if (shouldClose) {
+          context.router.removeWhere((route) => route.name == PoiCardWidgetRoute.name);
+        }
+      });
 
     final poiCardState = state.valueOrNull;
     final storeParking = ref.read(parkingManageProvider.notifier);
