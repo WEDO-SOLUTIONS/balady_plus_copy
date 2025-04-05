@@ -58,9 +58,10 @@ class NaviSearchResults extends ConsumerWidget {
           ),
         ),
       ),
-      itemBuilder: (context, item) => SearchItem(
+      itemBuilder: (context, item, offers) => SearchItem(
         contentColor: context.colorsV3.backgroundSurface1,
         result: item,
+        offers: offers,
         language: language,
         myLocation:
             myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),

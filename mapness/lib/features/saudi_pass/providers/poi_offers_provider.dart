@@ -5,6 +5,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'poi_offers_provider.g.dart';
 
+/// Provider class for fetching offers by licenseIds.
+/// State is Map, key contains licenseId, value contains offers list for licenseId
 @riverpod
 class PoiOffers extends _$PoiOffers {
   @override
@@ -24,6 +26,8 @@ class PoiOffers extends _$PoiOffers {
       final promotions = await repository.getPromotions(
         cities: {city},
         licenseIds: newIds,
+        // we should fetch max count of offers for this licenseIds
+        pageSize: 1000,
       );
 
       for (final offer in promotions.records) {

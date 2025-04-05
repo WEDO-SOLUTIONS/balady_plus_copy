@@ -57,12 +57,12 @@ class MapSearchResults extends ConsumerWidget {
             color: context.colorsV2.accentDefault,
           ),
         ),
-        itemBuilder: (context, item) => SearchItem(
+        itemBuilder: (context, item, offers) => SearchItem(
           result: item,
+          offers: offers,
           language: language,
-          myLocation: myLocation == null
-              ? null
-              : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+          myLocation:
+          myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
           onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
         ),
       ),

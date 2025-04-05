@@ -8,6 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -68,11 +69,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
-    ref.listen(searchProvider(scope.value), (previous, next) {
+    ref
+      ..watch(poiOffersProvider.select((_) => null))
+      ..listen(searchProvider(scope.value), (previous, next) {
       final isSearchInRectRequest = ref.read(searchInRectProvider).isSearchInThisAreaRequest;
-      if (next.searchText.isEmpty) {
-        ref.read(searchInRectProvider.notifier).update();
-      }
+        if (next.searchText.isEmpty) {
+          ref.read(searchInRectProvider.notifier).update();
+        }
 
       _updateText(next.searchText);
       WidgetsBinding.instance.addPostFrameCallback((_) {

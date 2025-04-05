@@ -8,6 +8,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
+import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
+import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';
 import 'package:mapness/features/poi_card/widgets/photo_row/poi_photos_row.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -37,6 +40,7 @@ class SearchItem extends ConsumerWidget {
   final Language language;
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
+  final List<Offer> offers;
   final Color? contentColor;
 
   final void Function() onTap;
@@ -45,6 +49,7 @@ class SearchItem extends ConsumerWidget {
     required this.result,
     required this.onTap,
     required this.language,
+    required this.offers,
     this.myLocation,
     this.contentColor,
     super.key,
@@ -95,8 +100,21 @@ class SearchItem extends ConsumerWidget {
                 ),
                 subtitleExtra: result.makeAddress(),
                 subtitleExtraOptions: ContentRowTextOption(
-                  maxLines: 3,
-                  baseColor: context.colorsV3.foregroundSoft,
+                  builder: (context) => Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        result.makeAddress(),
+                        maxLines: 1,
+                        style: context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                      ),
+                      if (offers.isNotEmpty)
+                        const Padding(
+                          padding: EdgeInsets.only(top: Spacing.$2x),
+                          child: OffersBadge(),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               trailing: ContentRowCustomTrailingOptions(
