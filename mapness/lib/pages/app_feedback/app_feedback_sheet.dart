@@ -76,6 +76,8 @@ class AppFeedbackSheet extends HookConsumerWidget {
     }
 
     final scrollController = useStatelessBottomsheetController(onClose: onCloseBottomSheet);
+    Color backgroundColorDelegate(StatelessBottomSheetController controller) => context.colorsV3.screenOverlayDimming40
+        .withOpacity(Curves.easeIn.transform(controller.aspectRatio * 2.clamp(0, 1)));
 
     return FeedbackSourceProvider(
       source: source,
@@ -84,6 +86,7 @@ class AppFeedbackSheet extends HookConsumerWidget {
           scrollController: scrollController,
           safeAreaColor: context.colorsV3.backgroundSurface1,
           onWillPop: Future.value(false),
+          backgroundColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
           content: [
             sendFeedbackState.when(
               data: (data) => switch (data) {

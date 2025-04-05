@@ -130,6 +130,7 @@ class Routes {
         CustomRoute(
           path: '/saudi_pass_offer_feedback',
           page: AppFeedbackSheet.page,
+          opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
       ];
