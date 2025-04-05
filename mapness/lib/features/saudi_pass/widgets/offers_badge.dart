@@ -10,6 +10,6 @@ class OffersBadge extends StatelessWidget {
       context.l10n.offers,
       badgeType: BadgeType.warning,
       iconPosition: BadgeIconPosition.start,
-      icon: GeneralIcons.home,
+      icon: GeneralIcons.star,
     );
 }

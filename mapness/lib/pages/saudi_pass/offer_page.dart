@@ -219,7 +219,7 @@ class _Content extends HookConsumerWidget {
                       child: AppButton(
                         buttonColorScheme: ButtonColorScheme.primary,
                         onTap: () => _useCode(context, ref, offer.id, code, showCode),
-                        primaryIcon: SystemIcons.filter,
+                        primaryIcon: SystemIcons.code,
                         primaryLabel: context.l10n.useCode,
                       ),
                     ),
