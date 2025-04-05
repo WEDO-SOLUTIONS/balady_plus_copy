@@ -112,12 +112,17 @@ extension TradeLicenseMessageExt on TradeLicenseMessage {
         'endDate': endDate,
       };
 
-  static TradeLicenseMessage fromJson(Map<String, dynamic> json) => TradeLicenseMessage(
-        type: json['type'],
+  static TradeLicenseMessage? fromJson(Map<String, dynamic>? json) {
+    if (json == null) {
+      return null;
+    }
+    return TradeLicenseMessage(
+        type: json['type'] ?? '',
         license: json['license'],
-        legalForm: json['legalForm'],
-        endDate: json['endDate'],
+        legalForm: json['legalForm'] ?? '',
+        endDate: json['endDate'] ?? '',
       );
+  }
 }
 
 extension EntranceInfoMessageExt on EntranceInfoMessage {
