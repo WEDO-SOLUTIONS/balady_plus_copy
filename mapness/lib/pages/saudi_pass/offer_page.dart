@@ -204,7 +204,10 @@ class _Content extends HookConsumerWidget {
                     ),
                   ),
                   Spacing.$6x.heightBox,
-                  _OfferFeedback(offerId: offerId),
+                  _OfferFeedback(
+                    offerId: offerId,
+                    onRatingChanged: (rating) => _showFeedback(offerId: offerId, context: context, rating: rating),
+                  ),
                   Spacing.$4x.heightBox,
                 ],
               ),
@@ -305,9 +308,23 @@ class _Content extends HookConsumerWidget {
           ),
         );
 
-        showCode.value = redeemed;
+        if (redeemed == true) {
+          final rating = ref.read(sendOfferFeedbackProvider(offerId));
+          if (rating == 0) {
+            _showFeedback(rating: rating, offerId: offerId, context: context);
+          }
+          showCode.value = redeemed;
+        }
       },
     );
+  }
+
+  void _showFeedback({
+    required String offerId,
+    required BuildContext context,
+    required int rating,
+  }) {
+    context.router.push(AppFeedbackSheet(initialRating: rating, source: FeedbackSource.offer(offerId)));
   }
 }
 
@@ -551,8 +568,9 @@ class _OfferInfoRow extends StatelessWidget {
 
 class _OfferFeedback extends ConsumerWidget {
   final String offerId;
+  final ValueChanged<int> onRatingChanged;
 
-  const _OfferFeedback({required this.offerId});
+  const _OfferFeedback({required this.offerId, required this.onRatingChanged});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -564,11 +582,9 @@ class _OfferFeedback extends ConsumerWidget {
           rating: offerFeedback,
           onRatingChanged: (rating) {
             ref.read(authMethodsProvider.notifier).authOrOpen(
-              context,
-              callback: () {
-                context.router.push(AppFeedbackSheet(initialRating: rating, source: FeedbackSource.offer(offerId)));
-              },
-            );
+                  context,
+                  callback: () => onRatingChanged(rating),
+                );
           },
         ),
         Spacing.$1_5x.heightBox,

@@ -85,14 +85,14 @@ class AppFeedbackSheet extends HookConsumerWidget {
         child: StatelessBottomSheet(
           scrollController: scrollController,
           safeAreaColor: context.colorsV3.backgroundSurface1,
-          onWillPop: Future.value(false),
+          onWillPop: Future.value(source is FeedbackSourceOffer),
           backgroundColorDelegate: source is FeedbackSourceOffer ? backgroundColorDelegate : null,
           content: [
             sendFeedbackState.when(
               data: (data) => switch (data) {
                 AppFeedbackState.initial => AppFeedbackMain(
                     initialRating: initialRating,
-                    onNeedPopConfirm: () => _showConfirmDialog(context),
+                    onNeedPopConfirm: source is! FeedbackSourceOffer ? () => _showConfirmDialog(context) : null,
                   ),
                 AppFeedbackState.loading => const AppFeedbackLoading(),
                 AppFeedbackState.success => const Padding(

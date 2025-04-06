@@ -62,7 +62,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             alignment: AlignmentDirectional.centerEnd,
             child: CustomCloseButton(
               onClose: () {
-                if (rating.value == (initialRating ?? 0)) {
+                if (rating.value == (initialRating ?? 0) || onNeedPopConfirm == null) {
                   context.router.popForced();
                 } else {
                   onNeedPopConfirm?.call();
