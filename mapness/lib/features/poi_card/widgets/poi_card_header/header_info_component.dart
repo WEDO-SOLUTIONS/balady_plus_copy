@@ -42,7 +42,7 @@ class HeaderInfoComponent extends ConsumerWidget {
 
     final workTime = data.getOpeningHoursHeader(context);
     final offers = ref.watch(poiOffersProvider);
-    final hasOffers = offers.containsKey(data.tradeLicense?.license);
+    final hasOffers = offers.containsKey(data.tradeLicense?.license.trim());
 
     final worktime = data.getOpeningHoursHeader(context);
 

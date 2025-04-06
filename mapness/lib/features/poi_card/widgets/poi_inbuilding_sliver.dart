@@ -153,7 +153,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
               newPageProgressIndicatorBuilder: (context) => Center(child: Loading.medium()),
               itemBuilder: (context, item, index) => OrganizationWidget(
                 item: item,
-                hasOffers: offers.containsKey(item.tradeLicense?.license),
+                hasOffers: offers.containsKey(item.tradeLicense?.license.trim()),
                 onTap: (id) {
                   final id = item.id;
                   if (id == null) {

@@ -16,7 +16,8 @@ class PoiOffers extends _$PoiOffers {
     try {
       final repository = await ref.read(saudiPassRepositoryProvider.future);
 
-      final newIds = licenseIds.where((e) => !state.containsKey(e)).toSet();
+      final fixedLicenseIds = licenseIds.map((e) => e.trim()).toSet();
+      final newIds = fixedLicenseIds.where((e) => !state.containsKey(e)).toSet();
       if (newIds.isEmpty) {
         return;
       }
