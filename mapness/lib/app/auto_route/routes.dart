@@ -133,6 +133,12 @@ class Routes {
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
+        CustomRoute(
+          path: '/feedback/edit',
+          page: AppFeedbackInputSheet.page,
+          opaque: false,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(
