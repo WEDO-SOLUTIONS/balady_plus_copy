@@ -51,8 +51,7 @@ class Auth extends _$Auth {
     }
 
     final authSubscription = sl<EntryPointCubit>().stream.listen((event) {
-      // TODO: !!! temporary authorization state for testing, remove before release !!!
-      state = AsyncValue.data(SsoUserInfo(name: 'for test') /*event.userInfo*/);
+      state = AsyncValue.data(event.userInfo);
       ref
         ..invalidate(favouriteCacheProvider)
         ..invalidate(profileImageProvider)
@@ -64,14 +63,12 @@ class Auth extends _$Auth {
     await mixpanel?.identify('$userId');
 
     await FlutterUxcam.setUserIdentity(userId);
-    // TODO: !!! temporary authorization state for testing, remove before release !!!
-    return SsoUserInfo(name: 'for test'); /*CommonProperties.userInfo*/;
+    return CommonProperties.userInfo;
   }
 
   Future<void> forceUpdate() async {
     await sl<EntryPointCubit>().refreshSSOProfile();
     final data = sl<EntryPointCubit>().state.userInfo;
-    // TODO: !!! temporary authorization state for testing, remove before release !!!
-    state = AsyncValue.data(SsoUserInfo(name: 'for test') /*data*/);
+    state = AsyncValue.data(data);
   }
 }
