@@ -15,51 +15,47 @@ class OffersScreenViewWidget extends ConsumerWidget {
   int get filtersIndex => offersScreenView.isByPreferencesElseAll ? 0 : 1;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final segmentedTabsPrefsAndAll = SegmentTabsButton(
-      initialIndex: filtersIndex,
-      tabsContent: [
-        TabsRowV2Content(
-          title: context.l10n.saudiPassOffersPageByPreferences,
-          onTap: offersScreenView.tapByPreferences,
-        ),
-        TabsRowV2Content(
-          title: context.l10n.saudiPassOffersPageAll,
-          onTap: offersScreenView.tapAll,
-        ),
-      ],
-      onIndexChanged: (index) {},
-    );
-
-    return Padding(
-      padding: const EdgeInsets.only(top: Spacing.$4x),
-      child: SaudiPassScaffold(
-        onBackButton: offersScreenView.tapBack,
-        title: context.l10n.saudiPassOffersPageTitle,
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
-              child: segmentedTabsPrefsAndAll,
-            ),
-            Expanded(
-              child: ListenableBuilder(
-                listenable: offersScreenView,
-                builder: (context, _) => IndexedStack(
-                  index: filtersIndex,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                      child: PrefsContentWidget(offersScreenView),
-                    ),
-                    OffersViewWidget(offersScreenView),
-                  ],
+  Widget build(BuildContext context, WidgetRef ref) => Padding(
+        padding: const EdgeInsets.only(top: Spacing.$4x),
+        child: SaudiPassScaffold(
+          onBackButton: offersScreenView.tapBack,
+          title: context.l10n.saudiPassOffersPageTitle,
+          body: ListenableBuilder(
+            listenable: offersScreenView,
+            builder: (context, _) => Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
+                  child: SegmentTabsButton(
+                    initialIndex: filtersIndex,
+                    tabsContent: [
+                      TabsRowV2Content(
+                        title: context.l10n.saudiPassOffersPageByPreferences,
+                        onTap: offersScreenView.tapByPreferences,
+                      ),
+                      TabsRowV2Content(
+                        title: context.l10n.saudiPassOffersPageAll,
+                        onTap: offersScreenView.tapAll,
+                      ),
+                    ],
+                    onIndexChanged: (index) {},
+                  ),
                 ),
-              ),
+                Expanded(
+                  child: IndexedStack(
+                    index: filtersIndex,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                        child: PrefsContentWidget(offersScreenView),
+                      ),
+                      OffersViewWidget(offersScreenView),
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
+      );
 }
