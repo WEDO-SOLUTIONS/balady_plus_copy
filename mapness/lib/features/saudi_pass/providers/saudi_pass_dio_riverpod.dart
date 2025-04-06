@@ -38,6 +38,8 @@ class _SaudiPassDioRiverpod extends _$SaudiPassDioRiverpod {
         receiveTimeout: timeout,
         connectTimeout: timeout,
         headers: {
+          // TODO: !!! temporary authorization token from postman collection for testing, remove before release !!!
+          'Authorization': 'Bearer eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE3NDE3MTI2ODcsImlhdCI6MTc0MTcxMjY4NywiZXhwIjoxNzczMjQ4Njg3LCJhdWQiOlsiaHR0cHM6Ly9zc29hcHBkZXYubW9tcmEuZ292LnNhL3Jlc291cmNlcyIsIklkZW50aXR5U2VydmVyQ29uc3RhbnRzLkxvY2FsQXBpLlNjb3BlTmFtZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiXSwic2NvcGUiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsInJvbGVzIiwicHJvZmlsZSIsInRlbmFudCIsIklkZW50aXR5U2VydmVyQXBpIiwiSWRlbnRpdHlTZXJ2ZXJDb25zdGFudHMuTG9jYWxBcGkuU2NvcGVOYW1lIiwib2ZmbGluZV9hY2Nlc3MiXSwiY2xpZW50X2lkIjoiYmFsYWR5X21vYmlsZV9hcHAiLCJ1c2VyX2lkIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwicGhvbmVfbnVtYmVyIjoiMDA5NjY1NDQ4MzUwNjEiLCJqdGkiOiJGRkYzRURGM0MxODk5RjkyRTM5NTNEOTI0OTgxQzU0MSJ9.SdkcjL_bEIuLF7X15XMZTFro0XrEkFneZzt-1zv6iqmuQi9cuA1UgCbecKwMs2Ba39JRWVW-WesChyDiYDWGplrTcqa5Ppsif758Zh50zgdThJFHdzcOA8FEkVDKaFAy1YvVamkpMZK7GDV0tvFNIif77qhamuPFvD8lIs3foPNbQtDiqwNaHkNPvLbCFPUVEdrnrpiqNwNIPYLfBNnRX9ltd-jTBqH2cdtJkYi1AQgbsKzBqOAqasCqRmVB3rkEnMxqWSjth0MgpHYf1PMuZnTfKpNSWl3nxZIWWrZ8e-dl6xLvLtLQ7KQRXKSZTiIDgg9FpGqGTHRPPMSx0wA3OA',
           'X-Device-ID': uuid,
           'X-Device-Platform': Platform.isIOS ? 'ios' : 'android',
           'X-App-Version': version ?? '1.0.0',
