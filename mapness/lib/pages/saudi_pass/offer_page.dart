@@ -280,7 +280,7 @@ class _Content extends HookConsumerWidget {
       builder: (_) => OfferTermsSheet(
         terms: terms,
         title: context.l10n.termAndConditions,
-        close: context.l10n.feedbackBreaksSheetClose,
+        close: context.l10n.saudiPassTermAndConditionsClose,
       ),
     );
   }
