@@ -38,17 +38,17 @@ class AppFeedbackInput extends HookWidget {
       maxLines.value = lines.clamp(_initMaxLines, _maxLinesAllowed);
 
       final _isNotEmpty = textController.text.isNotEmpty;
-      final _isLessChars = textController.text.length < _maxCharsAllowed;
-      final _isValid = _isNotEmpty && _isLessChars;
+      final _isValidLength = textController.text.length <= _maxCharsAllowed;
+      final _isValid = _isNotEmpty && _isValidLength;
       isValid?.call(_isValid);
 
-      final newStateValue = _isLessChars ? BaladyInputState.defaultValue : BaladyInputState.error;
+      final newStateValue = _isValidLength ? BaladyInputState.defaultValue : BaladyInputState.error;
 
       if (newStateValue != inputState.value) {
         inputState.value = newStateValue;
       }
 
-      final newTextValue = _isLessChars ? null : context.l10n.appFeedbackCharacterLimitReached;
+      final newTextValue = _isValidLength ? null : context.l10n.appFeedbackCharacterLimitReached;
       if (newTextValue != supportingText.value) {
         supportingText.value = newTextValue;
       }
