@@ -54,7 +54,7 @@ class ProfilePage extends HookConsumerWidget {
             child: Stack(
               children: [
                 CustomScrollView(
-                  physics: const ClampingScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   slivers: [
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 20),
@@ -81,110 +81,113 @@ class ProfilePage extends HookConsumerWidget {
                           padding: const EdgeInsets.symmetric(
                             horizontal: Spacing.$4x,
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const SizedBox(height: Spacing.$4x),
-                              ClipRRect(
-                                borderRadius: BorderRadius.circular(RadiusBorder.l),
-                                child: ContentWrapper(
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const SizedBox(height: Spacing.$4x),
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(RadiusBorder.l),
+                                  child: ContentWrapper(
+                                    color: context.colorsV3.backgroundSurface1,
+                                    children: [
+                                      userData.maybeWhen(
+                                        orElse: () => const SizedBox.shrink(),
+                                        data: (data) => data == null
+                                            ? const SizedBox.shrink()
+                                            : ContentRowV2(
+                                                isDividerEnabled: true,
+                                                onTap: () => context.router.push(const ProfileInfoRoute()),
+                                                trailing: trailing,
+                                                leading: leadingIconBuilder(GeneralIcons.userCircle),
+                                                text: ContentRowTextOptions(
+                                                  title: context.l10n.account,
+                                                ),
+                                              ),
+                                      ),
+                                      ContentRowV2(
+                                        onTap: () => context.router.push(const SettingsRoute()),
+                                        trailing: trailing,
+                                        leading: leadingIconBuilder(SystemIcons.settings),
+                                        text: ContentRowTextOptions(
+                                          title: context.l10n.settings,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(height: Spacing.$4x),
+                                ContentWrapper(
                                   color: context.colorsV3.backgroundSurface1,
                                   children: [
-                                    userData.maybeWhen(
-                                      orElse: () => const SizedBox.shrink(),
-                                      data: (data) => data == null
-                                          ? const SizedBox.shrink()
-                                          : ContentRowV2(
-                                              isDividerEnabled: true,
-                                              onTap: () => context.router.push(const ProfileInfoRoute()),
-                                              trailing: trailing,
-                                              leading: leadingIconBuilder(GeneralIcons.userCircle),
-                                              text: ContentRowTextOptions(
-                                                title: context.l10n.account,
-                                              ),
-                                            ),
+                                    ContentRowV2(
+                                      isDividerEnabled: true,
+                                      onTap: () => context.router.push(const HelpCenterRoute()),
+                                      trailing: trailing,
+                                      leading: leadingIconBuilder(GeneralIcons.questionCircle),
+                                      text: ContentRowTextOptions(
+                                        title: context.l10n.helpCenter,
+                                      ),
                                     ),
                                     ContentRowV2(
-                                      onTap: () => context.router.push(const SettingsRoute()),
+                                      isDividerEnabled: true,
+                                      onTap: () {
+                                        context.router.push(const AboutBaladyRoute());
+                                      },
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(SystemIcons.settings),
+                                      leading: leadingIconBuilder(GeneralIcons.infoCircle),
                                       text: ContentRowTextOptions(
-                                        title: context.l10n.settings,
+                                        title: context.l10n.aboutApp,
+                                      ),
+                                    ),
+                                    ContentRowV2(
+                                      onTap: () {
+                                        inAppReview.openStoreListing(
+                                          appStoreId: MapnessConstants.appStoreId,
+                                        );
+                                      },
+                                      trailing: trailing,
+                                      leading: leadingIconBuilder(GeneralIcons.star),
+                                      text: ContentRowTextOptions(
+                                        title: context.l10n.rateBaladyApp,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ),
-                              const SizedBox(height: Spacing.$4x),
-                              ContentWrapper(
-                                color: context.colorsV3.backgroundSurface1,
-                                children: [
-                                  ContentRowV2(
-                                    isDividerEnabled: true,
-                                    onTap: () => context.router.push(const HelpCenterRoute()),
-                                    trailing: trailing,
-                                    leading: leadingIconBuilder(GeneralIcons.questionCircle),
-                                    text: ContentRowTextOptions(
-                                      title: context.l10n.helpCenter,
-                                    ),
-                                  ),
-                                  ContentRowV2(
-                                    isDividerEnabled: true,
-                                    onTap: () {
-                                      context.router.push(const AboutBaladyRoute());
-                                    },
-                                    trailing: trailing,
-                                    leading: leadingIconBuilder(GeneralIcons.infoCircle),
-                                    text: ContentRowTextOptions(
-                                      title: context.l10n.aboutApp,
-                                    ),
-                                  ),
-                                  ContentRowV2(
-                                    onTap: () {
-                                      inAppReview.openStoreListing(
-                                        appStoreId: MapnessConstants.appStoreId,
-                                      );
-                                    },
-                                    trailing: trailing,
-                                    leading: leadingIconBuilder(GeneralIcons.star),
-                                    text: ContentRowTextOptions(
-                                      title: context.l10n.rateBaladyApp,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(height: Spacing.$4x),
-                              userData.maybeWhen(
-                                orElse: () => const SizedBox.shrink(),
-                                data: (data) => data == null
-                                    ? const SizedBox.shrink()
-                                    : ContentWrapper(
-                                        color: context.colorsV3.backgroundSurface1,
-                                        children: [
-                                          ContentRowV2(
-                                            onTap: () => _logOut(context, ref, isLoading),
-                                            text: ContentRowTextOptions(
-                                              title: context.l10n.signOut,
-                                              titleOptions: ContentRowTextOption(
-                                                baseColor: context.colorsV3.errorDefault,
+                                const SizedBox(height: Spacing.$4x),
+                                userData.maybeWhen(
+                                  orElse: () => const SizedBox.shrink(),
+                                  data: (data) => data == null
+                                      ? const SizedBox.shrink()
+                                      : ContentWrapper(
+                                          color: context.colorsV3.backgroundSurface1,
+                                          children: [
+                                            ContentRowV2(
+                                              onTap: () => _logOut(context, ref, isLoading),
+                                              text: ContentRowTextOptions(
+                                                title: context.l10n.signOut,
+                                                titleOptions: ContentRowTextOption(
+                                                  baseColor: context.colorsV3.errorDefault,
+                                                ),
+                                              ),
+                                              leading: SvgPicture.asset(
+                                                'assets/icons/svg/ic_profile_logout.svg',
+                                                height: 24,
+                                                width: 24,
+                                                matchTextDirection: true,
+                                                package: PackageConfig.packageName,
+                                                colorFilter: ColorFilter.mode(
+                                                  context.colorsV3.errorDefault,
+                                                  BlendMode.srcIn,
+                                                ),
                                               ),
                                             ),
-                                            leading: SvgPicture.asset(
-                                              'assets/icons/svg/ic_profile_logout.svg',
-                                              height: 24,
-                                              width: 24,
-                                              matchTextDirection: true,
-                                              package: PackageConfig.packageName,
-                                              colorFilter: ColorFilter.mode(
-                                                context.colorsV3.errorDefault,
-                                                BlendMode.srcIn,
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                              ),
-                            ],
+                                          ],
+                                        ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
