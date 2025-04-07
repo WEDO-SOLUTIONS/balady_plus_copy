@@ -1,10 +1,11 @@
 import 'package:balady_plus/app/core/utils/routes_type.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -15,6 +16,7 @@ import '../../../../core/utils/constants/constants.dart';
 import '../../../../core/utils/constants/paths/icon_paths.dart';
 import '../../../../core/utils/enums/bloc_status.dart';
 import '../../../../core/utils/map_utils.dart';
+import '../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../_shared_feature_/presentation/under_testing/custom_expansion_panel_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
@@ -248,32 +250,73 @@ class _TransactionsDetailsPageState extends State<TransactionsDetailsPage> {
                               color: AppColor.white,
                               borderRadius: BorderRadius.circular(4),
                             ),
-                            child: GoogleMap(
-                                markers: {
-                                  Marker(
-                                      visible: MapUtils.locationMarker != null,
-                                      markerId: const MarkerId("storeLocation"),
-                                      icon: MapUtils.locationMarker!,
-                                      onTap: () {
-                                        CommonFunctions.launchMap(LatLng(
-                                            state.details!.lat!,
-                                            state.details!.lon!));
-                                      },
-                                      position: LatLng(state.details!.lat!,
-                                          state.details!.lon!))
-                                },
-                                onMapCreated: (GoogleMapController controller) {
-                                  controller.setMapStyle(
-                                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-                                  );
-                                },
-                                myLocationEnabled: false,
-                                myLocationButtonEnabled: false,
-                                zoomControlsEnabled: false,
-                                initialCameraPosition: CameraPosition(
-                                    target: LatLng(state.details!.lat!,
-                                        state.details!.lon!),
-                                    zoom: 13)),
+                            child:
+                            UrbiMapSection(
+                              readOnly: true,
+                              currentUserLocation: LatLng(latitude: state.details!.lat!, longitude: state.details!.lon!),
+                              incidentLocation: LatLng(latitude: state.details!.lat!, longitude: state.details!.lon!),
+                              marker: [Marker(
+                                id: "storeLocation"
+                                ,  onTap: (){
+                                CommonFunctions.launchMap(LatLng(latitude:state.details!.lat!, longitude:state.details!.lon!));
+
+                              },
+                                options: MarkerOptionsMessage(
+                                  position: GeoPointWithElevationMessage(
+                                    latitude: state.details!.lat!,
+                                    longitude: state.details!.lon!,
+                                    elevation: 0,
+                                  ),
+                                  icon: MarkerIconMessage(
+                                    width: 28,
+                                    pngPath:  Constants.mapMarkerLocation,
+                                  ),
+                                ),
+                              )],
+                              onCameraIdle: (bool isIdle) {
+
+                              },
+                              updateMovedPosition: (LatLng p) {
+
+                              },
+                              onMapController: (DgisMapController controller) {
+
+                              },
+                              showRadius: true,
+                            ),
+
+
+
+                            // GoogleMap(
+                            //     markers: {
+                            //       Marker(
+                            //           visible: MapUtils.locationMarker != null,
+                            //           markerId: const MarkerId("storeLocation"),
+                            //           icon: MapUtils.locationMarker!,
+                            //           onTap: () {
+                            //             CommonFunctions.launchMap(LatLng(
+                            //                 state.details!.lat!,
+                            //                 state.details!.lon!));
+                            //           },
+                            //           position: LatLng(state.details!.lat!,
+                            //               state.details!.lon!))
+                            //     },
+                            //     onMapCreated: (GoogleMapController controller) {
+                            //       controller.setMapStyle(
+                            //         """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                            //       );
+                            //     },
+                            //     myLocationEnabled: false,
+                            //     myLocationButtonEnabled: false,
+                            //     zoomControlsEnabled: false,
+                            //     initialCameraPosition: CameraPosition(
+                            //         target: LatLng(state.details!.lat!,
+                            //             state.details!.lon!),
+                            //         zoom: 13)),
+
+
+
+
                           ),
                         ],
                       ),

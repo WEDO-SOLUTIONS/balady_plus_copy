@@ -62,13 +62,14 @@ abstract class AppEnv {
       DeviceOrientation.portraitDown,
     ]);
 
-    MapUtils.loadMarkers();
+   //MapUtils.loadMarkers();
+
+    sl.registerLazySingleton<EnvType>(() => type);
     sharedPrefs.init();
     // di: dependency injection
     di.initialize();
     diEtmam.initialize();
     //! Please assign environment firstly
-    sl.registerLazySingleton<EnvType>(() => type);
 
     String testName = ".env.${type.name}";
     // Load the local files by the type.name (stg) send from main

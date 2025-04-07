@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/features/calculator/WebConnection.dart';
 import 'package:balady_plus/app/features/calculator/service_calculator_exports.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:smart_advisor/app/core/dependency_injection/dependency_injection_exports.dart';
 
 import '../../../../../core/utils/constants/remote_config.dart';

@@ -1,10 +1,12 @@
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/features/providers/presentation/blocs/provider_details_bloc/provider_details_bloc.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:collection/collection.dart';
 
+import '../../../../../../app/features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../../../core/utils/utils_exports.dart'
     show AppColor, PrimaryIcons, trans;
 import '../../../../_shared_feature_/shared/shared_feature_exports.dart'
@@ -33,21 +35,44 @@ class ProviderBranchesWidget extends StatelessWidget {
                     width: double.infinity,
                     color: AppColor.greyShadow,
                     margin: EdgeInsets.symmetric(horizontal: 16),
-                    child: GoogleMap(
-                        zoomControlsEnabled: false,
-                        markers:
-                            context.read<ProviderDetailsBloc>().getMarkers(),
-                        onMapCreated:
-                            (GoogleMapController controller) {
-                          controller.setMapStyle(
-                            """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-                          );
-                        },
-                        initialCameraPosition: CameraPosition(
-                            target:
-                                state.args.branches?.firstOrNull?.getLatLng() ??
-                                    CommonProperties.defaultLocation,
-                            zoom: 7)),
+                    child:
+
+                    UrbiMapSection(
+                      readOnly: true,
+                      currentUserLocation: state.args.branches?.firstOrNull?.getLatLng() ?? CommonProperties.defaultLocation,
+                      incidentLocation: state.args.branches?.firstOrNull?.getLatLng() ?? CommonProperties.defaultLocation,
+                      marker:context.read<ProviderDetailsBloc>().getMarkers().toList(),
+                      onCameraIdle: (bool isIdle) {
+
+                      },
+                      updateMovedPosition: (LatLng p) {
+
+                      },
+                      onMapController: (DgisMapController controller) {
+
+                      },
+                      showRadius: true,
+                    ),
+
+                    // GoogleMap(
+                    //     zoomControlsEnabled: false,
+                    //     markers:
+                    //         context.read<ProviderDetailsBloc>().getMarkers(),
+                    //     onMapCreated:
+                    //         (GoogleMapController controller) {
+                    //       controller.setMapStyle(
+                    //         """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                    //       );
+                    //     },
+                    //     initialCameraPosition: CameraPosition(
+                    //         target:
+                    //             state.args.branches?.firstOrNull?.getLatLng() ??
+                    //                 CommonProperties.defaultLocation,
+                    //         zoom: 7)),
+
+
+
+
                   ),
                   CustomVerticalSpace(height: 12),
                 ],

@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
@@ -60,7 +61,12 @@ class ZMZMCardWidget extends StatelessWidget {
             IconButton(
               icon: SvgPicture.asset(IconPath.routeSquare),
               onPressed: () {
-                CommonFunctions.externalLaunch(item.mapUrl);
+                CommonFunctions.launchMap(
+                  LatLng(
+                    latitude: item.latitude,
+                    longitude: item.longitude,
+                  ),
+                );
               },
             )
           ],

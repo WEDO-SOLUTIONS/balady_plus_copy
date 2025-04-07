@@ -6,14 +6,17 @@ import 'package:balady_plus/etmam_app/core/dependency_injection/injection_contai
 import 'package:balady_plus/etmam_app/core/utils/common_properties.dart';
 import 'package:balady_plus/etmam_app/core/utils/constants/app_config.dart';
 import 'package:balady_plus/etmam_app/core/utils/enums/order_status.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'constants/app_color.dart';
 import 'constants/constans.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+import 'package:balady_plus/app/core/utils/common_functions.dart' as CommonFunctionsApp;
 
 //FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
 
@@ -171,9 +174,9 @@ class CommonFunctions {
 
   static void launchMap(LatLng? location) async {
     if (location != null) {
-      final url =
-          'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
-      await CommonFunctions.externalLaunch(url);
+      // final url =
+      //     'https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}';
+      CommonFunctionsApp.CommonFunctions.openMap(location.latitude, location.longitude);
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:dgis_map/library.dart';
+
 
 class SearchEventsItem {
   String? id;
@@ -72,7 +72,7 @@ class SearchEventsItem {
     double? lon = double.tryParse(locationY ?? "");
     double? lat = double.tryParse(locationX ?? "");
 
-    if (lat != null && lon != null) return LatLng(lat, lon);
+    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
     return null;
   }
 

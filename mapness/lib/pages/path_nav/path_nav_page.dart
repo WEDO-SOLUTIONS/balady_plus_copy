@@ -16,12 +16,15 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/features/share_eta/entities/route_params_point_mapper.dart';
+import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -357,6 +360,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
     _navigatorAlreadyStopped = true;
+    final route = ref.read(etaRouteInfoProvider);
+    final pathInfo = ref.read(pathNavEtaProvider);
+    ref.read(appAnalyticsProvider).navigationCompleted(
+          origin: route.startPoint?.analyticsLabel ?? '',
+          destination: route.endPoint?.analyticsLabel ?? '',
+          spentTime: pathInfo?.spentTime ?? Duration.zero,
+        );
+    ref.invalidate(pathNavEtaProvider);
     await _stopActiveSharing();
     await ref.read(cameraPaddingProvider.notifier).resetPadding();
 

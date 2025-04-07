@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../survey_license_inquery_report/domain/entity/survey_inquery_data_entity.dart';
 import '../../domain/entity/construction_license_inquery_data_entity.dart';
 import '../bloc/construction_license_inquery_details_cubit.dart';
@@ -25,6 +26,7 @@ class _ConstructionLicenseInqueryDetailsState
   ConstructionLicenseInqueryDetailsCubit? bloc;
   bool showDays = false;
   String? licenseNumber;
+  DgisMapController? mapController;
 
   @override
   void initState() {
@@ -231,35 +233,61 @@ class _ConstructionLicenseInqueryDetailsState
                         ? SizedBox(
                             height: 250,
                             child: Stack(children: [
-                              GoogleMap(
-                                initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                      double.parse(
-                                          licenceQueryDetails.y!),
-                                      double.parse(
-                                          licenceQueryDetails.x!),
+
+
+                              UrbiMapSection(
+                                readOnly: true,
+                                currentUserLocation:LatLng(latitude: double.parse(licenceQueryDetails.y!),longitude: double.parse(licenceQueryDetails.x!)),
+                                incidentLocation:LatLng(latitude: double.parse(licenceQueryDetails.y!),longitude: double.parse(licenceQueryDetails.x!)),
+                                onCameraIdle: (bool isIdle) {
+                                  mapController?.moveCamera(
+                                    CameraPositionMessage(
+                                      point: GeoPointMessage(latitude:  double.parse(licenceQueryDetails.y!), longitude: double.parse(licenceQueryDetails.x!)),
+                                      zoom: 16.0,
+                                      tilt: 0.0,
+                                      bearing: 0.0,
                                     ),
-                                    zoom: 16),
-                                markers: {
-                                  Marker(
-                                    markerId: const MarkerId('position'),
-                                    position: LatLng(
-                                      double.parse(
-                                          licenceQueryDetails.y!),
-                                      double.parse(
-                                          licenceQueryDetails.x!),
-                                    ),
-                                  )
-                                },
-                                onMapCreated: (GoogleMapController controller) {
-                                  controller.setMapStyle(
-                                    """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                                    0.3, // duration
+                                    CameraAnimationTypeMessage.linear,
                                   );
                                 },
-                                zoomControlsEnabled: false,
-                                zoomGesturesEnabled: false,
-                                scrollGesturesEnabled: false,
+                                updateMovedPosition: (LatLng p) {
+
+                                },
+                                onMapController: (DgisMapController controller) {
+                                  mapController = controller;
+                                },
+                                showRadius: true,
                               ),
+                              // GoogleMap(
+                              //   initialCameraPosition: CameraPosition(
+                              //       target: LatLng(
+                              //         double.parse(
+                              //             licenceQueryDetails.y!),
+                              //         double.parse(
+                              //             licenceQueryDetails.x!),
+                              //       ),
+                              //       zoom: 16),
+                              //   markers: {
+                              //     Marker(
+                              //       markerId: const MarkerId('position'),
+                              //       position: LatLng(
+                              //         double.parse(
+                              //             licenceQueryDetails.y!),
+                              //         double.parse(
+                              //             licenceQueryDetails.x!),
+                              //       ),
+                              //     )
+                              //   },
+                              //   onMapCreated: (GoogleMapController controller) {
+                              //     controller.setMapStyle(
+                              //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                              //     );
+                              //   },
+                              //   zoomControlsEnabled: false,
+                              //   zoomGesturesEnabled: false,
+                              //   scrollGesturesEnabled: false,
+                              // ),
                               Positioned(
                                 bottom: 20,
                                 left: 20,

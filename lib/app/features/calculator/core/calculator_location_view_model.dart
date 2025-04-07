@@ -6,8 +6,9 @@ import 'package:balady_plus/app/features/calculator/data/model/IsicActivity.dart
 import 'package:balady_plus/app/features/calculator/data/model/Item.dart';
 import 'package:balady_plus/app/features/calculator/data/model/Municipality.dart';
 import 'package:balady_plus/app/features/calculator/presentation/pages/repository/ServiceCalculatorRepository.dart';
+import 'package:dgis_map/library.dart';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 import '../../../core/base/base_view_model.dart';
 import '../../../core/remote_services/api_constants.dart';

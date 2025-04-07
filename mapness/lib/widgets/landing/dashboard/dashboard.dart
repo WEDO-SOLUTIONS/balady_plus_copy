@@ -12,6 +12,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
 import 'package:mapness/features/landing/search_by_rubrics.dart';
@@ -213,12 +214,14 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   void _openParking() {
+    ref.read(appAnalyticsProvider).quickActionSelected('parking');
     widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
     widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
 
   Future<void> _openQibla(BuildContext context) async {
+    ref.read(appAnalyticsProvider).quickActionSelected('qibla');
     Metrics.logEventAdvanced(
       MetricsConstants.exploreKeys.qibla,
       action: MetricAction.tap.name,
@@ -234,14 +237,17 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   void _openQuran(BuildContext context) {
+    ref.read(appAnalyticsProvider).quickActionSelected('quran');
     NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
   }
 
   void _openAthkar(BuildContext context) {
+    ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
   }
 
   void _openMyLocation() {
+    ref.read(appAnalyticsProvider).quickActionSelected('my_location');
     Metrics.logEventAdvanced(
       MetricsConstants.poiKeys.myLocation,
       group: MetricsConstants.poiTag,
@@ -262,6 +268,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   }
 
   void _openSnapAndSend() {
+    ref.read(appAnalyticsProvider).quickActionSelected('snap_and_send');
     Metrics.logEventAdvanced(MetricsConstants.exploreKeys.enhanceUrbanSceneBannerButton,
         action: MetricAction.tap.name, group: MetricsConstants.exploreTag);
     CommonFunctions.openSnapAndSend();

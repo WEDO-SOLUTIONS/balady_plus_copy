@@ -1,12 +1,14 @@
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 import '../../../../../core/utils/utils_exports.dart' show BlocRequestStatus, CommonFunctions, Prayers;
@@ -39,7 +41,18 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
     getPrayerTimeRange();
   }
 
-  void setNotifications() {
+
+  Future<bool> checkExactAlarmPermission() async {
+    if ((await Permission.scheduleExactAlarm.request()).isGranted) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  void setNotifications() async {
+
+    await checkExactAlarmPermission();
     final isNotificationTurnOff = !state.prayerTimeSettings.contains("1");
     if (isNotificationTurnOff) return NotificationService.cancelAll();
 
@@ -88,6 +101,8 @@ class PrayerTimesCubit extends Cubit<PrayerTimesState> {
   }
 
   void getPrayerTimeRange() async {
+    LatLng? location = await Helpers.getCurrentLocation();
+
     if (CommonProperties.userLocation == null) return;
     final params = PrayerTimeRangeParams(
       startDate: DateFormat("dd/MM/yyyy").format(DateTime.now()),

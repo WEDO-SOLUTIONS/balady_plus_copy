@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
@@ -323,6 +324,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                 onTap: () {
                   if (widget.frameIndex == widget.frameLength - 1) {
                     ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
+                    ref.read(appAnalyticsProvider).onboardingFlowCompleted();
+                  } else {
+                    ref.read(appAnalyticsProvider).onboardingFlowSkipped();
                   }
                   StoryArgsProvider.of(context).onClose();
                 },

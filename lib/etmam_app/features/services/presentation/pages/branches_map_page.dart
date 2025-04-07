@@ -3,13 +3,15 @@ import 'package:balady_plus/etmam_app/core/services/services_exports.dart'
 import 'package:balady_plus/etmam_app/features/services/services_exports.dart'
     show BranchMapBloc, BranchMapState;
 import 'package:balady_plus/app/core/utils/utils_exports.dart' show BlocStatus;
+import 'package:dgis_map/library.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:collection/collection.dart';
 
 import '../../../../../app/core/utils/constants/constants.dart';
+import '../../../../../app/features/_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
 import '../../../../core/utils/utils_exports.dart'
     show CommonFunctions, CommonProperties, IconPath;
 import '../../../_shared_feature_/shared/shared_feature_exports.dart'
@@ -54,22 +56,42 @@ class _BranchesMapPageState extends State<BranchesMapPage> {
                     height: double.infinity,
                     width: double.infinity,
                   ),
-                  GoogleMap(
-                    zoomControlsEnabled: true,
-                    // myLocationEnabled: true,
-                    // myLocationButtonEnabled: true,
-                    markers: context.read<BranchMapBloc>().getMarkers(),
-                    onMapCreated:
-                        (GoogleMapController controller) {
-                      controller.setMapStyle(
-                        """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-                      );
+                  UrbiMapSection(
+                    readOnly: false,
+                    currentUserLocation:  branches.firstOrNull?.getLatLng() ??CommonProperties.defaultLocation,
+                    incidentLocation: branches.firstOrNull?.getLatLng() ??CommonProperties.defaultLocation,
+                    marker: context.read<BranchMapBloc>().getMarkers().toList(),
+                    onCameraIdle: (bool isIdle) {
+
                     },
-                    initialCameraPosition: CameraPosition(
-                        target: branches.firstOrNull?.getLatLng() ??
-                            CommonProperties.defaultLocation,
-                        zoom: 7),
+                    updateMovedPosition: (LatLng p) {
+
+                    },
+                    onMapController: (DgisMapController controller) {
+
+                    },
+                    showRadius: true,
                   ),
+
+                  // GoogleMap(
+                  //   zoomControlsEnabled: true,
+                  //   // myLocationEnabled: true,
+                  //   // myLocationButtonEnabled: true,
+                  //   markers: context.read<BranchMapBloc>().getMarkers(),
+                  //   onMapCreated:
+                  //       (GoogleMapController controller) {
+                  //     controller.setMapStyle(
+                  //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+                  //     );
+                  //   },
+                  //   initialCameraPosition: CameraPosition(
+                  //       target: branches.firstOrNull?.getLatLng() ??
+                  //           CommonProperties.defaultLocation,
+                  //       zoom: 7),
+                  // ),
+
+
+
                   Align(
                     alignment: AlignmentDirectional.topStart,
                     child: GestureDetector(

@@ -1,7 +1,10 @@
 import 'dart:async';
 
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../../../../../_shared_feature_/balady_features/widgets/UrbiMap/UrbiMapSection.dart';
+
 
 class LocationChatBubble extends StatefulWidget {
   final LatLng latLng;
@@ -15,7 +18,7 @@ class LocationChatBubble extends StatefulWidget {
 }
 
 class _LocationChatBubbleState extends State<LocationChatBubble> {
-  final Completer<GoogleMapController> _controller = Completer();
+  final Completer<DgisMapController> _controller = Completer();
 
   @override
   Widget build(BuildContext context) {
@@ -24,29 +27,53 @@ class _LocationChatBubbleState extends State<LocationChatBubble> {
       child: ClipRRect(
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: IgnorePointer(
-          child: GoogleMap(
-            buildingsEnabled: false,
-            myLocationButtonEnabled: false,
-            compassEnabled: false,
-            tiltGesturesEnabled: false,
-            zoomControlsEnabled: false,
-            mapToolbarEnabled: false,
-            scrollGesturesEnabled: false,
-            zoomGesturesEnabled: false,
-            rotateGesturesEnabled: false,
-            minMaxZoomPreference: const MinMaxZoomPreference(0, 15),
-            initialCameraPosition: CameraPosition(
-              target: widget.latLng,
-              zoom: 15,
-            ),
-            onMapCreated: (GoogleMapController controller) {
-              controller.setMapStyle(
-                """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
-              );
-              if (_controller.isCompleted) return;
-              _controller.complete(controller);
+          child:
+
+          UrbiMapSection(
+            readOnly: true,
+            currentUserLocation: widget.latLng,
+            incidentLocation: widget.latLng,
+            onCameraIdle: (bool isIdle) {
+
             },
+            updateMovedPosition: (LatLng p) {
+
+            },
+            onMapController: (DgisMapController controller) {
+              if (_controller.isCompleted) return;
+                  _controller.complete(controller);
+
+            },
+            showRadius: true,
           ),
+
+          // GoogleMap(
+          //   buildingsEnabled: false,
+          //   myLocationButtonEnabled: false,
+          //   compassEnabled: false,
+          //   tiltGesturesEnabled: false,
+          //   zoomControlsEnabled: false,
+          //   mapToolbarEnabled: false,
+          //   scrollGesturesEnabled: false,
+          //   zoomGesturesEnabled: false,
+          //   rotateGesturesEnabled: false,
+          //   minMaxZoomPreference: const MinMaxZoomPreference(0, 15),
+          //   initialCameraPosition: CameraPosition(
+          //     target: widget.latLng,
+          //     zoom: 15,
+          //   ),
+          //   onMapCreated: (GoogleMapController controller) {
+          //     controller.setMapStyle(
+          //       """[{ "featureType": "water","elementType": "labels.text",  "stylers": [{  "visibility": "off" }                                ]                            }                           ]""",
+          //     );
+          //     if (_controller.isCompleted) return;
+          //     _controller.complete(controller);
+          //   },
+          // ),
+
+
+
+
         ),
       ),
     );
