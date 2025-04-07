@@ -1,5 +1,6 @@
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_city_by_location_riverpod.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,9 +24,9 @@ class PoiOffers extends _$PoiOffers {
       }
 
       final updatedState = Map<String, List<Offer>>.from(state);
-      final city = await ref.read(saudiPassCityByLocationProvider.future);
+      final cityId = await ref.read(saudiPassCityIdByLocationProvider.future);
       final promotions = await repository.getPromotions(
-        cities: {city},
+        cities: {City(id: cityId, name: '')},
         licenseIds: newIds,
         // we should fetch max count of offers for this licenseIds
         pageSize: 1000,

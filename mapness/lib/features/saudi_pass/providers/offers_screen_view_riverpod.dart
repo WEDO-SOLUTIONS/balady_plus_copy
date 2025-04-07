@@ -13,7 +13,7 @@ class OffersScreenViewRiverpod extends _$OffersScreenViewRiverpod {
     final notifier = OffersScreenViewNotifier(
       saudiPassRepository: ref.read(saudiPassRepositoryProvider.future),
       ref: ref,
-      cityByLocation: ref.read(saudiPassCityByLocationProvider.future),
+      cityIdByLocation: ref.read(saudiPassCityIdByLocationProvider.future),
       offersGroup: offersGroup,
     );
 

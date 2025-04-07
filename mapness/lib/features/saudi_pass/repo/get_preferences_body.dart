@@ -52,7 +52,7 @@ class Preferences {
     required this.recommendedTypes,
     required this.receiveNearbyDeals,
     required this.receiveNewOpeningDeals,
-  }) : isNotPopulated = cities.isEmpty;
+  }) : isNotPopulated = categories.isEmpty & recommendedTypes.isEmpty;
 
   final bool isNotPopulated;
 

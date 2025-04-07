@@ -1,9 +1,10 @@
 part of 'offers_screen_view_notifier.dart';
 
 class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView {
-  PrefsOffersViewNotifier(this.saudiPassRepository, this.ref, this.preferences);
+  PrefsOffersViewNotifier(this.saudiPassRepository, this.cityByLocation, this.ref, this.preferences);
 
   final SaudiPassRepository saudiPassRepository;
+  final City cityByLocation;
   final Ref ref;
   Preferences preferences;
 
@@ -36,6 +37,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
     final chunked = OffersChunkedAsyncIterable.byPrefs(
       saudiPassRepository: saudiPassRepository,
       preferences: preferences,
+      cityByLocation: cityByLocation,
     );
 
     OfferView createOfferCardView(Offer offer) => OfferViewImpl(offer, ref, saudiPassRepository);
@@ -47,7 +49,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
   }
 
   @override
-  String get cityTitle => preferences.cities.first.name;
+  String get cityTitle => (preferences.cities.firstOrNull ?? cityByLocation).name;
 
   @override
   int get types => preferences.recommendedTypes.length;

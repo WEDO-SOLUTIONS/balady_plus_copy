@@ -30,7 +30,7 @@ part 'prefs_offers_view_notifier.dart';
 class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScreenView {
   OffersScreenViewNotifier({
     required super.saudiPassRepository,
-    required super.cityByLocation,
+    required super.cityIdByLocation,
     required super.ref,
     this.offersGroup,
   });
@@ -71,6 +71,6 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   Future<PrefsOffersViewNotifier> createPrefsOffersViewNotifier() async {
     final saudiPassRepository = await this.saudiPassRepository;
     final preferences = await saudiPassRepository.getPreferences();
-    return PrefsOffersViewNotifier(saudiPassRepository, ref, preferences);
+    return PrefsOffersViewNotifier(saudiPassRepository, await cityByLocation(), ref, preferences);
   }
 }

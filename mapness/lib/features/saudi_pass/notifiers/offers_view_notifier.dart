@@ -8,13 +8,13 @@ import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
 import 'package:mapness/features/saudi_pass/views/offers_view.dart';
 
 abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
-  Future<City> cityByLocation;
+  Future<String> cityIdByLocation;
   final Future<SaudiPassRepository> saudiPassRepository;
   final Ref ref;
 
   OffersViewNotifier({
     required this.saudiPassRepository,
-    required this.cityByLocation,
+    required this.cityIdByLocation,
     required this.ref,
   });
 
@@ -31,15 +31,22 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
     notifyListeners();
   }
 
+  late Future<Lookups> futureLookups = saudiPassRepository.then((it) => it.getAllLookups());
+
+  Future<City> cityByLocation() async {
+    final lookups = await futureLookups;
+    final cityIdByLocation = await this.cityIdByLocation;
+    return lookups.cities.where((city) => city.id == cityIdByLocation).firstOrNull ?? lookups.cities.first;
+  }
+
   Future<OffersFiltersViewNotifier> createFiltersAndOffersView() async {
     final saudiPassRepository = await this.saudiPassRepository;
-    final lookups = await saudiPassRepository.getAllLookups();
-    final cityByLocation = await this.cityByLocation;
+    final lookups = await futureLookups;
 
     return OffersFiltersViewNotifier(
       ref: ref,
       saudiPassRepository: saudiPassRepository,
-      defaultCity: cityByLocation,
+      defaultCity: await cityByLocation(),
       lookups: lookups,
       isFavoritesOnly: isFavoritesOnly,
       categoriesSelected: mapPreSelected(lookups.categories).toSet(),

@@ -26,13 +26,16 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
 
   OffersChunkedAsyncIterable.byPrefs({
     required this.saudiPassRepository,
+    required City cityByLocation,
     required Preferences this.preferences,
-  })
-      : recommendedTypes = preferences.recommendedTypes.toSet(),
+  })  : recommendedTypes = preferences.recommendedTypes.toSet(),
         categories = preferences.categories.toSet(),
         favorites = null,
         sorting = null,
-        cities = preferences.cities.toSet();
+        cities = {
+          if (preferences.cities.isEmpty) cityByLocation,
+          if (preferences.cities.isNotEmpty) ...preferences.cities,
+        };
 
   @override
   int get chunkSize => 20;

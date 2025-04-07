@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/features/saudi_pass/repo/geocoder_data.dart';
-import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -9,32 +8,32 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'saudi_pass_city_by_location_riverpod.g.dart';
 
-final saudiPassCityByLocationProvider = _saudiPassCityByLocationRiverpodProvider;
+final saudiPassCityIdByLocationProvider = _saudiPassCityByLocationRiverpodProvider;
 
 @riverpod
 class _SaudiPassCityByLocationRiverpod extends _$SaudiPassCityByLocationRiverpod {
   @override
-  Future<City> build() async {
+  Future<String> build() async {
     final Position? position = ref.read(locationProvider);
 
-    const defaultCity = City(id: '70030076560739975', name: 'Riyadh');
+    const riyadhId = '70030076560739975';
 
     if (position == null) {
-      return defaultCity;
+      return riyadhId;
     }
 
     try {
       final geocoderData = await _admDivCityByPosition((latitude: position.latitude, longitude: position.longitude));
 
       if (geocoderData.result.items.isEmpty) {
-        return defaultCity;
+        return riyadhId;
       }
 
       final item = geocoderData.result.items.first;
 
-      return City.fromJson(item.toJson());
+      return item.id;
     } on Object {
-      return defaultCity;
+      return riyadhId;
     }
   }
 
