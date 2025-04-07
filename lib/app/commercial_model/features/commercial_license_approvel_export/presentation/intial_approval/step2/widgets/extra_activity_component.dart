@@ -13,6 +13,7 @@ import '../../../../../../../features/_shared_feature_/presentation/widgets/cust
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import '../../../../../../../features/_shared_feature_/presentation/widgets/notes_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import '../../../../../../../features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../data/models/initialApproval/sub_activity_details_data.dart';
@@ -51,14 +52,18 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                   ),
                   const SizedBox(width: 6),
                   CustomTextWidget(
-                    "addetional_data".tr(),
+                    "addetional_data_quest".tr(),
                     fontWeight: AppFontWeight.bold,
-                    fontSize: 18,
+                    fontSize: 15,
                     fontColor: AppColor.blackModern600Light,
                   ),
+
+
                 ],
+
               ),
               const SizedBox(height: 14),
+
               ListView.separated(
                 itemCount: state.lstSelectedAddetionalActivity?.length ?? 0,
                 separatorBuilder: (_, __) => const SizedBox(height: 16),
@@ -73,7 +78,7 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                   },
                 ),
               ),
-              const SizedBox(height: 12),
+
 
               PlusAddButton(
                 text: "attach_activity".tr(),
@@ -205,6 +210,8 @@ class _ExtraActivityComponentState extends State<ExtraActivityComponent> {
                   ),
                 ),
               ),
+              const SizedBox(height: 12),
+              NotesWidget(notes: ["extra_data_note".tr()],),
             ],
           ),
         );
