@@ -59,57 +59,7 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
                   return;
                 }
 
-                try {
-                  ref.read(feedbackImageTypeProvider.notifier).type = type;
-                  await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
-                        acceptedFormats: firstImageField.acceptedFormats,
-                        maxSize: firstImageField.maxSize,
-                        maxImages: firstImageField.maxImages,
-                      );
-
-                  final images = ref.read(feedbackImageSelectorProvider);
-                  if (images.isNotEmpty) {
-                    await context.router.replace(
-                      QuickFeedbackRoute(
-                        type: QuickFeedbackType.addPhoto,
-                        params: params,
-                      ),
-                    );
-                  } else {
-                    context.router.popForced();
-                  }
-                } catch (e) {
-                  switch (e) {
-                    case FeedbackPerrmissionError():
-                      await showPermissionDeniedDialog(context, ref.read(feedbackImageTypeProvider));
-                      break;
-                    case FeedbackImageSizeError():
-                      await _showImageActionErrorSheet(
-                        context,
-                        error: BaseErrorWidget(
-                          errorTitle: context.l10n.photoLimitExceeded,
-                          errorLabel: context.l10n.feedbackImageLimitsError(
-                            firstImageField.maxImages.toString(),
-                            '$_maxImageResolution x $_maxImageResolution',
-                            firstImageField.maxSize.formatAsFileSize(),
-                          ),
-                          buttonLabel: context.l10n.done,
-                          onRetry: () {
-                            Navigator.of(context).pop();
-                          },
-                          buttonColorScheme: ButtonColorScheme.primary,
-                          onClose: () {
-                            Navigator.of(context).pop(false);
-                          },
-                        ),
-                        onRetry: () => Future(() => Navigator.of(context).pop()),
-                      );
-                      break;
-                    default:
-                      log(e.toString());
-                      break;
-                  }
-                }
+                await _handleCategories(ref, type, firstImageField, context);
               } catch (e) {
                 context.router.popForced();
               }
@@ -118,6 +68,66 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _handleCategories(WidgetRef ref, FeedbackImageSelectorType type,
+      FeedbackImageInputEntity firstImageField, BuildContext context) async {
+    try {
+      ref.read(feedbackImageTypeProvider.notifier).type = type;
+      await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
+            acceptedFormats: firstImageField.acceptedFormats,
+            maxSize: firstImageField.maxSize,
+            maxImages: firstImageField.maxImages,
+          );
+
+      final images = ref.read(feedbackImageSelectorProvider);
+      if (images.isNotEmpty) {
+        await context.router.replace(
+          QuickFeedbackRoute(
+            type: QuickFeedbackType.addPhoto,
+            params: params,
+          ),
+        );
+      } else {
+        context.router.popForced();
+      }
+    } catch (e) {
+      await _handleError(e, context, ref, firstImageField);
+    }
+  }
+
+  Future<void> _handleError(
+      Object e, BuildContext context, WidgetRef ref, FeedbackImageInputEntity firstImageField) async {
+    switch (e) {
+      case FeedbackPerrmissionError():
+        await showPermissionDeniedDialog(context, ref.read(feedbackImageTypeProvider));
+        break;
+      case FeedbackImageSizeError():
+        await _showImageActionErrorSheet(
+          context,
+          error: BaseErrorWidget(
+            errorTitle: context.l10n.photoLimitExceeded,
+            errorLabel: context.l10n.feedbackImageLimitsError(
+              firstImageField.maxImages.toString(),
+              '$_maxImageResolution x $_maxImageResolution',
+              firstImageField.maxSize.formatAsFileSize(),
+            ),
+            buttonLabel: context.l10n.done,
+            onRetry: () {
+              Navigator.of(context).pop();
+            },
+            buttonColorScheme: ButtonColorScheme.primary,
+            onClose: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          onRetry: () => Future(() => Navigator.of(context).pop()),
+        );
+        break;
+      default:
+        log(e.toString());
+        break;
+    }
   }
 
   Future<void> _showImageActionErrorSheet(
