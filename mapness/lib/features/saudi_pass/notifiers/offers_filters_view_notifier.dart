@@ -2,13 +2,15 @@ part of 'offers_screen_view_notifier.dart';
 
 class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersView {
   City defaultCity;
-  final StackRouter stackRouter;
+  final Ref ref;
+
+  StackRouter get stackRouter => ref.read(appRouterProvider);
   final SaudiPassRepository saudiPassRepository;
   final Lookups lookups;
   final bool isFavoritesOnly;
 
   OffersFiltersViewNotifier({
-    required this.stackRouter,
+    required this.ref,
     required this.saudiPassRepository,
     required this.defaultCity,
     required this.lookups,
@@ -34,7 +36,8 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
       sorting: sortingSelected.firstOrNull,
     );
 
-    OfferView createOfferCardView(Offer offer) => OfferViewImpl(offer, stackRouter, saudiPassRepository);
+    OfferView createOfferCardView(Offer offer) =>
+        OfferViewImpl(offer, ref, saudiPassRepository, reloadOnFavoriteChanges);
 
     return MappedAsyncIterable(
       decorated: FlatChunkedAsyncIterable(CachedAsyncIterable(chunked), chunked.chunkSize),
@@ -45,6 +48,12 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
   void createNewListAndNotify() {
     asyncIterableOffers = createOffersAsyncIterable();
     notifyListeners();
+  }
+
+  void reloadOnFavoriteChanges() {
+    if (isFavoritesOnly) {
+      createNewListAndNotify();
+    }
   }
 
   @override
@@ -159,16 +168,17 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
       categoriesSelected.isNotEmpty || recommendedTypesSelected.isNotEmpty || citySelected != defaultCity;
 }
 
-class OfferViewImpl implements OfferView {
+class OfferViewImpl extends ChangeNotifier implements OfferView {
   final Offer offer;
-  final StackRouter stackRouter;
+  final Ref ref;
   final SaudiPassRepository saudiPassRepository;
+  final void Function()? reloadOffers;
 
-  OfferViewImpl(this.offer, this.stackRouter, this.saudiPassRepository);
+  OfferViewImpl(this.offer, this.ref, this.saudiPassRepository, [this.reloadOffers]);
 
   @override
   void onTap() {
-    stackRouter.push(OfferRoute(offerId: offer.id));
+    ref.read(appRouterProvider).push(OfferRoute(offerId: offer.id));
   }
 
   @override
@@ -180,7 +190,7 @@ class OfferViewImpl implements OfferView {
   ({String url, Map<String, String> headers}) get logo => saudiPassRepository.getPromotionsImagesUri(imageId: imageId);
 
   @override
-  bool get isHeartRedAndFilled => offer.favorite;
+  late bool isHeartRedAndFilled = offer.favorite;
 
   @override
   String get subTitle => offer.description;
@@ -208,4 +218,35 @@ class OfferViewImpl implements OfferView {
 
   @override
   String get offerId => offer.id;
+
+  @override
+  Future<void> onHeartTap() async {
+    if (CommonProperties.isLoggedIn) {
+      await toggleWithBottomSheetDialog();
+    } else {
+      await ref.read(appRouterProvider).push(const SigninRoute());
+
+      if (CommonProperties.isLoggedIn) {
+        await toggleWithBottomSheetDialog();
+      }
+    }
+  }
+
+  void toggleAndNotify() {
+    isHeartRedAndFilled = !isHeartRedAndFilled;
+    notifyListeners();
+    reloadOffers?.call();
+  }
+
+  Future<void> toggleWithBottomSheetDialog() async {
+    if (isHeartRedAndFilled) {
+      await ref.read(appRouterProvider).push(OfferFavoritesRemovingSheetRoute(onRemove: () async {
+        await ref.read(offerFavoritesProvider(offerId).notifier).removeFromFavorites();
+        toggleAndNotify();
+      }));
+    } else {
+      await ref.read(offerFavoritesProvider(offer.id).notifier).addToFavorites();
+      toggleAndNotify();
+    }
+  }
 }

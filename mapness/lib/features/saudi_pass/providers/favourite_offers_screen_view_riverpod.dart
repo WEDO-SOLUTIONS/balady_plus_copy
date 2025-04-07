@@ -14,7 +14,7 @@ class FavouriteOffersScreenViewRiverpod extends _$FavouriteOffersScreenViewRiver
 
     final notifier = FavouriteOffersScreenViewNotifier(
       saudiPassRepository: futureRepo,
-      stackRouter: ref.read(appRouterProvider),
+      ref: ref,
       cityByLocation: ref.read(saudiPassCityByLocationProvider.future),
     );
 

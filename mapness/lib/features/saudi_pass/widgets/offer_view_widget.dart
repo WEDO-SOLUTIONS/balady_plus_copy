@@ -5,9 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
-import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
-import 'package:mapness/pages/saudi_pass/offer_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -131,30 +129,23 @@ class OfferViewWidget extends ConsumerWidget {
   }
 }
 
-class _HeartIconWidget extends ConsumerWidget {
+class _HeartIconWidget extends StatelessWidget {
   final OfferView offerView;
 
   const _HeartIconWidget(this.offerView, {super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colors = context.colorsV2;
 
-    final offerFavoritesState = ref.watch(offerFavoritesProvider(offerView.offerId));
-
-    final isHeartRedAndFilled = switch (offerFavoritesState) {
-      OfferFavoritesState.initial => offerView.isHeartRedAndFilled,
-      OfferFavoritesState.loading => offerView.isHeartRedAndFilled,
-      OfferFavoritesState.error => offerView.isHeartRedAndFilled,
-      OfferFavoritesState.added => true,
-      OfferFavoritesState.removed => false,
-    };
-
-    return InkWell(
-      onTap: () => changeFavorite(context, ref, !isHeartRedAndFilled, offerView.offerId),
-      child: Icon(
-        isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
-        color: isHeartRedAndFilled ? colors.errorSoft : colors.neutralMuted,
+    return ListenableBuilder(
+      listenable: offerView,
+      builder: (context, _) => InkWell(
+        onTap: offerView.onHeartTap,
+        child: Icon(
+          offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
+          color: offerView.isHeartRedAndFilled ? colors.errorSoft : colors.neutralMuted,
+        ),
       ),
     );
   }

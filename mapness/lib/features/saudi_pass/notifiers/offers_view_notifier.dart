@@ -1,5 +1,5 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/entities/saudi_pass/offers_group_mapper.dart';
 import 'package:mapness/features/saudi_pass/notifiers/offers_screen_view_notifier.dart';
@@ -10,12 +10,12 @@ import 'package:mapness/features/saudi_pass/views/offers_view.dart';
 abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
   Future<City> cityByLocation;
   final Future<SaudiPassRepository> saudiPassRepository;
-  final StackRouter stackRouter;
+  final Ref ref;
 
   OffersViewNotifier({
     required this.saudiPassRepository,
     required this.cityByLocation,
-    required this.stackRouter,
+    required this.ref,
   });
 
   bool get isFavoritesOnly;
@@ -37,7 +37,7 @@ abstract class OffersViewNotifier extends ChangeNotifier implements OffersView {
     final cityByLocation = await this.cityByLocation;
 
     return OffersFiltersViewNotifier(
-      stackRouter: stackRouter,
+      ref: ref,
       saudiPassRepository: saudiPassRepository,
       defaultCity: cityByLocation,
       lookups: lookups,

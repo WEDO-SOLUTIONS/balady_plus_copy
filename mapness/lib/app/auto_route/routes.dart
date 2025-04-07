@@ -139,6 +139,11 @@ class Routes {
           opaque: false,
           transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
+        CustomRoute(
+          path: '/saudi_pass_offer_favorites_removing_sheet',
+          page: OfferFavoritesRemovingSheetRoute.page,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(

@@ -59,7 +59,7 @@ abstract class OffersFiltersView implements Listenable {
 
 typedef FilterView = ({String? title, String? plusMore, bool isHighlighted, void Function()? tapCross});
 
-abstract class OfferView {
+abstract class OfferView implements Listenable {
   String get offerId;
 
   String get title;
@@ -81,4 +81,6 @@ abstract class OfferView {
   OffersGroup get offersGroup;
 
   void onTap();
+
+  void onHeartTap();
 }

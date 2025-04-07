@@ -1,5 +1,8 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
@@ -13,6 +16,7 @@ import 'package:mapness/features/saudi_pass/notifiers/offers_view_notifier.dart'
 import 'package:mapness/features/saudi_pass/notifiers/recommended_type_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/notifiers/settings_screen_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/notifiers/sorting_selection_dialog_view_notifier.dart';
+import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/get_preferences_body.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
@@ -27,7 +31,7 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   OffersScreenViewNotifier({
     required super.saudiPassRepository,
     required super.cityByLocation,
-    required super.stackRouter,
+    required super.ref,
     this.offersGroup,
   });
 
@@ -44,7 +48,7 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   bool isByPreferencesElseAll = false;
 
   @override
-  void tapBack() => stackRouter.popForced();
+  void tapBack() => ref.read(appRouterProvider).popForced();
 
   @override
   void tapByPreferences() {
@@ -67,6 +71,6 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   Future<PrefsOffersViewNotifier> createPrefsOffersViewNotifier() async {
     final saudiPassRepository = await this.saudiPassRepository;
     final preferences = await saudiPassRepository.getPreferences();
-    return PrefsOffersViewNotifier(saudiPassRepository, stackRouter, preferences);
+    return PrefsOffersViewNotifier(saudiPassRepository, ref, preferences);
   }
 }

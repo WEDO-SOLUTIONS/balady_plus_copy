@@ -1,10 +1,10 @@
 part of 'offers_screen_view_notifier.dart';
 
 class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView {
-  PrefsOffersViewNotifier(this.saudiPassRepository, this.stackRouter, this.preferences);
+  PrefsOffersViewNotifier(this.saudiPassRepository, this.ref, this.preferences);
 
   final SaudiPassRepository saudiPassRepository;
-  final StackRouter stackRouter;
+  final Ref ref;
   Preferences preferences;
 
   @override
@@ -20,6 +20,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
   void tapGotoPreferences() => openPreferences();
 
   Future<void> openPreferences() async {
+    final stackRouter = ref.read(appRouterProvider);
     final futurePreferences = await stackRouter.push<Future<Preferences>>(const ProfilePreferencesRoute());
     if (futurePreferences != null) {
       final returnedPreferences = await futurePreferences;
@@ -37,7 +38,7 @@ class PrefsOffersViewNotifier extends ChangeNotifier implements PrefsOffersView 
       preferences: preferences,
     );
 
-    OfferView createOfferCardView(Offer offer) => OfferViewImpl(offer, stackRouter, saudiPassRepository);
+    OfferView createOfferCardView(Offer offer) => OfferViewImpl(offer, ref, saudiPassRepository);
 
     return MappedAsyncIterable(
       decorated: FlatChunkedAsyncIterable(CachedAsyncIterable(chunked), chunked.chunkSize),
