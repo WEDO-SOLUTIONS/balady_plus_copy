@@ -80,7 +80,7 @@ class _Step2IntialApprovalActivityDataState extends State<Step2IntialApprovalAct
                                     return CustomTapWidgetForLongDialog(
                                         items: state.getIsicActivities(),
                                         value: step2State.selectedIsicActivity,
-                                        label: "step2_label1".tr(),
+                                        label: "step2_label1_quest".tr(),
                                         marginBottom: 8,
                                         onChangeType: (item) {
                                           IsicsMainActivity? i = state

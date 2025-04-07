@@ -57,7 +57,7 @@ class _Step2IntialApprovalGeolocationDataState extends State<Step2IntialApproval
 
             DropDownWithTitle(
                 selectedValue: state.gisResponse?.getFullAddress(),
-                title: "loaction".tr(),
+                title: "loation_quest".tr(),
                 onTap: () async {
                   //Navigator
 

@@ -294,7 +294,7 @@ class AppStyle {
   );
 
   static final dropDownTitleTextStyle = TextStyle(
-    fontSize: 16.0,
+    fontSize: 15.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern700Light,
     fontFamily: fontFamily,
