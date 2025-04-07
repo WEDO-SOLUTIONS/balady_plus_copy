@@ -51,11 +51,14 @@ class SelectionDialogViewWidget<T> extends HookWidget {
             builder: (context, _) => layoutBuilder(selectionDialogView.selectionViews),
           ),
         ),
+        Padding(
+          padding: horizontalPadding.copyWith(
+            top: Spacing.$6x,
+            bottom: Spacing.$4x + MediaQuery.viewPaddingOf(context).bottom,
+          ),
+          child: ResetSaveWidget(selectionDialogView),
+        ),
       ],
-      footer: Padding(
-        padding: horizontalPadding.copyWith(bottom: Spacing.$4x, top: Spacing.$6x),
-        child: ResetSaveWidget(selectionDialogView),
-      ),
     );
   }
 }

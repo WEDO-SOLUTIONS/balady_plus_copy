@@ -16,33 +16,35 @@ class SettingsScreenViewWidget extends StatelessWidget {
   Widget build(BuildContext context) => SaudiPassScaffold(
         onBackButton: settingsScreenView.tapBack,
         title: context.l10n.saudiPassSettingsPageTitle,
-        body: ListenableBuilder(
-          listenable: settingsScreenView,
-          builder: (context, _) => Padding(
-            padding: const EdgeInsets.all(Spacing.$4x),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Expanded(
-                  child: ListView(
-                    children: [
-                      SaudiPassCitySelection(title: settingsScreenView.cityTitle, onTap: settingsScreenView.tapCity),
-                      const SizedBox(height: Spacing.$3x),
-                      SettingsCardWidget(
-                        title: context.l10n.saudiPassOffersPageFilterType,
-                        child: WrapLayout(settingsScreenView.typeSelectionViews),
-                      ),
-                      const SizedBox(height: Spacing.$3x),
-                      SettingsCardWidget(
-                        title: context.l10n.saudiPassOffersPageFilterCategory,
-                        child: WrapLayout(settingsScreenView.categorySelectionViews),
-                      ),
-                    ],
+        body: SafeArea(
+          child: ListenableBuilder(
+            listenable: settingsScreenView,
+            builder: (context, _) => Padding(
+              padding: const EdgeInsets.all(Spacing.$4x),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        SaudiPassCitySelection(title: settingsScreenView.cityTitle, onTap: settingsScreenView.tapCity),
+                        const SizedBox(height: Spacing.$3x),
+                        SettingsCardWidget(
+                          title: context.l10n.saudiPassOffersPageFilterType,
+                          child: WrapLayout(settingsScreenView.typeSelectionViews),
+                        ),
+                        const SizedBox(height: Spacing.$3x),
+                        SettingsCardWidget(
+                          title: context.l10n.saudiPassOffersPageFilterCategory,
+                          child: WrapLayout(settingsScreenView.categorySelectionViews),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                const SizedBox(height: Spacing.$3x),
-                ResetSaveWidget(settingsScreenView),
-              ],
+                  const SizedBox(height: Spacing.$3x),
+                  ResetSaveWidget(settingsScreenView),
+                ],
+              ),
             ),
           ),
         ),
