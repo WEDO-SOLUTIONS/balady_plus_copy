@@ -452,7 +452,7 @@ class ChooseMuncipalityBloc
       CheckOnStateOfFreelancerCertificate event,
       Emitter<CertifiedObserverState> emitter) async {
     // Hear The User is finished form the training and is Certified Observer
-    if (event.observerStatus.qualification != "Qualified") {
+    if (event.observerStatus.qualification == "Qualified") {
       /// TODO : hear check if the user have the Freelance certificate
       if (event.observerStatus.freelanceCertificateNumber?.isNotEmpty ??
           false) {
