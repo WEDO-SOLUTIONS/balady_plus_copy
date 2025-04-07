@@ -128,7 +128,6 @@ jobs:
           sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$provisionProfileAeSpecifier/$provisionProfileSpecifier/" ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
           git apply mapness/scripts/ios-appgroups.patch || echo 'could not apply ios appgroups patch'
           git apply mapness/scripts/sdkkey.patch || echo 'could not apply sdk key patch'
