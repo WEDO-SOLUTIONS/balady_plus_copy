@@ -224,6 +224,7 @@ class ChooseMuncipalityBloc
             state.copyWith(
               status: BlocStatus.success,
               lstCitesLookUp: lstCites,
+              currentPageValue: 1
             ),
           );
         },
@@ -364,7 +365,7 @@ class ChooseMuncipalityBloc
               isAcceptNewObservers: (response.data!.result) as bool,
             ),
           );
-          _getCityList(state.requestData?.municipality!.strId);
+          getCityList(state.requestData!.municipality!.strId!);
           if (response.data!.result == true) {
             add(const GoToNextPageEvent());
           }
@@ -383,12 +384,12 @@ class ChooseMuncipalityBloc
         if (state.status == BlocStatus.performing) return;
         int prvoiusPage = state.currentPageValue - 1;
 
-        emitter(state.copyWith(
+        emit(state.copyWith(
           status: BlocStatus.performing,
         ));
         controller.jumpToPage(prvoiusPage);
 
-        emitter(state.copyWith(
+        emit(state.copyWith(
           status: BlocStatus.success,
           currentPageValue: prvoiusPage,
         ));
@@ -401,20 +402,20 @@ class ChooseMuncipalityBloc
       GoToNextPageEvent e, Emitter emitter) async {
     if (state is ChooseMuncipalityState) {
       ChooseMuncipalityState state = this.state as ChooseMuncipalityState;
-      if (state.status == BlocStatus.performing) return;
-      int nextPage = state.currentPageValue + 1;
+    //  if (state.status == BlocStatus.performing) return;
 
-      emitter(state.copyWith(
+      emit(state.copyWith(
         status: BlocStatus.performing,
       ));
+      int nextPage = state.currentPageValue + 1;
+
+
       controller.jumpToPage(nextPage);
 
-      emitter(state.copyWith(
+      emit(state.copyWith(
           status: BlocStatus.success, currentPageValue: nextPage));
 
-      // if (nextPage == 1) {
-      //   add(getRequestDetailsEvent(requestId: state.requestId!));
-      // }
+
     }
   }
 

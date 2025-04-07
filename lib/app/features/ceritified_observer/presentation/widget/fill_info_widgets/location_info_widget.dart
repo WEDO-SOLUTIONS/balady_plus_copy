@@ -48,10 +48,12 @@ class LocationInfoWidget extends StatelessWidget {
             onChangeType: (LookUpItem? item) {
               if (item != null) {
                 state.requestData!.district = null;
+
                 context.read<ChooseMuncipalityBloc>().add(
                   SetRequestDataEvent(
                     dataModel: state.requestData!.copyWith(
                       city: item,
+
                     ),
                   ),
                 );

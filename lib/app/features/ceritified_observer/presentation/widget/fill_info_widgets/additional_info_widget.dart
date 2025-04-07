@@ -20,7 +20,7 @@ class AdditionalInfoWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ExpandableWithControllerWidget(
-      title: 'vd_user_info'.tr(),
+      title: 'additional_info'.tr(),
       controller: expandableController,
       expanded: Column(
         children: [

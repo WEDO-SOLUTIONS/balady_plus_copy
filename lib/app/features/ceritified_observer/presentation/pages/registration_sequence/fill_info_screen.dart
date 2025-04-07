@@ -35,7 +35,7 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
   final ExpandableController additionalInfoExpandableController =
       ExpandableController();
 
-  bool isCompleted = false;
+  bool isCompleted = true;
 
   @override
   Widget build(BuildContext context) {
@@ -105,78 +105,84 @@ class _FillInfoScreenState extends State<FillInfoScreen> {
                   text: "next".tr(),
                   onPressed: () {
                     ///// First check if the Location Info is filled
+
+                    bool isFormValid=formKey.currentState!.validate();
                     if (state.requestData?.municipality == null ||
-                        state.requestData?.city == null ||
-                        state.requestData?.district == null) {
-                      moveToTheNotCompletedSection(locationSection);
-                      if (!locationExpandableController.expanded) {
-                        locationExpandableController.toggle();
+                          state.requestData?.city == null ||
+                          state.requestData?.district == null) {
+                        moveToTheNotCompletedSection(locationSection);
+                        if (!locationExpandableController.expanded) {
+                          locationExpandableController.toggle();
+                        }
+                        isCompleted = false;
+                      } else {
+                        if (locationExpandableController.expanded) {
+                          locationExpandableController.toggle();
+                        }
                       }
-                      isCompleted = false;
-                    } else {
-                      if (locationExpandableController.expanded) {
-                        locationExpandableController.toggle();
-                      }
-                    }
 
-                    ///// Second check if the Personal Info is filled
-                    if (state.requestData?.mobileNumber == null ||
-                        state.requestData?.email == null ||
-                        state.requestData?.academicQualification == null ||
-                        state.requestData?.maritalStatus == null) {
-                      moveToTheNotCompletedSection(personalSection);
-                      if (!personalExpandableController.expanded) {
-                        personalExpandableController.toggle();
+                      ///// Second check if the Personal Info is filled
+                      if (state.requestData?.mobileNumber == null ||
+                          state.requestData?.email == null ||
+                          state.requestData?.academicQualification == null ||
+                          state.requestData?.maritalStatus == null) {
+                        moveToTheNotCompletedSection(personalSection);
+                        if (!personalExpandableController.expanded) {
+                          personalExpandableController.toggle();
+                        }
+                        isCompleted = false;
+                      } else {
+                        if (personalExpandableController.expanded&& isFormValid==true) {
+                          personalExpandableController.toggle();
+                        }
                       }
-                      isCompleted = false;
-                    } else {
-                      if (personalExpandableController.expanded) {
-                        personalExpandableController.toggle();
-                      }
-                    }
 
-                    ///// Third check if the Bank Info is filled
-                    if (state.requestData?.bankInfo == null ||
-                        state.requestData?.iban == null) {
-                      moveToTheNotCompletedSection(bankSection);
-                      if (!bankExpandableController.expanded) {
-                        bankExpandableController.toggle();
+                      ///// Third check if the Bank Info is filled
+                      if (state.requestData?.bankInfo == null ||
+                          state.requestData?.iban == null) {
+                        moveToTheNotCompletedSection(bankSection);
+                        if (!bankExpandableController.expanded) {
+                          bankExpandableController.toggle();
+                        }
+                        isCompleted = false;
+                      } else {
+                        if (bankExpandableController.expanded) {
+                          bankExpandableController.toggle();
+                        }
                       }
-                      isCompleted = false;
-                    } else {
-                      if (bankExpandableController.expanded) {
-                        bankExpandableController.toggle();
-                      }
-                    }
 
-                    ///// Fourth check if the Additional Info is filled
-                    if (state.requestData?.surveyQuestion1 == null ||
-                        state.requestData?.surveyQuestion2 == null ||
-                        state.requestData?.surveyQuestion3 == null ||
-                        state.requestData?.surveyQuestion4 == null) {
-                      moveToTheNotCompletedSection(additionalInfoSection);
-                      if (!additionalInfoExpandableController.expanded) {
-                        additionalInfoExpandableController.toggle();
+                      ///// Fourth check if the Additional Info is filled
+                      if (state.requestData?.surveyQuestion1 == null ||
+                          state.requestData?.surveyQuestion2 == null ||
+                          state.requestData?.surveyQuestion3 == null ||
+                          state.requestData?.surveyQuestion4 == null) {
+                        moveToTheNotCompletedSection(additionalInfoSection);
+                        if (!additionalInfoExpandableController.expanded) {
+                          additionalInfoExpandableController.toggle();
+                        }
+                        isCompleted = false;
+                      } else {
+                        if (additionalInfoExpandableController.expanded) {
+                          additionalInfoExpandableController.toggle();
+                        }
                       }
-                      isCompleted = false;
-                    } else {
-                      if (additionalInfoExpandableController.expanded) {
-                        additionalInfoExpandableController.toggle();
+                      if(isFormValid == false)
+                        {
+                          isCompleted = false;
+                        }
+
+                      if (isCompleted) {
+                        context.read<ChooseMuncipalityBloc>().add(
+                          const GoToNextPageEvent(),
+                        );
+                      } else {
+                        CommonFunctions.showError(
+                            "please_fill_all_required_fields".tr());
+                        isCompleted = true;
                       }
-                    }
 
-                    if (isCompleted) {
-                      context.read<ChooseMuncipalityBloc>().add(
-                            const GoToNextPageEvent(),
-                          );
-                    } else {
-                      formKey.currentState!.validate();
-                      CommonFunctions.showError(
-                          "please_fill_all_required_fields".tr());
-                      isCompleted = true;
-                    }
+                      oneMove = false;
 
-                    oneMove = false;
                   },
                 ),
               ),
