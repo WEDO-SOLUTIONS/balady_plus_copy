@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +10,7 @@ import 'package:mapness/entities/feedback/feedback_category.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/features/feedback/submit_feedback_payload.dart';
 import 'package:mapness/pages/feedback/components/feedback_form_widget.dart';
+import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
 import 'package:mapness/widgets/feedback/feedback_form_container.dart';
 
@@ -62,9 +64,9 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       /// limit rebuilds to form title with send
       child: ValueListenableBuilder(
         valueListenable: _isFormValidNotifier,
-        builder: (context, isFormBalid, child) => FeedbackFormContainer(
+        builder: (context, isFormValid, child) => FeedbackFormContainer(
           title: category.name,
-          isSendEnabled: isFormBalid,
+          isSendEnabled: isFormValid,
           onSend: () => _collectForm(objectId: widget.objectId, categoryId: category.id),
           child: child!,
         ),
@@ -127,6 +129,16 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     final allRequiredFilled = requiredFields.every((field) {
       final formField = formFields[field.id];
       final value = formField?.value;
+
+      if (field.runtimeType.toString().contains('FeedbackImageInputEntity')) {
+        final images = value is IList<FileUpload> ? value.toList() : <FileUpload>[];
+
+        if (images.isEmpty) {
+          return false;
+        }
+        final allUploaded = images.every((img) => img is FileUploadSuccess);
+        return allUploaded;
+      }
 
       final String displayValue = switch (value) {
         null => '',
