@@ -84,8 +84,8 @@ jobs:
         uses: webfactory/ssh-agent@v0.9.0
         with:
           ssh-private-key: |
-                ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
-                ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
+            ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
+            ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
 
       - name: "Prebuild"
         env:
@@ -116,11 +116,8 @@ jobs:
           codeSignIdentityDevelopment='CODE_SIGN_IDENTITY = "Apple Development";'
           codeSignIdentityDistribution='CODE_SIGN_IDENTITY = "iPhone Distribution";'
 
-          provisionProfileNone='PROVISIONING_PROFILE_SPECIFIER = "";'
-          provisionProfileAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";'
-
-          provisionProfileMovingViolationsNone='AE_PROVISIONING_PROFILE_SPECIFIER = "";'
-          provisionProfileMovingViolationsAdHoc='PROVISIONING_PROFILE_SPECIFIER = "Balady Moving Violations Ad Hoc";'
+          provisionProfileAeSpecifier='AE_PROVISIONING_PROFILE_SPECIFIER'
+          provisionProfileSpecifier='PROVISIONING_PROFILE_SPECIFIER'
 
           appDisplayNameProd='$(APP_DISPLAY_NAME)';
           appDisplayNameDev='Balady Dev';
@@ -130,7 +127,7 @@ jobs:
           sed -i '' "s/$momrahTeam/$urbiTeam/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$codeSignAutomatic/$codeSignManual/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$codeSignIdentityDevelopment/$codeSignIdentityDistribution/" ios/Runner.xcodeproj/project.pbxproj
-          sed -i '' "s/$provisionProfileMovingViolationsNone/$provisionProfileMovingViolationsAdHoc/" ios/Runner.xcodeproj/project.pbxproj
+          sed -i '' "s/$provisionProfileAeSpecifier/$provisionProfileSpecifier/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$provisionProfileNone/$provisionProfileAdHoc/" ios/Runner.xcodeproj/project.pbxproj
           sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
           git apply mapness/scripts/ios-appgroups.patch || echo 'could not apply ios appgroups patch'
