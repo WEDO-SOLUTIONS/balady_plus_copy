@@ -1218,14 +1218,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.6.0"
-  flutter_insider:
-    dependency: "direct main"
-    description:
-      name: flutter_insider
-      sha256: a547a4baaf58bcd534e49e77710f2cfd294d095af543d032220ea6ed23db8c3c
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.16.0+nh"
   flutter_keyboard_visibility:
     dependency: "direct main"
     description:
