@@ -129,8 +129,7 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     final allRequiredFilled = requiredFields.every((field) {
       final formField = formFields[field.id];
       final value = formField?.value;
-
-      if (field.runtimeType.toString().contains('FeedbackImageInputEntity')) {
+      if (field is FeedbackImageInputEntity) {
         final images = value is IList<FileUpload> ? value.toList() : <FileUpload>[];
 
         if (images.isEmpty) {
