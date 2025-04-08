@@ -15,7 +15,7 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
-import 'package:mapness/widgets/favourites/screen/search_screen.dart';
+import 'package:mapness/widgets/favourites/screen/favourites_search_screen.dart';
 
 @RoutePage()
 class FavouritesSearchPage extends StatelessWidget {
@@ -58,7 +58,8 @@ class FavouritesSearch extends ConsumerWidget {
         .map((e) => e.item)
         .toList();
 
-    return SearchScreen(
+    return FavouritesSearchScreen(
+      markerType: markerType,
       hintText: switch (markerType) {
         FavouriteItemMarkerType.unknown || FavouriteItemMarkerType.place => '',
         FavouriteItemMarkerType.home => context.l10n.home_address,
@@ -67,13 +68,19 @@ class FavouritesSearch extends ConsumerWidget {
       onHistoryItemTap: (item) async {
         final dgisController = await ref.read(dgisControllerProvider.future);
 
-        final object = await dgisController.searchByObjectId(
-          DgisObjectIdMessage(
-            objectId: int.tryParse(item?.objectId ?? '') ?? 0,
-            entranceId: int.tryParse(item?.objectId ?? '') ?? 0,
-          ),
-        );
-        unawaited(onSearchTap(ref, context, object));
+        if (item?.objectId == null) {
+          if (item?.title != null) {
+            ref.read(suggestQueryProvider.notifier).update(item!.title);
+          }
+        } else {
+          final object = await dgisController.searchByObjectId(
+            DgisObjectIdMessage(
+              objectId: int.tryParse(item?.objectId ?? '') ?? 0,
+              entranceId: int.tryParse(item?.objectId ?? '') ?? 0,
+            ),
+          );
+          unawaited(onSearchTap(ref, context, object));
+        }
       },
       onTapOfSearch: () {
         ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
