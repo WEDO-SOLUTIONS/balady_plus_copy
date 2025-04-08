@@ -131,7 +131,7 @@ class Step3ConclusionCubit extends Bloc<ConclusionEvent,Step3ConclusionState> {
       ConclusionSection obj = ConclusionSection();
       obj.sectionName = "municipalAdvisorCivilDefenseTitle".tr();
       ConSectionContent section = ConSectionContent();
-      section.label="municipalAdvisorCivilDefenseTitle".tr();
+      section.label="Availablemechanisms".tr();
       section.value=[];
       civilDefenseDocuments.asMap().forEach((index, value) {
         section.value?.add(value.name!);
