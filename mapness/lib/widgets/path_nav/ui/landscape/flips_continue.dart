@@ -11,7 +11,7 @@ class FlipsContinue extends StatelessWidget {
   Widget build(BuildContext context) {
     const pathImage = 'packages/mapness/assets/images/ic_flips_continue.png';
     return Material(
-      child: Container(
+      child: ColoredBox(
         color: context.colorsV3.backgroundSurface4,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
