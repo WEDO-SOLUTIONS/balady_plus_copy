@@ -30,7 +30,7 @@ class DashboardOffersRow extends ConsumerWidget {
                 ),
                 const SizedBox(width: 4),
                 AppIcons(
-                  iconData: SystemIcons.arrowCornerRightLarge,
+                  iconData: context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
                   color: context.colorsV3.foregroundDefault,
                 )
               ],

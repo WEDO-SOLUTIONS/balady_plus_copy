@@ -188,7 +188,9 @@ class _Content extends HookConsumerWidget {
                                             context.textStyleV3.bodySmallMedium.copyWith(color: colors.accentDefault),
                                       ),
                                       AppIcons(
-                                        iconData: SystemIcons.arrowCornerRightSmall,
+                                        iconData: context.isLTR
+                                            ? SystemIcons.arrowCornerRightSmall
+                                            : SystemIcons.arrowCornerLeftSmall,
                                         color: colors.accentDefault,
                                       )
                                     ],
