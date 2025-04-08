@@ -30,7 +30,7 @@ class NotificationService: UNNotificationServiceExtension {
             let goToAppText = "Launch App"
 
             InsiderPushNotification.showInsiderRichPush(
-                request,
+                bestAttemptContent,
                 appGroup: APP_GROUP as String,
                 nextButtonText: nextButtonText,
                 goToAppText: goToAppText,
