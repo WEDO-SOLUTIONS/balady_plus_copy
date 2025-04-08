@@ -54,7 +54,7 @@ class ProfilePage extends HookConsumerWidget {
             child: Stack(
               children: [
                 CustomScrollView(
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: const ClampingScrollPhysics(),
                   slivers: [
                     const SliverToBoxAdapter(
                       child: SizedBox(height: 20),
@@ -67,25 +67,22 @@ class ProfilePage extends HookConsumerWidget {
                         child: ProfileHeader(),
                       ),
                     ),
-                    SliverFillRemaining(
-                      child: ColoredBox(
-                        color: backgroundColor,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: context.colorsV3.backgroundSurface4,
-                            borderRadius: const BorderRadius.only(
-                              topLeft: Radius.circular(RadiusBorder.xxl),
-                              topRight: Radius.circular(RadiusBorder.xxl),
-                            ),
-                          ),
+                    DecoratedSliver(
+                      decoration: BoxDecoration(
+                        color: context.colorsV3.backgroundSurface4,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(RadiusBorder.xxl),
+                          topRight: Radius.circular(RadiusBorder.xxl),
+                        ),
+                      ),
+                      sliver: SliverFillAfter(
+                        sliver: SliverPadding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: Spacing.$4x,
                           ),
-                          child: SingleChildScrollView(
-                            physics: const BouncingScrollPhysics(),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
+                          sliver: SliverList(
+                            delegate: SliverChildListDelegate(
+                              [
                                 const SizedBox(height: Spacing.$4x),
                                 ClipRRect(
                                   borderRadius: BorderRadius.circular(RadiusBorder.l),
