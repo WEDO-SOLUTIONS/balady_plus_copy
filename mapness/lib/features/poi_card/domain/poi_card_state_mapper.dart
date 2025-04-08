@@ -1,4 +1,4 @@
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
@@ -43,11 +43,11 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
       return null;
     }
 
-    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
-      return Colors.black
-          .withOpacity(max(0.0, state.index - Curves.easeIn.transform(interpolation) - 1).clamp(0, 1) * 0.7);
+    if (state == PoiCardBottomSheetState.expanded) {
+      return Colors.black.withOpacity(0.4);
     }
 
-    return Colors.black.withOpacity((state.index + interpolation - 1) * 0.7);
+    final opacity = interpolation * 0.4;
+    return Colors.black.withOpacity(opacity);
   }
 }
