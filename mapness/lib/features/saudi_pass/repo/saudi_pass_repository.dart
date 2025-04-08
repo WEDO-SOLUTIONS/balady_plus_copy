@@ -18,7 +18,7 @@ class SaudiPassRepository {
   }
 
   Future<Promotions> getPromotions({
-    required Set<City> cities,
+    required Set<String> cityIds,
     int pageNumber = 0,
     int pageSize = 10,
     Set<String> licenseIds = const {},
@@ -32,12 +32,12 @@ class SaudiPassRepository {
     Sort? discountSort,
     bool? favorites,
   }) async {
-    if (cities.isEmpty) {
+    if (cityIds.isEmpty) {
       throw Exception('Cities MUST NOT be empty');
     }
 
     final queryParameters = <String, Object?>{
-      'city-id': [for (final city in cities) city.id],
+      'city-id': [...cityIds],
       'page-no': pageNumber + 1,
       'page-size': pageSize,
       'license-id': [...licenseIds],

@@ -45,7 +45,7 @@ class OffersChunkedAsyncIterable extends ChunkedAsyncIterable<Offer> {
     final promotions = await saudiPassRepository.getPromotions(
       pageNumber: chunkIndex,
       pageSize: chunkSize,
-      cities: cities,
+      cityIds: cities.map((city) => city.id).toSet(),
       recommendedTypes: recommendedTypes,
       categories: categories,
       applyPreference: preferences != null ? true : null,
