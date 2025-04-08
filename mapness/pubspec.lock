@@ -22,14 +22,6 @@ packages:
     description: dart
     source: sdk
     version: "0.3.2"
-  accessibility_tools:
-    dependency: transitive
-    description:
-      name: accessibility_tools
-      sha256: "1ee3612b9439ca315f92dcc31c6a4828e95b96c1aa64ac3a7776c149722deca8"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
   add_2_calendar:
     dependency: "direct main"
     description:
@@ -209,10 +201,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "13ed68391f1406048b32cdd39e3d4308935b70623fa4e5970ec39c61f7bc8cc8"
+      sha256: "9f00f405afbed2d3d3b563fe3f61708a03bfe6a41c2e38b4d23e56441e936964"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.3.4"
+    version: "3.3.7"
   battery_plus:
     dependency: transitive
     description:
@@ -654,14 +646,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.11"
-  device_frame:
-    dependency: transitive
-    description:
-      name: device_frame
-      sha256: d031a06f5d6f4750009672db98a5aa1536aa4a231713852469ce394779a23d75
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.2.0"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -2628,14 +2612,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.1.0"
-  resizable_widget:
-    dependency: transitive
-    description:
-      name: resizable_widget
-      sha256: db2919754b93f386b9b3fb15e9f48f6c9d6d41f00a24397629133c99df86606a
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   riverpod:
     dependency: transitive
     description:
@@ -3457,22 +3433,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.17.0"
-  widgetbook:
-    dependency: transitive
-    description:
-      name: widgetbook
-      sha256: "43fb5d65e5617cae47aeb5b25d6c8c51ee44bb5296b9a72df7bd60dbc6c51877"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.11.0"
-  widgetbook_annotation:
-    dependency: transitive
-    description:
-      name: widgetbook_annotation
-      sha256: b6f1da292c20a6238d973a640d253ce3ebddbe1f9fa8f2afd72624797a38e7cc
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.3.0"
   win32:
     dependency: transitive
     description:
