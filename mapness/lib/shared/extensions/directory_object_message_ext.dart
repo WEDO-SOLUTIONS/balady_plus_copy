@@ -117,11 +117,11 @@ extension TradeLicenseMessageExt on TradeLicenseMessage {
       return null;
     }
     return TradeLicenseMessage(
-        type: json['type'] ?? '',
-        license: json['license'],
-        legalForm: json['legalForm'] ?? '',
-        endDate: json['endDate'] ?? '',
-      );
+      type: json['type'] ?? '',
+      license: json['license'],
+      legalForm: json['legalForm'] ?? '',
+      endDate: json['endDate'] ?? '',
+    );
   }
 }
 

@@ -4,6 +4,7 @@ import 'package:mapness/entities/app_feedback/feedback_source.dart';
 // ignore_for_file: invalid_annotation_target
 
 part 'app_feedback_payload.freezed.dart';
+
 part 'app_feedback_payload.g.dart';
 
 enum AppFeedbackLocale { en, ar }
@@ -45,18 +46,15 @@ class AppFeedbackContext with _$AppFeedbackContext {
   }) = _AppFeedbackContext;
 
   factory AppFeedbackContext.fromJson(Map<String, dynamic> json) => _$AppFeedbackContextFromJson(json);
-
 }
 
-FeedbackSource? _sourceFromJson(String? value) =>
-    switch (value) {
+FeedbackSource? _sourceFromJson(String? value) => switch (value) {
       'main' => const FeedbackSource.main(),
       'navi' => const FeedbackSource.navi(),
       _ => null,
     };
 
-String? _sourceToJson(FeedbackSource? source) =>
-    switch (source) {
+String? _sourceToJson(FeedbackSource? source) => switch (source) {
       FeedbackSourceMain() => 'main',
       FeedbackSourceNavi() => 'navi',
       _ => null,

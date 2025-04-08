@@ -7,9 +7,9 @@ class OffersBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaladyBadge.secondary(
-      context.l10n.offers,
-      badgeType: BadgeType.warning,
-      iconPosition: BadgeIconPosition.start,
-      icon: General16Icons.offer,
-    );
+        context.l10n.offers,
+        badgeType: BadgeType.warning,
+        iconPosition: BadgeIconPosition.start,
+        icon: General16Icons.offer,
+      );
 }

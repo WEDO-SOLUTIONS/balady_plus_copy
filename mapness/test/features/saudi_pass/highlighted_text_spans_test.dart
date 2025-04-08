@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mapness/features/saudi_pass/widgets/city_selection_dialog_widget.dart';
+import 'package:mapness/features/saudi_pass/widgets/city_selection_dialog_view_widget.dart';
 
 void main() {
   late String search;

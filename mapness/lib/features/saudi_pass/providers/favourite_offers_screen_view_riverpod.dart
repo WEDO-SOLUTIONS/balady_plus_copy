@@ -1,4 +1,3 @@
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/saudi_pass/notifiers/favourite_offers_screen_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_city_by_location_riverpod.dart';
 import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_riverpod.dart';
