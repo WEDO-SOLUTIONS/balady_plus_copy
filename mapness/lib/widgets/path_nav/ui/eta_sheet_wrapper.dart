@@ -32,6 +32,7 @@ class EtaSheetWrapper extends StatelessWidget {
         },
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (betterRouteDurationProfit != null)
               ValueListenableBuilder(

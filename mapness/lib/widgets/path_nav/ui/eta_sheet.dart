@@ -78,6 +78,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     final _subtitleVoiceInstruction =
         voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
 
+    final padding = (landscape || !_isExpanded) ? Spacing.$4x : 0.0;
     return EtaSheetWrapper(
       onSizeChanged: widget.onSizeChanged,
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
@@ -86,9 +87,10 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           padding: EdgeInsets.only(
-              left: _isExpanded ? 0 : Spacing.$4x,
-              right: _isExpanded ? 0 : Spacing.$4x,
-              bottom: _isExpanded ? 0 : bottomPadding),
+            left: padding,
+            right: padding,
+            bottom: _isExpanded ? 0 : bottomPadding,
+          ),
           contentColor: landscape ? colorsV3.backgroundSurface1 : colorsV3.backgroundSurface4,
           enabledHeader: _isExpanded,
           animationInfo: widget.animationInfo,

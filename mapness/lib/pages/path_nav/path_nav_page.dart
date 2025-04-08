@@ -437,13 +437,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
-    setState(() {
-      _navigatorAlreadyStopped = true;
-    });
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
-    await Future.delayed(const Duration(seconds: 1), () {
-      action?.call();
-    });
+    if (isLandscape) {
+      setState(() {
+        _navigatorAlreadyStopped = true;
+      });
+
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    action?.call();
   }
 
   // Show the route page after the trip is finished
