@@ -37,96 +37,108 @@ class OfferViewWidget extends ConsumerWidget {
     const boxFit = BoxFit.cover;
     return InkWell(
       onTap: offerView.onTap,
-      child: DecoratedBox(
-        decoration: BoxDecoration(
-          color: colors.backgroundSurface1,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$3x).copyWith(left: Spacing.$4x),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
-                child: SizedBox.square(
-                  dimension: Spacing.$12x,
-                  child: CachedNetworkImage(
-                    imageUrl: offerView.logo.url,
-                    httpHeaders: offerView.logo.headers,
-                    fit: boxFit,
-                    errorWidget: (context, url, error) => DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: offerView.offersGroup.color,
-                          begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-                          end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
-                        ),
-                      ),
-                      child: Image.asset(
-                        offerView.offersGroup.imagePath,
-                        fit: boxFit,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: Spacing.$3x),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Text.rich(
-                            TextSpan(
-                              children: [
-                                if (offerView.amount != null)
-                                  TextSpan(text: currencyFormatter.format(offerView.amount)),
-                                if (offerView.ratio != null) TextSpan(text: percentFormatter.format(offerView.ratio)),
-                                TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
-                                TextSpan(text: offerView.title),
-                                WidgetSpan(
-                                  child: Padding(
-                                    padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-                                    child: Icon(PlacesIcons.marketsFilled, size: 16, color: colors.neutralMuted),
-                                  ),
-                                ),
-                              ],
-                              style: textStyles.bodySmallSemiBold,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+      child: OfferViewDecorationWidget(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ClipRRect(
+              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
+              child: SizedBox.square(
+                dimension: Spacing.$12x,
+                child: CachedNetworkImage(
+                  imageUrl: offerView.logo.url,
+                  httpHeaders: offerView.logo.headers,
+                  fit: boxFit,
+                  errorWidget: (context, url, error) =>
+                      DecoratedBox(
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: offerView.offersGroup.color,
+                            begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+                            end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                           ),
                         ),
-                      ],
-                    ),
-                    Text(
-                      offerView.subTitle,
-                      style: textStyles.captionMediumRegular,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    Text(
-                      '${context.l10n.saudiPassOfferBy} $byDate',
-                      style: byDateStyle,
-                      maxLines: 1,
-                    ),
-                  ],
+                        child: Image.asset(
+                          offerView.offersGroup.imagePath,
+                          fit: boxFit,
+                        ),
+                      ),
                 ),
               ),
-              const SizedBox(width: Spacing.$3x),
-              Align(
-                alignment: Alignment.topRight,
-                child: _HeartIconWidget(offerView),
+            ),
+            const SizedBox(width: Spacing.$3x),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text.rich(
+                          TextSpan(
+                            children: [
+                              if (offerView.amount != null) TextSpan(text: currencyFormatter.format(offerView.amount)),
+                              if (offerView.ratio != null) TextSpan(text: percentFormatter.format(offerView.ratio)),
+                              TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
+                              TextSpan(text: offerView.title),
+                              WidgetSpan(
+                                child: Padding(
+                                  padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                                  child: Icon(PlacesIcons.marketsFilled, size: 16, color: colors.neutralMuted),
+                                ),
+                              ),
+                            ],
+                            style: textStyles.bodySmallSemiBold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    offerView.subTitle,
+                    style: textStyles.captionMediumRegular,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    '${context.l10n.saudiPassOfferBy} $byDate',
+                    style: byDateStyle,
+                    maxLines: 1,
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: Spacing.$3x),
+            Align(
+              alignment: Alignment.topRight,
+              child: _HeartIconWidget(offerView),
+            ),
+          ],
         ),
       ),
     );
   }
+}
+
+class OfferViewDecorationWidget extends StatelessWidget {
+  final Widget? child;
+
+  const OfferViewDecorationWidget({this.child, super.key});
+
+  @override
+  Widget build(BuildContext context) =>
+      DecoratedBox(
+        decoration: BoxDecoration(
+          color: context.colorsV3.backgroundSurface1,
+          borderRadius: BorderRadius.circular(RadiusBorder.xl),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$3x).copyWith(left: Spacing.$4x),
+          child: child,
+        ),
+      );
 }
 
 class _HeartIconWidget extends StatelessWidget {

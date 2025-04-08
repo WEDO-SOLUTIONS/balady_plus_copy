@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 import 'package:mapness/features/saudi_pass/async_iterable/async_iterable.dart';
+import 'package:mapness/features/saudi_pass/async_iterable/chunked_async_iterable.dart';
 
 /// This implementation is client of AsyncIterable to be used with ListView, SliverList, etc
 /// Asks forward [moreItems] and notifies on length updates
@@ -10,17 +13,27 @@ class AsyncIterableListingNotifier<T> extends ChangeNotifier implements AsyncIte
 
   AsyncIterableListingNotifier(this.decorated, {this.moreItems = 1});
 
-  @override
-  int get length => decorated.length + more;
+  int uxPageSize = 20;
 
-  int get more {
-    if (isEmpty) {
-      return 0;
+  final pageIndexes = <int>{};
+
+  bool isPageStart(int index) => index % uxPageSize == 0;
+
+  @override
+  int get length {
+    if (pageIndexes.isEmpty) {
+      return moreItems;
     }
-    if (maxIndex != null) {
-      return 0;
+
+    final page = pageIndexes.fold(0, max) + 1;
+
+    final pagedLength = uxPageSize * page;
+
+    if (pagedLength < decorated.length) {
+      return pagedLength + moreItems;
     }
-    return moreItems;
+
+    return decorated.length;
   }
 
   @override
@@ -31,11 +44,13 @@ class AsyncIterableListingNotifier<T> extends ChangeNotifier implements AsyncIte
 
   @override
   Future<bool> hasElement(int index) async {
-    final shouldUpdate = index >= decorated.length;
-
     final result = await decorated.hasElement(index);
 
-    if (shouldUpdate) {
+    final pageIndex = chunkIndexForIndex(index, uxPageSize);
+
+    if (isPageStart(index) && !pageIndexes.contains(pageIndex)) {
+      pageIndexes.add(pageIndex);
+
       notifyListeners();
     }
 

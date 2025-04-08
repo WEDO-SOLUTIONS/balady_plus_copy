@@ -54,7 +54,11 @@ class _OffersListWidgetState extends State<OffersListWidget> {
                     }
                   }
 
-                  return const Center(child: Loading(size: LoaderSize.large));
+                  if (offers.isPageStart(index)) {
+                    return const Center(child: Loading(size: LoaderSize.large));
+                  } else {
+                    return const OfferViewDecorationWidget();
+                  }
                 },
               ),
             ),
