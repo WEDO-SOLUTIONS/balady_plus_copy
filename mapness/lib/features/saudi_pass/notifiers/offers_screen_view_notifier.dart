@@ -71,6 +71,7 @@ class OffersScreenViewNotifier extends OffersViewNotifier implements OffersScree
   Future<PrefsOffersViewNotifier> createPrefsOffersViewNotifier() async {
     final saudiPassRepository = await this.saudiPassRepository;
     final preferences = await saudiPassRepository.getPreferences();
-    return PrefsOffersViewNotifier(saudiPassRepository, await cityByLocation(), ref, preferences);
+    final cityByLocation = await this.cityByLocation();
+    return PrefsOffersViewNotifier(saudiPassRepository, cityByLocation, ref, preferences);
   }
 }
