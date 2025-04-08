@@ -4503,5 +4503,6 @@
   "step2WorkerType_quest": "What is worker type?",
   "loation_quest": "What, is the approximate geographical location of the facility/shop?",
   "addetional_data_quest": "Will activities be added to the license?",
-  "extra_data_note": "You can add additional activities at the license level"
+  "extra_data_note": "You can add additional activities at the license level",
+  "Availablemechanisms": "Available Mechanisms"
 }
