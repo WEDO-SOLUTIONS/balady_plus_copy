@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -16,6 +16,9 @@
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
+		98D4B5E32DA524A300C47939 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D4B5E02DA524A300C47939 /* NotificationService.swift */; };
+		98D4B5EA2DA524A700C47939 /* NotificationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98D4B5E82DA524A700C47939 /* NotificationViewController.swift */; };
+		98D4B5EC2DA524A700C47939 /* MainInterface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 98D4B5E72DA524A700C47939 /* MainInterface.storyboard */; };
 		98F4D4E12C6CB1B900CFF6EB /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98F4D4E02C6CB1B900CFF6EB /* SceneDelegate.swift */; };
 		9F039BECCA34451185673A6D /* Pods_InsiderNotificationContent.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68825854D44B76B6891A49B7 /* Pods_InsiderNotificationContent.framework */; };
 		C52373F02CE361F000D6DD2C /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C52373EF2CE361F000D6DD2C /* AdSupport.framework */; };
@@ -127,6 +130,13 @@
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		980E38B6C0508EADC5754688 /* Pods-InsiderNotificationService.debug-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationService.debug-dev.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService.debug-dev.xcconfig"; sourceTree = "<group>"; };
+		98D4B5DE2DA524A300C47939 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		98D4B5DF2DA524A300C47939 /* InsiderNotificationService.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InsiderNotificationService.entitlements; sourceTree = "<group>"; };
+		98D4B5E02DA524A300C47939 /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		98D4B5E42DA524A700C47939 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		98D4B5E52DA524A700C47939 /* InsiderNotificationContent.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = InsiderNotificationContent.entitlements; sourceTree = "<group>"; };
+		98D4B5E62DA524A700C47939 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/MainInterface.storyboard; sourceTree = "<group>"; };
+		98D4B5E82DA524A700C47939 /* NotificationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationViewController.swift; sourceTree = "<group>"; };
 		98F4D4E02C6CB1B900CFF6EB /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		9B4FD03903B3D2A15FC3693A /* Pods-Runner.profile-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile-dev.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile-dev.xcconfig"; sourceTree = "<group>"; };
 		A652BF4C97D335113CF70855 /* Pods-InsiderNotificationContent.profile-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-InsiderNotificationContent.profile-pre.xcconfig"; path = "Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent.profile-pre.xcconfig"; sourceTree = "<group>"; };
@@ -163,49 +173,6 @@
 		F6FE3E1E2D1146470011838B /* MovingViolationsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MovingViolationsExtension.entitlements; sourceTree = "<group>"; };
 		FA305A82962246D1B10F4007 /* Pods-Runner.debug-pre.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug-pre.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug-pre.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		C5BBE6962D83013700B4252C /* Exceptions for "InsiderNotificationService" folder in "InsiderNotificationService" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = C5BBE68D2D83013700B4252C /* InsiderNotificationService */;
-		};
-		C5BBE6B72D83023600B4252C /* Exceptions for "InsiderNotificationContent" folder in "InsiderNotificationContent" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = C5BBE6A72D83023600B4252C /* InsiderNotificationContent */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXGroup section */
-		C5BBE6752D83010900B4252C /* InsiderNotificationService */ = {
-			isa = PBXGroup;
-			exceptions = (
-			);
-			path = InsiderNotificationService;
-			sourceTree = "<group>";
-		};
-		C5BBE68F2D83013700B4252C /* InsiderNotificationService */ = {
-			isa = PBXGroup;
-			exceptions = (
-				C5BBE6962D83013700B4252C /* Exceptions for "InsiderNotificationService" folder in "InsiderNotificationService" target */,
-			);
-			path = InsiderNotificationService;
-			sourceTree = "<group>";
-		};
-		C5BBE6AD2D83023600B4252C /* InsiderNotificationContent */ = {
-			isa = PBXGroup;
-			exceptions = (
-				C5BBE6B72D83023600B4252C /* Exceptions for "InsiderNotificationContent" folder in "InsiderNotificationContent" target */,
-			);
-			path = InsiderNotificationContent;
-			sourceTree = "<group>";
-		};
-/* End PBXGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		97C146EB1CF9000F007C117D /* Frameworks */ = {
@@ -330,9 +297,8 @@
 				9740EEB11CF90186004384FC /* Flutter */,
 				97C146F01CF9000F007C117D /* Runner */,
 				F6FE3E012D1126020011838B /* MovingViolations */,
-				C5BBE6752D83010900B4252C /* InsiderNotificationService */,
-				C5BBE68F2D83013700B4252C /* InsiderNotificationService */,
-				C5BBE6AD2D83023600B4252C /* InsiderNotificationContent */,
+				98D4B5E12DA524A300C47939 /* InsiderNotificationService */,
+				98D4B5E92DA524A700C47939 /* InsiderNotificationContent */,
 				97C146EF1CF9000F007C117D /* Products */,
 				8C22C2AEAEB985D937E50078 /* Pods */,
 				3D68B916203992069536C4FA /* Frameworks */,
@@ -366,6 +332,27 @@
 				74858FAD1ED2DC5600515810 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
+			sourceTree = "<group>";
+		};
+		98D4B5E12DA524A300C47939 /* InsiderNotificationService */ = {
+			isa = PBXGroup;
+			children = (
+				98D4B5DE2DA524A300C47939 /* Info.plist */,
+				98D4B5DF2DA524A300C47939 /* InsiderNotificationService.entitlements */,
+				98D4B5E02DA524A300C47939 /* NotificationService.swift */,
+			);
+			path = InsiderNotificationService;
+			sourceTree = "<group>";
+		};
+		98D4B5E92DA524A700C47939 /* InsiderNotificationContent */ = {
+			isa = PBXGroup;
+			children = (
+				98D4B5E42DA524A700C47939 /* Info.plist */,
+				98D4B5E52DA524A700C47939 /* InsiderNotificationContent.entitlements */,
+				98D4B5E72DA524A700C47939 /* MainInterface.storyboard */,
+				98D4B5E82DA524A700C47939 /* NotificationViewController.swift */,
+			);
+			path = InsiderNotificationContent;
 			sourceTree = "<group>";
 		};
 		F6FE3E012D1126020011838B /* MovingViolations */ = {
@@ -425,9 +412,6 @@
 			);
 			dependencies = (
 			);
-			fileSystemSynchronizedGroups = (
-				C5BBE68F2D83013700B4252C /* InsiderNotificationService */,
-			);
 			name = InsiderNotificationService;
 			productName = InsiderNotificationService;
 			productReference = C5BBE68E2D83013700B4252C /* InsiderNotificationService.appex */;
@@ -446,9 +430,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				C5BBE6AD2D83023600B4252C /* InsiderNotificationContent */,
 			);
 			name = InsiderNotificationContent;
 			productName = InsiderNotificationContent;
@@ -543,6 +524,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D4B5EC2DA524A700C47939 /* MainInterface.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,9 +563,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Embed Pods Frameworks";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -598,9 +584,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-InsiderNotificationContent/Pods-InsiderNotificationContent-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -615,9 +605,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -674,7 +668,11 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputPaths = (
+			);
 			name = "Run Script";
+			outputPaths = (
+			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "/bin/sh \"$FLUTTER_ROOT/packages/flutter_tools/bin/xcode_backend.sh\" build\n";
@@ -687,9 +685,13 @@
 			inputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
+			inputPaths = (
+			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-InsiderNotificationService/Pods-InsiderNotificationService-resources-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -735,6 +737,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D4B5E32DA524A300C47939 /* NotificationService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -742,6 +745,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				98D4B5EA2DA524A700C47939 /* NotificationViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -791,6 +795,14 @@
 				97C147001CF9000F007C117D /* Base */,
 			);
 			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+		98D4B5E72DA524A700C47939 /* MainInterface.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				98D4B5E62DA524A700C47939 /* Base */,
+			);
+			name = MainInterface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -855,7 +867,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -874,7 +886,6 @@
 				MARKETING_VERSION = 2.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -942,7 +953,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -961,7 +972,6 @@
 				MARKETING_VERSION = 2.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -1026,7 +1036,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1045,7 +1055,6 @@
 				MARKETING_VERSION = 2.6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = YES;
@@ -1110,7 +1119,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1128,7 +1137,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1196,7 +1204,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1214,7 +1222,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1282,7 +1289,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1300,7 +1307,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1365,7 +1371,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1383,7 +1389,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1448,7 +1453,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1466,7 +1471,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1529,7 +1533,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1547,7 +1551,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1610,7 +1613,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1628,7 +1631,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1748,7 +1750,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1766,7 +1768,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -1779,7 +1780,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				APP_DISPLAY_NAME = "Balady | بلدي";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1797,7 +1798,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = momra.balady.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady Ad Hoc";
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -1810,6 +1810,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 32B15B9BE3C283FFE2DAAC9C /* Pods-InsiderNotificationService.debug-prod.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1841,7 +1842,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -1896,6 +1896,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 65F5F2ACCAFCBC4495C38A00 /* Pods-InsiderNotificationService.debug-pre.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1927,7 +1928,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -1982,6 +1982,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 980E38B6C0508EADC5754688 /* Pods-InsiderNotificationService.debug-dev.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2013,7 +2014,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2068,6 +2068,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 93D280A69DBA85DFE608E6E3 /* Pods-InsiderNotificationService.debug-stg.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2099,7 +2100,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2154,6 +2154,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B9B69D124CD7F453918A563F /* Pods-InsiderNotificationService.release-prod.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2185,7 +2186,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2233,6 +2233,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D3912B4222C97A9B97B5A57E /* Pods-InsiderNotificationService.release-pre.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2264,7 +2265,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2312,6 +2312,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = C5C095BAB4B89D1F46E92EB1 /* Pods-InsiderNotificationService.release-dev.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2343,7 +2344,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2391,6 +2391,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = EEA412CAEBC7FB7040C735EF /* Pods-InsiderNotificationService.release-stg.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2422,7 +2423,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2470,6 +2470,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 2A64DEDE76ADC9148D514512 /* Pods-InsiderNotificationService.profile-prod.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2501,7 +2502,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2549,6 +2549,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = F4707C4CE4FDDF137852B438 /* Pods-InsiderNotificationService.profile-pre.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2580,7 +2581,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2628,6 +2628,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 63323A471F6B9682AC776B6E /* Pods-InsiderNotificationService.profile-dev.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2659,7 +2660,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2707,6 +2707,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = E4BDA2E00C577814EDA24897 /* Pods-InsiderNotificationService.profile-stg.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2738,7 +2739,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationService/InsiderNotificationService.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationService Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2786,6 +2786,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4A069409668CA4B71A65E9FE /* Pods-InsiderNotificationContent.debug-prod.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2817,7 +2818,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2872,6 +2872,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7CDECD5A3EAD57697F0991BE /* Pods-InsiderNotificationContent.debug-pre.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2903,7 +2904,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -2958,6 +2958,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4259AD9671A48867ED14541A /* Pods-InsiderNotificationContent.debug-dev.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -2989,7 +2990,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3044,6 +3044,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 4CBDFE8B93E95CDB42C4D897 /* Pods-InsiderNotificationContent.debug-stg.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3075,7 +3076,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3130,6 +3130,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D0C4998C37B28EA9D810EFED /* Pods-InsiderNotificationContent.release-prod.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3161,7 +3162,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3209,6 +3209,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = CE69EC6EF3F4B8AF5C7A69FD /* Pods-InsiderNotificationContent.release-pre.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3240,7 +3241,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3288,6 +3288,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 86BD2D720D357AB85BA71030 /* Pods-InsiderNotificationContent.release-dev.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3319,7 +3320,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3367,6 +3367,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 8AB718D91378D01075E876F9 /* Pods-InsiderNotificationContent.release-stg.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3398,7 +3399,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3446,6 +3446,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7FDC48C02CFE2F839DF5884A /* Pods-InsiderNotificationContent.profile-prod.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3477,7 +3478,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3525,6 +3525,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = A652BF4C97D335113CF70855 /* Pods-InsiderNotificationContent.profile-pre.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3556,7 +3557,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3604,6 +3604,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 51E338FB8CE743639358B5DB /* Pods-InsiderNotificationContent.profile-dev.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3635,7 +3636,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
@@ -3683,6 +3683,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 1F320F33E34B60A3DC5D90F7 /* Pods-InsiderNotificationContent.profile-stg.xcconfig */;
 			buildSettings = {
+				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -3714,7 +3715,6 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = InsiderNotificationContent/InsiderNotificationContent.entitlements;
-				AE_PROVISIONING_PROFILE_SPECIFIER = "Balady InsiderNotificationContent Ad Hoc";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
