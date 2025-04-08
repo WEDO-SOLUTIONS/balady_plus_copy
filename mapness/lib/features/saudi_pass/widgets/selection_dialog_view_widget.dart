@@ -25,7 +25,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialogView.tapCross);
+    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialogView.tapCross());
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
