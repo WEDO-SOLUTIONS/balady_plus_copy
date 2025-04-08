@@ -26,30 +26,28 @@ class EtaContinue extends ConsumerWidget {
     }
 
     final media = MediaQuery.of(context);
-    final bottomPadding = media.padding.bottom + (Platform.isAndroid? Spacing.$6x : 0);
+    final bottomPadding = media.padding.bottom + (Platform.isAndroid ? Spacing.$6x : 0);
 
     return EtaSheetWrapper(
       onSizeChanged: onSizeChanged,
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: Spacing.$4x,
-          right: Spacing.$4x,
-          bottom: bottomPadding,
-        ),
-        child: GestureDetector(
-          onTap: onTap,
-          child: BaseRoadPanel(
-            roadPanelModel: RoadPanelModelContinue(
-              distanceChild: NaviChildModel(
-                title: eta.distanceEta,
-                description: eta.distanceEtaUnits.getDescription(context),
-              ),
-              drivingChild: NaviChildModel(
-                title: eta.timeEta,
-                description: eta.timeEtaUnits.getDescription(context),
-              ),
-              title: context.l10n.continueTrip,
+      child: GestureDetector(
+        onTap: onTap,
+        child: BaseRoadPanel(
+          roadPanelModel: RoadPanelModelContinue(
+            padding: EdgeInsets.only(
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              bottom: bottomPadding,
             ),
+            distanceChild: NaviChildModel(
+              title: eta.distanceEta,
+              description: eta.distanceEtaUnits.getDescription(context),
+            ),
+            drivingChild: NaviChildModel(
+              title: eta.timeEta,
+              description: eta.timeEtaUnits.getDescription(context),
+            ),
+            title: context.l10n.continueTrip,
           ),
         ),
       ),

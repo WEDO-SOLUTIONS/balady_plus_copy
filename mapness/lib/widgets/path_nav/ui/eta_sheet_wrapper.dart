@@ -51,9 +51,11 @@ class EtaSheetWrapper extends StatelessWidget {
                       )
                     : const SizedBox.shrink(),
               ),
-            Material(
-              color: Colors.transparent,
-              child: child,
+            Flexible(
+              child: Material(
+                color: Colors.transparent,
+                child: child,
+              ),
             ),
           ],
         ),
