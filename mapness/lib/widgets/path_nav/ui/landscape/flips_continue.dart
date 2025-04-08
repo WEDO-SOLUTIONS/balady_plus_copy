@@ -8,20 +8,23 @@ class FlipsContinue extends StatelessWidget {
   const FlipsContinue({super.key});
 
   @override
-  Widget build(BuildContext context) => Material(
-    child: Container(
-          color: context.colorsV3.backgroundSurface4,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Image.asset('packages/mapness/assets/images/ic_flips_continue.png'),
-              Spacing.$4x.heightBox,
-              Text(
-                context.l10n.theScreenFlipsContinue,
-                style: context.textStyleV3.h3SemiBold,
-              )
-            ],
-          ),
+  Widget build(BuildContext context) {
+    const pathImage = 'packages/mapness/assets/images/ic_flips_continue.png';
+    return Material(
+      child: Container(
+        color: context.colorsV3.backgroundSurface4,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(pathImage),
+            Spacing.$4x.heightBox,
+            Text(
+              context.l10n.theScreenFlipsContinue,
+              style: context.textStyleV3.h3SemiBold,
+            )
+          ],
         ),
-  );
+      ),
+    );
+  }
 }
