@@ -43,9 +43,9 @@ import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/widgets/path_nav/ui/landscape/navi_panel_landscape.dart';
 import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
+import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
-import 'package:mapness/widgets/path_nav/ui/path_nav_map_controls.dart';
 import 'package:urbi_analytics/logger.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -81,6 +81,11 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   double heightOfEta = 90.0;
   final _expansionNotifier = ValueNotifier<bool>(false);
   Size _size = const Size(0, 0);
+
+  final isControlsActive = ValueNotifier(true);
+  bool wasSetActive = true;
+
+  Timer? timer;
 
   late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(uikit.Spacing.$3x);
 
@@ -122,6 +127,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     WidgetsBinding.instance.addObserver(this);
     _initNavigation();
+    startControlsDisapearTimer();
     WakelockPlus.enable();
   }
 
@@ -155,6 +161,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     _betterRouteDurationProfit.dispose();
     _navigationState.dispose();
     _expansionNotifier.dispose();
+    timer?.cancel();
     WakelockPlus.disable();
     super.dispose();
   }
@@ -214,6 +221,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
   }
 
+  void startControlsDisapearTimer() {
+    timer = Timer(const Duration(seconds: 15), () {
+      if (mounted) {
+        isControlsActive.value = false;
+        wasSetActive = false;
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     ref
@@ -232,6 +248,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           _endTripAndShowHome();
         }
       });
+    final isPortrait = MediaQuery.orientationOf(context) == Orientation.portrait;
 
     // We use the Directionality widget to set the text direction to ltr.
     // This is necessary for LayersControl to be at the right side of the screen.
@@ -239,118 +256,140 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       canPop: false,
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: OrientationBuilder(
-          builder: (context, orientation) => Stack(
-            children: [
-              PathNavMapControls(
-                bottomHeightNotifier: _bottomHeightNotifier,
-                navigationState: _navigationState,
-                expansionNotifier: _expansionNotifier,
-                navType: widget.navType,
-                onRoutePressed: _onShowRoutePressed,
-              ),
-              if (orientation == Orientation.portrait)
-                Consumer(
-                  builder: (_, ref, __) {
-                    final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
-                    return isEtaExpanded
-                        ? GestureDetector(
-                            behavior: HitTestBehavior.translucent,
-                            onTap: () {
-                              ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-                            },
-                            child: SizedBox.expand(
-                              child: ColoredBox(
-                                color: AppColor.black.withOpacity(0.4),
-                              ),
+        child: Stack(
+          children: [
+            PathNavMapControls(
+              bottomHeightNotifier: _bottomHeightNotifier,
+              navigationState: _navigationState,
+              expansionNotifier: _expansionNotifier,
+              navType: widget.navType,
+              showControls: isControlsActive,
+              onRoutePressed: _onShowRoutePressed,
+              onUserActivity: () {
+                timer?.cancel();
+                timer = null;
+                wasSetActive = true;
+                isControlsActive.value = true;
+                startControlsDisapearTimer();
+              },
+            ),
+            if (isPortrait)
+              Consumer(
+                builder: (_, ref, __) {
+                  final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
+                  return isEtaExpanded
+                      ? GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                          },
+                          child: SizedBox.expand(
+                            child: ColoredBox(
+                              color: AppColor.black.withOpacity(0.4),
                             ),
-                          )
-                        : const SizedBox.shrink();
-                  },
-                ),
-              if (orientation == Orientation.portrait)
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: MeasureSize(
-                    onChange: (size) {
-                      if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
-                        _size = size;
-                        _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
-                      }
-                    },
-                    child: Column(
-                      children: [
-                        ParkingBanner(
-                          navigatorType: widget.navType,
-                          navigationState: _navigationState,
-                          isHomeOrWork: widget.isHomeOrWork,
-                        ),
-                        Directionality(
-                          textDirection: ref.watch(uiDirectionProvider),
-                          child: ValueListenableBuilder(
-                            valueListenable: _navigationState,
-                            builder: (context, state, child) {
-                              switch (state) {
-                                case PathNavState.running:
-                                  return Align(
-                                    alignment: Alignment.bottomCenter,
-                                    child: EtaSheet(
-                                      onEndTripPressed: () => _endTripAndShowFeedback(context),
-                                      onSearchPressed: () => _onSearchPressed(context),
-                                      onBetterRouteAccept: () => _acceptBetterRoute(context),
-                                      onBetterRouteReject: () => _rejectBetterRoute(context),
-                                      betterRouteDurationProfit: _betterRouteDurationProfit,
-                                      onTapRoute: _onShowRoutePressed,
-                                      onSizeChanged: _onSizeChanged,
-                                    ),
-                                  );
-                                case PathNavState.paused:
-                                  return EtaContinue(
-                                    onTap: _onContinuePressed,
-                                    onSizeChanged: _onSizeChanged,
-                                  );
-                                case PathNavState.finished:
-                                  return EtaFinished(
-                                    onSearchPressed: () => _onSearchPressed(context),
-                                    expansionNotifier: _expansionNotifier,
-                                    onEndTripPressed: _endTripAndShowHome,
-                                    onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
-                                    onSizeChanged: _onSizeChanged,
-                                  );
-                              }
-                            },
                           ),
+                        )
+                      : const SizedBox.shrink();
+                },
+              ),
+            if (isPortrait)
+              Positioned(
+                bottom: 0,
+                right: 0,
+                left: 0,
+                child: MeasureSize(
+                  onChange: (size) {
+                    if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
+                      _size = size;
+                      _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
+                    }
+                  },
+                  child: Column(
+                    children: [
+                      ParkingBanner(
+                        navigatorType: widget.navType,
+                        navigationState: _navigationState,
+                        isHomeOrWork: widget.isHomeOrWork,
+                      ),
+                      Directionality(
+                        textDirection: ref.watch(uiDirectionProvider),
+                        child: ValueListenableBuilder(
+                          valueListenable: _navigationState,
+                          builder: (context, state, child) {
+                            switch (state) {
+                              case PathNavState.running:
+                                return Align(
+                                  alignment: Alignment.bottomCenter,
+                                  child: EtaSheet(
+                                    onEndTripPressed: () => _endTripAndShowFeedback(context),
+                                    onSearchPressed: () => _onSearchPressed(context),
+                                    onBetterRouteAccept: () => _acceptBetterRoute(context),
+                                    onBetterRouteReject: () => _rejectBetterRoute(context),
+                                    betterRouteDurationProfit: _betterRouteDurationProfit,
+                                    onTapRoute: _onShowRoutePressed,
+                                    onSizeChanged: _onSizeChanged,
+                                  ),
+                                );
+                              case PathNavState.paused:
+                                return EtaContinue(
+                                  onTap: _onContinuePressed,
+                                  onSizeChanged: _onSizeChanged,
+                                );
+                              case PathNavState.finished:
+                                return EtaFinished(
+                                  onSearchPressed: () => _onSearchPressed(context),
+                                  expansionNotifier: _expansionNotifier,
+                                  onEndTripPressed: _endTripAndShowHome,
+                                  onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
+                                  onSizeChanged: _onSizeChanged,
+                                );
+                            }
+                          },
                         ),
-                      ],
-                    ),
-                  ),
-                )
-              else
-                Positioned.fill(
-                  child: Align(
-                    alignment: AlignmentDirectional.bottomStart,
-                    child: NaviPanelLandscape(
-                      navigationState: _navigationState,
-                      expansionNotifier: _expansionNotifier,
-                      endTripAndShowFeedback: _endTripAndShowFeedback,
-                      onShowRoutePressed: _onShowRoutePressed,
-                      acceptBetterRoute: _acceptBetterRoute,
-                      rejectBetterRoute: _rejectBetterRoute,
-                      betterRouteDurationProfit: _betterRouteDurationProfit,
-                      onSizeChanged: _onSizeChanged,
-                      onContinuePressed: _onContinuePressed,
-                      endTripAndShowHome: _endTripAndShowHome,
-                      endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
-                      onSearchPressed: _onSearchPressed,
-                      onTapRoute: _onShowRoutePressed,
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-              ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking)
-            ],
-          ),
+              )
+            else
+              Positioned.fill(
+                child: Align(
+                  alignment: AlignmentDirectional.bottomStart,
+                  child: NaviPanelLandscape(
+                    navigationState: _navigationState,
+                    expansionNotifier: _expansionNotifier,
+                    endTripAndShowFeedback: _endTripAndShowFeedback,
+                    onShowRoutePressed: _onShowRoutePressed,
+                    acceptBetterRoute: _acceptBetterRoute,
+                    rejectBetterRoute: _rejectBetterRoute,
+                    betterRouteDurationProfit: _betterRouteDurationProfit,
+                    onSizeChanged: _onSizeChanged,
+                    onContinuePressed: _onContinuePressed,
+                    endTripAndShowHome: _endTripAndShowHome,
+                    endTripAndBuildAnotherRoute: _endTripAndBuildAnotherRoute,
+                    onSearchPressed: _onSearchPressed,
+                    onTapRoute: _onShowRoutePressed,
+                  ),
+                ),
+              ),
+            Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (event) {
+                timer?.cancel();
+                timer = null;
+                setState(() {
+                  if (!isControlsActive.value) {
+                    wasSetActive = true;
+                    isControlsActive.value = true;
+                  }
+                });
+              },
+              onPointerUp: (event) {
+                startControlsDisapearTimer();
+              },
+            ),
+            ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking)
+          ],
         ),
       ),
     );
