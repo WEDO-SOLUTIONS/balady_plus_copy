@@ -95,20 +95,20 @@ class AppFeedbackMain extends HookConsumerWidget {
             },
           ),
         ),
-        Padding(
-          padding: const EdgeInsets.all(Spacing.$4x),
-          child: ValueListenableBuilder(
-            valueListenable: rating,
-            builder: (context, ratingValue, _) => Text(
-              source is FeedbackSourceOffer
-                  ? context.l10n.offerFeedbackMessage
-                  : _ratingText(context.l10n, rating.value),
-              textAlign: TextAlign.center,
-              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                color: context.colorsV2.foregroundSoft,
-              ),
-            ),
-          ),
+        ValueListenableBuilder(
+          valueListenable: rating,
+          builder: (context, ratingValue, _) => source is! FeedbackSourceOffer || ratingValue == 0
+              ? Padding(
+                  padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
+                  child: Text(
+                    _feedbackSubtitleText(context.l10n, rating.value, source),
+                    textAlign: TextAlign.center,
+                    style: context.textStyleV3.bodyLargeRegular.copyWith(
+                      color: context.colorsV2.foregroundSoft,
+                    ),
+                  ),
+                )
+              : const SizedBox.shrink(),
         ),
         ValueListenableBuilder(
           valueListenable: rating,
@@ -116,7 +116,7 @@ class AppFeedbackMain extends HookConsumerWidget {
               duration: Durations.short3,
               child: ratingValue > 0 && source is! FeedbackSourceOffer
                   ? Padding(
-                      padding: const EdgeInsets.only(bottom: Spacing.$4x),
+                      padding: const EdgeInsets.only(top: Spacing.$4x),
                       child: TagCloud(
                         key: ValueKey(ratingValue),
                         rating: ratingValue,
@@ -133,7 +133,7 @@ class AppFeedbackMain extends HookConsumerWidget {
             }
             return Padding(
               key: const ValueKey('app-feedback-balady-input'),
-              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+              padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: () async {
@@ -167,11 +167,13 @@ class AppFeedbackMain extends HookConsumerWidget {
               valueListenable: rating,
               builder: (context, ratingValue, _) {
                 final canSend = ratingValue > 0;
-                final buttonState = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
+                final buttonColorScheme = !canSend ? ButtonColorScheme.tertiary : ButtonColorScheme.primary;
+                final buttonState = !canSend ? ButtonState.disabled : ButtonState.normal;
                 return SizedBox(
                   width: double.infinity,
                   child: AppButton(
-                    buttonColorScheme: buttonState,
+                    buttonColorScheme: buttonColorScheme,
+                    buttonState: buttonState,
                     onTap: !canSend
                         ? null
                         : () async {
@@ -194,6 +196,9 @@ class AppFeedbackMain extends HookConsumerWidget {
       ],
     );
   }
+
+  String _feedbackSubtitleText(AppLocalizations l10n, int rating, FeedbackSource source) =>
+      source is FeedbackSourceOffer ? l10n.offerFeedbackMessage : _ratingText(l10n, rating);
 
   String _ratingText(AppLocalizations l10n, int rating) => switch (rating) {
         1 => l10n.appFeedbackRating1,
