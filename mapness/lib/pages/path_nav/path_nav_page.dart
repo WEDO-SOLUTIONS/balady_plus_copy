@@ -41,6 +41,7 @@ import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
+import 'package:mapness/widgets/path_nav/ui/landscape/flips_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/landscape/navi_panel_landscape.dart';
 import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
@@ -256,7 +257,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       canPop: false,
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: Stack(
+        child:           _navigatorAlreadyStopped ?
+     const FlipsContinue() : Stack(
           children: [
             PathNavMapControls(
               bottomHeightNotifier: _bottomHeightNotifier,
@@ -279,16 +281,16 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                   final isEtaExpanded = ref.watch(pathNavEtaProvider)?.isExpanded ?? false;
                   return isEtaExpanded
                       ? GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-                          },
-                          child: SizedBox.expand(
-                            child: ColoredBox(
-                              color: AppColor.black.withOpacity(0.4),
-                            ),
-                          ),
-                        )
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
+                    },
+                    child: SizedBox.expand(
+                      child: ColoredBox(
+                        color: AppColor.black.withOpacity(0.4),
+                      ),
+                    ),
+                  )
                       : const SizedBox.shrink();
                 },
               ),
@@ -388,7 +390,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                 startControlsDisapearTimer();
               },
             ),
-            ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking)
+            ParkingBottomSheetPage(onSizeChanged: _onSizeChangedParking),
           ],
         ),
       ),
@@ -398,7 +400,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   // Different actions for different states. We have to stop navigation and remove all markers when the trip is finished
   // Also we do action (in our case we navigate to the home page or to route page) after the trip is finished
   Future<void> _endTrip({VoidCallback? action}) async {
-    _navigatorAlreadyStopped = true;
     final route = ref.read(etaRouteInfoProvider);
     final pathInfo = ref.read(pathNavEtaProvider);
     ref.read(appAnalyticsProvider).navigationCompleted(
@@ -421,8 +422,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     }
 
     await clearNavigationState();
-    action?.call();
-
     await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     ref.read(layersControlsProvider.notifier).updateLayerInfo();
 
@@ -433,6 +432,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     ).notifier);
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
+
+    setState(() {
+      _navigatorAlreadyStopped = true;
+    });
+
+    await Future.delayed(const Duration(seconds: 1), () {
+      action?.call();
+    });
   }
 
   // Show the route page after the trip is finished
