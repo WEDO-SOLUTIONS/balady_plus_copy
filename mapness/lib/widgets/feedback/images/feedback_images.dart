@@ -1,18 +1,17 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart';
+import 'package:mapness/features/feedback/feedback_image_error.dart';
+import 'package:mapness/features/feedback/feedback_image_selector.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
@@ -20,7 +19,7 @@ import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:urbi_analytics/logger.dart';
 
 const _maxImageResolution = 5000;
 const _minPhotoWidth = 100;
@@ -29,25 +28,12 @@ const _photoPadding = 8.0;
 class FeedbackImages extends StatelessWidget {
   final FeedbackImageInputEntity field;
 
-  const FeedbackImages({
+  final GlobalKey<FormFieldState<IList<FileUpload>>> fieldKey = GlobalKey<FormFieldState<IList<FileUpload>>>();
+
+  FeedbackImages({
     required this.field,
     super.key,
   });
-
-  Future<Size> _calculateImageDimension(String imagePath) {
-    final Completer<Size> completer = Completer();
-    final Image image = Image.file(File(imagePath));
-    image.image.resolve(const ImageConfiguration()).addListener(
-      ImageStreamListener(
-        (image, synchronousCall) {
-          final myImage = image.image;
-          final Size size = Size(myImage.width.toDouble(), myImage.height.toDouble());
-          completer.complete(size);
-        },
-      ),
-    );
-    return completer.future;
-  }
 
   @override
   Widget build(BuildContext context) => Column(
@@ -66,62 +52,72 @@ class FeedbackImages extends StatelessWidget {
               ),
             ],
           ),
-          FormBuilderField<IList<FileUpload>>(
-            name: field.id,
-            valueTransformer: (value) => value
-                ?.map(
-                  (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
-                )
-                .nonNulls
-                .toList(),
-            validator: (value) {
-              /// check does field has value
-              if (value == null || value.isEmpty) {
-                return field.isRequired ? 'NEED PHOTOS' : null;
-              }
-
-              /// check are all fields uploaded
-              if (value.every((fu) => fu is FileUploadSuccess)) {
-                return null;
-              }
-              return 'UPLOAD NOT FINISHED';
-            },
-            builder: (fieldState) {
-              final value = fieldState.value ?? const IList.empty();
-
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  final imagesInRow =
-                      ((constraints.maxWidth + _photoPadding) / (_minPhotoWidth + _photoPadding)).floor();
-                  final size = (constraints.maxWidth + _photoPadding) / imagesInRow - _photoPadding;
-
-                  return Wrap(
-                    spacing: _photoPadding,
-                    runSpacing: _photoPadding,
-                    children: [
-                      if (value.length < field.maxImages)
-                        _AddImageButton(
-                          onTap: () => _showImageSelectorDialog(context, fieldState),
-                          size: size,
-                        ),
-                      ...value.indexed.map(
-                        (indexedUpload) => FeedbackImageWidget(
-                          key: ValueKey(indexedUpload),
-                          imagePath: indexedUpload.$2.srcPath,
-                          onRemove: () => fieldState.didChange(
-                            value.removeAt(indexedUpload.$1),
-                          ),
-                          onUploadStatusChange: (status) =>
-                              fieldState.didChange(value.replace(indexedUpload.$1, status)),
-                          imageSize: size,
-                        ),
-                      ),
-                    ],
-                  );
-                },
+          Consumer(builder: (context, ref, _) {
+            ref.listen(feedbackImageSelectorProvider, (_, next) {
+              fieldKey.currentState?.didChange(
+                next.map((e) => FileUpload.init(srcPath: e.path)).toIList(),
               );
-            },
-          ),
+            });
+            return FormBuilderField<IList<FileUpload>>(
+                key: fieldKey,
+                name: field.id,
+                initialValue:
+                    ref.read(feedbackImageSelectorProvider).map((e) => FileUpload.init(srcPath: e.path)).toIList(),
+                valueTransformer: (value) => value
+                    ?.map(
+                      (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
+                    )
+                    .nonNulls
+                    .toList(),
+                validator: (value) {
+                  /// check does field has value
+                  if (value == null || value.isEmpty) {
+                    return field.isRequired ? 'NEED PHOTOS' : null;
+                  }
+
+                  /// check are all fields uploaded
+                  if (value.every((fu) => fu is FileUploadSuccess)) {
+                    return null;
+                  }
+                  return 'UPLOAD NOT FINISHED';
+                },
+                builder: (fieldState) {
+                  final value = fieldState.value ?? const IList.empty();
+
+                  // Recreate
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final imagesInRow =
+                          ((constraints.maxWidth + _photoPadding) / (_minPhotoWidth + _photoPadding)).floor();
+                      final size = (constraints.maxWidth + _photoPadding) / imagesInRow - _photoPadding;
+
+                      return Wrap(
+                        spacing: _photoPadding,
+                        runSpacing: _photoPadding,
+                        children: [
+                          if (value.length < field.maxImages)
+                            _AddImageButton(
+                              onTap: () => _showImageSelectorDialog(context, ref),
+                              size: size,
+                            ),
+                          ...value.indexed.map(
+                            (indexedUpload) => FeedbackImageWidget(
+                              key: ValueKey(indexedUpload),
+                              imagePath: indexedUpload.$2.srcPath,
+                              onRemove: () => fieldState.didChange(
+                                value.removeAt(indexedUpload.$1),
+                              ),
+                              onUploadStatusChange: (status) =>
+                                  fieldState.didChange(value.replace(indexedUpload.$1, status)),
+                              imageSize: size,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                });
+          }),
           Spacing.$2x.heightBox,
           Text(
             context.l10n.feedbackImageVadidationDiscription(
@@ -138,7 +134,10 @@ class FeedbackImages extends StatelessWidget {
         ],
       );
 
-  Future<void> _showImageSelectorDialog(BuildContext context, FormFieldState<IList<FileUpload>> fieldState) async {
+  Future<void> _showImageSelectorDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
     final result = await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -155,122 +154,51 @@ class FeedbackImages extends StatelessWidget {
       return;
     }
 
-    await _handlePickImage(context: context, fieldState: fieldState, type: result);
-  }
+    ref.read(feedbackImageTypeProvider.notifier).type = result;
 
-  Future<void> _handlePickImage(
-      {required BuildContext context,
-      required FormFieldState<IList<FileUpload>> fieldState,
-      required FeedbackImageSelectorType type}) async {
-    if (await _isPermissionDenied(type)) {
-      await showPermissionDeniedDialog(context, type);
-      return;
-    }
+    try {
+      // Get previous selected images
+      final selectedImages =
+          (fieldKey.currentState?.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
 
-    final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage(type);
-    if (images.isEmpty) {
-      return;
-    }
-
-    final filteredImages = await filterImages(
-      context,
-      images: images,
-      fieldState: fieldState,
-      selectedImages: selectedImages,
-    );
-    final value = fieldState.value ?? const IList.empty();
-
-    /// avoid upload same image twice
-    filteredImages.removeWhere(
-      (element) => value.any(
-        (element2) => element2.srcPath == element.path,
-      ),
-    );
-
-    fieldState.didChange(
-      value.addAll(
-        filteredImages.map(
-          (image) => FileUpload.init(srcPath: image.path),
-        ),
-      ),
-    );
-  }
-
-  Future<bool> isValidImage(String path) async {
-    final fileType = path.split('.').last.toLowerCase();
-    final isImageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
-    final size = await File(path).length();
-    final isSizeAccepted = size <= field.maxSize;
-    final dim = await _calculateImageDimension(path);
-    final isDimAccepted = dim.width <= _maxImageResolution && dim.height <= _maxImageResolution;
-    return isImageFormatAccepted && isSizeAccepted && isDimAccepted;
-  }
-
-  Future<List<XFile>> filterImages(
-    BuildContext context, {
-    required List<XFile> images,
-    required FormFieldState<IList<FileUpload>> fieldState,
-    required List<XFile> selectedImages,
-  }) async {
-    final List<XFile> filteredImages = [];
-    bool isAllImagesValid = true;
-    for (final image in images) {
-      final isImageValid = await isValidImage(image.path);
-      isAllImagesValid &= isImageValid;
-      if (isImageValid) {
-        filteredImages.add(image);
+      await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
+            acceptedFormats: field.acceptedFormats,
+            maxSize: field.maxSize,
+            maxImages: field.maxImages,
+            selectedImages: selectedImages,
+          );
+    } catch (e) {
+      switch (e) {
+        case FeedbackPerrmissionError():
+          await showPermissionDeniedDialog(context, ref.read(feedbackImageTypeProvider));
+          break;
+        case FeedbackImageSizeError():
+          await _showImageActionErrorSheet(
+            context,
+            error: BaseErrorWidget(
+              buttonColorScheme: ButtonColorScheme.primary,
+              errorTitle: context.l10n.photoLimitExceeded,
+              errorLabel: context.l10n.feedbackImageLimitsError(
+                field.maxImages.toString(),
+                '$_maxImageResolution x $_maxImageResolution',
+                field.maxSize.formatAsFileSize(),
+              ),
+              buttonLabel: context.l10n.tryAgain,
+              onRetry: () {
+                Navigator.of(context).pop(true);
+              },
+              onClose: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            onRetry: () => _showImageSelectorDialog(context, ref),
+          );
+          break;
+        default:
+          log(e.toString());
+          break;
       }
     }
-
-    if (filteredImages.length >= field.maxImages - selectedImages.length) {
-      filteredImages.removeRange(field.maxImages - selectedImages.length, filteredImages.length);
-    }
-
-    if (!isAllImagesValid) {
-      unawaited(
-        _showImageActionErrorSheet(
-          context,
-          error: BaseErrorWidget(
-            errorLabel: context.l10n.feedbackImageSizeExceedFailure(
-              field.maxSize.formatAsFileSize(),
-            ),
-            buttonLabel: context.l10n.done,
-            onRetry: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          onRetry: () => _showImageSelectorDialog(context, fieldState),
-        ),
-      );
-    }
-    return filteredImages;
-  }
-
-  Future<List<XFile>> _pickFromGallery() async => ImagePicker().pickMultiImage(
-        maxWidth: _maxImageResolution.toDouble(),
-        maxHeight: _maxImageResolution.toDouble(),
-      );
-
-  Future<List<XFile>> _pickFromCamera() async {
-    final image = await ImagePicker().pickImage(
-      source: ImageSource.camera,
-      maxWidth: _maxImageResolution.toDouble(),
-      maxHeight: _maxImageResolution.toDouble(),
-    );
-    if (image == null) {
-      return [];
-    }
-    return [image];
-  }
-
-  Future<List<XFile>> _pickedImage(FeedbackImageSelectorType type) async {
-    final images = switch (type) {
-      FeedbackImageSelectorType.gallery => await _pickFromGallery(),
-      FeedbackImageSelectorType.camera => await _pickFromCamera(),
-    };
-
-    return images;
   }
 
   Future<void> _showImageActionErrorSheet(
@@ -296,26 +224,8 @@ class FeedbackImages extends StatelessWidget {
     }
   }
 
-  Future<bool> _isPermissionDenied(FeedbackImageSelectorType type) async {
-    final permission = await _getPermissionForType(type);
-
-    final permissionStatus = await permission.request();
-
-    return permissionStatus.isDenied || permissionStatus.isPermanentlyDenied;
-  }
-
-  Future<Permission> _getPermissionForType(FeedbackImageSelectorType type) async {
-    switch (type) {
-      case FeedbackImageSelectorType.camera:
-        return Permission.camera;
-      case FeedbackImageSelectorType.gallery:
-        if (Platform.isAndroid) {
-          final androidInfo = await DeviceInfoPlugin().androidInfo;
-          return androidInfo.version.sdkInt <= 32 ? Permission.storage : Permission.photos;
-        }
-        return Permission.photos;
-    }
-  }
+  ///
+  ///You can upload up to {count} photos, each no larger than {size} and with a resolution up to {resolution} pixels
 }
 
 class _AddImageButton extends StatelessWidget {

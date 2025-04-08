@@ -82,10 +82,9 @@ class FeedbackPermissionSheet extends HookWidget {
                 ),
               ],
             )),
-        const SafeArea(
-            child: SizedBox(
+        const SizedBox(
           height: Spacing.$4x,
-        )),
+        ),
       ],
     );
   }
