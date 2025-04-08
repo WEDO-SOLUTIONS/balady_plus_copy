@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 
 import '../data_sources/point_layers_data.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
+
 
 List<BuildingComplianceCertificate> buildingComplianceCertificateFromJson(
         List list) =>

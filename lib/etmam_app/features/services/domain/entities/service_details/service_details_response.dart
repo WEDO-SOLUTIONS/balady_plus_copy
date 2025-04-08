@@ -1,9 +1,10 @@
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
     show SocialMediaTypes;
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
     show Faq;
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 class ServiceDetailsResponse {
   Provider? provider;
@@ -72,7 +73,7 @@ class Branch extends Equatable {
     double? lat = double.tryParse(location?.latitude ?? "");
     double? lon = double.tryParse(location?.longitude ?? "");
 
-    if (lat != null && lon != null) return LatLng(lat, lon);
+    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
   }
 
   @override
@@ -92,7 +93,7 @@ class Location {
     double? lat = double.tryParse(latitude ?? "");
     double? lon = double.tryParse(longitude ?? "");
 
-    if (lat != null && lon != null) return LatLng(lat, lon);
+    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
   }
 }
 

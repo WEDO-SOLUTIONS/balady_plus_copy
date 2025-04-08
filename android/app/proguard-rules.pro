@@ -83,3 +83,39 @@
 -dontwarn com.huawei.android.os.**
 -dontwarn com.huawei.hms.**
 -dontwarn com.huawei.libcore.io.**
+
+
+#insider sdk integration
+-keep class com.useinsider.insider.Insider { *; }
+
+-keep interface com.useinsider.insider.InsiderCallback { *; }
+-keep class com.useinsider.insider.InsiderUser { *; }
+-keep class com.useinsider.insider.InsiderProduct { *; }
+-keep class com.useinsider.insider.InsiderEvent { *; }
+-keep class com.useinsider.insider.InsiderCallbackType { *; }
+-keep class com.useinsider.insider.InsiderGender { *; }
+-keep class com.useinsider.insider.InsiderIdentifiers { *; }
+
+-keep interface com.useinsider.insider.RecommendationEngine$SmartRecommendation { *; }
+-keep interface com.useinsider.insider.MessageCenterData { *; }
+-keep class com.useinsider.insider.Geofence { *; }
+-keep class com.useinsider.insider.ContentOptimizerDataType { *; }
+-keep class org.openudid.** { *; }
+-keep class com.useinsider.insider.OpenUDID_manager { *; }
+
+
+# Preserve generic signatures (needed for Gson TypeToken)
+-keepattributes Signature
+
+# Keep all classes that extend TypeToken
+-keep class com.google.gson.reflect.TypeToken { *; }
+
+# Keep Gson model classes (if applicable)
+-keep class your.package.name.** { *; }  # Replace with your actual package name
+
+# Keep all classes used by Flutter Local Notifications
+-keep class com.dexterous.flutterlocalnotifications.** { *; }
+
+# Keep Firebase and Google Play Services if you're using them
+-keep class com.google.firebase.** { *; }
+-keep class com.google.android.gms.** { *; }

@@ -1,5 +1,5 @@
 import 'package:dgis_map/library.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as gm;
+
 
 class PointLayersData {
   final String id;

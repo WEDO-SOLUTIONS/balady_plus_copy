@@ -2,8 +2,9 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dartz/dartz.dart' hide Tuple3;
+import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:tuple/tuple.dart';
 
@@ -81,10 +82,11 @@ class CustomerVoiceRepository {
         RemoteConfig.gis + ApiConstants.GisGetLocation,
         relativePath: query);
 */
-    var res = await sl<web.WebService>().dio.get(ApiUrl.gis,
-        queryParameters: {"x": location.longitude, "y": location.latitude});
 
     try {
+      var res = await sl<web.WebService>().dio.get(ApiUrl.gis,
+          queryParameters: {"x": location.longitude, "y": location.latitude});
+
       Map<String, dynamic> x = {};
       var data = res.data["data"]["result"];
 

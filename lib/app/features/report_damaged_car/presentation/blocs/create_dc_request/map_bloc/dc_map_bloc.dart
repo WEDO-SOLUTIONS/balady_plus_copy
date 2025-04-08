@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dgis_map/dgis_map_controller.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'dart:io';
 import 'dart:math' show cos, sqrt, asin;
 
@@ -28,7 +30,7 @@ part 'dc_map_state.dart';
 class DCMapBloc extends Bloc<DCMapEvent, DCMapState> {
   final GetGISData _getGisData;
   final CheckActiveLocation _checkActiveLocation;
-  late GoogleMapController mapController;
+  late DgisMapController mapController;
 
   DCMapBloc({
     MapScreenParams? params,
@@ -221,11 +223,23 @@ class DCMapBloc extends Bloc<DCMapEvent, DCMapState> {
 
   void animateCamera(double lat, double lng) {
     try {
-      mapController.animateCamera(
-        CameraUpdate.newCameraPosition(
-          CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+      // mapController.animateCamera(
+      //   CameraUpdate.newCameraPosition(
+      //     CameraPosition(target: LatLng(lat, lng), zoom: 16.0),
+      //   ),
+      // );
+      mapController.moveCamera(
+        CameraPositionMessage(
+          point: GeoPointMessage(latitude: lat, longitude: lng),
+          zoom: 16.0,
+          tilt: 0.0,
+          bearing: 0.0,
         ),
+        0.3, // duration
+        CameraAnimationTypeMessage.linear,
       );
+
+
     } catch (error, stackTrace) {
     LogsViewModel().sendEventFromModel(
       event: ErrorExceptionModel(

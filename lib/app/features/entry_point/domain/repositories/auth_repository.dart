@@ -10,7 +10,7 @@ abstract class EntryPointRepository {
   Future<Either<Failure, AuthorizationTokenResponse>> authorize();
   Future<Either<Failure, bool>> saveAuth(SSOToken params);
   Future<Either<Failure, SSOToken>> checkAuth();
-  Future<Either<Failure, EndSessionResponse>> clearAuth();
+  Future<Either<Failure, bool>> clearAuth();
   Future<Either<Failure, String>> logout();
   Future<Either<Failure, TokenResponse>> refreshToken(String refreshToken);
   Future<Either<Failure, SsoUserInfo>> getSSOProfile();

@@ -1,15 +1,20 @@
-package com.dgis.map.providers
+package com.dgis.map
 
 import android.content.Context
 import android.location.Location
 import android.os.HandlerThread
 import android.util.Log
-import com.huawei.hms.location.*
+import com.huawei.hms.location.FusedLocationProviderClient
+import com.huawei.hms.location.LocationCallback
+import com.huawei.hms.location.LocationRequest
+import com.huawei.hms.location.LocationResult
+import com.huawei.hms.location.LocationServices
 
 class HuaweiLocationProvider(private val context: Context) {
     private var client: FusedLocationProviderClient? = null
     private var callback: LocationCallback? = null
     private var thread: HandlerThread? = null
+    private var lastLocation: Location? = null
 
     init {
         client = LocationServices.getFusedLocationProviderClient(context)
@@ -28,18 +33,27 @@ class HuaweiLocationProvider(private val context: Context) {
 
         callback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
-                result.locations.lastOrNull()?.let { onLocationUpdate(it) }
+                result.locations.lastOrNull()?.let {
+                    lastLocation = it
+                    onLocationUpdate(it)
+                }
             }
         }
         client?.requestLocationUpdates(request, callback, thread.looper)
     }
-    fun getLastKnownLocation(): Location? {
-        Log.d("HuaweiLocationProvider", "Huawei Location ${client?.lastLocation?.result}")
-        Log.d("HuaweiLocationProvider", "Huawei Location ${client?.lastLocation?.exception}")
 
-        print("amr: ${client?.lastLocation?.result}");
+    fun getLastKnownLocation(onResult: (Location?) -> Unit) {
+        lastLocation?.let {
+            onResult(it)
+            return
+        }
 
-        return client?.lastLocation?.result
+        client?.lastLocation?.addOnSuccessListener { location ->
+            lastLocation = location
+            onResult(location)
+        }?.addOnFailureListener {
+            onResult(null)
+        }
     }
 
 

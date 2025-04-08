@@ -5,7 +5,6 @@ import 'package:flutter/widgets.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
-import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class PoiPhotoButton extends StatelessWidget {
@@ -27,8 +26,7 @@ class PoiPhotoButton extends StatelessWidget {
     return AppButton(
       buttonColorScheme: ButtonColorScheme.onColor,
       onTap: () => context.router.push(
-        QuickFeedbackRoute(
-          type: QuickFeedbackType.addPhoto,
+        QuickFeedbackPhotoRoute(
           params: FeedbackObjectIdParams(objectId),
         ),
       ),

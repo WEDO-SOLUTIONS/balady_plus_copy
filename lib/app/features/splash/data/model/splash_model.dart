@@ -28,6 +28,18 @@ class SplashModel {
       seasonalSplashDuration: int.tryParse(json['seasonal_splash_duration'] ?? '0') ?? 0,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'occasion_title': occasionTitle,
+      'default_image': defaultImage,
+      'splash_image': splashImage,
+      'start_date': startDate.toIso8601String(),
+      'end_date': endDate.toIso8601String(),
+      'default_splash_duration': defaultSplashDuration.toString(),
+      'seasonal_splash_duration': seasonalSplashDuration.toString(),
+    };
+  }
 }
 class StatusDetails {
   final int code;

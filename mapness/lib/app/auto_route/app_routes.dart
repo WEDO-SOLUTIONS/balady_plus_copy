@@ -152,6 +152,10 @@ class AppRouter extends RootStackRouter {
               page: LayersSheetRoute.page,
             ),
             CustomRoute(
+              path: 'add_phtoto_feedback',
+              page: QuickFeedbackPhotoRoute.page,
+            ),
+            CustomRoute(
               path: 'quickFeedback',
               page: QuickFeedbackRoute.page,
             ),

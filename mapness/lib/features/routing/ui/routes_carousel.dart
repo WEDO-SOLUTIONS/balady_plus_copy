@@ -24,7 +24,7 @@ class RoutesCarousel extends StatelessWidget {
 
   final RouteSearchOptionsMessage navType;
 
-  final List<RouteParamsPoint?> points;
+  final List<RouteParamsPointWithLabel?> points;
   final Function(RouteInfo) startNavigation;
 
   @override
@@ -49,7 +49,7 @@ class _RoutesCarousel extends ConsumerStatefulWidget {
   final RouteSearchOptionsMessage navType;
   final double biggestWidth;
   final Function(RouteInfo) startNavigation;
-  final List<RouteParamsPoint?> points;
+  final List<RouteParamsPointWithLabel?> points;
 
   @override
   ConsumerState<_RoutesCarousel> createState() => _RoutesCarouselState();
@@ -72,8 +72,8 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
   Widget build(BuildContext context) {
     final routes = ref.watch(
       routesProvider(
-        startPoint: widget.points[0],
-        finishPoint: widget.points[1],
+        startPoint: widget.points[0]?.value,
+        finishPoint: widget.points[1]?.value,
         navType: widget.navType,
       ),
     );
@@ -103,7 +103,7 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
           }
 
           final finishLocation =
-              widget.points[1] ?? RouteParamsPoint(latitude: location!.latitude, longitude: location.longitude);
+              widget.points[1]?.value ?? RouteParamsPoint(latitude: location!.latitude, longitude: location.longitude);
 
           // Set finish point for ETA stream
           EtaStreamStorage()

@@ -1,7 +1,8 @@
 import 'package:balady_plus/app/core/utils/extensions/date_time_extension.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_location.dart';
 import 'package:balady_plus/app/features/events/domain/entities/events_details/events_picture.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:dgis_map/library.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EventDetailsResponse {
@@ -115,7 +116,7 @@ class EventDetailsResponse {
     double? lon = double.tryParse(location?.y ?? "");
     double? lat = double.tryParse(location?.x ?? "");
 
-    if (lat != null && lon != null) return LatLng(lat, lon);
+    if (lat != null && lon != null) return LatLng(latitude:lat, longitude:lon);
     return null;
   }
 

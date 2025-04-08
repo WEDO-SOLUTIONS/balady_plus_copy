@@ -42,8 +42,6 @@ class SharedPrefs {
     return _sharedPreferences?.getString("firstDateTime");
   }
 
-
-
   bool? getIsFirstLaunchForGame() {
     if (_sharedPreferences?.getBool('first_launch_game') != null) {
       return _sharedPreferences?.getBool('first_launch_game');
@@ -96,7 +94,8 @@ class SharedPrefs {
           message: error.toString(),
           stackTrace: stackTrace.toString(),
         ),
-      );}
+      );
+    }
   }
 
   String? getGuestFirstName() {
@@ -306,6 +305,31 @@ class SharedPrefs {
 
   String? getChatbotSessionId() {
     return _sharedPreferences?.getString('chatbot_session_id');
+  }
+
+  Future<void> setIsNafathLogin(String? idToken) async {
+    if (idToken != null) {
+      await _sharedPreferences?.setString('IsNafathLogin', idToken);
+    } else {
+      await _sharedPreferences?.remove('IsNafathLogin');
+    }
+  }
+
+  String? getIsNafathLogin() {
+    return _sharedPreferences?.getString('IsNafathLogin');
+  }
+
+  Future<void> saveDataOfSplash(String dataOfSplash) async {
+    _sharedPreferences?.setString('dataOfSplash', dataOfSplash);
+  }
+
+  Map<String, dynamic>? getDataOfSplash() {
+    String? data = _sharedPreferences?.getString('dataOfSplash');
+    if (data != null) {
+      return json.decode(data);
+    } else {
+      return null;
+    }
   }
 }
 

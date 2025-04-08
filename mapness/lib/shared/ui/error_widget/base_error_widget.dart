@@ -7,30 +7,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A base error widget that displays an error message and a retry button.
 class BaseErrorWidget extends StatelessWidget {
-  /// Creates a [BaseErrorWidget].
-  const BaseErrorWidget({
-    required this.onRetry,
-    this.withRetryButton = true,
-    this.buttonColorScheme = ButtonColorScheme.secondary,
-    this.buttonLabel,
-    this.errorLabel,
-    this.errorTitle,
-    this.paddingForImage = EdgeInsets.zero,
-    super.key,
-  });
-
-  /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
-  factory BaseErrorWidget.noRetry({
-    String? errorLabel,
-    Key? key,
-  }) =>
-      BaseErrorWidget(
-        key: key,
-        onRetry: () {},
-        withRetryButton: false,
-        errorLabel: errorLabel,
-      );
-
   /// The action to be taken when the retry button is pressed.
   final VoidCallback onRetry;
 
@@ -54,6 +30,34 @@ class BaseErrorWidget extends StatelessWidget {
   /// The padding for the image.
   final EdgeInsetsGeometry paddingForImage;
 
+  /// Add a close button to the widget. If [null] it will be not displayed.
+  final VoidCallback? onClose;
+
+  /// Creates a [BaseErrorWidget].
+  const BaseErrorWidget({
+    required this.onRetry,
+    this.withRetryButton = true,
+    this.buttonColorScheme = ButtonColorScheme.secondary,
+    this.buttonLabel,
+    this.errorLabel,
+    this.errorTitle,
+    this.onClose,
+    this.paddingForImage = EdgeInsets.zero,
+    super.key,
+  });
+
+  /// A factory constructor for creating a [BaseErrorWidget] without a retry button.
+  factory BaseErrorWidget.noRetry({
+    String? errorLabel,
+    Key? key,
+  }) =>
+      BaseErrorWidget(
+        key: key,
+        onRetry: () {},
+        withRetryButton: false,
+        errorLabel: errorLabel,
+      );
+
   @override
   Widget build(BuildContext context) {
     final errorText = errorLabel ?? '${context.l10n.failedToLoadData}\n${context.l10n.tryAgainLater}';
@@ -72,6 +76,18 @@ class BaseErrorWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
+            if (onClose != null)
+              Align(
+                alignment: AlignmentDirectional.topEnd,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: Spacing.$2x, top: Spacing.$1x),
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.tertiary,
+                    primaryIcon: SystemIcons.close,
+                    onTap: onClose,
+                  ),
+                ),
+              ),
             Padding(
               padding: paddingForImage,
               child: SvgPicture.asset(
@@ -81,11 +97,13 @@ class BaseErrorWidget extends StatelessWidget {
             ),
             if (errorTitle != null)
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+                padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x),
                 child: Text(
                   errorTitle!,
                   textAlign: TextAlign.center,
-                  style: context.textStyleV3.h3Medium,
+                  style: context.textStyleV3.h3SemiBold.copyWith(
+                    color: context.colorsV2.foregroundDefault,
+                  ),
                 ),
               )
             else
@@ -95,7 +113,7 @@ class BaseErrorWidget extends StatelessWidget {
               child: Text(
                 errorText,
                 textAlign: TextAlign.center,
-                style: context.textStyle.text.copyWith(
+                style: context.textStyleV3.bodyLargeRegular.copyWith(
                   color: errorTitle != null ? context.colorsV2.foregroundSoft : context.colorsV2.foregroundDefault,
                 ),
               ),

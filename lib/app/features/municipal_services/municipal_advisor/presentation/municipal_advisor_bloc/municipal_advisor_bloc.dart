@@ -2,10 +2,11 @@ import 'dart:async';
 
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/use_cases/get_building_complince.dart';
 import 'package:balady_plus/app/features/municipal_services/municipal_advisor/domain/use_cases/get_gis_image.dart';
+import 'package:dgis_map/library.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:collection/collection.dart';
 

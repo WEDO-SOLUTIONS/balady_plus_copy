@@ -134,7 +134,7 @@ class _PoiPaddingConfig extends _$PoiPaddingConfig {
     await cameraPosition.animateTo(
       CameraPositionMessage(
         point: cameraPoint,
-        zoom: isInViewZone ? cameraConfig?.zoom ?? cameraZoom ?? 17 : 17,
+        zoom: isInViewZone ? cameraConfig?.zoom ?? cameraZoom ?? 16 : 16,
         tilt: 0,
         bearing: bearing ?? 0,
       ),

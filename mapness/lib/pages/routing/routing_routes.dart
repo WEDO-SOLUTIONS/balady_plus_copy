@@ -142,7 +142,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                     ),
                   ),
                   RoutingInfo(
-                    points: points.map((e) => e.value).toList(),
+                    pointsWithLabel: points,
                     isHomeOrWork: widget.isHomeOrWork,
                   ),
                 ],

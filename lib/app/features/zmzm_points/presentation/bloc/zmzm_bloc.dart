@@ -29,30 +29,53 @@ class ZmZmBloc extends Bloc<ZmZmEvent, ZmZmState> {
 
   Future<void> _initZmZm(initZmZmEvent e, Emitter emitter) async {
     emitter(
-        state.copyWith(cities: ["makkah".tr(), "jeddah".tr(), "madina".tr()]));
+      state.copyWith(
+        cities: [
+          "makkah".tr(),
+          "jeddah".tr(),
+          "madina".tr(),
+        ],
+      ),
+    );
 
-    emitter(state.copyWith(items: [
-      ZMZMItemModel(
-          id: 1,
-          city: "makkah".tr(),
-          name: "zmzm_project".tr(),
-          mapUrl: "https://goo.gl/maps/pPLWJ4hYTarbkQ8f6?coh=178571&entry=tt"),
-      ZMZMItemModel(
-          id: 2,
-          city: "jeddah".tr(),
-          name: "zmzm_project".tr(),
-          mapUrl: "https://maps.app.goo.gl/ebC9zj1HnHDbV25c6"),
-      ZMZMItemModel(
-          id: 3,
-          city: "jeddah".tr(),
-          name: "zmzm_project".tr(),
-          mapUrl: "https://maps.app.goo.gl/odha4UTAFZD2rcxH6"),
-      ZMZMItemModel(
-          id: 4,
-          city: "madina".tr(),
-          name: "zmzm_project".tr(),
-          mapUrl: "https://goo.gl/maps/2NCFyi2zv643aUh46?coh=178571&entry=tt"),
-    ]));
+    emitter(
+      state.copyWith(
+        items: [
+          ZMZMItemModel(
+            id: 1,
+            city: "makkah".tr(),
+            name: "zmzm_project".tr(),
+            mapUrl: "https://goo.gl/maps/pPLWJ4hYTarbkQ8f6?coh=178571&entry=tt",
+            latitude: 21.388682785976513,
+            longitude: 39.82263266394502,
+          ),
+          ZMZMItemModel(
+            id: 2,
+            city: "jeddah".tr(),
+            name: "zmzm_project".tr(),
+            mapUrl: "https://maps.app.goo.gl/ebC9zj1HnHDbV25c6",
+            latitude: 21.66223610004171,
+            longitude: 39.17338678563084,
+          ),
+          ZMZMItemModel(
+            id: 3,
+            city: "jeddah".tr(),
+            name: "zmzm_project".tr(),
+            mapUrl: "https://maps.app.goo.gl/odha4UTAFZD2rcxH6",
+            latitude: 21.68851795949141,
+            longitude: 39.14486122470785,
+          ),
+          ZMZMItemModel(
+            id: 4,
+            city: "madina".tr(),
+            name: "zmzm_project".tr(),
+            mapUrl: "https://goo.gl/maps/2NCFyi2zv643aUh46?coh=178571&entry=tt",
+            latitude: 24.555410372745598,
+            longitude: 39.71582569940709,
+          ),
+        ],
+      ),
+    );
   }
 
   Future<void> _goToNextPageHandler(

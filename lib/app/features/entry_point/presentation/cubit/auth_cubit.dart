@@ -10,6 +10,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../etmam_app/features/etmam_entry_point/presentation/cubit/etmam_entry_point_cubit.dart';
 import '../../../../core/dependency_injection/injection_container.dart';
@@ -79,7 +80,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         _getTestData = GetTestData(repository: sl()),
         _getEkramPermission = GetEkramPermission(repository: sl()),
         _getGisData = getGisData,
-        super(const EntryPointState());
+        super(const EntryPointState()) {
+    sl<LocationCubit>().getLocationInit();
+    refreshAPIGeeToken();
+    Permission.notification.request();
+  }
 
   void hideSplash() {
     emit(
@@ -87,37 +92,37 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     );
   }
 
-  Future<void> onLoadingApp() async {
-    emit(state.copyWith(status: AuthStatus.loading));
-    sl<LocationCubit>().getLocationInit();
-    final failureOrSuccess = await _checkAuth(NoParams());
-    await failureOrSuccess.fold((failure) {
-      emit(state.copyWith(
-        status: AuthStatus.failure,
-      ));
-    }, (token) async {
-      final failureOrSuccess = await _checkSSOProfile(NoParams());
-      failureOrSuccess.fold((failure) {}, (profile) {
-        emit(state.copyWith(
-          status: AuthStatus.notAuthenticated,
-          token: token,
-          userInfo: profile,
-          errorMessage: "",
-        ));
-        FlutterUxcam.setUserIdentity(profile.idNo);
-        FlutterUxcam.setUserProperty("name", profile.arName ?? "");
-      });
-      //MM sl<EtmamEntryPointCubit>().onLoadingApp();
-
-      //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
-      if (sharedPrefs.getFirstDateTime() == null) {
-        sharedPrefs.setFirstDateTime();
-      }
-      refreshSSOProfile();
-      getEkramPermissions();
-    });
-    refreshAPIGeeToken();
-  }
+  // Future<void> onLoadingApp() async {
+  //   emit(state.copyWith(status: AuthStatus.loading));
+  //   sl<LocationCubit>().getLocationInit();
+  //   final failureOrSuccess = await _checkAuth(NoParams());
+  //   await failureOrSuccess.fold((failure) {
+  //     emit(state.copyWith(
+  //       status: AuthStatus.failure,
+  //     ));
+  //   }, (token) async {
+  //     final failureOrSuccess = await _checkSSOProfile(NoParams());
+  //     failureOrSuccess.fold((failure) {}, (profile) {
+  //       emit(state.copyWith(
+  //         status: AuthStatus.notAuthenticated,
+  //         token: token,
+  //         userInfo: profile,
+  //         errorMessage: "",
+  //       ));
+  //       FlutterUxcam.setUserIdentity(profile.idNo);
+  //       FlutterUxcam.setUserProperty("name", profile.arName ?? "");
+  //     });
+  //     //MM sl<EtmamEntryPointCubit>().onLoadingApp();
+  //
+  //     //  if (token.refreshToken != null) await refreshToken(token.refreshToken!);
+  //     if (sharedPrefs.getFirstDateTime() == null) {
+  //       sharedPrefs.setFirstDateTime();
+  //     }
+  //     refreshSSOProfile();
+  //     getEkramPermissions();
+  //   });
+  //   refreshAPIGeeToken();
+  // }
 
   ////////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////////
@@ -171,15 +176,23 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         );
       });
     }
-    AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
+    AuthenticatedState authState =
+        sl<AuthenticationBloc>().state as AuthenticatedState;
     if (authState is AuthenticatedMunicipalityState) {
       _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
     } else {
+      final data = authState.profileData;
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
           token: token,
-          userInfo: const SsoUserInfo(),
+          userInfo: SsoUserInfo(
+            enName: data.enName,
+            arName: data.arName,
+            idNo: data.sub,
+            mail: data.email,
+            phone: data.phoneNumber,
+          ),
           errorMessage: "",
         ),
       );
@@ -335,10 +348,14 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> clearAuth({LoginDataModel? loginData}) async {
     try {
+      if (loginData == null) {
+        sl<AuthenticationBloc>().add(LogoutAuthentication());
+        return;
+      }
+
       if (state.status == AuthStatus.notAuthenticated) {
         return;
       }
-      sl<AuthenticationBloc>().add(LogoutAuthentication());
       emit(
         const EntryPointState(
           status: AuthStatus.notAuthenticated,
@@ -346,7 +363,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         ),
       );
 
-      if(loginData?.deviceIdToken != null) {
+      if (loginData?.deviceIdToken != null) {
         try {
           await _logout(NoParams());
         } catch (e) {
@@ -356,7 +373,6 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         await _clearAuth(NoParams());
         clearSSOInfo();
       }
-
 
       if (CommonProperties.fcmToken != null &&
           CommonProperties.fcmToken!.isNotEmpty) {
@@ -384,7 +400,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       print("object");
       EasyLoading.dismiss();
     }
-    if(sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState) {
+    if (sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState) {
       await _clearAuth(NoParams());
       sl<DelegatorsCubit>().clearDelegators();
       clearSSOInfo();
@@ -404,18 +420,19 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
-      if(authState is AuthenticatedMunicipalityState) {
+      AuthenticatedState authState =
+          sl<AuthenticationBloc>().state as AuthenticatedState;
+      if (authState is AuthenticatedMunicipalityState) {
         final failureOrSuccessForProfile = await _getProfile(NoParams());
         await failureOrSuccessForProfile.fold((failure) async {},
-                (success) async {
-              final failureOrSuccess = await _saveSSOProfile(success);
-              if (failureOrSuccess.isRight()) {
-                emit(state.copyWith(
-                  userInfo: success,
-                ));
-              }
-            });
+            (success) async {
+          final failureOrSuccess = await _saveSSOProfile(success);
+          if (failureOrSuccess.isRight()) {
+            emit(state.copyWith(
+              userInfo: success,
+            ));
+          }
+        });
       }
     } catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

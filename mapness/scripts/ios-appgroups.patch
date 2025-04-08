@@ -1,3 +1,64 @@
+diff --git a/ios/InsiderNotificationContent/InsiderNotificationContent.entitlements b/ios/InsiderNotificationContent/InsiderNotificationContent.entitlements
+index ac176fc0d0..b874181df7 100644
+--- a/ios/InsiderNotificationContent/InsiderNotificationContent.entitlements
++++ b/ios/InsiderNotificationContent/InsiderNotificationContent.entitlements
+@@ -4,7 +4,7 @@
+ <dict>
+ 	<key>com.apple.security.application-groups</key>
+ 	<array>
+-		<string>group.movingViolations</string>
++		<string>group.urbi.movingViolations</string>
+ 	</array>
+ </dict>
+ </plist>
+diff --git a/ios/InsiderNotificationContent/NotificationViewController.swift b/ios/InsiderNotificationContent/NotificationViewController.swift
+index 1fe8d1f4c5..a4a9ccad0e 100644
+--- a/ios/InsiderNotificationContent/NotificationViewController.swift
++++ b/ios/InsiderNotificationContent/NotificationViewController.swift
+@@ -12,7 +12,7 @@ import UserNotificationsUI
+ import InsiderMobileAdvancedNotification
+ // FIXME: Please change with your app group.
+ 
+-let APP_GROUP = "group.movingViolations"
++let APP_GROUP = "group.urbi.movingViolations"
+ 
+ @objc(NotificationViewController)
+ 
+diff --git a/ios/InsiderNotificationService/InsiderNotificationService.entitlements b/ios/InsiderNotificationService/InsiderNotificationService.entitlements
+index ac176fc0d0..b874181df7 100644
+--- a/ios/InsiderNotificationService/InsiderNotificationService.entitlements
++++ b/ios/InsiderNotificationService/InsiderNotificationService.entitlements
+@@ -4,7 +4,7 @@
+ <dict>
+ 	<key>com.apple.security.application-groups</key>
+ 	<array>
+-		<string>group.movingViolations</string>
++		<string>group.urbi.movingViolations</string>
+ 	</array>
+ </dict>
+ </plist>
+diff --git a/ios/InsiderNotificationService/NotificationService.swift b/ios/InsiderNotificationService/NotificationService.swift
+index b348b1a796..43b938dda4 100644
+--- a/ios/InsiderNotificationService/NotificationService.swift
++++ b/ios/InsiderNotificationService/NotificationService.swift
+@@ -10,7 +10,7 @@ import UserNotifications
+ import InsiderMobileAdvancedNotification
+ 
+ // FIXME: Please change with your app group.
+-let APP_GROUP = "group.movingViolations"
++let APP_GROUP = "group.urbi.movingViolations"
+ 
+ class NotificationService: UNNotificationServiceExtension {
+ 
+@@ -42,7 +42,7 @@ class NotificationService: UNNotificationServiceExtension {
+                     print(bestAttemptContent.attachments)
+                     contentHandler(bestAttemptContent)
+                     print(bestAttemptContent.attachments)
+-            })
++                })
+             print(bestAttemptContent.attachments)
+         }
+     }
 diff --git a/ios/MovingViolationsExtension.entitlements b/ios/MovingViolationsExtension.entitlements
 index ac176fc0d0..b874181df7 100644
 --- a/ios/MovingViolationsExtension.entitlements
@@ -12,10 +73,10 @@ index ac176fc0d0..b874181df7 100644
  </dict>
  </plist>
 diff --git a/ios/Runner/Runner.entitlements b/ios/Runner/Runner.entitlements
-index 89c9cf5d37..b4afcc58f8 100644
+index 8a9f21cd56..b05accfd4c 100644
 --- a/ios/Runner/Runner.entitlements
 +++ b/ios/Runner/Runner.entitlements
-@@ -14,7 +14,7 @@
+@@ -16,7 +16,7 @@
  	<true/>
  	<key>com.apple.security.application-groups</key>
  	<array>
@@ -24,3 +85,42 @@ index 89c9cf5d37..b4afcc58f8 100644
  	</array>
  </dict>
  </plist>
+diff --git a/lib/app/app.dart b/lib/app/app.dart
+index 4a166bf983..f5706f8025 100644
+--- a/lib/app/app.dart
++++ b/lib/app/app.dart
+@@ -99,22 +99,19 @@ class AppWidgetState extends State<AppWidget> {
+ 
+     // Call in async method.
+ 
+-
+-            await FlutterInsider.Instance.init(
+-        "baladyappuat", "group.movingViolations",
+-        (int type, dynamic data) {
++    await FlutterInsider.Instance.init("baladyappuat", "group.urbi.movingViolations", (int type, dynamic data) {
+       switch (type) {
+-            case InsiderCallbackAction.NOTIFICATION_OPEN:
+-              print('[INSIDER][NOTIFICATION_OPEN]: $data');
+-              break;
+-            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+-              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+-              break;
+-            default:
+-              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+-              break;
+-          }
+-        });
++        case InsiderCallbackAction.NOTIFICATION_OPEN:
++          print('[INSIDER][NOTIFICATION_OPEN]: $data');
++          break;
++        case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
++          print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
++          break;
++        default:
++          print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
++          break;
++      }
++    });
+ 
+ 
+     // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
