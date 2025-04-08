@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class FlipsContinue extends StatelessWidget {
   const FlipsContinue({super.key});
@@ -16,7 +17,7 @@ class FlipsContinue extends StatelessWidget {
               Image.asset('packages/mapness/assets/images/ic_flips_continue.png'),
               Spacing.$4x.heightBox,
               Text(
-                'The screen flips to continue',
+                context.l10n.theScreenFlipsContinue,
                 style: context.textStyleV3.h3SemiBold,
               )
             ],
