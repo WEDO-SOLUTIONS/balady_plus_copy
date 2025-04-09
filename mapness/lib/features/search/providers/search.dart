@@ -49,6 +49,10 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
   SearchRequestLang? _currentQueryLocale;
 
+  // Timer to start full search if we don't get any results
+  // Should be canceled
+  Timer? _fullSearchTimer;
+
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
@@ -64,6 +68,8 @@ class Search extends _$Search {
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
     _currentQueryLocale = null;
+    _fullSearchTimer?.cancel();
+    _fullSearchTimer = null;
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -124,6 +130,17 @@ class Search extends _$Search {
               suggest: result,
               searchText: query,
             );
+      // BSA-1931: We need to start full search if we don't get any results
+      // and user types more than 2 symbols
+      if (query.length > 2 && state is SearchStateEmpty) {
+        _fullSearchTimer?.cancel();
+        _fullSearchTimer = Timer(
+          const Duration(seconds: 1),
+          () {
+            searchByText(query);
+          },
+        );
+      }
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
@@ -203,7 +220,9 @@ class Search extends _$Search {
   Future<void> searchByText(String query) async {
     try {
       await _searchOperation?.cancel();
-      state = SearchStateLoading(searchText: query);
+      if (state is! SearchStateSuggest) {
+        state = SearchStateLoading(searchText: query);
+      }
       await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
@@ -239,7 +258,7 @@ class Search extends _$Search {
       final results = await searchOperation.value;
 
       final zoom = ref.watch(cameraPositionProvider)?.zoom ?? 0;
-      if (zoom > 13) {
+      if (zoom > 13 && state is! SearchStateSuggest) {
         await _animateToRepresentativeArea(results: results);
       }
 
