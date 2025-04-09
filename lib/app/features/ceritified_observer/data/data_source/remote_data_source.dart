@@ -516,13 +516,14 @@ class CertifiedObserverRemoteDataSourceImplementation
   Future<Map<String, dynamic>> getFreelancerCertificateStatus() async {
     var response;
     try {
-      DateTime dateTime =
-      (await CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
-      await registerFreelancerCertificate();
+
+      //await registerFreelancerCertificate();
       UserCertificates userCertificates = await getAllFreelancerCertificate();
       if (userCertificates.certificate.isNotEmpty) {
         for (var certificate in userCertificates.certificate) {
+
           if (certificate.speciality?.code == specialityCode[sl<EnvType>().name]) {
+            DateTime dateTime = (await CommonFunctions.fetchOnlineDateTimeForKSA() ?? DateTime.now());
             if(certificate.status == "ACTIVE" && dateTime.isBefore(certificate.expiryDate!)) {
               return {
                 "certificateNumber": certificate.number,

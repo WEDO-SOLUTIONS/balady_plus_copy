@@ -454,8 +454,8 @@ class ChooseMuncipalityBloc
     // Hear The User is finished form the training and is Certified Observer
     if (event.observerStatus.qualification == "Qualified") {
       /// TODO : hear check if the user have the Freelance certificate
-      if (event.observerStatus.freelanceCertificateNumber?.isNotEmpty ??
-          false) {
+      // if (event.observerStatus.freelanceCertificateNumber?.isNotEmpty ??
+      //     false) {
         /// TODO : if have show need check expiry date and states of the certificate
         var respons = await _getFreelancerCertificateStatus(NoParams());
         respons.fold((error) {
@@ -468,26 +468,45 @@ class ChooseMuncipalityBloc
             ),
           );
         }, (seccs) {
-          emitter(
-            const HaveFreelanceCertificateState(
-              title: 'title_congratulations_certified_observer',
-              description: 'description_monitoring_process_momtathel',
-              textAction: 'open_momtathl_app',
-              icon: IconPath.medalIcon,
-            ),
-          );
+          if(seccs.isNotEmpty ==true) {
+            emitter(
+              const HaveFreelanceCertificateState(
+                title: 'title_congratulations_certified_observer',
+                description: 'description_monitoring_process_momtathel',
+                textAction: 'open_momtathl_app',
+                icon: IconPath.medalIcon,
+              ),
+            );
+          }
+          else
+            {
+                emitter(
+                  const NoHaveFreelanceCertificateState(
+                    title: 'completing_the_certified_observer_request',
+                    description: 'no_have_freelancer_certificate_certified_observer',
+                    textAction: 'agree',
+                    icon: IconPath.elementsIcon,
+                  ),
+                );
+            }
         });
-      } else {
-        /// TODO : if not have show show button create new Freelance certificate
-        emitter(
-          const NoHaveFreelanceCertificateState(
-            title: 'completing_the_certified_observer_request',
-            description: 'no_have_freelancer_certificate_certified_observer',
-            textAction: 'agree',
-            icon: IconPath.elementsIcon,
-          ),
-        );
-      }
+
+
+     // }
+
+      // else {
+      //   /// TODO : if not have show show button create new Freelance certificate
+      //   emitter(
+      //     const NoHaveFreelanceCertificateState(
+      //       title: 'completing_the_certified_observer_request',
+      //       description: 'no_have_freelancer_certificate_certified_observer',
+      //       textAction: 'agree',
+      //       icon: IconPath.elementsIcon,
+      //     ),
+      //   );
+      // }
+
+
     } else {
       //response.data!.result?.qualification == "Waiting for approval" ||
       //response.data!.result?.qualification == "Not qualified"
