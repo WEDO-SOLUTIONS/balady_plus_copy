@@ -2,6 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/widgets/decorated_smooth_radius.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SmallChipWidget extends StatelessWidget {
   final String title;
@@ -14,6 +15,7 @@ class SmallChipWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorsV2 = context.colorsV3;
     final textColor = isHighlighted ? colorsV2.accentOnAccent : colorsV2.foregroundDefault;
+    final textStyle = context.isLTR ? context.textStyleV3.bodySmallMedium : context.textStyleV3.bodySmallSemiBold;
 
     return DecoratedSmoothRadius(
       borderRadius: RadiusBorder.m,
@@ -35,7 +37,7 @@ class SmallChipWidget extends StatelessWidget {
                   textHeightBehavior: TextHeightBehavior(
                     applyHeightToLastDescent: Directionality.of(context) == TextDirection.ltr,
                   ),
-                  style: context.textStyleV3.bodySmallMedium.copyWith(color: textColor),
+                  style: textStyle.copyWith(color: textColor),
                 ),
               ],
             ),
