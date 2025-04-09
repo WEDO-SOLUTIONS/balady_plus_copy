@@ -35,16 +35,16 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
 
     return ValueListenableBuilder(
       valueListenable: widget.expansionNotifier,
-      builder: (context, value, child) => EtaSheetWrapper(
+      builder: (context, isExpanded, child) => EtaSheetWrapper(
         onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
-            padding: !value
+            padding: (!landscape && !isExpanded)
                 ? EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding)
-                : EdgeInsets.zero,
+                : EdgeInsets.only(bottom: !isExpanded ? bottomPadding : 0.0),
             isLeadingIconAvailable: !landscape,
             onSearchTap: widget.onSearchPressed,
-            enabledHeader: value,
+            enabledHeader: isExpanded,
             title: context.l10n.youArrived,
             onTapBurger: toggle,
             buttons: [
