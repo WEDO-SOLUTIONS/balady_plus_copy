@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -13,6 +15,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
@@ -44,6 +47,7 @@ class Search extends _$Search {
   SearchQueryMessage? _previousSearchQueryMessage;
   QuickFilter? _previousQuickSearch;
   CancelableOperation? _searchOperation;
+  SearchRequestLang? _currentQueryLocale;
 
   bool get isSearchRunning => _previousType != null;
 
@@ -59,6 +63,7 @@ class Search extends _$Search {
     _previousQuery = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
+    _currentQueryLocale = null;
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -82,6 +87,7 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
+      await _setUpLocale(query);
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -98,14 +104,15 @@ class Search extends _$Search {
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
 
-      final dgisController = await ref.read(dgisControllerProvider.future);
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
         dgisController.fetchSuggest(
           query,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -138,6 +145,7 @@ class Search extends _$Search {
     }
     try {
       state = SearchStateLoading(searchText: searchQuery);
+      await _setUpLocale(searchQuery);
 
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
@@ -165,6 +173,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -195,6 +204,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: query);
+      await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
       _previousQuery = query;
@@ -222,6 +232,7 @@ class Search extends _$Search {
           // TODO(Dmitrii): Search improved but we have to test it more so we could return `_getRestrictionFromRect()` here
           spatialRestriction: _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -253,6 +264,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
+      await _setUpLocale(text);
 
       _previousType = SearchType.searchByQuery;
       _previousQuery = text;
@@ -280,6 +292,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -413,6 +426,15 @@ class Search extends _$Search {
               ),
             ),
           );
+    }
+  }
+
+  Future<void> _setUpLocale(String query) async {
+    final currentLang = ref.read(appLanguageProvider).languageCode;
+    final localeOfRequest = LanguageDetector.detectLanguageConLocale(query, currentLang);
+
+    if (localeOfRequest != _currentQueryLocale) {
+      _currentQueryLocale = localeOfRequest;
     }
   }
 }
