@@ -38,12 +38,12 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
 import 'package:mapness/widgets/path_nav/ui/landscape/flips_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/landscape/navi_panel_landscape.dart';
-import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
@@ -89,6 +89,8 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
   Timer? timer;
 
   late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(uikit.Spacing.$3x);
+
+  final uikit.AnimationInfo _animationInfo = uikit.AnimationInfo();
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
@@ -302,7 +304,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                       left: 0,
                       child: MeasureSize(
                         onChange: (size) {
-                          if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false)) {
+                          if (!(ref.read(pathNavEtaProvider)?.isExpanded ?? false) && !_animationInfo.isAnimating) {
                             _size = size;
                             _bottomHeightNotifier.value = size.height + uikit.Spacing.$3x;
                           }
@@ -324,6 +326,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                       return Align(
                                         alignment: Alignment.bottomCenter,
                                         child: EtaSheet(
+                                      animationInfo: _animationInfo,
                                           onEndTripPressed: () => _endTripAndShowFeedback(context),
                                           onSearchPressed: () => _onSearchPressed(context),
                                           onBetterRouteAccept: () => _acceptBetterRoute(context),
@@ -434,13 +437,17 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
-    setState(() {
-      _navigatorAlreadyStopped = true;
-    });
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
-    await Future.delayed(const Duration(seconds: 1), () {
-      action?.call();
-    });
+    if (isLandscape) {
+      setState(() {
+        _navigatorAlreadyStopped = true;
+      });
+
+      await Future.delayed(const Duration(seconds: 1));
+    }
+
+    action?.call();
   }
 
   // Show the route page after the trip is finished

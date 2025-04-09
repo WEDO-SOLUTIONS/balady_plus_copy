@@ -20,7 +20,8 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
+
 import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()

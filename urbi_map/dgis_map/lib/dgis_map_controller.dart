@@ -275,6 +275,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.search(
       queryText,
@@ -284,6 +285,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -298,6 +300,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.searchByQuery(
       query,
@@ -306,6 +309,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -320,6 +324,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.searchByCategory(
       category,
@@ -328,6 +333,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -342,6 +348,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.searchByRubrics(
       rubrics,
@@ -350,6 +357,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -471,11 +479,13 @@ class DgisMapController {
     String queryText, {
     GeoRectMessage? searchRect,
     List<SuggestedTypeMessage>? allowedResultTypes,
+    String? locale,
   }) =>
       _instance.fetchSuggests(
         queryText,
         searchRect: searchRect,
         allowedResultTypes: allowedResultTypes?.map((e) => SuggestedTypeMessage_(type: e)).toList(),
+        locale: locale,
       );
 
   /// Hide panorama markers. Used for optimization. In most cases should not be used directly.
