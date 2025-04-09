@@ -42,7 +42,6 @@ import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
-import 'package:mapness/widgets/path_nav/ui/landscape/flips_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/landscape/navi_panel_landscape.dart';
 import 'package:mapness/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
@@ -262,14 +261,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       canPop: false,
       child: Directionality(
         textDirection: TextDirection.ltr,
-        child: _navigatorAlreadyStopped
-            ? const FlipsContinue()
-            : Stack(
-                children: [
-                  PathNavMapControls(
-                    bottomHeightNotifier: _bottomHeightNotifier,
-                    navigationState: _navigationState,
-                    expansionNotifier: _expansionNotifier,
+        child: Stack(
+          children: [
+            PathNavMapControls(
+              bottomHeightNotifier: _bottomHeightNotifier,
+              navigationState: _navigationState,
+              expansionNotifier: _expansionNotifier,
                     navType: widget.navType,
                     showControls: isControlsActive,
                     onRoutePressed: _onShowRoutePressed,
@@ -367,7 +364,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                         child: NaviPanelLandscape(
                           navigationState: _navigationState,
                           expansionNotifier: _expansionNotifier,
-                          endTripAndShowFeedback: _endTripAndShowFeedback,
                           onShowRoutePressed: _onShowRoutePressed,
                           acceptBetterRoute: _acceptBetterRoute,
                           rejectBetterRoute: _rejectBetterRoute,
@@ -414,7 +410,6 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
           destination: route.endPoint?.analyticsLabel ?? '',
           spentTime: pathInfo?.spentTime ?? Duration.zero,
         );
-    ref.invalidate(pathNavEtaProvider);
     await _stopActiveSharing();
     await ref.read(cameraPaddingProvider.notifier).resetPadding();
 
@@ -441,13 +436,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await mapObjectProvider.setMapObjectManagerIsVisible(isVisible: true);
 
     final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-
     if (isLandscape) {
-      setState(() {
-        _navigatorAlreadyStopped = true;
-      });
-
-      await Future.delayed(const Duration(seconds: 1));
+      await context.router.push(const FlipsContinueRoute());
+      action?.call();
+      return;
     }
 
     action?.call();

@@ -11,7 +11,6 @@ import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
 class NaviPanelLandscape extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
   final ValueNotifier<bool> expansionNotifier;
-  final Function(BuildContext context) endTripAndShowFeedback;
   final VoidCallback onShowRoutePressed;
   final Function(BuildContext context) acceptBetterRoute;
   final Function(BuildContext context) rejectBetterRoute;
@@ -26,7 +25,6 @@ class NaviPanelLandscape extends ConsumerStatefulWidget {
   const NaviPanelLandscape({
     required this.navigationState,
     required this.expansionNotifier,
-    required this.endTripAndShowFeedback,
     required this.onShowRoutePressed,
     required this.acceptBetterRoute,
     required this.rejectBetterRoute,
@@ -72,7 +70,7 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviPanelLandscape> {
                 switch (state) {
                   case PathNavState.running:
                     return EtaSheet(
-                      onEndTripPressed: () => widget.endTripAndShowFeedback(context),
+                      onEndTripPressed: () => widget.endTripAndShowHome(),
                       onTapRoute: widget.onTapRoute,
                       onBetterRouteAccept: () => widget.acceptBetterRoute(context),
                       onBetterRouteReject: () => widget.rejectBetterRoute(context),
