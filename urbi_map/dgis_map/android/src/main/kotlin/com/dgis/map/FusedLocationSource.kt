@@ -3,8 +3,6 @@ package com.dgis.map
 import android.content.Context
 import android.location.Location
 import android.util.Log
-import com.dgis.map.providers.GoogleLocationProvider
-import com.dgis.map.providers.HuaweiLocationProvider
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import ru.dgis.sdk.positioning.DesiredAccuracy
@@ -25,12 +23,15 @@ class FusedLocationSource(private val context: Context) : LocationSource {
         }
     }
 
-
     val lastLocation: Location?
-        get() = when (val provider = locationProvider) {
-            is GoogleLocationProvider -> provider.getLastKnownLocation()
-            is HuaweiLocationProvider -> provider.getLastKnownLocation()
-            else -> null
+        get() {
+            var location: Location? = null
+            (locationProvider as? GoogleLocationProvider)?.getLastKnownLocation {
+                location = it
+            } ?: (locationProvider as? HuaweiLocationProvider)?.getLastKnownLocation {
+                location = it
+            }
+            return location
         }
 
     override fun activate(listener: LocationChangeListener) {
