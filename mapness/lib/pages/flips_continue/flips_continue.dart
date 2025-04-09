@@ -17,6 +17,7 @@ class FlipsContinuePage extends StatefulWidget {
 class _FlipsContinuePageState extends State<FlipsContinuePage> {
   final _flipsDuration = const Duration(milliseconds: 1000);
   final _popDuration = const Duration(milliseconds: 400);
+  final _pathImage = 'packages/mapness/assets/images/ic_flips_continue.png';
 
   @override
   void initState() {
@@ -36,15 +37,13 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    const pathImage = 'packages/mapness/assets/images/ic_flips_continue.png';
-    return Material(
+  Widget build(BuildContext context) => Material(
       child: ColoredBox(
         color: context.colorsV3.backgroundSurface4,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(pathImage),
+            Image.asset(_pathImage),
             Spacing.$4x.heightBox,
             Text(
               context.l10n.theScreenFlipsContinue,
@@ -54,5 +53,4 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
         ),
       ),
     );
-  }
 }
