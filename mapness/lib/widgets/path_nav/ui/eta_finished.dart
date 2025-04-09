@@ -39,7 +39,9 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
         onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
-            padding: EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding),
+            padding: !value
+                ? EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding)
+                : EdgeInsets.zero,
             isLeadingIconAvailable: !landscape,
             onSearchTap: widget.onSearchPressed,
             enabledHeader: value,
