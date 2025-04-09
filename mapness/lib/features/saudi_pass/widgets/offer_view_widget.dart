@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
+import 'package:mapness/features/saudi_pass/widgets/offer_view_decoration_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
@@ -122,25 +123,6 @@ class OfferViewWidget extends ConsumerWidget {
   }
 }
 
-class OfferViewDecorationWidget extends StatelessWidget {
-  final Widget? child;
-
-  const OfferViewDecorationWidget({this.child, super.key});
-
-  @override
-  Widget build(BuildContext context) =>
-      DecoratedBox(
-        decoration: BoxDecoration(
-          color: context.colorsV3.backgroundSurface1,
-          borderRadius: BorderRadius.circular(RadiusBorder.xl),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(Spacing.$3x).copyWith(left: Spacing.$4x),
-          child: child,
-        ),
-      );
-}
-
 class _HeartIconWidget extends StatelessWidget {
   final OfferView offerView;
 
@@ -152,13 +134,15 @@ class _HeartIconWidget extends StatelessWidget {
 
     return ListenableBuilder(
       listenable: offerView,
-      builder: (context, _) => InkWell(
-        onTap: offerView.onHeartTap,
-        child: Icon(
-          offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
-          color: offerView.isHeartRedAndFilled ? colors.errorSoft : colors.neutralMuted,
-        ),
-      ),
+      builder: (context, _) =>
+
+          InkWell(
+            onTap: offerView.onHeartTap,
+            child: Icon(
+              offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
+              color: offerView.isHeartRedAndFilled ? colors.errorSoft : colors.neutralMuted,
+            ),
+          ),
     );
   }
 }
