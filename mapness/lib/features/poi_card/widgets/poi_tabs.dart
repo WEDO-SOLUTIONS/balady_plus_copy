@@ -178,6 +178,7 @@ class _PoiTabItem extends StatelessWidget {
                                 '$count',
                                 style: context.textStyleV3.captionSmallMedium.copyWith(
                                   color: context.colorsV3.staticWhite,
+                                  height: .9,
                                 ),
                               ),
                             ),
