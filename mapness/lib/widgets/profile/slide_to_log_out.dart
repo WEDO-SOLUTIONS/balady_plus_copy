@@ -28,6 +28,8 @@ class _SlideToLogoutState extends State<SlideToLogout> {
   Widget build(BuildContext context) => LayoutBuilder(
         builder: (ctx, constraints) {
           final maxWidth = constraints.maxWidth - slideSize;
+          final textDirection = Directionality.of(context);
+          final isRTL = textDirection == TextDirection.rtl;
           return Stack(
             children: [
               Container(
@@ -63,7 +65,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                 child: GestureDetector(
                   onHorizontalDragUpdate: (details) {
                     setState(() {
-                      final factor = Directionality.of(context) == TextDirection.ltr ? 1 : -1;
+                      final factor = isRTL ? -1 : 1;
                       _dragPosition = (_dragPosition + factor * details.delta.dx).clamp(0, maxWidth);
                     });
                   },
@@ -85,7 +87,7 @@ class _SlideToLogoutState extends State<SlideToLogout> {
                       borderRadius: radius,
                     ),
                     child: Icon(
-                      SystemIcons.arrowRight,
+                      isRTL ? SystemIcons.arrowLeft : SystemIcons.arrowRight,
                       size: 24,
                       color: context.colorsV2.staticWhite,
                     ),
