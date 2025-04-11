@@ -38,19 +38,19 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
 
   @override
   Widget build(BuildContext context) => Material(
-      child: ColoredBox(
-        color: context.colorsV3.backgroundSurface4,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Image.asset(_pathImage),
-            Spacing.$4x.heightBox,
-            Text(
-              context.l10n.theScreenFlipsContinue,
-              style: context.textStyleV3.h3SemiBold,
-            )
-          ],
+        child: ColoredBox(
+          color: context.colorsV3.backgroundSurface4,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset(_pathImage),
+              Spacing.$4x.heightBox,
+              Text(
+                context.l10n.theScreenFlipsContinue,
+                style: context.textStyleV3.h3SemiBold,
+              )
+            ],
+          ),
         ),
-      ),
-    );
+      );
 }
