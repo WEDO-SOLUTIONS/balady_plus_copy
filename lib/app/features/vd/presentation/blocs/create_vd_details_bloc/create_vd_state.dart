@@ -87,7 +87,7 @@ class CreateVDState extends Equatable {
 
   bool isNextButtonEnabled() {
     if (currentPageValue == 0) {
-      if (selectedCategory?.categoryId == 'CG-61') {
+      if (selectedCategory?.categoryId == RemoteConfig.QaseemCategoryKey) {
         if (gisResponse?.adminMunicipalityId != '008') {
           CommonFunctions.showError('ErrOnlyQaseem'.tr());
           return false;
