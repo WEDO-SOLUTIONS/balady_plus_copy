@@ -45,8 +45,13 @@ class FeedbackFormContainer extends ConsumerWidget {
                         onPressed: isSendEnabled ? onSend : null,
                       )
                     : null,
+                colorDisabled: context.colorsV2.foregroundMuted,
                 colorEnabled: context.colorsV3.foregroundDefault,
-                colorDisabled: context.colorsV3.foregroundMuted,
+                textStyle: context.textStyle.footNoteBold.copyWith(
+                  color: context.color.textAndIconsBasePrimary,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 16,
+                ),
 
                 /// changes in model ignored for some reason even with == and hashCode overriden
                 key: ValueKey(isSendEnabled),
