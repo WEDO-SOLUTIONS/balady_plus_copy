@@ -15,7 +15,7 @@ import 'dart:io';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
+//import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:mapness/shared/ui/urbi_map.dart';
@@ -191,65 +191,68 @@ class MapSearchSection extends StatelessWidget {
       alignment: Alignment.center,
       height: 52,
       decoration: Constants.boxDecorationWithShadowAndRoundedCorner,
-      child: TypeAheadField<UrbiLocationModel>(
-        errorBuilder: (context, error) =>  Text('errors_server_error_1'.tr()),
-        emptyBuilder: (context) => query.isNotEmpty? Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text("noSearchFounded".tr()),
-        ):SizedBox(),
-        suggestionsCallback: (search) => suggestionsCallback(search,currentUserLocation),
-        builder: (context, controller, focusNode) {
-          return TextField(
-              controller: controller,
-              focusNode: focusNode,
-              autofocus: true,
-              decoration: InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'lbl_search_for_place'.tr(),
-              )
-          );
-        },
-        itemBuilder: (context, model) {
-
-          String? area="";
-          String? region = "";
-          if( model.admDiv != null &&  model.admDiv!.isNotEmpty) {
+      child: AutocompleteTextFiled(currentUserLocation:currentUserLocation, onSearchResult: onSearchResult,),
 
 
-            List? districtArea = model.admDiv!.where((item) => item.type == "district_area").toList();
-
-            if(districtArea.isNotEmpty) {
-              area = districtArea.first.name;
-            }
-
-            List? districtRegion = model.admDiv!.where((item) => item.type == "region").toList();
-
-            if(districtRegion.isNotEmpty) {
-              region = districtRegion.first.name;
-            }
-
-          }
-          String Type = "";
-          if(model.type == "street") {
-            Type= "${model.type!},";
-          }
-          return Column(
-            children: [
-              ListTile(
-                title: Text( Type + (model.searchAttributes?.suggestedText??"")),
-                subtitle: Text("${area!},${region}"),
-              ),
-              Divider(thickness: 1,)
-            ],
-          );
-        },
-
-        onSelected: (model) {
-          if (model.point != null) {
-            onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
-          }
-        },
-      ),
+      // TypeAheadField<UrbiLocationModel>(
+      //   errorBuilder: (context, error) =>  Text('errors_server_error_1'.tr()),
+      //   emptyBuilder: (context) => query.isNotEmpty? Padding(
+      //     padding: const EdgeInsets.all(8.0),
+      //     child: Text("noSearchFounded".tr()),
+      //   ):SizedBox(),
+      //   suggestionsCallback: (search) => suggestionsCallback(search,currentUserLocation),
+      //   builder: (context, controller, focusNode) {
+      //     return TextField(
+      //         controller: controller,
+      //         focusNode: focusNode,
+      //         autofocus: true,
+      //         decoration: InputDecoration(
+      //           border: OutlineInputBorder(),
+      //           labelText: 'lbl_search_for_place'.tr(),
+      //         )
+      //     );
+      //   },
+      //   itemBuilder: (context, model) {
+      //
+      //     String? area="";
+      //     String? region = "";
+      //     if( model.admDiv != null &&  model.admDiv!.isNotEmpty) {
+      //
+      //
+      //       List? districtArea = model.admDiv!.where((item) => item.type == "district_area").toList();
+      //
+      //       if(districtArea.isNotEmpty) {
+      //         area = districtArea.first.name;
+      //       }
+      //
+      //       List? districtRegion = model.admDiv!.where((item) => item.type == "region").toList();
+      //
+      //       if(districtRegion.isNotEmpty) {
+      //         region = districtRegion.first.name;
+      //       }
+      //
+      //     }
+      //     String Type = "";
+      //     if(model.type == "street") {
+      //       Type= "${model.type!},";
+      //     }
+      //     return Column(
+      //       children: [
+      //         ListTile(
+      //           title: Text( Type + (model.searchAttributes?.suggestedText??"")),
+      //           subtitle: Text("${area!},${region}"),
+      //         ),
+      //         Divider(thickness: 1,)
+      //       ],
+      //     );
+      //   },
+      //
+      //   onSelected: (model) {
+      //     if (model.point != null) {
+      //       onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
+      //     }
+      //   },
+      // ),
     );
 
 
@@ -265,6 +268,127 @@ class MapSearchSection extends StatelessWidget {
   }
 
 
+}
+
+
+class AutocompleteTextFiled extends StatelessWidget {
+  final LatLng? currentUserLocation;
+  Function(LatLng location) onSearchResult;
+  TextEditingController? textEditingController;
+  String? query;
+  List<UrbiLocationModel> lstSuggestedLocation = [];
+  AutocompleteTextFiled({super.key,required this.currentUserLocation,required this.onSearchResult,});
+
+  @override
+  Widget build(BuildContext context) {
+    return Autocomplete<UrbiLocationModel>(
+      optionsBuilder: (TextEditingValue textEditingValue) {
+
+        return  lstSuggestedLocation;
+
+      },
+      fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
+        // Implement the text field UI
+        textEditingController= fieldTextEditingController;
+        return TextField(
+          controller: fieldTextEditingController,
+          focusNode: fieldFocusNode,
+          decoration: InputDecoration(
+            labelText: 'lbl_search_for_place'.tr(),
+          ),
+          onChanged: (text) {
+
+            query = text;
+            suggestionsCallback(query,currentUserLocation);
+
+          },
+          onSubmitted: (text) {
+
+            // Handle the submission of the selected suggestion
+            // Implement the logic for the selection action
+          },
+        );
+      },
+
+      optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<UrbiLocationModel> onSelected, Iterable<UrbiLocationModel> options) {
+        // Implement the UI for displaying the suggestion options
+
+        if(query!= null &&query!.isNotEmpty)
+          return Padding(
+            padding: const EdgeInsets.only(left: 30.0,bottom: 180),
+            child: Material(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: options.map((UrbiLocationModel model) {
+                  String? area="";
+                  String? region = "";
+                  if( model.admDiv != null &&  model.admDiv!.isNotEmpty) {
+
+
+                    List? districtArea = model.admDiv!.where((item) => item.type == "district_area").toList();
+
+                    if(districtArea.isNotEmpty) {
+                      area = districtArea.first.name;
+                    }
+
+                    List? districtRegion = model.admDiv!.where((item) => item.type == "region").toList();
+
+                    if(districtRegion.isNotEmpty) {
+                      region = districtRegion.first.name;
+                    }
+
+                  }
+                  String Type = "";
+                  if(model.type == "street") {
+                    Type= "${model.type!},";
+                  }
+
+
+                  return Column(
+                    children: [
+                      ListTile(
+                        onTap: (){
+                          if (model.point != null) {
+                            textEditingController?.text = Type + (model.searchAttributes?.suggestedText??"");
+                            onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
+                          }
+                        },
+                        title: Text( Type + (model.searchAttributes?.suggestedText??"")),
+                        subtitle: Text("${area!},${region}"),
+                      ),
+                      Divider(thickness: 1,)
+                    ],
+                  );
+                }).toList(),
+              ),
+            ),
+          );
+        else
+          return Container();
+      },
+
+    );
+  }
+
+  void suggestionsCallback(String? pattern,LatLng? location) async {
+
+    //await Future<void>.delayed(Duration(seconds: 1));
+    if(pattern != null && pattern.isNotEmpty) {
+      UrbiSearchProvider? provider = sl();
+      provider.search(pattern,
+          location ?? const LatLng(latitude: 24.694163, longitude: 46.722667)).then((value){
+
+        lstSuggestedLocation =value;
+      });
+    }
+    else {
+      lstSuggestedLocation = [];
+    }
+
+
+
+
+  }
 }
 
 
