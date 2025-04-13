@@ -632,6 +632,20 @@ class ApiUrl {
   static const String splash = '/v1/portal-services/splash/images';
 
 
+  static  String getObserverStatus(String identityNumber) => 'v1/cis-certified-observers-services/registered-certified-observer-data/$identityNumber';
+  static  String getMuncipalitList = 'v1/cis-certified-observers-services/municipalities';
+  static  String checkMuncipalityAcceptance(String id) => 'v1/cis-certified-observers-services/municipalities/$id/verifications';
+
+  static  String getMuncipalityCites(String municipalityId) => 'v1/cis-certified-observers-services/cities/$municipalityId';
+  static  String urlDistrictsList = 'v1/cis-certified-observers-services/districts';
+
+
+  static  String registerObserver = 'v2/cis-certified-observers-services/external-inspector/registration';
+  static  String registerNewFreelancer = 'v1/freelancer-services/register';
+  static  String createNewFreelancerCertificate = 'v1/freelancer-services/certificate';
+  static  String freelancerCertificateStatus = 'v1/freelancer-services/certificate-status';
+  static  String updateFreelancerCertificate = 'v1/freelancer-services/update-certificate';
+  static  String getFreelancerCertificate = 'v1/freelancer-services/user-certificates';
 
 
 

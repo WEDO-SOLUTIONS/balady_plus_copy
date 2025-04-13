@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/commercial_model/commercial_routes/commercial_routes.dart';
 import 'package:balady_plus/app/commercial_model/features/posters/presentation/widgets/types_dialog/commercial_permits_dialog.dart';
 import 'package:balady_plus/app/features/balady_calender/presentation/pages/balady_calendar_page.dart';
+import 'package:balady_plus/app/features/ceritified_observer/presentation/pages/training_screen.dart';
 import 'package:balady_plus/app/features/classification_certificate/core/classification_certificate_routes/classification_certificate_routes.dart';
 import 'package:balady_plus/app/features/create_compliance/presentation/pages/create_compliance_location_confirm_page.dart';
 import 'package:balady_plus/app/features/athkar/presentation/pages/athkar_entity_content.dart';
@@ -49,13 +50,13 @@ import '../../../etmam_app/features/home/presentation/pages/etmam_main_city_page
 import '../../../etmam_app/features/home/presentation/pages/etmam_main_page.dart';
 import '../../../etmam_app/features/my_orders/presentation/pages/delete_orders_page.dart';
 import '../../../etmam_app/features/my_orders/presentation/pages/request_details_page.dart';
-import '../../core/utils/utils_exports.dart'
-    show EtmamRoutesNames, RouteName;
+import '../../core/utils/utils_exports.dart' show EtmamRoutesNames, RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/calculator/presentation/pages/service_calculator_result_screen.dart';
 import '../../features/calendar/calendar_exports.dart';
 import '../../features/calendar/presentation/pages/calendar_details_page.dart';
+import '../../features/ceritified_observer/presentation/pages/register_observer_home.dart';
 import '../../features/chatbot/presentation/pages/chatbot_screen.dart';
 import '../../features/chatbot/presentation/widgets/chat_history_details.dart';
 import '../../features/construction_license_inquery/persentation/construction_license_query/construction_license_inquery_screen.dart';
@@ -310,7 +311,8 @@ class Routes {
 
     RouteName.baladyCalendarPage: (context) => const BaladyCalendarPage(),
     RouteName.etmamMainPage: (context) => const EtmamMainPage(),
-    RouteName.cityServicesEtmamMainPage: (context) => const CityServicesEtmamMainPage(),
+    RouteName.cityServicesEtmamMainPage: (context) =>
+        const CityServicesEtmamMainPage(),
     RouteName.etmamMainPageCitySelector: (context) => const EtmamMainCityPage(),
 
     //! Services
@@ -574,7 +576,7 @@ class Routes {
     RouteName.driverEkramTransportationDetailsScreen: (context) =>
         const UsersEkramTransportationDetailsPage(),
 
-    RouteName.EkramMapPage: (context) =>  EkramMapPage(),
+    RouteName.EkramMapPage: (context) => EkramMapPage(),
 
     RouteName.ekramCemetryRequestScreen: (context) =>
         const EkramBookCemetryPage(),
@@ -614,8 +616,7 @@ class Routes {
     // RouteName.SpecificServicePage: (context) => const AllServicesPage(),
     RouteName.jodDonationPage: (context) => const JodDonationPage(),
     RouteName.chatbot: (context) => const ChatBotScreen(),
-    RouteName.chatHistoryDetailsRoute: (context) =>
-    const ChatHistoryDetails(),
+    RouteName.chatHistoryDetailsRoute: (context) => const ChatHistoryDetails(),
 
     RouteName.surveyReportInquery: (context) =>
         const SurveyReportInqueryScreen(),
@@ -630,12 +631,17 @@ class Routes {
     RouteName.notificationsDetailsScreen: (context) =>
         const NotificationsDetailsScreen(),
 
-
     RouteName.vDAllTypesScreen: (context) => const VDAllTypesScreen(),
     RouteName.daemTypeScreen: (context) => const DaemTypeScreen(),
-    RouteName.generalInquiryTypeScreen: (context) => const GeneralInquiryTypeScreen(),
+    RouteName.generalInquiryTypeScreen: (context) =>
+        const GeneralInquiryTypeScreen(),
     RouteName.mSRTypeScreen: (context) => const MSRTypeScreen(),
-    RouteName.commercialPermitsScreen: (context) => const CommercialPermitsScreen()
+    RouteName.commercialPermitsScreen: (context) =>
+        const CommercialPermitsScreen(),
+
+    RouteName.Observer_Choose_Municipality: (context) =>
+        const RegisterObserverHome(),
+    RouteName.trainingScreen: (context) => const TrainingScreen()
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {

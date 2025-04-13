@@ -208,6 +208,17 @@ class Helpers {
     }
   }
 
+
+  static String? validateIBAN(String? iban) {
+    RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
+
+    if (!phoneReg.hasMatch(iban ?? "")) {
+      return ('please_enter_valid_iban').tr();
+    }
+
+    return null;
+  }
+
   static String? validateMobile(String? phone) {
     RegExp phoneReg = RegExp(r'^(05)([0-9]{8})$');
 
@@ -218,13 +229,13 @@ class Helpers {
     return null;
   }
 
-  static String? validateEmail(String email) {
+  static String? validateEmail(String? email) {
     RegExp emailPattern = RegExp(
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-    String e = email;
+    String e = email ?? "";
     e = e.replaceAll("\u200e", '').replaceAll("\u200f", '').trim();
     if (e.isEmpty) {
-      return ('empty_mail_field_error').tr();
+      return ('lbl_email_err1').tr();
     } else if (!emailPattern.hasMatch(e)) {
       return ('lbl_email_err1').tr();
     }

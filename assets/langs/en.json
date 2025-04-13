@@ -4504,5 +4504,145 @@
   "loation_quest": "What, is the approximate geographical location of the facility/shop?",
   "addetional_data_quest": "Will activities be added to the license?",
   "extra_data_note": "You can add additional activities at the license level",
-  "Availablemechanisms": "Available Mechanisms"
+  "Availablemechanisms": "Available Mechanisms",
+
+
+
+  "married": "Married",
+  "unmarried": "Unmarried",
+  "primary": "Elementary  School",
+  "intermediate": "Intermediate School",
+  "secondary": "High School",
+  "university": "Bachelor's Dgree",
+  "masters": "Master's Dgree",
+
+
+  "alAhliSaudiBank": "The Saudi National Bank (SNB)",
+  "alRajhiBank": "Al Rajhi Bank",
+  "RiyadhBank": "Riyadh Bank",
+  "SaudiBritishBank": "The Saudi British Bank (SABB)",
+  "ArabNationalBank": "Arab National Bank (ANB)",
+  "AlinmaBank": "Alinma Bank",
+  "SaudiFransiBank": " Bank Saudi Fransi (BSF)",
+  "SaudiInvestmentBank": "The Saudi Investment Bank (SAIB)",
+  "BankAlJazira": "Bank AlJazira",
+  "BankAlBilad": "Bank Albilad",
+  "GulfBankOfSaudiArabia": "Gulf International Bank- Saudi Arabia (GIB Saudi Arabia)",
+  "EmiratesNBD": "Emirates NBD",
+  "BahrainNationalBank": "National Bank of Bahrain (NBB)",
+  "NationalBankOfKuwait": "National Bank of Kuwait (NBK)",
+  "BankMuscat": "Bank Muscat",
+  "DeutscheBank": "Deutsche Bank",
+  "BNPParibas": "BNP Paribas",
+  "JPMorganChaseNA": "JPMorgan Chase N.A.",
+  "NationalBankOfPakistan": "National Bank of Pakistan (NBP)",
+  "ZiraatBankasi": "T.C. Ziraat Bankasi",
+  "IndustrialAndCommercialBankOfChina": "Industrial and Commercial Bank of China (ICBC)",
+  "QNBGroup": "Qatar National Bank (QNB)",
+  "MizuhoFG": "MUFG Bank, Ltd.",
+  "FirstAbuDhabiBank": "First Abu Dhabi Bank (FAB)",
+  "CreditSuisseBank": "Credit Suisse",
+  "StandardCharteredBank": "Standard Chartered Bank",
+  "NationalBankOfIraq": "National Bank of Iraq (NBI)",
+  "TradeBankOfIraq": "Trade Bank of Iraq (TBI)",
+
+
+
+  "surveyQuestion1": "Are you an employee or worker in the ministry, Amana, municipality, or someone who is participating in detecting violations or performing inspection tasks, or (a spouse, in-law, or first-degree relative)?",
+  "surveyQuestion2": "Do you have any physical or mental disabilities that may affect your ability to perform field-inspection tasks?",
+  "surveyQuestion3": "Do you have a reliable and constant internet connection?",
+  "surveyQuestion4": "Do you have a smart device that supports “Momtathel” application?",
+
+
+  "please_fill_all_required_fields": "Please fill all required fields",
+
+  "please_enter_valid_iban": "Please enter a valid IBAN",
+
+
+
+
+
+  "pledge1_title" : "Integrity and Transparency",
+  "pledge1_description": "I commit to acting with complete integrity and transparency in all reports I submit and will not exploit the system for personal gain or illicit benefits.",
+
+  "pledge2_title" : "No Conflict of Interest",
+  "pledge2_description": "I confirm that I am not an employee or worker in the ministry, municipality, or affiliated with those engaged in monitoring violations, inspections, or related tasks, nor am I related by the first degree (spouse, in-law, or close relative) to any of these individuals.",
+
+  "pledge3_title" : "Adherence to Professional Ethics",
+  "pledge3_description": "I commit to not fabricating any malicious violations with the intent of submitting false reports to obtain a reward or for any other purpose, and I accept full legal responsibility if this is discovered.",
+
+  "pledge4_title" : "Accuracy in Reporting",
+  "pledge4_description": "I commit to submitting accurate and reliable reports on violations and understand that I am not entitled to claim a reward if the reported violation has been previously reported.",
+
+  "pledge5_title" : "Compliance with Competency Standards",
+  "pledge5_description": "I commit to adhering to the competency standards set by the ministry and understand that the ministry reserves the right to suspend my account on the Certified Observer platform if these standards are not met.",
+
+  "pledge6_title" : "Cooperation with Relevant Authorities",
+  "pledge6_description": "I commit to fully cooperating with the relevant authorities within the ministry by providing the necessary information and facilitating the verification of reports.",
+
+  "pledge7_title" : "Non-Exploitation of the System",
+  "pledge7_description": "I commit to not exploiting the system for unearned financial gains or to influence the decisions of the relevant authorities in any way.",
+
+  "pledge8_title" : "Legal Responsibility",
+  "pledge8_description": "I accept full legal responsibility for any false reports or inaccurate information I submit through the platform.",
+
+  "pledge9_title" : "Acceptance of Reward Terms",
+  "pledge9_description": "I commit to not claiming any reward until the violation has been confirmed and the penalty has been fully paid by the violator. I understand that the reward amount does not exceed 25% of the violation's value.",
+
+  "pledge10_title" : "Handling Corrected Violations",
+  "pledge10_description": "I acknowledge that if I report a violation and the violator corrects it before the inspector arrives to verify it, I am not entitled to claim a reward.",
+
+  "pledge11_title" : "Confidentiality of Information",
+  "pledge11_description": "I commit to maintaining the confidentiality of all information I handle and not disclosing it to any unauthorized party.",
+
+  "pledge12_title" : "Compliance with Laws and Regulations",
+  "pledge12_description": "I commit to adhering to all laws and regulations related to my role as a Certified Observer and understand that the ministry reserves the right to take any legal action against me in case of violation.",
+
+  "pledge13_title" : "Continuous Knowledge Updating",
+  "pledge13_description": "I commit to continuously updating my knowledge regarding the laws, regulations, and procedures approved by the ministry to ensure the submission of accurate and reliable reports.",
+
+  "pledge14_title" : "Self-Review",
+  "pledge14_description": "I commit to reviewing the reports I submit to ensure they are free from errors or inaccuracies. I understand that submitting incorrect reports may result in my account being suspended.",
+
+  "pledge15_title" : "Adherence to Terms and Procedures",
+  "pledge15_description": "I commit to complying with all terms and procedures set by the ministry for obtaining the reward, and I understand that non-compliance with these terms may result in the loss of my right to claim the reward.",
+
+
+"pledge_certified_observer": "I pledge that all the information provided is accurate and up-to-date, and I further pledge to comply with all the details of the commitment.",
+
+
+
+
+  "completing_the_certified_observer_request": "Completing the Certified Observer Request",
+  "renewal_the_certified_observer_request": "Renewal of Freelance Work Certificate",
+  "no_have_freelancer_certificate_certified_observer": "Dear user, a Freelance Work Certificate must be issued to begin your monitoring journey as a Certified Observer.",
+
+
+
+  "issue_new_freelancer_certificate_certified_observer": "Issue a new freelancer certificate as an certified observer",
+  "expired_freelancer_certificate_certified_observer": "Sorry, the status of your freelance work certificate as a certified observer is inactive.",
+  "renew_freelancer_certificate_certified_observer": "Renew the freelance certificate as an certified observer",
+  "states_not_active_freelancer_certificate_certified_observer": "Sorry, your account creation on the freelance work platform was not successful.",
+  "reissue_new_freelancer_certificate_certified_observer": "Issue a new freelancer certificate as an certified observer",
+
+
+  "waitingForApprovalMessage": "Dear user, your request has been received successfully. Final approval depends on passing the training phase. To access the training platform",
+  "start_training" :"Start Training",
+  "certified_observer": "Certified Observer",
+  "choose_muncipality": "You must specify the municipality you wish to work with.",
+  "muncipality_not_accept": "Sorry, registering a new certified observer is currently unavailable in the selected municipality.",
+
+  "degree": "Degrees",
+  "field_mandatory": "This field is required and must be filled in.",
+  "marital_status" : "Marital Status",
+  "bank_info": "Bank Info",
+  "additional_info": "Additional Info",
+  "bank_name": "Bank Name",
+  "bank_iban": "Bank Iban",
+
+
+  "title_congratulations_certified_observer":"Congratulations, you have been accepted as a Certified Observer",
+  "description_monitoring_process_momtathel": "Congratulations! You have been accepted as a Certified Observer. You can now begin the monitoring process through the Compliant Application.",
+  "open_momtathl_app" : "Proceed to the Compliant Application"
+
 }

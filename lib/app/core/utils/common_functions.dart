@@ -1,4 +1,4 @@
-import 'dart:convert' show base64Decode, base64Encode, utf8;
+import 'dart:convert' show base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
@@ -112,6 +112,10 @@ import 'constants/ux_cam_events.dart';
 import 'enums/enums.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+
+import 'package:http/http.dart' as http;
+
 
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
@@ -1774,6 +1778,30 @@ class CommonFunctions {
     }
 
   }
+
+
+  /////////////
+  static Future<DateTime?> fetchOnlineDateTimeForKSA() async {
+    try {
+      // World Time API URL for Saudi Arabia (Asia/Riyadh)
+      final url = Uri.parse('http://worldtimeapi.org/api/timezone/Asia/Riyadh');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final dateTimeString =
+        data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+        return DateTime.parse(dateTimeString);
+      } else {
+        print('Failed to fetch time: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching KSA date and time: $e');
+      return null;
+    }
+  }
+
 }
 
 class CommonProperties {

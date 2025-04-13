@@ -389,6 +389,10 @@ class RouteName {
   static const IntialApprovalRequestDetailsPage = 'IntialApprovalRequestDetailsPage';
 
 
+  static const Observer_Choose_Municipality = 'Observer_Choose_Municipality';
+
+  static String trainingScreen = "trainingScreen";
+
 }
 
 class EtmamRoutesNames {
@@ -457,6 +461,9 @@ class EtmamRoutesNames {
   static const editBiddingForm = '/EditBiddingForm';
 
   static const biddingReleationTypes = '/biddingReleationTypes';
+
+
+
 
 
 }
