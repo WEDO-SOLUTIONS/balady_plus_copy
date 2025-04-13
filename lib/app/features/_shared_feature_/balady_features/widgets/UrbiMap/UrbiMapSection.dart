@@ -19,6 +19,7 @@ import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import 'package:mapness/shared/ui/urbi_map.dart';
+import 'package:smart_advisor/app/core/utils/common_functions.dart';
 
 import '../../../../../core/dependency_injection/injection_container.dart';
 
@@ -271,25 +272,43 @@ class MapSearchSection extends StatelessWidget {
 }
 
 
-class AutocompleteTextFiled extends StatelessWidget {
+class AutocompleteTextFiled extends StatefulWidget {
   final LatLng? currentUserLocation;
   Function(LatLng location) onSearchResult;
-  TextEditingController? textEditingController;
   String? query;
   List<UrbiLocationModel> lstSuggestedLocation = [];
-  AutocompleteTextFiled({super.key,required this.currentUserLocation,required this.onSearchResult,});
+  bool showListView = true;
+
+   AutocompleteTextFiled(
+      {Key? key,
+        required this.currentUserLocation,
+        required this.onSearchResult,})
+      : super(key: key);
+
+  @override
+  _AutocompleteTextFiledState createState() => _AutocompleteTextFiledState();
+}
+
+
+class _AutocompleteTextFiledState extends State<AutocompleteTextFiled> {
+
 
   @override
   Widget build(BuildContext context) {
     return Autocomplete<UrbiLocationModel>(
       optionsBuilder: (TextEditingValue textEditingValue) {
 
-        return  lstSuggestedLocation;
+        return  widget.lstSuggestedLocation;
 
       },
+        // onSelected: (model) {
+        //   if (model.point != null) {
+        //     onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
+        //   }
+        // },
       fieldViewBuilder: (BuildContext context, TextEditingController fieldTextEditingController, FocusNode fieldFocusNode, VoidCallback onFieldSubmitted) {
         // Implement the text field UI
-        textEditingController= fieldTextEditingController;
+
         return TextField(
           controller: fieldTextEditingController,
           focusNode: fieldFocusNode,
@@ -298,10 +317,16 @@ class AutocompleteTextFiled extends StatelessWidget {
           ),
           onChanged: (text) {
 
-            query = text;
-            suggestionsCallback(query,currentUserLocation);
+
+            setState(() {
+              widget.query = text;
+              widget.showListView = true;
+            });
+
+            suggestionsCallback(widget.query,widget.currentUserLocation);
 
           },
+
           onSubmitted: (text) {
 
             // Handle the submission of the selected suggestion
@@ -313,11 +338,13 @@ class AutocompleteTextFiled extends StatelessWidget {
       optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<UrbiLocationModel> onSelected, Iterable<UrbiLocationModel> options) {
         // Implement the UI for displaying the suggestion options
 
-        if(query!= null &&query!.isNotEmpty)
-          return Padding(
-            padding: const EdgeInsets.only(left: 30.0,bottom: 180),
+
+        if(widget.query!= null &&widget.query!.isNotEmpty)
+          return widget.showListView==true?Padding(
+            padding: EdgeInsets.only(left: CommonFunctions.isAppAR?30.0:0,bottom: 180,right: CommonFunctions.isAppAR?0.0:30),
             child: Material(
-              child: ListView(
+              child:
+              ListView(
                 padding: EdgeInsets.zero,
                 children: options.map((UrbiLocationModel model) {
                   String? area="";
@@ -349,8 +376,14 @@ class AutocompleteTextFiled extends StatelessWidget {
                       ListTile(
                         onTap: (){
                           if (model.point != null) {
-                            textEditingController?.text = Type + (model.searchAttributes?.suggestedText??"");
-                            onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
+
+                           // textEditingController?.text = Type + (model.searchAttributes?.suggestedText??"");
+
+                            setState(() {
+                              widget.showListView = false;
+                            });
+
+                            widget.onSearchResult(LatLng(latitude: model.point!.lat!,longitude: model.point!.lon!));
                           }
                         },
                         title: Text( Type + (model.searchAttributes?.suggestedText??"")),
@@ -362,7 +395,7 @@ class AutocompleteTextFiled extends StatelessWidget {
                 }).toList(),
               ),
             ),
-          );
+          ):Container();
         else
           return Container();
       },
@@ -378,17 +411,19 @@ class AutocompleteTextFiled extends StatelessWidget {
       provider.search(pattern,
           location ?? const LatLng(latitude: 24.694163, longitude: 46.722667)).then((value){
 
-        lstSuggestedLocation =value;
+        widget.lstSuggestedLocation =value;
       });
     }
     else {
-      lstSuggestedLocation = [];
+      widget.lstSuggestedLocation = [];
     }
 
 
 
 
   }
+
+
 }
 
 
