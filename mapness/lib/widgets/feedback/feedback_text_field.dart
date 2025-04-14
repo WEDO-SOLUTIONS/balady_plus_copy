@@ -56,19 +56,24 @@ class FeedbackInput extends HookWidget {
         ]),
         builder: (fieldState) => Column(
               children: [
-                FeedbackTextInput(
-                  labelText: field.label,
-                  hintText: field.hint,
-                  controller: controller,
-                  focusNode: focusNode,
-                  errorText: fieldState.hasError ? context.l10n.feedbackTextFieldWrongFormat : null,
-                  allowedInputPattern: allowedInputPattern,
-                  isRequired: field.isRequired,
-                  maxLength: field.maxLength,
-                  keyboardType: keyboardType,
-                  maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
-                  onChanged: fieldState.didChange,
-                  type: field.type,
+                GestureDetector(
+                  onTap: () => _selectAddress(context, controller, fieldState),
+                  child: AbsorbPointer(
+                    child: FeedbackTextInput(
+                      labelText: field.label,
+                      hintText: field.hint,
+                      controller: controller,
+                      focusNode: focusNode,
+                      errorText: fieldState.hasError ? context.l10n.feedbackTextFieldWrongFormat : null,
+                      allowedInputPattern: allowedInputPattern,
+                      isRequired: field.isRequired,
+                      //maxLength: field.maxLength,
+                      keyboardType: keyboardType,
+                      maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+                      onChanged: fieldState.didChange,
+                      type: field.type,
+                    ),
+                  ),
                 ),
                 if (field.setOnMap)
                   SizedBox(
@@ -94,6 +99,22 @@ class FeedbackInput extends HookWidget {
     FormFieldState field,
   ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
+
+    if (result == null || result is! RoutePoint) {
+      return;
+    }
+
+    final location = result.label ?? 'lat:${result.latitude}, lon:${result.longitude}';
+    controller.text = location;
+    field.didChange(location);
+  }
+
+  Future<void> _selectAddress(
+    BuildContext context,
+    TextEditingController controller,
+    FormFieldState field,
+  ) async {
+    final result = await context.router.push(const FeedbackAddressSuggester());
 
     if (result == null || result is! RoutePoint) {
       return;

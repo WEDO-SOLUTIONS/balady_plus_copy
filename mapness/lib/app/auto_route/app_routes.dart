@@ -159,6 +159,12 @@ class AppRouter extends RootStackRouter {
               path: 'quickFeedback',
               page: QuickFeedbackRoute.page,
             ),
+            AppRoute(
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              durationInMilliseconds: 250,
+              path: 'quickFeedbackAddress',
+              page: FeedbackAddressSuggester.page,
+            ),
             CustomRoute(
               path: 'feedback/:objectId',
               page: FeedbackSelectTypeRoute.page,

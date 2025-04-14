@@ -86,6 +86,62 @@ class Search extends _$Search {
     await fetchSuggest(query);
   }
 
+  Future<void> searchAddress(String query) async {
+    try {
+      await _searchOperation?.cancel();
+      if (query.isEmpty) {
+        state = const SearchStateHistory();
+        return;
+      }
+      await _setUpLocale(query);
+
+      _updateSearchText(query);
+      _previousType = SearchType.fetchSuggest;
+      _previousQuery = query;
+      // // -- Analytics
+      // AdvancedMetrics.instance.startSearchResponse(
+      //   queryType: _previousType!.name,
+      //   searchQuery: query,
+      // );
+      // Metrics.logEvent(
+      //   'fetchSuggest',
+      //   object: runtimeType,
+      // );
+      // mixpanel?.timeEvent('Search: fetchSuggest');
+      // // -- Analytics
+
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final dgisController = await ref.read(dgisControllerProvider.future);
+
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.fetchSuggest(
+          query,
+          searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
+          suggestorType: SuggestorTypeEnum.address,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final result = await searchOperation.value;
+
+      state = result.suggests.isEmpty
+          ? SearchStateEmpty(searchText: query)
+          : SearchStateSuggest(
+              suggest: result,
+              searchText: query,
+            );
+
+      // // -- Analytics
+      // await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
+      // await mixpanel?.track('Search: fetchSuggest');
+      // // -- Analytics
+    } on Exception catch (_) {
+      state = SearchStateError(searchText: query);
+      rethrow;
+    }
+  }
+
   Future<void> fetchSuggest(String query) async {
     try {
       await _searchOperation?.cancel();
