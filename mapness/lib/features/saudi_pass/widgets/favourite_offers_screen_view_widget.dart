@@ -14,20 +14,22 @@ class FavouriteOffersScreenViewWidget extends StatelessWidget {
   Widget build(BuildContext context) => SaudiPassScaffold(
         onBackButton: favouriteOffersScreenView.tapBack,
         title: context.l10n.saudiPassFavoritesOffersPageTitle,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(child: OffersViewWidget(favouriteOffersScreenView)),
-            Padding(
-              padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
-              child: BaladyAppButton(
-                primaryLabel: context.l10n.saudiPassFavoritesOffersPageGoToAllOffers,
-                buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                buttonType: BaladyButtonType.secondary,
-                onTap: favouriteOffersScreenView.tapGotoAllOffers,
+        body: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Expanded(child: OffersViewWidget(favouriteOffersScreenView)),
+              Padding(
+                padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
+                child: BaladyAppButton(
+                  primaryLabel: context.l10n.saudiPassFavoritesOffersPageGoToAllOffers,
+                  buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+                  buttonType: BaladyButtonType.secondary,
+                  onTap: favouriteOffersScreenView.tapGotoAllOffers,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
 }
