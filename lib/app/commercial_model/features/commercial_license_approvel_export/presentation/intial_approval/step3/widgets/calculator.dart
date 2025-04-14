@@ -95,6 +95,38 @@ class _CalcualtorFeesState extends State<CalcualtorFees> {
                           .toList(),
                     ),
 
+
+                    state.issueCommercialConculsionEntity?.calculateStandardFees?.activitiesCostDetailes != null &&state.issueCommercialConculsionEntity?.calculateStandardFees?.activitiesCostDetailes!.isNotEmpty==true?
+                    Column(children: [
+                      SizedBox(height: 10,),
+                      Row(
+                        children: [
+                          CustomTextWidget("Activies".tr(),
+                            textStyle: AppStyle.boardingTitle
+                                .copyWith(color: AppColor.primary900Light,fontSize: 18),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10,),
+                      Column(
+                        children: ( state.issueCommercialConculsionEntity?.calculateStandardFees?.activitiesCostDetailes ??
+                            [])
+                            .map(
+                              (costsInfo) => Padding(
+                            padding: const EdgeInsets.only(top: 8.0),
+                            child: TitleInvoice(
+                              money:
+                              '${costsInfo.activtyCost} ${"sar_text".tr()}',
+                              title:
+                              costsInfo.refrence ?? "",
+                            ),
+                          ),
+                        )
+                            .toList(),
+                      ),
+
+                    ],):Container(),
+
                   ],
                 ),
               ),

@@ -4643,6 +4643,7 @@
 
   "title_congratulations_certified_observer":"Congratulations, you have been accepted as a Certified Observer",
   "description_monitoring_process_momtathel": "Congratulations! You have been accepted as a Certified Observer. You can now begin the monitoring process through the Compliant Application.",
-  "open_momtathl_app" : "Proceed to the Compliant Application"
+  "open_momtathl_app" : "Proceed to the Compliant Application",
+  "Activies": "Activies"
 
 }
