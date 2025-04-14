@@ -326,7 +326,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                       return Align(
                                         alignment: Alignment.bottomCenter,
                                         child: EtaSheet(
-                                      animationInfo: _animationInfo,
+                                          animationInfo: _animationInfo,
                                           onEndTripPressed: () => _endTripAndShowFeedback(context),
                                           onSearchPressed: () => _onSearchPressed(context),
                                           onBetterRouteAccept: () => _acceptBetterRoute(context),
@@ -345,7 +345,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                       return EtaFinished(
                                         onSearchPressed: () => _onSearchPressed(context),
                                         expansionNotifier: _expansionNotifier,
-                                        onEndTripPressed: _endTripAndShowHome,
+                                        onEndTripPressed: () => _endTripAndShowFeedback(context),
                                         onBuildAnotherRoutePressed: _endTripAndBuildAnotherRoute,
                                         onSizeChanged: _onSizeChanged,
                                       );
