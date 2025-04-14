@@ -22,12 +22,16 @@ class TitleInvoice extends StatelessWidget {
           borderRadius: BorderRadius.all(Radius.circular(8))),
       width: MediaQuery.of(context).size.width,
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          CustomTextWidget(
-            title,
-            textStyle: AppStyle.serviceCardDescriptionTextStyle,
+          Expanded(
+            child: CustomTextWidget(
+              title,
+              maxLines: 2,
+              textStyle: AppStyle.serviceCardDescriptionTextStyle,
+            ),
           ),
-          const Spacer(),
+          //const Spacer(),
           CustomTextWidget(
             money,
             textStyle: AppStyle.serviceCardWarningTitleTextStyle,
