@@ -79,6 +79,12 @@ class Routes {
           path: '/flips_continue',
           page: FlipsContinueRoute.page,
         ),
+        CustomRoute(
+          path: '/feedback_address_suggester',
+          page: FeedbackAddressSuggester.page,
+          opaque: false,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(
