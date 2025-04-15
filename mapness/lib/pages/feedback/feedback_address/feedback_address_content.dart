@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
+import 'package:mapness/pages/feedback/feedback_address/feedback_address_empty.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_suggest.dart';
-import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
 
@@ -30,11 +30,11 @@ class FeedbackAddressContent extends ConsumerWidget {
     return searchState.map(
       empty: () => const SafeArea(
         top: false,
-        child: MapSearchEmpty(),
+        child: FeedbackAddressEmpty(isInitial: false),
       ),
       history: () => const SafeArea(
         top: false,
-        child: MapSearchEmpty(),
+        child: FeedbackAddressEmpty(isInitial: true),
       ),
       loading: () => const SafeArea(
         top: false,
@@ -53,7 +53,7 @@ class FeedbackAddressContent extends ConsumerWidget {
       ),
       results: (_) => const SafeArea(
         top: false,
-        child: MapSearchEmpty(),
+        child: FeedbackAddressEmpty(isInitial: false),
       ),
       failure: (query, errorMessage) => BaseErrorWidget(
           errorLabel: errorMessage,

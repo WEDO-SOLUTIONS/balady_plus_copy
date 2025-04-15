@@ -49,25 +49,18 @@ class FeedbackAddressSuggestions extends ConsumerWidget {
               isLast: index == suggests.length - 1,
               onObjectTap: (object) {
                 if (!context.mounted) {
-                  //mixpanel?.track('impossible-unounted-context');
                   return;
                 }
-
-                // Metrics.logEventAdvanced(MetricsConstants.routesKeys.searchSuggestion,
-                //     group: MetricsConstants.routesTag,
-                //     action: MetricAction.tap.toString(),
-                //     props: {
-                //       'item': object.id?.objectId,
-                //     });
                 final latitude = object.markerPosition?.latitude;
                 final longitude = object.markerPosition?.longitude;
                 if (latitude == null || longitude == null) {
                   return;
                 }
+                final address = object.makeFullAddress();
                 context.router.popForced(
                   RoutePointCoordinates(
                     GeoPointMessage(latitude: latitude, longitude: longitude),
-                    object.makeAddress(),
+                    address,
                   ),
                 );
               },

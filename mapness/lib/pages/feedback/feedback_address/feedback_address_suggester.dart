@@ -98,15 +98,15 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
 
                 //   return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
                 // },
-                key: const ValueKey('ROUTING SEARCH SHEET'),
+                key: const ValueKey('FEEDBACK SEARCH SHEET'),
                 scrollController: _dgisSheetController,
                 header: const Column(
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16),
+                      padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
                       child: FeedbackAddressSearchBar(),
                     ),
-                    SizedBox(height: 16),
+                    SizedBox(height: Spacing.$4x),
                   ],
                 ),
                 content: [
