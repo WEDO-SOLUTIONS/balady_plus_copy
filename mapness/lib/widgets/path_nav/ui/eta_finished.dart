@@ -30,8 +30,8 @@ class EtaFinished extends ConsumerStatefulWidget {
 class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
   Widget build(BuildContext context) {
-    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
 
     return ValueListenableBuilder(
       valueListenable: widget.expansionNotifier,

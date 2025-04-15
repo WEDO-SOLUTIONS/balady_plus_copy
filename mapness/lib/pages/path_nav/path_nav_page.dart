@@ -326,7 +326,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
                                       return Align(
                                         alignment: Alignment.bottomCenter,
                                         child: EtaSheet(
-                                      animationInfo: _animationInfo,
+                                          animationInfo: _animationInfo,
                                           onEndTripPressed: () => _endTripAndShowFeedback(context),
                                           onSearchPressed: () => _onSearchPressed(context),
                                           onBetterRouteAccept: () => _acceptBetterRoute(context),
@@ -571,7 +571,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       unawaited(clearNavigationState());
       unawaited(_stopActiveSharing());
     } else if (event == NavigationEvent.disabled) {
-      if (_navigationState.value != PathNavState.finished) {
+      if (context.mounted && _navigationState.value != PathNavState.finished) {
         _endTripAndShowHome();
       }
     }
