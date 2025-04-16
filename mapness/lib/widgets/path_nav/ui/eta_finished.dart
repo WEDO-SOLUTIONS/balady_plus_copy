@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,7 +33,7 @@ class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
   Widget build(BuildContext context) {
     final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
-    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0.0);
 
     return ValueListenableBuilder(
       valueListenable: widget.expansionNotifier,

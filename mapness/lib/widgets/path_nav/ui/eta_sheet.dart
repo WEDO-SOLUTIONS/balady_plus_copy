@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -51,7 +53,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom;
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0.0);
 
     final eta = ref.watch(pathNavEtaProvider);
     final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
