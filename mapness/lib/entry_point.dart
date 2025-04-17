@@ -185,37 +185,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> checkNavigationState() async {
-    final controller = await ref.read(dgisControllerProvider.future);
-    final navStateMessage = await controller.getCurrentNavigationState();
-
-    if (navStateMessage.state == NavigationState.navigation) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final location = ref.read(locationProvider);
-        if (location != null) {
-          ref.read(appRouterProvider).push(
-                PathNavRoute(
-                  navType: navStateMessage.routeSearchOptions,
-                  initAction: null,
-                ),
-              );
-        } else {
-          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
-            if (next != null) {
-              _locationListener?.close();
-              ref.read(appRouterProvider).push(
-                    PathNavRoute(
-                      navType: navStateMessage.routeSearchOptions,
-                      initAction: null,
-                    ),
-                  );
-            }
-          });
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
