@@ -71,6 +71,12 @@ class AppRouter extends RootStackRouter {
               path: 'routingMap',
               page: RoutingMapSelectRoute.page,
             ),
+            CustomRoute(
+              path: 'parking_add',
+              page: ParkingAddRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              fullscreenDialog: true,
+            ),
             AppRoute(
               path: 'poi-map',
               page: PoiCardWidgetRoute.page,

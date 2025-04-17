@@ -17,6 +17,7 @@ import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/widgets/feedback/images/add_image_button.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
 import 'package:urbi_analytics/logger.dart';
@@ -96,7 +97,7 @@ class FeedbackImages extends StatelessWidget {
                         runSpacing: _photoPadding,
                         children: [
                           if (value.length < field.maxImages)
-                            _AddImageButton(
+                            AddImageButton(
                               onTap: () => _showImageSelectorDialog(context, ref),
                               size: size,
                             ),
@@ -223,40 +224,4 @@ class FeedbackImages extends StatelessWidget {
       await onRetry();
     }
   }
-
-  ///
-  ///You can upload up to {count} photos, each no larger than {size} and with a resolution up to {resolution} pixels
-}
-
-class _AddImageButton extends StatelessWidget {
-  final void Function() onTap;
-  final double size;
-
-  const _AddImageButton({
-    required this.onTap,
-    required this.size,
-  });
-
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.l),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          child: SizedBox(
-            height: size,
-            width: size,
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
-              child: Center(
-                child: Icon(
-                  GeneralIcons.photo,
-                  color: context.colorsV2.accentDefault,
-                  size: size * .4,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
 }
