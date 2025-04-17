@@ -56,6 +56,7 @@ class Search extends _$Search {
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
+  bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override
   SearchState build(String scope) => SearchStateHistory(searchText: _previousQuery ?? '');
@@ -279,6 +280,10 @@ class Search extends _$Search {
     _searchInThisAreaMetric();
   }
 
+  // We use this method to search after press on category in suggester. So to determine
+  // if press on the card was made from suggest (not from search / history), we use
+  // `_previousType` variable. If it was `searchByQuery`, we know that user pressed on suggest category
+  // and then pressed on the search result
   Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
     try {
       await _searchOperation?.cancel();
