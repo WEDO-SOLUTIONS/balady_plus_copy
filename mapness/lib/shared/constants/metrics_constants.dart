@@ -138,7 +138,9 @@ class Search {
   // When we pressed on POI from search result
   String get fullSearchResultPressed => 'full_search_result_pressed';
   String get emptySearchResult => 'empty_search_result';
+  String get searchResult_ => 'search_result';
   String get emptySuggestResult => 'empty_suggest_result';
+  String get suggestResult => 'suggest_result';
 }
 
 class Login {

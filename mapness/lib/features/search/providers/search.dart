@@ -148,6 +148,9 @@ class Search extends _$Search {
         );
       }
       // -- Analytics
+      await ref
+          .read(urbiAnalyticsProvider)
+          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
@@ -281,6 +284,9 @@ class Search extends _$Search {
             .read(urbiAnalyticsProvider)
             .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
       }
+      await ref
+          .read(urbiAnalyticsProvider)
+          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
