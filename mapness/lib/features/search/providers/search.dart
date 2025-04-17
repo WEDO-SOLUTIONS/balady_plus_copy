@@ -58,7 +58,7 @@ class Search extends _$Search {
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
 
   @override
-  SearchState build(String scope) => const SearchStateHistory();
+  SearchState build(String scope) => SearchStateHistory(searchText: _previousQuery ?? '');
 
   void clear() {
     _searchOperation?.cancel();
