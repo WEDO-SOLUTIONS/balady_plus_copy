@@ -25,8 +25,7 @@ class EtaContinue extends ConsumerWidget {
       return const SizedBox();
     }
 
-    final media = MediaQuery.of(context);
-    final bottomPadding = media.padding.bottom + (Platform.isAndroid ? Spacing.$6x : 0);
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0);
 
     return EtaSheetWrapper(
       onSizeChanged: onSizeChanged,

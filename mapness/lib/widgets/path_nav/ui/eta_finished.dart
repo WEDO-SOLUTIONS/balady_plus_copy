@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,19 +32,21 @@ class EtaFinished extends ConsumerStatefulWidget {
 class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
   Widget build(BuildContext context) {
-    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
-    final bottomPadding = MediaQuery.of(context).padding.bottom;
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0.0);
 
     return ValueListenableBuilder(
       valueListenable: widget.expansionNotifier,
-      builder: (context, value, child) => EtaSheetWrapper(
+      builder: (context, isExpanded, child) => EtaSheetWrapper(
         onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
-            padding: EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding),
+            padding: (!landscape && !isExpanded)
+                ? EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding)
+                : EdgeInsets.only(bottom: !isExpanded ? bottomPadding : 0.0),
             isLeadingIconAvailable: !landscape,
             onSearchTap: widget.onSearchPressed,
-            enabledHeader: value,
+            enabledHeader: isExpanded,
             title: context.l10n.youArrived,
             onTapBurger: toggle,
             buttons: [

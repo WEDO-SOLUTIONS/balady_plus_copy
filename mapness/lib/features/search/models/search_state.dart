@@ -23,7 +23,7 @@ class SearchStateError extends SearchState {
     super.searchText = '',
   });
 
-  SearchStateHistory copyWith({String? searchText}) => SearchStateHistory(
+  SearchStateError copyWith({String? searchText}) => SearchStateError(
         searchText: searchText ?? this.searchText,
       );
 }

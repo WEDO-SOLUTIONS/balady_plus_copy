@@ -43,27 +43,41 @@ class Search extends _$Search {
   ];
 
   SearchType? _previousType;
+  SearchResultMessage? _result;
   String? _previousQuery;
   SearchQueryMessage? _previousSearchQueryMessage;
   QuickFilter? _previousQuickSearch;
   CancelableOperation? _searchOperation;
   SearchRequestLang? _currentQueryLocale;
 
+  // Timer to start full search if we don't get any results
+  // Should be canceled
+  Timer? _fullSearchTimer;
+
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
 
   @override
-  SearchState build(String scope) => const SearchStateHistory();
+  SearchState build(String scope) {
+    if (_result != null && _previousQuery != null) {
+      return SearchStateResults(results: _result!, searchText: _previousQuery!);
+    }
+
+    return SearchStateHistory(searchText: _previousQuery ?? '');
+  }
 
   void clear() {
     _searchOperation?.cancel();
     state = const SearchStateHistory();
     _previousType = null;
     _previousQuery = null;
+    _result = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
     _currentQueryLocale = null;
+    _fullSearchTimer?.cancel();
+    _fullSearchTimer = null;
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -124,6 +138,17 @@ class Search extends _$Search {
               suggest: result,
               searchText: query,
             );
+      // BSA-1931: We need to start full search if we don't get any results
+      // and user types more than 2 symbols
+      if (query.length > 2 && state is SearchStateEmpty) {
+        _fullSearchTimer?.cancel();
+        _fullSearchTimer = Timer(
+          const Duration(seconds: 1),
+          () {
+            searchByText(query);
+          },
+        );
+      }
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
@@ -193,6 +218,7 @@ class Search extends _$Search {
               searchText: searchQuery,
               markerType: quickSearch.markerType,
             );
+      _result = results;
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
@@ -203,7 +229,9 @@ class Search extends _$Search {
   Future<void> searchByText(String query) async {
     try {
       await _searchOperation?.cancel();
-      state = SearchStateLoading(searchText: query);
+      if (state is! SearchStateSuggest) {
+        state = SearchStateLoading(searchText: query);
+      }
       await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
@@ -239,7 +267,7 @@ class Search extends _$Search {
       final results = await searchOperation.value;
 
       final zoom = ref.watch(cameraPositionProvider)?.zoom ?? 0;
-      if (zoom > 13) {
+      if (zoom > 13 && state is! SearchStateSuggest) {
         await _animateToRepresentativeArea(results: results);
       }
 
@@ -249,6 +277,7 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
+      _result = results;
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
@@ -306,6 +335,7 @@ class Search extends _$Search {
               results: results,
               searchText: text,
             );
+      _result = results;
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByQuery');
@@ -354,6 +384,11 @@ class Search extends _$Search {
         quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect());
         break;
     }
+  }
+
+  Future<void> searchMore(String query) async {
+    state = SearchStateLoading(searchText: query);
+    await searchByText(query);
   }
 
   /// Here we send additional metrics because we want to know

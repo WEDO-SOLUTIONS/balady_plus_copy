@@ -53,11 +53,10 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final media = MediaQuery.of(context);
-    final bottomPadding = media.padding.bottom + (Platform.isAndroid ? Spacing.$6x : 0);
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0.0);
 
     final eta = ref.watch(pathNavEtaProvider);
-    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
     _isExpanded = eta?.isExpanded ?? false;
     final soundSettingsModel = ref.watch(soundSettingsProvider);
@@ -89,7 +88,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
           padding: EdgeInsets.only(
             left: padding,
             right: padding,
-            bottom: _isExpanded ? 0 : bottomPadding,
+            bottom: _isExpanded ? 0.0 : bottomPadding,
           ),
           contentColor: landscape ? colorsV3.backgroundSurface1 : colorsV3.backgroundSurface4,
           enabledHeader: _isExpanded,
@@ -196,7 +195,6 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
               primaryLabel: l10n.endTrip,
               onTap: widget.onEndTripPressed,
             ),
-            Spacing.$4x.heightBox,
           ],
           onTapBurger: toggle,
           isSearchShowing: !landscape,

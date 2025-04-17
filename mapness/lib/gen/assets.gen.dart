@@ -82,6 +82,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/foundation_day_banner.png
   AssetGenImage get foundationDayBanner => const AssetGenImage('assets/images/foundation_day_banner.png');
 
+  /// File path: assets/images/ic_flips_continue.png
+  AssetGenImage get icFlipsContinue => const AssetGenImage('assets/images/ic_flips_continue.png');
+
   /// File path: assets/images/img_video-placeholder.png
   AssetGenImage get imgVideoPlaceholder => const AssetGenImage('assets/images/img_video-placeholder.png');
 
@@ -198,6 +201,7 @@ class $AssetsImagesGen {
         favoritesExampleArabic,
         favoritesExampleEnglish,
         foundationDayBanner,
+        icFlipsContinue,
         imgVideoPlaceholder,
         ishanSeefromtheskyUnsplash,
         iwish,

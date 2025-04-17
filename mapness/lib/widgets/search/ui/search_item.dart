@@ -1,21 +1,20 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
+
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
-
-part 'widgets/search_history_gallery.dart';
 
 const prefixMapping = {
   'region': 'منطقة',
@@ -80,7 +79,11 @@ class SearchItem extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (photosUrls.isNotEmpty) _PhotosGallery(photosUrls: photosUrls, photoItems: photoItems),
+            if (photosUrls.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.$3x),
+                child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
+              ),
             ContentRowV2(
               crossAxisAlignment: CrossAxisAlignment.start,
               text: ContentRowTextOptions(
