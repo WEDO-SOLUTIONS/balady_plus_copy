@@ -39,6 +39,10 @@ class MapSearchResults extends ConsumerWidget {
         ref.read(urbiAnalyticsProvider).track(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
+      } else {
+        ref.read(urbiAnalyticsProvider).track(
+              '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.fullSearchResultPressed}',
+            );
       }
     }
 
