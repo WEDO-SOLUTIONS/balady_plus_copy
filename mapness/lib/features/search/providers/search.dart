@@ -375,6 +375,11 @@ class Search extends _$Search {
     }
   }
 
+  Future<void> searchMore(String query) async {
+    state = SearchStateLoading(searchText: query);
+    await searchByText(query);
+  }
+
   /// Here we send additional metrics because we want to know
   /// a) How many requests finished with success
   /// b) How many request finished with error
