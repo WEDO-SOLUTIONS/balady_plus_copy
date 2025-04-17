@@ -76,6 +76,9 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             if let estimates = Self.currentEstimates {
                 Self.updateEstimates(estimates)
             }
+        } else {
+            try? DgisMapInitializer.shared.getNavigationManager().start()
+            map.attributes.setAttributeValue(name: "navigatorOn", value: .boolean(true))
         }
     }
     

@@ -349,7 +349,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         final navStateMessage = await dgisController.getCurrentNavigationState();
         await ref.read(appRouterProvider).push(
               PathNavRoute(
-                navType: navStateMessage.routeSearchOptions,
+                navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                 initAction: null,
               ),
             );

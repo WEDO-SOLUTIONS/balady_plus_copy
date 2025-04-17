@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,11 +25,25 @@ class CarEnableFreeRoam extends _$CarEnableFreeRoam {
       return;
     }
 
-    final navState = await controller.getCurrentNavigationState();
-    final isFreeRoamPageActive = router.isRouteActive(FreeRoamRoute.name);
+    final routes = router.stack;
+    final isNavigationActive = routes.any((e) => e.name == PathNavRoute.name || e.name == FreeRoamRoute.name);
 
     // if already have nav state then dont break it
-    if (navState.state == NavigationState.navigation || isFreeRoamPageActive) {
+    if (isNavigationActive) {
+      return;
+    }
+
+    final navState = await controller.getCurrentNavigationState();
+    if (navState.state == NavigationState.navigation && navState.routeSearchOptions != null) {
+      final location = ref.read(locationProvider);
+      if (location != null) {
+        await router.push(
+          PathNavRoute(
+            navType: navState.routeSearchOptions!,
+            initAction: null,
+          ),
+        );
+      }
       return;
     }
 
