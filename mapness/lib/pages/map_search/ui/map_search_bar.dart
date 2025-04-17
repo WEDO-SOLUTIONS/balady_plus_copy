@@ -15,6 +15,7 @@ import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchBar extends ConsumerStatefulWidget {
@@ -111,14 +112,11 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
             if (query.trim().isNotEmpty) {
               await searcher.searchByText(query);
+              await ref.read(urbiAnalyticsProvider).track(
+                    '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
+                  );
               await ref.read(searchHistoryProvider(scope.value).notifier).put(
-                    SearchHistoryItem(
-                      title: query,
-                      address: '',
-                      objectId: null,
-                      entranceId: null,
-                      createdAt: DateTime.timestamp().toIso8601String(),
-                    ),
+                    SearchHistoryItem.fromQuery(query: query),
                   );
               unawaited(ref.read(SendStatisticProvider(query).future));
             }
