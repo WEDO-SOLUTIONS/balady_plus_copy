@@ -140,7 +140,7 @@ class _HeartIconWidget extends StatelessWidget {
             onTap: offerView.onHeartTap,
             child: Icon(
               offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
-              color: offerView.isHeartRedAndFilled ? colors.errorSoft : colors.neutralMuted,
+              color: offerView.isHeartRedAndFilled ? colors.extra01Default : colors.neutralMuted,
             ),
           ),
     );
