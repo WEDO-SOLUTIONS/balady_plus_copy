@@ -215,7 +215,6 @@ class NavigationHandler(
         val options =
                 navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions
                         ?.toRouteSearchOptionsMessage()
-                        ?: RouteSearchOptionsMessage.CAR
         callback(
                 Result.success(NavigationStateMessage(state = state, routeSearchOptions = options))
         )

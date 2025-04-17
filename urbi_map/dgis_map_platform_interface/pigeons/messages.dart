@@ -1269,7 +1269,7 @@ class NavigationStateMessage {
   NavigationStateMessage(this.state, this.routeSearchOptions);
 
   final NavigationState state;
-  final RouteSearchOptionsMessage routeSearchOptions;
+  final RouteSearchOptionsMessage? routeSearchOptions;
 }
 
 /// Represents the types of sound toggles.

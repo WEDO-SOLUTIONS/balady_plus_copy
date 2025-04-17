@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:dgis_map/library.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -24,14 +27,32 @@ class CarEnableFreeRoam extends _$CarEnableFreeRoam {
       return;
     }
 
-    final navState = await controller.getCurrentNavigationState();
-    final isFreeRoamPageActive = router.isRouteActive(FreeRoamRoute.name);
+    final routes = router.stack;
+    final isNavigationActive = routes.any((e) => e.name == PathNavRoute.name || e.name == FreeRoamRoute.name);
 
     // if already have nav state then dont break it
-    if (navState.state == NavigationState.navigation || isFreeRoamPageActive) {
+    if (isNavigationActive) {
       return;
     }
 
-    await router.push(const FreeRoamRoute());
+    final navState = await controller.getCurrentNavigationState();
+    final routeSearchOptions = navState.routeSearchOptions;
+    if (navState.state == NavigationState.navigation && routeSearchOptions != null) {
+      final location = ref.read(locationProvider);
+      if (location != null) {
+        await router.push(
+          PathNavRoute(
+            navType: routeSearchOptions,
+            initAction: null,
+          ),
+        );
+      }
+      return;
+    }
+
+    // TODO(Sergei): freeroam in android has some bugs
+    if (Platform.isIOS) {
+      await router.push(const FreeRoamRoute());
+    }
   }
 }

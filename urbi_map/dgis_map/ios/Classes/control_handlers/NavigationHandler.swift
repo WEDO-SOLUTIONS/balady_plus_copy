@@ -390,7 +390,7 @@ class NavigationHandler {
         case  .disabled: NavigationState.disabled
         default: NavigationState.disabled
         }
-        let options = self.navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
+        let options = self.navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions()
         completion(
             Result.success(NavigationStateMessage(state: state, routeSearchOptions: options))
         
