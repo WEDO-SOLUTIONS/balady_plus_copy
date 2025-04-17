@@ -165,7 +165,6 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$2x),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Container(
                         decoration: BoxDecoration(
