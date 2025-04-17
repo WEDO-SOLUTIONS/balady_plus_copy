@@ -8,6 +8,7 @@ import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -134,6 +135,10 @@ class Search extends _$Search {
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
       if (query.length > 2 && state is SearchStateEmpty) {
+        await ref
+            .read(urbiAnalyticsProvider)
+            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
+
         _fullSearchTimer?.cancel();
         _fullSearchTimer = Timer(
           const Duration(seconds: 1),
@@ -269,7 +274,13 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
+
       // -- Analytics
+      if (state is SearchStateEmpty) {
+        await ref
+            .read(urbiAnalyticsProvider)
+            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
+      }
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
