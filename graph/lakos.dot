@@ -2435,6 +2435,7 @@ digraph "" {
   "/lib/features/lifestyle_layers/helpers/layers_type_extension.dart" -> "/lib/features/lifestyle_layers/providers/layers_state.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/car_connection.dart";
+  "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/location.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/app_analytics/app_analytics.dart" -> "/lib/features/app_analytics/app_analytics_repository.dart";
   "/lib/features/app_analytics/app_analytics.dart" -> "/lib/features/app_analytics/data/app_analytics_insider_impl.dart";
