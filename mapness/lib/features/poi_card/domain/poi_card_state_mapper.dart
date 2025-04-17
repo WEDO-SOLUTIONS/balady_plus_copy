@@ -23,11 +23,11 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
         controller.setState(PoiCardBottomSheetState.hidden);
         return false;
       case PoiCardBottomSheetState.open:
-        controller.setState(PoiCardBottomSheetState.halfOpen);
+        controller.setState(PoiCardBottomSheetState.open);
         return false;
 
       case PoiCardBottomSheetState.expanded:
-        controller.setState(PoiCardBottomSheetState.open);
+        controller.setState(PoiCardBottomSheetState.expanded);
         return false;
     }
   }
@@ -41,7 +41,7 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
       return null;
     }
 
-    if (state == PoiCardBottomSheetState.expanded) {
+    if ([PoiCardBottomSheetState.expanded, PoiCardBottomSheetState.open].contains(state)) {
       return Colors.black.withOpacity(0.4);
     }
 
