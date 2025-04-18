@@ -19,30 +19,27 @@ class SaudiPassChipsSelectionWidget<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colors = context.colorsV3;
-    return Padding(
-      padding: const EdgeInsets.only(top: Spacing.$3x),
-      child: Container(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: context.colorsV3.backgroundSurface1,
-          borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              title,
-              style: context.textStyleV3.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
-            ),
-            Spacing.$3x.heightBox,
-            Wrap(
-              spacing: Spacing.$2x,
-              runSpacing: Spacing.$2x,
-              children: [for (final item in items) itemBuilder(context, item)],
-            ),
-          ],
-        ),
+    return Container(
+      padding: const EdgeInsets.all(Spacing.$4x),
+      width: double.infinity,
+      decoration: BoxDecoration(
+        color: context.colorsV3.backgroundSurface1,
+        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            title,
+            style: context.textStyleV3.bodyLargeSemiBold.copyWith(color: colors.foregroundDefault),
+          ),
+          Spacing.$3x.heightBox,
+          Wrap(
+            spacing: Spacing.$2x,
+            runSpacing: Spacing.$2x,
+            children: [for (final item in items) itemBuilder(context, item)],
+          ),
+        ],
       ),
     );
   }

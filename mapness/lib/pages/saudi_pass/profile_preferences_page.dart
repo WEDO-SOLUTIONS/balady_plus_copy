@@ -114,6 +114,7 @@ class _Content extends ConsumerWidget {
                     title: preferences.city?.name,
                     onTap: () => _selectCity(context, ref),
                   ),
+                  Spacing.$3x.heightBox,
                   _SelectRecommendedTypes(
                     items: preferences.recommendedTypes,
                     onItemTap: (item) => ref.watch(profilePreferencesProvider.notifier).changeRecommendedType(item),
