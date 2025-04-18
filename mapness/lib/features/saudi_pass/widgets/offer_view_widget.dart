@@ -50,20 +50,19 @@ class OfferViewWidget extends ConsumerWidget {
                   imageUrl: offerView.logo.url,
                   httpHeaders: offerView.logo.headers,
                   fit: boxFit,
-                  errorWidget: (context, url, error) =>
-                      DecoratedBox(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: offerView.offersGroup.color,
-                            begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-                            end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
-                          ),
-                        ),
-                        child: Image.asset(
-                          offerView.offersGroup.imagePath,
-                          fit: boxFit,
-                        ),
+                  errorWidget: (context, url, error) => DecoratedBox(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: offerView.offersGroup.color,
+                        begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+                        end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                       ),
+                    ),
+                    child: Image.asset(
+                      offerView.offersGroup.imagePath,
+                      fit: boxFit,
+                    ),
+                  ),
                 ),
               ),
             ),
@@ -134,15 +133,13 @@ class _HeartIconWidget extends StatelessWidget {
 
     return ListenableBuilder(
       listenable: offerView,
-      builder: (context, _) =>
-
-          InkWell(
-            onTap: offerView.onHeartTap,
-            child: Icon(
-              offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
-              color: offerView.isHeartRedAndFilled ? colors.extra01Default : colors.neutralMuted,
-            ),
-          ),
+      builder: (context, _) => InkWell(
+        onTap: offerView.onHeartTap,
+        child: Icon(
+          offerView.isHeartRedAndFilled ? GeneralIcons.filledHeart : GeneralIcons.heart,
+          color: offerView.isHeartRedAndFilled ? colors.extra01Default : colors.neutralMuted,
+        ),
+      ),
     );
   }
 }

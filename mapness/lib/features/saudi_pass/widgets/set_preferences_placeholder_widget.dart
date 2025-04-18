@@ -14,8 +14,7 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) =>
-      _PlaceholderWidget(
+  Widget build(BuildContext context) => _PlaceholderWidget(
         asset: 'assets/images_svg/illustration_percent.svg',
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
@@ -33,8 +32,7 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) =>
-      _PlaceholderWidget(
+  Widget build(BuildContext context) => _PlaceholderWidget(
         asset: 'assets/images_svg/illustration_percent.svg',
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
@@ -52,8 +50,7 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) =>
-      _PlaceholderWidget(
+  Widget build(BuildContext context) => _PlaceholderWidget(
         asset: 'assets/images_svg/illustration_error.svg',
         action: action,
         title: context.l10n.saudiPassSomethingWentWrong,

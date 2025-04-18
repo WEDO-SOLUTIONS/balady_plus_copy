@@ -50,5 +50,3 @@ class FlatChunkedAsyncIterable<T> implements AsyncIterable<T> {
   @override
   bool get isEmpty => chunkedAsyncIterable.isEmpty;
 }
-
-

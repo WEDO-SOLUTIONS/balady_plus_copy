@@ -76,9 +76,8 @@ class FilterWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    ChipIconWidget trailingIcon(FilterView filter) =>
-        ChipIconWidget(
-              ({required isSelected}) {
+    ChipIconWidget trailingIcon(FilterView filter) => ChipIconWidget(
+          ({required isSelected}) {
             final color = filter.isHighlighted ? context.colorsV2.accentOnAccent : context.colorsV2.foregroundDefault;
             return InkWell(
               onTap: filter.isHighlighted ? filter.tapCross : null,

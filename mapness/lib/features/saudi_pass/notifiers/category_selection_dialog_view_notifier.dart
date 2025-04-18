@@ -5,12 +5,12 @@ import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 class CategorySelectionDialogViewNotifier extends SelectionDialogViewNotifier<Category, String> {
   CategorySelectionDialogViewNotifier(OffersFiltersViewNotifier parent)
       : super(
-    all: parent.lookups.categories,
-    selected: parent.categoriesSelected,
-    stackRouter: parent.stackRouter,
-    selectionDialogApply: parent.applyCategories,
-    createSelectionView: CategorySelectionView.new,
-  );
+          all: parent.lookups.categories,
+          selected: parent.categoriesSelected,
+          stackRouter: parent.stackRouter,
+          selectionDialogApply: parent.applyCategories,
+          createSelectionView: CategorySelectionView.new,
+        );
 }
 
 class CategorySelectionView extends BaseSelectionView<Category, String> {

@@ -78,7 +78,7 @@ class OfferFavoritesRemovingSheet extends HookWidget {
                       child: AppButton(
                         primaryLabel: remove,
                         buttonColorScheme: ButtonColorScheme.primary,
-                        onTap:() {
+                        onTap: () {
                           onRemove();
                           bottomSheetController.close();
                         },
