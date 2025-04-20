@@ -16,20 +16,20 @@ class ServiceConfigResponse {
     this.data,
   });
 
-  List<StatusDetail>? statusDetails;
+  StatusDetail? statusDetails;
   Data? data;
 
   factory ServiceConfigResponse.fromJson(Map<String, dynamic> json) =>
       ServiceConfigResponse(
-        statusDetails: List<StatusDetail>.from(
-            json["statusDetails"].map((x) => StatusDetail.fromJson(x))),
-        data: Data.fromJson(json["data"]),
+        statusDetails: json["statusDetails"] == null
+            ? null
+            : StatusDetail.fromJson(json["statusDetails"]),
+        data: json["data"] == null ? null : Data.fromJson(json["data"]),
       );
 
   Map<String, dynamic> toJson() => {
-        "statusDetails":
-            List<dynamic>.from(statusDetails!.map((x) => x.toJson())),
-        "data": data!.toJson(),
+        "statusDetails": statusDetails?.toJson(),
+        "data": data?.toJson(),
       };
 
   int? getServiceId() {
@@ -82,8 +82,10 @@ class ServiceConfigItem {
       this.allowAddTopic,
       this.visitType,
       this.realEstate,
-        this.attachmentsConfig
-      });
+      this.commitmentable,
+      this.askForWakeelVisit,
+      this.prevTransNoRequired,
+      this.attachmentsConfig});
 
   int? id;
   dynamic name;
@@ -96,10 +98,11 @@ class ServiceConfigItem {
   bool? allowDepartmentList;
   bool? allowAddTopic;
   bool? realEstate;
+  bool? commitmentable;
+  bool? askForWakeelVisit;
+  bool? prevTransNoRequired;
   List<VisitType>? visitType;
   List<AttachmentsConfig>? attachmentsConfig;
-
-
 
   factory ServiceConfigItem.fromJson(Map<String, dynamic> json) =>
       ServiceConfigItem(
@@ -114,14 +117,16 @@ class ServiceConfigItem {
         allowDepartmentList: json["allowDepartmentList"],
         allowAddTopic: json["allowAddTopic"],
         realEstate: json["realEstate"],
+        commitmentable: json["commitmentable"],
+        askForWakeelVisit: json["askForWakeelVisit"],
+        prevTransNoRequired: json["prevTransNoRequired"],
         visitType: json["visitType"] != null
             ? List<VisitType>.from(
                 json["visitType"].map((x) => VisitType.fromJson(x)))
             : null,
-
         attachmentsConfig: json["attachmentsConfig"] != null
-            ? List<AttachmentsConfig>.from(
-            json["attachmentsConfig"].map((x) => AttachmentsConfig.fromJson(x)))
+            ? List<AttachmentsConfig>.from(json["attachmentsConfig"]
+                .map((x) => AttachmentsConfig.fromJson(x)))
             : null,
       );
 
@@ -137,7 +142,8 @@ class ServiceConfigItem {
         "allowDepartmentList": allowDepartmentList,
         "allowAddTopic": allowAddTopic,
         "visitType": List<dynamic>.from(visitType!.map((x) => x.toJson())),
-         "attachmentsConfig": List<dynamic>.from(attachmentsConfig!.map((x) => x.toJson())),
+        "attachmentsConfig":
+            List<dynamic>.from(attachmentsConfig!.map((x) => x.toJson())),
       };
 }
 
@@ -161,18 +167,14 @@ class VisitType {
       };
 }
 
-
-
 class AttachmentsConfig {
-  AttachmentsConfig({
-    this.id,
-    this.uuid,
-    this.name,
-    this.allowedFilesExtension,
-    this.mandatory,
-    this.maxSize
-
-  });
+  AttachmentsConfig(
+      {this.id,
+      this.uuid,
+      this.name,
+      this.allowedFilesExtension,
+      this.mandatory,
+      this.maxSize});
 
   int? id;
   int? maxSize;
@@ -180,28 +182,25 @@ class AttachmentsConfig {
   String? name;
   String? allowedFilesExtension;
   bool? mandatory;
-  factory AttachmentsConfig.fromJson(Map<String, dynamic> json) => AttachmentsConfig(
-    id: json["id"],
-    uuid: json["uuid"],
-    name: json["name"],
-    maxSize: json["maxSize"],
-    allowedFilesExtension: json["allowedFilesExtension"],
-    mandatory: json["mandatory"],
-
-  );
+  factory AttachmentsConfig.fromJson(Map<String, dynamic> json) =>
+      AttachmentsConfig(
+        id: json["id"],
+        uuid: json["uuid"],
+        name: json["name"],
+        maxSize: json["maxSize"],
+        allowedFilesExtension: json["allowedFilesExtension"],
+        mandatory: json["mandatory"],
+      );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "name": name,
-    "uuid": uuid,
-    "maxSize": maxSize,
-    "allowedFilesExtension": allowedFilesExtension,
-    "mandatory": mandatory,
-  };
+        "id": id,
+        "name": name,
+        "uuid": uuid,
+        "maxSize": maxSize,
+        "allowedFilesExtension": allowedFilesExtension,
+        "mandatory": mandatory,
+      };
 }
-
-
-
 
 class StatusDetail {
   StatusDetail({

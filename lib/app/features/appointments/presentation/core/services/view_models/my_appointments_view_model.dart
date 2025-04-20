@@ -29,8 +29,9 @@ class MyAppointmentsViewModel extends BaseViewModel {
         await _repository.getMyAppointments(
             pageIndex: pageIndex ?? 0,
             pageSize: pageSize ?? 20,
-            upcomingAppointments: upcomingAppointments,
-            autoLogout: autoLogout);
+            // upcomingAppointments: upcomingAppointments,
+            // autoLogout: autoLogout
+            );
     showLoad ? hideLoader() : null;
     if (response.item1 != null && response.item1!) {
       if (upcomingAppointments) {

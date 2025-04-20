@@ -10,6 +10,7 @@ import 'package:balady_plus/app/features/balady_calender/domain/repositories/bal
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_bloc.dart';
 import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
     as calendar;
+import 'package:balady_plus/app/features/ceritified_observer/data/repositories/repository_implementation.dart';
 import 'package:balady_plus/app/features/chatbot/data/data_sources/chat_bot_data_sources.dart';
 import 'package:balady_plus/app/features/chatbot/data/repositories/chat_bot_repository_implementation.dart';
 import 'package:balady_plus/app/features/chatbot/domain/repositories/chat_bot_repository.dart';
@@ -44,6 +45,8 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/shared_feature_exports.dart'
     show BridgeParams, DropDownItem, FileInfo;
 import '../../features/bottom_navigation/presentation/cubits/bottom_nav_bar_cubit.dart';
+import '../../features/ceritified_observer/data/data_source/remote_data_source.dart';
+import '../../features/ceritified_observer/domain/repository/repository.dart';
 import '../../features/classification_certificate/core/dependency_injection/classification_certificate_injection.dart';
 import '../../features/force_update/presentation/core/force_update_cubit.dart';
 import '../../features/location/presentation/bloc/location_bloc.dart';
@@ -257,6 +260,11 @@ void initialize() {
 
   sl.registerLazySingleton<QuestionRemoteDataSourceImplementation>(() => QuestionRemoteDataSourceImplementation(webService: sl()));
   sl.registerLazySingleton<SplashRemoteDataSource>(() => SplashRemoteDataSourceImpl(webService: sl()));
+
+  sl.registerLazySingleton<CertifiedObserverRemoteDataSource>(() => CertifiedObserverRemoteDataSourceImplementation(webService: sl()));
+  sl.registerLazySingleton<CertifiedObserverRepository>(() => CertifiedObserverRepositoryImplementation(remoteDataSource: sl()));
+
+
 
   /////////////// End
 

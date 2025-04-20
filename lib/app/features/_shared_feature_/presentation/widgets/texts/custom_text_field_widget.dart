@@ -152,7 +152,7 @@ class CustomTextFieldWidget extends StatelessWidget {
           children: [
             Flexible(
               child: WidgetLabel(
-                isRequired:!showOptional || isRequired ? true : false,
+                isRequired: !showOptional || isRequired ? true : false,
                 label: label,
                 labelStyle: labelStyle,
               ),
@@ -699,7 +699,7 @@ class _CustomTextFieldWithValueWidgetState
         // Label
         // if field is required, then show label beside asterisk e.g. *Username
         WidgetLabel(
-          isRequired: widget.isRequired ,
+          isRequired: widget.isRequired,
           label: widget.label,
           labelStyle: widget.labelStyle,
         ),

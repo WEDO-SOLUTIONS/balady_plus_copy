@@ -100,6 +100,7 @@ class RequestsListItem extends StatelessWidget {
                   request.redirectUrl,
                 );
               } else {
+
                 NavigationService.navigatorKey.currentState!.pushNamed(
                   routeName,
                   arguments: {
@@ -107,6 +108,7 @@ class RequestsListItem extends StatelessWidget {
                     "objectionRequestNumber":
                         request.requestNumberAsText.toString(),
                     "redirectUrl": request.redirectUrl,
+                    "hashingRequestNumber":request.hashingRequestNumber
                   },
                 );
               }

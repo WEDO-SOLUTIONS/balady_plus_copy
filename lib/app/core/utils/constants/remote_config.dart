@@ -141,6 +141,9 @@ class RemoteConfig {
 
   static String get movingVeichleCategoryKey =>
       _RemoteConfig.movingVeichleCategoryKey[env]!;
+
+  static String get QaseemCategoryKey =>
+      _RemoteConfig.QaseemCategoryKey[env]!;
 }
 
 //! First solution
@@ -652,6 +655,14 @@ class _RemoteConfig {
     preVal: "CG-53",
     prodVal: "CG-53",
     urbiPreVal: "CG-53",
+  );
+
+  static final QaseemCategoryKey = _initValues<String>(
+    devVal: "CG-61",
+    stgVal: "CG-61",
+    preVal: "CG-14",
+    prodVal: "CG-14",
+    urbiPreVal: "CG-61",
   );
 
   static Map<EnvType, T> _initValues<T>({

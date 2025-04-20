@@ -389,4 +389,57 @@ class CommercialModelEndPoints {
   static checkDebts({required String transactionType, required int transactionId}) => 'v1/debt-collection-services/mobile/debts/$transactionType/$transactionId';
 
   static getListDebtsPaging({required String referenceId, required int transactionId, required String transactionType}) => 'v1/debt-collection-services/mobile/debts/paging/$transactionType/$transactionId/$referenceId';
+
+
+///////////////// initail approvel request
+
+  static String commercialInitialApprovalApply =
+      "v1/balady-commercial-initial-approval-services/issuing/apply";
+
+  static const String InitialApprovalAccommodationTypes =
+      "/v1/balady-commercial-initial-approval-services/accommodation-types";
+
+  static  String InitialApprovalSubActivities (int requestID,int isicCode) =>
+      "/v1/balady-commercial-initial-approval-services/salama-activities-by-isic-number-with-facility/$isicCode/$requestID";
+
+  static  String InitialApprovalMainActivities (int requestID) =>
+      "/v1/balady-commercial-initial-approval-services/activities/isics/$requestID";
+  static  String InitialApprovalsubActivityDetails(String isicCode) =>
+      "/v1/balady-commercial-initial-approval-services/activities/$isicCode";
+
+  static  String InitialApprovalAddIsicActivities (int requestID)=>
+      "/v1/balady-commercial-initial-approval-services/cr-isic-activities/$requestID";
+
+  static String InitialApprovalAddetionalDetailsActivity(
+      String subActivity, int addetioanlActivityId) =>
+      'v1/balady-commercial-services/new-request/additional/activities/$subActivity/$addetioanlActivityId';
+  static String InitialApprovalRequestDetails( int requestId) =>
+      '/v1/balady-commercial-initial-approval-services/request/details/$requestId';
+
+  static String InitialApprovalCalculateFessInteractively(int requestId) =>
+      '/v1/balady-commercial-initial-approval-services/calculate-fees-interactively/$requestId';
+
+  static String InitialApprovalSubmit(int requestId) =>
+      '/v1/balady-commercial-initial-approval-services/issuing/submit/$requestId';
+
+
+  static String InitialApprovalSaveActivityAndSites(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/site-and-activities/$requestId";
+
+  static String applyLicenseExport(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/commercial/apply/$requestId";
+  static String intialApprovalConclusion(int requestId) =>
+      "/v1/balady-commercial-initial-approval-services/lookups/$requestId?typeId=ISSUING";
+
+  static String cancelIntialApproval(int requestId) => "/v1/balady-commercial-initial-approval-services/requests/$requestId";
+
+  static String getSPLNotifcation = "/v1/balady-commercial-mobile-services/spl/site-info";
+
+  static String replyWithNote(String requestId) => "/v1/balady-commercial-initial-approval-services/reply-note/$requestId";
+
+
+
+
+
+
 }

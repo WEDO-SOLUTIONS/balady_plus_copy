@@ -7,7 +7,7 @@ import 'package:smart_advisor/app/core/utils/constants/app_style.dart';
 import 'package:smart_advisor/app/features/shared_features/new_app_bar.dart';
 
 class SelectActivity extends StatefulWidget {
-  SelectActivity({super.key});
+  const SelectActivity({super.key});
 
   @override
   State<SelectActivity> createState() => _SelectActivityState();

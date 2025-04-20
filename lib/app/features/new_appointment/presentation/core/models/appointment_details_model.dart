@@ -101,7 +101,10 @@ class AppointmentItemInfo {
       this.visitTypeName,
       this.realEstateSurveyId,
       this.realEstateId,
-      this.realEstateRequestId});
+      this.realEstateRequestId,
+      this.existedWakeelVisit = false,
+      this.accepted_agreement = false,
+      });
 
   int? id;
   String? municipalityId;
@@ -152,6 +155,10 @@ class AppointmentItemInfo {
   String? realEstateSurveyId;
   String? realEstateId;
   String? realEstateRequestId;
+  bool? existedWakeelVisit;
+  bool? accepted_agreement;
+
+  
 
   String getFormattedVisitDate() {
     String originalDateString = visitDate ?? "";
@@ -234,6 +241,8 @@ class AppointmentItemInfo {
       realEstateSurveyId: json["realEstateSurveyId"],
       realEstateId: json["realEstateId"],
       realEstateRequestId: json["realEstateRequestId"],
+      existedWakeelVisit: json["existedWakeelVisit"] ,
+      accepted_agreement: json["accepted_agreement"],
       attachments: json["attachments"] == null
           ? []
           : List<Attachment>.from(

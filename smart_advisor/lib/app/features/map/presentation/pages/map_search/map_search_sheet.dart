@@ -4,8 +4,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:mapness/_features/landing/providers/search_in_rect.dart';
 import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/search.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -14,9 +17,7 @@ import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/map_search/ui/map_search_header_delegate.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
-
-import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/shared/extensions/router_extension.dart';
 import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -184,7 +185,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
 
       final isRtl = ref.read(appLanguageProvider) == Language.arabic;
       final markers = await searchState.results.getMarkers(
-        router: ref.read(appRouterProvider),
+        router: ref.read(goRouterProvider),
         icon: icon,
         isRtl: isRtl,
       );
@@ -267,15 +268,15 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> {
       ref.read(searchInRectProvider.notifier).update();
       searchObjectManager = null;
     });
-    ref.read(appRouterProvider).popForced();
+    context.pop();
   }
 
   Future<void> _setupTapListener() async {
     final dgisController = await ref.read(dgisControllerProvider.future);
     _streamSubscription = dgisController.objectTapEvents.listen((_) {
-      final router = ref.read(appRouterProvider);
+      final goRouter = ref.read(goRouterProvider);
 
-      if (router.current.name == SearchRoute.name) {
+      if (goRouter.isCurrentRoute(SearchRoute.path)) {
         _dgisSheetController.animateTo(Expansion.collapsed);
       }
     });

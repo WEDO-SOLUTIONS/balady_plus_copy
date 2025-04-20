@@ -1,15 +1,14 @@
 /*import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/router.dart';
+import 'package:mapness/app/routes/poi_map.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/_features/poi_card/domain/model/poi_camera_config.dart';
 
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
@@ -52,13 +51,11 @@ class MapSearchResults extends ConsumerWidget {
           );
 
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ref.read(appRouterProvider).push(
-                  PoiCardWidgetRoute(
-                      objectId: item.id!,
-                      cameraConfig: PoiCameraConfig(
-                        zoom: 18,
-                      )),
-                );
+            PoiMapRoute.open(
+              ref.read(goRouterProvider),
+              item.id!.objectId,
+              zoom: 18,
+            );
           });
         },
       ),

@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/errors/failures.dart';
@@ -242,9 +243,40 @@ class BaladyServices {
     return null;
   }
 
-  static void openIssueLicense() {
+  static void openObjections() {
     NavigationService.navigatorKey.currentState
-        ?.pushNamed(RouteName.commercialLicenseServicePage);
+        ?.pushNamed(RouteName.objectableTransactions);
+  }
+
+  static Future<bool> checkLocationSettings(BuildContext context) {
+    return CommonFunctions.checkLocationSettings(context);
+  }
+
+  static Future<String> getBuildingCompliance(
+      BuildContext context, double lat, double lon) async {
+    try {
+      var r = await GetBuildingCompliance(sl()).call(GISParams(x: lon, y: lat));
+
+      return r.getRight?.first.stageno ?? "";
+    } catch (ex) {
+      return "";
+    }
+  }
+
+  ////
+  ///
+  ///
+
+  static bool isLoggedIn() {
+    return CommonProperties.isLoggedInMunicipality;
+  }
+
+  static void openIssueLicense() {
+    // NavigationService.navigatorKey.currentState
+    //   ?.pushNamed(CommercialRouteName.commercialLicensePage);
+
+    launchUrl(Uri.parse(
+        "https://balady.gov.sa/ar/services/%D8%A5%D8%B5%D8%AF%D8%A7%D8%B1-%D8%B1%D8%AE%D8%B5%D8%A9-%D8%AA%D8%AC%D8%A7%D8%B1%D9%8A%D8%A9"));
   }
 
   static void openChatGPT() {
@@ -263,23 +295,56 @@ class BaladyServices {
     }
   }
 
-  static void openObjections() {
-    NavigationService.navigatorKey.currentState
-        ?.pushNamed(RouteName.objectableTransactions);
+  static Future<bool> login() async {
+    if (CommonProperties.isLoggedInMunicipality) {
+      return Future.value(true);
+    } else {
+      return await showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  return Future.value(true);
+                }
+                return Future.value(false);
+              }));
+    }
   }
 
-  static Future<bool> checkLocationSettings(BuildContext context) {
-    return CommonFunctions.checkLocationSettings(context);
+  static String get token => CommonProperties.token;
+  static String get userId => CommonProperties.userInfo?.idNo ?? "";
+
+  static void navigateToLicenseMangments() {
+    if (CommonProperties.isLoggedInMunicipality) {
+      NavigationService.navigatorKey.currentState
+          ?.pushNamed(RouteName.requests);
+    } else {
+      showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  NavigationService.navigatorKey.currentState
+                      ?.pushNamed(RouteName.requests);
+                }
+              }));
+    }
   }
 
-  static Future<String> getBuildingCompliance(
-      BuildContext context, double lat, double lon) async {
-    try {
-      var r = await GetBuildingCompliance(sl()).call(GISParams(x: lon, y: lat));
-
-      return r.getRight?.first.stageno ?? "";
-    } catch (ex) {
-      return "";
+  static void navigateToLicense() {
+    if (CommonProperties.isLoggedInMunicipality) {
+      NavigationService.navigatorKey.currentState
+          ?.pushNamed(RouteName.licenses);
+    } else {
+      showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) =>
+              NeedLoginDialog(onSuccessLogin: (bool? isSuccess) async {
+                if (isSuccess ?? false) {
+                  NavigationService.navigatorKey.currentState
+                      ?.pushNamed(RouteName.licenses);
+                }
+              }));
     }
   }
 }

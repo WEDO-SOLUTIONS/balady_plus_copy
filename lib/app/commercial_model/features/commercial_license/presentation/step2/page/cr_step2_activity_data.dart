@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
@@ -63,6 +64,8 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                     current.selectedIsicActivity,
                                 builder: (context, step2State) {
                                   return CustomTapWidgetForLongDialog(
+
+                                      readOnly: sl<CommercialLicenseBloc>().state.isFromIntialApproval==true,
                                       items: state.getIsicActivities(),
                                       value: step2State.selectedIsicActivity,
                                       label: "step2_label1".tr(),
@@ -83,12 +86,14 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                               );
                             },
                           ),
+
                           BlocBuilder<CrStep2ActivityDataCubit,
                               CrStep2ActivityDataState>(
                             builder: (context, state) {
                               return CustomTapWidgetForLongDialog(
                                   items: state.subActivities,
                                   value: state.selectedSubActivity,
+                                  readOnly: sl<CommercialLicenseBloc>().state.isFromIntialApproval==true,
                                   isLoading: state
                                       .subActivitiesStatus.isSubmissionLoading,
                                   label: 'step2_label2'.tr(),
@@ -117,13 +122,16 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                             showSpace: false,
                           ),
                           const CustomVerticalSpace(height: 16),
+
+                          sl<CommercialLicenseBloc>().state.isFromIntialApproval !=true?
                           CustomTextFieldWidget(
+
                             label: 'step2_label4'.tr(),
                             hintText: 'label4_hint'.tr(),
                             isDigitsOnly: true,
                             initialValue: state.totalArea != null
                                 ? state.totalArea.toString()
-                                : null,
+                                : '',
                             keyboardType: TextInputType.number,
                             suffixIcon: CustomTextWidget(
                               "m2".tr(),
@@ -137,20 +145,29 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                                   .read<CrStep2ActivityDataCubit>()
                                   .updateArea(double.tryParse(value ?? ""));
                             },
-                          ),
+
+                          ) :ReadOnlyField(
+                            title: "step2_label4".tr(),
+                            subTitle: state.getMainActivityArea().toString(),
+                            showSpace: false,
+                          ) ,
                           const CustomVerticalSpace(height: 12),
                           if (state.showHotel()) ...[
-                            AccomodationDropDownTypes(),
+                            const AccomodationDropDownTypes(),
                             const CustomVerticalSpace(height: 16),
+
+
                             CustomTextFieldWidget(
+                              readOnly: sl<CommercialLicenseBloc>().state.isFromIntialApproval==true,
                               label: "lbl_unit".tr(),
                               hintText: "lbl_unit".tr(),
                               isDigitsOnly: true,
+
                               initialValue: state.unitCount != null
                                   ? state.unitCount.toString()
                                   : null,
                               keyboardType: TextInputType.number,
-                              suffixIcon: CustomTextWidget(
+                              suffixIcon: const CustomTextWidget(
                                 "",
                                 fontSize: 12,
                                 fontWeight: AppFontWeight.semiBold,
@@ -167,7 +184,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           ],
                           ReadOnlyField(
                             title: "cr_main_activity_area".tr(),
-                            subTitle: state.getTotalArea().toString(),
+                            subTitle: state.getMainActivityArea().toString(),
                             showSpace: false,
                           ),
                           const CustomVerticalSpace(height: 16),
@@ -218,9 +235,11 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                           WorkerTypeComponent(
                             selectedWorkerType: state.workerType,
                             onSelectedType: (type) {
-                              context
-                                  .read<CrStep2ActivityDataCubit>()
-                                  .updateWorkerType(type);
+                             if( sl<CommercialLicenseBloc>().state.isFromIntialApproval!=true){
+                                context
+                                    .read<CrStep2ActivityDataCubit>()
+                                    .updateWorkerType(type);
+                              }
                             },
                           ),
                           const CustomVerticalSpace(height: 16),
@@ -232,6 +251,7 @@ class _CRStep2ActivityDataState extends State<CRStep2ActivityData> {
                     ),
                   ),
                 ),
+
 
                 (state.subActivityDetailsStatus.isSubmissionLoading ||
                         state.status.isSubmissionLoading)

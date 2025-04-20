@@ -1,3 +1,5 @@
+import 'package:auto_size_text/auto_size_text.dart';
+
 import '/app/core/utils/constants/app_colors.dart';
 import '/app/core/utils/constants/app_style.dart';
 import '/app/features/_shared_feature_/domain/entities/lookUp_response.dart';
@@ -7,9 +9,13 @@ class CalculatorDropdown extends StatefulWidget {
   final String title;
   final List<LookUpItem> list;
   final Function onSelect;
+  final Key? key;
 
   const CalculatorDropdown(
-      {required this.title, required this.list, required this.onSelect});
+      {required this.title,
+      required this.list,
+      required this.onSelect,
+      this.key});
   @override
   _CalculatorDropdownState createState() => _CalculatorDropdownState();
 }
@@ -23,6 +29,7 @@ class _CalculatorDropdownState extends State<CalculatorDropdown> {
   @override
   Widget build(BuildContext context) {
     return Column(
+      key: widget.key,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
@@ -59,17 +66,19 @@ class _CalculatorDropdownState extends State<CalculatorDropdown> {
                 return DropdownMenuItem<LookUpItem>(
                   value: option,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 10.0),
                     child: Row(
                       children: [
                         //   Icon(Icons.check_circle_outline, color: Colors.teal),
                         //    SizedBox(width: 10),
-                        Text(
-                          option.name,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.black87,
+                        Flexible(
+                          child: AutoSizeText(
+                            option.name,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.black87,
+                            ),
                           ),
                         ),
                       ],

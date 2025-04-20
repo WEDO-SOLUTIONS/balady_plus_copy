@@ -262,9 +262,10 @@ class _MapPageState extends State<MapPage> {
                     id: zone.guid ?? "",
                     options: PolygonOptionsMessage(contours: [
                       zone.polygon?.rings?.firstOrNull
-                          ?.map((r) =>
-                              GeoPointMessage(latitude: r[1], longitude: r[0]))
-                          .toList() ?? []
+                              ?.map((r) => GeoPointMessage(
+                                  latitude: r[1], longitude: r[0]))
+                              .toList() ??
+                          []
                     ]));
 
                 controller.addPolygon(p);
@@ -293,7 +294,7 @@ class _MapPageState extends State<MapPage> {
                         initCameraPositionPoint();
                       }),
                     ),
-                    const Positioned(bottom: 300, left: 12, child: TagMap()),
+                    Positioned(bottom: 300, left: 12, child: const TagMap()),
 
                     /* GestureDetector(
                       onTap: () {

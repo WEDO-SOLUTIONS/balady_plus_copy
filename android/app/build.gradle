@@ -30,7 +30,7 @@ if (keystorePropertiesFile.exists()) {
 }
 
 android {
-    compileSdkVersion 34
+    compileSdkVersion 35
     namespace "momra.balady.android"
 
     compileOptions {
@@ -146,3 +146,4 @@ dependencies {
 
 }
 apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.huawei.agconnect'

@@ -1,4 +1,4 @@
-import 'dart:convert' show base64Decode, base64Encode, utf8;
+import 'dart:convert' show base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
@@ -113,6 +113,10 @@ import 'enums/enums.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
+
+import 'package:http/http.dart' as http;
+
+
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
 FirebaseAnalytics fbAnalytics = FirebaseAnalytics.instance;
@@ -209,6 +213,7 @@ class CommonFunctions {
     PackageDetails info = sl();
     NotificationRequest request = NotificationRequest();
     request.fcmToken = fcm;
+    request.FCMTokenSource = await isHawaiiDevice()?"HUAWEI":"FIREBASE";
     request.appId = GeneralKey.appId;
     request.device = device;
     request.appVersion = info.version;
@@ -427,6 +432,9 @@ class CommonFunctions {
 
     await OpenFile.open(url);
   }
+
+
+
 
   static String getDayName(String? dateStr) {
     String dayName = "";
@@ -1006,7 +1014,8 @@ class CommonFunctions {
 
   static showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
-      if (error.contains("https")) {
+
+      if (error.contains("https")||error.toLowerCase().contains("momra.gov.sa")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
             NavigationService.navigatorKey.currentContext!,
             error,
@@ -1474,6 +1483,9 @@ class CommonFunctions {
     }
   }
 
+
+
+
   static void showApigeeFile(String fileUrl, String fileName,
       {int? serviceId}) async {
     print(fileName);
@@ -1737,6 +1749,59 @@ class CommonFunctions {
       return true;
     return false;
   }
+
+
+  static String? hijriToGregorian(String? hijriDate ) {
+
+    try
+    {
+      if(hijriDate != null && hijriDate.isNotEmpty) {
+
+        List<int> dateSplitted =
+        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
+            .split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        var gDate = HijriCalendar();
+        DateTime gorgianDate = gDate.hijriToGregorian(
+            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+        String? gorgian  = DateFormat('yyyy/MM/dd').format(gorgianDate);
+
+
+        return CommonFunctions.padHijriDate(gorgian);
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
+
+  /////////////
+  static Future<DateTime?> fetchOnlineDateTimeForKSA() async {
+    try {
+      // World Time API URL for Saudi Arabia (Asia/Riyadh)
+      final url = Uri.parse('http://worldtimeapi.org/api/timezone/Asia/Riyadh');
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        final dateTimeString =
+        data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+        return DateTime.parse(dateTimeString);
+      } else {
+        print('Failed to fetch time: ${response.statusCode}');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching KSA date and time: $e');
+      return null;
+    }
+  }
+
 }
 
 class CommonProperties {

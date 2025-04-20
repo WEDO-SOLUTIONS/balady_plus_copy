@@ -17,6 +17,7 @@ import '/app/features/map/domain/entities/gis_data_request.dart';
 import '/app/features/map/domain/entities/validate_point_request.dart';
 import 'package:dio/dio.dart' show DioException, Options, Options;
 import '/app/core/utils/constants/language.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../../core/errors/errors_exports.dart' show ServerException;
 import '../../../../core/services/services_exports.dart'
@@ -58,8 +59,8 @@ class SmartAdvisorMapRemoteDataSourceImplementation
         queryParameters: params.toMap(),
         options: Options(headers: {
           "verifyingKEY": CommonFunctions.hashRequest(
-            q,
-            "GET",
+            q, "GET",
+            // authorization: BaladyServices.token.isNotEmpty ? true : false
           )
         }),
       );
@@ -138,8 +139,10 @@ class SmartAdvisorMapRemoteDataSourceImplementation
       ValidatePointRequest params) async {
     try {
       final verifyingKEY = CommonFunctions.hashRequest(
-          sl<EnvType>().domain + ApiUrls.validatePoint, "POST",
-          body: json.encode(params.toJson()));
+        sl<EnvType>().domain + ApiUrls.validatePoint, "POST",
+        body: json.encode(params.toJson()),
+        // authorization: BaladyServices.token.isNotEmpty ? true : false
+      );
 
       final response = await webService.dio.post(ApiUrls.validatePoint,
           data: params.toJson(),

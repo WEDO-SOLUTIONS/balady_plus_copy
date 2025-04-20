@@ -9,7 +9,9 @@ import 'package:smart_advisor/app/features/shared_features/widgets/custom_button
 
 class RatingDialog extends StatefulWidget {
   final Function onSelection;
-  const RatingDialog({super.key, required this.onSelection});
+  final bool isGuest;
+  const RatingDialog(
+      {super.key, required this.onSelection, required this.isGuest});
 
   @override
   State<RatingDialog> createState() => _RatingDialogState();
@@ -145,7 +147,7 @@ class _RatingDialogState extends State<RatingDialog> {
                                   height: 4,
                                 ),
                                 Text(
-                                  "5",
+                                  "3",
                                   style: AppStyle.textRegularRomanStyle
                                       .copyWith(
                                           fontSize: 14,
@@ -177,7 +179,7 @@ class _RatingDialogState extends State<RatingDialog> {
                     ),
                     child: Row(
                       children: [
-                        Expanded(
+                        /* Expanded(
                             child: CustomButton(
                           onPress: () {
                             Navigator.of(context).pop();
@@ -189,7 +191,7 @@ class _RatingDialogState extends State<RatingDialog> {
                         )),
                         const SizedBox(
                           width: 16,
-                        ),
+                        ),*/
                         Expanded(
                             flex: 2,
                             child: CustomButton(

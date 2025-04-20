@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smart_advisor/app/core/utils/constants/app_colors.dart';
+import 'package:smart_advisor/app/core/utils/constants/app_config.dart';
 import 'package:smart_advisor/app/core/utils/constants/app_style.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
+import 'package:smart_advisor/app/core/utils/constants/language.dart';
+
+import '../../../../../core/services/local/navigation_services.dart';
+import '../../../../../core/utils/constants/route_names.dart';
 
 class ChatgptWidget extends StatelessWidget {
   const ChatgptWidget({super.key});
@@ -10,7 +15,8 @@ class ChatgptWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        BaladyServices.openChatGPT();
+        NavigationService.navigatorKey.currentState!
+            .pushNamed(RouteName.qrDetails);
       },
       child: Container(
         height: 120,
@@ -29,7 +35,7 @@ class ChatgptWidget extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "لديك استفسار محدد ؟",
+                    "scanQR".tr(),
                     style: AppStyle.calloutBoldStyle
                         .copyWith(color: AppColor.textPrimaryColor),
                   ),
@@ -40,6 +46,12 @@ class ChatgptWidget extends StatelessWidget {
                       text: TextSpan(
                         children: [
                           TextSpan(
+                              text: "scanQrDetails".tr(),
+                              style: AppStyle.footNoteMediumStyle.copyWith(
+                                  color: AppColor.textSecondaryColor,
+                                  height: 1.7))
+
+                          /* TextSpan(
                             text: 'ابدأ المحادثة مع',
                             style: AppStyle.footNoteMediumStyle.copyWith(
                                 color: AppColor.textSecondaryColor,
@@ -55,7 +67,7 @@ class ChatgptWidget extends StatelessWidget {
                             style: AppStyle.footNoteMediumStyle.copyWith(
                                 color: AppColor.textSecondaryColor,
                                 height: 1.7),
-                          ),
+                          ),*/
                         ],
                       ),
                     ),
@@ -63,7 +75,7 @@ class ChatgptWidget extends StatelessWidget {
                 ],
               ),
               Image.asset(
-                  'packages/smart_advisor/smart_advisor_assets/images/chatGPTlogo.png')
+                  'packages/smart_advisor/smart_advisor_assets/images/barcode.png')
             ],
           ),
         ),

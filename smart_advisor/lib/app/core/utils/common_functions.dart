@@ -13,6 +13,7 @@ import 'package:smart_advisor/app/features/shared_features/widgets/webview_page.
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import './utils_exports.dart' show AppConfig, AppLanguage;
 import 'constants/app_colors.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 class CommonFunctions {
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>
@@ -29,6 +30,21 @@ class CommonFunctions {
               color: AppColor.white,
             ),
             backgroundColor: const Color.fromARGB(255, 204, 51, 51),
+            hideCloseButton: true,
+            duration: const Duration(seconds: 3));
+      } catch (_) {}
+    }
+  }
+
+  static showSuccess(String error) {
+    if (error.isNotEmpty) {
+      try {
+        BotToast.showSimpleNotification(
+            title: error,
+            titleStyle: const TextStyle(
+              color: AppColor.white,
+            ),
+            backgroundColor: const Color(0xFF389492),
             hideCloseButton: true,
             duration: const Duration(seconds: 3));
       } catch (_) {}
@@ -83,13 +99,12 @@ class CommonFunctions {
     }));
   }
 
-  static String hashRequest(
-    String url,
-    String method, {
-    String? body,
-    bool authorization = false,
-    String? corelationId,
-  }) {
+  static String hashRequest(String url, String method,
+      {String? body,
+      bool authorization = false,
+      String? corelationId,
+      String? loginIdentityId,
+      String? loginIdentityType}) {
     //var encodedURL = Uri.encodeComponent(url);
 
     String message = "";
@@ -97,10 +112,17 @@ class CommonFunctions {
     if (body != null) {
       message += body.replaceAll(RegExp(r'^/\\n/g'), "");
     }
+
+    if (authorization) message += 'Bearer ${BaladyServices.token}';
+    print("message $message");
+    if (loginIdentityId != null) message += loginIdentityId;
+
+    if (loginIdentityType != null) message += loginIdentityType;
+
     /*message.errorLog();
     ;
     body.errorLog();*/
-
+    print("message $message");
     message.trim();
     print(message);
     String hmCode = sl<EnvType>().isProd

@@ -36,6 +36,7 @@ class _MainFlowPageState extends State<MainFlowPage> {
         },
         child: BlocBuilder<MainFlowBloc, MainFlowState>(
           builder: (context, state) {
+            List<Widget> steps = context.read<MainFlowBloc>().getStepsPages();
             return Stack(
               children: [
                 Scaffold(
@@ -52,7 +53,7 @@ class _MainFlowPageState extends State<MainFlowPage> {
                             fit: BoxFit
                                 .cover, // Adjust the fit of the image if needed
                           ),
-                          borderRadius: const BorderRadius.only(
+                          borderRadius: BorderRadius.only(
                             bottomLeft: Radius.circular(20),
                             bottomRight: Radius.circular(20),
                           ),
@@ -72,14 +73,11 @@ class _MainFlowPageState extends State<MainFlowPage> {
                             Expanded(
                               child: PageView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount:
-                                      context.read<MainFlowBloc>().steps.length,
+                                  itemCount: steps.length,
                                   controller:
                                       context.read<MainFlowBloc>().controller,
                                   itemBuilder: (ctx, index) {
-                                    return context
-                                        .read<MainFlowBloc>()
-                                        .steps[index];
+                                    return steps[index];
                                   }),
                             ),
                             CustomBottomButtons(
@@ -137,7 +135,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   Widget build(BuildContext context) {
     int step = getStep(widget.currentStep);
     return Container(
-      padding: EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       child: Row(
         children: [
           StepIcon(
@@ -198,7 +196,7 @@ class _StepperWidgetState extends State<StepperWidget> {
   }
 
   int getValue(int currentIndex) {
-    print("current Step ${currentIndex}");
+    print("current Step $currentIndex");
     switch (currentIndex) {
       case 0:
       case 1:
@@ -296,7 +294,7 @@ class StepBar extends StatelessWidget {
                             ? 1
                             : 0, // Value between 0.0 and 1.0
             minHeight: 10, // Customize height
-            backgroundColor: Color(0xffDDE1EC), // Background color
+            backgroundColor: const Color(0xffDDE1EC), // Background color
             color: const Color(0xff568F64), // Active progress color
           ),
         ),

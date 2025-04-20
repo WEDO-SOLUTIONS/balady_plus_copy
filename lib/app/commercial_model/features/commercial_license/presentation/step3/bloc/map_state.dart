@@ -14,6 +14,7 @@ class MapState extends Equatable {
   final String? mapNo;
   final bool? draftLoaded;
   final BlocStatus draftStatus;
+  final String? splNotification;
   MapState(
       {this.status = BlocStatus.initial,
       this.errorMessage,
@@ -27,6 +28,7 @@ class MapState extends Equatable {
       this.landNo,
       this.mapNo,
       this.draftLoaded,
+        this.splNotification,
       this.draftStatus = BlocStatus.initial});
 
   MapState copyWith(
@@ -42,6 +44,7 @@ class MapState extends Equatable {
       final String? landNo,
       final String? mapNo,
       final bool? draftLoaded,
+        final String? splNotification,
       final BlocStatus? draftStatus}) {
     return MapState(
         status: status ?? this.status,
@@ -56,6 +59,7 @@ class MapState extends Equatable {
         landNo: landNo ?? this.landNo,
         mapNo: mapNo ?? this.mapNo,
         draftLoaded: draftLoaded ?? this.draftLoaded,
+        splNotification:splNotification??this.splNotification,
         draftStatus: draftStatus ?? this.draftStatus);
   }
 
@@ -80,6 +84,7 @@ class MapState extends Equatable {
         mapNo,
         landNo,
         draftLoaded,
+       splNotification,
         draftStatus
       ];
 }

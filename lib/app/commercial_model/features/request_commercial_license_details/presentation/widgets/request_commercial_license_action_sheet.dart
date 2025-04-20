@@ -12,6 +12,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:provider/provider.dart';
 
+import '../../../commercial_license/domain/entities/request_info_arragments.dart';
+
 class RequestCommercialLicenseActionSheet extends StatelessWidget {
   const RequestCommercialLicenseActionSheet({super.key});
 
@@ -44,12 +46,16 @@ class RequestCommercialLicenseActionSheet extends StatelessWidget {
                                                 .renewCommercialLicenseSubmitForm,
                                             arguments: provider.requestId,
                                           );
-                                        } else if (provider.requestTypeId ==
-                                            1004) {
+                                        } else if (provider.requestTypeId == 1004) {
+
+                                          // fawzi check if it from
                                           Navigator.of(context).pushNamed(
                                             CommercialRouteName.commercialLicensePage,
-                                            arguments: provider.requestId,
+                                            arguments: RequestInfoArragments(requestId: provider.requestId,isFromIntialApproval: provider.isFromInitialApproval),
                                           );
+
+
+
                                         } else {
                                           try {
                                             Navigator.of(context)

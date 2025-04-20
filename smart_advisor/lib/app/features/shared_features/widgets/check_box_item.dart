@@ -8,11 +8,13 @@ class CheckBoxItem extends StatelessWidget {
   final Function(bool?) onSelect;
   final String title;
   final Color? color;
+  final bool? isDeleting;
   const CheckBoxItem(
       {super.key,
       required this.currentValue,
       required this.onSelect,
       required this.title,
+      this.isDeleting = false,
       this.color});
 
   @override
@@ -33,7 +35,8 @@ class CheckBoxItem extends StatelessWidget {
             value: currentValue,
             onChanged: onSelect,
             checkColor: AppColor.white,
-            activeColor: AppColor.primary,
+            activeColor:
+                isDeleting! ? AppColor.statusAttentionColor : AppColor.primary,
           ),
           const SizedBox(
             width: 8,
