@@ -1,10 +1,11 @@
+import 'dart:io';
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
-
-import 'layout_size_wrapper.dart';
 
 class EtaFinished extends ConsumerStatefulWidget {
   final VoidCallback onEndTripPressed;
@@ -31,17 +32,21 @@ class EtaFinished extends ConsumerStatefulWidget {
 class _EtaFinishedState extends ConsumerState<EtaFinished> {
   @override
   Widget build(BuildContext context) {
-    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0.0);
+
     return ValueListenableBuilder(
       valueListenable: widget.expansionNotifier,
-      builder: (context, value, child) => EtaSheetWrapper(
-        isExpanded: value,
+      builder: (context, isExpanded, child) => EtaSheetWrapper(
         onSizeChanged: widget.onSizeChanged,
         child: BaseRoadPanel(
           roadPanelModel: RoadPanelModelArrived(
+            padding: (!landscape && !isExpanded)
+                ? EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: bottomPadding)
+                : EdgeInsets.only(bottom: !isExpanded ? bottomPadding : 0.0),
             isLeadingIconAvailable: !landscape,
             onSearchTap: widget.onSearchPressed,
-            enabledHeader: value,
+            enabledHeader: isExpanded,
             title: context.l10n.youArrived,
             onTapBurger: toggle,
             buttons: [

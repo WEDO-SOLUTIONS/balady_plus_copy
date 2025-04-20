@@ -191,7 +191,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         await mapObjectManager.removeAllMarkers();
       }
       await mapObjectManager.addMarkers(markers);
-    } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
+    } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory && searchState.searchText.isEmpty) {
       await mapObjectManager.removeAllMarkers();
     }
   }

@@ -106,7 +106,7 @@ class MapSuggestList extends ConsumerWidget {
                 final searchState = ref.read(searchProvider(scope.value));
                 final title = searchState.searchText;
 
-                search.searchByText(title);
+                search.searchMore(title);
               },
             ),
           )

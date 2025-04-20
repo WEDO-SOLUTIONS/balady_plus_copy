@@ -418,6 +418,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.search(
       queryText,
@@ -435,6 +436,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -452,6 +454,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.searchByQuery(
       query,
@@ -460,6 +463,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -477,6 +481,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.searchByCategory(
       category,
@@ -485,6 +490,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -502,6 +508,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.searchByRubrics(
       rubrics,
@@ -510,6 +517,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -530,8 +538,9 @@ class DgisMapPlugin extends FlutterMapApi {
     String queryText, {
     List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
+    String? locale,
   }) =>
-      _api.fetchSuggests(queryText, allowedResultTypes, searchRect);
+      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale);
 
   /// Get distance to the specified points.
   Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage> points) {

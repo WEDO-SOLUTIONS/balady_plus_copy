@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -16,12 +18,12 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 
-import 'layout_size_wrapper.dart';
-
 class EtaSheet extends ConsumerStatefulWidget {
+  final AnimationInfo? animationInfo;
   final VoidCallback? onSearchPressed;
   final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
@@ -36,6 +38,7 @@ class EtaSheet extends ConsumerStatefulWidget {
     required this.onBetterRouteReject,
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
+    this.animationInfo,
     this.onSearchPressed,
     this.onTapRoute,
     super.key,
@@ -50,15 +53,17 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
 
   @override
   Widget build(BuildContext context) {
+    final bottomPadding = MediaQuery.viewPaddingOf(context).bottom + (Platform.isAndroid ? Spacing.$5x : 0.0);
+
     final eta = ref.watch(pathNavEtaProvider);
-    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
     _isExpanded = eta?.isExpanded ?? false;
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
     final voiceName = soundSettingsModel.voiceName;
     final l10n = context.l10n;
-    final colorsV2 = context.colorsV2;
+    final colorsV3 = context.colorsV3;
     final color = context.color;
     final textStyleV3 = context.textStyleV3;
     ref
@@ -72,17 +77,22 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
     final _subtitleVoiceInstruction =
         voiceName != null ? '$_voiceInstructionTypeTitle • $voiceName' : _voiceInstructionTypeTitle;
 
+    final padding = (landscape || !_isExpanded) ? Spacing.$4x : 0.0;
     return EtaSheetWrapper(
-      isExpanded: _isExpanded,
       onSizeChanged: widget.onSizeChanged,
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
-      backgroundColor: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
-          contentColor: colorsV2.backgroundSurface4,
+          padding: EdgeInsets.only(
+            left: padding,
+            right: padding,
+            bottom: _isExpanded ? 0.0 : bottomPadding,
+          ),
+          contentColor: landscape ? colorsV3.backgroundSurface1 : colorsV3.backgroundSurface4,
           enabledHeader: _isExpanded,
+          animationInfo: widget.animationInfo,
           distanceChild: NaviChildModel(
             description: eta != null ? eta.distanceEtaUnits.getDescription(context) : '--',
             title: eta != null ? formatDistance(eta.distanceEta) : '--',
@@ -129,16 +139,12 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                   color: color.textAndIconsBaseSecondary,
                 ),
                 titleStyle: textStyleV3.bodyLargeMedium.copyWith(
-                  color: colorsV2.foregroundDefault,
+                  color: colorsV3.foregroundDefault,
                 ),
                 wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
                 title: l10n.voiceInstruction,
                 subtitle: _subtitleVoiceInstruction,
-                padding: const EdgeInsets.symmetric(
-                  vertical: Spacing.$4x,
-                  horizontal: Spacing.$4x,
-                ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
@@ -165,7 +171,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
               onTap: () => context.router.push(const NavigatorSettingsRoute()),
               options: ContentRowOptions(
                 titleStyle: textStyleV3.bodyLargeRegular.copyWith(
-                  color: colorsV2.foregroundDefault,
+                  color: colorsV3.foregroundDefault,
                 ),
                 wrapperColor: color.surfaceBaseTertiary,
                 wrapperEnabled: true,
@@ -173,10 +179,6 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 leadingIcon: Icon(
                   SystemIcons.settings,
                   color: color.textAndIconsBaseSecondary,
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: Spacing.$3x,
-                  horizontal: Spacing.$4x,
                 ),
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
@@ -186,18 +188,13 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
               ),
             ),
-            Spacing.$3x.heightBox,
           ],
           buttons: [
-            Container(
-              color: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
-              padding: const EdgeInsets.all(Spacing.$4x),
-              child: AppButton(
-                buttonColorScheme: ButtonColorScheme.warning,
-                primaryLabel: l10n.endTrip,
-                onTap: widget.onEndTripPressed,
-              ),
-            )
+            AppButton(
+              buttonColorScheme: ButtonColorScheme.warning,
+              primaryLabel: l10n.endTrip,
+              onTap: widget.onEndTripPressed,
+            ),
           ],
           onTapBurger: toggle,
           isSearchShowing: !landscape,

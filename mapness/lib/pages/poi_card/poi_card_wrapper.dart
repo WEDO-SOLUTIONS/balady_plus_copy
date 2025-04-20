@@ -18,6 +18,35 @@ class _PoiCardWrapper extends ConsumerStatefulWidget {
 }
 
 class _WrapperState extends ConsumerState<_PoiCardWrapper> {
+  bool prevRouteNavi = false;
+
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final routes = context.router.stack;
+      prevRouteNavi = routes.length >= 2 && routes[routes.length - 2].name == PathNavRoute.name;
+    });
+  }
+
+  @override
+  void dispose() {
+    if (prevRouteNavi) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeRight,
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final viewModelProvider = poiCardProviderProvider(

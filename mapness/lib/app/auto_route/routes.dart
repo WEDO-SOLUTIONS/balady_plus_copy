@@ -75,6 +75,10 @@ class Routes {
           page: LanguagePickSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
         ),
+        CustomRoute(
+          path: '/flips_continue',
+          page: FlipsContinueRoute.page,
+        ),
       ];
 
   static AutoRoute get bottomMenuRoute => AppRoute(

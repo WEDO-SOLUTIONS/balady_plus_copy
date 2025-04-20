@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
@@ -13,6 +15,7 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:mapness/shared/utils/language_detector.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'search.g.dart';
@@ -40,25 +43,41 @@ class Search extends _$Search {
   ];
 
   SearchType? _previousType;
+  SearchResultMessage? _result;
   String? _previousQuery;
   SearchQueryMessage? _previousSearchQueryMessage;
   QuickFilter? _previousQuickSearch;
   CancelableOperation? _searchOperation;
+  SearchRequestLang? _currentQueryLocale;
+
+  // Timer to start full search if we don't get any results
+  // Should be canceled
+  Timer? _fullSearchTimer;
 
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
 
   @override
-  SearchState build(String scope) => const SearchStateHistory();
+  SearchState build(String scope) {
+    if (_result != null && _previousQuery != null) {
+      return SearchStateResults(results: _result!, searchText: _previousQuery!);
+    }
+
+    return SearchStateHistory(searchText: _previousQuery ?? '');
+  }
 
   void clear() {
     _searchOperation?.cancel();
     state = const SearchStateHistory();
     _previousType = null;
     _previousQuery = null;
+    _result = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
+    _currentQueryLocale = null;
+    _fullSearchTimer?.cancel();
+    _fullSearchTimer = null;
   }
 
   Future<void> searchQueryChanged(String query) async {
@@ -82,6 +101,7 @@ class Search extends _$Search {
         state = const SearchStateHistory();
         return;
       }
+      await _setUpLocale(query);
 
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
@@ -98,14 +118,15 @@ class Search extends _$Search {
       mixpanel?.timeEvent('Search: fetchSuggest');
       // -- Analytics
 
-      final dgisController = await ref.read(dgisControllerProvider.future);
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final dgisController = await ref.read(dgisControllerProvider.future);
 
       final searchOperation = CancelableOperation.fromFuture(
         dgisController.fetchSuggest(
           query,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -117,6 +138,17 @@ class Search extends _$Search {
               suggest: result,
               searchText: query,
             );
+      // BSA-1931: We need to start full search if we don't get any results
+      // and user types more than 2 symbols
+      if (query.length > 2 && state is SearchStateEmpty) {
+        _fullSearchTimer?.cancel();
+        _fullSearchTimer = Timer(
+          const Duration(seconds: 1),
+          () {
+            searchByText(query);
+          },
+        );
+      }
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
@@ -138,6 +170,7 @@ class Search extends _$Search {
     }
     try {
       state = SearchStateLoading(searchText: searchQuery);
+      await _setUpLocale(searchQuery);
 
       _previousType = SearchType.quickSearch;
       _previousQuickSearch = quickSearch;
@@ -165,6 +198,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -184,6 +218,7 @@ class Search extends _$Search {
               searchText: searchQuery,
               markerType: quickSearch.markerType,
             );
+      _result = results;
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
@@ -194,7 +229,10 @@ class Search extends _$Search {
   Future<void> searchByText(String query) async {
     try {
       await _searchOperation?.cancel();
-      state = SearchStateLoading(searchText: query);
+      if (state is! SearchStateSuggest) {
+        state = SearchStateLoading(searchText: query);
+      }
+      await _setUpLocale(query);
 
       _previousType = SearchType.searchByText;
       _previousQuery = query;
@@ -222,13 +260,14 @@ class Search extends _$Search {
           // TODO(Dmitrii): Search improved but we have to test it more so we could return `_getRestrictionFromRect()` here
           spatialRestriction: _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
       final zoom = ref.watch(cameraPositionProvider)?.zoom ?? 0;
-      if (zoom > 13) {
+      if (zoom > 13 && state is! SearchStateSuggest) {
         await _animateToRepresentativeArea(results: results);
       }
 
@@ -238,6 +277,7 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
+      _result = results;
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
@@ -253,6 +293,7 @@ class Search extends _$Search {
     try {
       await _searchOperation?.cancel();
       state = SearchStateLoading(searchText: text);
+      await _setUpLocale(text);
 
       _previousType = SearchType.searchByQuery;
       _previousQuery = text;
@@ -280,6 +321,7 @@ class Search extends _$Search {
           // TODO(Sergei): revert value to _saRestrictions when search performance is improved
           spatialRestriction: spatialRestriction ?? _saRestrictions,
           searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
         ),
       );
       _searchOperation = searchOperation;
@@ -293,6 +335,7 @@ class Search extends _$Search {
               results: results,
               searchText: text,
             );
+      _result = results;
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByQuery');
@@ -341,6 +384,11 @@ class Search extends _$Search {
         quickSearch(_previousQuickSearch!, spatialRestriction: _getRestrictionFromRect());
         break;
     }
+  }
+
+  Future<void> searchMore(String query) async {
+    state = SearchStateLoading(searchText: query);
+    await searchByText(query);
   }
 
   /// Here we send additional metrics because we want to know
@@ -413,6 +461,15 @@ class Search extends _$Search {
               ),
             ),
           );
+    }
+  }
+
+  Future<void> _setUpLocale(String query) async {
+    final currentLang = ref.read(appLanguageProvider).languageCode;
+    final localeOfRequest = LanguageDetector.detectLanguageConLocale(query, currentLang);
+
+    if (localeOfRequest != _currentQueryLocale) {
+      _currentQueryLocale = localeOfRequest;
     }
   }
 }
