@@ -1,7 +1,6 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class AppCloseButton extends StatelessWidget {
   const AppCloseButton({required this.onPressed, super.key});
@@ -37,27 +36,24 @@ class CustomCloseButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.only(bottom: Spacing.$4x),
         child: Material(
           borderRadius: borderRadius,
           child: InkWell(
             borderRadius: borderRadius,
             onTap: onClose,
-            child: Container(
-              height: 40,
-              width: 40,
-              decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(8),
+            child: SizedBox(
+              height: Spacing.$10x,
+              width: Spacing.$10x,
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(RadiusBorder.m),
+                  color: context.colorsV3.neutralContainerDefault.withOpacity(0.12),
                 ),
-                color: context.color.textAndIconsBasePrimary.withAlpha(10),
-              ),
-              padding: const EdgeInsets.all(8),
-              child: SvgPicture.asset(
-                'assets/icons/svg/ic_search_close.svg',
-                semanticsLabel: 'MinApps Screen',
-                package: 'mapness',
-                color: context.color.textAndIconsBasePrimary.withOpacity(0.7),
+                child: Padding(
+                  padding: const EdgeInsets.all(Spacing.$2x),
+                  child: SystemIcons.close.icon(color: context.colorsV3.neutralOnContainer),
+                ),
               ),
             ),
           ),

@@ -22,6 +22,10 @@
 	<string>$(FLUTTER_BUILD_NAME)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>speech</string>
+    <key>NSMotionUsageDescription</key>
+    <string>motion</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
@@ -32,6 +36,16 @@
 				<string>com.momra.balady</string>
 				<string>com.balady</string>
 				<string>apps.balady.gov.sa</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>insider</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>insiderbaladyappuat</string>
 			</array>
 		</dict>
 	</array>
@@ -79,10 +93,23 @@
 	<string>Your data will be used to deliver personalized ads to you.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
+		<key>CPSupportsDashboardNavigationScene</key>
+		<true/>
 		<key>UIApplicationSupportsMultipleScenes</key>
 		<true/>
 		<key>UISceneConfigurations</key>
 		<dict>
+			<key>CPTemplateApplicationDashboardSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneClassName</key>
+					<string>CPTemplateApplicationDashboardScene</string>
+					<key>UISceneConfigurationName</key>
+					<string>DashboardSceneConfiguration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>dgis_map.FlutterCarPlayDashboardSceneDelegate</string>
+				</dict>
+			</array>
 			<key>CPTemplateApplicationSceneSessionRoleApplication</key>
 			<array>
 				<dict>
@@ -103,26 +130,15 @@
 					<string>Main</string>
 				</dict>
 			</array>
-			<key>CPTemplateApplicationDashboardSceneSessionRoleApplication</key>
-            <array>
-                <dict>
-                    <key>UISceneClassName</key>
-                    <string>CPTemplateApplicationDashboardScene</string>
-                    <key>UISceneConfigurationName</key>
-                    <string>DashboardSceneConfiguration</string>
-                    <key>UISceneDelegateClassName</key>
-                    <string>dgis_map.FlutterCarPlayDashboardSceneDelegate</string>
-                </dict>
-            </array>
 		</dict>
-		<key>CPSupportsDashboardNavigationScene</key>
-        <true/>
 	</dict>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
@@ -132,8 +148,10 @@
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
-		<string>UIInterfaceOrientationPortrait</string>
-	</array>
+        <string>UIInterfaceOrientationPortrait</string>
+        <string>UIInterfaceOrientationLandscapeLeft</string>
+        <string>UIInterfaceOrientationLandscapeRight</string>
+    </array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>

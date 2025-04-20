@@ -11,6 +11,7 @@
 *.lock
 .svn/
 migrate_working_dir/
+lefthook-local.yml
 
 # IntelliJ related
 *.iml

@@ -15,13 +15,15 @@ import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-const weatherHeaderSize = 300.0;
+double weatherHeaderSize = 300.0;
 
 class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final GlobalKey cardKey;
 
   const WeatherCardHeaderDelegate({
     required this.bottomSheetController,
+    required this.cardKey,
   });
 
   @override
@@ -31,6 +33,7 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) =>
       DashboardHeader(
+        cardKey: cardKey,
         bottomSheetController: bottomSheetController,
       );
 
@@ -41,14 +44,16 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => weatherHeaderSize;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class DashboardHeader extends ConsumerWidget {
   final StatefulBottomSheetController bottomSheetController;
+  final GlobalKey cardKey;
 
   const DashboardHeader({
     required this.bottomSheetController,
+    required this.cardKey,
     super.key,
   });
 
@@ -77,6 +82,7 @@ class DashboardHeader extends ConsumerWidget {
       child: Data(
         allWeatherInfo: allWeatherInfo,
         locale: locale,
+        cardKey: cardKey,
         onTap: () {
           if (bottomSheetController.state == ThreeStateBottomSheet.expanded) {
             bottomSheetController.setState(ThreeStateBottomSheet.hidden);
@@ -93,10 +99,12 @@ class Data extends ConsumerWidget {
   final AllWeatherInfoEntity? allWeatherInfo;
   final Locale locale;
   final Function()? onTap;
+  final GlobalKey cardKey;
 
   const Data({
     required this.onTap,
     required this.allWeatherInfo,
+    required this.cardKey,
     required this.locale,
     super.key,
   });
@@ -118,9 +126,7 @@ class Data extends ConsumerWidget {
     );
 
     return Container(
-      height: weatherHeaderSize,
       decoration: const BoxDecoration(
-        // color: context.color.surfaceBasePrimary,
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(RadiusBorder.xl),
@@ -128,6 +134,8 @@ class Data extends ConsumerWidget {
         ),
       ),
       child: Column(
+        key: cardKey,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Spacing.$3x.heightBox,
           Row(

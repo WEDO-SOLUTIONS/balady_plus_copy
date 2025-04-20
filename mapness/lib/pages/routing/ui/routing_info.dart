@@ -10,6 +10,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/routing/ui/routes_carousel.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/pages/routing/lib/route_point_extension.dart';
@@ -27,14 +28,15 @@ import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
+  final List<RouteParamsPointWithLabel> pointsWithLabel;
   final List<RouteParamsPoint?> points;
   final bool isHomeOrWork;
 
-  const RoutingInfo({
-    required this.points,
+  RoutingInfo({
+    required this.pointsWithLabel,
     this.isHomeOrWork = false,
     super.key,
-  });
+  }) : points = pointsWithLabel.map((e) => e.value).toList();
 
   @override
   ConsumerState<RoutingInfo> createState() => _RoutingInfoState();
@@ -195,7 +197,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
             children: [
               Spacing.$4x.heightBox,
               RoutesCarousel(
-                points: widget.points,
+                points: widget.pointsWithLabel,
                 startNavigation: (route) => _startNavigation(route, navigatingType),
                 navType: navigatingType,
               ),
@@ -235,7 +237,18 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
     );
 
     // log advert analytics event
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.navigationRoutingStartedJorney);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.navigationRoutingStartedJorney);
+    ref.read(advertMetricsProvider.notifier).sendEvent(
+          AdvertMetricsKeys.journeyStartedUnique,
+          isUniquePerSession: true,
+        );
+
+    ref.read(appAnalyticsProvider).navigationStarted(
+          originLocation: widget.pointsWithLabel.length > 1 ? widget.pointsWithLabel.first.label : '',
+          destinationLocation: widget.pointsWithLabel.lastOrNull?.label ?? '',
+          estimateTime: route.duration,
+          estimateDistance: route.distance,
+        );
 
     ref.read(urbiAnalyticsProvider).track(
       'startNavigation',
@@ -245,13 +258,13 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       },
     );
 
-    context.router.push(
-      PathNavRoute(
-        navType: navigatingType,
-        isHomeOrWork: widget.isHomeOrWork,
-        initAction: PathNavPageInitAction.startNavigation,
-      ),
-    );
+    context.router.pushAndPopUntil(
+        PathNavRoute(
+          navType: navigatingType,
+          isHomeOrWork: widget.isHomeOrWork,
+          initAction: PathNavPageInitAction.startNavigation,
+        ),
+        predicate: (route) => route.settings.name == BottomMenuRoute.name);
   }
 
   void _onChanged(RouteSearchOptionsMessage routeSearch) {

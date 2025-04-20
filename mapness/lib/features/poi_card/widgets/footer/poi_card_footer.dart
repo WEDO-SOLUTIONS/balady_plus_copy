@@ -15,10 +15,10 @@ import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
-  static const double padding = 8;
+  static const double padding = 12;
 
   final DirectoryObjectMessage? data;
-  final VoidCallback share;
+  final Future Function() share;
   final VoidCallback? callPhone;
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
@@ -86,6 +86,7 @@ class PoiCardFooter extends HookConsumerWidget {
 
     return ThrottledCallbackWidget(
       callback: share,
+      resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
         displayShadow: displayShadow.value,
         items: [

@@ -75,8 +75,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                             children: [
                               const WeatherControl(),
                               const Spacer(),
-                              if (widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden)
-                                const IndoorControl(),
+                              const IndoorControl(),
                               const Spacer(),
                               const EtaSharingControl(),
                               uikit.Spacing.$4x.heightBox,

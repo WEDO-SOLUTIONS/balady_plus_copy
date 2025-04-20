@@ -10,7 +10,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_message.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class _PathNavMessage extends _$PathNavMessage {
   StreamSubscription<NaviMessageEvent>? subscription;
 

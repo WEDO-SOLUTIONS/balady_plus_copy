@@ -29,9 +29,10 @@ class PoiCardActions extends _$PoiCardActions {
     }
   }
 
-  void share({required int? objectId, LatLng? markerCoords}) {
+  Future<void> share({required int? objectId, LatLng? markerCoords}) {
     if (objectId == null) {
-      return onError();
+      onError();
+      return Future.value();
     }
     final baseUri = BaldayDeeplink.basePoiUri;
     final query = <String, String>{};
@@ -43,7 +44,7 @@ class PoiCardActions extends _$PoiCardActions {
       query[BaldayDeeplink.longitudeKey] = markerCoords.longitude.toString();
     }
 
-    Share.share(BaldayDeeplink.urlWithQuery(baseUri, query));
+    return Share.share(BaldayDeeplink.urlWithQuery(baseUri, query));
   }
 
   String _myLocationDeeplink(LatLng location) => BaldayDeeplink.urlWithQuery(

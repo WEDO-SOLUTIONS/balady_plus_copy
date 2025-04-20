@@ -46,6 +46,7 @@ class Search extends _$Search {
   CancelableOperation? _searchOperation;
 
   bool get isSearchRunning => _previousType != null;
+
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
 
   @override
@@ -226,7 +227,10 @@ class Search extends _$Search {
       _searchOperation = searchOperation;
       final results = await searchOperation.value;
 
-      await _animateToRepresentativeArea(results: results);
+      final zoom = ref.watch(cameraPositionProvider)?.zoom ?? 0;
+      if (zoom > 13) {
+        await _animateToRepresentativeArea(results: results);
+      }
 
       state = (results.firstPage?.items.isEmpty ?? true)
           ? SearchStateEmpty(searchText: query)

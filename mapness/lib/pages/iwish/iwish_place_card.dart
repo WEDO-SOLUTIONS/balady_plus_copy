@@ -5,7 +5,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/_features/lifestyle_layers/map_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -20,6 +19,7 @@ import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_about_park.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_info.dart';
+import 'package:mapness/widgets/iwish/ui/iwish_map_controls.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_photos_row.dart';
 import 'package:mapness/widgets/iwish/ui/iwish_state_label.dart';
 
@@ -46,7 +46,7 @@ class IwishPlaceCardPage extends ConsumerWidget {
     return Stack(
       alignment: Alignment.bottomCenter,
       children: [
-        MapControls(bottomExtent: controlsBottomExtent),
+        IwishMapControls(bottomExtent: controlsBottomExtent),
         entity.when(
           error: (_, __) => ErrorSheetWidget(
             onRetry: entityNotifier.refresh,

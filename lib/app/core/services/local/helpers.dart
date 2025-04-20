@@ -114,7 +114,7 @@ class Helpers {
   static Future<LatLng?> getCurrentLocation(
       {geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
-      bool isHuawei = await CommonFunctions.isHawaiiDevice();
+      bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
         final latLng = await CommonFunctions.getCurrentLocationHuawei();
         debugPrint(
@@ -130,7 +130,7 @@ class Helpers {
             timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      return LatLng(latitude:position.latitude, longitude:position.longitude);
+      return LatLng(latitude:position.latitude,longitude: position.longitude);
     } catch (error, stackTrace) {
       return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }

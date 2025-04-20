@@ -1,13 +1,10 @@
-import 'dart:async';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:dgis_map/library.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
@@ -25,8 +22,9 @@ import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 import 'layout_size_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
+  final VoidCallback? onSearchPressed;
+  final VoidCallback? onTapRoute;
   final VoidCallback onEndTripPressed;
-  final VoidCallback onRoutePressed;
   final VoidCallback onBetterRouteAccept;
   final VoidCallback onBetterRouteReject;
   final OnWidgetSizeChange onSizeChanged;
@@ -34,11 +32,12 @@ class EtaSheet extends ConsumerStatefulWidget {
 
   const EtaSheet({
     required this.onEndTripPressed,
-    required this.onRoutePressed,
     required this.onBetterRouteAccept,
     required this.onBetterRouteReject,
     required this.onSizeChanged,
     required this.betterRouteDurationProfit,
+    this.onSearchPressed,
+    this.onTapRoute,
     super.key,
   });
 
@@ -49,24 +48,11 @@ class EtaSheet extends ConsumerStatefulWidget {
 class _EtaSheetState extends ConsumerState<EtaSheet> {
   bool _isExpanded = false;
 
-  ///TODO: discuss to team and move to riverpod provider all the same cases
-  StreamSubscription<TapEvent>? _streamSubscription;
-
-  @override
-  void initState() {
-    _setupTapListener();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    _streamSubscription?.cancel();
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final eta = ref.watch(pathNavEtaProvider);
+    final landscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     _isExpanded = eta?.isExpanded ?? false;
     final soundSettingsModel = ref.watch(soundSettingsProvider);
     final soundSettingsNotifier = ref.read(soundSettingsProvider.notifier);
@@ -92,7 +78,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       betterRouteDurationProfit: widget.betterRouteDurationProfit,
       onBetterRouteAccept: widget.onBetterRouteAccept,
       onBetterRouteReject: widget.onBetterRouteReject,
-      backgroundColor: colorsV2.backgroundSurface4,
+      backgroundColor: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
           contentColor: colorsV2.backgroundSurface4,
@@ -110,11 +96,34 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             title: eta != null ? eta.timeEta : '--',
           ),
           contentRows: [
+            Spacing.$3x.heightBox,
             ShareEtaBtn(
               durationMinutes: int.tryParse(eta?.timeEta ?? '') ?? 0,
             ),
+            if (widget.onSearchPressed != null)
+              Padding(
+                padding: const EdgeInsets.only(
+                  top: Spacing.$3x,
+                ),
+                child: ContentRow(
+                  onTap: () => widget.onTapRoute?.call(),
+                  options: ContentRowOptions(
+                    wrapperColor: color.surfaceBaseTertiary,
+                    wrapperEnabled: true,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    title: l10n.route,
+                    actionWidget: ContentRowActionOptions(
+                      actionIcon: AppIcons(
+                        iconData: GeneralIcons.route,
+                        color: context.colorsV3.foregroundMuted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            Spacing.$3x.heightBox,
             ContentRow(
-              onTap: () => const SoundSettingsRoute().push(context),
+              onTap: () => context.router.push(const SoundSettingsRoute()),
               options: ContentRowOptions(
                 subtitleStyle: textStyleV3.bodySmallRegular.copyWith(
                   color: color.textAndIconsBaseSecondary,
@@ -133,7 +142,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
-                    color: color.textAndIconsBaseTertiary,
+                    color: context.colorsV3.foregroundMuted,
                   ),
                 ),
                 bottomWidget: SegmentTabsButton(
@@ -151,6 +160,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 ),
               ),
             ),
+            Spacing.$3x.heightBox,
             ContentRow(
               onTap: () => context.router.push(const NavigatorSettingsRoute()),
               options: ContentRowOptions(
@@ -171,26 +181,28 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                 actionWidget: ContentRowActionOptions(
                   actionIcon: AppIcons(
                     iconData: SystemIcons.arrowCornerRightLarge,
-                    color: color.textAndIconsBaseTertiary,
+                    color: context.colorsV3.foregroundMuted,
                   ),
                 ),
               ),
             ),
+            Spacing.$3x.heightBox,
           ],
           buttons: [
-            AppButton(
-              padding: const EdgeInsets.only(
-                left: Spacing.$4x,
-                right: Spacing.$4x,
-                bottom: Spacing.$3x,
+            Container(
+              color: landscape ? colorsV2.backgroundSurface1 : colorsV2.backgroundSurface4,
+              padding: const EdgeInsets.all(Spacing.$4x),
+              child: AppButton(
+                buttonColorScheme: ButtonColorScheme.warning,
+                primaryLabel: l10n.endTrip,
+                onTap: widget.onEndTripPressed,
               ),
-              buttonColorScheme: ButtonColorScheme.warning,
-              primaryLabel: l10n.endTrip,
-              onTap: widget.onEndTripPressed,
             )
           ],
           onTapBurger: toggle,
-          onTapRoute: eta != null ? widget.onRoutePressed : () {},
+          isSearchShowing: !landscape,
+          onTapSearch: widget.onSearchPressed,
+          onTapRoute: widget.onTapRoute,
         ),
       ),
     );
@@ -204,15 +216,5 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
         props: {
           'isExpanded': _isExpanded,
         });
-  }
-
-  void _setupTapListener() {
-    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
-      if (context.router.isRouteActive(PathNavRoute.name)) {
-        if (_isExpanded) {
-          ref.read(pathNavEtaProvider.notifier).toggleIsExpanded(isExpanded: false);
-        }
-      }
-    });
   }
 }

@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
 import 'package:mapness/features/landing/search_by_rubrics.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
@@ -98,7 +99,7 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             group: MetricsConstants.exploreTag,
           );
 
-          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
           context.router.push(const FavouritesRoute());
         },
       ),
@@ -109,7 +110,8 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             'filter': quickFilter.name,
           },
         );
-        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+        ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
+        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
         final language = ref.read(appLanguageProvider);
         final query = quickFilter.query[language];
         if (query != null) {
