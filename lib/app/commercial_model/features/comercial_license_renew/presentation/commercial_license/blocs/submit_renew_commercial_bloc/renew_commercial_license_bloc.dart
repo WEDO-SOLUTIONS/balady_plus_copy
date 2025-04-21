@@ -13,6 +13,9 @@ import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import '../../../../../../../features/_shared_feature_/data/entities/validators/cr_700_validation.dart';
+import '../../../../../../../features/_shared_feature_/presentation/dialogs/bottom_sheet_dialogs.dart';
+import '../../../../../commercial_license/domain/use_cases/get_commercial_endorsements.dart';
+import '../../../../../commercial_license/presentation/step4/widgets/endorsements_agreement.dart';
 import '../../../../data/models/renew_request_details.dart';
 import '../../../../domain/entities/cr_attachment_response.dart';
 import '../../../../domain/entities/save_renew_request.dart';
@@ -47,6 +50,7 @@ class RenewCommercialLicenseBloc
   final SaveCrAttachment _saveCrAttachment;
   final SubmitRenewAttachments _submitRenewAttachments;
   final GetRenewRequestDetails _renewRequestDetails;
+  final GetCommercailEndorsements _getCommercailEndorsements;
   final SubmitRenew _submitRenew;
   final GetDeedInfo _getDeedInfo;
 
@@ -63,6 +67,7 @@ class RenewCommercialLicenseBloc
         _renewRequestDetails = GetRenewRequestDetails(repository: sl()),
         _submitRenew = SubmitRenew(repository: sl()),
         _getDeedInfo = GetDeedInfo(repository: sl()),
+        _getCommercailEndorsements= GetCommercailEndorsements(repository: sl()),
         super(RenewCommercialLicenseState(requestId: requestId)) {
     on<GoToNextPageEvent>(_goToNextPageHandler);
     on<GoToPreviousPageEvent>(_goToPreviousPageHandler);
@@ -72,6 +77,7 @@ class RenewCommercialLicenseBloc
     on<UpdateRenewYearsEvent>(_updateRenewYears);
     on<ChangeInsidePetrolStationEvent>(_changeInsidePetrolStationHandler);
     add(GetRequestInfoEvent());
+    getEndorsements();
   }
 
   Future<void> _goToNextPageHandler(
@@ -158,6 +164,38 @@ class RenewCommercialLicenseBloc
       setUpData();
       setUpDraft();
     });
+  }
+
+
+  Future<void> getEndorsements() async {
+    int requestId = state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess = await _getCommercailEndorsements(requestId);
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (res) {
+
+
+
+      if (res.isNotEmpty) {
+        BottomSheetDialog.showDraggableSheet(
+            enableDrag: false,
+            isDismissible: false,
+            NavigationService.navigatorKey.currentContext!,
+            child: EndorsementsAgreement(
+              lstEndorsements: res.map((item) => (item as String).tr()).toList() ,
+            ));
+
+      }
+      emit(state.copyWith(status: BlocStatus.success));
+    });
+
+
+
+
   }
 
   Future<void> _updateRenewYears(

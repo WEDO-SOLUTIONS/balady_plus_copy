@@ -149,4 +149,7 @@ abstract class CrRepository {
 
   Future<Either<Failure, IssueCommercialConculsion>> getCommercialConculsion(
       {required int params});
+
+  Future<Either<Failure, List<dynamic>>> getCommercialEndorsements(
+      {required int requestID});
 }
