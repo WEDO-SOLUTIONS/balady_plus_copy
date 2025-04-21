@@ -16,10 +16,14 @@ class FullscreenLoadingIndicator extends StatelessWidget {
   /// The color of the loading indicator.
   final Color? color;
 
+  /// The background color
+  final Color backgroundColor;
+
   const FullscreenLoadingIndicator({
     super.key,
     this.title,
     this.color,
+    this.backgroundColor = Colors.white,
     this.isDisplayTitle = true,
   });
 
@@ -27,7 +31,7 @@ class FullscreenLoadingIndicator extends StatelessWidget {
   Widget build(BuildContext context) {
     final loadingTitle = title ?? context.l10n.loading;
     return Material(
-      color: Colors.white,
+      color: backgroundColor,
       child: Center(
         child: Loading.large(
           title: loadingTitle,

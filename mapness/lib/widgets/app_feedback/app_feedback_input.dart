@@ -67,6 +67,7 @@ class AppFeedbackInput extends HookWidget {
           controller: textController,
           inputState: inputState.value,
           config: BaladyInputConfig(
+            background: BaladyInputBackground.color,
             focusNode: focusNode,
             autofocus: true,
             hintText: context.l10n.appFeedbackTellUsMore,

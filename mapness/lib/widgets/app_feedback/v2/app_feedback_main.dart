@@ -149,6 +149,7 @@ class AppFeedbackMain extends HookConsumerWidget {
                     inputState: BaladyInputState.readOnly,
                     controller: feedbackTextController,
                     config: BaladyInputConfig(
+                      background: BaladyInputBackground.color,
                       hintText: context.l10n.appFeedbackHintText,
                       maxLines: 4,
                       isDisposed: false,

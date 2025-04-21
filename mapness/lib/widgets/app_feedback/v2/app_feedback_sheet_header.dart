@@ -26,6 +26,7 @@ class AppFeedbackSheetHeader extends StatelessWidget {
             child: AppButton(
               buttonColorScheme: ButtonColorScheme.onColor,
               padding: EdgeInsets.zero,
+              color: context.colorsV3.backgroundSurface4,
               onTap: onBackTap,
               primaryIcon: SystemIcons.arrowCornerLeftLarge,
               iconColor: context.colorsV2.foregroundDefault,

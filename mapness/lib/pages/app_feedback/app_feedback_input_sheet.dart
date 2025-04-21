@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -25,9 +26,12 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
 
     final textEditingController = useTextEditingController(text: initialText);
     final isValid = useState(false);
+    final backgroundColor = context.colorsV3.backgroundSurface4;
 
     return StatelessBottomSheet(
       scrollController: scrollController,
+      backgroundColor: backgroundColor,
+      draggerColor: backgroundColor,
       header: AppFeedbackSheetHeader(
         onBackTap: context.router.popForced,
         title: context.l10n.appFeedbackInputTitle,
