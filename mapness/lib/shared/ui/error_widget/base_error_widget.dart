@@ -118,12 +118,15 @@ class BaseErrorWidget extends StatelessWidget {
               ),
             ),
             if (withRetryButton)
-              Padding(
-                padding: const EdgeInsets.only(top: Spacing.$6x, bottom: Spacing.$3x),
-                child: AppButton(
-                  onTap: onRetry,
-                  buttonColorScheme: buttonColorScheme,
-                  primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+              SafeArea(
+                top: false,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$6x, bottom: Spacing.$3x),
+                  child: AppButton(
+                    onTap: onRetry,
+                    buttonColorScheme: buttonColorScheme,
+                    primaryLabel: buttonLabel ?? context.l10n.tryAgain,
+                  ),
                 ),
               ),
           ],
