@@ -187,7 +187,6 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                         buttonColorScheme: ButtonColorScheme.primary,
                         primaryIcon: SystemIcons.close,
                         iconColor: context.colorsV2.staticWhite,
-                        color: Colors.transparent,
                         onTap: () {
                           _animationController.value = 1.0;
                           ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
