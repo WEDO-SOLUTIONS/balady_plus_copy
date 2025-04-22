@@ -127,7 +127,7 @@ dependencies:
   flutter_riverpod: ^2.4.1
   battery_plus: ^6.0.4
   app_tracking_transparency: ^2.0.6
-  adjust_sdk: 5.0.2
+  adjust_sdk: 5.1.1
   flutter_appauth: ^9.0.0
 
   webview_flutter: 4.10.0
