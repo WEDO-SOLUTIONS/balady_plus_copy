@@ -138,6 +138,7 @@ class FeedbackImages extends StatelessWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
+    FocusScope.of(context).unfocus();
     final result = await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -147,10 +148,6 @@ class FeedbackImages extends StatelessWidget {
     );
 
     if (result == null) {
-      return;
-    }
-
-    if (!context.mounted) {
       return;
     }
 
@@ -167,6 +164,7 @@ class FeedbackImages extends StatelessWidget {
             maxImages: field.maxImages,
             selectedImages: selectedImages,
           );
+      FocusScope.of(context).unfocus();
     } catch (e) {
       switch (e) {
         case FeedbackPerrmissionError():
