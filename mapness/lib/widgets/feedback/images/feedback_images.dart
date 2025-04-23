@@ -164,7 +164,7 @@ class FeedbackImages extends StatelessWidget {
             maxImages: field.maxImages,
             selectedImages: selectedImages,
           );
-      FocusScope.of(context).unfocus();
+      FocusManager.instance.primaryFocus?.unfocus();
     } catch (e) {
       switch (e) {
         case FeedbackPerrmissionError():
