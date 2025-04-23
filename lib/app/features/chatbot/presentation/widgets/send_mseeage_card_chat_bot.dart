@@ -100,6 +100,9 @@ class _SendMessageCardChatBotState extends State<SendMessageCardChatBot> {
     final text = message ?? _controller.text;
     if (text.isEmpty) return;
     // provider.setMessage(ChatBotMessageModel(message: text));
+    if(provider.countFullUpQuestions.value >= 4) {
+      provider.countFullUpQuestions.value = 0;
+    }
     provider.sendQuestion(text);
     _controller.text = '';
     FocusScope.of(context).unfocus();
