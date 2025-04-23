@@ -18,6 +18,7 @@ class PoiPhotosRow extends ConsumerWidget {
     required this.objectId,
     super.key,
   });
+
   final int objectId;
 
   @override
@@ -109,7 +110,8 @@ class PoiPhotosRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       itemBuilder: (context, index) {
         final loadingShimmerImage = LoadingShimmerImage(
-          onImageTap: (name, {isAsset}) => context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
+          onImageTap: (name, {isAsset}) =>
+              context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
           imageUrl: photos[index],
           file: photoFiles?[index],
           fit: BoxFit.cover,

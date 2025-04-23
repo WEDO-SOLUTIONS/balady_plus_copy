@@ -76,10 +76,7 @@ class PoiHeader extends ConsumerWidget {
               ),
             ),
             if (_parkingObjectId) Spacing.$4x.heightBox,
-            if (_data != null && !_parkingObjectId)
-              HeaderInfoComponent(
-                data: _data
-              ),
+            if (_data != null && !_parkingObjectId) HeaderInfoComponent(data: _data),
             if (_tabController != null && !_parkingObjectId)
               TabComponent(
                 tabController: _tabController,
