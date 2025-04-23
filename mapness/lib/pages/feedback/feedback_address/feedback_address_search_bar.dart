@@ -56,33 +56,8 @@ class _FeedbackAddressSearchBarState extends ConsumerState<FeedbackAddressSearch
         controller: _controller,
         config: BaladyInputConfig(
           focusNode: _focusNode,
-          onTap: () {
-            //ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
-          },
-          onChanged: (query) {
-            // Metrics.logEventAdvanced(
-            //   MetricsConstants.routesKeys.searchSubmit,
-            //   group: MetricsConstants.routesTag,
-            //   action: MetricAction.type.toString(),
-            //   props: {'query': query},
-            // );
-
-            ref.read(searchProvider(scope.value).notifier).searchAddress(query);
-          },
-          onSubmitted: (query) {
-            // Metrics.logEventAdvanced(
-            //   MetricsConstants.routesKeys.searchSubmit,
-            //   group: MetricsConstants.routesTag,
-            //   action: MetricAction.type.toString(),
-            //   props: {'query': query},
-            // );
-            ref.read(searchProvider(scope.value).notifier).searchAddress(query);
-            // if (query.isNotEmpty) {
-            //   ref.read(searchHistoryProvider(scope.value).notifier).put(
-            //         SearchHistoryItem.fromQuery(query: query),
-            //       );
-            // }
-          },
+          onChanged: (query) => ref.read(searchProvider(scope.value).notifier).searchAddress(query),
+          onSubmitted: (query) => ref.read(searchProvider(scope.value).notifier).searchAddress(query),
           hintText: context.l10n.search,
           fillColor: context.colorsV2.neutralContainerDefault,
           hintColor: context.colorsV2.foregroundSoft,
@@ -92,11 +67,6 @@ class _FeedbackAddressSearchBarState extends ConsumerState<FeedbackAddressSearch
       option: SearchTextBackOption(
         text: context.l10n.cancel,
         onPressed: () {
-          // Metrics.logEventAdvanced(
-          //   MetricsConstants.routesKeys.searchBackButton,
-          //   group: MetricsConstants.routesTag,
-          //   action: MetricAction.tap.toString(),
-          // );
           FocusScope.of(context).unfocus();
           context.router.popForced();
         },

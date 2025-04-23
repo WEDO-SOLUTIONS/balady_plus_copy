@@ -1,8 +1,5 @@
-// ignore_for_file: unused_import
-
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -14,7 +11,7 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_content.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_search_bar.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
-import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
+import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 
 @RoutePage()
 class FeedbackAddressSuggester extends ConsumerStatefulWidget {
@@ -82,22 +79,7 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
             child: SafeArea(
               bottom: false,
               child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                // outside: MapDashboardControls(_dgisSheetController, key: const ValueKey('RoutesControls')),
-                // outsideOpacityDelegate: (controller) {
-                //   final aspectRatio = controller.aspectRatio;
-                //   final interpolation = controller.interpolation;
-                //   final state = controller.state;
-
-                //   final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-                //   final isSheetStateOpen = state == ThreeStateBottomSheet.open;
-                //   final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
-
-                //   final isFull =
-                //       (_dgisSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-                //           isSheetCoversHalfOfTheScreen;
-
-                //   return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-                // },
+                outsideOpacityDelegate: _dgisSheetController.defaultOpacityDelegate,
                 key: const ValueKey('FEEDBACK SEARCH SHEET'),
                 scrollController: _dgisSheetController,
                 header: const Column(

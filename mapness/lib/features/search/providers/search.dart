@@ -98,17 +98,6 @@ class Search extends _$Search {
       _updateSearchText(query);
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
-      // -- Analytics
-      AdvancedMetrics.instance.startSearchResponse(
-        queryType: _previousType!.name,
-        searchQuery: query,
-      );
-      Metrics.logEvent(
-        'fetchSuggest',
-        object: runtimeType,
-      );
-      mixpanel?.timeEvent('Search: fetchSuggest - address');
-      // -- Analytics
 
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
@@ -131,11 +120,6 @@ class Search extends _$Search {
               suggest: result,
               searchText: query,
             );
-
-      // -- Analytics
-      await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
-      await mixpanel?.track('Search: fetchSuggest - address');
-      // -- Analytics
     } on Exception catch (_) {
       state = SearchStateError(searchText: query);
       rethrow;
