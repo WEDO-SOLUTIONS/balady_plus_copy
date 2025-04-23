@@ -4,10 +4,10 @@ import 'package:dgis_map/library.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'parking_add.g.dart';
+part 'parking_spot_map.g.dart';
 
 @riverpod
-class _ParkingAdd extends _$ParkingAdd {
+class _ParkingSpotMap extends _$ParkingSpotMap {
   late Completer<DgisMapController> _completer;
   late final _settings = MapObjectManagerSettings.parking();
   late final _mapObjectManager = ref
@@ -46,4 +46,4 @@ class _ParkingAdd extends _$ParkingAdd {
   Future<void> deleteMarkers() async => (await future).removeAllMarkers(fromManager: _mapObjectManager);
 }
 
-final parkingAddProvider = _parkingAddProvider;
+final parkingSpotMapProvider = _parkingSpotMapProvider;

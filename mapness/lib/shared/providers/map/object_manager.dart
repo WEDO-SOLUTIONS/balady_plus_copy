@@ -60,7 +60,7 @@ class MapObjectManagerSettings {
       );
 
   factory MapObjectManagerSettings.parking() => const MapObjectManagerSettings._(
-        name: 'parking',
+        name: 'parking-spot',
         layerId: MapObjectLayers.defaultLayerId,
       );
 

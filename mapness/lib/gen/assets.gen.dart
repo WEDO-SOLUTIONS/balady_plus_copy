@@ -866,6 +866,10 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/parking.svg
   String get parking => 'assets/icons/svg/parking.svg';
 
+  /// File path: assets/icons/svg/parking_control.png
+  AssetGenImage get parkingControl =>
+      const AssetGenImage('assets/icons/svg/parking_control.png');
+
   /// File path: assets/icons/svg/photo_gallery.svg
   String get photoGallery => 'assets/icons/svg/photo_gallery.svg';
 
@@ -947,7 +951,7 @@ class $AssetsIconsSvgGen {
   $AssetsIconsSvgWeatherGen get weather => const $AssetsIconsSvgWeatherGen();
 
   /// List of all assets
-  List<String> get values => [
+  List<dynamic> get values => [
         betaAr,
         betaEn,
         calories,
@@ -1081,6 +1085,7 @@ class $AssetsIconsSvgGen {
         jobPin,
         lighting,
         parking,
+        parkingControl,
         photoGallery,
         placeCardPlaceholder,
         saFlag,

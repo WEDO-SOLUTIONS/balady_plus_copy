@@ -73,7 +73,7 @@ class AppRouter extends RootStackRouter {
             ),
             CustomRoute(
               path: 'parking_add',
-              page: ParkingAddRoute.page,
+              page: ParkingSpotRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
               fullscreenDialog: true,
             ),
@@ -215,6 +215,12 @@ class AppRouter extends RootStackRouter {
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'delete_parking',
+              page: DeleteParkingRoute.page,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
           ],
         ),

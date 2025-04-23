@@ -14,8 +14,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
-const _poiMapFontAr = 'FrutigerLTArabic65Bold';
-const _poiMapFontEn = 'GolosText_SemiBold';
+const poiMapFontAr = 'FrutigerLTArabic65Bold';
+const poiMapFontEn = 'GolosText_SemiBold';
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
@@ -47,7 +47,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
     color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
-    fontName: title.containsArabic() || isRtl ? _poiMapFontAr : _poiMapFontEn,
+    fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
     textPlacement: MarkerTextPlacementMessage(
       placement: TextPlacementMessage.bottomCenter,
     ),

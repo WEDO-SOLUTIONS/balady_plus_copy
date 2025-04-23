@@ -11,6 +11,7 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
 class MapDashboardControls extends ConsumerStatefulWidget {
@@ -73,7 +74,13 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const WeatherControl(),
+                              Row(
+                                children: [
+                                  const WeatherControl(),
+                                  uikit.Spacing.$1_5x.heightBox,
+                                  const ParkingControl(),
+                                ],
+                              ),
                               const Spacer(),
                               const IndoorControl(),
                               const Spacer(),
