@@ -72,10 +72,6 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
               alignment: Alignment.bottomCenter,
               child: ErrorSheetV2(
                 onClose: () async {
-                  final isGranted = await ref.read(locationProvider.notifier).checkOnLocationPermissionGranted();
-                  if (!isGranted) {
-                    return;
-                  }
                   switch (widget.routeOnClose) {
                     case != null:
                       {
