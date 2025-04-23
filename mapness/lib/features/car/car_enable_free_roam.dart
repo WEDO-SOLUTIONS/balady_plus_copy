@@ -50,9 +50,6 @@ class CarEnableFreeRoam extends _$CarEnableFreeRoam {
       return;
     }
 
-    // TODO(Sergei): freeroam in android has some bugs
-    if (Platform.isIOS) {
-      await router.push(const FreeRoamRoute());
-    }
+    await router.push(const FreeRoamRoute());
   }
 }

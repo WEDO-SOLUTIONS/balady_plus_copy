@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
+import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -14,6 +15,7 @@ import 'package:mapness/pages/free_roam/ui/road_panel.dart';
 import 'package:mapness/pages/free_roam/ui/traffic_parking_control.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/path_nav_ext.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
@@ -41,6 +43,8 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
 
   Timer? timer;
 
+  StreamSubscription? _naviEventsListener;
+
   late final uikit.StatelessBottomSheetController _bottomSheetController = uikit.StatelessBottomSheetController(
     onClose: (_) => _bottomSheetController.close,
   );
@@ -54,6 +58,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
       });
     });
     startControlsDisapearTimer();
+    _listenNavigationEvents();
 
     WakelockPlus.enable();
   }
@@ -67,7 +72,17 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
   @override
   void dispose() {
     WakelockPlus.disable();
+    _naviEventsListener?.cancel();
     super.dispose();
+  }
+
+  Future<void> _listenNavigationEvents() async {
+    final dgisController = await ref.read(dgisControllerProvider.future);
+    _naviEventsListener = dgisController.navigationEvents.listen((event) {
+      if (event == NavigationEvent.disabled && context.mounted) {
+        ref.read(freeRoamManagerProvider.notifier).endTripAndShowHome(context: context);
+      }
+    });
   }
 
   void startControlsDisapearTimer() {
