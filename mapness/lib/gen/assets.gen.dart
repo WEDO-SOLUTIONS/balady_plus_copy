@@ -23,55 +23,43 @@ class $AssetsImagesGen {
   const $AssetsImagesGen();
 
   /// File path: assets/images/add_company.png
-  AssetGenImage get addCompany =>
-      const AssetGenImage('assets/images/add_company.png');
+  AssetGenImage get addCompany => const AssetGenImage('assets/images/add_company.png');
 
   /// File path: assets/images/add_photo.png
-  AssetGenImage get addPhoto =>
-      const AssetGenImage('assets/images/add_photo.png');
+  AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
   /// File path: assets/images/app_feedback_success.png
-  AssetGenImage get appFeedbackSuccess =>
-      const AssetGenImage('assets/images/app_feedback_success.png');
+  AssetGenImage get appFeedbackSuccess => const AssetGenImage('assets/images/app_feedback_success.png');
 
   /// File path: assets/images/balady_logo.png
-  AssetGenImage get baladyLogo =>
-      const AssetGenImage('assets/images/balady_logo.png');
+  AssetGenImage get baladyLogo => const AssetGenImage('assets/images/balady_logo.png');
 
   /// File path: assets/images/calendar_card.png
-  AssetGenImage get calendarCard =>
-      const AssetGenImage('assets/images/calendar_card.png');
+  AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
   /// File path: assets/images/calendar_card_brown.png
-  AssetGenImage get calendarCardBrown =>
-      const AssetGenImage('assets/images/calendar_card_brown.png');
+  AssetGenImage get calendarCardBrown => const AssetGenImage('assets/images/calendar_card_brown.png');
 
   /// File path: assets/images/challenge.png
-  AssetGenImage get challenge =>
-      const AssetGenImage('assets/images/challenge.png');
+  AssetGenImage get challenge => const AssetGenImage('assets/images/challenge.png');
 
   /// File path: assets/images/city_expert.png
-  AssetGenImage get cityExpert =>
-      const AssetGenImage('assets/images/city_expert.png');
+  AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
 
   /// File path: assets/images/compliance_card.png
-  AssetGenImage get complianceCard =>
-      const AssetGenImage('assets/images/compliance_card.png');
+  AssetGenImage get complianceCard => const AssetGenImage('assets/images/compliance_card.png');
 
   /// File path: assets/images/compliance_card_brown.png
-  AssetGenImage get complianceCardBrown =>
-      const AssetGenImage('assets/images/compliance_card_brown.png');
+  AssetGenImage get complianceCardBrown => const AssetGenImage('assets/images/compliance_card_brown.png');
 
   /// File path: assets/images/day_pray.png
-  AssetGenImage get dayPray =>
-      const AssetGenImage('assets/images/day_pray.png');
+  AssetGenImage get dayPray => const AssetGenImage('assets/images/day_pray.png');
 
   /// File path: assets/images/domino.png
   AssetGenImage get domino => const AssetGenImage('assets/images/domino.png');
 
   /// File path: assets/images/eta_sheet_background.png
-  AssetGenImage get etaSheetBackground =>
-      const AssetGenImage('assets/images/eta_sheet_background.png');
+  AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
 
   /// File path: assets/images/event_0.png
   AssetGenImage get event0 => const AssetGenImage('assets/images/event_0.png');
@@ -83,142 +71,110 @@ class $AssetsImagesGen {
   AssetGenImage get event2 => const AssetGenImage('assets/images/event_2.png');
 
   /// File path: assets/images/event_card_item_mask.png
-  AssetGenImage get eventCardItemMask =>
-      const AssetGenImage('assets/images/event_card_item_mask.png');
+  AssetGenImage get eventCardItemMask => const AssetGenImage('assets/images/event_card_item_mask.png');
 
   /// File path: assets/images/favorites_example_arabic.png
-  AssetGenImage get favoritesExampleArabic =>
-      const AssetGenImage('assets/images/favorites_example_arabic.png');
+  AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
 
   /// File path: assets/images/favorites_example_english.png
-  AssetGenImage get favoritesExampleEnglish =>
-      const AssetGenImage('assets/images/favorites_example_english.png');
+  AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.png');
 
   /// File path: assets/images/foundation_day_banner.png
-  AssetGenImage get foundationDayBanner =>
-      const AssetGenImage('assets/images/foundation_day_banner.png');
+  AssetGenImage get foundationDayBanner => const AssetGenImage('assets/images/foundation_day_banner.png');
 
   /// File path: assets/images/ic_flips_continue.png
-  AssetGenImage get icFlipsContinue =>
-      const AssetGenImage('assets/images/ic_flips_continue.png');
+  AssetGenImage get icFlipsContinue => const AssetGenImage('assets/images/ic_flips_continue.png');
 
   /// File path: assets/images/img_video-placeholder.png
-  AssetGenImage get imgVideoPlaceholder =>
-      const AssetGenImage('assets/images/img_video-placeholder.png');
+  AssetGenImage get imgVideoPlaceholder => const AssetGenImage('assets/images/img_video-placeholder.png');
 
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
-  AssetGenImage get ishanSeefromtheskyUnsplash =>
-      const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
+  AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
   /// File path: assets/images/iwish.png
   AssetGenImage get iwish => const AssetGenImage('assets/images/iwish.png');
 
   /// File path: assets/images/job_card_img.png
-  AssetGenImage get jobCardImg =>
-      const AssetGenImage('assets/images/job_card_img.png');
+  AssetGenImage get jobCardImg => const AssetGenImage('assets/images/job_card_img.png');
 
   /// File path: assets/images/kiblah_arrow.png
-  AssetGenImage get kiblahArrow =>
-      const AssetGenImage('assets/images/kiblah_arrow.png');
+  AssetGenImage get kiblahArrow => const AssetGenImage('assets/images/kiblah_arrow.png');
 
   /// File path: assets/images/location_required.png
-  AssetGenImage get locationRequired =>
-      const AssetGenImage('assets/images/location_required.png');
+  AssetGenImage get locationRequired => const AssetGenImage('assets/images/location_required.png');
 
   /// File path: assets/images/log_in_card.png
-  AssetGenImage get logInCard =>
-      const AssetGenImage('assets/images/log_in_card.png');
+  AssetGenImage get logInCard => const AssetGenImage('assets/images/log_in_card.png');
 
   /// File path: assets/images/log_in_card_brown.png
-  AssetGenImage get logInCardBrown =>
-      const AssetGenImage('assets/images/log_in_card_brown.png');
+  AssetGenImage get logInCardBrown => const AssetGenImage('assets/images/log_in_card_brown.png');
 
   /// File path: assets/images/marker_eta_mask.png
-  AssetGenImage get markerEtaMask =>
-      const AssetGenImage('assets/images/marker_eta_mask.png');
+  AssetGenImage get markerEtaMask => const AssetGenImage('assets/images/marker_eta_mask.png');
 
   /// File path: assets/images/night_pray.png
-  AssetGenImage get nightPray =>
-      const AssetGenImage('assets/images/night_pray.png');
+  AssetGenImage get nightPray => const AssetGenImage('assets/images/night_pray.png');
 
   /// File path: assets/images/places_card_mask.png
-  AssetGenImage get placesCardMask =>
-      const AssetGenImage('assets/images/places_card_mask.png');
+  AssetGenImage get placesCardMask => const AssetGenImage('assets/images/places_card_mask.png');
 
   /// File path: assets/images/poi_boulevard_riyadh_city.png
-  AssetGenImage get poiBoulevardRiyadhCity =>
-      const AssetGenImage('assets/images/poi_boulevard_riyadh_city.png');
+  AssetGenImage get poiBoulevardRiyadhCity => const AssetGenImage('assets/images/poi_boulevard_riyadh_city.png');
 
   /// File path: assets/images/poi_edge_of_the_world.png
-  AssetGenImage get poiEdgeOfTheWorld =>
-      const AssetGenImage('assets/images/poi_edge_of_the_world.png');
+  AssetGenImage get poiEdgeOfTheWorld => const AssetGenImage('assets/images/poi_edge_of_the_world.png');
 
   /// File path: assets/images/poi_faisaliya_tower.png
-  AssetGenImage get poiFaisaliyaTower =>
-      const AssetGenImage('assets/images/poi_faisaliya_tower.png');
+  AssetGenImage get poiFaisaliyaTower => const AssetGenImage('assets/images/poi_faisaliya_tower.png');
 
   /// File path: assets/images/poi_kingdom_center.png
-  AssetGenImage get poiKingdomCenter =>
-      const AssetGenImage('assets/images/poi_kingdom_center.png');
+  AssetGenImage get poiKingdomCenter => const AssetGenImage('assets/images/poi_kingdom_center.png');
 
   /// File path: assets/images/poi_masmak_fortress.png
-  AssetGenImage get poiMasmakFortress =>
-      const AssetGenImage('assets/images/poi_masmak_fortress.png');
+  AssetGenImage get poiMasmakFortress => const AssetGenImage('assets/images/poi_masmak_fortress.png');
 
   /// File path: assets/images/prayer_time.png
-  AssetGenImage get prayerTime =>
-      const AssetGenImage('assets/images/prayer_time.png');
+  AssetGenImage get prayerTime => const AssetGenImage('assets/images/prayer_time.png');
 
   /// File path: assets/images/qibla.png
   AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.png');
 
   /// File path: assets/images/region_not_available.png
-  AssetGenImage get regionNotAvailable =>
-      const AssetGenImage('assets/images/region_not_available.png');
+  AssetGenImage get regionNotAvailable => const AssetGenImage('assets/images/region_not_available.png');
 
   /// File path: assets/images/snap_and_send.png
-  AssetGenImage get snapAndSend =>
-      const AssetGenImage('assets/images/snap_and_send.png');
+  AssetGenImage get snapAndSend => const AssetGenImage('assets/images/snap_and_send.png');
 
   /// File path: assets/images/snap_and_send_card.png
-  AssetGenImage get snapAndSendCard =>
-      const AssetGenImage('assets/images/snap_and_send_card.png');
+  AssetGenImage get snapAndSendCard => const AssetGenImage('assets/images/snap_and_send_card.png');
 
   /// File path: assets/images/snap_and_send_card_brown.png
-  AssetGenImage get snapAndSendCardBrown =>
-      const AssetGenImage('assets/images/snap_and_send_card_brown.png');
+  AssetGenImage get snapAndSendCardBrown => const AssetGenImage('assets/images/snap_and_send_card_brown.png');
 
   /// File path: assets/images/snap_and_send_phone.png
-  AssetGenImage get snapAndSendPhone =>
-      const AssetGenImage('assets/images/snap_and_send_phone.png');
+  AssetGenImage get snapAndSendPhone => const AssetGenImage('assets/images/snap_and_send_phone.png');
 
   /// File path: assets/images/snap_and_send_phone_brown.png
-  AssetGenImage get snapAndSendPhoneBrown =>
-      const AssetGenImage('assets/images/snap_and_send_phone_brown.png');
+  AssetGenImage get snapAndSendPhoneBrown => const AssetGenImage('assets/images/snap_and_send_phone_brown.png');
 
   /// File path: assets/images/snap_send.png
-  AssetGenImage get snapSend =>
-      const AssetGenImage('assets/images/snap_send.png');
+  AssetGenImage get snapSend => const AssetGenImage('assets/images/snap_send.png');
 
   /// File path: assets/images/success_app_feedback.png
-  AssetGenImage get successAppFeedback =>
-      const AssetGenImage('assets/images/success_app_feedback.png');
+  AssetGenImage get successAppFeedback => const AssetGenImage('assets/images/success_app_feedback.png');
 
   /// File path: assets/images/sunrise_pray.png
-  AssetGenImage get sunrisePray =>
-      const AssetGenImage('assets/images/sunrise_pray.png');
+  AssetGenImage get sunrisePray => const AssetGenImage('assets/images/sunrise_pray.png');
 
   /// File path: assets/images/sunset_pray.png
-  AssetGenImage get sunsetPray =>
-      const AssetGenImage('assets/images/sunset_pray.png');
+  AssetGenImage get sunsetPray => const AssetGenImage('assets/images/sunset_pray.png');
 
   /// File path: assets/images/tree-and-park-bench-white-background.png
-  AssetGenImage get treeAndParkBenchWhiteBackground => const AssetGenImage(
-      'assets/images/tree-and-park-bench-white-background.png');
+  AssetGenImage get treeAndParkBenchWhiteBackground =>
+      const AssetGenImage('assets/images/tree-and-park-bench-white-background.png');
 
   /// File path: assets/images/wavinghand.png
-  AssetGenImage get wavinghand =>
-      const AssetGenImage('assets/images/wavinghand.png');
+  AssetGenImage get wavinghand => const AssetGenImage('assets/images/wavinghand.png');
 
   /// File path: assets/images/yango.png
   AssetGenImage get yango => const AssetGenImage('assets/images/yango.png');
@@ -302,16 +258,13 @@ class $AssetsImagesSvgGen {
   String get enBaladyLogo => 'assets/images_svg/en_balady_logo.svg';
 
   /// File path: assets/images_svg/eta_auth_blank_user_marker.svg
-  String get etaAuthBlankUserMarker =>
-      'assets/images_svg/eta_auth_blank_user_marker.svg';
+  String get etaAuthBlankUserMarker => 'assets/images_svg/eta_auth_blank_user_marker.svg';
 
   /// File path: assets/images_svg/eta_lost_connection_control.svg
-  String get etaLostConnectionControl =>
-      'assets/images_svg/eta_lost_connection_control.svg';
+  String get etaLostConnectionControl => 'assets/images_svg/eta_lost_connection_control.svg';
 
   /// File path: assets/images_svg/eta_lost_connection_marker.svg
-  String get etaLostConnectionMarker =>
-      'assets/images_svg/eta_lost_connection_marker.svg';
+  String get etaLostConnectionMarker => 'assets/images_svg/eta_lost_connection_marker.svg';
 
   /// File path: assets/images_svg/eta_named_user.svg
   String get etaNamedUser => 'assets/images_svg/eta_named_user.svg';
@@ -323,8 +276,7 @@ class $AssetsImagesSvgGen {
   String get etaUnknownUser => 'assets/images_svg/eta_unknown_user.svg';
 
   /// File path: assets/images_svg/eta_unknown_user_marker.svg
-  String get etaUnknownUserMarker =>
-      'assets/images_svg/eta_unknown_user_marker.svg';
+  String get etaUnknownUserMarker => 'assets/images_svg/eta_unknown_user_marker.svg';
 
   /// File path: assets/images_svg/happy_face.svg
   String get happyFace => 'assets/images_svg/happy_face.svg';
@@ -339,8 +291,7 @@ class $AssetsImagesSvgGen {
   String get illustrationError => 'assets/images_svg/illustration_error.svg';
 
   /// File path: assets/images_svg/illustration_notifications.svg
-  String get illustrationNotifications =>
-      'assets/images_svg/illustration_notifications.svg';
+  String get illustrationNotifications => 'assets/images_svg/illustration_notifications.svg';
 
   /// File path: assets/images_svg/illustration_thanks.svg
   String get illustrationThanks => 'assets/images_svg/illustration_thanks.svg';
@@ -470,8 +421,7 @@ class $AssetsIconsSvgGen {
   String get circulation => 'assets/icons/svg/circulation.svg';
 
   /// File path: assets/icons/svg/current_location_icon.svg
-  String get currentLocationIcon =>
-      'assets/icons/svg/current_location_icon.svg';
+  String get currentLocationIcon => 'assets/icons/svg/current_location_icon.svg';
 
   /// File path: assets/icons/svg/dustbins.svg
   String get dustbins => 'assets/icons/svg/dustbins.svg';
@@ -492,8 +442,7 @@ class $AssetsIconsSvgGen {
   String get icArrowCompass => 'assets/icons/svg/ic_arrow_compass.svg';
 
   /// File path: assets/icons/svg/ic_arrow_corner_down_l.svg
-  String get icArrowCornerDownL =>
-      'assets/icons/svg/ic_arrow_corner_down_l.svg';
+  String get icArrowCornerDownL => 'assets/icons/svg/ic_arrow_corner_down_l.svg';
 
   /// File path: assets/icons/svg/ic_best_route.svg
   String get icBestRoute => 'assets/icons/svg/ic_best_route.svg';
@@ -640,16 +589,13 @@ class $AssetsIconsSvgGen {
   String get icInfoCircle => 'assets/icons/svg/ic_info_circle.svg';
 
   /// File path: assets/icons/svg/ic_iwish_marker_completed.svg
-  String get icIwishMarkerCompleted =>
-      'assets/icons/svg/ic_iwish_marker_completed.svg';
+  String get icIwishMarkerCompleted => 'assets/icons/svg/ic_iwish_marker_completed.svg';
 
   /// File path: assets/icons/svg/ic_iwish_marker_planned.svg
-  String get icIwishMarkerPlanned =>
-      'assets/icons/svg/ic_iwish_marker_planned.svg';
+  String get icIwishMarkerPlanned => 'assets/icons/svg/ic_iwish_marker_planned.svg';
 
   /// File path: assets/icons/svg/ic_iwish_marker_selected.svg
-  String get icIwishMarkerSelected =>
-      'assets/icons/svg/ic_iwish_marker_selected.svg';
+  String get icIwishMarkerSelected => 'assets/icons/svg/ic_iwish_marker_selected.svg';
 
   /// File path: assets/icons/svg/ic_kiblah.svg
   String get icKiblah => 'assets/icons/svg/ic_kiblah.svg';
@@ -772,15 +718,13 @@ class $AssetsIconsSvgGen {
   String get icRoutingCircle => 'assets/icons/svg/ic_routing_circle.svg';
 
   /// File path: assets/icons/svg/ic_routing_circle_small.svg
-  String get icRoutingCircleSmall =>
-      'assets/icons/svg/ic_routing_circle_small.svg';
+  String get icRoutingCircleSmall => 'assets/icons/svg/ic_routing_circle_small.svg';
 
   /// File path: assets/icons/svg/ic_routing_location.svg
   String get icRoutingLocation => 'assets/icons/svg/ic_routing_location.svg';
 
   /// File path: assets/icons/svg/ic_routing_pedestrian.svg
-  String get icRoutingPedestrian =>
-      'assets/icons/svg/ic_routing_pedestrian.svg';
+  String get icRoutingPedestrian => 'assets/icons/svg/ic_routing_pedestrian.svg';
 
   /// File path: assets/icons/svg/ic_running.svg
   String get icRunning => 'assets/icons/svg/ic_running.svg';
@@ -867,37 +811,31 @@ class $AssetsIconsSvgGen {
   String get parking => 'assets/icons/svg/parking.svg';
 
   /// File path: assets/icons/svg/parking_control.png
-  AssetGenImage get parkingControl =>
-      const AssetGenImage('assets/icons/svg/parking_control.png');
+  AssetGenImage get parkingControl => const AssetGenImage('assets/icons/svg/parking_control.png');
 
   /// File path: assets/icons/svg/photo_gallery.svg
   String get photoGallery => 'assets/icons/svg/photo_gallery.svg';
 
   /// File path: assets/icons/svg/place_card_placeholder.svg
-  String get placeCardPlaceholder =>
-      'assets/icons/svg/place_card_placeholder.svg';
+  String get placeCardPlaceholder => 'assets/icons/svg/place_card_placeholder.svg';
 
   /// Directory path: assets/icons/svg/places
   $AssetsIconsSvgPlacesGen get places => const $AssetsIconsSvgPlacesGen();
 
   /// Directory path: assets/icons/svg/places_big
-  $AssetsIconsSvgPlacesBigGen get placesBig =>
-      const $AssetsIconsSvgPlacesBigGen();
+  $AssetsIconsSvgPlacesBigGen get placesBig => const $AssetsIconsSvgPlacesBigGen();
 
   /// Directory path: assets/icons/svg/places_big_new
-  $AssetsIconsSvgPlacesBigNewGen get placesBigNew =>
-      const $AssetsIconsSvgPlacesBigNewGen();
+  $AssetsIconsSvgPlacesBigNewGen get placesBigNew => const $AssetsIconsSvgPlacesBigNewGen();
 
   /// Directory path: assets/icons/svg/places_new
-  $AssetsIconsSvgPlacesNewGen get placesNew =>
-      const $AssetsIconsSvgPlacesNewGen();
+  $AssetsIconsSvgPlacesNewGen get placesNew => const $AssetsIconsSvgPlacesNewGen();
 
   /// Directory path: assets/icons/svg/poi_card
   $AssetsIconsSvgPoiCardGen get poiCard => const $AssetsIconsSvgPoiCardGen();
 
   /// Directory path: assets/icons/svg/quick_filters
-  $AssetsIconsSvgQuickFiltersGen get quickFilters =>
-      const $AssetsIconsSvgQuickFiltersGen();
+  $AssetsIconsSvgQuickFiltersGen get quickFilters => const $AssetsIconsSvgQuickFiltersGen();
 
   /// File path: assets/icons/svg/sa_flag.svg
   String get saFlag => 'assets/icons/svg/sa_flag.svg';
@@ -1110,23 +1048,16 @@ class $AssetsMapsConfigsGen {
   const $AssetsMapsConfigsGen();
 
   /// File path: assets/maps/configs/momrah-prod-vendor-config.jsonx
-  String get momrahProdVendorConfig =>
-      'assets/maps/configs/momrah-prod-vendor-config.jsonx';
+  String get momrahProdVendorConfig => 'assets/maps/configs/momrah-prod-vendor-config.jsonx';
 
   /// File path: assets/maps/configs/momrah-staging-vendor-config.jsonx
-  String get momrahStagingVendorConfig =>
-      'assets/maps/configs/momrah-staging-vendor-config.jsonx';
+  String get momrahStagingVendorConfig => 'assets/maps/configs/momrah-staging-vendor-config.jsonx';
 
   /// File path: assets/maps/configs/urbi-pre-prod-vendor-config.jsonx
-  String get urbiPreProdVendorConfig =>
-      'assets/maps/configs/urbi-pre-prod-vendor-config.jsonx';
+  String get urbiPreProdVendorConfig => 'assets/maps/configs/urbi-pre-prod-vendor-config.jsonx';
 
   /// List of all assets
-  List<String> get values => [
-        momrahProdVendorConfig,
-        momrahStagingVendorConfig,
-        urbiPreProdVendorConfig
-      ];
+  List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
 }
 
 class $AssetsIconsSvgLayersGen {
@@ -1303,15 +1234,13 @@ class $AssetsIconsSvgPlacesBigGen {
   String get icEventsLtr => 'assets/icons/svg/places_big/ic_events_ltr.svg';
 
   /// File path: assets/icons/svg/places_big/ic_gasstation_ltr.svg
-  String get icGasstationLtr =>
-      'assets/icons/svg/places_big/ic_gasstation_ltr.svg';
+  String get icGasstationLtr => 'assets/icons/svg/places_big/ic_gasstation_ltr.svg';
 
   /// File path: assets/icons/svg/places_big/ic_gym.svg
   String get icGym => 'assets/icons/svg/places_big/ic_gym.svg';
 
   /// File path: assets/icons/svg/places_big/ic_hospital_place.svg
-  String get icHospitalPlace =>
-      'assets/icons/svg/places_big/ic_hospital_place.svg';
+  String get icHospitalPlace => 'assets/icons/svg/places_big/ic_hospital_place.svg';
 
   /// File path: assets/icons/svg/places_big/ic_hotels.svg
   String get icHotels => 'assets/icons/svg/places_big/ic_hotels.svg';
@@ -1391,8 +1320,7 @@ class $AssetsIconsSvgPlacesBigNewGen {
   String get icBanks => 'assets/icons/svg/places_big_new/ic_banks.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_barbershop.svg
-  String get icBarbershop =>
-      'assets/icons/svg/places_big_new/ic_barbershop.svg';
+  String get icBarbershop => 'assets/icons/svg/places_big_new/ic_barbershop.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_beach.svg
   String get icBeach => 'assets/icons/svg/places_big_new/ic_beach.svg';
@@ -1401,48 +1329,40 @@ class $AssetsIconsSvgPlacesBigNewGen {
   String get icBeauty => 'assets/icons/svg/places_big_new/ic_beauty.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_building_materials.svg
-  String get icBuildingMaterials =>
-      'assets/icons/svg/places_big_new/ic_building_materials.svg';
+  String get icBuildingMaterials => 'assets/icons/svg/places_big_new/ic_building_materials.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_business.svg
   String get icBusiness => 'assets/icons/svg/places_big_new/ic_business.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_car_services.svg
-  String get icCarServices =>
-      'assets/icons/svg/places_big_new/ic_car_services.svg';
+  String get icCarServices => 'assets/icons/svg/places_big_new/ic_car_services.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_children_goods.svg
-  String get icChildrenGoods =>
-      'assets/icons/svg/places_big_new/ic_children_goods.svg';
+  String get icChildrenGoods => 'assets/icons/svg/places_big_new/ic_children_goods.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_city_transport.svg
-  String get icCityTransport =>
-      'assets/icons/svg/places_big_new/ic_city_transport.svg';
+  String get icCityTransport => 'assets/icons/svg/places_big_new/ic_city_transport.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_clothing.svg
   String get icClothing => 'assets/icons/svg/places_big_new/ic_clothing.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_connection.svg
-  String get icConnection =>
-      'assets/icons/svg/places_big_new/ic_connection.svg';
+  String get icConnection => 'assets/icons/svg/places_big_new/ic_connection.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_construction.svg
-  String get icConstruction =>
-      'assets/icons/svg/places_big_new/ic_construction.svg';
+  String get icConstruction => 'assets/icons/svg/places_big_new/ic_construction.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_events.svg
   String get icEvents => 'assets/icons/svg/places_big_new/ic_events.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_gasstation_ltr.svg
-  String get icGasstationLtr =>
-      'assets/icons/svg/places_big_new/ic_gasstation_ltr.svg';
+  String get icGasstationLtr => 'assets/icons/svg/places_big_new/ic_gasstation_ltr.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_gym.svg
   String get icGym => 'assets/icons/svg/places_big_new/ic_gym.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_hospital_place.svg
-  String get icHospitalPlace =>
-      'assets/icons/svg/places_big_new/ic_hospital_place.svg';
+  String get icHospitalPlace => 'assets/icons/svg/places_big_new/ic_hospital_place.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_hotels.svg
   String get icHotels => 'assets/icons/svg/places_big_new/ic_hotels.svg';
@@ -1454,15 +1374,13 @@ class $AssetsIconsSvgPlacesBigNewGen {
   String get icMedia => 'assets/icons/svg/places_big_new/ic_media.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_medicine_ltr.svg
-  String get icMedicineLtr =>
-      'assets/icons/svg/places_big_new/ic_medicine_ltr.svg';
+  String get icMedicineLtr => 'assets/icons/svg/places_big_new/ic_medicine_ltr.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_mosques.svg
   String get icMosques => 'assets/icons/svg/places_big_new/ic_mosques.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_municipalities.svg
-  String get icMunicipalities =>
-      'assets/icons/svg/places_big_new/ic_municipalities.svg';
+  String get icMunicipalities => 'assets/icons/svg/places_big_new/ic_municipalities.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_park.svg
   String get icPark => 'assets/icons/svg/places_big_new/ic_park.svg';
@@ -1474,16 +1392,13 @@ class $AssetsIconsSvgPlacesBigNewGen {
   String get icQibla => 'assets/icons/svg/places_big_new/ic_qibla.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_railway_transport.svg
-  String get icRailwayTransport =>
-      'assets/icons/svg/places_big_new/ic_railway_transport.svg';
+  String get icRailwayTransport => 'assets/icons/svg/places_big_new/ic_railway_transport.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_recreation.svg
-  String get icRecreation =>
-      'assets/icons/svg/places_big_new/ic_recreation.svg';
+  String get icRecreation => 'assets/icons/svg/places_big_new/ic_recreation.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_restaurant.svg
-  String get icRestaurant =>
-      'assets/icons/svg/places_big_new/ic_restaurant.svg';
+  String get icRestaurant => 'assets/icons/svg/places_big_new/ic_restaurant.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_school_ltr.svg
   String get icSchoolLtr => 'assets/icons/svg/places_big_new/ic_school_ltr.svg';
@@ -1498,8 +1413,7 @@ class $AssetsIconsSvgPlacesBigNewGen {
   String get icTooth => 'assets/icons/svg/places_big_new/ic_tooth.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_water_transport.svg
-  String get icWaterTransport =>
-      'assets/icons/svg/places_big_new/ic_water_transport.svg';
+  String get icWaterTransport => 'assets/icons/svg/places_big_new/ic_water_transport.svg';
 
   /// File path: assets/icons/svg/places_big_new/ic_wc.svg
   String get icWc => 'assets/icons/svg/places_big_new/ic_wc.svg';
@@ -1571,8 +1485,7 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icBeauty => 'assets/icons/svg/places_new/ic_beauty.svg';
 
   /// File path: assets/icons/svg/places_new/ic_building_materials.svg
-  String get icBuildingMaterials =>
-      'assets/icons/svg/places_new/ic_building_materials.svg';
+  String get icBuildingMaterials => 'assets/icons/svg/places_new/ic_building_materials.svg';
 
   /// File path: assets/icons/svg/places_new/ic_busstation.svg
   String get icBusstation => 'assets/icons/svg/places_new/ic_busstation.svg';
@@ -1581,8 +1494,7 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icCarServices => 'assets/icons/svg/places_new/ic_car_services.svg';
 
   /// File path: assets/icons/svg/places_new/ic_children_goods.svg
-  String get icChildrenGoods =>
-      'assets/icons/svg/places_new/ic_children_goods.svg';
+  String get icChildrenGoods => 'assets/icons/svg/places_new/ic_children_goods.svg';
 
   /// File path: assets/icons/svg/places_new/ic_clothes.svg
   String get icClothes => 'assets/icons/svg/places_new/ic_clothes.svg';
@@ -1591,8 +1503,7 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icConnection => 'assets/icons/svg/places_new/ic_connection.svg';
 
   /// File path: assets/icons/svg/places_new/ic_constructions.svg
-  String get icConstructions =>
-      'assets/icons/svg/places_new/ic_constructions.svg';
+  String get icConstructions => 'assets/icons/svg/places_new/ic_constructions.svg';
 
   /// File path: assets/icons/svg/places_new/ic_events.svg
   String get icEvents => 'assets/icons/svg/places_new/ic_events.svg';
@@ -1601,15 +1512,13 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icEventsLtr => 'assets/icons/svg/places_new/ic_events_ltr.svg';
 
   /// File path: assets/icons/svg/places_new/ic_gasstation_ltr.svg
-  String get icGasstationLtr =>
-      'assets/icons/svg/places_new/ic_gasstation_ltr.svg';
+  String get icGasstationLtr => 'assets/icons/svg/places_new/ic_gasstation_ltr.svg';
 
   /// File path: assets/icons/svg/places_new/ic_gym.svg
   String get icGym => 'assets/icons/svg/places_new/ic_gym.svg';
 
   /// File path: assets/icons/svg/places_new/ic_hospital_place.svg
-  String get icHospitalPlace =>
-      'assets/icons/svg/places_new/ic_hospital_place.svg';
+  String get icHospitalPlace => 'assets/icons/svg/places_new/ic_hospital_place.svg';
 
   /// File path: assets/icons/svg/places_new/ic_hotels.svg
   String get icHotels => 'assets/icons/svg/places_new/ic_hotels.svg';
@@ -1627,8 +1536,7 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icMosques => 'assets/icons/svg/places_new/ic_mosques.svg';
 
   /// File path: assets/icons/svg/places_new/ic_municipalities.svg
-  String get icMunicipalities =>
-      'assets/icons/svg/places_new/ic_municipalities.svg';
+  String get icMunicipalities => 'assets/icons/svg/places_new/ic_municipalities.svg';
 
   /// File path: assets/icons/svg/places_new/ic_park.svg
   String get icPark => 'assets/icons/svg/places_new/ic_park.svg';
@@ -1643,8 +1551,7 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icQibla => 'assets/icons/svg/places_new/ic_qibla.svg';
 
   /// File path: assets/icons/svg/places_new/ic_railway_transport.svg
-  String get icRailwayTransport =>
-      'assets/icons/svg/places_new/ic_railway_transport.svg';
+  String get icRailwayTransport => 'assets/icons/svg/places_new/ic_railway_transport.svg';
 
   /// File path: assets/icons/svg/places_new/ic_recreation.svg
   String get icRecreation => 'assets/icons/svg/places_new/ic_recreation.svg';
@@ -1665,8 +1572,7 @@ class $AssetsIconsSvgPlacesNewGen {
   String get icTooth => 'assets/icons/svg/places_new/ic_tooth.svg';
 
   /// File path: assets/icons/svg/places_new/ic_water_transport.svg
-  String get icWaterTransport =>
-      'assets/icons/svg/places_new/ic_water_transport.svg';
+  String get icWaterTransport => 'assets/icons/svg/places_new/ic_water_transport.svg';
 
   /// File path: assets/icons/svg/places_new/ic_wc.svg
   String get icWc => 'assets/icons/svg/places_new/ic_wc.svg';
@@ -1743,85 +1649,67 @@ class $AssetsIconsSvgQuickFiltersGen {
   String get freeRoam => 'assets/icons/svg/quick_filters/free_roam.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_beaches.svg
-  String get icQuickBeaches =>
-      'assets/icons/svg/quick_filters/ic_quick_beaches.svg';
+  String get icQuickBeaches => 'assets/icons/svg/quick_filters/ic_quick_beaches.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_beauty.svg
-  String get icQuickBeauty =>
-      'assets/icons/svg/quick_filters/ic_quick_beauty.svg';
+  String get icQuickBeauty => 'assets/icons/svg/quick_filters/ic_quick_beauty.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_bookmark.svg
-  String get icQuickBookmark =>
-      'assets/icons/svg/quick_filters/ic_quick_bookmark.svg';
+  String get icQuickBookmark => 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_car_services.svg
-  String get icQuickCarServices =>
-      'assets/icons/svg/quick_filters/ic_quick_car_services.svg';
+  String get icQuickCarServices => 'assets/icons/svg/quick_filters/ic_quick_car_services.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_dental.svg
-  String get icQuickDental =>
-      'assets/icons/svg/quick_filters/ic_quick_dental.svg';
+  String get icQuickDental => 'assets/icons/svg/quick_filters/ic_quick_dental.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_events.svg
-  String get icQuickEvents =>
-      'assets/icons/svg/quick_filters/ic_quick_events.svg';
+  String get icQuickEvents => 'assets/icons/svg/quick_filters/ic_quick_events.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_gas_station.svg
-  String get icQuickGasStation =>
-      'assets/icons/svg/quick_filters/ic_quick_gas_station.svg';
+  String get icQuickGasStation => 'assets/icons/svg/quick_filters/ic_quick_gas_station.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_home.svg
   String get icQuickHome => 'assets/icons/svg/quick_filters/ic_quick_home.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_hospital.svg
-  String get icQuickHospital =>
-      'assets/icons/svg/quick_filters/ic_quick_hospital.svg';
+  String get icQuickHospital => 'assets/icons/svg/quick_filters/ic_quick_hospital.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_hotels.svg
-  String get icQuickHotels =>
-      'assets/icons/svg/quick_filters/ic_quick_hotels.svg';
+  String get icQuickHotels => 'assets/icons/svg/quick_filters/ic_quick_hotels.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_markets.svg
-  String get icQuickMarkets =>
-      'assets/icons/svg/quick_filters/ic_quick_markets.svg';
+  String get icQuickMarkets => 'assets/icons/svg/quick_filters/ic_quick_markets.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_medicine.svg
-  String get icQuickMedicine =>
-      'assets/icons/svg/quick_filters/ic_quick_medicine.svg';
+  String get icQuickMedicine => 'assets/icons/svg/quick_filters/ic_quick_medicine.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_mosques.svg
-  String get icQuickMosques =>
-      'assets/icons/svg/quick_filters/ic_quick_mosques.svg';
+  String get icQuickMosques => 'assets/icons/svg/quick_filters/ic_quick_mosques.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_park.svg
   String get icQuickPark => 'assets/icons/svg/quick_filters/ic_quick_park.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_recreation.svg
-  String get icQuickRecreation =>
-      'assets/icons/svg/quick_filters/ic_quick_recreation.svg';
+  String get icQuickRecreation => 'assets/icons/svg/quick_filters/ic_quick_recreation.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_restaurants.svg
-  String get icQuickRestaurants =>
-      'assets/icons/svg/quick_filters/ic_quick_restaurants.svg';
+  String get icQuickRestaurants => 'assets/icons/svg/quick_filters/ic_quick_restaurants.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_salons.svg
-  String get icQuickSalons =>
-      'assets/icons/svg/quick_filters/ic_quick_salons.svg';
+  String get icQuickSalons => 'assets/icons/svg/quick_filters/ic_quick_salons.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_school.svg
-  String get icQuickSchool =>
-      'assets/icons/svg/quick_filters/ic_quick_school.svg';
+  String get icQuickSchool => 'assets/icons/svg/quick_filters/ic_quick_school.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg
-  String get icQuickSportClubs =>
-      'assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg';
+  String get icQuickSportClubs => 'assets/icons/svg/quick_filters/ic_quick_sport_clubs.svg';
 
   /// File path: assets/icons/svg/quick_filters/ic_quick_work.svg
   String get icQuickWork => 'assets/icons/svg/quick_filters/ic_quick_work.svg';
 
   /// File path: assets/icons/svg/quick_filters/recreation_pin.svg
-  String get recreationPin =>
-      'assets/icons/svg/quick_filters/recreation_pin.svg';
+  String get recreationPin => 'assets/icons/svg/quick_filters/recreation_pin.svg';
 
   /// File path: assets/icons/svg/quick_filters/salons_pin.svg
   String get salonsPin => 'assets/icons/svg/quick_filters/salons_pin.svg';
@@ -1957,8 +1845,7 @@ class $AssetsIconsSvgWeatherGen {
   String get humidity => 'assets/icons/svg/weather/humidity.svg';
 
   /// Directory path: assets/icons/svg/weather/night
-  $AssetsIconsSvgWeatherNightGen get night =>
-      const $AssetsIconsSvgWeatherNightGen();
+  $AssetsIconsSvgWeatherNightGen get night => const $AssetsIconsSvgWeatherNightGen();
 
   /// File path: assets/icons/svg/weather/partly_clouded.svg
   String get partlyClouded => 'assets/icons/svg/weather/partly_clouded.svg';
@@ -1979,8 +1866,7 @@ class $AssetsIconsSvgWeatherGen {
   String get sunset => 'assets/icons/svg/weather/sunset.svg';
 
   /// File path: assets/icons/svg/weather/thermometer_empty.svg
-  String get thermometerEmpty =>
-      'assets/icons/svg/weather/thermometer_empty.svg';
+  String get thermometerEmpty => 'assets/icons/svg/weather/thermometer_empty.svg';
 
   /// File path: assets/icons/svg/weather/umbrella_empty.svg
   String get umbrellaEmpty => 'assets/icons/svg/weather/umbrella_empty.svg';
