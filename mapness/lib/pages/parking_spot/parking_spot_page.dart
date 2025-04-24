@@ -41,7 +41,7 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
 }
 
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
-  final _iconAsset = 'packages/mapness/assets/icons/svg/ic_parking_add.svg';
+  final _iconAsset = 'packages/mapness/assets/icons/svg/parking_control.svg';
 
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
