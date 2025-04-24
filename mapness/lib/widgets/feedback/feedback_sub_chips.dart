@@ -8,6 +8,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/feedback/feedback_input.dart';
 
 class FeedbackSubChips extends StatefulWidget {
@@ -168,7 +169,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
               controller: controller,
               config: BaladyInputConfig(
                 hintText: widget.field.hint,
-                onValidate: (_) => variants.isEmpty ? 'Nothing found, please select from the list' : null,
+                onValidate: (_) => variants.isEmpty ? context.l10n.feedbackSubcategoryEmptyError : null,
               ),
             ),
           ),
