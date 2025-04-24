@@ -23,11 +23,11 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
         controller.setState(PoiCardBottomSheetState.hidden);
         return false;
       case PoiCardBottomSheetState.open:
-        controller.setState(PoiCardBottomSheetState.open);
+        controller.setState(PoiCardBottomSheetState.halfOpen);
         return false;
 
       case PoiCardBottomSheetState.expanded:
-        controller.setState(PoiCardBottomSheetState.expanded);
+        controller.setState(PoiCardBottomSheetState.open);
         return false;
     }
   }
