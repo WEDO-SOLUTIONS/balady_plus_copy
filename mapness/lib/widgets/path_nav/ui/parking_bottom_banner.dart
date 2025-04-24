@@ -165,32 +165,28 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$2x),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: context.colorsV3.backgroundSurface1,
-                              borderRadius: borderSizeS,
-                            ),
-                            padding: const EdgeInsets.all(Spacing.$2x),
-                            child: EventsOnTheRoute.parking.icon(color: context.staticColor.surfaceStatusAccent),
-                          ),
-                          Spacing.$3x.widthBox,
-                          Text(
-                            context.l10n.showParkingSuggestions,
-                            style: context.textStyleV3.bodyLargeSemiBold
-                                .copyWith(color: context.colorsV3.backgroundSurface1),
-                          ),
-                        ],
+                      Container(
+                        decoration: BoxDecoration(
+                          color: context.colorsV3.backgroundSurface1,
+                          borderRadius: borderSizeS,
+                        ),
+                        padding: const EdgeInsets.all(Spacing.$2x),
+                        child: EventsOnTheRoute.parking.icon(color: context.staticColor.surfaceStatusAccent),
+                      ),
+                      Spacing.$3x.widthBox,
+                      Expanded(
+                        child: Text(
+                          context.l10n.showParkingSuggestions,
+                          style:
+                              context.textStyleV3.bodyLargeMedium.copyWith(color: context.colorsV3.backgroundSurface1),
+                        ),
                       ),
                       AppButton(
                         size: ButtonSize.small,
                         buttonColorScheme: ButtonColorScheme.primary,
                         primaryIcon: SystemIcons.close,
                         iconColor: context.colorsV2.staticWhite,
-                        color: Colors.transparent,
                         onTap: () {
                           _animationController.value = 1.0;
                           ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);

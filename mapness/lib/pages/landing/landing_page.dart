@@ -11,7 +11,6 @@ import 'package:mapness/features/favourites/providers/favourite_markers.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
@@ -77,9 +76,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkLocationPermission();
-    } else if (state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.paused) {
       AdvancedMetrics.instance.pauseMeasureBattery();
     }
 
