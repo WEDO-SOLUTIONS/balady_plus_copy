@@ -81,13 +81,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
                 scrollPhysics: CustomScrollPhysics.common(),
                 doubleTapZoomable: true,
                 pageController: pageController,
-                showTitleBar: (show) {
-                  if (show) {
-                    isAppBarVisible.value = true;
-                  } else {
-                    isAppBarVisible.value = false;
-                  }
-                },
+                showTitleBar: (show) => isAppBarVisible.value = show,
               ),
             ],
           ),
