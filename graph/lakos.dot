@@ -200,7 +200,6 @@ digraph "" {
   "/lib/features/car/car_enable_free_roam.dart" [label="car_enable_free_roam"];
   "/lib/features/sso_auth/domain/entity/sso_token_info.dart" [label="sso_token_info"];
   "/lib/features/sso_auth/domain/mappers/auth_token_response.dart" [label="auth_token_response"];
-  "/lib/features/sso_auth/presentation/signin_screen.dart" [label="signin_screen"];
   "/lib/features/sso_auth/data/token_provider.dart" [label="token_provider"];
   "/lib/features/sso_auth/data/auth_provider.dart" [label="auth_provider"];
   "/lib/features/statistic/data/bss_repository.dart" [label="bss_repository"];
@@ -1195,10 +1194,6 @@ digraph "" {
               label="mappers";
               "/lib/features/sso_auth/domain/mappers/auth_token_response.dart";
             }
-          }
-          subgraph "cluster~/lib/features/sso_auth/presentation" {
-            label="presentation";
-            "/lib/features/sso_auth/presentation/signin_screen.dart";
           }
           subgraph "cluster~/lib/features/sso_auth/data" {
             label="data";
@@ -3026,13 +3021,6 @@ digraph "" {
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/location.dart";
   "/lib/features/car/car_enable_free_roam.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/sso_auth/domain/mappers/auth_token_response.dart" -> "/lib/features/sso_auth/domain/entity/sso_token_info.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/config/package_config.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/constants/metrics_constants.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/lib/urbi_metrics.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/ui/balady_logo/balady_logo.dart";
-  "/lib/features/sso_auth/presentation/signin_screen.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/entry_point.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/features/sso_auth/data/auth_provider.dart" -> "/lib/features/profile/profile_image_provider.dart";
@@ -4068,7 +4056,6 @@ digraph "" {
   "/lib/shared/lib/auth/auth_methods.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/shared/lib/auth/auth_methods.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/shared/lib/auth/auth_methods.dart" -> "/lib/shared/lib/urbi_metrics.dart";
-  "/lib/shared/lib/auth/auth_token_interceptors.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/shared/lib/auth/auth_token_interceptors.dart" -> "/lib/features/sso_auth/data/auth_provider.dart";
   "/lib/shared/lib/auth/auth_token_interceptors.dart" -> "/lib/features/sso_auth/data/token_provider.dart";
   "/lib/shared/lib/image_denied_dialog.dart" -> "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart";
