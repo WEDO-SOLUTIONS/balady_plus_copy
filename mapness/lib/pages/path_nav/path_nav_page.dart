@@ -515,6 +515,9 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
+    final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
+    final position = ref.read(locationProvider);
+
     context.router.popUntilRouteWithName(BottomMenuRoute.name);
     ToastOverlay.of(context).show(
       title: ctx.l10n.youWantSaveParking,
@@ -522,9 +525,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       secondText: ctx.l10n.save,
       iconAsset: _iconAsset,
       onSecondTap: () {
-        final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
-        final position = ref.read(locationProvider);
-        ctx.router.push(
+        rootNavigatorKey.currentContext?.router.push(
           ParkingSpotRoute(
             isEdit: !parkingManage,
             markerPosition: GeoPointWithElevationMessage(
