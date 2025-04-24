@@ -41,12 +41,24 @@ class _ToastWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-                    child: Text(
-                      _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
-                      style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Text(
+                          _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
+                          style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
+                        ),
+                      ),
+                      const SizedBox(width: Spacing.$2x),
+                      if (iconData != null)
+                        Icon(
+                          iconData,
+                          color: iconColor ?? context.colorsV2.foregroundDefault,
+                        )
+                      else if (iconAsset != null)
+                        SvgPicture.asset(iconAsset!),
+                    ],
                   ),
                   Row(
                     children: [
@@ -57,7 +69,6 @@ class _ToastWidget extends ConsumerWidget {
                             padding: const EdgeInsetsDirectional.only(
                               top: Spacing.$3x,
                               bottom: Spacing.$3x,
-                              start: Spacing.$4x,
                             ),
                             child: Text(
                               firstText!,
@@ -92,24 +103,16 @@ class _ToastWidget extends ConsumerWidget {
           ),
         ),
       ),
-      const SizedBox(width: Spacing.$2x),
-      if (iconData != null)
-        Icon(
-          iconData,
-          color: iconColor ?? context.colorsV2.foregroundDefault,
-        )
-      else if (iconAsset != null)
-        SvgPicture.asset(iconAsset!),
     ];
 
     return SafeArea(
       child: Container(
         constraints: const BoxConstraints(minHeight: 44),
         padding: EdgeInsets.only(
-          left: Spacing.$3x,
-          right: Spacing.$3x,
+          left: Spacing.$4x,
+          right: Spacing.$4x,
           top: Spacing.$3x + Spacing.$0_5x,
-          bottom: hasFirstAction ? 0.0 : Spacing.$3x + Spacing.$0_5x,
+          bottom: hasFirstAction ? 0.0 : Spacing.$4x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
           color: context.colorsV2.backgroundSurface1,
