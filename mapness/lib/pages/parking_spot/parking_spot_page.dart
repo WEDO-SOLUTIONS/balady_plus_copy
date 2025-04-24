@@ -41,6 +41,8 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
 }
 
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
+  final _iconAsset = 'packages/mapness/assets/icons/svg/ic_parking_spot.svg';
+
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
   final _isDirty = ValueNotifier(false);
@@ -279,6 +281,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       title: context.l10n.parkingSuccessfullySaved,
       firstText: context.l10n.feedbackBreaksSheetClose,
       secondText: context.l10n.share,
+      iconAsset: _iconAsset,
       onSecondTap: () async {
         if (_latLng == null) {
           return;
