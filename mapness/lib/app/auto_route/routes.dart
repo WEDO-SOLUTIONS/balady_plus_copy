@@ -51,10 +51,6 @@ class Routes {
           page: ImageEditorRoute.page,
         ),
         CustomRoute(
-          path: '/signin',
-          page: SigninRoute.page,
-        ),
-        CustomRoute(
           path: '/navigator_settings',
           page: NavigatorSettingsRoute.page,
         ),
