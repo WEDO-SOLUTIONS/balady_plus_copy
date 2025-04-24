@@ -28,7 +28,11 @@ class FeedbackCategoryDto {
   FeedbackCategoryEntity toDomain() => FeedbackCategoryEntity(
         id: type,
         name: name,
-        fields: fields.map((e) => e.toDomain()).toList(),
+        fields: fields
+            .map(
+              (e) => e.toDomain(),
+            )
+            .toList(),
         iconUrl: icon,
       );
 }
