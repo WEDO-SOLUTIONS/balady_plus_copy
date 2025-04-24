@@ -15,6 +15,7 @@ class DeleteParkingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    const iconAsset = 'packages/mapness/assets/icons/svg/ic_complete.svg';
     final controller = StatelessBottomSheetController();
 
     return StatelessBottomSheet(
@@ -56,7 +57,10 @@ class DeleteParkingPage extends ConsumerWidget {
             primaryLabel: context.l10n.accept,
             onTap: () {
               ref.read(parkingManageProvider.notifier).clearStore();
-              ToastOverlay.of(context).show(title: context.l10n.parkingSpotDeleted);
+              ToastOverlay.of(context).show(
+                title: context.l10n.parkingSpotDeleted,
+                iconAsset: iconAsset,
+              );
               context.router.popUntilRouteWithName(BottomMenuRoute.name);
             },
           ),

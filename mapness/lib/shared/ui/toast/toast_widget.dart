@@ -3,21 +3,23 @@ part of 'toast_overlay.dart';
 class _ToastWidget extends ConsumerWidget {
   final String title;
   final TextStyle? titleStyle;
-  final String? actionText;
+  final String? firstText;
+  final String? secondText;
   final String? iconAsset;
   final IconData? iconData;
   final Color? iconColor;
   final bool isFlipped;
 
-  final VoidCallback? onActionTap;
-  final VoidCallback? onCloseTap;
+  final VoidCallback? onFirstTap;
+  final VoidCallback? onSecondTap;
 
   const _ToastWidget({
     required this.title,
     this.titleStyle,
-    this.actionText,
-    this.onActionTap,
-    this.onCloseTap,
+    this.secondText,
+    this.firstText,
+    this.onFirstTap,
+    this.onSecondTap,
     this.iconData,
     this.iconColor,
     this.iconAsset,
@@ -26,18 +28,9 @@ class _ToastWidget extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasAction = actionText != null;
+    final hasFirstAction = firstText != null;
+    final hasSecondAction = secondText != null;
     final children = [
-      if (onCloseTap != null) ...[
-        GestureDetector(
-          onTap: onCloseTap,
-          child: Icon(
-            SystemIcons.closeSmall,
-            color: context.colorsV2.foregroundDefault,
-          ),
-        ),
-        const SizedBox(width: Spacing.$2x),
-      ],
       Expanded(
         child: LayoutBuilder(
           builder: (context, constraints) => ConstrainedBox(
@@ -48,23 +41,51 @@ class _ToastWidget extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
-                    style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
+                  Padding(
+                    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
+                    child: Text(
+                      _getTitle(l10n: ref.watch(appLocaleProvider), title: title),
+                      style: titleStyle ?? context.textStyleV3.bodyLargeRegular,
+                    ),
                   ),
-                  if (hasAction)
-                    GestureDetector(
-                      onTap: onActionTap,
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
-                        child: Text(
-                          actionText!,
-                          style: context.textStyleV3.bodyLargeRegular.copyWith(
-                            color: context.colorsV2.accentActive,
+                  Row(
+                    children: [
+                      if (hasFirstAction)
+                        GestureDetector(
+                          onTap: onFirstTap,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              top: Spacing.$3x,
+                              bottom: Spacing.$3x,
+                              start: Spacing.$4x,
+                            ),
+                            child: Text(
+                              firstText!,
+                              style: context.textStyleV3.bodySmallSemiBold.copyWith(
+                                color: context.colorsV3.accentDefault,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
+                      if (hasSecondAction)
+                        GestureDetector(
+                          onTap: onSecondTap,
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(
+                              top: Spacing.$3x,
+                              bottom: Spacing.$3x,
+                              start: Spacing.$4x,
+                            ),
+                            child: Text(
+                              secondText!,
+                              style: context.textStyleV3.bodySmallSemiBold.copyWith(
+                                color: context.colorsV3.accentDefault,
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -88,7 +109,7 @@ class _ToastWidget extends ConsumerWidget {
           left: Spacing.$3x,
           right: Spacing.$3x,
           top: Spacing.$3x + Spacing.$0_5x,
-          bottom: hasAction ? 0.0 : Spacing.$3x + Spacing.$0_5x,
+          bottom: hasFirstAction ? 0.0 : Spacing.$3x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
           color: context.colorsV2.backgroundSurface1,

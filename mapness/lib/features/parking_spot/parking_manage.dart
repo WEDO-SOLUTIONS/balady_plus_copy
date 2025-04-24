@@ -7,7 +7,6 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
-import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/hive.dart';
@@ -16,7 +15,6 @@ import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:share_plus/share_plus.dart';
 
 part 'parking_manage.g.dart';
 
@@ -151,18 +149,6 @@ class _ParkingManage extends _$ParkingManage {
         },
       ),
     );
-  }
-
-  Future<void> sharedParking(String title, {required double latitude, required double longitude}) async {
-    final baseUri = BaldayDeeplink.basePoiUri;
-    final query = <String, String>{};
-
-    query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
-
-    query[BaldayDeeplink.latitudeKey] = latitude.toString();
-    query[BaldayDeeplink.longitudeKey] = longitude.toString();
-
-    await Share.share('$title ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
   }
 }
 

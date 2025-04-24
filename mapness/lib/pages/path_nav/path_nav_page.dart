@@ -75,6 +75,7 @@ class PathNavPage extends ConsumerStatefulWidget {
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
   final bool _navigatorAlreadyStopped = false;
+  final _iconAsset = 'packages/mapness/assets/icons/svg/ic_complete.svg';
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 
@@ -517,8 +518,10 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     context.router.popUntilRouteWithName(BottomMenuRoute.name);
     ToastOverlay.of(context).show(
       title: ctx.l10n.youWantSaveParking,
-      actionText: ctx.l10n.save,
-      onActionTap: () {
+      firstText: ctx.l10n.feedbackBreaksSheetClose,
+      secondText: ctx.l10n.save,
+      iconAsset: _iconAsset,
+      onSecondTap: () {
         final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
         final position = ref.read(locationProvider);
         ctx.router.push(
