@@ -102,6 +102,7 @@ class _FeedbackSubChipsSelector extends StatefulWidget {
 class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
   final controller = TextEditingController();
   String search = '';
+  String? errorText;
 
   @override
   void initState() {
@@ -167,9 +168,18 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
             padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
             child: BaladyTextInput(
               controller: controller,
+              supportingText: variants.isEmpty
+                  ? BaladySupportingText(
+                      text: context.l10n.feedbackSubcategoryEmptyError,
+                      style: context.textStyleV3.bodySmallRegular.copyWith(
+                        color: context.colorsV3.errorDefault,
+                      ),
+                    )
+                  : null,
+              inputState: variants.isEmpty ? BaladyInputState.error : BaladyInputState.defaultValue,
               config: BaladyInputConfig(
+                isDisposed: false,
                 hintText: widget.field.hint,
-                onValidate: (_) => variants.isEmpty ? context.l10n.feedbackSubcategoryEmptyError : null,
               ),
             ),
           ),
