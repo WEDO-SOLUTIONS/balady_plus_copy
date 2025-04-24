@@ -295,7 +295,8 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
         query[BaldayDeeplink.latitudeKey] = _latLng!.latitude.toString();
         query[BaldayDeeplink.longitudeKey] = _latLng!.longitude.toString();
 
-        await Share.share('${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
+        await Share.share(
+            '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
       },
     );
   }
