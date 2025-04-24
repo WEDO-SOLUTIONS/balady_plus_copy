@@ -21,8 +21,7 @@ class ParkingControl extends ConsumerWidget {
 
     final cameraPosition = ref.read(cameraPositionProvider);
 
-    /// TODO(Ayat) Update icon to svg
-    const iconParking = 'packages/mapness/assets/icons/svg/parking_control.png';
+    const iconParking = 'packages/mapness/assets/icons/svg/parking_control.svg';
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
       child: SizedBox(
