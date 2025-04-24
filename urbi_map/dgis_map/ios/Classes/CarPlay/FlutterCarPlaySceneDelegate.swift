@@ -67,8 +67,13 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     func viewDidLoad(with map: DGis.Map) {
         FlutterCarPlaySceneDelegate.map = map
         
-        let navigationState = DgisMapInitializer.shared.getNavigationManager().uiModel.state
-        if navigationState == .navigation || navigationState == .routeSearch {
+        let uiModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        let navigationState = uiModel.state
+        let routeBuildOptions = uiModel.route.routeBuildOptions
+        let isNavigation = (navigationState == .navigation || navigationState == .routeSearch) && routeBuildOptions != nil
+        let isFreeRoam = (navigationState == .navigation || navigationState == .routeSearch) && routeBuildOptions == nil
+        
+        if isNavigation {
             Self.startNavigation()
             if let maneuver = Self.currentManeuver {
                 Self.updateManeuver(maneuver)
@@ -76,7 +81,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             if let estimates = Self.currentEstimates {
                 Self.updateEstimates(estimates)
             }
-        } else {
+        } else if !isFreeRoam {
             try? DgisMapInitializer.shared.getNavigationManager().start()
             map.attributes.setAttributeValue(name: "navigatorOn", value: .boolean(true))
         }
