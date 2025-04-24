@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/w
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -54,9 +55,12 @@ class FeedbackImages extends StatelessWidget {
           ),
           Consumer(builder: (context, ref, _) {
             ref.listen(feedbackImageSelectorProvider, (_, next) {
-              fieldKey.currentState?.didChange(
-                next.map((e) => FileUpload.init(srcPath: e.path)).toIList(),
-              );
+              final oldValue = fieldKey.currentState?.value ?? const IList.empty();
+              final newValue = next.map((newXFile) {
+                final existing = oldValue.firstWhereOrNull((f) => f.srcPath == newXFile.path);
+                return existing ?? FileUpload.init(srcPath: newXFile.path);
+              }).toIList();
+              fieldKey.currentState?.didChange(newValue);
             });
             return FormBuilderField<IList<FileUpload>>(
                 key: fieldKey,
