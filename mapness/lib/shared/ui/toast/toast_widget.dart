@@ -112,7 +112,7 @@ class _ToastWidget extends ConsumerWidget {
           left: Spacing.$4x,
           right: Spacing.$4x,
           top: Spacing.$3x + Spacing.$0_5x,
-          bottom: hasFirstAction ? 0.0 : Spacing.$4x + Spacing.$0_5x,
+          bottom: hasFirstAction || hasSecondAction ? 0.0 : Spacing.$3x + Spacing.$0_5x,
         ),
         decoration: BoxDecoration(
           color: context.colorsV2.backgroundSurface1,

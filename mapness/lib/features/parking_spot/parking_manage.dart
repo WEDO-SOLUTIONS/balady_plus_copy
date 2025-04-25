@@ -23,7 +23,7 @@ const _keyCache = 'parking_store_model';
 
 const parkingId = 'parking_marker';
 const iconParking = 'packages/mapness/assets/icons/svg/places_new/ic_parking.svg';
-const parkingObjectId = 10;
+const parkingObjectId = 10; /// This ID is needed to determine that we have opened the parking lot
 
 @riverpod
 class _ParkingManage extends _$ParkingManage {

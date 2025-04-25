@@ -67,7 +67,7 @@ class ToastOverlayState extends State<ToastOverlay> {
     String? iconAsset,
     IconData? iconData,
     Color? iconColor,
-    bool? isDismissible = false,
+    bool? isDismissible,
     bool isClosable = false,
     bool isFlipped = false,
     Duration displayDuration = const Duration(seconds: 3),
@@ -179,6 +179,7 @@ class ToastOverlayState extends State<ToastOverlay> {
     show(
       title: _betaNotificationTitleKey,
       titleStyle: context.textStyleV3.captionLargeRegular.copyWith(fontSize: context.isLTR ? 12 : 13),
+      isDismissible: true,
       isClosable: true,
       isFlipped: true,
       iconData: General16Icons.infoCircleFill,
