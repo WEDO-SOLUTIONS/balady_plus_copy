@@ -445,6 +445,7 @@ digraph "" {
   "/lib/shared/config/environment_config.dart" [label="environment_config"];
   "/lib/shared/utils/language_detector.dart" [label="language_detector"];
   "/lib/shared/utils/text_utils/phone_number_formatter.dart" [label="phone_number_formatter"];
+  "/lib/shared/utils/text_utils/voice_settings_utils.dart" [label="voice_settings_utils"];
   "/lib/shared/utils/common_function.dart" [label="common_function"];
   "/lib/shared/entities/coordinates.dart" [label="coordinates"];
   "/lib/shared/extensions/brief_route_info_message_ext.dart" [label="brief_route_info_message_ext"];
@@ -639,6 +640,7 @@ digraph "" {
   "/lib/widgets/feedback/schedule/drum_picker_widget.dart" [label="drum_picker_widget"];
   "/lib/widgets/feedback/feedback_type_item_widget.dart" [label="feedback_type_item_widget"];
   "/lib/widgets/feedback/feedback_text_list.dart" [label="feedback_text_list"];
+  "/lib/widgets/feedback/feedback_sub_chips.dart" [label="feedback_sub_chips"];
   "/lib/widgets/feedback/images/feedback_image_item.dart" [label="feedback_image_item"];
   "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" [label="feedback_image_selector_sheet"];
   "/lib/widgets/feedback/images/feedback_image_action_button.dart" [label="feedback_image_action_button"];
@@ -1731,6 +1733,7 @@ digraph "" {
           subgraph "cluster~/lib/shared/utils/text_utils" {
             label="text_utils";
             "/lib/shared/utils/text_utils/phone_number_formatter.dart";
+            "/lib/shared/utils/text_utils/voice_settings_utils.dart";
           }
         }
         subgraph "cluster~/lib/shared/entities" {
@@ -2067,6 +2070,7 @@ digraph "" {
           "/lib/widgets/feedback/feedback_balady_business.dart";
           "/lib/widgets/feedback/feedback_type_item_widget.dart";
           "/lib/widgets/feedback/feedback_text_list.dart";
+          "/lib/widgets/feedback/feedback_sub_chips.dart";
           "/lib/widgets/feedback/feedback_schedule_widget.dart";
           subgraph "cluster~/lib/widgets/feedback/schedule" {
             label="schedule";
@@ -2712,6 +2716,7 @@ digraph "" {
   "/lib/features/path_nav/providers/path_nav_eta.dart" -> "/lib/features/share_eta/providers/eta_route_info_provider.dart";
   "/lib/features/path_nav/providers/path_nav_eta.dart" -> "/lib/shared/providers/location.dart";
   "/lib/features/path_nav/providers/path_nav_eta.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
+  "/lib/features/path_nav/providers/path_nav_eta.dart" -> "/lib/shared/providers/map/parking_autoenabled_sheet_provider.dart";
   "/lib/features/path_nav/providers/path_nav_sound_provider.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/features/path_nav/providers/path_nav_sound_provider.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/path_nav/providers/path_nav_maneuver.dart" -> "/lib/entities/path_nav/models/path_nav_maneuver.dart";
@@ -3274,6 +3279,7 @@ digraph "" {
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/feedback_bool_toggle.dart";
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/feedback_chips.dart";
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/feedback_schedule_widget.dart";
+  "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/feedback_sub_chips.dart";
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/feedback_text_field.dart";
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/feedback_text_list.dart";
   "/lib/pages/feedback/components/feedback_field_widget.dart" -> "/lib/widgets/feedback/images/feedback_images.dart";
@@ -3618,6 +3624,7 @@ digraph "" {
   "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/pages/free_roam/ui/traffic_parking_control.dart";
   "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/shared/extensions/path_nav_ext.dart";
+  "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/widgets/landing/compass_control.dart";
   "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/widgets/landing/follow_control.dart";
   "/lib/pages/free_roam/free_roam_page.dart" -> "/lib/widgets/landing/indoor_control.dart";
@@ -3909,6 +3916,7 @@ digraph "" {
   "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/pages/navigator_settings/utils/sound_type_extension.dart";
   "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/shared/providers/map/sound_settings.dart";
+  "/lib/pages/navigator_settings/pages/sound_settings_page/sound_settings_page_content.dart" -> "/lib/shared/utils/text_utils/voice_settings_utils.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" -> "/lib/pages/navigator_settings/components/voice_row_widget.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart" -> "/lib/shared/providers/map/sound_settings.dart";
   "/lib/pages/navigator_settings/pages/voice_page/voice_page.dart" -> "/lib/pages/navigator_settings/pages/voice_page/voice_page_content.dart";
@@ -3927,10 +3935,12 @@ digraph "" {
   "/lib/pages/navigator_settings/components/language_pick_sheet.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/pages/navigator_settings/components/voice_row_widget.dart" -> "/lib/shared/providers/map/dgis_packages.dart";
   "/lib/pages/navigator_settings/components/voice_row_widget.dart" -> "/lib/shared/providers/navigator_voice.dart";
+  "/lib/pages/navigator_settings/components/voice_row_widget.dart" -> "/lib/shared/utils/text_utils/voice_settings_utils.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/widgets/lifestyle_layers/layers_sheet_content.dart";
   "/lib/pages/lifestyle_layers/layers_sheet.dart" -> "/lib/widgets/lifestyle_layers/parking_details_content.dart";
+  "/lib/shared/utils/text_utils/voice_settings_utils.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/extensions/path_nav_ext.dart" -> "/lib/entities/path_nav/models/path_nav_message_state.dart";
   "/lib/shared/extensions/time_range_extension.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/shared/extensions/time_range_extension.dart" -> "/lib/shared/extensions/time_of_day_extension.dart";
@@ -4258,6 +4268,10 @@ digraph "" {
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/shared/utils/text_utils/phone_number_formatter.dart";
   "/lib/widgets/feedback/feedback_text_list.dart" -> "/lib/widgets/feedback/feedback_input.dart";
+  "/lib/widgets/feedback/feedback_sub_chips.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
+  "/lib/widgets/feedback/feedback_sub_chips.dart" -> "/lib/entities/feedback/fields_entity/feedback_text_type_entity.dart";
+  "/lib/widgets/feedback/feedback_sub_chips.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/feedback/feedback_sub_chips.dart" -> "/lib/widgets/feedback/feedback_input.dart";
   "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
   "/lib/widgets/feedback/images/feedback_images.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
