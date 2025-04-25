@@ -810,6 +810,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/parking.svg
   String get parking => 'assets/icons/svg/parking.svg';
 
+  /// File path: assets/icons/svg/parking_control.png
+  AssetGenImage get parkingControl => const AssetGenImage('assets/icons/svg/parking_control.png');
+
   /// File path: assets/icons/svg/photo_gallery.svg
   String get photoGallery => 'assets/icons/svg/photo_gallery.svg';
 
@@ -886,7 +889,7 @@ class $AssetsIconsSvgGen {
   $AssetsIconsSvgWeatherGen get weather => const $AssetsIconsSvgWeatherGen();
 
   /// List of all assets
-  List<String> get values => [
+  List<dynamic> get values => [
         betaAr,
         betaEn,
         calories,
@@ -1020,6 +1023,7 @@ class $AssetsIconsSvgGen {
         jobPin,
         lighting,
         parking,
+        parkingControl,
         photoGallery,
         placeCardPlaceholder,
         saFlag,
@@ -1537,6 +1541,9 @@ class $AssetsIconsSvgPlacesNewGen {
   /// File path: assets/icons/svg/places_new/ic_park.svg
   String get icPark => 'assets/icons/svg/places_new/ic_park.svg';
 
+  /// File path: assets/icons/svg/places_new/ic_parking.svg
+  String get icParking => 'assets/icons/svg/places_new/ic_parking.svg';
+
   /// File path: assets/icons/svg/places_new/ic_police.svg
   String get icPolice => 'assets/icons/svg/places_new/ic_police.svg';
 
@@ -1598,6 +1605,7 @@ class $AssetsIconsSvgPlacesNewGen {
         icMosques,
         icMunicipalities,
         icPark,
+        icParking,
         icPolice,
         icQibla,
         icRailwayTransport,

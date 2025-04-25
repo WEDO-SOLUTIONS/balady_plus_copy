@@ -59,6 +59,11 @@ class MapObjectManagerSettings {
         layerId: MapObjectLayers.defaultLayerId,
       );
 
+  factory MapObjectManagerSettings.parking() => const MapObjectManagerSettings._(
+        name: 'parking-spot',
+        layerId: MapObjectLayers.defaultLayerId,
+      );
+
   factory MapObjectManagerSettings.selectedMarker() => const MapObjectManagerSettings._(
         name: 'selected-marker',
         layerId: MapObjectLayers.defaultLayerId,
