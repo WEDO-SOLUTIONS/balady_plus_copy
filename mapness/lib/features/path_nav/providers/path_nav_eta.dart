@@ -72,7 +72,7 @@ class _PathNavEta extends _$PathNavEta {
 
   void toggleIsExpanded({required bool isExpanded}) {
 
-    if (isExpanded == true) {
+    if (isExpanded) {
       ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     }
 
