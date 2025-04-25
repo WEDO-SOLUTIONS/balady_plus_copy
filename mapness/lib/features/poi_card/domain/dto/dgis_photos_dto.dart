@@ -44,31 +44,11 @@ class Item {
 
 @JsonSerializable()
 class PreviewUrls {
-  @JsonKey(name: '100x100')
-  final String? small;
-
-  @JsonKey(name: '100x')
-  final String? smallByWidth;
-
-  @JsonKey(name: 'x100')
-  final String? smallByHeight;
-
-  @JsonKey(name: '600x600')
-  final String? medium;
-
   @JsonKey(name: '600x')
   final String? mediumByWidth;
 
-  @JsonKey(name: 'x600')
-  final String? mediumByHeight;
-
   PreviewUrls({
-    this.small,
-    this.smallByWidth,
-    this.smallByHeight,
-    this.medium,
     this.mediumByWidth,
-    this.mediumByHeight,
   });
 
   factory PreviewUrls.fromJson(Map<String, dynamic> json) => _$PreviewUrlsFromJson(json);
