@@ -304,13 +304,15 @@ extension FlutterCarPlaySceneDelegate {
             CPTravelEstimates(distanceRemaining: distance.roundedMeters.humanReadable, timeRemaining: time),
             for: navigationSession.upcomingManeuvers.first!
         )
-        navigationSession.maneuverState = switch(distance.value) {
-        case ...0:
-                .continue
-        case ...1:
-                .execute
-        default:
-                .initial
+        if #available(iOS 17.4, *) {
+            navigationSession.maneuverState = switch(distance.value) {
+            case ...0:
+                    .continue
+            case ...1:
+                    .execute
+            default:
+                    .initial
+            }
         }
     }
     
