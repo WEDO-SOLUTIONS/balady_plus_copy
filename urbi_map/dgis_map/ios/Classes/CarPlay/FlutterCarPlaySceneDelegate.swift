@@ -68,12 +68,12 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         FlutterCarPlaySceneDelegate.map = map
         
         let uiModel = DgisMapInitializer.shared.getNavigationManager().uiModel
-        let navigationState = uiModel.state
+        let isNavigationState = uiModel.state == .navigation || uiModel.state == .routeSearch
         let routeBuildOptions = uiModel.route.routeBuildOptions
-        let isNavigation = (navigationState == .navigation || navigationState == .routeSearch) && routeBuildOptions != nil
-        let isFreeRoam = (navigationState == .navigation || navigationState == .routeSearch) && routeBuildOptions == nil
+        let isRouteNavigation = isNavigationState && routeBuildOptions != nil
+        let isFreeRoam = isNavigationState && routeBuildOptions == nil
         
-        if isNavigation {
+        if isRouteNavigation {
             Self.startNavigation()
             if let maneuver = Self.currentManeuver {
                 Self.updateManeuver(maneuver)
