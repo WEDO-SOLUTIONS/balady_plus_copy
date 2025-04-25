@@ -9,6 +9,7 @@ import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_eta.g.dart';
@@ -70,9 +71,14 @@ class _PathNavEta extends _$PathNavEta {
   }
 
   void toggleIsExpanded({required bool isExpanded}) {
+
+    if (isExpanded) {
+      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+    }
+
     state = state?.copyWith(
-      isExpanded: isExpanded,
-    );
+        isExpanded: isExpanded,
+      );
   }
 }
 
