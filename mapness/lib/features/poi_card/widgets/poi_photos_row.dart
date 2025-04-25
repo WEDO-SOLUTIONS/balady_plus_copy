@@ -62,6 +62,9 @@ class PoiPhotosRow extends ConsumerWidget {
 
     /// extract photo urls
     final photos = parkingObject ? parkingPhotos ?? [] : photosState.requireValue.items.map((e) => e.url).toList();
+    final previewUrls = parkingObject
+        ? parkingPhotos ?? []
+        : photosState.requireValue.items.map((e) => e.previewUrls?.mediumByWidth ?? e.url).toList();
 
     /// special form for small amount of photos
     if (photos.length <= 3) {
@@ -91,7 +94,7 @@ class PoiPhotosRow extends ConsumerWidget {
 
                             context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index));
                           },
-                          imageUrl: photos[index],
+                          imageUrl: previewUrls[index],
                           file: photoFiles?[index],
                           fit: BoxFit.cover,
                         ),
@@ -112,7 +115,7 @@ class PoiPhotosRow extends ConsumerWidget {
         final loadingShimmerImage = LoadingShimmerImage(
           onImageTap: (name, {isAsset}) =>
               context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
-          imageUrl: photos[index],
+          imageUrl: previewUrls[index],
           file: photoFiles?[index],
           fit: BoxFit.cover,
         );
