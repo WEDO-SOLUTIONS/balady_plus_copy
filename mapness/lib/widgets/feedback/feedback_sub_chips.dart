@@ -196,18 +196,18 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                   if (search.isNotEmpty && variants.isNotEmpty)
                     for (final entry in variants.entries)
                       for (final item in entry.value)
-                        ContentRow(
-                          options: ContentRowOptions(
-                            title: item.label,
-                            leadingIcon: SvgPicture.network(
-                              entry.key.icon,
-                              width: 24,
-                              height: 24,
-                              colorFilter: ColorFilter.mode(
-                                context.colorsV3.foregroundDisabled,
-                                BlendMode.srcIn,
-                              ),
+                        ContentRowV2(
+                          leading: SvgPicture.network(
+                            entry.key.icon,
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                              context.colorsV3.foregroundDisabled,
+                              BlendMode.srcIn,
                             ),
+                          ),
+                          text: ContentRowTextOptions(
+                            title: item.label,
                           ),
                         )
                   else
