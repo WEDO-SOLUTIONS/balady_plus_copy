@@ -339,6 +339,11 @@ digraph "" {
   "/lib/pages/feedback/components/feedback_select_options_form_container.dart" [label="feedback_select_options_form_container"];
   "/lib/pages/feedback/components/feedback_form_widget.dart" [label="feedback_form_widget"];
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" [label="feedback_select_options_component_widget"];
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" [label="feedback_address_content"];
+  "/lib/pages/feedback/feedback_address/feedback_address_empty.dart" [label="feedback_address_empty"];
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" [label="feedback_address_suggester"];
+  "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" [label="feedback_address_suggest"];
+  "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" [label="feedback_address_search_bar"];
   "/lib/pages/feedback/feedback_sent_page.dart" [label="feedback_sent_page"];
   "/lib/pages/feedback/quick_feedback_photo_page.dart" [label="quick_feedback_photo_page"];
   "/lib/pages/kiblah/providers/fake_compass.dart" [label="fake_compass"];
@@ -1523,6 +1528,14 @@ digraph "" {
             "/lib/pages/feedback/components/feedback_select_options_form_container.dart";
             "/lib/pages/feedback/components/feedback_form_widget.dart";
             "/lib/pages/feedback/components/feedback_select_options_component_widget.dart";
+          }
+          subgraph "cluster~/lib/pages/feedback/feedback_address" {
+            label="feedback_address";
+            "/lib/pages/feedback/feedback_address/feedback_address_content.dart";
+            "/lib/pages/feedback/feedback_address/feedback_address_empty.dart";
+            "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart";
+            "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart";
+            "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart";
           }
         }
         subgraph "cluster~/lib/pages/kiblah" {
@@ -3351,6 +3364,26 @@ digraph "" {
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/widgets/feedback/feedback_form_container.dart";
   "/lib/pages/feedback/components/feedback_select_options_component_widget.dart" -> "/lib/widgets/feedback/feedback_select_options_widget.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" -> "/lib/features/search/models/search_state.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_empty.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_content.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_empty.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/app/auto_route/app_routes.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/features/search/ui/search_scope.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_content.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/shared/extensions/bottom_sheet_controller_helper_extension.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/entities/routing/route_point.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/features/search/ui/suggest_item.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/lib/make_address.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/providers/location.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/features/feedback/submit_feedback.dart";
   "/lib/pages/feedback/feedback_sent_page.dart" -> "/lib/pages/feedback/feedback_sheet_widget.dart";
   "/lib/pages/feedback/quick_feedback_photo_page.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
