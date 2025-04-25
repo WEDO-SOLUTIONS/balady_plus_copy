@@ -16,6 +16,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -129,6 +130,10 @@ class DashboardHeader extends ConsumerWidget {
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
+
+              ref.read(urbiAnalyticsProvider).track(
+                    '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+                  );
               context.router.push(SearchRoute(expansion: Expansion.expanded));
             },
             child: AbsorbPointer(

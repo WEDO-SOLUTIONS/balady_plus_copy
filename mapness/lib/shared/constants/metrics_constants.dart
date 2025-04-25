@@ -130,6 +130,17 @@ class Search {
   String get searchField => 'Search field';
   String get exitIcon => 'Exit icon';
   String get searchInThisArea => 'Search in this area';
+  // BSA-2161
+  String get uniqueSearchInitialized => 'unique_search_initialized';
+  String get suggestionPressed => 'suggestion_pressed';
+  // search more or by keyboard "search"
+  String get searchButtonPressed => 'search_button_pressed';
+  // When we pressed on POI from search result
+  String get fullSearchResultPressed => 'full_search_result_pressed';
+  String get emptySearchResult => 'empty_search_result';
+  String get searchResult_ => 'search_result';
+  String get emptySuggestResult => 'empty_suggest_result';
+  String get suggestResult => 'suggest_result';
 }
 
 class Login {

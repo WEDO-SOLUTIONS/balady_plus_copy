@@ -111,6 +111,15 @@ fun SuggestedTypeMessage.toSuggestType(): SuggestedType = when(this) {
     SuggestedTypeMessage.STATION_METRO -> SuggestedType.STATION_METRO
 }
 
+fun SuggestorTypeEnum.toSuggestType(): SuggestorType = when(this) {
+    SuggestorTypeEnum.ADDRESS -> SuggestorType.ADDRESS
+    SuggestorTypeEnum.CITY_SELECTOR -> SuggestorType.CITY_SELECTOR
+    SuggestorTypeEnum.OBJECT -> SuggestorType.OBJECT
+    SuggestorTypeEnum.PLACES -> SuggestorType.PLACES
+    SuggestorTypeEnum.ROUTE_ENDPOINT -> SuggestorType.ROUTE_ENDPOINT
+    SuggestorTypeEnum.RUBRIC -> SuggestorType.RUBRIC
+}
+
 fun MarkedUpText.toMessage(): MarkedUpTextMessage {
     return MarkedUpTextMessage(
         text = this.text,

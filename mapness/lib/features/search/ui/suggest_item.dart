@@ -7,10 +7,12 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/ar_functions.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:provider/provider.dart';
 
@@ -67,6 +69,9 @@ class SuggestItem extends ConsumerWidget {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
         ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem);
+        ref.read(urbiAnalyticsProvider).track(
+              '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
+            );
         onObjectTap(objectItem);
       }
     }

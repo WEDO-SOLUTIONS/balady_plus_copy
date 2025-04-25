@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/my_location_poi/my_location_image.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
@@ -70,8 +71,8 @@ class ShareMyLocationPage extends HookConsumerWidget {
         context.router.popForced();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
-          actionText: context.l10n.tryAgain,
-          onActionTap: () {
+          firstText: context.l10n.tryAgain,
+          onFirstTap: () {
             _showEtaTimeSheet(context, ref);
           },
         );
@@ -152,6 +153,16 @@ class ShareMyLocationPage extends HookConsumerWidget {
                   MyLocationPoiActions(
                     onShare: () => _showEtaControlSheet(context, ref),
                     onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
+                    onParkingAdd: () => context.router.push(
+                      ParkingSpotRoute(
+                        address: text,
+                        markerPosition: GeoPointWithElevationMessage(
+                          latitude: closestPoint?.latitude ?? 0,
+                          longitude: closestPoint?.longitude ?? 0,
+                          elevation: 0,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),

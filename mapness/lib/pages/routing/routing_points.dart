@@ -23,6 +23,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 @RoutePage()
 class RoutingPointsPage extends StatelessWidget {
@@ -130,12 +131,15 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
               pinned: true,
               floating: true,
             ),
-            header: Padding(
-              padding: const EdgeInsets.only(bottom: Spacing.$4x),
-              child: ABRoute(
-                items: aBRouteModels.toList(),
-                onTap: (i) => _onTap(i, context, ref),
-                onReorder: _onReorder,
+            header: GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              child: Padding(
+                padding: const EdgeInsets.only(bottom: Spacing.$4x),
+                child: ABRoute(
+                  items: aBRouteModels.toList(),
+                  onTap: (i) => _onTap(i, context, ref),
+                  onReorder: _onReorder,
+                ),
               ),
             ),
             content: [
@@ -165,6 +169,9 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
     ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
 
+    await ref.read(urbiAnalyticsProvider).track(
+          '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+        );
     final value = await context.router.push(
       RoutingSearchSheetRoute(
         placeholder: index == 0 ? context.l10n.from : context.l10n.to,
