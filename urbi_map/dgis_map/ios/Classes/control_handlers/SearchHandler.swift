@@ -404,6 +404,8 @@ class SearchHandler: NSObject {
         allowedResultTypes: [SuggestedTypeMessage_]?,
         searchGeoRect: DGis.GeoRect?,
         locale: String?,
+        suggestorType: SuggestorTypeEnum?,
+        limit: Int64?,
         completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void
     ) {
         var suggestQueryBuilder = SuggestQueryBuilder
@@ -412,10 +414,20 @@ class SearchHandler: NSObject {
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: Self.saRestrictions)
         
+        if let suggestorType {
+            suggestQueryBuilder = suggestQueryBuilder.setSuggestorType(suggestorType: suggestorType.toSuggestorType())
+        }
         if let allowedResultTypes {
             suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
                 allowedResultTypes: allowedResultTypes.map { $0.type.suggestedType }
             )
+        }
+        if let limit {
+            if limit >= Int64(Int32.min) && limit <= Int64(Int32.max) {
+                suggestQueryBuilder = suggestQueryBuilder.setLimit(limit: Int32(limit))
+            } else {
+                print("Value out of range for Int32")
+            }
         }
             
         let suggestQuery = suggestQueryBuilder.build()

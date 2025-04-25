@@ -96,6 +96,46 @@ class Search extends _$Search {
     await fetchSuggest(query);
   }
 
+  Future<void> searchAddress(String query) async {
+    try {
+      await _searchOperation?.cancel();
+      if (query.isEmpty) {
+        state = const SearchStateHistory();
+        return;
+      }
+      await _setUpLocale(query);
+
+      _updateSearchText(query);
+      _previousType = SearchType.fetchSuggest;
+      _previousQuery = query;
+
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final dgisController = await ref.read(dgisControllerProvider.future);
+
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.fetchSuggest(
+          query,
+          searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
+          suggestorType: SuggestorTypeEnum.address,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final result = await searchOperation.value;
+
+      state = result.suggests.isEmpty
+          ? SearchStateEmpty(searchText: query)
+          : SearchStateSuggest(
+              suggest: result,
+              searchText: query,
+            );
+    } on Exception catch (_) {
+      state = SearchStateError(searchText: query);
+      rethrow;
+    }
+  }
+
   Future<void> fetchSuggest(String query) async {
     try {
       await _searchOperation?.cancel();

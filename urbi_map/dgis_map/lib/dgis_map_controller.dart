@@ -480,12 +480,16 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     List<SuggestedTypeMessage>? allowedResultTypes,
     String? locale,
+    SuggestorTypeEnum? suggestorType,
+    int? limit,
   }) =>
       _instance.fetchSuggests(
         queryText,
         searchRect: searchRect,
         allowedResultTypes: allowedResultTypes?.map((e) => SuggestedTypeMessage_(type: e)).toList(),
         locale: locale,
+        suggestorType: suggestorType,
+        limit: limit,
       );
 
   /// Hide panorama markers. Used for optimization. In most cases should not be used directly.
