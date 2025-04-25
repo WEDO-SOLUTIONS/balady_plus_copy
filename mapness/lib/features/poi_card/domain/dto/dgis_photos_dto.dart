@@ -21,6 +21,7 @@ class Item {
   String? realObjectType;
   int height;
   int width;
+  @JsonKey(name: 'preview_urls')
   PreviewUrls? previewUrls;
 
   @JsonKey(defaultValue: false)
@@ -52,10 +53,22 @@ class PreviewUrls {
   @JsonKey(name: 'x100')
   final String? smallByHeight;
 
+  @JsonKey(name: '600x600')
+  final String? medium;
+
+  @JsonKey(name: '600x')
+  final String? mediumByWidth;
+
+  @JsonKey(name: 'x600')
+  final String? mediumByHeight;
+
   PreviewUrls({
     this.small,
     this.smallByWidth,
     this.smallByHeight,
+    this.medium,
+    this.mediumByWidth,
+    this.mediumByHeight,
   });
 
   factory PreviewUrls.fromJson(Map<String, dynamic> json) => _$PreviewUrlsFromJson(json);
