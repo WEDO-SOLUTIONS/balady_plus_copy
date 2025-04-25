@@ -16,6 +16,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class MapSuggestList extends ConsumerWidget {
   const MapSuggestList({
@@ -107,6 +108,10 @@ class MapSuggestList extends ConsumerWidget {
                 final title = searchState.searchText;
 
                 search.searchMore(title);
+
+                ref.read(urbiAnalyticsProvider).track(
+                      '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
+                    );
               },
             ),
           )
