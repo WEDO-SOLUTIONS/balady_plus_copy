@@ -44,6 +44,7 @@ class Search extends _$Search {
   ];
 
   SearchType? _previousType;
+  SearchResultMessage? _result;
   String? _previousQuery;
   SearchQueryMessage? _previousSearchQueryMessage;
   QuickFilter? _previousQuickSearch;
@@ -60,13 +61,20 @@ class Search extends _$Search {
   bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override
-  SearchState build(String scope) => SearchStateHistory(searchText: _previousQuery ?? '');
+  SearchState build(String scope) {
+    if (_result != null && _previousQuery != null) {
+      return SearchStateResults(results: _result!, searchText: _previousQuery!);
+    }
+
+    return SearchStateHistory(searchText: _previousQuery ?? '');
+  }
 
   void clear() {
     _searchOperation?.cancel();
     state = const SearchStateHistory();
     _previousType = null;
     _previousQuery = null;
+    _result = null;
     _previousSearchQueryMessage = null;
     _previousQuickSearch = null;
     _currentQueryLocale = null;
@@ -219,6 +227,7 @@ class Search extends _$Search {
               searchText: searchQuery,
               markerType: quickSearch.markerType,
             );
+      _result = results;
     } on Exception catch (_) {
       state = SearchStateError(searchText: searchQuery);
       rethrow;
@@ -277,7 +286,8 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
-
+      
+      _result = results;
       // -- Analytics
       if (state is SearchStateEmpty) {
         await ref
@@ -347,6 +357,7 @@ class Search extends _$Search {
               results: results,
               searchText: text,
             );
+      _result = results;
       // -- Analytics
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByQuery');

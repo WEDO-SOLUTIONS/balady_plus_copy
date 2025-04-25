@@ -11,52 +11,40 @@ import '../../../../../core/services/global/web_service.dart';
 
 import '../../../data/models/response_body_model.dart';
 
-
 class UrbiSearchProvider extends ChangeNotifier {
-
-
   ValueNotifier<UrbiLocationModel>? lstSuggestedLocation;
-
 
   UrbiSearchProvider() {}
 
-
-  Future<List<UrbiLocationModel>> search(String query,LatLng location) async {
-
-
+  Future<List<UrbiLocationModel>> search(String query, LatLng location) async {
     Response? response;
     try {
-      String url= "https://apiservices.balady.gov.sa/v1/urbi-services/catalog-api/3.0/suggests";
+      String url = "https://urbi-lifestyle.momrah.gov.sa/3.0/suggests";
 
-      WebService webService= sl();
-      Map<String, dynamic>    formMap =
-      {"key":"0dc4aaea-82ac-416a-b807-f99c33b835b6",
-        "locale":"ar_SA",
-        "fields":"items.full_address_name,items.point,items.adm_div",
-        "q":query,
-        "location":"${location.longitude},${location.latitude}"
+      WebService webService = sl();
+      Map<String, dynamic> formMap = {
+        "key": "0dc4aaea-82ac-416a-b807-f99c33b835b6",
+        "locale": "ar_SA",
+        "fields": "items.full_address_name,items.point,items.adm_div",
+        "q": query,
+        "location": "${location.longitude},${location.latitude}"
       };
-      response = await webService.dio.get(url,
+      response = await webService.dio.get(
+        url,
         queryParameters: formMap,
-
       );
 
       final data = response.data["result"]["items"];
 
-      List<UrbiLocationModel> parsedResult = data != null
-          ? List<UrbiLocationModel>.from(data.map((x) => UrbiLocationModel.fromJson(x)))
-          : [];
+      List<UrbiLocationModel> parsedResult =
+          data != null ? List<UrbiLocationModel>.from(data.map((x) => UrbiLocationModel.fromJson(x))) : [];
 
-      parsedResult=  parsedResult.where((item) => (item.fullName != null && item.fullName!.isNotEmpty)).toList();
+      parsedResult = parsedResult.where((item) => (item.fullName != null && item.fullName!.isNotEmpty)).toList();
       return parsedResult;
     } on DioError catch (error, stackTrace) {
-
       return [];
     } catch (error, stackTrace) {
       return [];
     }
   }
-
-
-
 }

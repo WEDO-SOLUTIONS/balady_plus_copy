@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/src/components/text_input/input_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
 import 'package:mapness/shared/utils/text_utils/phone_number_formatter.dart';
@@ -25,6 +24,8 @@ class FeedbackTextInput extends StatefulWidget {
     this.onChanged,
     this.errorText,
     this.focusNode,
+    this.onTap,
+    this.readonly = false,
     super.key,
   });
 
@@ -40,6 +41,8 @@ class FeedbackTextInput extends StatefulWidget {
   final ValueChanged<String>? onChanged;
   final String? errorText;
   final FocusNode? focusNode;
+  final VoidCallback? onTap;
+  final bool readonly;
 
   @override
   State<FeedbackTextInput> createState() => _FeedbackTextInputState();
@@ -120,7 +123,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
       textDirection: direction,
       child: BaladyTextInput(
         label: widget.labelText != null ? BaladyInputLabel(text: widget.labelText!) : null,
-        inputState: _inputErrorState,
+        inputState: widget.readonly ? BaladyInputState.readOnly : _inputErrorState,
         controller: _controller,
         config: BaladyInputConfig(
           isDisposed: false,
@@ -134,6 +137,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
           maxLines: widget.maxLines,
           keyboardType: widget.keyboardType,
           onChanged: _onChanged,
+          onTap: widget.onTap,
           inputFormatters: [
             if (widget.type == FeedbackTextType.phone) const PhoneNumberFormatter(),
           ],

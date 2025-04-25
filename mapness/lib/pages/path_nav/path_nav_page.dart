@@ -566,7 +566,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       unawaited(clearNavigationState());
       unawaited(_stopActiveSharing());
     } else if (event == NavigationEvent.disabled) {
-      if (_navigationState.value != PathNavState.finished) {
+      if (context.mounted && _navigationState.value != PathNavState.finished) {
         _endTripAndShowHome();
       }
     }
