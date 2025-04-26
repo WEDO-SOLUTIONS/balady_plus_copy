@@ -13,6 +13,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -62,6 +63,7 @@ class _ParkingManage extends _$ParkingManage {
   Future<void> saveStore(ParkingStoreModel model) async {
     final hive = await ref.read(hiveProvider(_boxName).future);
 
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     await hive.put(_keyCache, model.toJson());
     await _addMarker(model.lat, model.lon);
     state = AsyncValue.data(model);

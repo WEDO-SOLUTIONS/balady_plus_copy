@@ -84,7 +84,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     ref
       ..watch(parkingSpotMapProvider.notifier)
       ..watch(parkingManageProvider.notifier)
-      ..listen(parkingImageProvider, (_, __) => _checkDirty());
+      ..listen(parkingImageProvider(isEdit: widget.isEdit), (_, __) => _checkDirty());
 
     return Scaffold(
       backgroundColor: context.colorsV3.backgroundSurface4,
@@ -255,7 +255,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
   Future<void> _onTapSave(BuildContext context) async {
     final parkingManage = ref.read(parkingManageProvider.notifier);
-    final images = ref.read(parkingImageProvider);
+    final images = ref.read(parkingImageProvider(isEdit: widget.isEdit));
 
     if (_latLng == null) {
       return;
@@ -303,7 +303,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
   void _checkDirty() {
     final stored = ref.read(parkingManageProvider).valueOrNull;
-    final images = ref.read(parkingImageProvider);
+    final images = ref.read(parkingImageProvider());
 
     final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
 
