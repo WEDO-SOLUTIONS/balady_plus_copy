@@ -16,13 +16,13 @@ class _FeedbackErrorImageItem extends StatelessWidget {
         children: [
           Opacity(
             opacity: 0.7,
-            child: _FeedbackImageItem(
+            child: FeedbackImageItem(
               imagePath: imagePath,
               imageSize: imageSize,
             ),
           ),
           Center(
-            child: _ImageActionButton(
+            child: ImageActionButton(
               icon: GeneralIcons.reload,
               size: 24,
               iconSize: 12,

@@ -1,14 +1,17 @@
-part of 'feedback_image_widget.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:flutter/material.dart';
 
-class _ImageActionButton extends StatelessWidget {
+class ImageActionButton extends StatelessWidget {
   final VoidCallback onTap;
   final IconData icon;
   final double size;
   final double iconSize;
 
-  const _ImageActionButton({
+  const ImageActionButton({
     required this.onTap,
     required this.icon,
+    super.key,
     this.size = 16,
     this.iconSize = 14,
   });
