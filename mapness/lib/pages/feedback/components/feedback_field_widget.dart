@@ -5,6 +5,7 @@ import 'package:mapness/entities/feedback/feedback_base_entity.dart';
 import 'package:mapness/widgets/feedback/feedback_bool_toggle.dart';
 import 'package:mapness/widgets/feedback/feedback_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_schedule_widget.dart';
+import 'package:mapness/widgets/feedback/feedback_sub_chips.dart';
 import 'package:mapness/widgets/feedback/feedback_text_field.dart';
 import 'package:mapness/widgets/feedback/feedback_text_list.dart';
 import 'package:mapness/widgets/feedback/images/feedback_images.dart';
@@ -23,8 +24,7 @@ class FeedbackFieldWidget extends StatefulWidget {
   State<FeedbackFieldWidget> createState() => _FeedbackFieldWidgetState();
 }
 
-class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget>
-    with AutomaticKeepAliveClientMixin {
+class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget> with AutomaticKeepAliveClientMixin {
   @override
   // ignore: prefer_expression_function_bodies
   Widget build(BuildContext context) {
@@ -67,11 +67,14 @@ class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget>
           key: ValueKey(widget.field.id),
           field: widget.field as FeedbackScheduleEntity,
         ),
+      FeedbackSubChipsEntity() => FeedbackSubChips(
+          key: ValueKey(widget.field.id),
+          field: widget.field as FeedbackSubChipsEntity,
+        ),
 
       /// Handle unknown fields (if i.e. backend does not increase api version but change protocol)
       /// since field is required make form invalid
-      FeedbackUnknownEntity(isRequired: final isRequired) when isRequired =>
-        FormBuilderField<void>(
+      FeedbackUnknownEntity(isRequired: final isRequired) when isRequired => FormBuilderField<void>(
           name: widget.field.id,
 
           /// make form invalid
@@ -95,8 +98,7 @@ class _FeedbackFieldWidgetState extends State<FeedbackFieldWidget>
               color: Colors.grey,
             ),
             padding: const EdgeInsets.all(Spacing.$4x),
-            child:
-                Text('Unknown field but not required - id: ${widget.field.id}'),
+            child: Text('Unknown field but not required - id: ${widget.field.id}'),
           ),
         ),
     };

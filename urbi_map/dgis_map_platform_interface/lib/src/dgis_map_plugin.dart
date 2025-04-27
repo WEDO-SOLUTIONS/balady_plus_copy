@@ -534,13 +534,18 @@ class DgisMapPlugin extends FlutterMapApi {
   /// This method returns a list of suggestions for the search query for [queryText].
   /// - [allowedResultTypes] - list of allowed result types.
   /// - [searchRect] - user viewport. If not null, search will be performed for this viewport and will give
+  /// - [locale] - locale for the search. If not null, search will be performed for this locale.
+  /// - [suggestorType] - suggestor type for the search. If not null, search will return only suggestions of this type.
+  /// - [limit] - limit for the search. If not null, search will return only this number of suggestions. By default it is 10.
   Future<SuggestResultMessage> fetchSuggests(
     String queryText, {
     List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
     String? locale,
+    SuggestorTypeEnum? suggestorType,
+    int? limit,
   }) =>
-      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale);
+      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale, suggestorType, limit);
 
   /// Get distance to the specified points.
   Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage> points) {

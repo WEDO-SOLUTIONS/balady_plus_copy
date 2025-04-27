@@ -61,7 +61,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       vsync: this,
     );
 
-    _tabType = ValueNotifier(PoiTabsType.info);
+    final _parkingObjectId = objectId == parkingObjectId;
+    _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
     _tabController.addListener(
       () {
         if (_tabController.indexIsChanging) {
@@ -113,6 +114,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       data.title = name;
     }
 
+    final isParkingPoi = widget.objectId == parkingObjectId;
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final photos = ref.watch(poiPhotoProvider(objectId));
@@ -210,7 +212,12 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 action: MetricAction.tap.toString(),
               );
 
-              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              if (isParkingPoi) {
+                ref.read(parkingManageProvider.notifier).restoreMarker();
+              } else {
+                ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              }
+
               ref.read(highlightProvider.notifier).removeHighlight(data.id!);
               context.router.popForced();
             },
@@ -259,6 +266,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                         state: poiCardState,
                         objectId: data.id!,
                         bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
+                      ),
+                    PoiTabsType.parking => const SliverPadding(
+                        padding: EdgeInsets.all(Spacing.$4x),
+                        sliver: ParkingContent(),
                       ),
                   },
                 ),

@@ -62,20 +62,19 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     });
 
     final poiCardState = state.valueOrNull;
-    final data = poiCardState?.gisObjectIdMessage;
-    final objectId = data?.id?.objectId;
+    final storeParking = ref.read(parkingManageProvider.notifier);
+    final storeParkingData = ref.read(parkingManageProvider).valueOrNull?.convertToDirectoryObject(context);
+    final isParkingPoi = widget.objectId.objectId == parkingObjectId;
+    final data = isParkingPoi ? storeParkingData : poiCardState?.gisObjectIdMessage;
 
-    if (widget.closestPoint != null) {
-      final closestPoint = widget.closestPoint!;
-      data?.markerPosition = GeoPointWithElevationMessage(
-        latitude: closestPoint.latitude,
-        longitude: closestPoint.longitude,
-        elevation: 0,
-      );
+    if (isParkingPoi) {
+      storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
 
+    final objectId = data?.id?.objectId;
+
     /// loading progress indicator
-    if (state.isLoading) {
+    if (state.isLoading && widget.objectId.objectId != parkingObjectId) {
       return Align(
         alignment: Alignment.bottomCenter,
         child: PoiLoadingSheet(
@@ -85,7 +84,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     }
 
     /// error handling or invalid data
-    if (state.hasError || objectId == null) {
+    if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
       if (state.error is PlatformException &&
 
           /// sometimes error code is in message and sometimes in code, idk, probably changed in releases

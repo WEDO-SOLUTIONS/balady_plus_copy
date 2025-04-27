@@ -71,6 +71,12 @@ class AppRouter extends RootStackRouter {
               path: 'routingMap',
               page: RoutingMapSelectRoute.page,
             ),
+            CustomRoute(
+              path: 'parking_add',
+              page: ParkingSpotRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              fullscreenDialog: true,
+            ),
             AppRoute(
               path: 'poi-map',
               page: PoiCardWidgetRoute.page,
@@ -209,6 +215,12 @@ class AppRouter extends RootStackRouter {
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'delete_parking',
+              page: DeleteParkingRoute.page,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
           ],
         ),

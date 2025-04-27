@@ -19,6 +19,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dgis_http_network.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/padding_config.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -96,6 +97,10 @@ class PoiCardProvider extends _$PoiCardProvider {
     PoiCameraConfig? cameraConfig,
     LatLng? closestPoint,
   }) async {
+    ref.onDispose(() {
+      ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+    });
+
     state = const AsyncValue.loading();
 
     final result = await ref

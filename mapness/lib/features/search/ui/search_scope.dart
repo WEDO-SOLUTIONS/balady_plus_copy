@@ -5,7 +5,8 @@ import 'package:provider/provider.dart';
 enum SearchScopeEnum {
   map('MapSearch'),
   favourites('FavouritesSearch'),
-  routes('RoutingSearch');
+  routes('RoutingSearch'),
+  feedback('FeedbackSearch');
 
   final String value;
   const SearchScopeEnum(this.value);

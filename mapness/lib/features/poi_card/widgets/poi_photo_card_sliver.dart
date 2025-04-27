@@ -149,7 +149,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
             (context, index) => ClipRRect(
               borderRadius: BorderRadius.circular(RadiusBorder.xs),
               child: LoadingShimmerImage(
-                imageUrl: photoItems[index].previewUrls?.smallByWidth ?? photosUrls[index],
+                imageUrl: photoItems[index].previewUrls?.mediumByWidth ?? photosUrls[index],
                 fit: BoxFit.cover,
                 onImageTap: (name, {isAsset}) =>
                     context.router.push(PhotoViewerRoute(photoPaths: photosUrls, currentPhotoIndex: index)),

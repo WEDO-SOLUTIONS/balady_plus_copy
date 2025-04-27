@@ -48,6 +48,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
               Text(
                 context.l10n.theScreenFlipsContinue,
                 style: context.textStyleV3.h3SemiBold,
+                textAlign: TextAlign.center,
               )
             ],
           ),

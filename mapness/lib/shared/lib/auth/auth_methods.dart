@@ -1,10 +1,8 @@
 import 'dart:async';
 
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'package:flutter/widgets.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -25,7 +23,7 @@ class AuthMethods extends _$AuthMethods {
   }) async {
     if (!state) {
       if (context.mounted) {
-        await context.router.push(const SigninRoute());
+        await ref.read(authProvider.notifier).doAuth();
         state = CommonProperties.isLoggedIn;
       }
     }

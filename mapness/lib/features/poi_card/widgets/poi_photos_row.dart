@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
@@ -5,6 +6,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -16,14 +18,18 @@ class PoiPhotosRow extends ConsumerWidget {
     required this.objectId,
     super.key,
   });
+
   final int objectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final parkingObject = objectId == parkingObjectId;
+    final parkingPhotos = ref.read(parkingManageProvider).value?.imagesPaths;
+    final photoFiles = parkingPhotos?.map((e) => File(e)).toList();
     final photosState = ref.watch(poiPhotoProvider(objectId));
 
     /// show shimmer while loading
-    if (photosState.isLoading) {
+    if (photosState.isLoading && !parkingObject) {
       return Shimmer.fromColors(
         baseColor: Colors.grey[300]!,
         highlightColor: Colors.grey[100]!,
@@ -37,7 +43,7 @@ class PoiPhotosRow extends ConsumerWidget {
     }
 
     /// reload button on error
-    if (photosState.hasError) {
+    if (photosState.hasError && !parkingObject) {
       return InkWell(
         onTap: () => ref.invalidate(poiPhotoProvider(objectId)),
         radius: 12,
@@ -55,7 +61,10 @@ class PoiPhotosRow extends ConsumerWidget {
     }
 
     /// extract photo urls
-    final photos = photosState.requireValue.items.map((e) => e.url).toList();
+    final photos = parkingObject ? parkingPhotos ?? [] : photosState.requireValue.items.map((e) => e.url).toList();
+    final previewUrls = parkingObject
+        ? parkingPhotos ?? []
+        : photosState.requireValue.items.map((e) => e.previewUrls?.mediumByWidth ?? e.url).toList();
 
     /// special form for small amount of photos
     if (photos.length <= 3) {
@@ -85,7 +94,8 @@ class PoiPhotosRow extends ConsumerWidget {
 
                             context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index));
                           },
-                          imageUrl: photosState.requireValue.items[index].previewUrls?.smallByWidth ?? photo,
+                          imageUrl: previewUrls[index],
+                          file: photoFiles?[index],
                           fit: BoxFit.cover,
                         ),
                       ),
@@ -103,8 +113,10 @@ class PoiPhotosRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12),
       itemBuilder: (context, index) {
         final loadingShimmerImage = LoadingShimmerImage(
-          onImageTap: (name, {isAsset}) => context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
-          imageUrl: photos[index],
+          onImageTap: (name, {isAsset}) =>
+              context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
+          imageUrl: previewUrls[index],
+          file: photoFiles?[index],
           fit: BoxFit.cover,
         );
         return Padding(

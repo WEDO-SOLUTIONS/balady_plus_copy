@@ -692,7 +692,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
         searchHandler.releasePage(pageId, completion: completion)
     }
     
-    func fetchSuggests(queryText: String, allowedResultTypes: [SuggestedTypeMessage_]?, searchRect: GeoRectMessage?,  locale: String?, completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void) {
+    func fetchSuggests(queryText: String, allowedResultTypes: [SuggestedTypeMessage_]?, searchRect: GeoRectMessage?, locale: String?, suggestorType: SuggestorTypeEnum?, limit: Int64?, completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void)  {
 
         guard let searchHandler = self.searchHandler else {
             completion(
@@ -711,6 +711,8 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
             allowedResultTypes: allowedResultTypes,
             searchGeoRect: searchRect?.geoRect,
             locale: locale,
+            suggestorType: suggestorType,
+            limit: limit,
             completion: completion
         )
     }

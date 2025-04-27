@@ -306,6 +306,8 @@ class SearchHandler(
         allowedResultTypes: List<SuggestedTypeMessage_>?,
         searchGeoRect: GeoRect?,
         locale: String?,
+        suggestorType: SuggestorTypeEnum?,
+        limit: Int?,
         callback: (Result<SuggestResultMessage>)->Unit
     ) {
         var suggestQueryBuilder =
@@ -313,7 +315,14 @@ class SearchHandler(
                         .setAreaOfInterest(searchGeoRect)
                         .setSpatialRestriction(saRestrictions)
                         .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
-
+        
+        if(suggestorType != null) {
+            suggestQueryBuilder = suggestQueryBuilder.setSuggestorType(suggestorType.toSuggestType())
+        }
+        if (limit != null) {
+            suggestQueryBuilder = suggestQueryBuilder.setLimit(limit)
+        }
+        
         if (allowedResultTypes != null) {
             suggestQueryBuilder =
                     suggestQueryBuilder.setAllowedResultTypes(

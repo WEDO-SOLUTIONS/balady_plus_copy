@@ -2,7 +2,6 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/extensions/context_conversion.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:easy_image_viewer/easy_image_viewer.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/photo_viewer/custom_scroll_physics.dart';
@@ -28,12 +27,10 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
   final ValueNotifier<String> title = ValueNotifier('');
   late PageController pageController;
   late ValueNotifier<bool> isAppBarVisible;
-  late final MultiImageProvider multiImageProvider;
 
   @override
   void initState() {
     super.initState();
-    multiImageProvider = MultiImageProvider(widget.photoPaths?.map((path) => NetworkImage(path)).toList() ?? []);
     pageController = PageController(initialPage: widget.currentPhotoIndex);
     pageController.addListener(updateTitle);
     isAppBarVisible = ValueNotifier(true);
@@ -80,17 +77,11 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
           child: Stack(
             children: [
               PhotoViewPager(
+                imageSource: widget.photoPaths ?? [],
                 scrollPhysics: CustomScrollPhysics.common(),
                 doubleTapZoomable: true,
-                easyImageProvider: multiImageProvider,
                 pageController: pageController,
-                onScaleChanged: (zoom) {
-                  if (zoom > 1) {
-                    isAppBarVisible.value = false;
-                  } else {
-                    isAppBarVisible.value = true;
-                  }
-                },
+                showTitleBar: (show) => isAppBarVisible.value = show,
               ),
             ],
           ),
