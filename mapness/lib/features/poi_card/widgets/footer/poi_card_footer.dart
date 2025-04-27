@@ -14,11 +14,13 @@ import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
   static const double padding = 12;
+  static const iconAsset = 'packages/mapness/assets/icons/svg/ic_complete.svg';
 
   final DirectoryObjectMessage? data;
   final Future Function() share;
@@ -139,9 +141,7 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
               buttonType: BaladyButtonType.secondary,
-              onPressed: () => context.router.push(
-                ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition),
-              ),
+              onPressed: () => _onParkingTab(ref, context),
             ),
           if (parkingPoi)
             ItemActionBar(
@@ -153,9 +153,47 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: GeneralIcons.trash,
               buttonType: BaladyButtonType.secondary,
-              onPressed: () => context.router.push(const DeleteParkingRoute()),
+              onPressed: () => _onTrashTab(ref, context),
             ),
         ],
+      ),
+    );
+  }
+
+  void _onParkingTab(WidgetRef ref, BuildContext context) {
+    final hasNotParking = ref.read(parkingManageProvider).valueOrNull != null;
+    if (hasNotParking) {
+      context.router.push(
+        ParkingDialogRoute(
+          title: context.l10n.createNewParkingSpot,
+          desc: context.l10n.currentParkingSpaceRemoved,
+          onAcceptTab: () {
+            context.router.popAndPush(ParkingSpotRoute(
+              address: data?.title,
+              markerPosition: data?.markerPosition,
+            ));
+          },
+          onCancelTab: context.router.popForced,
+        ),
+      );
+    } else {
+      context.router.push(ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition));
+    }
+  }
+
+  void _onTrashTab(WidgetRef ref, BuildContext context) {
+    context.router.push(
+      ParkingDialogRoute(
+        title: context.l10n.youSureWantDelete,
+        onAcceptTab: () {
+          ref.read(parkingManageProvider.notifier).clearStore();
+          ToastOverlay.of(context).show(
+            title: context.l10n.parkingSpotDeleted,
+            iconAsset: iconAsset,
+          );
+          context.router.popUntilRouteWithName(BottomMenuRoute.name);
+        },
+        onCancelTab: context.router.popForced,
       ),
     );
   }

@@ -86,6 +86,11 @@ class _ParkingManage extends _$ParkingManage {
     GeoPointWithElevationMessage? geoPoint,
     String title,
   ) async {
+    final exists = _mapObjectManager.markers.any((marker) => marker.id == poiPinId);
+    if (exists) {
+      return;
+    }
+
     final lat = geoPoint?.latitude ?? 0.0;
     final lon = geoPoint?.longitude ?? 0.0;
 
