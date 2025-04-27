@@ -218,7 +218,7 @@ class AppRouter extends RootStackRouter {
             ),
             CustomRoute(
               path: 'delete_parking',
-              page: DeleteParkingRoute.page,
+              page: ParkingDialogRoute.page,
               opaque: false,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
