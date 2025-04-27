@@ -49,7 +49,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
           resizeToAvoidBottomInset: false,
           backgroundColor: Colors.grey.shade100,
           appBar: AppBar(
-            title: Text("services".tr()),
+            title: Text("municipal_services".tr()),
             centerTitle: true,
             titleTextStyle: Theme.of(context).textTheme.titleLarge,
             backgroundColor: Colors.transparent,
@@ -143,7 +143,31 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                               //////////////////////////////////////////////////////
                               //////////////////////////////////////////////////////
                               //////////////////////////////////////////////////////
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 12),
+                              Text(
+                                "municipal_services_title".tr(),
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
+                                    .copyWith(
+                                      fontFamily: AppConfig.appFontType,
+                                      fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                    ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                                child: Text(
+                                  "municipal_services_message".tr(),
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium!
+                                      .copyWith(
+                                        fontFamily: AppConfig.appFontType,
+                                      ),
+                                ),
+                              ),
+                              const SizedBox(height: 8),
                               MostUsedService(
                                 mostUsedService:
                                     state.homeServices.mostUsedService,

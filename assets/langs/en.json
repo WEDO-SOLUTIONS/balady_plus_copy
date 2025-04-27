@@ -125,7 +125,7 @@
   "allTimes": "All times",
   "_servicesComment": "Anything about services",
   "public_services": "Public services",
-  "municipal_services": "Individual Services",
+  "municipal_services": "Municipal services",
   "azkar": "Athkar",
   "damaged_cars": "Damaged cars",
   "damaged_cars1": "Damaged cars",
@@ -4644,6 +4644,9 @@
   "title_congratulations_certified_observer":"Congratulations, you have been accepted as a Certified Observer",
   "description_monitoring_process_momtathel": "Congratulations! You have been accepted as a Certified Observer. You can now begin the monitoring process through the Compliant Application.",
   "open_momtathl_app" : "Proceed to the Compliant Application",
-  "Activies": "Activies"
+  "Activies": "Activies",
+
+  "municipal_services_title": "Welcome to Municipal Services on Balady+",
+  "municipal_services_message": "We are a smart gate that facilitates services — not the executing entity."
 
 }
