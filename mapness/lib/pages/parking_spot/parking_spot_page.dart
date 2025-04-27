@@ -86,6 +86,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       ..watch(parkingManageProvider.notifier)
       ..listen(parkingImageProvider(isEdit: widget.isEdit), (_, __) => _checkDirty());
 
+    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: context.colorsV3.backgroundSurface4,
       appBar: BaladyTopBar(
@@ -172,9 +173,12 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
             ),
             Spacing.$0_5x.heightBox,
             Center(
-              child: Text(
-                context.l10n.dataStoredFor,
-                style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundSoft),
+              child: Padding(
+                padding: EdgeInsets.only(bottom: mediaQuery.viewPadding.bottom),
+                child: Text(
+                  context.l10n.dataStoredFor,
+                  style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                ),
               ),
             )
           ],
