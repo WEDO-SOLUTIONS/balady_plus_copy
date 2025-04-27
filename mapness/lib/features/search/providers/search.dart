@@ -326,7 +326,7 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
-      
+
       _result = results;
       // -- Analytics
       if (state is SearchStateEmpty) {

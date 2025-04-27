@@ -84,7 +84,19 @@ class SearchInRect extends _$SearchInRect {
       return false;
     }
 
-    // Calculate the diagonal distance of the old rectangle
+    final oldCenterLat = (oldRect.northEast.latitude + oldRect.southWest.latitude) / 2;
+    final oldCenterLng = (oldRect.northEast.longitude + oldRect.southWest.longitude) / 2;
+    final newCenterLat = (newRect.northEast.latitude + newRect.southWest.latitude) / 2;
+    final newCenterLng = (newRect.northEast.longitude + newRect.southWest.longitude) / 2;
+
+    // Calculate the distance between the centers of the two rectangles
+    final distance = CommonFunctions.distance(
+      oldCenterLat,
+      oldCenterLng,
+      newCenterLat,
+      newCenterLng,
+    );
+
     final diag = CommonFunctions.distance(
       oldRect.northEast.latitude,
       oldRect.northEast.longitude,
@@ -92,21 +104,7 @@ class SearchInRect extends _$SearchInRect {
       oldRect.southWest.longitude,
     );
 
-    // Calculate the distance between the two rectangles' points
-    final distance = CommonFunctions.distance(
-          oldRect.northEast.latitude,
-          oldRect.northEast.longitude,
-          newRect.northEast.latitude,
-          newRect.northEast.longitude,
-        ) +
-        CommonFunctions.distance(
-          oldRect.southWest.latitude,
-          oldRect.southWest.longitude,
-          newRect.southWest.latitude,
-          newRect.southWest.longitude,
-        );
-
-    // Return true if the distance is more than half the diagonal of the old rectangle
+    // Check if the distance is greater than half the diagonal of the old rectangle
     return distance > diag / 2;
   }
 }
