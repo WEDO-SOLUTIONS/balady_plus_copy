@@ -101,7 +101,7 @@ class AppWidgetState extends State<AppWidget> {
 
 
             await FlutterInsider.Instance.init(
-        "baladyappuat", "group.movingViolations",
+        "baladyapp", "group.movingViolations",
         (int type, dynamic data) {
       switch (type) {
             case InsiderCallbackAction.NOTIFICATION_OPEN:
