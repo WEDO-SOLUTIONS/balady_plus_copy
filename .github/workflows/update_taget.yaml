@@ -5,6 +5,10 @@ on:
     branches:
       - 'urbi-release-*'
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update-pr-target-branches:
     runs-on: ubuntu-latest
