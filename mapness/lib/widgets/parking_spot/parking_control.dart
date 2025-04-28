@@ -14,7 +14,8 @@ class ParkingControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(parkingManageProvider).valueOrNull;
+    final result = ref.read(parkingManageProvider).valueOrNull;
+    final cameraPosition = ref.watch(cameraPositionProvider);
 
     if (result == null) {
       return const SizedBox.shrink();

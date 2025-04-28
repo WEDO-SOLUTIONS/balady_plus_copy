@@ -14,6 +14,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -78,7 +79,6 @@ class _ParkingManage extends _$ParkingManage {
     final hive = await ref.read(hiveProvider(_boxName).future);
 
     await hive.delete(_keyCache);
-    await _mapObjectManager.removeAllMarkers();
     state = const AsyncValue.data(null);
   }
 
@@ -86,7 +86,9 @@ class _ParkingManage extends _$ParkingManage {
     GeoPointWithElevationMessage? geoPoint,
     String title,
   ) async {
-    final exists = _mapObjectManager.markers.any((marker) => marker.id == poiPinId);
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    final markers = selectedMarker.mapObjectManager.markers;
+    final exists = markers.any((marker) => marker.id == poiPinId);
     if (exists) {
       return;
     }
@@ -97,15 +99,13 @@ class _ParkingManage extends _$ParkingManage {
     await _mapObjectManager.removeAllMarkers();
 
     final style = await _markerStyle(title);
-    await _mapObjectManager.addMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
-        text: title,
-        textStyle: style,
-        icon: Markers.defaultPinNew,
-        id: poiPinId,
-      ),
-    );
+    await selectedMarker.showMarker(Markers.pinMarker(
+      GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
+      text: title,
+      textStyle: style,
+      icon: Markers.defaultPinNew,
+      id: poiPinId,
+    ));
   }
 
   Future<MarkerTextStyleMessage> _markerStyle(String title) async {
@@ -127,7 +127,12 @@ class _ParkingManage extends _$ParkingManage {
   }
 
   Future<void> _addMarker(double lat, double lon) async {
-    await _mapObjectManager.removeAllMarkers();
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    final markers = selectedMarker.mapObjectManager.markers;
+    final exists = markers.any((marker) => marker.id == poiPinId);
+    if (exists) {
+      return;
+    }
 
     await _mapObjectManager.addMarker(
       Marker(
