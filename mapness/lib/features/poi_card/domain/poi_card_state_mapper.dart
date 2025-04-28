@@ -41,7 +41,7 @@ final class PoiCardStateMapper implements BottomSheetStateMapper<PoiCardBottomSh
       return null;
     }
 
-    if ([PoiCardBottomSheetState.expanded, PoiCardBottomSheetState.open].contains(state)) {
+    if (state == PoiCardBottomSheetState.open || state == PoiCardBottomSheetState.expanded) {
       return Colors.black.withOpacity(0.4);
     }
 
