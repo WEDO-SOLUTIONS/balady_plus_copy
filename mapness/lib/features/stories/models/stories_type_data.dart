@@ -78,7 +78,6 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_1_en.png',
                 arabicImageUrl: 'assets/images/onboarding_story_1_ar.png',
                 isAssetImage: true,
-                duration: 30,
                 action: NextStoryAction(
                   localeKey: 'about_routes',
                 ),
@@ -88,7 +87,6 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_2_en.png',
                 arabicImageUrl: 'assets/images/onboarding_story_2_ar.png',
                 isAssetImage: true,
-                duration: 30,
                 action: NextStoryAction(
                   localeKey: 'balady_features',
                 ),
@@ -98,7 +96,6 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_3_en.png',
                 arabicImageUrl: 'assets/images/onboarding_story_3_ar.png',
                 isAssetImage: true,
-                duration: 30,
                 action: NextStoryAction(
                   localeKey: 'get_started',
                 ),
