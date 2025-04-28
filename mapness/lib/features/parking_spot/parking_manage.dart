@@ -64,7 +64,33 @@ class _ParkingManage extends _$ParkingManage {
     final hive = await ref.read(hiveProvider(_boxName).future);
 
     await hive.put(_keyCache, model.toJson());
-    await _addMarker(model.lat, model.lon);
+    await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+    await _mapObjectManager.removeAllMarkers();
+    await _mapObjectManager.addMarker(
+      Marker(
+        id: parkingId,
+        options: MarkerOptionsMessage(
+          position: GeoPointWithElevationMessage(
+            latitude: model.lat,
+            longitude: model.lon,
+            elevation: 1,
+          ),
+          icon: iconParking.markerIcon(),
+        ),
+        onTap: () {
+          ref.read(appRouterProvider).replaceOrPush(
+            route: PoiCardWidgetRoute(
+              closestPoint: LatLng(latitude: model.lat, longitude: model.lon),
+              objectId: DgisObjectIdMessage(
+                objectId: parkingObjectId,
+                entranceId: 0,
+              ),
+            ),
+            toCompareRoutes: [PoiCardWidgetRoute.page],
+          );
+        },
+      ),
+    );
     state = AsyncValue.data(model);
   }
 
