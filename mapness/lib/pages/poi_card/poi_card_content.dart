@@ -114,7 +114,6 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       data.title = name;
     }
 
-    final isParkingPoi = widget.objectId == parkingObjectId;
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
     final photos = ref.watch(poiPhotoProvider(objectId));
@@ -212,12 +211,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 action: MetricAction.tap.toString(),
               );
 
-              if (isParkingPoi) {
-                ref.read(parkingManageProvider.notifier).restoreMarker();
-              } else {
-                ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
-              }
-
+              ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+              ref.read(parkingManageProvider.notifier).restoreMarker();
               ref.read(highlightProvider.notifier).removeHighlight(data.id!);
               context.router.popForced();
             },
