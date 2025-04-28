@@ -24,7 +24,7 @@ const _boxName = 'parking_location';
 const _keyCache = 'parking_store_model';
 
 const parkingId = 'parking_marker';
-const parkingObjectId = 10;/// This ID is needed to determine that we have opened the parking lot
+const parkingObjectId = 10; /// This ID is needed to determine that we have opened the parking lot
 
 @riverpod
 class _ParkingManage extends _$ParkingManage {
