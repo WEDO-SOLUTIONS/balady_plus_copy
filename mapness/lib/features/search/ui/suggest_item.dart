@@ -80,7 +80,7 @@ class SuggestItem extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       onTap: _onSuggestTap,
       isDividerEnabled: !isLast,
-      leading: SystemIcons.search.icon(color: iconColor ?? context.colorsV2.foregroundDefault),
+      leading: SystemIcons.search.icon(color: iconColor ?? context.colorsV3.foregroundMuted),
       text: ContentRowTextOptions(
         title: suggest.title.text,
         titleOptions: ContentRowTextOption(

@@ -81,7 +81,7 @@ class BottomMenuPage extends ConsumerWidget {
                     icon: AppBottomNavigationBarItem(
                       selected: route.activeIndex == 1,
                       iconBuilder: (ctx, isSelected) => DefaultIcon(
-                        icon: GeneralIcons.route,
+                        icon: GeneralIcons.routeStroke,
                         selected: isSelected,
                       ),
                       label: context.l10n.nav_route,
