@@ -1,5 +1,4 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -8,22 +7,18 @@ import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuickFilters extends ConsumerWidget {
-  final models.QuickFilter? selectedQuickFilter;
   final List<FilterItem>? customFilters;
   final ValueChanged<models.QuickFilter> onQuickFilterTap;
   final void Function() onFavouritesTap;
   final void Function() onFavouritesBookmarkTap;
   final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
-  final QuickFilterScreen id;
-
   final double? height;
   final ItemScrollController? itemScrollController;
 
@@ -31,10 +26,8 @@ class QuickFilters extends ConsumerWidget {
     required this.onQuickFilterTap,
     required this.onFavouritesTap,
     required this.onFavouritesBookmarkTap,
-    required this.id,
     this.height,
     super.key,
-    this.selectedQuickFilter,
     this.padding = const EdgeInsets.only(bottom: 16.0),
     this.customFilters,
     this.onCustomTap,
@@ -50,7 +43,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
-          icon: GeneralIcons.home,
+          icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
           onTap: () {
             final home = favouritesState.valueOrNull?.home;
             if (home != null) {
@@ -66,7 +59,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
-          icon: GeneralIcons.briefcase,
+          icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
           onTap: () {
             final work = favouritesState.valueOrNull?.work;
             if (work != null) {
@@ -85,7 +78,7 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       FilterItemConfig(
         filterType: FilterType.favourites,
-        icon: SystemIcons.bookmark,
+        icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
         onTap: onFavouritesBookmarkTap,
       ),
       ...customItems,
@@ -94,8 +87,6 @@ class QuickFilters extends ConsumerWidget {
             (filter) => FilterItemConfig(
               filterType: FilterType.quick,
               title: filter.title(context.l10n),
-              selected: filter == selectedQuickFilter,
-              icon: filter.icon,
               onTap: () => onQuickFilterTap(filter),
             ),
           ),
@@ -105,7 +96,6 @@ class QuickFilters extends ConsumerWidget {
       padding: padding,
       filters: items,
       height: height,
-      id: id,
       itemScrollController: itemScrollController,
     );
   }
