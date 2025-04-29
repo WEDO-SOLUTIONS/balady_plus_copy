@@ -73,7 +73,6 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
         Text(
           context.l10n.feedbackImageLimitsError(
             maxImages,
-            '$maxImageResolution x $maxImageResolution',
             maxSizeInBytes.formatAsFileSize(),
           ),
           style: context.textStyleV3.captionMediumRegular.copyWith(
