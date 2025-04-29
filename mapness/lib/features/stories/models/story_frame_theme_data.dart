@@ -48,25 +48,27 @@ class StoryFrameThemeData {
       actionTheme: actionTheme,
     );
 
+    final onboardingTheme = baseTheme.copyWith(
+      titleStyle: textTheme.h2SemiBold.copyWith(
+        color: AppColor.black,
+        fontSize: 26,
+        height: 17 / 26,
+      ),
+      descriptionStyle: textTheme.bodyLargeRegular.copyWith(
+        color: AppColor.black,
+        fontSize: 14,
+        height: 17 / 14,
+      ),
+      actionTheme: actionTheme.copyWith(
+        textColor: const Color(0xFFFFFFFF),
+        backgroundColor: const Color(0xFF003449),
+      ),
+    );
+
     return switch (id) {
-      'route1' => baseTheme.copyWith(),
-      'route2' => baseTheme.copyWith(),
-      'route3' => baseTheme.copyWith(),
-      'onboarding1' => baseTheme.copyWith(
-          titleStyle: textTheme.h2SemiBold.copyWith(
-            color: AppColor.white,
-          ),
-        ),
-      'onboarding2' => baseTheme.copyWith(
-          titleStyle: textTheme.h2SemiBold.copyWith(
-            color: AppColor.white,
-          ),
-        ),
-      'onboarding3' => baseTheme.copyWith(
-          titleStyle: textTheme.h2SemiBold.copyWith(
-            color: AppColor.white,
-          ),
-        ),
+      'onboarding1' => onboardingTheme,
+      'onboarding2' => onboardingTheme,
+      'onboarding3' => onboardingTheme,
       _ => baseTheme,
     };
   }

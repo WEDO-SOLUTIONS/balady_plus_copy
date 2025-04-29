@@ -8,7 +8,7 @@ class StoryFrameTexts {
   final String? description;
 
   /// Constructs a [StoryFrameTexts] instance.
-  StoryFrameTexts({
+  const StoryFrameTexts({
     required this.title,
     this.description,
     this.subTitle,
@@ -25,9 +25,12 @@ class StoryFrameTexts {
         'route1' => l10n.whatCanTheNavigatorDo,
         'route2' => l10n.theShortestRoute,
         'route3' => l10n.focusOnTheRoad,
-        'onboarding1' => l10n.onboardingBaladyAppTitle,
-        'onboarding2' => l10n.onboardingRoutesTitle,
-        'onboarding3' => l10n.onboardingCapabilitiesTitle,
+        // TODO: After release delete next keys from localyze
+        // onboardingBaladyAppTitle, onboardingRoutesTitle, onboardingCapabilitiesTitle
+        // This keys is deprecated and should be removed after release
+        'onboarding1' => l10n.onboarding1Title,
+        'onboarding2' => l10n.onboarding2Title,
+        'onboarding3' => l10n.onboarding3Title,
         _ => 'No title',
       };
 
@@ -36,9 +39,12 @@ class StoryFrameTexts {
         'route1' => l10n.route1description,
         'route2' => l10n.route2description,
         'route3' => l10n.route3description,
-        'onboarding1' => l10n.onboardingBaladyAppDescription,
-        'onboarding2' => l10n.onboardingRoutesDescription,
-        'onboarding3' => l10n.onboardingCapabilitiesDescription,
+        // TODO: After release delete next keys from localyze
+        // onboardingBaladyAppDescription, onboardingRoutesDescription, onboardingCapabilitiesDescription
+        // This keys is deprecated and should be removed after release
+        'onboarding1' => l10n.onboarding1Description,
+        'onboarding2' => l10n.onboarding2Description,
+        'onboarding3' => l10n.onboarding3Description,
         _ => null,
       };
 

@@ -1,6 +1,8 @@
+import 'package:flutter/rendering.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
+import 'package:mapness/features/stories/models/story_frame_theme_data.dart';
 
 import 'package:mapness/features/stories/models/story_types.dart';
 
@@ -68,6 +70,9 @@ class RouteStoryData extends StoryTypedData {
 
 /// Represents the story data for the [StoryTypes.onboarding] type.
 class OnboardingStoryData extends StoryTypedData {
+  static const Color _titleColor = Color(0xFF0C0C0D);
+  static const Color _descriptionColor = Color(0xFF0C0C0D);
+
   const OnboardingStoryData()
       : super(type: StoryTypes.onboarding, stories: const [
           StoryData(
@@ -75,29 +80,37 @@ class OnboardingStoryData extends StoryTypedData {
             frames: [
               StoryFrameData(
                 storyId: 'onboarding1',
-                imageUrl: 'assets/images/onboarding_story_1_en.png',
-                arabicImageUrl: 'assets/images/onboarding_story_1_ar.png',
-                isAssetImage: true,
-                action: NextStoryAction(
-                  localeKey: 'about_routes',
+                networkTheme: NetworkStoryThemeData(
+                  titleColor: _titleColor,
+                  descriptionColor: _descriptionColor,
                 ),
+                imageUrl: 'assets/images/onboarding_story_1.png',
+                arabicImageUrl: 'assets/images/onboarding_story_1.png',
+                isAssetImage: true,
+                duration: 30,
               ),
               StoryFrameData(
                 storyId: 'onboarding2',
-                imageUrl: 'assets/images/onboarding_story_2_en.png',
-                arabicImageUrl: 'assets/images/onboarding_story_2_ar.png',
-                isAssetImage: true,
-                action: NextStoryAction(
-                  localeKey: 'balady_features',
+                networkTheme: NetworkStoryThemeData(
+                  titleColor: _titleColor,
+                  descriptionColor: _descriptionColor,
                 ),
+                imageUrl: 'assets/images/onboarding_story_2.png',
+                arabicImageUrl: 'assets/images/onboarding_story_2.png',
+                isAssetImage: true,
+                duration: 30,
               ),
               StoryFrameData(
                 storyId: 'onboarding3',
-                imageUrl: 'assets/images/onboarding_story_3_en.png',
-                arabicImageUrl: 'assets/images/onboarding_story_3_ar.png',
+                networkTheme: NetworkStoryThemeData(
+                  titleColor: _titleColor,
+                  descriptionColor: _descriptionColor,
+                ),
+                imageUrl: 'assets/images/onboarding_story_3.png',
+                arabicImageUrl: 'assets/images/onboarding_story_3.png',
                 isAssetImage: true,
                 action: NextStoryAction(
-                  localeKey: 'get_started',
+                  localeKey: 'onboarding3Action',
                 ),
               ),
             ],
