@@ -186,10 +186,10 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: "59dbf4562d9e7de40ba265a15d760007fab911586bed329223058ef7501d88c8"
+      sha256: b0cbce831364eb225941aad93e4a1c3cc9ebc5d504bf75d68b8e334ec3152541
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.52"
+    version: "0.0.54"
   balady_plus:
     dependency: "direct main"
     description:
