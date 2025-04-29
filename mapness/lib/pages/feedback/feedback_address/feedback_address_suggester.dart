@@ -35,7 +35,7 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
     super.initState();
     _dgisSheetController = StatelessBottomSheetController(
         heightModel: BottomSheetHeightModel.aspect(
-          (Platform.isIOS) ? .931 : .98,
+          .98,
         ),
         onClose: (_) {
           ref.read(appRouterProvider).back();
