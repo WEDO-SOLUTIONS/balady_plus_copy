@@ -133,7 +133,7 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
           package: PackageConfig.packageName,
         )
       : SvgPicture.asset(
-          'assets/icons/svg/ic_language_change.svg',
+          'assets/icons/svg/profile/ic_language_change.svg',
           height: 24,
           width: 24,
           package: PackageConfig.packageName,
