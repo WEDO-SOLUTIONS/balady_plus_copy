@@ -109,7 +109,6 @@ class QuickFeedbackPhotoPage extends ConsumerWidget {
             errorTitle: context.l10n.photoLimitExceeded,
             errorLabel: context.l10n.feedbackImageLimitsError(
               firstImageField.maxImages.toString(),
-              '$_maxImageResolution x $_maxImageResolution',
               firstImageField.maxSize.formatAsFileSize(),
             ),
             buttonLabel: context.l10n.done,
