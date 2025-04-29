@@ -3375,10 +3375,9 @@ digraph "" {
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/features/search/ui/search_scope.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_content.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart";
-  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
-  "/lib/pages/feedback/feedback_address/feedback_address_suggester.dart" -> "/lib/shared/extensions/bottom_sheet_controller_helper_extension.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/entities/routing/route_point.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/features/search/ui/suggest_item.dart";
+  "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/lib/make_address.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_suggest.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/feedback/feedback_address/feedback_address_search_bar.dart" -> "/lib/features/search/models/search_scope.dart";
@@ -4739,11 +4738,8 @@ digraph "" {
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/features/statistic/providers/statistics_provider.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
-  "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/lib/search/compute_camera_position.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/providers/app_language.dart";
-  "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/providers/location.dart";
-  "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/providers/map/camera_position.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/widgets/landing/map_quick_filters.dart" -> "/lib/widgets/quick_filters/models/filter_item.dart";
