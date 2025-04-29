@@ -31,7 +31,7 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: widget.currentPhotoIndex);
+    pageController = PageController(initialPage: widget.currentPhotoIndex,);
     pageController.addListener(updateTitle);
     isAppBarVisible = ValueNotifier(true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -74,16 +74,16 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
         ),
         child: DecoratedBox(
           decoration: const BoxDecoration(color: backgroundColor),
-          child: Stack(
-            children: [
-              PhotoViewPager(
-                imageSource: widget.photoPaths ?? [],
-                scrollPhysics: CustomScrollPhysics.common(),
-                doubleTapZoomable: true,
-                pageController: pageController,
-                showTitleBar: (show) => isAppBarVisible.value = show,
-              ),
-            ],
+          child: PhotoViewPager(
+            imageSource: widget.photoPaths ?? [],
+            scrollPhysics: CustomScrollPhysics.common(),
+            doubleTapZoomable: true,
+            pageController: pageController,
+            showTitleBar: (show) {
+              setState(() {
+                isAppBarVisible.value = show;
+              });
+            },
           ),
         ),
       );

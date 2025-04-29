@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
-import 'package:photo_view/photo_view_gallery.dart';
 
 /// PageView for swiping through a list of images
 class PhotoViewPager extends StatefulWidget {
@@ -34,32 +33,61 @@ class PhotoViewPager extends StatefulWidget {
 }
 
 class _PhotoViewPagerState extends State<PhotoViewPager> {
-  @override
-  Widget build(BuildContext context) => PhotoViewGallery.builder(
-        scrollPhysics: widget.scrollPhysics,
-        builder: _buildItem,
-        itemCount: widget.imageSource.length,
-        loadingBuilder: (_, __) => const Center(child: CircularProgressIndicator()),
-        backgroundDecoration: const BoxDecoration(),
-        pageController: widget.pageController,
-        onPageChanged: (_) {},
-        scaleStateChangedCallback: (value) {
-          switch (value) {
-            case PhotoViewScaleState.initial:
-              widget.showTitleBar?.call(true);
-            case PhotoViewScaleState.covering:
-            case PhotoViewScaleState.originalSize:
-            case PhotoViewScaleState.zoomedIn:
-            case PhotoViewScaleState.zoomedOut:
-              widget.showTitleBar?.call(false);
-          }
-        },
-      );
+  int? imageIndex;
 
-  PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) => PhotoViewGalleryPageOptions(
-        minScale: 0.1,
-        imageProvider: CachedNetworkImageProvider(
-          widget.imageSource[index],
+  @override
+  Widget build(BuildContext context) {
+    if (imageIndex != null) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          // Обработка чистого тапа
+          setState(() {
+            imageIndex = null;
+            widget.showTitleBar?.call(true);
+          });
+        },
+        child: PhotoView(
+          imageProvider: CachedNetworkImageProvider(
+            widget.imageSource[imageIndex!],
+          ),
+          minScale: .1,
+          scaleStateChangedCallback: (value) {
+            switch (value) {
+              case PhotoViewScaleState.initial:
+                widget.showTitleBar?.call(false);
+                setState(() => imageIndex = null);
+              case PhotoViewScaleState.originalSize:
+                widget.showTitleBar?.call(true);
+                setState(() => imageIndex = null);
+              case PhotoViewScaleState.covering:
+              case PhotoViewScaleState.zoomedIn:
+              case PhotoViewScaleState.zoomedOut:
+                widget.showTitleBar?.call(false);
+            }
+          },
         ),
       );
+    }
+    return PageView.builder(
+      key: const PageStorageKey('photo_pager'),
+      itemCount: widget.infinitelyScrollable ? null : widget.imageSource.length,
+      controller: widget.pageController,
+      itemBuilder: (context, index) => GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          // Обработка чистого тапа
+          setState(() {
+            imageIndex = index;
+            widget.showTitleBar?.call(false);
+          });
+        },
+        child: Image(
+          image: CachedNetworkImageProvider(
+            widget.imageSource[index],
+          ),
+        ),
+      ),
+    );
+  }
 }
