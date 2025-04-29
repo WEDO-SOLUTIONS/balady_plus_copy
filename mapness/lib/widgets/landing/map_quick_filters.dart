@@ -14,11 +14,8 @@ import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
-import 'package:mapness/shared/lib/search/compute_camera_position.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -66,22 +63,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         layerId: settings.layerId,
       ).notifier,
     );
-    ref.listen(searchByRubricsProvider, (previous, next) async {
-      if (!widget.forMap) {
-        return;
-      }
-      final value = next.unwrapPrevious().value;
-      if (value != null) {
-        _debouncer.run(() async {
-          await computeCameraPosition(
-            value,
-            ref.read(cameraPositionProvider),
-            ref.read(locationProvider),
-            ref.read(cameraPositionProvider.notifier).animateTo,
-          );
-        });
-      }
-    });
 
     return QuickFilters(
       id: widget.id,

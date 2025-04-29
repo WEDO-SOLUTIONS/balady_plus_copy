@@ -122,7 +122,12 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
     return Directionality(
       textDirection: direction,
       child: BaladyTextInput(
-        label: widget.labelText != null ? BaladyInputLabel(text: widget.labelText!) : null,
+        label: widget.labelText != null
+            ? BaladyInputLabel(
+                text: widget.labelText!,
+                isRequired: widget.isRequired,
+              )
+            : null,
         inputState: widget.readonly ? BaladyInputState.readOnly : _inputErrorState,
         controller: _controller,
         config: BaladyInputConfig(
@@ -146,10 +151,7 @@ class _FeedbackTextInputState extends State<FeedbackTextInput> {
             ? const BaladyInputAffixWidget(widget: SizedBox.shrink(), width: 0)
             : null,
         supportingText: widget.maxLength != null
-            ? BaladySupportingText(
-                maxLength: widget.maxLength,
-                text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText,
-              )
+            ? BaladySupportingText(text: _inputErrorState == BaladyInputState.defaultValue ? null : widget.errorText)
             : null,
       ),
     );

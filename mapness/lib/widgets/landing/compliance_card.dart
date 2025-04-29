@@ -71,7 +71,7 @@ class ComplianceCard extends ConsumerWidget {
                   ),
                   Divider(height: Spacing.px / 2, indent: 63, color: context.colorsV2.borderMuted),
                   _RowButton(
-                    icon: context.isLTR ? GeneralIcons.documentDefenceRTL : GeneralIcons.documentDefenceLTR,
+                    icon: GeneralIcons.documentDefenceLTR,
                     onTap: CommonFunctions.openComplianceTerms,
                     label: context.l10n.complianceRequirements,
                   ),

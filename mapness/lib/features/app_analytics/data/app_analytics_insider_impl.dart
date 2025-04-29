@@ -27,7 +27,6 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
     required double estimateDistance,
   }) {
     FlutterInsider.Instance.tagEvent('navigation_started')
-        .addParameterWithString('timestamp', DateTime.timestamp().toIso8601String())
         .addParameterWithString('origin', originLocation)
         .addParameterWithString('destination', destinationLocation)
         .addParameterWithDouble('estimated_time', estimateTime.toDouble())
@@ -46,7 +45,6 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
         .addParameterWithString('origin', origin)
         .addParameterWithString('destination', destination)
         .addParameterWithInt('time_to_midway', spentTime.inSeconds)
-        .addParameterWithString('timestamp', DateTime.timestamp().toIso8601String())
         .addParameterWithString('midway_point', midPoint)
         .build();
   }
@@ -93,7 +91,6 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
   void categorySelected(String category) {
     FlutterInsider.Instance.tagEvent('category_selected')
         .addParameterWithString('category', category)
-        .addParameterWithString('timestamp', DateTime.timestamp().toIso8601String())
         .build();
   }
 
@@ -117,7 +114,6 @@ class AppAnalyticsInsiderImpl implements AppAnalyticsRepository {
         .addParameterWithString('origin', origin)
         .addParameterWithString('destination', destination)
         .addParameterWithInt('time_to_reach', spentTime.inSeconds)
-        .addParameterWithString('timestamp', DateTime.timestamp().toIso8601String())
         .build();
   }
 }

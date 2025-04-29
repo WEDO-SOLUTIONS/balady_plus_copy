@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,8 +11,6 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_content.dart';
 import 'package:mapness/pages/feedback/feedback_address/feedback_address_search_bar.dart';
-import 'package:mapness/pages/landing/landing_state_mapper.dart';
-import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 
 @RoutePage()
 class FeedbackAddressSuggester extends ConsumerStatefulWidget {
@@ -24,7 +23,7 @@ class FeedbackAddressSuggester extends ConsumerStatefulWidget {
 }
 
 class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSuggester> {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _dgisSheetController;
+  late final StatelessBottomSheetController _dgisSheetController;
   final kbVisibilityController = KeyboardVisibilityController();
   late final StreamSubscription<bool> _keyboardVisible;
 
@@ -34,32 +33,14 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
   @override
   void initState() {
     super.initState();
-    _dgisSheetController = StatefulBottomSheetController(
-      initialState: ThreeStateBottomSheet.expanded,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {
-        0.0,
-        if (Platform.isIOS) .3 else .38,
-        if (Platform.isIOS) .931 else .98,
-      }),
-      stateMapper: const LandingStateMapper(),
-    );
+    _dgisSheetController = StatelessBottomSheetController(
+        heightModel: BottomSheetHeightModel.aspect(
+          (Platform.isIOS) ? .931 : .98,
+        ),
+        onClose: (_) {
+          ref.read(appRouterProvider).back();
+        });
 
-    _dgisSheetController.addListener(
-      () {
-        if (_dgisSheetController.state == ThreeStateBottomSheet.open && context.mounted) {
-          setState(() {
-            isFirstLaunch = true;
-          });
-        } else if (_dgisSheetController.state == ThreeStateBottomSheet.hidden && context.mounted) {
-          if (isFirstLaunch) {
-            setState(() {
-              isFirstLaunch = false;
-              ref.read(appRouterProvider).back();
-            });
-          }
-        }
-      },
-    );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
   }
 
@@ -77,26 +58,28 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
           builder: (context, constraints) => NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: SafeArea(
-              bottom: false,
-              child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                outsideOpacityDelegate: _dgisSheetController.defaultOpacityDelegate,
+              child: StatelessBottomSheet(
                 key: const ValueKey('FEEDBACK SEARCH SHEET'),
+                physics: const BouncingScrollPhysics(),
                 scrollController: _dgisSheetController,
-                header: const Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                      child: FeedbackAddressSearchBar(),
-                    ),
-                    SizedBox(height: Spacing.$4x),
-                  ],
-                ),
-                content: [
-                  FeedbackAddressContent(
-                    showMyLocation: false,
-                    scrollController: _dgisSheetController,
+                backgroundColor: context.colorsV3.backgroundSurface4,
+                safeAreaColor: context.colorsV3.backgroundSurface4,
+                header: ColoredBox(
+                  color: context.colorsV3.backgroundSurface1,
+                  child: const Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                        child: FeedbackAddressSearchBar(),
+                      ),
+                      SizedBox(height: Spacing.$4x),
+                    ],
                   ),
-                ],
+                ),
+                sliverBeforeContent: FeedbackAddressContent(
+                  showMyLocation: false,
+                  scrollController: _dgisSheetController,
+                ),
               ),
             ),
           ),
@@ -128,13 +111,5 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
     if (!kbState) {
       return;
     }
-    final currentExp = _dgisSheetController.state;
-    if (currentExp == ThreeStateBottomSheet.expanded || currentExp == ThreeStateBottomSheet.open) {
-      return;
-    }
-
-    Future.delayed(Durations.short1).then((_) {
-      _dgisSheetController.setState(ThreeStateBottomSheet.expanded);
-    });
   }
 }

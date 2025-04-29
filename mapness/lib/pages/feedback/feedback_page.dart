@@ -124,19 +124,25 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       return;
     }
 
-    final requiredFields = fields.where((field) => field.isRequired);
-
-    final allRequiredFilled = requiredFields.every((field) {
+    final allFieldsValid = fields.every((field) {
       final formField = formFields[field.id];
       final value = formField?.value;
       if (field is FeedbackImageInputEntity) {
         final images = value is IList<FileUpload> ? value.toList() : <FileUpload>[];
 
-        if (images.isEmpty) {
-          return false;
+        if (field.isRequired) {
+          if (images.isEmpty) {
+            return false;
+          }
+          final allUploaded = images.every((img) => img is FileUploadSuccess);
+          return allUploaded;
+        } else {
+          if (images.isEmpty) {
+            return true;
+          }
+          final allUploaded = images.every((img) => img is FileUploadSuccess);
+          return allUploaded;
         }
-        final allUploaded = images.every((img) => img is FileUploadSuccess);
-        return allUploaded;
       }
 
       final String displayValue = switch (value) {
@@ -146,22 +152,20 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         _ => value.toString(),
       };
 
-      // if the fields that areRequired are Email Phone and Type then send should work as this data will be correct
       final FeedbackTextType? fieldType = _checkFieldType(field);
+      final validator = validators[fieldType];
+      final error = validator?.call(displayValue);
 
-      if (fieldType != null) {
-        final validator = validators[fieldType];
-        final error = validator?.call(displayValue);
-
-        if (error != null) {
-          return false;
+      if (field.isRequired) {
+        return displayValue.isNotEmpty && error == null;
+      } else {
+        if (displayValue.isNotEmpty) {
+          return error == null;
         }
+        return true;
       }
-
-      return displayValue.isNotEmpty;
     });
-
-    _isFormValidNotifier.value = allRequiredFilled;
+    _isFormValidNotifier.value = allFieldsValid;
   }
 
   FeedbackTextType? _checkFieldType(FeedbackBaseEntity field) {

@@ -2,7 +2,7 @@ import 'package:mapness/features/app_analytics/app_analytics_repository.dart';
 import 'package:mapness/features/app_analytics/data/app_analytics_insider_impl.dart';
 import 'package:mapness/features/app_feedback/device_info_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/ui/toast/app_locale.dart';
+import 'package:mapness/shared/providers/app_language.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'app_analytics.g.dart';
@@ -13,7 +13,7 @@ class AppAnalytics extends _$AppAnalytics {
   AppAnalyticsRepository build() {
     final auth = ref.watch(authProvider.future);
     final analytics = stateOrNull ?? AppAnalyticsInsiderImpl();
-    final locale = ref.watch(appLocaleProvider).localeName;
+    final locale = ref.watch(appLanguageProvider).languageCode;
     final deviceInfo = ref.watch(deviceInfoProvider.future);
     Future(() async {
       final authValue = await auth;
