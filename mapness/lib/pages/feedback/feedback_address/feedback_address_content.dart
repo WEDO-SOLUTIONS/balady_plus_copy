@@ -28,38 +28,27 @@ class FeedbackAddressContent extends ConsumerWidget {
     final searchState = ref.watch(searchProvider(scope.value));
 
     return searchState.map(
-      empty: () => const SafeArea(
-        top: false,
-        child: FeedbackAddressEmpty(isInitial: false),
-      ),
-      history: () => const SafeArea(
-        top: false,
-        child: FeedbackAddressEmpty(isInitial: true),
-      ),
-      loading: () => const SafeArea(
-        top: false,
-        child: Center(
-          child: Loading(
-            orientation: Axis.vertical,
-            size: LoaderSize.large,
+      empty: () => const FeedbackAddressEmpty(isInitial: false),
+      history: () => const FeedbackAddressEmpty(isInitial: true),
+      loading: () => SliverLayoutBuilder(
+        builder: (context, constraints) => SliverToBoxAdapter(
+          child: SizedBox(
+            height: constraints.viewportMainAxisExtent,
+            child: const Center(child: Loading(orientation: Axis.vertical, size: LoaderSize.large)),
           ),
         ),
       ),
-      suggest: (suggest) => SafeArea(
-        top: false,
-        child: FeedbackAddressSuggestions(
-          suggest: suggest,
-        ),
+      suggest: (suggest) => FeedbackAddressSuggestions(
+        suggest: suggest,
       ),
-      results: (_) => const SafeArea(
-        top: false,
-        child: FeedbackAddressEmpty(isInitial: false),
+      results: (_) => const FeedbackAddressEmpty(isInitial: false),
+      failure: (query, errorMessage) => SliverToBoxAdapter(
+        child: BaseErrorWidget(
+            errorLabel: errorMessage,
+            onRetry: () {
+              ref.read(searchProvider(scope.value).notifier).searchAddress(query);
+            }),
       ),
-      failure: (query, errorMessage) => BaseErrorWidget(
-          errorLabel: errorMessage,
-          onRetry: () {
-            ref.read(searchProvider(scope.value).notifier).searchAddress(query);
-          }),
     );
   }
 }

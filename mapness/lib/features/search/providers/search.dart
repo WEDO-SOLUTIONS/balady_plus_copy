@@ -109,6 +109,8 @@ class Search extends _$Search {
       _previousType = SearchType.fetchSuggest;
       _previousQuery = query;
 
+      state = SearchStateLoading(searchText: query);
+
       final searchRect =
           ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
       final dgisController = await ref.read(dgisControllerProvider.future);
@@ -326,7 +328,7 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
-      
+
       _result = results;
       // -- Analytics
       if (state is SearchStateEmpty) {
