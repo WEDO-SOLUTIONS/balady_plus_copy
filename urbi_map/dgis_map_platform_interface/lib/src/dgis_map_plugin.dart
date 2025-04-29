@@ -412,7 +412,7 @@ class DgisMapPlugin extends FlutterMapApi {
   /// more relevant results.
   Future<SearchResultMessage> search(
     String queryText, {
-    List<SearchCategoryMessage>? categories,
+    List<int>? rubricIds,
     List<GeoPointMessage>? spatialRestriction,
     required SortingTypeMessage sortingType,
     required int pageSize,
@@ -422,15 +422,7 @@ class DgisMapPlugin extends FlutterMapApi {
   }) {
     return _api.search(
       queryText,
-      categories != null
-          ? SearchCategoriesMessage(
-              categories: categories
-                  .map(
-                    (e) => SearchCategoryMessage_(category: e),
-                  )
-                  .toList(),
-            )
-          : null,
+      rubricIds,
       spatialRestriction,
       weekTime,
       searchRect,
@@ -458,33 +450,6 @@ class DgisMapPlugin extends FlutterMapApi {
   }) {
     return _api.searchByQuery(
       query,
-      spatialRestriction,
-      weekTime,
-      searchRect,
-      sortingType,
-      pageSize,
-      locale,
-    );
-  }
-
-  /// Search by category.
-  /// - [spatialRestriction] - spatial restriction for search. Search is bounded by this rectangle.
-  /// - [sortingType] - sorting type for search results. Could be by distance, by rating or by relevance.
-  /// - [pageSize] - number of objects in the search result.
-  /// - [weekTime] - week time for search. If not null, search will be performed by week time.
-  /// - [searchRect] - user viewport. If not null, search will be performed for this viewport and will give
-  /// more relevant results.
-  Future<SearchResultMessage> searchByCategory(
-    SearchCategoryMessage category, {
-    List<GeoPointMessage>? spatialRestriction,
-    required SortingTypeMessage sortingType,
-    required int pageSize,
-    WeekTimeSearchMessage? weekTime,
-    GeoRectMessage? searchRect,
-    String? locale,
-  }) {
-    return _api.searchByCategory(
-      category,
       spatialRestriction,
       weekTime,
       searchRect,
