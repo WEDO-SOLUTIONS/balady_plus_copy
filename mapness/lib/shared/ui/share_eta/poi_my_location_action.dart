@@ -58,13 +58,14 @@ class MyLocationPoiActions extends StatelessWidget {
                 colorButton: secondary,
                 onTap: onCopy,
               ),
-              if (onParkingAdd != null) ItemActionBar(
-                icon: SystemIcons.parkingAdd,
-                buttonType: BaladyButtonType.secondary,
-                onPressed: () {
-                  onParkingAdd?.call();
-                },
-              ),
+              if (onParkingAdd != null)
+                ItemActionBar(
+                  icon: SystemIcons.parkingAdd,
+                  buttonType: BaladyButtonType.secondary,
+                  onPressed: () {
+                    onParkingAdd?.call();
+                  },
+                ),
             ],
           ),
         ),
