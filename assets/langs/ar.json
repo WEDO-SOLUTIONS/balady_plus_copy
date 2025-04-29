@@ -118,7 +118,7 @@
   "allTimes": "كل الأوقات",
   "_servicesComment": "أي شيء يخص الخدمات",
   "public_services": "الخدمات العامة",
-  "municipal_services": "خدمات الأفراد",
+  "municipal_services": "الخدمات البلدية",
   "azkar": "الأذكار",
   "damaged_cars": "السيارات التالفة",
   "damaged_cars1": "السيارات التالفة",
@@ -4371,6 +4371,10 @@
   "title_congratulations_certified_observer":"يمكنك الآن بدء عملية الرقابة عبر تطبيق ممتثل من خلال الرابط",
   "description_monitoring_process_momtathel": "يمكنك الان بدء عملية الرقابة من خلال تطبيق ممتثل",
   "open_momtathl_app" : "التوجه إلى تطبيق ممتثل",
-  "Activies": "الانشطة"
+  "Activies": "الانشطة",
+
+
+  "municipal_services_title": "مرحبًا بك في قسم الخدمات البلدية على بلدي+.",
+  "municipal_services_message": "نساعدك في الوصول إلى الخدمات بكل سهولة، بينما تتولى الجهات الشريكة تنفيذها"
 
 }
