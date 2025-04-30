@@ -2854,6 +2854,7 @@ digraph "" {
   "/lib/features/stories/models/stories_type_data.dart" -> "/lib/features/stories/models/story_data.dart";
   "/lib/features/stories/models/stories_type_data.dart" -> "/lib/features/stories/models/story_frame_action.dart";
   "/lib/features/stories/models/stories_type_data.dart" -> "/lib/features/stories/models/story_frame_data.dart";
+  "/lib/features/stories/models/stories_type_data.dart" -> "/lib/features/stories/models/story_frame_theme_data.dart";
   "/lib/features/stories/models/stories_type_data.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/features/stories/models/story_frame_texts.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/features/stories/models/story_frame_data.dart" -> "/lib/features/stories/models/story_frame_action.dart";
