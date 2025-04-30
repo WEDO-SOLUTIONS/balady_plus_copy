@@ -80,35 +80,33 @@ class OnboardingStoryData extends StoryTypedData {
             frames: [
               StoryFrameData(
                 storyId: 'onboarding1',
-                networkTheme: NetworkStoryThemeData(
-                  titleColor: _titleColor,
-                  descriptionColor: _descriptionColor,
-                ),
                 imageUrl: 'assets/images/onboarding_story_1.png',
                 arabicImageUrl: 'assets/images/onboarding_story_1.png',
                 isAssetImage: true,
-                duration: 30,
+                networkTheme: NetworkStoryThemeData(
+                  titleColor: _titleColor,
+                  descriptionColor: _descriptionColor,
+                ),
               ),
               StoryFrameData(
                 storyId: 'onboarding2',
-                networkTheme: NetworkStoryThemeData(
-                  titleColor: _titleColor,
-                  descriptionColor: _descriptionColor,
-                ),
                 imageUrl: 'assets/images/onboarding_story_2.png',
                 arabicImageUrl: 'assets/images/onboarding_story_2.png',
                 isAssetImage: true,
-                duration: 30,
-              ),
-              StoryFrameData(
-                storyId: 'onboarding3',
                 networkTheme: NetworkStoryThemeData(
                   titleColor: _titleColor,
                   descriptionColor: _descriptionColor,
                 ),
+              ),
+              StoryFrameData(
+                storyId: 'onboarding3',
                 imageUrl: 'assets/images/onboarding_story_3.png',
                 arabicImageUrl: 'assets/images/onboarding_story_3.png',
                 isAssetImage: true,
+                networkTheme: NetworkStoryThemeData(
+                  titleColor: _titleColor,
+                  descriptionColor: _descriptionColor,
+                ),
                 action: NextStoryAction(
                   localeKey: 'onboarding3Action',
                 ),

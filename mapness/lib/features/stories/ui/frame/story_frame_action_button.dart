@@ -38,7 +38,8 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         'open_services' => l10n.openServices,
         'about_routes' => l10n.onboardingMoreRoutesButton,
         'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
-        'get_started' => l10n.onboardingGetStartedButton,
+        // TODO: After release delete from localizy [onboardingGetStartedButton] key
+        // It was previously used instead of "onboarding3Action"
         'onboarding3Action' => l10n.onboarding3Action,
         _ => ''
       };
