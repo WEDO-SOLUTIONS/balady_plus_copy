@@ -110,17 +110,25 @@ class _RoutesCarouselState extends ConsumerState<_RoutesCarousel> {
             ..setLatitude(finishLocation.latitude)
             ..setLongitude(finishLocation.longitude);
 
+          final startPointEta = (widget.points[0]?.etaPoint.lat != null && widget.points[0]?.etaPoint.lon != null)
+              ? widget.points[0]!.etaPoint
+              : EtaRoutePoint(
+                  lat: location!.latitude,
+                  lon: location.longitude,
+                  label: widget.points[0]?.label,
+                );
+
+          final finishPointEta = (widget.points[1]?.etaPoint.lat != null && widget.points[1]?.etaPoint.lon != null)
+              ? widget.points[1]!.etaPoint
+              : EtaRoutePoint(
+                  lat: finishLocation.latitude,
+                  lon: finishLocation.longitude,
+                  label: widget.points[1]?.label,
+                );
+
           ref.read(etaRouteInfoProvider.notifier).setRoute(eta.EtaRoute(
-                startPoint: widget.points[0]?.etaPoint ??
-                    EtaRoutePoint(
-                      lat: location!.latitude,
-                      lon: location.longitude,
-                    ),
-                endPoint: widget.points[1]?.etaPoint ??
-                    EtaRoutePoint(
-                      lat: location!.latitude,
-                      lon: location.longitude,
-                    ),
+                startPoint: startPointEta,
+                endPoint: finishPointEta,
                 type: _routeType,
                 routeIndex: _activeRoute,
                 createdAt: DateTime.now().toUtc().toIso8601String(),
