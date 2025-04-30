@@ -12,20 +12,16 @@ class FeedbackAddressEmpty extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-        child: !isInitial
-            ? Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    context.l10n.searchCouldNotFindAnything,
-                    style: context.textStyleV3.bodyLargeSemiBold,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              )
-            : const SizedBox(),
+  Widget build(BuildContext context, WidgetRef ref) => SliverFillRemaining(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+          child: !isInitial
+              ? Text(
+                  context.l10n.searchCouldNotFindAnything,
+                  style: context.textStyleV3.bodyLargeSemiBold,
+                  textAlign: TextAlign.center,
+                )
+              : null,
+        ),
       );
 }

@@ -183,7 +183,6 @@ class FeedbackImages extends StatelessWidget {
               errorTitle: context.l10n.photoLimitExceeded,
               errorLabel: context.l10n.feedbackImageLimitsError(
                 field.maxImages.toString(),
-                '$_maxImageResolution x $_maxImageResolution',
                 field.maxSize.formatAsFileSize(),
               ),
               buttonLabel: context.l10n.tryAgain,

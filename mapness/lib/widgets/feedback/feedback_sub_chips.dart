@@ -197,6 +197,7 @@ class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
                     for (final entry in variants.entries)
                       for (final item in entry.value)
                         ContentRowV2(
+                          onTap: () => Navigator.pop(context, item),
                           leading: SvgPicture.network(
                             entry.key.icon,
                             width: 24,

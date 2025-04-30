@@ -133,7 +133,7 @@ class ProfilePage extends HookConsumerWidget {
                                         context.router.push(const AboutBaladyRoute());
                                       },
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.infoCircle),
+                                      leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
                                       ),
