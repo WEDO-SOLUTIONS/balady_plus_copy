@@ -5,22 +5,26 @@ class HomeServices {
   final MostUsedServiceModel mostUsedService;
   final List<Service> mostUsedServices;
   final List<ServicesCategory> servicesCategories;
+  final List<Service> miniApps;
 
   HomeServices({
     required this.mostUsedService,
     required this.mostUsedServices,
     required this.servicesCategories,
+    required this.miniApps,
   });
 
   HomeServices copyWith({
     MostUsedServiceModel? mostUsedService,
     List<Service>? mostUsedServices,
+    List<Service>? miniApps,
     List<ServicesCategory>? servicesCategories,
   }) =>
       HomeServices(
         mostUsedService: mostUsedService ?? this.mostUsedService,
         mostUsedServices: mostUsedServices ?? this.mostUsedServices,
         servicesCategories: servicesCategories ?? this.servicesCategories,
+        miniApps: miniApps ?? this.miniApps,
       );
 
   factory HomeServices.fromJson(Map<String, dynamic> json) {
@@ -29,7 +33,13 @@ class HomeServices {
       mostUsedServices: json["mostUsedServices"] == null
           ? []
           : List<Service>.from(
-              json["mostUsedServices"]!.map((x) => Service.fromJson(x))),
+              json["mostUsedServices"]!.map((x) => Service.fromJson(x)),
+            ),
+      miniApps: json["mainServices"] == null
+          ? []
+          : List<Service>.from(
+              json["mainServices"]!.map((x) => Service.fromJson(x)),
+            ),
       servicesCategories: json["servicesCategories"] == null
           ? []
           : List<ServicesCategory>.from(
@@ -177,7 +187,13 @@ class Service {
       actionType: ActionTypeMap.fromString(json['actiontype']),
       actionValue: json["actionvalue"],
       subServices: json["subServices"] == null
-          ? []
+          ? json["sub_services"] == null
+              ? []
+              : List<Service>.from(
+                  json["sub_services"]!.map(
+                    (x) => Service.fromJson(x),
+                  ),
+                )
           : List<Service>.from(
               json["subServices"]!.map(
                 (x) => Service.fromJson(x),

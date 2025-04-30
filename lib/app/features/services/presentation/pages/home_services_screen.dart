@@ -18,6 +18,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -39,7 +40,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
             builder: (context, state) {
               if (state is ServicesSuccessState) {
                 return BlocProvider<ServiceCardsCubit>(
-                    create: (context) => ServiceCardsCubit(listOfServices: state.homeServices.mostUsedServices),
+                    create: (context) => ServiceCardsCubit(listOfServices: state.homeServices.miniApps),
                   child: Padding(
                     padding: const EdgeInsets.all(12.0),
                     child: RefreshIndicator(
