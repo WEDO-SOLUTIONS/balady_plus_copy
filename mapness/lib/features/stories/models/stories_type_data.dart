@@ -70,8 +70,10 @@ class RouteStoryData extends StoryTypedData {
 
 /// Represents the story data for the [StoryTypes.onboarding] type.
 class OnboardingStoryData extends StoryTypedData {
-  static const Color _titleColor = Color(0xFF0C0C0D);
-  static const Color _descriptionColor = Color(0xFF0C0C0D);
+  static const theme = NetworkStoryThemeData(
+    titleColor: Color(0xFF0C0C0D),
+    descriptionColor: Color(0xFF0C0C0D),
+  );
 
   const OnboardingStoryData()
       : super(type: StoryTypes.onboarding, stories: const [
@@ -83,30 +85,21 @@ class OnboardingStoryData extends StoryTypedData {
                 imageUrl: 'assets/images/onboarding_story_1.png',
                 arabicImageUrl: 'assets/images/onboarding_story_1.png',
                 isAssetImage: true,
-                networkTheme: NetworkStoryThemeData(
-                  titleColor: _titleColor,
-                  descriptionColor: _descriptionColor,
-                ),
+                networkTheme: theme,
               ),
               StoryFrameData(
                 storyId: 'onboarding2',
                 imageUrl: 'assets/images/onboarding_story_2.png',
                 arabicImageUrl: 'assets/images/onboarding_story_2.png',
                 isAssetImage: true,
-                networkTheme: NetworkStoryThemeData(
-                  titleColor: _titleColor,
-                  descriptionColor: _descriptionColor,
-                ),
+                networkTheme: theme,
               ),
               StoryFrameData(
                 storyId: 'onboarding3',
                 imageUrl: 'assets/images/onboarding_story_3.png',
                 arabicImageUrl: 'assets/images/onboarding_story_3.png',
                 isAssetImage: true,
-                networkTheme: NetworkStoryThemeData(
-                  titleColor: _titleColor,
-                  descriptionColor: _descriptionColor,
-                ),
+                networkTheme: theme,
                 action: NextStoryAction(
                   localeKey: 'onboarding3Action',
                 ),
