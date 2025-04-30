@@ -323,6 +323,7 @@ digraph "" {
   "/lib/entities/favourites/favourites_state.dart" [label="favourites_state"];
   "/lib/entities/favourites/favourite_search_item.dart" [label="favourite_search_item"];
   "/lib/entities/metro/metro_line_model.dart" [label="metro_line_model"];
+  "/lib/_generated/assets/assets.gen.dart" [label="assets.gen"];
   "/lib/_generated/protocol/protocol.pb.dart" [label="protocol.pb"];
   "/lib/_generated/protocol/protocol.pbjson.dart" [label="protocol.pbjson"];
   "/lib/_generated/protocol/protocol.pbserver.dart" [label="protocol.pbserver"];
@@ -612,7 +613,6 @@ digraph "" {
   "/lib/app/auto_route/guards/onboard_route_guard.dart" [label="onboard_route_guard"];
   "/lib/app/auto_route/poi_card_ext.dart" [label="poi_card_ext"];
   "/lib/app/auto_route/routes.dart" [label="routes"];
-  "/lib/gen/assets.gen.dart" [label="assets.gen"];
   "/lib/_features/common/providers/permissions.dart" [label="permissions"];
   "/lib/_features/common/providers/color_scheme.dart" [label="color_scheme"];
   "/lib/_features/common/providers/network_status.dart" [label="network_status"];
@@ -1494,6 +1494,10 @@ digraph "" {
       }
       subgraph "cluster~/lib/_generated" {
         label="_generated";
+        subgraph "cluster~/lib/_generated/assets" {
+          label="assets";
+          "/lib/_generated/assets/assets.gen.dart";
+        }
         subgraph "cluster~/lib/_generated/protocol" {
           label="protocol";
           "/lib/_generated/protocol/protocol.pb.dart";
@@ -2038,10 +2042,6 @@ digraph "" {
             "/lib/app/auto_route/guards/onboard_route_guard.dart";
           }
         }
-      }
-      subgraph "cluster~/lib/gen" {
-        label="gen";
-        "/lib/gen/assets.gen.dart";
       }
       subgraph "cluster~/lib/_features" {
         label="_features";
