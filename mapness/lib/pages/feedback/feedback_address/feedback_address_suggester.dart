@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
@@ -35,7 +34,7 @@ class _FeedbackAddressSuggesterState extends ConsumerState<FeedbackAddressSugges
     super.initState();
     _dgisSheetController = StatelessBottomSheetController(
         heightModel: BottomSheetHeightModel.aspect(
-          (Platform.isIOS) ? .931 : .98,
+          .98,
         ),
         onClose: (_) {
           ref.read(appRouterProvider).back();
