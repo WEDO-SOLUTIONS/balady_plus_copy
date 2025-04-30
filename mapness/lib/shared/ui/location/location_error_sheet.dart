@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -93,7 +94,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,
-                assetImage: 'assets/images_svg/lost_location.svg',
+                assetImage: Assets.imagesSvg.lostLocation.path,
                 package: PackageConfig.packageName,
                 onRetry: () async {
                   final permissionStatus = await perm.Permission.location.status;

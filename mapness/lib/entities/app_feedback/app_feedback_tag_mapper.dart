@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
 enum Tag {
@@ -56,14 +57,14 @@ class AppFeedbackTagMapper {
       };
 
   static String getIconByTag(Tag tag) => switch (tag) {
-        Tag.badDirections || Tag.wrongDirections || Tag.helpfulDirections => 'assets/icons/svg/tag_directions.svg',
-        Tag.locationProblems || Tag.location => 'assets/icons/svg/tag_gps.svg',
-        Tag.poorTraffic || Tag.traffic => 'assets/icons/svg/tag_traffic.svg',
-        Tag.wrongArrivalTime || Tag.arrivalTime => 'assets/icons/svg/tag_arrival.svg',
-        Tag.poorDesign || Tag.design || Tag.niceDesign || Tag.greatDesign => 'assets/icons/svg/tag_design.svg',
-        Tag.easyToUse => 'assets/icons/svg/tag_easy_to_use.svg',
-        Tag.goodNavigation => 'assets/icons/svg/tag_navi.svg',
-        Tag.parkingProblems || Tag.parking => 'assets/icons/svg/tag_parking.svg',
+        Tag.badDirections || Tag.wrongDirections || Tag.helpfulDirections => Assets.icons.svg.tagDirections.path,
+        Tag.locationProblems || Tag.location => Assets.icons.svg.tagGps.path,
+        Tag.poorTraffic || Tag.traffic => Assets.icons.svg.tagTraffic.path,
+        Tag.wrongArrivalTime || Tag.arrivalTime => Assets.icons.svg.tagArrival.path,
+        Tag.poorDesign || Tag.design || Tag.niceDesign || Tag.greatDesign => Assets.icons.svg.tagDesign.path,
+        Tag.easyToUse => Assets.icons.svg.tagEasyToUse.path,
+        Tag.goodNavigation => Assets.icons.svg.tagNavi.path,
+        Tag.parkingProblems || Tag.parking => Assets.icons.svg.tagParking.path,
       };
 
   /// Because in task requirements, the tags must send to backend localized in English

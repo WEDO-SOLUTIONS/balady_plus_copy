@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -119,7 +120,7 @@ class DestinationRow extends StatelessWidget {
                 width: 24,
                 height: 24,
                 child: SvgPicture.asset(
-                  'assets/icons/svg/ic_drag_indicator.svg',
+                  Assets.icons.svg.icDragIndicator.path,
                   package: PackageConfig.packageName,
                 ),
               ),

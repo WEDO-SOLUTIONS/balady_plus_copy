@@ -14,6 +14,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart' hide TextDirection;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
@@ -68,8 +69,8 @@ class PrayerCard extends ConsumerWidget {
                         child: Ink.image(
                           alignment: Alignment.topCenter,
                           fit: BoxFit.cover,
-                          image: const AssetImage(
-                            'assets/images/ishan-seefromthesky-unsplash.jpg',
+                          image: AssetImage(
+                            Assets.images.ishanSeefromtheskyUnsplash.path,
                             package: PackageConfig.packageName,
                           ),
                           child: InkWell(

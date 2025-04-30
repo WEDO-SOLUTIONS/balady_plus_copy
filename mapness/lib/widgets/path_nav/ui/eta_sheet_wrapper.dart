@@ -4,6 +4,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
@@ -91,7 +92,7 @@ class _BetterRouteButton extends StatelessWidget {
               child: Row(
                 children: [
                   SvgPicture.asset(
-                    'assets/icons/svg/ic_best_route.svg',
+                    Assets.icons.svg.icBestRoute.path,
                     width: 40,
                     height: 40,
                     package: PackageConfig.packageName,
@@ -109,7 +110,7 @@ class _BetterRouteButton extends StatelessWidget {
                     buttonColorScheme: ButtonColorScheme.primary,
                     size: ButtonSize.small,
                     trailing: SvgPicture.asset(
-                      'assets/icons/svg/ic_close.svg',
+                      Assets.icons.svg.icClose.path,
                       width: 16,
                       height: 16,
                       package: PackageConfig.packageName,

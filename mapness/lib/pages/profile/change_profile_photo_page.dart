@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/shared/config/package_config.dart';
@@ -64,7 +65,7 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
                 },
                 options: ContentRowOptions(
                   leadingIcon: SvgPicture.asset(
-                    'assets/icons/svg/photo_gallery.svg',
+                    Assets.icons.svg.photoGallery.path,
                     colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
                     package: PackageConfig.packageName,
                   ),

@@ -6,8 +6,8 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:intl/intl.dart' hide TextDirection;
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
@@ -248,8 +248,8 @@ class Data extends ConsumerWidget {
                           child: Center(
                             child: SvgPicture.asset(
                               isDay == true
-                                  ? 'assets/icons/svg/weather/Sun_new.svg'
-                                  : 'assets/icons/svg/weather/Moon.svg',
+                                  ? Assets.icons.svg.weather.sunNew.path
+                                  : Assets.icons.svg.weather.moon.path,
                               package: PackageConfig.packageName,
                               height: 75,
                               width: 75,
@@ -269,7 +269,7 @@ class Data extends ConsumerWidget {
                             style: textStyle,
                             maxLines: 1,
                           ),
-                          assetName: 'assets/icons/svg/weather/wind.svg',
+                          assetName: Assets.icons.svg.weather.wind.path,
                         ),
                         buildButton(
                           desc: Text(
@@ -277,7 +277,7 @@ class Data extends ConsumerWidget {
                             style: textStyle,
                             maxLines: 1,
                           ),
-                          assetName: 'assets/icons/svg/weather/pressure.svg',
+                          assetName: Assets.icons.svg.weather.pressure.path,
                         ),
                         buildButton(
                           desc: Text(
@@ -285,7 +285,7 @@ class Data extends ConsumerWidget {
                             style: textStyle,
                             maxLines: 1,
                           ),
-                          assetName: 'assets/icons/svg/weather/humidity.svg',
+                          assetName: Assets.icons.svg.weather.humidity.path,
                         ),
                       ],
                     ),

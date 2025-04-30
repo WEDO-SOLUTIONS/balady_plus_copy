@@ -5,6 +5,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -81,7 +82,7 @@ class QiblaCard extends ConsumerWidget {
                       alignment: Alignment.center,
                       transform: context.isLTR ? Matrix4.identity() : Matrix4.rotationY(pi),
                       child: Image.asset(
-                        'assets/images/qibla.png',
+                        Assets.images.qibla.path,
                         package: PackageConfig.packageName,
                         fit: BoxFit.fitHeight,
                       ),

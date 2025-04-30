@@ -72,7 +72,6 @@ class PathNavPage extends ConsumerStatefulWidget {
 
 class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObserver {
   final bool _navigatorAlreadyStopped = false;
-  final _iconAsset = 'packages/mapness/assets/icons/svg/ic_parking_spot.svg';
 
   static const padding = EdgeInsets.symmetric(horizontal: 12);
 

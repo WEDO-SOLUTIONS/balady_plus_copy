@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class BugButton extends StatefulWidget {
@@ -48,7 +49,7 @@ class _BugButtonState extends State<BugButton> {
             ),
             padding: const EdgeInsets.all(8),
             child: SvgPicture.asset(
-              'assets/icons/svg/ic_bug.svg',
+              Assets.icons.svg.icBug.path,
               package: PackageConfig.packageName,
             ),
           ),
