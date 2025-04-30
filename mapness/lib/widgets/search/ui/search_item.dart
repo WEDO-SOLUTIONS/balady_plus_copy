@@ -1,13 +1,12 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_badge.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';

@@ -23,6 +23,7 @@ import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/features/saudi_pass/repo/saudi_pass_repository.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
+import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 
 part 'offers_filters_view_notifier.dart';
 part 'prefs_offers_view_notifier.dart';

@@ -224,7 +224,7 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
     if (CommonProperties.isLoggedIn) {
       await toggleWithBottomSheetDialog();
     } else {
-      await ref.read(appRouterProvider).push(const SigninRoute());
+      await ref.read(authProvider.notifier).doAuth();
 
       if (CommonProperties.isLoggedIn) {
         await toggleWithBottomSheetDialog();
