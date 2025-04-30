@@ -3,6 +3,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
@@ -141,7 +142,7 @@ class _BriefRouteInfo extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SvgPicture.asset(
-            'assets/icons/svg/ic_car_poi.svg',
+            Assets.icons.svg.icCarPoi.path,
             height: iconSize,
             width: iconSize,
             package: PackageConfig.packageName,

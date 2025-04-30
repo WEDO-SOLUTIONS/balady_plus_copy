@@ -4,6 +4,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
@@ -65,7 +66,7 @@ class VoiceRow extends ConsumerWidget {
           child: Row(
             children: [
               SvgPicture.asset(
-                package.id == selectedVoice ? 'assets/icons/svg/ic_radio_on.svg' : 'assets/icons/svg/ic_radio_off.svg',
+                package.id == selectedVoice ? Assets.icons.svg.icRadioOn.path : Assets.icons.svg.icRadioOff.path,
                 height: 24,
                 width: 24,
                 package: PackageConfig.packageName,
@@ -99,7 +100,7 @@ class VoiceRow extends ConsumerWidget {
                 width: 12,
               ),
               SvgPicture.asset(
-                'assets/icons/svg/ic_profile_lang.svg',
+                Assets.icons.svg.icProfileLang.path,
                 height: 24,
                 width: 24,
                 package: PackageConfig.packageName,

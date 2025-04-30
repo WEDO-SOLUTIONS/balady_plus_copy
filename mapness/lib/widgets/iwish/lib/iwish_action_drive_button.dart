@@ -1,6 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class IwishActionDriveButton extends StatelessWidget {
@@ -24,7 +25,7 @@ class IwishActionDriveButton extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 SvgPicture.asset(
-                  'assets/icons/svg/ic_car.svg',
+                  Assets.icons.svg.icCar.path,
                   colorFilter: const ColorFilter.mode(
                     Colors.white,
                     BlendMode.srcIn,

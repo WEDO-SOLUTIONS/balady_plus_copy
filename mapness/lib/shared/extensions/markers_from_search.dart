@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
@@ -125,7 +126,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             position: position,
             isVisible: true,
             icon: icon?.copyWith(iconOpacity: 1) ??
-                LayersSvgPaths.basicMarker.markerIcon(size: 16).copyWith(iconOpacity: 1),
+                Assets.icons.svg.icMarkerMNew.path.markerIcon(size: 16).copyWith(iconOpacity: 1),
           ),
         ),
       );

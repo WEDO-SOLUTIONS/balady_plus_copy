@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/config/package_config.dart';
 
 class ExpandableCell extends StatelessWidget {
@@ -55,7 +56,7 @@ class ExpandableCell extends StatelessWidget {
                       height: 24,
                       width: 24,
                       package: PackageConfig.packageName,
-                      color: context.color.textAndIconsStatusAccent,
+                      colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
                     ),
                     const SizedBox(
                       width: 12,
@@ -103,7 +104,7 @@ class ExpandableCell extends StatelessWidget {
                     Transform.rotate(
                       angle: pi * animationValue,
                       child: SvgPicture.asset(
-                        'assets/icons/svg/ic_chevron_down.svg',
+                        Assets.icons.svg.icChevronDown.path,
                         height: 24,
                         width: 24,
                         package: PackageConfig.packageName,

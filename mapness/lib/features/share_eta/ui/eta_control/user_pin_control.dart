@@ -2,6 +2,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/models/eta_route_info.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
@@ -12,11 +13,11 @@ import 'package:mapness/shared/providers/map/camera_position.dart';
 class UserPinControl extends ConsumerWidget {
   final User? user;
 
-  static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user.svg';
-  static const String _authorizedUser = 'assets/images_svg/eta_named_user.svg';
-  static const String _userWithPhoto = 'assets/images_svg/eta_photo_user.svg';
+  static final String _unauthorizedUser = Assets.imagesSvg.etaUnknownUser.path;
+  static final String _authorizedUser = Assets.imagesSvg.etaNamedUser.path;
+  static final String _userWithPhoto = Assets.imagesSvg.etaPhotoUser.path;
 
-  static const String _userLostConnection = 'assets/images_svg/eta_lost_connection_control.svg';
+  static final String _userLostConnection = Assets.imagesSvg.etaLostConnectionControl.path;
 
   const UserPinControl({super.key, this.user});
 

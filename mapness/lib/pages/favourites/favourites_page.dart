@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
@@ -392,8 +393,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 child: Image.asset(
                                   fit: BoxFit.fitWidth,
                                   ref.read(appLanguageProvider) == Language.arabic
-                                      ? 'assets/images/favorites_example_arabic.png'
-                                      : 'assets/images/favorites_example_english.png',
+                                      ? Assets.images.favoritesExampleArabic.path
+                                      : Assets.images.favoritesExampleEnglish.path,
                                   package: PackageConfig.packageName,
                                 ),
                               ),
