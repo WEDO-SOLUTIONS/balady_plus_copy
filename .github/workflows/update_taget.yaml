@@ -17,8 +17,15 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            // 1) Get the current branch name from the environment
             const currentBranch = process.env.GITHUB_REF_NAME;
-            
+            if (!currentBranch) {
+              core.setFailed('❌ GITHUB_REF_NAME is not set');
+              return;
+            }
+            console.log(`🏷️  Current branch: ${currentBranch}`);
+
+            // 2) Retrieve all open pull requests in the repository
             const { data: pullRequests } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -26,16 +33,28 @@ jobs:
             });
 
             for (const pr of pullRequests) {
+              // 3) Skip if the PR already targets the current branch
               if (pr.base.ref === currentBranch) {
-                console.log(`PR #${pr.number} already targets ${currentBranch}. Skipping.`);
+                console.log(`✅ PR #${pr.number} already targets ${currentBranch}. Skipping.`);
                 continue;
               }
-            
-              await github.rest.pulls.update({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                pull_number: pr.number,
-                base: currentBranch
-              });
-              console.log(`Updated PR #${pr.number} to target branch ${process.env.CURRENT_BRANCH}`);
+
+              // 4) Skip if base and head are the same (no new commits to rebase)
+              if (pr.base.ref === pr.head.ref) {
+                console.log(`⚠️  PR #${pr.number} has base === head (${pr.base.ref}). Skipping.`);
+                continue;
+              }
+
+              try {
+                // 5) Update the PR's base branch to the current branch
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  base: currentBranch
+                });
+                console.log(`🔄 Updated PR #${pr.number} → base=${currentBranch}`);
+              } catch (error) {
+                console.warn(`❌ Failed to update PR #${pr.number}: ${error.message}`);
+              }
             }
