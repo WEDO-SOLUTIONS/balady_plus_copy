@@ -86,7 +86,6 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       ..watch(parkingManageProvider.notifier)
       ..listen(parkingImageProvider(isEdit: widget.isEdit), (_, __) => _checkDirty());
 
-    final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: context.colorsV3.backgroundSurface4,
       appBar: BaladyTopBar(
@@ -99,89 +98,88 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
         ),
         onLeadingPressed: () => context.router.popForced(),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(Spacing.$3x),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              context.l10n.feedbackAddress,
-              style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault),
-            ),
-            Spacing.$2x.heightBox,
-            SizedBox(
-              height: 84,
-              child: ClipRRect(
-                borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                child: UrbiMap(onMapCreated: _onMapCreated),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(Spacing.$3x),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                context.l10n.feedbackAddress,
+                style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault),
               ),
-            ),
-            Spacing.$2x.heightBox,
-            ValueListenableBuilder(
-                valueListenable: _addressNotifier,
-                builder: (_, value, __) {
-                  if (value.isEmpty) {
-                    return const SizedBox.shrink();
-                  }
-
-                  return Text(
-                    value,
-                    style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
-                  );
-                }),
-            Spacing.$3x.heightBox,
-            SizedBox(
-              width: double.infinity,
-              child: AppButton(
-                buttonColorScheme: ButtonColorScheme.secondary,
-                primaryIcon: GeneralIcons.location,
-                primaryLabel: context.l10n.changeLocation,
-                iconColor: context.colorsV3.accentSecondaryOnContainer,
-                textColor: context.colorsV3.accentSecondaryOnContainer,
-                onTap: () => _onTapChangeLocation(context),
-              ),
-            ),
-            Spacing.$4x.heightBox,
-            BaladyTextInput(
-              label: BaladyInputLabel(
-                text: context.l10n.comment,
-                style: context.textStyleV3.captionMediumRegular,
-              ),
-              controller: _textEditingController,
-              config: BaladyInputConfig(
-                isDisposed: false,
-                hintText: context.l10n.feedbackCommentHint,
-                background: BaladyInputBackground.color,
-                fillColor: context.colorsV2.neutralContainerDefault,
-                autovalidateMode: AutovalidateMode.onUnfocus,
-              ),
-            ),
-            Spacing.$4x.heightBox,
-            SelectedImages(isEdit: widget.isEdit),
-            const Spacer(),
-            ValueListenableBuilder<bool>(
-              valueListenable: _isDirty,
-              builder: (_, canSave, __) => SizedBox(
-                width: double.infinity,
-                child: AppButton(
-                  buttonColorScheme: ButtonColorScheme.primary,
-                  buttonState: canSave ? ButtonState.normal : ButtonState.disabled,
-                  primaryLabel: context.l10n.save,
-                  onTap: canSave ? () => _onTapSave(context) : null,
+              Spacing.$2x.heightBox,
+              SizedBox(
+                height: 84,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                  child: UrbiMap(onMapCreated: _onMapCreated),
                 ),
               ),
-            ),
-            Spacing.$0_5x.heightBox,
-            Center(
-              child: Padding(
-                padding: EdgeInsets.only(bottom: mediaQuery.viewPadding.bottom),
+              Spacing.$2x.heightBox,
+              ValueListenableBuilder(
+                  valueListenable: _addressNotifier,
+                  builder: (_, value, __) {
+                    if (value.isEmpty) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return Text(
+                      value,
+                      style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
+                    );
+                  }),
+              Spacing.$3x.heightBox,
+              SizedBox(
+                width: double.infinity,
+                child: AppButton(
+                  buttonColorScheme: ButtonColorScheme.secondary,
+                  primaryIcon: GeneralIcons.location,
+                  primaryLabel: context.l10n.changeLocation,
+                  iconColor: context.colorsV3.accentSecondaryOnContainer,
+                  textColor: context.colorsV3.accentSecondaryOnContainer,
+                  onTap: () => _onTapChangeLocation(context),
+                ),
+              ),
+              Spacing.$4x.heightBox,
+              BaladyTextInput(
+                label: BaladyInputLabel(
+                  text: context.l10n.comment,
+                  style: context.textStyleV3.captionMediumRegular,
+                ),
+                controller: _textEditingController,
+                config: BaladyInputConfig(
+                  isDisposed: false,
+                  hintText: context.l10n.feedbackCommentHint,
+                  background: BaladyInputBackground.color,
+                  fillColor: context.colorsV2.neutralContainerDefault,
+                  autovalidateMode: AutovalidateMode.onUnfocus,
+                ),
+              ),
+              Spacing.$4x.heightBox,
+              SelectedImages(isEdit: widget.isEdit),
+              const Spacer(),
+              ValueListenableBuilder<bool>(
+                valueListenable: _isDirty,
+                builder: (_, canSave, __) => SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.primary,
+                    buttonState: canSave ? ButtonState.normal : ButtonState.disabled,
+                    primaryLabel: context.l10n.save,
+                    onTap: canSave ? () => _onTapSave(context) : null,
+                  ),
+                ),
+              ),
+              Spacing.$0_5x.heightBox,
+              Center(
                 child: Text(
                   context.l10n.dataStoredFor,
                   style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundSoft),
                 ),
-              ),
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
       resizeToAvoidBottomInset: false,
