@@ -29,6 +29,20 @@ class _PathNavEta extends _$PathNavEta {
     bool halfRouteEventSent = false;
     final stopwatch = Stopwatch()..start();
 
+    final timer = Timer.periodic(const Duration(minutes: 1), (timer) {
+      final currentState = state;
+      if (currentState == null) {
+        return;
+      }
+
+      final duration = Duration(seconds: currentState.durationInSeconds);
+      final newArrivalTime = DateFormat.Hm().format(DateTime.now().add(duration));
+
+      if (newArrivalTime != currentState.arrivalTime) {
+        state = currentState.copyWith(arrivalTime: newArrivalTime);
+      }
+    });
+
     final subscription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
       final duration = Duration(seconds: event.duration);
@@ -67,18 +81,20 @@ class _PathNavEta extends _$PathNavEta {
         spentTime: stopwatch.elapsed,
       ).copyWith(isExpanded: isExpanded);
     });
-    ref.onDispose(subscription.cancel);
+    ref.onDispose(() {
+      subscription.cancel();
+      timer.cancel();
+    });
   }
 
   void toggleIsExpanded({required bool isExpanded}) {
-
     if (isExpanded) {
       ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
     }
 
     state = state?.copyWith(
-        isExpanded: isExpanded,
-      );
+      isExpanded: isExpanded,
+    );
   }
 }
 
