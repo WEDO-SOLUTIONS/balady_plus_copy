@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -73,8 +72,7 @@ class ErrorSheetV2 extends StatelessWidget {
                 builder: (context) {
                   if (assetImage == null || assetImage?.isEmpty == true) {
                     return SvgPicture.asset(
-                      Assets.imagesSvg.sadFace.path,
-                      package: PackageConfig.packageName,
+                      Assets.imagesSvg.sadFace.keyName,
                     );
                   }
 

@@ -5,7 +5,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/iwish/models/iwish_feedback_tag.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class IwishFeedbackTags extends StatelessWidget {
   IwishFeedbackTags({
@@ -55,7 +54,6 @@ class IwishFeedbackTags extends StatelessWidget {
                             e.assetUrl,
                             height: 24,
                             width: 24,
-                            package: PackageConfig.packageName,
                             matchTextDirection: e.rtlAsset,
                             colorFilter: const ColorFilter.mode(
                               NonThemeColor.color63,

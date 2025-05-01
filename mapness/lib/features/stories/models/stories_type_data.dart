@@ -1,4 +1,5 @@
 import 'package:flutter/rendering.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
@@ -26,38 +27,38 @@ sealed class StoryTypedData {
 
   /// Creates a [StoryTypedData] instance based on the given type.
   factory StoryTypedData.fromType(StoryTypes type) => switch (type) {
-        StoryTypes.onboarding => const OnboardingStoryData(),
-        StoryTypes.route => const RouteStoryData(),
+        StoryTypes.onboarding => OnboardingStoryData(),
+        StoryTypes.route => RouteStoryData(),
         StoryTypes.network => const NetworkStoryData(),
       };
 }
 
 /// Represents the story data for the [StoryTypes.route] type.
 class RouteStoryData extends StoryTypedData {
-  const RouteStoryData()
+  RouteStoryData()
       : super(
           type: StoryTypes.route,
-          stories: const [
+          stories: [
             StoryData(
               storyId: 'route0',
               frames: [
                 StoryFrameData(
                   storyId: 'route1',
-                  imageUrl: 'assets/images/route_story_1.png',
+                  imageUrl: Assets.images.routeStory1.keyName,
                   isAssetImage: true,
-                  action: NextStoryAction(),
+                  action: const NextStoryAction(),
                 ),
                 StoryFrameData(
                   storyId: 'route2',
-                  imageUrl: 'assets/images/route_story_2.png',
+                  imageUrl: Assets.images.routeStory2.keyName,
                   isAssetImage: true,
-                  action: NextStoryAction(),
+                  action: const NextStoryAction(),
                 ),
                 StoryFrameData(
                   storyId: 'route3',
-                  imageUrl: 'assets/images/route_story_3.png',
+                  imageUrl: Assets.images.routeStory3.keyName,
                   isAssetImage: true,
-                  action: NavigationFrameAction(
+                  action: const NavigationFrameAction(
                     location: '/routing',
                     localeKey: 'try_now',
                   ),
@@ -75,34 +76,32 @@ class OnboardingStoryData extends StoryTypedData {
     descriptionColor: Color(0xFF0C0C0D),
   );
 
-  const OnboardingStoryData()
-      : super(type: StoryTypes.onboarding, stories: const [
+  OnboardingStoryData()
+      : super(type: StoryTypes.onboarding, stories: [
           StoryData(
             storyId: 'onboarding0',
             frames: [
               StoryFrameData(
                 storyId: 'onboarding1',
-                imageUrl: 'assets/images/onboarding_story_1.png',
-                arabicImageUrl: 'assets/images/onboarding_story_1.png',
+                imageUrl: Assets.images.onboardingStory1.keyName,
+                arabicImageUrl: Assets.images.onboardingStory1.keyName,
                 isAssetImage: true,
                 networkTheme: theme,
               ),
               StoryFrameData(
                 storyId: 'onboarding2',
-                imageUrl: 'assets/images/onboarding_story_2.png',
-                arabicImageUrl: 'assets/images/onboarding_story_2.png',
+                imageUrl: Assets.images.onboardingStory2.keyName,
+                arabicImageUrl: Assets.images.onboardingStory2.keyName,
                 isAssetImage: true,
                 networkTheme: theme,
               ),
               StoryFrameData(
                 storyId: 'onboarding3',
-                imageUrl: 'assets/images/onboarding_story_3.png',
-                arabicImageUrl: 'assets/images/onboarding_story_3.png',
+                imageUrl: Assets.images.onboardingStory3.keyName,
+                arabicImageUrl: Assets.images.onboardingStory3.keyName,
                 isAssetImage: true,
                 networkTheme: theme,
-                action: NextStoryAction(
-                  localeKey: 'onboarding3Action',
-                ),
+                action: const NextStoryAction(localeKey: 'onboarding3Action'),
               ),
             ],
           ),

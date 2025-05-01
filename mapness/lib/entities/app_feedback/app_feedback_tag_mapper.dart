@@ -57,14 +57,14 @@ class AppFeedbackTagMapper {
       };
 
   static String getIconByTag(Tag tag) => switch (tag) {
-        Tag.badDirections || Tag.wrongDirections || Tag.helpfulDirections => Assets.icons.svg.tagDirections.path,
-        Tag.locationProblems || Tag.location => Assets.icons.svg.tagGps.path,
-        Tag.poorTraffic || Tag.traffic => Assets.icons.svg.tagTraffic.path,
-        Tag.wrongArrivalTime || Tag.arrivalTime => Assets.icons.svg.tagArrival.path,
-        Tag.poorDesign || Tag.design || Tag.niceDesign || Tag.greatDesign => Assets.icons.svg.tagDesign.path,
-        Tag.easyToUse => Assets.icons.svg.tagEasyToUse.path,
-        Tag.goodNavigation => Assets.icons.svg.tagNavi.path,
-        Tag.parkingProblems || Tag.parking => Assets.icons.svg.tagParking.path,
+        Tag.badDirections || Tag.wrongDirections || Tag.helpfulDirections => Assets.icons.svg.tagDirections.keyName,
+        Tag.locationProblems || Tag.location => Assets.icons.svg.tagGps.keyName,
+        Tag.poorTraffic || Tag.traffic => Assets.icons.svg.tagTraffic.keyName,
+        Tag.wrongArrivalTime || Tag.arrivalTime => Assets.icons.svg.tagArrival.keyName,
+        Tag.poorDesign || Tag.design || Tag.niceDesign || Tag.greatDesign => Assets.icons.svg.tagDesign.keyName,
+        Tag.easyToUse => Assets.icons.svg.tagEasyToUse.keyName,
+        Tag.goodNavigation => Assets.icons.svg.tagNavi.keyName,
+        Tag.parkingProblems || Tag.parking => Assets.icons.svg.tagParking.keyName,
       };
 
   /// Because in task requirements, the tags must send to backend localized in English

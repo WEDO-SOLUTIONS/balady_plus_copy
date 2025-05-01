@@ -31,7 +31,7 @@ sealed class RoutePoint {
 
 class RoutePointMyLocation extends RoutePoint {
   @override
-  String get icon => Assets.icons.svg.icRoutingLocation.path;
+  String get icon => Assets.icons.svg.icRoutingLocation.keyName;
 
   @override
   bool get isNotEmpty => true;
@@ -68,7 +68,7 @@ class RoutePointCoordinates extends RoutePoint {
   final String? address;
 
   @override
-  String get icon => Assets.icons.svg.icRoutingCircle.path;
+  String get icon => Assets.icons.svg.icRoutingCircle.keyName;
 
   @override
   bool get isNotEmpty => true;
@@ -104,7 +104,7 @@ class RoutePointDirectoryObject extends RoutePoint {
   final DirectoryObjectMessage? object;
 
   @override
-  String get icon => Assets.icons.svg.icRoutingCircle.path;
+  String get icon => Assets.icons.svg.icRoutingCircle.keyName;
 
   @override
   bool get isNotEmpty => object != null;
@@ -140,7 +140,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   final FavouriteItem? item;
 
   @override
-  String get icon => Assets.icons.svg.icRoutingCircle.path;
+  String get icon => Assets.icons.svg.icRoutingCircle.keyName;
 
   @override
   bool get isNotEmpty => item != null;

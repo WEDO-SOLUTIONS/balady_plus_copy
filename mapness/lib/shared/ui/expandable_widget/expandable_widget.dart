@@ -5,7 +5,6 @@ import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class ExpandableWidget extends StatelessWidget {
   const ExpandableWidget({
@@ -79,10 +78,9 @@ class ExpandableWidget extends StatelessWidget {
                       Transform.rotate(
                         angle: pi * animationValue,
                         child: SvgPicture.asset(
-                          Assets.icons.svg.icChevronDown.path,
+                          Assets.icons.svg.icChevronDown.keyName,
                           height: 24,
                           width: 24,
-                          package: PackageConfig.packageName,
                         ),
                       ),
                     ],

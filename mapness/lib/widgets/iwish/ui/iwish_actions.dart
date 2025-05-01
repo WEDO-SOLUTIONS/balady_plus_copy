@@ -27,17 +27,17 @@ class IwishActions extends StatelessWidget {
           IwishActionDriveButton(label: driveLabel, onPressed: onDrive),
           // gap,
           // IwishActionIconButton(
-          //   iconAsset: Assets.icons.svg.icShare.path,
+          //   iconAsset: Assets.icons.svg.icShare.keyName,
           //   onPressed: onShare,
           // ),
           // gap,
           // IwishActionIconButton(
-          //   iconAsset: Assets.icons.svg.icEntrance.path,
+          //   iconAsset: Assets.icons.svg.icEntrance.keyName,
           //   onPressed: onEnter,
           // ),
           // gap,
           // IwishActionIconButton(
-          //   iconAsset: Assets.icons.svg.icPhone.path,
+          //   iconAsset: Assets.icons.svg.icPhone.keyName,
           //   onPressed: onCall,
           // ),
         ],

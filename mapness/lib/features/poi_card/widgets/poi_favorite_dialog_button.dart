@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class PoiFavoriteDialogButton extends StatelessWidget {
   const PoiFavoriteDialogButton({
@@ -25,7 +24,6 @@ class PoiFavoriteDialogButton extends StatelessWidget {
           actionWidget: ContentRowActionOptions(
             actionIcon: AppIcons(
               iconPath: iconAsset,
-              package: PackageConfig.packageName,
             ),
           ),
         ),

@@ -219,7 +219,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               longitude: _latLng!.longitude,
               elevation: 0,
             ),
-            icon: Assets.icons.svg.placesNew.icParking.path.markerIcon(),
+            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
           ),
         ),
       );
@@ -246,7 +246,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               longitude: _latLng!.longitude,
               elevation: 0,
             ),
-            icon: Assets.icons.svg.placesNew.icParking.path.markerIcon(),
+            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
           ),
         ),
       );
@@ -281,7 +281,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       title: context.l10n.parkingSuccessfullySaved,
       firstText: context.l10n.feedbackBreaksSheetClose,
       secondText: context.l10n.share,
-      iconAsset: Assets.icons.svg.parkingControl.path,
+      iconAsset: Assets.icons.svg.parkingControl.keyName,
       onSecondTap: () async {
         if (_latLng == null) {
           return;

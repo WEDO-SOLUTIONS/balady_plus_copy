@@ -38,7 +38,7 @@ class PathNavFollowControl extends ConsumerWidget {
         await dgisController.followNavigation();
       },
       child: SvgPicture.asset(
-        Assets.icons.svg.icControlLocation.path,
+        Assets.icons.svg.icControlLocation.keyName,
         semanticsLabel: 'MinApps Screen',
         package: 'mapness',
         colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),

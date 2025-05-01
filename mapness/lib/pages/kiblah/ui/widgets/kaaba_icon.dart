@@ -3,7 +3,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class KaabaIcon extends StatelessWidget {
   const KaabaIcon({required this.isCorrect, super.key});
@@ -20,10 +19,9 @@ class KaabaIcon extends StatelessWidget {
         height: 32,
         child: Center(
           child: SvgPicture.asset(
-            Assets.icons.svg.icKiblah.path,
+            Assets.icons.svg.icKiblah.keyName,
             height: 16,
             width: 16,
-            package: PackageConfig.packageName,
           ),
         ),
       );

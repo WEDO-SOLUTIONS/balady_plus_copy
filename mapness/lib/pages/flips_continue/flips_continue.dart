@@ -43,7 +43,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(Assets.images.icFlipsContinue.path),
+              Image.asset(Assets.images.icFlipsContinue.keyName),
               Spacing.$4x.heightBox,
               Text(
                 context.l10n.theScreenFlipsContinue,

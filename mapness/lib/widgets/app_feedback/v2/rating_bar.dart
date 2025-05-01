@@ -2,7 +2,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class RatingBar extends StatelessWidget {
   final int rating;
@@ -41,8 +40,7 @@ class RatingBar extends StatelessWidget {
                         width: ratingItemSize,
                         height: ratingItemSize,
                         key: ValueKey('rating_star-$index-$isActive'),
-                        package: PackageConfig.packageName,
-                        isActive ? Assets.imagesSvg.activeStar.path : Assets.imagesSvg.inactiveStar.path,
+                        isActive ? Assets.imagesSvg.activeStar.keyName : Assets.imagesSvg.inactiveStar.keyName,
                       ),
                     ),
                   ),

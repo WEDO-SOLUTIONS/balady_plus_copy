@@ -25,8 +25,35 @@ class $AssetsIconsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/add_company.png
+  AssetGenImage get addCompany => const AssetGenImage('assets/images/add_company.png');
+
+  /// File path: assets/images/add_photo.png
+  AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
+
+  /// File path: assets/images/calendar_card.png
+  AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
+
+  /// File path: assets/images/calendar_card_brown.png
+  AssetGenImage get calendarCardBrown => const AssetGenImage('assets/images/calendar_card_brown.png');
+
+  /// File path: assets/images/city_expert.png
+  AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
+
+  /// File path: assets/images/dark_map_preview.jpg
+  AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
+
+  /// File path: assets/images/drive_home_arrow.png
+  AssetGenImage get driveHomeArrow => const AssetGenImage('assets/images/drive_home_arrow.png');
+
+  /// File path: assets/images/drive_home_background.png
+  AssetGenImage get driveHomeBackground => const AssetGenImage('assets/images/drive_home_background.png');
+
   /// File path: assets/images/eta_sheet_background.png
   AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
+
+  /// File path: assets/images/event_card_item_mask.png
+  AssetGenImage get eventCardItemMask => const AssetGenImage('assets/images/event_card_item_mask.png');
 
   /// File path: assets/images/favorites_example_arabic.png
   AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
@@ -34,14 +61,29 @@ class $AssetsImagesGen {
   /// File path: assets/images/favorites_example_english.png
   AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.png');
 
+  /// File path: assets/images/feedback_eyes.png
+  AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
+
   /// File path: assets/images/ic_flips_continue.png
   AssetGenImage get icFlipsContinue => const AssetGenImage('assets/images/ic_flips_continue.png');
 
   /// File path: assets/images/ishan-seefromthesky-unsplash.jpg
   AssetGenImage get ishanSeefromtheskyUnsplash => const AssetGenImage('assets/images/ishan-seefromthesky-unsplash.jpg');
 
+  /// File path: assets/images/light_map_preview.jpg
+  AssetGenImage get lightMapPreview => const AssetGenImage('assets/images/light_map_preview.jpg');
+
   /// File path: assets/images/marker_eta_mask.png
   AssetGenImage get markerEtaMask => const AssetGenImage('assets/images/marker_eta_mask.png');
+
+  /// File path: assets/images/onboarding_story_1.png
+  AssetGenImage get onboardingStory1 => const AssetGenImage('assets/images/onboarding_story_1.png');
+
+  /// File path: assets/images/onboarding_story_2.png
+  AssetGenImage get onboardingStory2 => const AssetGenImage('assets/images/onboarding_story_2.png');
+
+  /// File path: assets/images/onboarding_story_3.png
+  AssetGenImage get onboardingStory3 => const AssetGenImage('assets/images/onboarding_story_3.png');
 
   /// File path: assets/images/qibla.png
   AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.png');
@@ -49,8 +91,20 @@ class $AssetsImagesGen {
   /// File path: assets/images/region_not_available.png
   AssetGenImage get regionNotAvailable => const AssetGenImage('assets/images/region_not_available.png');
 
+  /// File path: assets/images/route_story_1.png
+  AssetGenImage get routeStory1 => const AssetGenImage('assets/images/route_story_1.png');
+
+  /// File path: assets/images/route_story_2.png
+  AssetGenImage get routeStory2 => const AssetGenImage('assets/images/route_story_2.png');
+
+  /// File path: assets/images/route_story_3.png
+  AssetGenImage get routeStory3 => const AssetGenImage('assets/images/route_story_3.png');
+
   /// File path: assets/images/success_app_feedback.png
   AssetGenImage get successAppFeedback => const AssetGenImage('assets/images/success_app_feedback.png');
+
+  /// File path: assets/images/sunrise_pray.png
+  AssetGenImage get sunrisePray => const AssetGenImage('assets/images/sunrise_pray.png');
 
   /// File path: assets/images/tree-and-park-bench-white-background.png
   AssetGenImage get treeAndParkBenchWhiteBackground =>
@@ -61,15 +115,33 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<AssetGenImage> get values => [
+        addCompany,
+        addPhoto,
+        calendarCard,
+        calendarCardBrown,
+        cityExpert,
+        darkMapPreview,
+        driveHomeArrow,
+        driveHomeBackground,
         etaSheetBackground,
+        eventCardItemMask,
         favoritesExampleArabic,
         favoritesExampleEnglish,
+        feedbackEyes,
         icFlipsContinue,
         ishanSeefromtheskyUnsplash,
+        lightMapPreview,
         markerEtaMask,
+        onboardingStory1,
+        onboardingStory2,
+        onboardingStory3,
         qibla,
         regionNotAvailable,
+        routeStory1,
+        routeStory2,
+        routeStory3,
         successAppFeedback,
+        sunrisePray,
         treeAndParkBenchWhiteBackground,
         wavinghand
       ];
@@ -166,7 +238,7 @@ class $AssetsIconsLottieGen {
   const $AssetsIconsLottieGen();
 
   /// File path: assets/icons/lottie/pin_logo_animated.json
-  String get pinLogoAnimated => 'assets/icons/lottie/pin_logo_animated.json';
+  String get pinLogoAnimated => 'packages/mapness/assets/icons/lottie/pin_logo_animated.json';
 
   /// List of all assets
   List<String> get values => [pinLogoAnimated];
@@ -247,6 +319,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_marker_m_new.svg
   SvgGenImage get icMarkerMNew => const SvgGenImage('assets/icons/svg/ic_marker_m_new.svg');
 
+  /// File path: assets/icons/svg/ic_notification.svg
+  SvgGenImage get icNotification => const SvgGenImage('assets/icons/svg/ic_notification.svg');
+
   /// File path: assets/icons/svg/ic_parking_spot.svg
   SvgGenImage get icParkingSpot => const SvgGenImage('assets/icons/svg/ic_parking_spot.svg');
 
@@ -291,6 +366,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/photo_gallery.svg
   SvgGenImage get photoGallery => const SvgGenImage('assets/icons/svg/photo_gallery.svg');
+
+  /// Directory path: assets/icons/svg/places_big_new
+  $AssetsIconsSvgPlacesBigNewGen get placesBigNew => const $AssetsIconsSvgPlacesBigNewGen();
 
   /// Directory path: assets/icons/svg/places_new
   $AssetsIconsSvgPlacesNewGen get placesNew => const $AssetsIconsSvgPlacesNewGen();
@@ -357,6 +435,7 @@ class $AssetsIconsSvgGen {
         icLangEn,
         icLanguageChange,
         icMarkerMNew,
+        icNotification,
         icParkingSpot,
         icPhone,
         icPinNew,
@@ -388,13 +467,13 @@ class $AssetsMapsConfigsGen {
   const $AssetsMapsConfigsGen();
 
   /// File path: assets/maps/configs/momrah-prod-vendor-config.jsonx
-  String get momrahProdVendorConfig => 'assets/maps/configs/momrah-prod-vendor-config.jsonx';
+  String get momrahProdVendorConfig => 'packages/mapness/assets/maps/configs/momrah-prod-vendor-config.jsonx';
 
   /// File path: assets/maps/configs/momrah-staging-vendor-config.jsonx
-  String get momrahStagingVendorConfig => 'assets/maps/configs/momrah-staging-vendor-config.jsonx';
+  String get momrahStagingVendorConfig => 'packages/mapness/assets/maps/configs/momrah-staging-vendor-config.jsonx';
 
   /// File path: assets/maps/configs/urbi-pre-prod-vendor-config.jsonx
-  String get urbiPreProdVendorConfig => 'assets/maps/configs/urbi-pre-prod-vendor-config.jsonx';
+  String get urbiPreProdVendorConfig => 'packages/mapness/assets/maps/configs/urbi-pre-prod-vendor-config.jsonx';
 
   /// List of all assets
   List<String> get values => [momrahProdVendorConfig, momrahStagingVendorConfig, urbiPreProdVendorConfig];
@@ -432,14 +511,184 @@ class $AssetsIconsSvgLayersGen {
       [icBuildingPin, icFancyPin, icFavHome, icFavPin, icFavWork, icInvestPin, icJoyPin, icParkingPin];
 }
 
+class $AssetsIconsSvgPlacesBigNewGen {
+  const $AssetsIconsSvgPlacesBigNewGen();
+
+  /// File path: assets/icons/svg/places_big_new/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_big_new/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_big_new/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_big_new/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_car_services.svg
+  SvgGenImage get icCarServices => const SvgGenImage('assets/icons/svg/places_big_new/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_events.svg
+  SvgGenImage get icEvents => const SvgGenImage('assets/icons/svg/places_big_new/ic_events.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr => const SvgGenImage('assets/icons/svg/places_big_new/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_big_new/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_hospital_place.svg
+  SvgGenImage get icHospitalPlace => const SvgGenImage('assets/icons/svg/places_big_new/ic_hospital_place.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_big_new/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_big_new/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_big_new/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_big_new/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_big_new/ic_park.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_big_new/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_big_new/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_big_new/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_big_new/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_big_new/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_big_new/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_big_new/ic_wc.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icCarServices,
+        icEvents,
+        icGasstationLtr,
+        icGym,
+        icHospitalPlace,
+        icHotels,
+        icMarkets,
+        icMedicineLtr,
+        icMosques,
+        icPark,
+        icQibla,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icTooth,
+        icWc
+      ];
+}
+
 class $AssetsIconsSvgPlacesNewGen {
   const $AssetsIconsSvgPlacesNewGen();
+
+  /// File path: assets/icons/svg/places_new/ic_barbershop.svg
+  SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_new/ic_barbershop.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_beach.svg
+  SvgGenImage get icBeach => const SvgGenImage('assets/icons/svg/places_new/ic_beach.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_beauty.svg
+  SvgGenImage get icBeauty => const SvgGenImage('assets/icons/svg/places_new/ic_beauty.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_car_services.svg
+  SvgGenImage get icCarServices => const SvgGenImage('assets/icons/svg/places_new/ic_car_services.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_events_ltr.svg
+  SvgGenImage get icEventsLtr => const SvgGenImage('assets/icons/svg/places_new/ic_events_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_gasstation_ltr.svg
+  SvgGenImage get icGasstationLtr => const SvgGenImage('assets/icons/svg/places_new/ic_gasstation_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_gym.svg
+  SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new/ic_gym.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_hospital_place.svg
+  SvgGenImage get icHospitalPlace => const SvgGenImage('assets/icons/svg/places_new/ic_hospital_place.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_hotels.svg
+  SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new/ic_hotels.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_markets.svg
+  SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_medicine_ltr.svg
+  SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_new/ic_medicine_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_mosques.svg
+  SvgGenImage get icMosques => const SvgGenImage('assets/icons/svg/places_new/ic_mosques.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_park.svg
+  SvgGenImage get icPark => const SvgGenImage('assets/icons/svg/places_new/ic_park.svg');
 
   /// File path: assets/icons/svg/places_new/ic_parking.svg
   SvgGenImage get icParking => const SvgGenImage('assets/icons/svg/places_new/ic_parking.svg');
 
+  /// File path: assets/icons/svg/places_new/ic_qibla.svg
+  SvgGenImage get icQibla => const SvgGenImage('assets/icons/svg/places_new/ic_qibla.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_recreation.svg
+  SvgGenImage get icRecreation => const SvgGenImage('assets/icons/svg/places_new/ic_recreation.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_restaurant.svg
+  SvgGenImage get icRestaurant => const SvgGenImage('assets/icons/svg/places_new/ic_restaurant.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_school_ltr.svg
+  SvgGenImage get icSchoolLtr => const SvgGenImage('assets/icons/svg/places_new/ic_school_ltr.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_shopping.svg
+  SvgGenImage get icShopping => const SvgGenImage('assets/icons/svg/places_new/ic_shopping.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_tooth.svg
+  SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new/ic_tooth.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_wc.svg
+  SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new/ic_wc.svg');
+
   /// List of all assets
-  List<SvgGenImage> get values => [icParking];
+  List<SvgGenImage> get values => [
+        icBarbershop,
+        icBeach,
+        icBeauty,
+        icCarServices,
+        icEventsLtr,
+        icGasstationLtr,
+        icGym,
+        icHospitalPlace,
+        icHotels,
+        icMarkets,
+        icMedicineLtr,
+        icMosques,
+        icPark,
+        icParking,
+        icQibla,
+        icRecreation,
+        icRestaurant,
+        icSchoolLtr,
+        icShopping,
+        icTooth,
+        icWc
+      ];
 }
 
 class $AssetsIconsSvgQuickFiltersGen {
@@ -495,6 +744,8 @@ class $AssetsIconsSvgWeatherGen {
 class Assets {
   const Assets._();
 
+  static const String package = 'mapness';
+
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
   static const $AssetsImagesSvgGen imagesSvg = $AssetsImagesSvgGen();
@@ -509,6 +760,8 @@ class AssetGenImage {
   });
 
   final String _assetName;
+
+  static const String package = 'mapness';
 
   final Size? size;
   final Set<String> flavors;
@@ -533,7 +786,7 @@ class AssetGenImage {
     bool matchTextDirection = false,
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
-    String? package,
+    @Deprecated('Do not specify package for a generated library asset') String? package = package,
     FilterQuality filterQuality = FilterQuality.medium,
     int? cacheWidth,
     int? cacheHeight,
@@ -568,7 +821,7 @@ class AssetGenImage {
 
   ImageProvider provider({
     AssetBundle? bundle,
-    String? package,
+    @Deprecated('Do not specify package for a generated library asset') String? package = package,
   }) {
     return AssetImage(
       _assetName,
@@ -579,7 +832,7 @@ class AssetGenImage {
 
   String get path => _assetName;
 
-  String get keyName => _assetName;
+  String get keyName => 'packages/mapness/$_assetName';
 }
 
 class SvgGenImage {
@@ -600,11 +853,13 @@ class SvgGenImage {
   final Set<String> flavors;
   final bool _isVecFormat;
 
+  static const String package = 'mapness';
+
   _svg.SvgPicture svg({
     Key? key,
     bool matchTextDirection = false,
     AssetBundle? bundle,
-    String? package,
+    @Deprecated('Do not specify package for a generated library asset') String? package = package,
     double? width,
     double? height,
     BoxFit fit = BoxFit.contain,
@@ -655,5 +910,5 @@ class SvgGenImage {
 
   String get path => _assetName;
 
-  String get keyName => _assetName;
+  String get keyName => 'packages/mapness/$_assetName';
 }

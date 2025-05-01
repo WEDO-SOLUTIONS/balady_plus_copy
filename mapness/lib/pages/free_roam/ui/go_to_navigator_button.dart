@@ -8,7 +8,6 @@ import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class GoToNavigatorButton extends ConsumerStatefulWidget {
@@ -97,10 +96,9 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
                   child: Padding(
                     padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
                     child: SvgPicture.asset(
-                      Assets.icons.svg.quickFilters.freeRoam.path,
+                      Assets.icons.svg.quickFilters.freeRoam.keyName,
                       height: iconSize,
                       width: iconSize,
-                      package: PackageConfig.packageName,
                       colorFilter: const ColorFilter.mode(
                         Colors.white,
                         BlendMode.srcIn,

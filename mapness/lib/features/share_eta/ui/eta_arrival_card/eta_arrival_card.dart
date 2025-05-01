@@ -10,7 +10,6 @@ import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_route_line.dart';
 import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaArrivalCard extends HookConsumerWidget {
@@ -35,8 +34,7 @@ class EtaArrivalCard extends HookConsumerWidget {
         image: DecorationImage(
             matchTextDirection: true,
             image: AssetImage(
-              Assets.images.etaSheetBackground.path,
-              package: PackageConfig.packageName,
+              Assets.images.etaSheetBackground.keyName,
             ),
             fit: BoxFit.fill),
       ),

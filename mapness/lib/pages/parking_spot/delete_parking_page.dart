@@ -59,7 +59,7 @@ class DeleteParkingPage extends ConsumerWidget {
               ref.read(parkingManageProvider.notifier).clearStore();
               ToastOverlay.of(context).show(
                 title: context.l10n.parkingSpotDeleted,
-                iconAsset: Assets.icons.svg.icComplete.path,
+                iconAsset: Assets.icons.svg.icComplete.keyName,
               );
               context.router.popUntilRouteWithName(BottomMenuRoute.name);
             },

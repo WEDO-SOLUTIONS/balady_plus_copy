@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
 
@@ -66,10 +65,9 @@ class VoiceRow extends ConsumerWidget {
           child: Row(
             children: [
               SvgPicture.asset(
-                package.id == selectedVoice ? Assets.icons.svg.icRadioOn.path : Assets.icons.svg.icRadioOff.path,
+                package.id == selectedVoice ? Assets.icons.svg.icRadioOn.keyName : Assets.icons.svg.icRadioOff.keyName,
                 height: 24,
                 width: 24,
-                package: PackageConfig.packageName,
               ),
               const SizedBox(
                 width: 12,
@@ -100,10 +98,9 @@ class VoiceRow extends ConsumerWidget {
                 width: 12,
               ),
               SvgPicture.asset(
-                Assets.icons.svg.icProfileLang.path,
+                Assets.icons.svg.icProfileLang.keyName,
                 height: 24,
                 width: 24,
-                package: PackageConfig.packageName,
               ),
             ],
           ),

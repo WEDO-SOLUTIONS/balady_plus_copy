@@ -51,7 +51,7 @@ class WeatherMapController extends _$WeatherMapController {
         /// показывает иконки затоплений на карте
         // await searchController.searchByText('critical_point',
         //     icon: MarkerIconMessage(
-        //       path: Assets.icons.svg.weather.floodPoint.path,
+        //       path: Assets.icons.svg.weather.floodPoint.keyName,
         //       width: 24,
         //     ), onTap: (dgisObject) {
         //   // if(dgisObject!=null){

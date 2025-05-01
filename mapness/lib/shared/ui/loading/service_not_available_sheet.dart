@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart' as pkg;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
@@ -48,10 +47,9 @@ class ServiceNotAvailableSheetPage extends StatelessWidget {
                 ),
               ),
               Image.asset(
-                Assets.images.regionNotAvailable.path,
+                Assets.images.regionNotAvailable.keyName,
                 width: double.infinity,
                 fit: BoxFit.fitWidth,
-                package: pkg.PackageConfig.packageName,
               ),
               const SizedBox(
                 height: Spacing.$5x,

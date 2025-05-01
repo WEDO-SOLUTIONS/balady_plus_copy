@@ -6,7 +6,6 @@ import 'package:expansion_widget/expansion_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class ExpandableCell extends StatelessWidget {
   const ExpandableCell({
@@ -55,7 +54,6 @@ class ExpandableCell extends StatelessWidget {
                       icon,
                       height: 24,
                       width: 24,
-                      package: PackageConfig.packageName,
                       colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
                     ),
                     const SizedBox(
@@ -104,10 +102,9 @@ class ExpandableCell extends StatelessWidget {
                     Transform.rotate(
                       angle: pi * animationValue,
                       child: SvgPicture.asset(
-                        Assets.icons.svg.icChevronDown.path,
+                        Assets.icons.svg.icChevronDown.keyName,
                         height: 24,
                         width: 24,
-                        package: PackageConfig.packageName,
                       ),
                     ),
                   ],

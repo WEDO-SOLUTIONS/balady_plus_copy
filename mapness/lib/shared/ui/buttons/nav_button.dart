@@ -2,7 +2,6 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 // TODO: rewrite according to UIKit
 class NavButton extends StatelessWidget {
@@ -28,7 +27,6 @@ class NavButton extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: SvgPicture.asset(
             icon,
-            package: PackageConfig.packageName,
             colorFilter: ColorFilter.mode(
               context.color.textAndIconsBasePrimary,
               BlendMode.srcIn,

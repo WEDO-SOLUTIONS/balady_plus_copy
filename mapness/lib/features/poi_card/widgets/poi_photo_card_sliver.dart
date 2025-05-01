@@ -3,6 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
@@ -176,7 +177,7 @@ class PoiPhotoCardSliver extends ConsumerWidget {
               child: Padding(
                 padding: const EdgeInsets.only(top: Spacing.$4x),
                 child: FeedbackBannerCard(
-                  imageAssetName: 'add_photo.png',
+                  path: Assets.images.addPhoto.keyName,
                   title: context.l10n.addPhotoPOICardTitle,
                   subtitle: context.l10n.addPhotosDescription,
                   gradientColors: const [Color(0xFF396372), Color(0xFF013449)],
