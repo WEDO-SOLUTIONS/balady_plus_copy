@@ -350,12 +350,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     try {
       if (loginData == null) {
         sl<AuthenticationBloc>().add(LogoutAuthentication());
-        return;
+        // return;
       }
 
-      if (state.status == AuthStatus.notAuthenticated) {
-        return;
-      }
+      // if (state.status == AuthStatus.notAuthenticated) {
+      //   return;
+      // }
       emit(
         const EntryPointState(
           status: AuthStatus.notAuthenticated,
