@@ -26,7 +26,6 @@ class CompassControl extends ConsumerWidget {
           child: SvgPicture.asset(
             Assets.icons.svg.icControlCompass.keyName,
             semanticsLabel: 'MinApps Screen',
-            package: 'mapness',
           ),
         ),
       ),
