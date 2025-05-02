@@ -88,7 +88,6 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
               child: SvgPicture.asset(
                 Assets.icons.svg.icDashboardSearch.keyName,
                 semanticsLabel: 'MinApps Screen',
-                package: 'mapness',
                 colorFilter: ColorFilter.mode(
                   context.color.strokeAccent,
                   BlendMode.srcIn,
@@ -110,7 +109,6 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                   child: SvgPicture.asset(
                     Assets.icons.svg.icSearchClear.keyName,
                     semanticsLabel: 'MinApps Screen',
-                    package: 'mapness',
                   ),
                 ),
               ),

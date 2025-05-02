@@ -40,7 +40,6 @@ class PathNavFollowControl extends ConsumerWidget {
       child: SvgPicture.asset(
         Assets.icons.svg.icControlLocation.keyName,
         semanticsLabel: 'MinApps Screen',
-        package: 'mapness',
         colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
       ),
     );
