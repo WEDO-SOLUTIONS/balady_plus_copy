@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -15,7 +16,6 @@ class DeleteParkingPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    const iconAsset = 'packages/mapness/assets/icons/svg/ic_complete.svg';
     final controller = StatelessBottomSheetController();
 
     return StatelessBottomSheet(
@@ -59,7 +59,7 @@ class DeleteParkingPage extends ConsumerWidget {
               ref.read(parkingManageProvider.notifier).clearStore();
               ToastOverlay.of(context).show(
                 title: context.l10n.parkingSpotDeleted,
-                iconAsset: iconAsset,
+                iconAsset: Assets.icons.svg.icComplete.keyName,
               );
               context.router.popUntilRouteWithName(BottomMenuRoute.name);
             },

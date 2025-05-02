@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/suggest.dart';
 
@@ -85,9 +86,8 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
-                'assets/icons/svg/ic_dashboard_search.svg',
+                Assets.icons.svg.icDashboardSearch.keyName,
                 semanticsLabel: 'MinApps Screen',
-                package: 'mapness',
                 colorFilter: ColorFilter.mode(
                   context.color.strokeAccent,
                   BlendMode.srcIn,
@@ -107,9 +107,8 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: SvgPicture.asset(
-                    'assets/icons/svg/ic_search_clear.svg',
+                    Assets.icons.svg.icSearchClear.keyName,
                     semanticsLabel: 'MinApps Screen',
-                    package: 'mapness',
                   ),
                 ),
               ),

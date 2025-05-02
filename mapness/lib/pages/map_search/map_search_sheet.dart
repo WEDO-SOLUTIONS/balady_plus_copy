@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
@@ -214,7 +215,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-        icon: LayersSvgPaths.basicMarker.markerIcon(),
+        icon: Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
         text: '$objectCount',
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(

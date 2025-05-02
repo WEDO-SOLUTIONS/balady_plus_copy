@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';

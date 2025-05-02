@@ -3,14 +3,13 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/share_eta/models/eta_info_model.dart';
 import 'package:mapness/features/share_eta/providers/eta_geo_subscriber.dart';
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_route_line.dart';
 import 'package:mapness/features/share_eta/ui/eta_control/user_pin_control.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaArrivalCard extends HookConsumerWidget {
@@ -31,12 +30,11 @@ class EtaArrivalCard extends HookConsumerWidget {
       ),
       padding: const EdgeInsets.all(Spacing.$4x),
       width: double.infinity,
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         image: DecorationImage(
             matchTextDirection: true,
             image: AssetImage(
-              'assets/images/eta_sheet_background.png',
-              package: PackageConfig.packageName,
+              Assets.images.etaSheetBackground.keyName,
             ),
             fit: BoxFit.fill),
       ),

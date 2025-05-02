@@ -7,6 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
@@ -21,7 +22,7 @@ import 'package:urbi_analytics/logger.dart';
 class EtaUtils {
   static Future<img.Image> processImage(String imgUrl, int imgSize, {bool isUnavailable = false}) async {
     // Load the mask image from assets
-    final maskData = await rootBundle.load('packages/mapness/assets/images/marker_eta_mask.png');
+    final maskData = await rootBundle.load(Assets.images.markerEtaMask.keyName);
     final maskBytes = maskData.buffer.asUint8List();
 
     final mask = img.decodeImage(maskBytes)!;

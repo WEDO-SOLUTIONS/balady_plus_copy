@@ -7,9 +7,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/log_out_sheet.dart';
@@ -169,11 +169,10 @@ class ProfilePage extends HookConsumerWidget {
                                                 ),
                                               ),
                                               leading: SvgPicture.asset(
-                                                'assets/icons/svg/ic_profile_logout.svg',
+                                                Assets.icons.svg.icProfileLogout.keyName,
                                                 height: 24,
                                                 width: 24,
                                                 matchTextDirection: true,
-                                                package: PackageConfig.packageName,
                                                 colorFilter: ColorFilter.mode(
                                                   context.colorsV3.errorDefault,
                                                   BlendMode.srcIn,

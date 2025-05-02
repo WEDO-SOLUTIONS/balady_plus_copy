@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image/image.dart' as img;
 import 'package:mapness/_features/common/providers/network_status.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -34,9 +35,9 @@ part 'eta_geo_subscriber.g.dart';
 
 @riverpod
 class EtaGeoSubscriber extends _$EtaGeoSubscriber {
-  static const String _unauthorizedUser = 'assets/images_svg/eta_unknown_user_marker.svg';
-  static const String _autharizedUser = 'assets/images_svg/eta_auth_blank_user_marker.svg';
-  static const String _lostConnection = 'assets/images_svg/eta_lost_connection_marker.svg';
+  static final String _unauthorizedUser = Assets.imagesSvg.etaUnknownUserMarker.keyName;
+  static final String _autharizedUser = Assets.imagesSvg.etaAuthBlankUserMarker.keyName;
+  static final String _lostConnection = Assets.imagesSvg.etaLostConnectionMarker.keyName;
 
   static const imgSize = 48;
   static const streamBreakTimeout = 30;

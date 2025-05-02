@@ -2,6 +2,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entry_point.dart';
 import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/uuid_provider.dart';
@@ -141,9 +142,8 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       ),
                       const Spacer(),
                       SvgPicture.asset(
-                        'assets/icons/svg/ic_bug.svg',
+                        Assets.icons.svg.icBug.keyName,
                         height: 30,
-                        package: PackageConfig.packageName,
                       ),
                     ],
                   ),

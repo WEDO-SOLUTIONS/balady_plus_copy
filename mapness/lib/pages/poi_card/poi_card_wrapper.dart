@@ -97,8 +97,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
               errorTitle: context.l10n.poiObjectNotFoundTitle,
               errorContent: context.l10n.poiObjectNotFoundContent,
               buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
-              assetImage: 'assets/images_svg/happy_face.svg',
-              package: PackageConfig.packageName,
+              assetImage: Assets.imagesSvg.happyFace.keyName,
               onRetry: () => context.router.popForced(),
             )
           ],

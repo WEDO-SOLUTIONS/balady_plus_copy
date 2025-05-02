@@ -41,8 +41,7 @@ class DefaultProfileImage extends ConsumerWidget {
                 color: context.colorsV3.backgroundSurface1,
               ),
             )
-          : SvgPicture.asset(
-              'packages/mapness/assets/icons/svg/ic_profile.svg',
+          : Assets.icons.svg.icProfile.svg(
               height: 36,
               width: 36,
               colorFilter: ColorFilter.mode(

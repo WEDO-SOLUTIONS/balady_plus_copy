@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
@@ -125,7 +126,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
             position: position,
             isVisible: true,
             icon: icon?.copyWith(iconOpacity: 1) ??
-                LayersSvgPaths.basicMarker.markerIcon(size: 16).copyWith(iconOpacity: 1),
+                Assets.icons.svg.icMarkerMNew.keyName.markerIcon(size: 16).copyWith(iconOpacity: 1),
           ),
         ),
       );
@@ -160,74 +161,57 @@ enum MapMarkersType {
 }
 
 extension IconPathFromMapMarkersType on MapMarkersType {
-  static const _pathPrefix = 'packages/mapness/assets/icons/svg/places_new';
-
-  /// We can get svg icon for the map to draw marker with special icon
-  /// Or we can get null if [MapMarkersType] is null
-  ///
-  /// It's easy to use because we can use this extension right in the build method of the marker
   String get iconPath => switch (this) {
-        MapMarkersType.markets => '$_pathPrefix/ic_markets.svg',
-        MapMarkersType.beach => '$_pathPrefix/ic_beach.svg',
-        MapMarkersType.gym => '$_pathPrefix/ic_gym.svg',
-        MapMarkersType.gasStation => '$_pathPrefix/ic_gasstation_ltr.svg',
-        MapMarkersType.events => '$_pathPrefix/ic_events_ltr.svg',
-        MapMarkersType.carServices => '$_pathPrefix/ic_car_services.svg',
-        MapMarkersType.hospitals => '$_pathPrefix/ic_hospital_place.svg',
-        MapMarkersType.hotels => '$_pathPrefix/ic_hotels.svg',
-        MapMarkersType.pharmacies => '$_pathPrefix/ic_medicine_ltr.svg',
-        MapMarkersType.mosques => '$_pathPrefix/ic_mosques.svg',
-        MapMarkersType.parks => '$_pathPrefix/ic_park.svg',
-        MapMarkersType.qibla => '$_pathPrefix/ic_qibla.svg',
-        MapMarkersType.restaurants => '$_pathPrefix/ic_restaurant.svg',
-        MapMarkersType.wc => '$_pathPrefix/ic_wc.svg',
-        MapMarkersType.dentalCenters => '$_pathPrefix/ic_tooth.svg',
-        MapMarkersType.schools => '$_pathPrefix/ic_school_ltr.svg',
-        MapMarkersType.shopping => '$_pathPrefix/ic_shopping.svg',
-        MapMarkersType.beauty => '$_pathPrefix/ic_beauty.svg',
-        MapMarkersType.barbershops => '$_pathPrefix/ic_barbershop.svg',
-        MapMarkersType.recreationCenters => '$_pathPrefix/ic_recreation.svg',
+        MapMarkersType.markets => Assets.icons.svg.placesNew.icMarkets.keyName,
+        MapMarkersType.beach => Assets.icons.svg.placesNew.icBeach.keyName,
+        MapMarkersType.gym => Assets.icons.svg.placesNew.icGym.keyName,
+        MapMarkersType.gasStation => Assets.icons.svg.placesNew.icGasstationLtr.keyName,
+        MapMarkersType.events => Assets.icons.svg.placesNew.icEventsLtr.keyName,
+        MapMarkersType.carServices => Assets.icons.svg.placesNew.icCarServices.keyName,
+        MapMarkersType.hospitals => Assets.icons.svg.placesNew.icHospitalPlace.keyName,
+        MapMarkersType.hotels => Assets.icons.svg.placesNew.icHotels.keyName,
+        MapMarkersType.pharmacies => Assets.icons.svg.placesNew.icMedicineLtr.keyName,
+        MapMarkersType.mosques => Assets.icons.svg.placesNew.icMosques.keyName,
+        MapMarkersType.parks => Assets.icons.svg.placesNew.icPark.keyName,
+        MapMarkersType.qibla => Assets.icons.svg.placesNew.icQibla.keyName,
+        MapMarkersType.restaurants => Assets.icons.svg.placesNew.icRestaurant.keyName,
+        MapMarkersType.wc => Assets.icons.svg.placesNew.icWc.keyName,
+        MapMarkersType.dentalCenters => Assets.icons.svg.placesNew.icTooth.keyName,
+        MapMarkersType.schools => Assets.icons.svg.placesNew.icSchoolLtr.keyName,
+        MapMarkersType.shopping => Assets.icons.svg.placesNew.icShopping.keyName,
+        MapMarkersType.beauty => Assets.icons.svg.placesNew.icBeauty.keyName,
+        MapMarkersType.barbershops => Assets.icons.svg.placesNew.icBarbershop.keyName,
+        MapMarkersType.recreationCenters => Assets.icons.svg.placesNew.icRecreation.keyName,
       };
 }
 
 extension BigIconPath on String {
-  static const _pathPrefix = 'packages/mapness/assets/icons/svg/places_big_new/';
-
-  // Because we need to replace only this markers with big icons
-  // If you need to add more icons, please add it in this list
-  // ignore: unused_field
-  static const _markersList = [
-    'ic_markets.svg',
-    'ic_beach.svg',
-    'ic_gym.svg',
-    'ic_gasstation_ltr.svg',
-    'ic_events_ltr.svg',
-    'ic_car_services.svg',
-    'ic_hospital_place.svg',
-    'ic_hotels.svg',
-    'ic_medicine_ltr.svg',
-    'ic_mosques.svg',
-    'ic_park.svg',
-    'ic_qibla.svg',
-    'ic_restaurant.svg',
-    'ic_wc.svg',
-    'ic_tooth.svg',
-    'ic_school_ltr.svg',
-    'ic_recreation.svg',
-    'ic_shopping.svg',
-    'ic_barbershop.svg',
-    'ic_beauty.svg',
-  ];
-
-  // ignore: prefer_expression_function_bodies
-  String? get bigIconPath {
+  String get bigIconPath {
     final iconName = split('/').last;
-    if (_markersList.contains(iconName)) {
-      final path = '$_pathPrefix$iconName';
 
-      return path;
-    } else {
-      return Markers.defaultPinNew;
-    }
+    final bigIcons = {
+      'ic_markets.svg': Assets.icons.svg.placesBigNew.icMarkets.keyName,
+      'ic_beach.svg': Assets.icons.svg.placesBigNew.icBeach.keyName,
+      'ic_gym.svg': Assets.icons.svg.placesBigNew.icGym.keyName,
+      'ic_gasstation_ltr.svg': Assets.icons.svg.placesBigNew.icGasstationLtr.keyName,
+      'ic_events.svg': Assets.icons.svg.placesBigNew.icEvents.keyName,
+      'ic_car_services.svg': Assets.icons.svg.placesBigNew.icCarServices.keyName,
+      'ic_hospital_place.svg': Assets.icons.svg.placesBigNew.icHospitalPlace.keyName,
+      'ic_hotels.svg': Assets.icons.svg.placesBigNew.icHotels.keyName,
+      'ic_medicine_ltr.svg': Assets.icons.svg.placesBigNew.icMedicineLtr.keyName,
+      'ic_mosques.svg': Assets.icons.svg.placesBigNew.icMosques.keyName,
+      'ic_park.svg': Assets.icons.svg.placesBigNew.icPark.keyName,
+      'ic_qibla.svg': Assets.icons.svg.placesBigNew.icQibla.keyName,
+      'ic_restaurant.svg': Assets.icons.svg.placesBigNew.icRestaurant.keyName,
+      'ic_wc.svg': Assets.icons.svg.placesBigNew.icWc.keyName,
+      'ic_tooth.svg': Assets.icons.svg.placesBigNew.icTooth.keyName,
+      'ic_school_ltr.svg': Assets.icons.svg.placesBigNew.icSchoolLtr.keyName,
+      'ic_shopping.svg': Assets.icons.svg.placesBigNew.icShopping.keyName,
+      'ic_barbershop.svg': Assets.icons.svg.placesBigNew.icBarbershop.keyName,
+      'ic_beauty.svg': Assets.icons.svg.placesBigNew.icBeauty.keyName,
+      'ic_recreation.svg': Assets.icons.svg.placesBigNew.icRecreation.keyName,
+    };
+
+    return bigIcons[iconName] ?? Markers.defaultPinNew;
   }
 }

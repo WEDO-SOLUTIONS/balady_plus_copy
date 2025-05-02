@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/iwish/models/iwish_entity.dart';
 import 'package:mapness/entities/iwish/models/iwish_marker.dart';
 import 'package:mapness/features/iwish/providers/iwish_markers.dart';
@@ -13,9 +14,9 @@ extension IwishMarkerMapper on IwishMarker {
     // and replace current `icon` with `MarkerIconMessage` with proper path
     // ignore: unused_local_variable
     final path = switch ((isSelected, state)) {
-      (true, _) => LayersSvgPathsDeprecated.joyParkSelected,
-      (_, IwishState.completed) => LayersSvgPathsDeprecated.joyParkCompleted,
-      (_, _) => LayersSvgPathsDeprecated.joyParkPlanned,
+      (true, _) => Assets.icons.svg.icIwishMarkerSelected.keyName,
+      (_, IwishState.completed) => Assets.icons.svg.icIwishMarkerCompleted.keyName,
+      (_, _) => Assets.icons.svg.icIwishMarkerPlanned.keyName,
     };
     return Marker(
       id: '$iwishMarkerPrefix$id',
