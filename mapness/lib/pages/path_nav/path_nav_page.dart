@@ -511,11 +511,12 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
       return;
     }
 
+    context.router.popUntilRouteWithName(BottomMenuRoute.name);
+
     // TODO(Ayat): temporarily hides
     // final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
     // final position = ref.read(locationProvider);
     //
-    // context.router.popUntilRouteWithName(BottomMenuRoute.name);
     // ToastOverlay.of(context).show(
     //   title: ctx.l10n.youWantSaveParking,
     //   firstText: ctx.l10n.feedbackBreaksSheetClose,
