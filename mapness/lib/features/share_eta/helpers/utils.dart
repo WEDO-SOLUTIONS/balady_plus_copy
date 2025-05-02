@@ -22,7 +22,7 @@ import 'package:urbi_analytics/logger.dart';
 class EtaUtils {
   static Future<img.Image> processImage(String imgUrl, int imgSize, {bool isUnavailable = false}) async {
     // Load the mask image from assets
-    final maskData = await rootBundle.load(Assets.images.markerEtaMask.path);
+    final maskData = await rootBundle.load(Assets.images.markerEtaMask.keyName);
     final maskBytes = maskData.buffer.asUint8List();
 
     final mask = img.decodeImage(maskBytes)!;

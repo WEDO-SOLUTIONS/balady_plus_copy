@@ -677,7 +677,7 @@ class LayersControls extends _$LayersControls {
                     longitude: e.latLng?.longitude ?? 0,
                     elevation: 0,
                   ),
-                  icon: Assets.icons.svg.layers.icInvestPin.path.markerIcon(),
+                  icon: Assets.icons.svg.layers.icInvestPin.keyName.markerIcon(),
                   textStyle: MarkerTextStyleMessage(
                     color: NonThemeColor.color26.value,
                     strokeColor: Colors.white.value,

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 
@@ -31,10 +30,9 @@ class AppFeedbackCard extends ConsumerWidget {
                     leadingIcon: Padding(
                       padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
                       child: Image.asset(
-                        Assets.images.wavinghand.path,
+                        Assets.images.wavinghand.keyName,
                         width: Spacing.$8x,
                         matchTextDirection: true,
-                        package: PackageConfig.packageName,
                       ),
                     ),
                     titleBuilder: (context) => Padding(

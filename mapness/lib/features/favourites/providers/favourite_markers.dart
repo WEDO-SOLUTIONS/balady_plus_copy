@@ -76,7 +76,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           element,
-          Assets.icons.svg.layers.icFavPin.path.markerIcon(),
+          Assets.icons.svg.layers.icFavPin.keyName.markerIcon(),
           router,
         ),
       );
@@ -87,7 +87,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.home!,
-          Assets.icons.svg.layers.icFavHome.path.markerIcon(),
+          Assets.icons.svg.layers.icFavHome.keyName.markerIcon(),
           router,
         ),
       );
@@ -98,7 +98,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.work!,
-          Assets.icons.svg.layers.icFavWork.path.markerIcon(),
+          Assets.icons.svg.layers.icFavWork.keyName.markerIcon(),
           router,
         ),
       );

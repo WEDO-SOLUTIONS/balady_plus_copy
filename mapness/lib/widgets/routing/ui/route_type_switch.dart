@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class RouteTypeSwitch extends ConsumerWidget {
   const RouteTypeSwitch({
@@ -43,7 +42,6 @@ class RouteTypeSwitch extends ConsumerWidget {
                 SvgPicture.asset(
                   iconAsset,
                   height: 30,
-                  package: PackageConfig.packageName,
                   colorFilter: ColorFilter.mode(
                     titleColor,
                     BlendMode.srcATop,

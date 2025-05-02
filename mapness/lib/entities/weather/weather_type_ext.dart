@@ -46,8 +46,8 @@ extension WeatherMapTypeExt on WeatherMapType {
       };
 
   String iconRes() => switch (this) {
-        WeatherMapType.precipitation => Assets.icons.svg.weather.umbrellaEmpty.path,
-        WeatherMapType.temperature => Assets.icons.svg.weather.thermometerEmpty.path,
+        WeatherMapType.precipitation => Assets.icons.svg.weather.umbrellaEmpty.keyName,
+        WeatherMapType.temperature => Assets.icons.svg.weather.thermometerEmpty.keyName,
       };
 
   // ignore_for_file: missing_whitespace_between_adjacent_strings

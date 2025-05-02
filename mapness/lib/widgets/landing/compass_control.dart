@@ -24,7 +24,7 @@ class CompassControl extends ConsumerWidget {
         child: Transform.rotate(
           angle: bearingState.angle - pi,
           child: SvgPicture.asset(
-            Assets.icons.svg.icControlCompass.path,
+            Assets.icons.svg.icControlCompass.keyName,
             semanticsLabel: 'MinApps Screen',
             package: 'mapness',
           ),

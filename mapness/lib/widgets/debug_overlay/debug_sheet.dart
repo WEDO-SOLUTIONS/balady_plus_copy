@@ -142,9 +142,8 @@ class _DebugSheetState extends ConsumerState<DebugSheet> {
                       ),
                       const Spacer(),
                       SvgPicture.asset(
-                        Assets.icons.svg.icBug.path,
+                        Assets.icons.svg.icBug.keyName,
                         height: 30,
-                        package: PackageConfig.packageName,
                       ),
                     ],
                   ),

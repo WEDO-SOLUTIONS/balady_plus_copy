@@ -11,7 +11,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
@@ -126,17 +125,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget? leadingIcon(Language language) => showFlags
       ? SvgPicture.asset(
           switch (language) {
-            Language.arabic => Assets.icons.svg.saFlag.path,
-            Language.english => Assets.icons.svg.ukFlag.path,
+            Language.arabic => Assets.icons.svg.saFlag.keyName,
+            Language.english => Assets.icons.svg.ukFlag.keyName,
           },
           height: 16,
           width: 22,
-          package: PackageConfig.packageName,
         )
       : SvgPicture.asset(
-          Assets.icons.svg.icLanguageChange.path,
+          Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,
-          package: PackageConfig.packageName,
         );
 }

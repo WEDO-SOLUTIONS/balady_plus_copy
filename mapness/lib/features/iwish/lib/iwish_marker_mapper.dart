@@ -14,9 +14,9 @@ extension IwishMarkerMapper on IwishMarker {
     // and replace current `icon` with `MarkerIconMessage` with proper path
     // ignore: unused_local_variable
     final path = switch ((isSelected, state)) {
-      (true, _) => Assets.icons.svg.icIwishMarkerSelected.path,
-      (_, IwishState.completed) => Assets.icons.svg.icIwishMarkerCompleted.path,
-      (_, _) => Assets.icons.svg.icIwishMarkerPlanned.path,
+      (true, _) => Assets.icons.svg.icIwishMarkerSelected.keyName,
+      (_, IwishState.completed) => Assets.icons.svg.icIwishMarkerCompleted.keyName,
+      (_, _) => Assets.icons.svg.icIwishMarkerPlanned.keyName,
     };
     return Marker(
       id: '$iwishMarkerPrefix$id',

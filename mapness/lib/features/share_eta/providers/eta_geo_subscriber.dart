@@ -35,9 +35,9 @@ part 'eta_geo_subscriber.g.dart';
 
 @riverpod
 class EtaGeoSubscriber extends _$EtaGeoSubscriber {
-  static final String _unauthorizedUser = Assets.imagesSvg.etaUnknownUserMarker.path;
-  static final String _autharizedUser = Assets.imagesSvg.etaAuthBlankUserMarker.path;
-  static final String _lostConnection = Assets.imagesSvg.etaLostConnectionMarker.path;
+  static final String _unauthorizedUser = Assets.imagesSvg.etaUnknownUserMarker.keyName;
+  static final String _autharizedUser = Assets.imagesSvg.etaAuthBlankUserMarker.keyName;
+  static final String _lostConnection = Assets.imagesSvg.etaLostConnectionMarker.keyName;
 
   static const imgSize = 48;
   static const streamBreakTimeout = 30;

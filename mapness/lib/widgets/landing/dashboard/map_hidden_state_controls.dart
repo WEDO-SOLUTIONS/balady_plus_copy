@@ -14,7 +14,6 @@ import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -316,10 +315,9 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                         ),
                         child: Center(
                           child: SvgPicture.asset(
-                            Assets.icons.svg.quickFilters.freeRoam.path,
+                            Assets.icons.svg.quickFilters.freeRoam.keyName,
                             height: iconSize,
                             width: iconSize,
-                            package: PackageConfig.packageName,
                             colorFilter: ColorFilter.mode(
                               iconAndTextColor,
                               BlendMode.srcIn,

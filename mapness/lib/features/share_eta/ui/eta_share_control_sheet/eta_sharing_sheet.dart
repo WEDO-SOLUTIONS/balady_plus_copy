@@ -5,7 +5,6 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart';
 import 'package:mapness/features/share_eta/ui/pulse_indicator.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class EtaSharingSheet extends StatelessWidget {
@@ -33,8 +32,7 @@ class EtaSharingSheet extends StatelessWidget {
             onTap: onCurrentLocationPressed,
             options: ContentRowOptions(
                 leadingIcon: SvgPicture.asset(
-                  Assets.icons.svg.currentLocationIcon.path,
-                  package: PackageConfig.packageName,
+                  Assets.icons.svg.currentLocationIcon.keyName,
                   colorFilter: ColorFilter.mode(
                     context.colorsV2.foregroundSoft,
                     BlendMode.srcIn,

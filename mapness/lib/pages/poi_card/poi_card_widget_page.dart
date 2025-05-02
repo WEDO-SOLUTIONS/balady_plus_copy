@@ -37,7 +37,6 @@ import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';

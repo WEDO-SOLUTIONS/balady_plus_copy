@@ -13,7 +13,6 @@ import 'package:mapness/_features/common/widgets/dragger.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -65,9 +64,8 @@ class ChangeProfilePhotoPage extends ConsumerWidget {
                 },
                 options: ContentRowOptions(
                   leadingIcon: SvgPicture.asset(
-                    Assets.icons.svg.photoGallery.path,
+                    Assets.icons.svg.photoGallery.keyName,
                     colorFilter: ColorFilter.mode(context.color.textAndIconsStatusAccent, BlendMode.srcIn),
-                    package: PackageConfig.packageName,
                   ),
                   title: context.l10n.change_avatar,
                   titleStyle: context.textStyle.text.copyWith(color: context.color.textAndIconsBasePrimary),

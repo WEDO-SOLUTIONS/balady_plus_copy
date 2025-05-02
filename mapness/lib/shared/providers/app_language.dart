@@ -42,8 +42,8 @@ extension LanguageData on Language {
       };
 
   String get icon => switch (this) {
-        Language.english => Assets.icons.svg.icLangEn.path,
-        Language.arabic => Assets.icons.svg.icLangAr.path,
+        Language.english => Assets.icons.svg.icLangEn.keyName,
+        Language.arabic => Assets.icons.svg.icLangAr.keyName,
       };
 
   Locale get locale => switch (this) {

@@ -50,7 +50,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
-          icon: Assets.icons.svg.quickFilters.icQuickHome.path,
+          icon: Assets.icons.svg.quickFilters.icQuickHome.keyName,
           onTap: () {
             final home = favouritesState.valueOrNull?.home;
             if (home != null) {
@@ -66,7 +66,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
-          icon: Assets.icons.svg.quickFilters.icQuickWork.path,
+          icon: Assets.icons.svg.quickFilters.icQuickWork.keyName,
           onTap: () {
             final work = favouritesState.valueOrNull?.work;
             if (work != null) {
@@ -85,7 +85,7 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       FilterItemConfig(
         filterType: FilterType.favourites,
-        icon: Assets.icons.svg.quickFilters.icQuickBookmark.path,
+        icon: Assets.icons.svg.quickFilters.icQuickBookmark.keyName,
         onTap: onFavouritesBookmarkTap,
       ),
       ...customItems,

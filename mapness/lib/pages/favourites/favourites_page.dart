@@ -13,7 +13,6 @@ import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/share_util.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -393,9 +392,8 @@ class _FavouritesPageState extends ConsumerState<FavouritesPage> {
                                 child: Image.asset(
                                   fit: BoxFit.fitWidth,
                                   ref.read(appLanguageProvider) == Language.arabic
-                                      ? Assets.images.favoritesExampleArabic.path
-                                      : Assets.images.favoritesExampleEnglish.path,
-                                  package: PackageConfig.packageName,
+                                      ? Assets.images.favoritesExampleArabic.keyName
+                                      : Assets.images.favoritesExampleEnglish.keyName,
                                 ),
                               ),
                             ),

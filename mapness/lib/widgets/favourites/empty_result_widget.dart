@@ -2,7 +2,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class EmptyResultWidget extends StatelessWidget {
   const EmptyResultWidget({required this.text, super.key});
@@ -12,8 +11,7 @@ class EmptyResultWidget extends StatelessWidget {
   Widget build(BuildContext context) => Column(
         children: [
           SvgPicture.asset(
-            Assets.imagesSvg.emptySearch.path,
-            package: PackageConfig.packageName,
+            Assets.imagesSvg.emptySearch.keyName,
             width: 240,
             height: 140,
           ),

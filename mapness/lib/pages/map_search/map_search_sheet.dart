@@ -215,7 +215,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-        icon: Assets.icons.svg.icMarkerMNew.path.markerIcon(),
+        icon: Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
         text: '$objectCount',
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(

@@ -7,7 +7,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -94,8 +93,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,
-                assetImage: Assets.imagesSvg.lostLocation.path,
-                package: PackageConfig.packageName,
+                assetImage: Assets.imagesSvg.lostLocation.keyName,
                 onRetry: () async {
                   final permissionStatus = await perm.Permission.location.status;
                   final serviceStatus = await perm.Permission.location.serviceStatus;

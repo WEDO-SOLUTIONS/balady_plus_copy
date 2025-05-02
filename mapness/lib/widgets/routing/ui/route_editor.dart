@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/routing/route_point.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteEditor extends StatelessWidget {
@@ -92,7 +91,6 @@ class DestinationRow extends StatelessWidget {
               height: 24,
               child: SvgPicture.asset(
                 icon,
-                package: PackageConfig.packageName,
                 color: context.color.textAndIconsStatusAccent,
                 // colorFilter: ColorFilter.mode(
                 // index == 0 ? NonThemeColor.color3 : context.color.strokeAccent,
@@ -120,8 +118,7 @@ class DestinationRow extends StatelessWidget {
                 width: 24,
                 height: 24,
                 child: SvgPicture.asset(
-                  Assets.icons.svg.icDragIndicator.path,
-                  package: PackageConfig.packageName,
+                  Assets.icons.svg.icDragIndicator.keyName,
                 ),
               ),
             ),

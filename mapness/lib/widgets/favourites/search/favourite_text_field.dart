@@ -86,7 +86,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: SvgPicture.asset(
-                Assets.icons.svg.icDashboardSearch.path,
+                Assets.icons.svg.icDashboardSearch.keyName,
                 semanticsLabel: 'MinApps Screen',
                 package: 'mapness',
                 colorFilter: ColorFilter.mode(
@@ -108,7 +108,7 @@ class _FavouriteTextFieldState extends ConsumerState<FavouriteTextField> {
                 child: Padding(
                   padding: const EdgeInsets.all(8),
                   child: SvgPicture.asset(
-                    Assets.icons.svg.icSearchClear.path,
+                    Assets.icons.svg.icSearchClear.keyName,
                     semanticsLabel: 'MinApps Screen',
                     package: 'mapness',
                   ),

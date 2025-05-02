@@ -3,7 +3,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 /// A base error widget that displays an error message and a retry button.
@@ -92,8 +91,7 @@ class BaseErrorWidget extends StatelessWidget {
             Padding(
               padding: paddingForImage,
               child: SvgPicture.asset(
-                Assets.imagesSvg.illustrationError.path,
-                package: PackageConfig.packageName,
+                Assets.imagesSvg.illustrationError.keyName,
               ),
             ),
             if (errorTitle != null)

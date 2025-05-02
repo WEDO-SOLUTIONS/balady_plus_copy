@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 
 class CenterCompassWidget extends StatelessWidget {
   final Color backgroundColor;
@@ -22,8 +21,7 @@ class CenterCompassWidget extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(50),
           child: SvgPicture.asset(
-            Assets.icons.svg.icArrowCompass.path,
-            package: PackageConfig.packageName,
+            Assets.icons.svg.icArrowCompass.keyName,
           ),
         ),
       );

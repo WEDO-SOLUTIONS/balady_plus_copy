@@ -15,7 +15,6 @@ import 'package:intl/intl.dart' hide TextDirection;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/_features/common/providers/network_status.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:provider/provider.dart' as provider;
@@ -70,8 +69,7 @@ class PrayerCard extends ConsumerWidget {
                           alignment: Alignment.topCenter,
                           fit: BoxFit.cover,
                           image: AssetImage(
-                            Assets.images.ishanSeefromtheskyUnsplash.path,
-                            package: PackageConfig.packageName,
+                            Assets.images.ishanSeefromtheskyUnsplash.keyName,
                           ),
                           child: InkWell(
                             onTap: () {

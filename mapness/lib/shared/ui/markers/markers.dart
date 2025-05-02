@@ -6,7 +6,7 @@ class Markers {
   static const double defaultWidth = 70;
   static const double defaultHeight = 58;
   static final defaultPin = Assets.icons.lottie.pinLogoAnimated;
-  static final defaultPinNew = Assets.icons.svg.icPinNew.path;
+  static final defaultPinNew = Assets.icons.svg.icPinNew.keyName;
 
   static Marker pinMarker(
     GeoPointWithElevationMessage position, {
@@ -22,7 +22,7 @@ class Markers {
         options: MarkerOptionsMessage(
           position: position,
           icon: SvgMarkerIcon(
-            svgPath: icon ?? defaultPinNew,
+            svgPath: icon ?? Assets.icons.svg.icPinNew.keyName,
             width: width ?? defaultWidth,
           ),
           text: breakMarkerLabel(text),
