@@ -59,6 +59,11 @@ jobs:
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+
       - name: AdSedare
         env:
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
