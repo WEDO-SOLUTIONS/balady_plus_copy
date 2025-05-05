@@ -8,7 +8,7 @@ import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/widgets/feedback/images/add_image_button.dart';
-import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
+import 'package:mapness/widgets/feedback/images/feedback_image_preview.dart';
 
 class SelectedImages extends ConsumerStatefulWidget {
   final bool isEdit;
@@ -53,11 +53,10 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
                 size: _imageSize,
               ),
             ..._images.indexed.map(
-              (indexedUpload) => FeedbackImageWidget(
+              (indexedUpload) => FeedbackImagePreview(
                 key: ValueKey(indexedUpload),
                 imagePath: indexedUpload.$2.path,
                 onRemove: () => imageProvider.removeImage(indexedUpload.$2),
-                onUploadStatusChange: (_) {},
                 imageSize: _imageSize,
               ),
             ),
