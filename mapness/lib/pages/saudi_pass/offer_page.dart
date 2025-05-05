@@ -8,10 +8,10 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide IconButton;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:intl/intl.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/features/saudi_pass/functions/create_amount_or_ratio_text_span.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_details_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_redeem_provider.dart';
@@ -249,31 +249,16 @@ class _Content extends HookConsumerWidget {
     return '${context.l10n.saudiPassOfferBy} $value';
   }
 
-  // TODO: move to offer ext / utils
-  String? _getDiscount(OfferDetails offer, Language language, BuildContext context) {
-    final currencySymbol = switch (language) {
-      Language.english => 'SAR',
-      Language.arabic => 'ر.س',
-    };
+  TextSpan? _getDiscount(OfferDetails offer, Language language, BuildContext context) {
     final locale = Localizations.localeOf(context);
 
-    final currencyFormatter = NumberFormat.currency(locale: 'ar_SA', symbol: currencySymbol, decimalDigits: 0);
-    final percentFormatter = NumberFormat.decimalPercentPattern(locale: locale.languageCode);
-
-    if (offer.typeDetails.amount != null) {
-      return currencyFormatter.format(offer.typeDetails.amount);
-    }
-
-    final ratio = offer.typeDetails.ratio;
-    if (ratio == null) {
-      return null;
-    }
-
-    if (offer.typeDetails.ratio != null) {
-      return percentFormatter.format(ratio / 100);
-    }
-
-    return null;
+    return createAmountOrRatioTextSpan(
+      language: language,
+      locale: locale,
+      amount: offer.typeDetails.amount,
+      ratio: offer.typeDetails.ratio,
+      iconSize: 22,
+    );
   }
 
   Future<void> _showTerms(BuildContext context, String terms) async {
@@ -356,7 +341,7 @@ Future<void> _showFavoritesRemovingDialog(BuildContext context, WidgetRef ref, S
 class _OfferPreviewByGroup extends StatelessWidget {
   final OffersGroup offersGroup;
   final String description;
-  final String? discount;
+  final TextSpan? discount;
   final String? companyLogoId;
 
   const _OfferPreviewByGroup({
@@ -420,7 +405,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
                         if (hasDiscount)
                           Padding(
                             padding: const EdgeInsets.only(top: Spacing.$3x),
-                            child: Text(
+                            child: Text.rich(
                               discount!,
                               maxLines: 1,
                               style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.staticWhite),
@@ -457,7 +442,7 @@ class _OfferPreviewByGroup extends StatelessWidget {
 class _OfferPreviewByBusiness extends StatelessWidget {
   final String? imageId;
   final String description;
-  final String? discount;
+  final TextSpan? discount;
 
   const _OfferPreviewByBusiness({
     required this.imageId,
@@ -491,7 +476,7 @@ class _OfferPreviewByBusiness extends StatelessWidget {
                 if (hasDiscount)
                   Padding(
                     padding: const EdgeInsets.only(top: Spacing.$3x),
-                    child: Text(
+                    child: Text.rich(
                       discount!,
                       maxLines: 1,
                       style: context.textStyleV3.h1SemiBold.copyWith(color: context.colorsV3.staticWhite),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
+import 'package:mapness/features/saudi_pass/functions/create_amount_or_ratio_text_span.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_view_decoration_widget.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -25,15 +26,13 @@ class OfferViewWidget extends ConsumerWidget {
       color: offerView.isByDateRed ? colors.errorDefault : null,
     );
 
-    final lang = ref.watch(appLanguageProvider);
-
-    final currencySymbol = switch (lang) {
-      Language.english => 'SAR',
-      Language.arabic => 'ر.س',
-    };
-
-    final currencyFormatter = NumberFormat.currency(locale: 'ar_SA', symbol: currencySymbol, decimalDigits: 0);
-    final percentFormatter = NumberFormat.decimalPercentPattern(locale: locale.languageCode);
+    final amountOrRatioTextSpan = createAmountOrRatioTextSpan(
+      amount: offerView.amount,
+      ratio: offerView.ratio,
+      language: ref.watch(appLanguageProvider),
+      locale: Localizations.localeOf(context),
+      iconSize: 12,
+    );
 
     const boxFit = BoxFit.cover;
     return InkWell(
@@ -71,30 +70,23 @@ class OfferViewWidget extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text.rich(
-                          TextSpan(
-                            children: [
-                              if (offerView.amount != null) TextSpan(text: currencyFormatter.format(offerView.amount)),
-                              if (offerView.ratio != null) TextSpan(text: percentFormatter.format(offerView.ratio)),
-                              TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
-                              TextSpan(text: offerView.title),
-                              WidgetSpan(
-                                child: Padding(
-                                  padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
-                                  child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
-                                ),
-                              ),
-                            ],
-                            style: textStyles.bodySmallSemiBold,
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        if (amountOrRatioTextSpan != null) amountOrRatioTextSpan,
+                        TextSpan(text: ' • ', style: TextStyle(color: colors.neutralMuted)),
+                        TextSpan(text: offerView.title),
+                        WidgetSpan(
+                          child: Padding(
+                            padding: const EdgeInsetsDirectional.only(start: Spacing.$1x),
+                            child: Icon(PlacesIcons.markets, size: 16, color: colors.neutralMuted),
                           ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
                         ),
-                      ),
-                    ],
+                      ],
+                      style: textStyles.bodySmallSemiBold,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     offerView.subTitle,
@@ -125,7 +117,7 @@ class OfferViewWidget extends ConsumerWidget {
 class _HeartIconWidget extends StatelessWidget {
   final OfferView offerView;
 
-  const _HeartIconWidget(this.offerView, {super.key});
+  const _HeartIconWidget(this.offerView);
 
   @override
   Widget build(BuildContext context) {
