@@ -69,6 +69,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
     _addressNotifier.addListener(_checkDirty);
     _textEditingController.addListener(_checkDirty);
+    _checkDirty();
   }
 
   @override
