@@ -26,18 +26,12 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
   List<XFile> _images = [];
 
   @override
-  void initState() {
-    _images = widget.isEdit ? [] : ref.read(parkingImageProvider);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     const _photoPadding = Spacing.$2x;
     const _imageSize = 62.0;
 
-    _images = ref.watch(parkingImageProvider);
-    final imageProvider = ref.watch(parkingImageProvider.notifier);
+    _images = ref.watch(parkingImageProvider(isEdit: widget.isEdit));
+    final imageProvider = ref.watch(parkingImageProvider(isEdit: widget.isEdit).notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

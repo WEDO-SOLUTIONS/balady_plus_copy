@@ -15,10 +15,14 @@ const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
 @riverpod
 class _ParkingImage extends _$ParkingImage {
   @override
-  List<XFile> build() {
+  List<XFile> build({bool isEdit = false}) {
+    if (isEdit == false) {
+      return <XFile>[];
+    }
+
     final data = ref.read(parkingManageProvider).valueOrNull;
 
-    return data?.imagesPaths.map((e) => XFile(e)).toList() ?? [];
+    return data?.imagesPaths.map((e) => XFile(e)).toList() ?? <XFile>[];
   }
 
   Future<void> onAddImages() async {
@@ -78,4 +82,4 @@ class _ParkingImage extends _$ParkingImage {
   }
 }
 
-final parkingImageProvider = _parkingImageProvider;
+const parkingImageProvider = _parkingImageProvider;
