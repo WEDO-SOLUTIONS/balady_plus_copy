@@ -75,7 +75,7 @@ class _ParkingManage extends _$ParkingManage {
             longitude: model.lon,
             elevation: 1,
           ),
-          icon: iconParking.markerIcon(),
+          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
           ref.read(appRouterProvider).replaceOrPush(

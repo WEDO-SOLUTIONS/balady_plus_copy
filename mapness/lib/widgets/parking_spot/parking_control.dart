@@ -21,8 +21,6 @@ class ParkingControl extends ConsumerWidget {
       return const SizedBox.shrink();
     }
 
-    final cameraPosition = ref.read(cameraPositionProvider);
-
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
       child: SizedBox(
