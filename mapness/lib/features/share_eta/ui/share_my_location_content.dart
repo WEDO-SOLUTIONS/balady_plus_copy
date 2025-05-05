@@ -70,8 +70,8 @@ class ShareMyLocationPage extends HookConsumerWidget {
         context.router.popForced();
         ToastOverlay.of(context).show(
           title: context.l10n.failedShareLiveLocation,
-          actionText: context.l10n.tryAgain,
-          onActionTap: () {
+          firstText: context.l10n.tryAgain,
+          onFirstTap: () {
             _showEtaTimeSheet(context, ref);
           },
         );
@@ -152,6 +152,17 @@ class ShareMyLocationPage extends HookConsumerWidget {
                   MyLocationPoiActions(
                     onShare: () => _showEtaControlSheet(context, ref),
                     onCopy: () => ref.read(poiCardActionsProvider.notifier).copyToClipboard(closestPoint),
+                    // TODO(Ayat): temporarily hides
+                    // onParkingAdd: () => context.router.push(
+                    //   ParkingSpotRoute(
+                    //     address: text,
+                    //     markerPosition: GeoPointWithElevationMessage(
+                    //       latitude: closestPoint?.latitude ?? 0,
+                    //       longitude: closestPoint?.longitude ?? 0,
+                    //       elevation: 0,
+                    //     ),
+                    //   ),
+                    // ),
                   ),
                 ],
               ),

@@ -1,18 +1,10 @@
-import 'package:easy_image_viewer/easy_image_viewer.dart';
-import 'package:flutter/gestures.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-
-/// Custom ScrollBehavior that allows dragging with all pointers
-/// including the normally excluded mouse
-class MouseEnabledScrollBehavior extends MaterialScrollBehavior {
-  // Override behavior methods and getters like dragDevices
-  @override
-  Set<PointerDeviceKind> get dragDevices => PointerDeviceKind.values.toSet();
-}
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 /// PageView for swiping through a list of images
 class PhotoViewPager extends StatefulWidget {
-  final EasyImageProvider easyImageProvider;
   final PageController pageController;
   final bool doubleTapZoomable;
   final bool infinitelyScrollable;
@@ -20,19 +12,21 @@ class PhotoViewPager extends StatefulWidget {
 
   /// Callback for when the scale has changed, only invoked at the end of
   /// an interaction.
-  final void Function(double)? onScaleChanged;
+  final void Function(bool)? showTitleBar;
+
+  final List<String> imageSource;
 
   /// Create new instance, using the [easyImageProvider] to populate the [PageView],
   /// and the [pageController] to control the initial image index to display.
   /// The optional [doubleTapZoomable] boolean defaults to false and allows double tap to zoom.
   const PhotoViewPager({
-    required this.easyImageProvider,
     required this.pageController,
     required this.scrollPhysics,
     Key? key,
     this.doubleTapZoomable = false,
-    this.onScaleChanged,
+    this.showTitleBar,
     this.infinitelyScrollable = false,
+    required this.imageSource,
   }) : super(key: key);
 
   @override
@@ -40,42 +34,32 @@ class PhotoViewPager extends StatefulWidget {
 }
 
 class _PhotoViewPagerState extends State<PhotoViewPager> {
-  bool _pagingEnabled = true;
-
   @override
-  Widget build(BuildContext context) => PageView.builder(
-        physics: _pagingEnabled ? widget.scrollPhysics : const NeverScrollableScrollPhysics(),
-        scrollBehavior: MouseEnabledScrollBehavior(),
-        key: GlobalObjectKey(widget.easyImageProvider),
-        itemCount: widget.infinitelyScrollable ? null : widget.easyImageProvider.imageCount,
-        controller: widget.pageController,
-        itemBuilder: (context, index) {
-          final pageIndex = _getPageIndex(index);
-
-          return EasyImageView.imageWidget(
-            widget.easyImageProvider.imageWidgetBuilder(context, pageIndex),
-            key: Key('easy_image_view_$pageIndex'),
-            doubleTapZoomable: widget.doubleTapZoomable,
-            onScaleChanged: (scale) {
-              if (widget.onScaleChanged != null) {
-                widget.onScaleChanged!(scale);
-              }
-
-              setState(() {
-                _pagingEnabled = scale <= 1.0;
-              });
-            },
-          );
+  Widget build(BuildContext context) => PhotoViewGallery.builder(
+        scrollPhysics: widget.scrollPhysics,
+        builder: _buildItem,
+        itemCount: widget.imageSource.length,
+        loadingBuilder: (_, __) => const Center(child: CircularProgressIndicator()),
+        backgroundDecoration: const BoxDecoration(),
+        pageController: widget.pageController,
+        onPageChanged: (_) {},
+        scaleStateChangedCallback: (value) {
+          switch (value) {
+            case PhotoViewScaleState.initial:
+              widget.showTitleBar?.call(true);
+            case PhotoViewScaleState.covering:
+            case PhotoViewScaleState.originalSize:
+            case PhotoViewScaleState.zoomedIn:
+            case PhotoViewScaleState.zoomedOut:
+              widget.showTitleBar?.call(false);
+          }
         },
       );
 
-  // If the infinitelyScrollable true, the page number is calculated modulo the
-  // total number of images, effectively creating a looping carousel effect.
-  // Otherwise, the index is returned as is.
-  int _getPageIndex(int index) {
-    if (widget.infinitelyScrollable) {
-      return index % widget.easyImageProvider.imageCount;
-    }
-    return index;
-  }
+  PhotoViewGalleryPageOptions _buildItem(BuildContext context, int index) => PhotoViewGalleryPageOptions(
+        minScale: 0.1,
+        imageProvider: CachedNetworkImageProvider(
+          widget.imageSource[index],
+        ),
+      );
 }

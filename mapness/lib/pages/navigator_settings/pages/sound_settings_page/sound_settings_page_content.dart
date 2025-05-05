@@ -8,6 +8,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
 class SoundSettingsPageContent extends ConsumerWidget {
@@ -95,7 +96,7 @@ class SoundSettingsPageContent extends ConsumerWidget {
                           iconData: SystemIcons.arrowCornerRightLarge,
                           color: colorsV2.foregroundSoft,
                         ),
-                        actionText: soundSettingsModel.voiceName,
+                        actionText: localizeVoicePackageName(context, soundSettingsModel.voiceName),
                         actionTextStyle: textStyleV3.bodySmallMedium.copyWith(
                           color: colorsV2.foregroundSoft,
                         )),

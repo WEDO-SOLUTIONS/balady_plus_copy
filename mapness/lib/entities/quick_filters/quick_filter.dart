@@ -67,11 +67,11 @@ extension QuickFilterExtension on QuickFilter {
       };
 
   IconData? get icon => switch (this) {
-        QuickFilter.mosques => PlacesIcons.mosquesFilled,
-        QuickFilter.gasStation => PlacesIcons.gasstationFilled,
-        QuickFilter.hotels => PlacesIcons.hotelsFilled,
-        QuickFilter.markets => PlacesIcons.marketsFilled,
-        QuickFilter.eatOut => PlacesIcons.restaurantFilled,
+        QuickFilter.mosques => PlacesIcons.mosques,
+        QuickFilter.gasStation => PlacesIcons.gasstation,
+        QuickFilter.hotels => PlacesIcons.hotels,
+        QuickFilter.markets => PlacesIcons.markets,
+        QuickFilter.eatOut => PlacesIcons.restaurant,
         _ => null,
       };
 

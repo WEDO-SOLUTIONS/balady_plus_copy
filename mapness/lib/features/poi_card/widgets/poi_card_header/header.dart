@@ -1,9 +1,11 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header_info_component.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/subtitle.dart';
@@ -53,6 +55,8 @@ class PoiHeader extends ConsumerWidget {
     final subtitleIcon = _getParkingIcon(parkingInfo);
     final _tabController = tabController;
     final _data = data;
+
+    final _parkingObjectId = _data?.id?.objectId == parkingObjectId;
     return ColoredBox(
       color: context.colorsV2.backgroundSurface2,
       child: Padding(
@@ -71,11 +75,9 @@ class PoiHeader extends ConsumerWidget {
                 ),
               ),
             ),
-            if (_data != null)
-              HeaderInfoComponent(
-                data: _data,
-              ),
-            if (_tabController != null)
+            if (_parkingObjectId) Spacing.$4x.heightBox,
+            if (_data != null && !_parkingObjectId) HeaderInfoComponent(data: _data),
+            if (_tabController != null && !_parkingObjectId)
               TabComponent(
                 tabController: _tabController,
                 objectId: _data?.id?.objectId ?? 0,

@@ -124,7 +124,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
                     title: l10n.route,
                     actionWidget: ContentRowActionOptions(
                       actionIcon: AppIcons(
-                        iconData: GeneralIcons.route,
+                        iconData: GeneralIcons.routeStroke,
                         color: context.colorsV3.foregroundMuted,
                       ),
                     ),

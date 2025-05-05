@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dgis_map/library.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -50,9 +48,6 @@ class CarEnableFreeRoam extends _$CarEnableFreeRoam {
       return;
     }
 
-    // TODO(Sergei): freeroam in android has some bugs
-    if (Platform.isIOS) {
-      await router.push(const FreeRoamRoute());
-    }
+    await router.push(const FreeRoamRoute());
   }
 }

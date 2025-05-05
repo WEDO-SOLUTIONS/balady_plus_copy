@@ -531,6 +531,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_comment-heart.svg
   String get icCommentHeart => 'assets/icons/svg/ic_comment-heart.svg';
 
+  /// File path: assets/icons/svg/ic_complete.svg
+  String get icComplete => 'assets/icons/svg/ic_complete.svg';
+
   /// File path: assets/icons/svg/ic_compliance.svg
   String get icCompliance => 'assets/icons/svg/ic_compliance.svg';
 
@@ -717,6 +720,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/ic_parking_poi.svg
   String get icParkingPoi => 'assets/icons/svg/ic_parking_poi.svg';
 
+  /// File path: assets/icons/svg/ic_parking_spot.svg
+  String get icParkingSpot => 'assets/icons/svg/ic_parking_spot.svg';
+
   /// File path: assets/icons/svg/ic_phone.svg
   String get icPhone => 'assets/icons/svg/ic_phone.svg';
 
@@ -866,6 +872,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/parking.svg
   String get parking => 'assets/icons/svg/parking.svg';
 
+  /// File path: assets/icons/svg/parking_control.svg
+  String get parkingControl => 'assets/icons/svg/parking_control.svg';
+
   /// File path: assets/icons/svg/photo_gallery.svg
   String get photoGallery => 'assets/icons/svg/photo_gallery.svg';
 
@@ -972,6 +981,7 @@ class $AssetsIconsSvgGen {
         icChevronDown,
         icClose,
         icCommentHeart,
+        icComplete,
         icCompliance,
         icConnectionLost,
         icControlCompass,
@@ -1033,6 +1043,7 @@ class $AssetsIconsSvgGen {
         icOutdoorClub,
         icParking,
         icParkingPoi,
+        icParkingSpot,
         icPhone,
         icPhonePoi,
         icPin,
@@ -1081,6 +1092,7 @@ class $AssetsIconsSvgGen {
         jobPin,
         lighting,
         parking,
+        parkingControl,
         photoGallery,
         placeCardPlaceholder,
         saFlag,
@@ -1628,6 +1640,9 @@ class $AssetsIconsSvgPlacesNewGen {
   /// File path: assets/icons/svg/places_new/ic_park.svg
   String get icPark => 'assets/icons/svg/places_new/ic_park.svg';
 
+  /// File path: assets/icons/svg/places_new/ic_parking.svg
+  String get icParking => 'assets/icons/svg/places_new/ic_parking.svg';
+
   /// File path: assets/icons/svg/places_new/ic_police.svg
   String get icPolice => 'assets/icons/svg/places_new/ic_police.svg';
 
@@ -1691,6 +1706,7 @@ class $AssetsIconsSvgPlacesNewGen {
         icMosques,
         icMunicipalities,
         icPark,
+        icParking,
         icPolice,
         icQibla,
         icRailwayTransport,

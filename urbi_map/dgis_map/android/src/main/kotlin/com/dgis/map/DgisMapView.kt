@@ -620,6 +620,8 @@ class DgisMapView(
             allowedResultTypes: List<SuggestedTypeMessage_>?,
             searchRect: GeoRectMessage?,
             locale: String?,
+            suggestorType: SuggestorTypeEnum?,
+            limit: Long?,
             callback: (Result<SuggestResultMessage>) -> Unit
     ) {
         searchHandler?.fetchSuggests(
@@ -627,6 +629,8 @@ class DgisMapView(
                 allowedResultTypes = allowedResultTypes,
                 searchGeoRect = searchRect?.toGeoRect(),
                 locale = locale,
+                suggestorType = suggestorType,
+                limit = limit?.toInt(),
                 callback = callback
         )
     }

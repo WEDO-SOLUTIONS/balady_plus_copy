@@ -2,6 +2,7 @@ import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/w
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:collection/collection.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/widgets/feedback/images/add_image_button.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
 import 'package:urbi_analytics/logger.dart';
@@ -54,9 +56,12 @@ class FeedbackImages extends StatelessWidget {
           ),
           Consumer(builder: (context, ref, _) {
             ref.listen(feedbackImageSelectorProvider, (_, next) {
-              fieldKey.currentState?.didChange(
-                next.map((e) => FileUpload.init(srcPath: e.path)).toIList(),
-              );
+              final oldValue = fieldKey.currentState?.value ?? const IList.empty();
+              final newValue = next.map((newXFile) {
+                final existing = oldValue.firstWhereOrNull((f) => f.srcPath == newXFile.path);
+                return existing ?? FileUpload.init(srcPath: newXFile.path);
+              }).toIList();
+              fieldKey.currentState?.didChange(newValue);
             });
             return FormBuilderField<IList<FileUpload>>(
                 key: fieldKey,
@@ -96,7 +101,7 @@ class FeedbackImages extends StatelessWidget {
                         runSpacing: _photoPadding,
                         children: [
                           if (value.length < field.maxImages)
-                            _AddImageButton(
+                            AddImageButton(
                               onTap: () => _showImageSelectorDialog(context, ref),
                               size: size,
                             ),
@@ -138,6 +143,7 @@ class FeedbackImages extends StatelessWidget {
     BuildContext context,
     WidgetRef ref,
   ) async {
+    FocusScope.of(context).unfocus();
     final result = await showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -147,10 +153,6 @@ class FeedbackImages extends StatelessWidget {
     );
 
     if (result == null) {
-      return;
-    }
-
-    if (!context.mounted) {
       return;
     }
 
@@ -167,6 +169,7 @@ class FeedbackImages extends StatelessWidget {
             maxImages: field.maxImages,
             selectedImages: selectedImages,
           );
+      FocusManager.instance.primaryFocus?.unfocus();
     } catch (e) {
       switch (e) {
         case FeedbackPerrmissionError():
@@ -180,7 +183,6 @@ class FeedbackImages extends StatelessWidget {
               errorTitle: context.l10n.photoLimitExceeded,
               errorLabel: context.l10n.feedbackImageLimitsError(
                 field.maxImages.toString(),
-                '$_maxImageResolution x $_maxImageResolution',
                 field.maxSize.formatAsFileSize(),
               ),
               buttonLabel: context.l10n.tryAgain,
@@ -223,40 +225,4 @@ class FeedbackImages extends StatelessWidget {
       await onRetry();
     }
   }
-
-  ///
-  ///You can upload up to {count} photos, each no larger than {size} and with a resolution up to {resolution} pixels
-}
-
-class _AddImageButton extends StatelessWidget {
-  final void Function() onTap;
-  final double size;
-
-  const _AddImageButton({
-    required this.onTap,
-    required this.size,
-  });
-
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.l),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          child: SizedBox(
-            height: size,
-            width: size,
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
-              child: Center(
-                child: Icon(
-                  GeneralIcons.photo,
-                  color: context.colorsV2.accentDefault,
-                  size: size * .4,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
 }

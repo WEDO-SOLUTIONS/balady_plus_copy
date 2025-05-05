@@ -40,7 +40,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.3.9
+    version: 3.4.0
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -142,7 +142,7 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.17
+    version: 1.0.18
   equatable: 2.0.7
   flutter_insider: ^3.15.2
 
@@ -158,6 +158,7 @@ dependency_overrides:
   # https://github.com/flutter/packages/pull/8656
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
+  sentry_dio: 8.14.2
 
 dev_dependencies:
   flutter_test:

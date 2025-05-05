@@ -7,11 +7,13 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 class MyLocationPoiActions extends StatelessWidget {
   final VoidCallback? onShare;
   final VoidCallback? onCopy;
+  final VoidCallback? onParkingAdd;
 
   const MyLocationPoiActions({
     super.key,
     this.onShare,
     this.onCopy,
+    this.onParkingAdd,
   });
 
   @override
@@ -56,6 +58,14 @@ class MyLocationPoiActions extends StatelessWidget {
                 colorButton: secondary,
                 onTap: onCopy,
               ),
+              if (onParkingAdd != null)
+                ItemActionBar(
+                  icon: SystemIcons.parkingAdd,
+                  buttonType: BaladyButtonType.secondary,
+                  onPressed: () {
+                    onParkingAdd?.call();
+                  },
+                ),
             ],
           ),
         ),

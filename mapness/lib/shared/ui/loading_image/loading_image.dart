@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:mapness/shared/ui/buttons/refresh_button.dart';
 
 class LoadingImage extends ConsumerStatefulWidget {
   final String imageUrl;
+  final File? file;
   final Widget loadingWidget;
   final BoxFit? fit;
   final VoidCallback? onImageReady;
@@ -23,6 +26,7 @@ class LoadingImage extends ConsumerStatefulWidget {
     this.onImageTap,
     this.isAssetImg = false,
     this.filterQuality,
+    this.file,
   });
 
   @override
@@ -65,6 +69,18 @@ class _LoadingImageState extends ConsumerState<LoadingImage> {
         }
       },
     );
+
+    if (widget.file != null) {
+      return Image.file(
+        widget.file!,
+        fit: widget.fit,
+        errorBuilder: (context, __, ___) => ColoredBox(
+          color: context.color.surfaceBasePrimary,
+          child: const SizedBox.shrink(),
+        ),
+        filterQuality: widget.filterQuality ?? FilterQuality.low,
+      );
+    }
 
     return widget.isAssetImg == true
         ? Image.asset(

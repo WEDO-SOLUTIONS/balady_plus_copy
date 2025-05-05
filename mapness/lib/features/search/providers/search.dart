@@ -8,6 +8,7 @@ import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/shared/constants/advanced_metrics_constants.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -57,6 +58,7 @@ class Search extends _$Search {
   bool get isSearchRunning => _previousType != null;
 
   bool get isQuickSearchRunning => _previousType == SearchType.quickSearch;
+  bool get searchFromSuggest => _previousType == SearchType.searchByQuery;
 
   @override
   SearchState build(String scope) {
@@ -92,6 +94,48 @@ class Search extends _$Search {
     }
 
     await fetchSuggest(query);
+  }
+
+  Future<void> searchAddress(String query) async {
+    try {
+      await _searchOperation?.cancel();
+      if (query.isEmpty) {
+        state = const SearchStateHistory();
+        return;
+      }
+      await _setUpLocale(query);
+
+      _updateSearchText(query);
+      _previousType = SearchType.fetchSuggest;
+      _previousQuery = query;
+
+      state = SearchStateLoading(searchText: query);
+
+      final searchRect =
+          ref.read(dgisControllerProvider.notifier).visibleRectSubject.valueOrNull?.visibleRect.geoRectMessage();
+      final dgisController = await ref.read(dgisControllerProvider.future);
+
+      final searchOperation = CancelableOperation.fromFuture(
+        dgisController.fetchSuggest(
+          query,
+          searchRect: searchRect,
+          locale: _currentQueryLocale?.localeForMapness,
+          suggestorType: SuggestorTypeEnum.address,
+        ),
+      );
+      _searchOperation = searchOperation;
+      final result = await searchOperation.value;
+
+      state = result.suggests.isEmpty
+          ? SearchStateEmpty(searchText: query)
+          : SearchStateSuggest(
+              suggest: result,
+              searchText: query,
+            );
+    } on Exception catch (_) {
+      state = SearchStateError(searchText: query);
+      rethrow;
+    }
   }
 
   Future<void> fetchSuggest(String query) async {
@@ -141,6 +185,10 @@ class Search extends _$Search {
       // BSA-1931: We need to start full search if we don't get any results
       // and user types more than 2 symbols
       if (query.length > 2 && state is SearchStateEmpty) {
+        await ref
+            .read(urbiAnalyticsProvider)
+            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
+
         _fullSearchTimer?.cancel();
         _fullSearchTimer = Timer(
           const Duration(seconds: 1),
@@ -150,6 +198,9 @@ class Search extends _$Search {
         );
       }
       // -- Analytics
+      await ref
+          .read(urbiAnalyticsProvider)
+          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
@@ -277,8 +328,17 @@ class Search extends _$Search {
               results: results,
               searchText: query,
             );
+
       _result = results;
       // -- Analytics
+      if (state is SearchStateEmpty) {
+        await ref
+            .read(urbiAnalyticsProvider)
+            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
+      }
+      await ref
+          .read(urbiAnalyticsProvider)
+          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
@@ -289,6 +349,10 @@ class Search extends _$Search {
     _searchInThisAreaMetric();
   }
 
+  // We use this method to search after press on category in suggester. So to determine
+  // if press on the card was made from suggest (not from search / history), we use
+  // `_previousType` variable. If it was `searchByQuery`, we know that user pressed on suggest category
+  // and then pressed on the search result
   Future<void> searchByQuery(SearchQueryMessage query, String text, {List<GeoPointMessage>? spatialRestriction}) async {
     try {
       await _searchOperation?.cancel();

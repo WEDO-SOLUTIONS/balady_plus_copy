@@ -23,7 +23,7 @@ class _Location extends _$Location {
 
   @override
   Position? build() {
-    checkLocationPermission().then((permitted) async {
+    checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
       if (!permitted) {
         return;
       }
@@ -75,11 +75,15 @@ class _Location extends _$Location {
     return null;
   }
 
-  Future<bool> checkLocationPermission({String? routeOnClose}) async {
+  Future<bool> checkLocationPermission({String? routeOnClose, bool showGiveAccessSheet = true}) async {
+    const routeLocation = '/request_location';
+    final router = ref.read(appRouterProvider);
+    final serviceStatus = await perm.Permission.location.serviceStatus;
+
+    if (CommonFunctions.locationDialogShowed || router.isPathActive(routeLocation)) {
+      return false;
+    }
     try {
-      const routeLocation = '/request_location';
-      final serviceStatus = await perm.Permission.location.serviceStatus;
-      final router = ref.read(appRouterProvider);
       if (serviceStatus != perm.ServiceStatus.disabled) {
         final status = await perm.Permission.location.request();
         if (status == perm.PermissionStatus.permanentlyDenied) {
@@ -110,7 +114,6 @@ class _Location extends _$Location {
             } else {
               userLocation = await Geolocator.getLastKnownPosition();
             }
-            // final loc = await Helpers.getCurrentLocation();
             state = await _getLocation(userLocation != null
                 ? Position(
                     latitude: userLocation.latitude,
@@ -129,19 +132,15 @@ class _Location extends _$Location {
           return true;
         }
       } else {
-        if (CommonFunctions.locationDialogShowed) {
-          return false;
-        }
-        if (router.isPathActive(routeLocation)) {
-          return false;
-        }
-        CommonFunctions.locationDialogShowed = true;
+        if (showGiveAccessSheet) {
+          CommonFunctions.locationDialogShowed = true;
 
-        unawaited(
-          router
-              .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
-              .then((value) => CommonFunctions.locationDialogShowed = false),
-        );
+          unawaited(
+            router
+                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
+                .then((value) => CommonFunctions.locationDialogShowed = false),
+          );
+        }
       }
     } catch (ex) {
       debugPrint(ex.toString());
