@@ -14,13 +14,12 @@ class ParkingControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(parkingManageProvider).valueOrNull;
+    final result = ref.read(parkingManageProvider).valueOrNull;
+    final cameraPosition = ref.watch(cameraPositionProvider);
 
     if (result == null) {
       return const SizedBox.shrink();
     }
-
-    final cameraPosition = ref.read(cameraPositionProvider);
 
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),

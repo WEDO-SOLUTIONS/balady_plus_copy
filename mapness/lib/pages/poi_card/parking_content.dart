@@ -19,10 +19,11 @@ class ParkingContent extends ConsumerWidget {
       hasScrollBody: false,
       child: Column(
         children: [
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(Spacing.$4x),
-            decoration: BoxDecoration(
+          if (parkingManage?.comment.isNotEmpty == true)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(Spacing.$4x),
+              decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(RadiusBorder.xl),
               color: context.colorsV3.backgroundSurface1,
             ),
@@ -42,7 +43,7 @@ class ParkingContent extends ConsumerWidget {
               ],
             ),
           ),
-          Spacing.$4x.heightBox,
+          if (parkingManage?.comment.isNotEmpty == true) Spacing.$4x.heightBox,
           Container(
             padding: const EdgeInsets.all(Spacing.$4x),
             decoration: BoxDecoration(
