@@ -1,13 +1,13 @@
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
+import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+import 'package:balady_plus/app/features/delegators/presentation/widgets/delegator_list.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../core/dependency_injection/injection_container.dart';
 import '../../../../core/utils/constants/dialog_names.dart';
 import '../../../home_page/presentation/widgets/home_app_bar/circle_icon.dart';
-import '../../../profile_features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
-import '../../../profile_features/delegators/presentation/widgets/delegator_list.dart';
 import '../buttons/elevated_button_widgets.dart';
 import '../widgets/custom_svg_icon_widget.dart';
 import '../widgets/draw_line_widget.dart';

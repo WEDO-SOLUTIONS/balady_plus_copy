@@ -37,8 +37,7 @@ class EntryPointInjection {
         getAPIgeeToken: sl(),
         logout: sl(),
         checkAuth: sl(),
-        forceVersion: sl(),
-        getGisData: sl()));
+        forceVersion: sl()));
 
     //! Use Case
     sl.registerLazySingleton(() => GetToken(repository: sl()));

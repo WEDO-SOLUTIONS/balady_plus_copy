@@ -13,8 +13,6 @@ import 'package:http_certificate_pinning/http_certificate_pinning.dart';
 import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:balady_plus/etmam_app/core/utils/utils_exports.dart'
-    as EtmamCommonProperties hide Log;
 import 'package:sentry_dio/sentry_dio.dart';
 import '../../../core/dependency_injection/dependency_injection_exports.dart'
     show sl;
@@ -169,47 +167,14 @@ class AppInterceptors extends Interceptor {
     RequestInterceptorHandler handler,
   ) async {
     "On-Sending-Request ${options.uri}".actionLog();
-    // Update language
-    /*
 
-      if (!options.uri.toString().contains("objection-generic-services") &&
-        !options.uri.toString().contains("objection-services") &&
-        !options.uri.toString().contains("PRRestService")) {
-      options.headers["Accept-Language"] = languageCode;
-    }*/
     options.headers[ApiHeader.language.eName] = languageCode;
     options.headers["Accept-Language"] = languageCode;
 
-    if (options.uri.toString().toLowerCase().contains("etmamplus-services") ||
-        options.uri.toString().toLowerCase().contains("dashboard-services") ||
-        options.uri.toString().toLowerCase().contains("mobile-dynamic-forms") ||
-        options.uri.toString().toLowerCase().contains("biddings-services")||
-        options.uri.toString().toLowerCase().contains("etmamplus-archiving-services/attachments")) {
-      var headers = {
-        ApiHeaders.xFeappId: EtmamCommonProperties.CommonProperties.appName,
-        ApiHeaders.xFeAppVersion:
-            EtmamCommonProperties.CommonProperties.appVersion,
-        ApiHeaders.xFeDeviceId: EtmamCommonProperties.CommonProperties.deviceId,
-        ApiHeaders.xFeDeviceOs: EtmamCommonProperties.CommonProperties.deviceOs,
-        ApiHeaders.xSessionId: EtmamCommonProperties.CommonProperties.sessionId,
-        ApiHeaders.xCorrelationId:
-            EtmamCommonProperties.CommonFunctions.generateGUID(),
-        if (EtmamCommonProperties.CommonProperties.profileId != null)
-          ApiHeaders.xUserProfileId:
-              EtmamCommonProperties.CommonProperties.profileId
-      };
-      options.headers.addAll(headers);
-    }
+
 
     String? xCorrelationId;
 
-    if (options.uri.toString().toLowerCase().contains("building-licenses") ||
-        options.uri.toString().toLowerCase().contains("area-reports")) {
-      xCorrelationId = EtmamCommonProperties.CommonFunctions.generateGUID();
-      options.headers.putIfAbsent("x-platform-id", () => "baladyservices");
-      options.headers
-          .putIfAbsent(ApiHeaders.xCorrelationId, () => xCorrelationId);
-    }
     if (options.uri.toString().toLowerCase().contains("validate-license") ||
         options.uri.toString().toLowerCase().contains("license/permits") ||
         options.uri.toString().toLowerCase().contains("send-to-new-owner") ||
@@ -231,8 +196,7 @@ class AppInterceptors extends Interceptor {
             .toString()
             .toLowerCase()
             .contains("transfer/upload-attachment")) {
-      options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation,
-          () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
+      // options.headers.putIfAbsent(ApiHeaders.xSubmitterRelation, () => CommonProperties.selectedDelegator?.getRole() ?? "HIMSELF");
     }
     if (await networkConnection.isConnected == false) {
       "Request-Rejected because 'Network-Disconnected'".errorLog();

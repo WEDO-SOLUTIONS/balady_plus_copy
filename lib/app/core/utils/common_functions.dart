@@ -5,29 +5,22 @@ import 'dart:ui';
 import 'dart:math' show asin, cos, sqrt;
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
+import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
 import 'package:dgis_map/library.dart';
 import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:geolocator/geolocator.dart' as geo_locator;
 
-import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_event.dart'
-    as calendar;
-import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
-import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart'
-    as events;
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/location/presentation/bloc/location_bloc.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/camera/camera_page_params.dart';
-import 'package:balady_plus/app/features/vd/domain/entities/categories/category_item.dart';
-import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:crypto/crypto.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'
-    show BlocProvider, EventTransformer;
+    show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
@@ -46,34 +39,25 @@ import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
 import 'package:url_launcher/url_launcher.dart'
-    show LaunchMode, canLaunchUrl, launchUrl;
+    show LaunchMode,  launchUrl;
 import 'package:uuid/uuid.dart';
 
-import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
 
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
 import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
-import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
-import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
-import '../../features/events/presentation/bloc/events_bloc.dart';
 import '../../features/notifications/manager/notification_manager.dart';
-import '../../features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
-import '../../features/profile_features/delegators/domain/entities/user_profile_entity.dart';
-import '../../features/vd/domain/entities/gis/gis_params.dart';
-import '../../features/vd/domain/entities/gis/gis_response.dart';
-import '../../features/vd/presentation/dialogs/vd_all_types_dialog.dart';
+import 'package:balady_plus/app/features/notifications/data/model/notification_request.dart';
+
 import '../errors/exceptions.dart';
 import './utils_exports.dart'
     show
         AppColor,
-        AppConfig,
         AppLanguage,
-        BlocStatus,
         EnvType,
         GeneralKey,
         MimeType,
@@ -96,8 +80,6 @@ import '../../features/entry_point/domain/entities/sso_user_info.dart'
     show SsoUserInfo;
 import '../../features/entry_point/domain/entities/sso_user_info.dart';
 import '../../features/entry_point/presentation/cubit/auth_cubit.dart';
-import '../../features/profile_features/delegators/delegators_exports.dart'
-    show AgentEntity, DelegatorEntity;
 import '../dependency_injection/dependency_injection_exports.dart' show sl;
 import '../services/services_exports.dart'
     show
@@ -1637,13 +1619,11 @@ class CommonFunctions {
 
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
-    sl<HomeServicesCubit>().loadServices();
-    sl<EventsBloc>().add(const events.GetSearchEvent());
-    sl<CalendarBloc>().add(const calendar.GetSearchEvent());
-
-    BlocProvider.of<DashboardBloc>(
-            NavigationService.navigatorKey.currentContext!)
-        .add(DashboardEventInitial());
+    // sl<EventsBloc>().add(const events.GetSearchEvent());
+    // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
+    // BlocProvider.of<DashboardBloc>(
+    //         NavigationService.navigatorKey.currentContext!)
+    //     .add(DashboardEventInitial());
   }
 
   static void sendUXCamEvent(String event) {
@@ -1729,12 +1709,12 @@ class CommonFunctions {
   }
 
   static void openMovingViolations(Uri? uri) {
-    NavigationService.navigatorKey.currentState!.pushNamed(
-        RouteName.vdCameraPage,
-        arguments: CameraParamsPage(
-            selectedCategory:
-                CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey),
-            /*isFromHome: true*/));
+    // NavigationService.navigatorKey.currentState!.pushNamed(
+    //     RouteName.vdCameraPage,
+    //     arguments: CameraParamsPage(
+    //         selectedCategory:
+    //             CategoryItem(categoryId: RemoteConfig.movingVeichleCategoryKey),
+    //         /*isFromHome: true*/));
   }
 
   static bool isFoundationDay() {
@@ -1833,32 +1813,32 @@ class CommonProperties {
 
   static SsoUserInfo? get userInfo => sl<EntryPointCubit>().state.userInfo;
 
-  static DelegatorEntity? get selectedDelegator =>
-      sl<EntryPointCubit>().state.selectedDelegator;
+  // static DelegatorEntity? get selectedDelegator =>
+  //     sl<EntryPointCubit>().state.selectedDelegator;
+  //
+  // static AgentEntity? get selectedAgent =>
+  //     sl<EntryPointCubit>().state.selectedAgent;
 
-  static AgentEntity? get selectedAgent =>
-      sl<EntryPointCubit>().state.selectedAgent;
-
-  static UserProfileEntity? getCurrentUserProfile() {
-    if (selectedDelegator != null) {
-      return UserProfileEntity(
-          id: selectedDelegator?.crNumber,
-          type: selectedDelegator?.crType,
-          profileType: UserProfileType.Delegator,
-          roleId: selectedDelegator?.roleId,
-          roleName: selectedDelegator?.roleName,
-          name: selectedDelegator?.entityName);
-    } else if (selectedAgent != null) {
-      return UserProfileEntity(
-          id: selectedAgent?.requestId,
-          type: selectedAgent?.grantorTypeId,
-          profileType: UserProfileType.Agent,
-          agencyRequestKey: selectedAgent?.requestId,
-          roleName: selectedAgent?.agencyTypeName,
-          name: selectedAgent?.grantorName);
-    }
-    return null;
-  }
+  // static UserProfileEntity? getCurrentUserProfile() {
+  //   if (selectedDelegator != null) {
+  //     return UserProfileEntity(
+  //         id: selectedDelegator?.crNumber,
+  //         type: selectedDelegator?.crType,
+  //         profileType: UserProfileType.Delegator,
+  //         roleId: selectedDelegator?.roleId,
+  //         roleName: selectedDelegator?.roleName,
+  //         name: selectedDelegator?.entityName);
+  //   } else if (selectedAgent != null) {
+  //     return UserProfileEntity(
+  //         id: selectedAgent?.requestId,
+  //         type: selectedAgent?.grantorTypeId,
+  //         profileType: UserProfileType.Agent,
+  //         agencyRequestKey: selectedAgent?.requestId,
+  //         roleName: selectedAgent?.agencyTypeName,
+  //         name: selectedAgent?.grantorName);
+  //   }
+  //   return null;
+  // }
 
 
   static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
@@ -1866,9 +1846,7 @@ class CommonProperties {
 
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
-
-  static GISResponse? get userLocationGIS =>
-      sl<LocationCubit>().state.gisResponse;
+  static GISResponse? get userLocationGIS => sl<LocationCubit>().state.gisResponse;
 
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 

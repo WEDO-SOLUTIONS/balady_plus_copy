@@ -1,9 +1,7 @@
 import 'package:balady_plus/app/core/errors/exceptions.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/constants/apis/api_info.dart';
-import 'package:smart_advisor/app/features/_shared_feature_/presentation/models/response_body_model.dart';
-import 'package:balady_plus/app/core/utils/extensions/delay.dart';
-import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 
 import 'package:dio/dio.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -32,7 +30,7 @@ class CheckCommercialLicesnseDataSourceImpl
       final decodedResponse =
           ResponseBodyModel<bool>.fromMap(response.data, parsedResult: data);
 
-      return decodedResponse.data!.result!.toFuture();
+      return decodedResponse.data!.result!;
     } on DioException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(

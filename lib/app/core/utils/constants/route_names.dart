@@ -142,9 +142,9 @@ class RouteName {
   static const weatherMainPage = '/weather_main_page';
   // -------  Map ---------
   static const MapDetailsPage = '/mapDetailsPage';
-  static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
-  static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
-  static const ResturantDetailsPage = "/ResturantDetailsPage";
+  // static const DiggingMapDetailsPage = '/DiggingMapDetailsPage';
+  // static const InvestmentMapDetailsPage = '/InvestmentMapDetailsPage';
+  // static const ResturantDetailsPage = "/ResturantDetailsPage";
 
   // -------  CRM Details ---------
 
@@ -168,7 +168,7 @@ class RouteName {
   static const mainAthkarPage = 'Athkar_Page';
   static const athkarEntitesPage = 'Athkar_Category_Page';
   static const athkarEntityContentPage = 'Athkat_Details_Page';
-  static const boardingPage = '/boardingPage';
+  // static const boardingPage = '/boardingPage';
 
   static const investmentPage = '/investmentPage';
   static const tempRentalPage = '/tempRentalPage';

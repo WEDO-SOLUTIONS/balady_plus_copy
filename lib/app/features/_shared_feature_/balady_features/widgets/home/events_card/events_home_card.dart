@@ -1,12 +1,13 @@
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_shimmer_list_widget.dart';
 import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
+import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_bloc.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_event.dart';
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
-import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart';
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_shimmer_widget.dart';
 import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';

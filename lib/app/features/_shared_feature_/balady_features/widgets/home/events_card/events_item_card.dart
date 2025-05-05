@@ -1,8 +1,8 @@
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_network_icon_widget.dart';
-import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
+import 'package:balady_plus/app/features/events/domain/entities/search_events/search_events_item.dart';
 import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';

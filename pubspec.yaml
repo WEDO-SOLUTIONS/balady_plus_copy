@@ -196,8 +196,6 @@ dependencies:
   mapness:
     path: mapness
 
-  smart_advisor:
-    path: smart_advisor
 
   wakelock_plus: 1.2.8
   provider: ^6.0.5

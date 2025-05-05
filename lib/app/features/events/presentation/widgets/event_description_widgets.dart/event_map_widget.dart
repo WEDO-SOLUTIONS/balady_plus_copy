@@ -4,7 +4,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mapness/export/mapness_functions.dart';
 
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_svg_icon_widget.dart';
@@ -44,13 +43,13 @@ class EventMapWidget extends StatelessWidget {
                     iconSize: 24.0,
                   ),
                   onPressed: () {
-                    MapnessFunctions.openRoutesScreen(
-                      finishPoint: MapnessRoutePoint(
-                        latitude: location!.latitude,
-                        longitude: location!.longitude,
-                        label: name ?? "",
-                      ),
-                    );
+                    // MapnessFunctions.openRoutesScreen(
+                    //   finishPoint: MapnessRoutePoint(
+                    //     latitude: location!.latitude,
+                    //     longitude: location!.longitude,
+                    //     label: name ?? "",
+                    //   ),
+                    // );
                   },
                 )
               ],
