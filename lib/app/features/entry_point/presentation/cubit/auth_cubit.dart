@@ -176,8 +176,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         );
       });
     }
-    AuthenticatedState authState =
-        sl<AuthenticationBloc>().state as AuthenticatedState;
+    AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
     if (authState is AuthenticatedMunicipalityState) {
       _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
     } else {
@@ -187,6 +186,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           status: AuthStatus.authenticated,
           token: token,
           userInfo: SsoUserInfo(
+            name: data.firstNameArabic,
+            sname: data.lastNameArabic,
             enName: data.enName,
             arName: data.arName,
             idNo: data.sub,
@@ -211,8 +212,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
       }
     }
 
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
 
@@ -247,9 +247,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               "access_token": success.accessToken,
               "idToken": success.idToken,
               "expires_in": success.accessTokenExpirationDateTime != null
-                  ? DateTime.now()
-                      .difference(success.accessTokenExpirationDateTime!)
-                      .inSeconds
+                  ? DateTime.now().difference(success.accessTokenExpirationDateTime!).inSeconds
                   : 3500000,
               "token_type": success.tokenType,
               "refresh_token": success.refreshToken,
@@ -310,11 +308,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    DateTime? expireTime =
-        DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
+    DateTime? expireTime = DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
-    if (expireTime == null ||
-        (expireTime.difference(DateTime.now()).inHours <= 2)) {
+    if (expireTime == null || (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
       return await failureOrSuccess.fold((failure) {
         return false;
@@ -329,13 +325,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> checkifTokenExpired() async {
     if (state.status == AuthStatus.notAuthenticated) {
-      DateTime? expireTime =
-          DateTime.tryParse(state.token?.expirationTime ?? "");
+      DateTime? expireTime = DateTime.tryParse(state.token?.expirationTime ?? "");
 
       if (expireTime != null) {
-        if (!DateTime.now()
-            .add(const Duration(minutes: 15))
-            .isBefore(expireTime)) {
+        if (!DateTime.now().add(const Duration(minutes: 15)).isBefore(expireTime)) {
           if (state.token?.refreshToken != null) {
             return await refreshToken(state.token!.refreshToken!);
           }
@@ -374,8 +367,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         clearSSOInfo();
       }
 
-      if (CommonProperties.fcmToken != null &&
-          CommonProperties.fcmToken!.isNotEmpty) {
+      if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
       }
       EasyLoading.dismiss();
@@ -410,8 +402,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         EasyLoading.dismiss();
       }
     }
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
@@ -420,12 +411,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      AuthenticatedState authState =
-          sl<AuthenticationBloc>().state as AuthenticatedState;
+      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
       if (authState is AuthenticatedMunicipalityState) {
         final failureOrSuccessForProfile = await _getProfile(NoParams());
-        await failureOrSuccessForProfile.fold((failure) async {},
-            (success) async {
+        await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
           final failureOrSuccess = await _saveSSOProfile(success);
           if (failureOrSuccess.isRight()) {
             emit(state.copyWith(
@@ -475,13 +464,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
+    emit(state.copyWith(selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
   }
 
   void selectAgent(AgentEntity? agent) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
+    emit(state.copyWith(selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
   }
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {
@@ -490,13 +477,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
     if (latlng == null) {
     } else {
-      emit(state.copyWith(
-          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
+      emit(state.copyWith(userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
 
       GetGISData getgis = GetGISData(repository: sl());
 
-      var result =
-          await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
+      var result = await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
       result.fold((l) {
         emit(state.copyWith(gisStatus: BlocStatus.failure));
       }, (r) {
@@ -522,8 +507,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   Future<void> getEkramPermissions({bool allowTracking = false}) async {
     try {
       if (state.userInfo?.sub == null || state.userInfo?.tnm == null) return;
-      final failureOrSuccessForProfile =
-          await _getEkramPermission(GetPermissionParamsModel(claims: [
+      final failureOrSuccessForProfile = await _getEkramPermission(GetPermissionParamsModel(claims: [
         Claim(type: "sub", value: state.userInfo!.sub!),
         Claim(type: "tenant", value: state.userInfo!.tnm!)
       ]));
@@ -531,10 +515,8 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         print("permission failure$failure");
       }, (success) async {
         print("permission success$success");
-        if ((success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ??
-                false) &&
-            (success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ??
-                false)) {
+        if ((success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ?? false) &&
+            (success.permissions?.contains("تسجيل رحلة نقل وتجهيز الموتى") ?? false)) {
           CommonProperties.showEkramDriver = true;
           sharedPrefs.setIsEkramDriver(true);
         } else {
@@ -550,8 +532,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         ),
       );
     }
-    CommonProperties.showEkramDriver =
-        sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
+    CommonProperties.showEkramDriver = sharedPrefs.isEkramDriver() ?? CommonProperties.showEkramDriver;
     if (allowTracking) {
       if (CommonProperties.showEkramDriver) {
         //  sl<EkramLocationService>().startTracking = true;
@@ -588,8 +569,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
       SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-      final failureOrSuccess =
-          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
+      final failureOrSuccess = await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
       if (failureOrSuccess.isRight()) {
         emit(
           state.copyWith(
