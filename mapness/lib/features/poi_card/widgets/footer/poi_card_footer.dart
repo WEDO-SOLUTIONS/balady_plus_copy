@@ -137,25 +137,24 @@ class PoiCardFooter extends HookConsumerWidget {
             label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
             onPressed: throttledShare,
           ),
-          // TODO(Ayat): temporarily hides
-          // if (!parkingPoi)
-          //   ItemActionBar(
-          //     icon: SystemIcons.parkingAdd,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => _onParkingTab(ref, context),
-          //   ),
-          // if (parkingPoi)
-          //   ItemActionBar(
-          //     icon: SystemIcons.edit,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
-          //   ),
-          // if (parkingPoi)
-          //   ItemActionBar(
-          //     icon: GeneralIcons.trash,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => _onTrashTab(ref, context),
-          //   ),
+          if (!parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.parkingAdd,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: () => _onParkingTab(ref, context),
+            ),
+          if (parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.edit,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
+            ),
+          if (parkingPoi)
+            ItemActionBar(
+              icon: GeneralIcons.trash,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: () => _onTrashTab(ref, context),
+            ),
         ],
       ),
     );
