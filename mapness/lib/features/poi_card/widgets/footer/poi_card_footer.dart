@@ -196,4 +196,42 @@ class PoiCardFooter extends HookConsumerWidget {
       ),
     );
   }
+
+  void _onParkingTab(WidgetRef ref, BuildContext context) {
+    final hasNotParking = ref.read(parkingManageProvider).valueOrNull != null;
+    if (hasNotParking) {
+      context.router.push(
+        ParkingDialogRoute(
+          title: context.l10n.createNewParkingSpot,
+          desc: context.l10n.currentParkingSpaceRemoved,
+          onAcceptTab: () {
+            context.router.popAndPush(ParkingSpotRoute(
+              address: data?.title,
+              markerPosition: data?.markerPosition,
+            ));
+          },
+          onCancelTab: context.router.popForced,
+        ),
+      );
+    } else {
+      context.router.push(ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition));
+    }
+  }
+
+  void _onTrashTab(WidgetRef ref, BuildContext context) {
+    context.router.push(
+      ParkingDialogRoute(
+        title: context.l10n.youSureWantDelete,
+        onAcceptTab: () {
+          ref.read(parkingManageProvider.notifier).clearStore();
+          ToastOverlay.of(context).show(
+            title: context.l10n.parkingSpotDeleted,
+            iconAsset: iconAsset,
+          );
+          context.router.popUntilRouteWithName(BottomMenuRoute.name);
+        },
+        onCancelTab: context.router.popForced,
+      ),
+    );
+  }
 }
