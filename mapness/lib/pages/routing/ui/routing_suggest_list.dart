@@ -40,6 +40,7 @@ class RoutingSuggestList extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
           child: ListView.builder(
             shrinkWrap: true,
+            padding: EdgeInsets.zero,
             physics: const NeverScrollableScrollPhysics(),
             keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
             itemBuilder: (context, index) => SuggestItem(

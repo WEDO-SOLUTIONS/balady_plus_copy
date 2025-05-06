@@ -164,6 +164,12 @@ class DgisMapController {
   /// Changes state of location follow in navigation mode.
   Future<void> followNavigation() => _instance.followNavigation();
 
+  /// Changes state of location follow in navigation mode.
+  Future<void> stopFollowNavigation() => _instance.stopFollowNavigation();
+
+  /// Changes state of location follow in navigation mode.
+  Future<void> startFollowNavigation() => _instance.startFollowNavigation();
+
   /// Changes selected indoor level. Observe state listening to [indoorActiveIndex].
   Future<void> selectIndoorLevel(IndoorLevel level) => _instance.selectIndoorLevel(level.levelIndex);
 
@@ -269,6 +275,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.search(
       queryText,
@@ -278,6 +285,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -292,6 +300,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.searchByQuery(
       query,
@@ -300,6 +309,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -314,6 +324,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.searchByCategory(
       category,
@@ -322,6 +333,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -336,6 +348,7 @@ class DgisMapController {
     GeoRectMessage? searchRect,
     bool isOpenNow = false,
     int pageSize = 20,
+    String? locale,
   }) {
     return _instance.searchByRubrics(
       rubrics,
@@ -344,6 +357,7 @@ class DgisMapController {
       weekTime: isOpenNow ? WeekTimeFactory.openNow() : null,
       pageSize: pageSize,
       searchRect: searchRect,
+      locale: locale,
     );
   }
 
@@ -465,11 +479,17 @@ class DgisMapController {
     String queryText, {
     GeoRectMessage? searchRect,
     List<SuggestedTypeMessage>? allowedResultTypes,
+    String? locale,
+    SuggestorTypeEnum? suggestorType,
+    int? limit,
   }) =>
       _instance.fetchSuggests(
         queryText,
         searchRect: searchRect,
         allowedResultTypes: allowedResultTypes?.map((e) => SuggestedTypeMessage_(type: e)).toList(),
+        locale: locale,
+        suggestorType: suggestorType,
+        limit: limit,
       );
 
   /// Hide panorama markers. Used for optimization. In most cases should not be used directly.

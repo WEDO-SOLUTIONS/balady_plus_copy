@@ -4,40 +4,45 @@ import 'package:flutter/rendering.dart';
 typedef OnWidgetSizeChange = void Function(Size size);
 
 class MeasureSizeRenderObject extends RenderProxyBox {
-
-  MeasureSizeRenderObject(this.onChange);
   Size? oldSize;
   OnWidgetSizeChange onChange;
+
+  MeasureSizeRenderObject(
+    this.onChange,
+  );
 
   @override
   void performLayout() {
     super.performLayout();
 
-    final newSize = child!.size;
-    if (oldSize == newSize) {
+    if (oldSize == size) {
       return;
     }
 
-    oldSize = newSize;
+    oldSize = size;
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      onChange(newSize);
+      onChange(size);
     });
   }
 }
 
 class MeasureSize extends SingleChildRenderObjectWidget {
+  final OnWidgetSizeChange onChange;
 
   const MeasureSize({
-    required this.onChange, required Widget super.child, super.key,
-  });
-  final OnWidgetSizeChange onChange;
+    required this.onChange,
+    required Widget child,
+    Key? key,
+  }) : super(key: key, child: child);
 
   @override
   RenderObject createRenderObject(BuildContext context) => MeasureSizeRenderObject(onChange);
 
   @override
-  void updateRenderObject(
-      BuildContext context, covariant MeasureSizeRenderObject renderObject,) {
-    renderObject.onChange = onChange;
+  void updateRenderObject(BuildContext context, covariant MeasureSizeRenderObject renderObject) {
+    renderObject
+      ..onChange = onChange
+      ..markNeedsLayout();
   }
 }

@@ -4,7 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/profile/widgets/profile_edited_photo.dart';
+import 'package:mapness/widgets/profile/profile_edited_photo.dart';
 
 class AuthorizedWidget extends ConsumerWidget {
   const AuthorizedWidget({required this.userData, super.key});

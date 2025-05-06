@@ -17,7 +17,7 @@ enum FeedbackObjectType {
   /// @return The corresponding [FeedbackObjectType].
   factory FeedbackObjectType.fromMessage(ObjectTypeMessage? message) => switch (message) {
         ObjectTypeMessage.branch => FeedbackObjectType.branch,
-        ObjectTypeMessage.street => FeedbackObjectType.street,
+        ObjectTypeMessage.admDivDistrict || ObjectTypeMessage.street => FeedbackObjectType.street,
         ObjectTypeMessage.building => FeedbackObjectType.building,
 
         // Handles all other cases

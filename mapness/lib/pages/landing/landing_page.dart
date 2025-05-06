@@ -7,17 +7,13 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
-import 'package:mapness/features/stories/providers/stories_open_state.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
-import 'package:mapness/shared/providers/beta_notification.dart';
-import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
-import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 
 @RoutePage()
@@ -58,15 +54,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
     });
   }
 
-  void _showBetaNotification() {
-    final wasBetaShown = ref.read(betaNotificationProvider);
-
-    if (!wasBetaShown) {
-      ref.read(betaNotificationProvider.notifier).setShown();
-      ToastOverlay.of(context).showBetaNotification();
-    }
-  }
-
   void _calculatePadding() {
     ref.read(cameraPaddingProvider.notifier).resetPadding(
           defaultPadding: CameraSetPaddingMessage(
@@ -89,9 +76,7 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.resumed) {
-      ref.read(locationProvider.notifier).checkLocationPermission();
-    } else if (state == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.paused) {
       AdvancedMetrics.instance.pauseMeasureBattery();
     }
 
@@ -100,18 +85,6 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
 
   @override
   Widget build(BuildContext context) {
-    if (!ref.read(storiesOpenStateProvider)) {
-      Future(_showBetaNotification);
-    }
-
-    ref.listen(storiesOpenStateProvider, (_, isStoriesOpen) {
-      if (isStoriesOpen) {
-        ToastOverlay.of(context).hide();
-      } else {
-        _showBetaNotification();
-      }
-    });
-
     final esri = MapObjectManagerSettings.esri();
     final mappness = MapObjectManagerSettings.mappness();
     final metro = MapObjectManagerSettings.metro();

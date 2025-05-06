@@ -198,7 +198,7 @@ class NavigationHandler {
             behaviour: self.navigationManager.mapFollowController.cameraBehaviour
         )
         
-        self.navigationManager.mapFollowController.setFollow(follow: true)
+        startFollowNavigation()
         self.navigationManager.zoomFollowSettings.speedRangeToStyleZoomSequence = [
             SpeedRangeToStyleZoom(
                 range: SpeedRange(minSpeed: Double(truncating: speedRangeZoom.minSpeedRange as NSNumber), maxSpeed: speedRangeZoom.maxSpeedRange),
@@ -228,7 +228,19 @@ class NavigationHandler {
         self.map.camera.setBehaviour(
             behaviour: self.navigationManager.mapFollowController.cameraBehaviour
         )
+        startFollowNavigation()
+    }
+
+    func startFollowNavigation() {
         self.navigationManager.mapFollowController.setFollow(follow: true)
+        // Default delay is 15 seconds
+        self.navigationManager.mapFollowController.followReturnDelay = 15.0
+    }
+
+    func stopFollowNavigation() {
+        self.navigationManager.mapFollowController.setFollow(follow: false)
+        // Disable auto return to follow mode
+        self.navigationManager.mapFollowController.followReturnDelay = 0.0
     }
     
     func startNavigation(
@@ -378,7 +390,7 @@ class NavigationHandler {
         case  .disabled: NavigationState.disabled
         default: NavigationState.disabled
         }
-        let options = self.navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions() ?? RouteSearchOptionsMessage.car
+        let options = self.navigationManager.uiModel.route.routeBuildOptions?.routeSearchOptions.toRouteSearchOptions()
         completion(
             Result.success(NavigationStateMessage(state: state, routeSearchOptions: options))
         

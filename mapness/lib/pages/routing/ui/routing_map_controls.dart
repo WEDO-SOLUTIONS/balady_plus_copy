@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,13 +9,15 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
   const RoutingMapControls({
-    required this.bottomHeightNotifier,
+    this.bottomHeightNotifier,
     super.key,
   });
-  final ValueNotifier<double> bottomHeightNotifier;
+
+  final ValueNotifier<double>? bottomHeightNotifier;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SafeArea(
@@ -37,6 +40,7 @@ class RoutingMapControls extends ConsumerWidget {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          WeatherControl(),
                           Spacer(),
                           IndoorControl(),
                           Spacer(),
@@ -50,6 +54,7 @@ class RoutingMapControls extends ConsumerWidget {
                           LayersControl(),
                           SizedBox(height: 8),
                           TrafficControl(),
+                          SizedBox(height: 8),
                           Spacer(),
                           ZoomControl(),
                           Spacer(),
@@ -63,10 +68,12 @@ class RoutingMapControls extends ConsumerWidget {
                 ),
               ),
             ),
-            ValueListenableBuilder(
-              valueListenable: bottomHeightNotifier,
-              builder: (context, value, _) => value.heightBox,
-            )
+            if (bottomHeightNotifier != null)
+              ValueListenableBuilder(
+                valueListenable: bottomHeightNotifier!,
+                builder: (context, value, _) => value.heightBox,
+              ),
+            if (bottomHeightNotifier == null) uikit.Spacing.$3x.heightBox
           ],
         ),
       );

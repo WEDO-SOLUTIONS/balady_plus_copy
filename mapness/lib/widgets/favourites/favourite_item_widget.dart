@@ -14,12 +14,14 @@ class FavouriteItemWidget extends StatefulWidget {
   final bool isEditing;
   final bool isDeletable;
   final bool? isSelected;
+  final bool isLongPressEnabled;
   final Function(bool value)? onSelect;
   final VoidCallback? onDelete;
   final VoidCallback? onRouteTap;
   final VoidCallback? onShareTap;
   final bool isFirst;
   final bool isLast;
+  final Widget? icon;
 
   const FavouriteItemWidget({
     required this.onTap,
@@ -29,11 +31,13 @@ class FavouriteItemWidget extends StatefulWidget {
     required this.isLast,
     required super.key,
     this.isDeletable = true,
+    this.isLongPressEnabled = true,
     this.onSelect,
     this.isSelected,
     this.onRouteTap,
     this.onDelete,
     this.onShareTap,
+    this.icon,
   });
 
   @override
@@ -76,9 +80,10 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
                 onLongPress: _onLongPress,
                 child: ContentRow(
                   options: ContentRowOptions(
-                    leadingIcon: SystemIcons.bookmarkFill.icon(
-                      color: context.color.textAndIconsStatusAccent,
-                    ),
+                    leadingIcon: widget.icon ??
+                        SystemIcons.bookmarkFill.icon(
+                          color: context.color.textAndIconsStatusAccent,
+                        ),
                     title: widget.item.title,
                     subtitle: widget.item.subtitle,
                   ),
@@ -119,7 +124,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
   }
 
   void _onLongPress() {
-    if (!widget.isEditing) {
+    if (!widget.isEditing && widget.isLongPressEnabled) {
       final color = context.color;
       showMenu(
         constraints: const BoxConstraints(
@@ -136,7 +141,7 @@ class _FavouriteItemWidgetState extends State<FavouriteItemWidget> {
             onTap: () => widget.onRouteTap?.call(),
             child: PopupMenuWidget(
               title: context.l10n.route,
-              icon: GeneralIcons.route.icon(
+              icon: GeneralIcons.routeStroke.icon(
                 color: color.textAndIconsBasePrimary,
               ),
               showDivider: false,

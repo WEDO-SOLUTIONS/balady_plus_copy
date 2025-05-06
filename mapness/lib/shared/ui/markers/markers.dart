@@ -1,4 +1,5 @@
 import 'package:dgis_map/library.dart';
+import 'package:mapness/shared/utils/common_function.dart';
 
 class Markers {
   static const double defaultWidth = 70;
@@ -23,7 +24,7 @@ class Markers {
             svgPath: icon ?? defaultPinNew,
             width: width ?? defaultWidth,
           ),
-          text: text,
+          text: breakMarkerLabel(text),
           textStyle: textStyle,
           anchor: MarkerAnchorMessage(x: 0.5, y: 1),
           animatedAppearance: true,

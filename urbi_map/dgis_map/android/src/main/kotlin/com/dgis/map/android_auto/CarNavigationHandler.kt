@@ -91,7 +91,11 @@ class CarNavigationHandler(
     }
 
     private fun navigationStateListener(state: State) {
-        navigationListener?.onNavigationStateChanged(state.toNavigationState())
+        val routeBuildOptions = navigationManager.uiModel.route.routeBuildOptions
+        navigationListener?.onNavigationStateChanged(
+            state.toNavigationState(routeBuildOptions != null)
+        )
+
         if (state == State.DISABLED) {
             destination = null
             instructions = null
@@ -106,7 +110,6 @@ class CarNavigationHandler(
         }
 
         // Destination
-        val routeBuildOptions = navigationManager.uiModel.route.routeBuildOptions
         if (destination == null && state == State.NAVIGATION && routeBuildOptions != null) {
             searchHandler.searchByDirectoryObjectId(
                 routeBuildOptions.finishPoint.objectId,
@@ -348,12 +351,8 @@ class CarNavigationHandler(
     }
 
     fun getCurrentNavigationState(): NavigationState {
-        return when (navigationManager.uiModel.state) {
-            State.NAVIGATION -> NavigationState.NAVIGATION
-            State.ROUTE_SEARCH -> NavigationState.REROUTING
-            State.FINISHED -> NavigationState.FINISHED
-            State.DISABLED -> NavigationState.DISABLED
-        }
+        val routeBuildOptions = navigationManager.uiModel.route.routeBuildOptions
+        return navigationManager.uiModel.state.toNavigationState(routeBuildOptions != null)
     }
 
     override fun close() {

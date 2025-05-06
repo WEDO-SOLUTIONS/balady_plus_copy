@@ -33,7 +33,7 @@ class PoiPhoto extends _$PoiPhoto {
           Language.english => 'en_SA',
           Language.arabic => 'ar_AE',
         },
-        'preview_size': '100x100,100x,x100',
+        'preview_size': '600x',
       },
       options: Options(
         validateStatus: (status) => status != null && status >= 200 && status < 300 || status == HttpStatus.notFound,

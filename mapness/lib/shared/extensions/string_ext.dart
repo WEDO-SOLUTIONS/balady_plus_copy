@@ -13,3 +13,15 @@ extension StringExt on String {
 
   String get reversed => split('').reversed.join();
 }
+
+extension StringNullableExt on String? {
+  bool containsArabic() {
+    final text = this;
+    if (text == null) {
+      return false;
+    }
+    // Regular expression for checking Arabic characters
+    final arabicRegex = RegExp(r'[\u0600-\u06FF\u0750-\u077F]');
+    return arabicRegex.hasMatch(text);
+  }
+}

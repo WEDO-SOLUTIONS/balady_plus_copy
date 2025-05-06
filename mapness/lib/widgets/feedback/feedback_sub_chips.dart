@@ -1,0 +1,274 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:balady_uikit/core/widgets/dragger.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+
+import 'package:mapness/entities/feedback/feedback_base_entity.dart';
+import 'package:mapness/entities/feedback/fields_entity/feedback_text_type_entity.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/widgets/feedback/feedback_input.dart';
+
+class FeedbackSubChips extends StatefulWidget {
+  final FeedbackSubChipsEntity field;
+
+  const FeedbackSubChips({
+    required this.field,
+    super.key,
+  });
+
+  @override
+  State<FeedbackSubChips> createState() => _FeedbackSubChipsState();
+}
+
+class _FeedbackSubChipsState extends State<FeedbackSubChips> {
+  final controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) => FormBuilderField<int>(
+        name: widget.field.id,
+        validator: (value) => !widget.field.isRequired || value != null ? null : '',
+        builder: (fieldState) => FeedbackTextInput(
+          labelText: widget.field.label,
+          hintText: widget.field.hint,
+          readonly: true,
+          onChanged: (value) {
+            if (value.isEmpty) {
+              fieldState.didChange(null);
+            }
+          },
+          isRequired: widget.field.isRequired,
+          controller: controller,
+          maxLength: 500,
+          type: FeedbackTextType.text,
+          onTap: () async {
+            final item = await _FeedbackSubChipsSelector.show(context: context, field: widget.field);
+
+            if (item == null || !mounted) {
+              return;
+            }
+
+            fieldState.didChange(item.id);
+            controller.text = item.label;
+          },
+        ),
+      );
+
+  ChipIconWidget iconBuilder({
+    required BuildContext context,
+    required String iconUrl,
+  }) =>
+      ChipIconWidget(
+        ({required isSelected}) => SvgPicture.network(
+          iconUrl,
+          colorFilter: ColorFilter.mode(
+            isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary,
+            BlendMode.srcIn,
+          ),
+        ),
+      );
+}
+
+class _FeedbackSubChipsSelector extends StatefulWidget {
+  final FeedbackSubChipsEntity field;
+
+  const _FeedbackSubChipsSelector({
+    required this.field,
+  });
+
+  static Future<FeedbackChipsItemEntity?> show({
+    required BuildContext context,
+    required FeedbackSubChipsEntity field,
+  }) =>
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        useSafeArea: true,
+        barrierColor: context.colorsV3.screenOverlayDimming40,
+        builder: (context) => _FeedbackSubChipsSelector(field: field),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(RadiusBorder.xl),
+          ),
+        ),
+      );
+
+  @override
+  State<_FeedbackSubChipsSelector> createState() => _FeedbackSubChipsSelectorState();
+}
+
+class _FeedbackSubChipsSelectorState extends State<_FeedbackSubChipsSelector> {
+  final controller = TextEditingController();
+  String search = '';
+  String? errorText;
+
+  @override
+  void initState() {
+    controller.addListener(() {
+      if (search != controller.text) {
+        setState(() {
+          search = controller.text;
+        });
+      }
+    });
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final variants = widget.field.variants.map(
+      (key, value) => MapEntry(
+        key,
+        value.where(
+          (element) => element.label.toLowerCase().contains(search.toLowerCase()),
+        ),
+      ),
+    )..removeWhere((key, value) => value.isEmpty);
+
+    return Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.viewInsetsOf(context).bottom,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Padding(
+            padding: EdgeInsets.all(Spacing.$1_5x),
+            child: Dragger(),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(
+              right: Spacing.$4x,
+              left: Spacing.$4x,
+              bottom: Spacing.$4x,
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    widget.field.label,
+                    style: context.textStyleV3.h2SemiBold,
+                  ),
+                ),
+                AppButton.close(
+                  onTap: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: BaladyTextInput(
+              controller: controller,
+              supportingText: variants.isEmpty
+                  ? BaladySupportingText(
+                      text: context.l10n.feedbackSubcategoryEmptyError,
+                      style: context.textStyleV3.bodySmallRegular.copyWith(
+                        color: context.colorsV3.errorDefault,
+                      ),
+                    )
+                  : null,
+              inputState: variants.isEmpty ? BaladyInputState.error : BaladyInputState.defaultValue,
+              config: BaladyInputConfig(
+                isDisposed: false,
+                hintText: widget.field.hint,
+              ),
+            ),
+          ),
+          Spacing.px.heightBox,
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Spacing.$4x,
+                vertical: Spacing.$2x,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (search.isNotEmpty && variants.isNotEmpty)
+                    for (final entry in variants.entries)
+                      for (final item in entry.value)
+                        ContentRowV2(
+                          onTap: () => Navigator.pop(context, item),
+                          leading: SvgPicture.network(
+                            entry.key.icon,
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                              context.colorsV3.foregroundDisabled,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          text: ContentRowTextOptions(
+                            title: item.label,
+                          ),
+                        )
+                  else
+                    for (final entry in variants.isEmpty ? widget.field.variants.entries : variants.entries) ...[
+                      Row(
+                        children: [
+                          SvgPicture.network(
+                            entry.key.icon,
+                            width: 24,
+                            height: 24,
+                            colorFilter: ColorFilter.mode(
+                              context.colorsV3.foregroundDisabled,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                          Spacing.$1_5x.widthBox,
+                          Expanded(
+                            child: Text(
+                              entry.key.name,
+                              style: context.textStyleV3.bodySmallMedium.copyWith(
+                                color: context.colorsV3.foregroundMuted,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          for (final item in entry.value)
+                            InkWell(
+                              onTap: () => Navigator.pop(context, item),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: Spacing.$1_5x),
+                                child: Row(
+                                  children: [
+                                    const SizedBox(width: 24),
+                                    Spacing.$1_5x.widthBox,
+                                    Expanded(
+                                      child: Text(
+                                        item.label,
+                                        style: context.textStyleV3.bodySmallRegular,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: Spacing.$1_5x + 24),
+                        child: Divider(),
+                      ),
+                    ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

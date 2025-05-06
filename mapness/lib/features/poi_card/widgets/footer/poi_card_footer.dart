@@ -6,6 +6,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
@@ -15,10 +16,10 @@ import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class PoiCardFooter extends HookConsumerWidget {
   static const double height = 40;
-  static const double padding = 8;
+  static const double padding = 12;
 
   final DirectoryObjectMessage? data;
-  final VoidCallback share;
+  final Future Function() share;
   final VoidCallback? callPhone;
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
@@ -84,8 +85,16 @@ class PoiCardFooter extends HookConsumerWidget {
     final callPhone = this.callPhone;
     final onEntranceTap = this.onEntranceTap;
 
+    final parkingPoi = objectId == parkingObjectId;
+    final brief = briefInfo?.firstOrNull;
+    final carParkingLabel = [
+      brief?.getBriefRouteDescription(context.l10n),
+      brief?.getBriefRouteDistanceDescription(context.l10n),
+    ].where((e) => e != null && e.trim().isNotEmpty).join(' ');
+
     return ThrottledCallbackWidget(
       callback: share,
+      resetAfterFutureCompleted: true,
       builder: (context, throttledShare) => BottomActionBar(
         displayShadow: displayShadow.value,
         items: [
@@ -94,7 +103,9 @@ class PoiCardFooter extends HookConsumerWidget {
             buttonType: BaladyButtonType.primary,
             label: hasContactsAndHasEntrances
                 ? null
-                : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
+                : parkingPoi
+                    ? carParkingLabel
+                    : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
             onPressed: onTapCar,
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
@@ -109,18 +120,40 @@ class PoiCardFooter extends HookConsumerWidget {
               buttonType: BaladyButtonType.secondary,
               onPressed: onEntranceTap,
             ),
-          ItemActionBar(
-            icon: iconData,
-            buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances ? null : context.l10n.save,
-            onPressed: () => onTapFavorite(favouriteItem),
-          ),
+          if (!parkingPoi)
+            ItemActionBar(
+              icon: iconData,
+              buttonType: BaladyButtonType.secondary,
+              label: hasContactsAndHasEntrances ? null : context.l10n.save,
+              onPressed: () => onTapFavorite(favouriteItem),
+            ),
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances ? null : context.l10n.share,
+            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
             onPressed: throttledShare,
           ),
+          // TODO(Ayat): temporarily hides
+          // if (!parkingPoi)
+          //   ItemActionBar(
+          //     icon: SystemIcons.parkingAdd,
+          //     buttonType: BaladyButtonType.secondary,
+          //     onPressed: () => context.router.push(
+          //       ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition),
+          //     ),
+          //   ),
+          // if (parkingPoi)
+          //   ItemActionBar(
+          //     icon: SystemIcons.edit,
+          //     buttonType: BaladyButtonType.secondary,
+          //     onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
+          //   ),
+          // if (parkingPoi)
+          //   ItemActionBar(
+          //     icon: GeneralIcons.trash,
+          //     buttonType: BaladyButtonType.secondary,
+          //     onPressed: () => context.router.push(const DeleteParkingRoute()),
+          //   ),
         ],
       ),
     );

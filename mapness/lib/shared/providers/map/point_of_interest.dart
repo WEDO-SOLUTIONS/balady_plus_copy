@@ -1,6 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/providers/map/directory_object_from_dgis_id.dart';
@@ -13,8 +14,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'point_of_interest.g.dart';
 
 const poiPinId = 'poi_pin_id';
-const _poiMapFontAr = 'FrutigerLTArabic65Bold';
-const _poiMapFontEn = 'GolosText_SemiBold';
+const poiMapFontAr = 'FrutigerLTArabic65Bold';
+const poiMapFontEn = 'GolosText_SemiBold';
 
 @riverpod
 Future<DirectoryObjectMessage?> pointOfInterest(
@@ -39,13 +40,14 @@ Future<DirectoryObjectMessage?> pointOfInterest(
   final dark = await ref.watch(darkModeProvider.future);
   final isRtl = ref.read(appLanguageProvider) == Language.arabic;
 
+  final title = directoryObject?.title;
   final textStyle = MarkerTextStyleMessage(
     fontSize: 13,
     textOffset: 4,
     color: dark.isDark ? 0xD3FFFFFF : 0xff1B1B1B,
     strokeColor: dark.isDark ? 0xff1B1B1B : 0xD3FFFFFF,
     strokeWidth: 1,
-    fontName: isRtl ? _poiMapFontAr : _poiMapFontEn,
+    fontName: title.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
     textPlacement: MarkerTextPlacementMessage(
       placement: TextPlacementMessage.bottomCenter,
     ),
@@ -58,7 +60,7 @@ Future<DirectoryObjectMessage?> pointOfInterest(
         longitude: closestPoint?.longitude ?? position.longitude,
         elevation: 1,
       ),
-      text: directoryObject?.title,
+      text: title,
       textStyle: textStyle,
       icon: mapMarkerMapper?.iconPath.bigIconPath,
       id: poiPinId,

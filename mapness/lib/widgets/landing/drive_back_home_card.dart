@@ -173,9 +173,9 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
   }
 
   Future<FavouriteItem?> getHome(StackRouter router) async {
-    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
 
-    final home = ref.read(favouriteCacheProvider).valueOrNull?.home;
+    final home = (await ref.read(favouriteCacheProvider.future)).home;
 
     /// If there is no home ask user to add it.
     if (home == null) {

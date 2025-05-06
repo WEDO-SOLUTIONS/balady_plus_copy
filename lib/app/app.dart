@@ -30,7 +30,8 @@ import 'features/entry_point/presentation/cubit/auth_cubit.dart';
 import 'features/location/presentation/bloc/location_bloc.dart';
 import 'features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import '../app/core/utils/utils_exports.dart' show EnvType;
-
+import 'package:flutter_insider/flutter_insider.dart';
+import 'package:flutter_insider/enum/InsiderCallbackAction.dart';
 // import 'baldy';
 
 final GlobalKey<AppWidgetState> materialAppKey = GlobalKey();
@@ -88,6 +89,41 @@ class AppWidget extends StatefulWidget {
 
 class AppWidgetState extends State<AppWidget> {
   @override
+  void initState() {
+    super.initState();
+    initInsider();
+  }
+
+  Future initInsider() async {
+    if (!mounted) return;
+
+    // Call in async method.
+
+
+            await FlutterInsider.Instance.init(
+        "baladyapp", "group.movingViolations",
+        (int type, dynamic data) {
+      switch (type) {
+            case InsiderCallbackAction.NOTIFICATION_OPEN:
+              print('[INSIDER][NOTIFICATION_OPEN]: $data');
+              break;
+            case InsiderCallbackAction.TEMP_STORE_CUSTOM_ACTION:
+              print('[INSIDER][TEMP_STORE_CUSTOM_ACTION]: $data');
+              break;
+            default:
+              print("[INSIDER][InsiderCallbackAction]: Unregistered Action!");
+              break;
+          }
+        });
+
+
+    // This is an utility method, if you want to handle the push permission in iOS own your own you can omit the following method.
+    FlutterInsider.Instance.registerWithQuietPermission(false);
+  }
+
+  void callback() {}
+
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
@@ -113,7 +149,6 @@ class AppWidgetState extends State<AppWidget> {
               appBarTheme: const AppBarTheme(
                 backgroundColor: AppColor.primary900Light,
                 centerTitle: true,
-
               ),
               dropdownMenuTheme: const DropdownMenuThemeData(
                 inputDecorationTheme: InputDecorationTheme(),

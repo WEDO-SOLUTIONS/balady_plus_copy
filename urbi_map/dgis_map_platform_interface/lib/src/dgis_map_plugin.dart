@@ -204,6 +204,16 @@ class DgisMapPlugin extends FlutterMapApi {
     return _api.followNavigation();
   }
 
+  /// Start follow in navigation mode.
+  Future<void> startFollowNavigation() {
+    return _api.startFollowNavigation();
+  }
+
+  /// Stop follow in navigation mode.
+  Future<void> stopFollowNavigation() {
+    return _api.stopFollowNavigation();
+  }
+
   StreamSubscription _initEventChannel() {
     return EventChannel('com.dgis.map_view_events_$_viewId').receiveBroadcastStream().listen(
       (event) {
@@ -408,6 +418,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.search(
       queryText,
@@ -425,6 +436,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -442,6 +454,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.searchByQuery(
       query,
@@ -450,6 +463,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -467,6 +481,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.searchByCategory(
       category,
@@ -475,6 +490,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -492,6 +508,7 @@ class DgisMapPlugin extends FlutterMapApi {
     required int pageSize,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
+    String? locale,
   }) {
     return _api.searchByRubrics(
       rubrics,
@@ -500,6 +517,7 @@ class DgisMapPlugin extends FlutterMapApi {
       searchRect,
       sortingType,
       pageSize,
+      locale,
     );
   }
 
@@ -516,12 +534,18 @@ class DgisMapPlugin extends FlutterMapApi {
   /// This method returns a list of suggestions for the search query for [queryText].
   /// - [allowedResultTypes] - list of allowed result types.
   /// - [searchRect] - user viewport. If not null, search will be performed for this viewport and will give
+  /// - [locale] - locale for the search. If not null, search will be performed for this locale.
+  /// - [suggestorType] - suggestor type for the search. If not null, search will return only suggestions of this type.
+  /// - [limit] - limit for the search. If not null, search will return only this number of suggestions. By default it is 10.
   Future<SuggestResultMessage> fetchSuggests(
     String queryText, {
     List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
+    String? locale,
+    SuggestorTypeEnum? suggestorType,
+    int? limit,
   }) =>
-      _api.fetchSuggests(queryText, allowedResultTypes, searchRect);
+      _api.fetchSuggests(queryText, allowedResultTypes, searchRect, locale, suggestorType, limit);
 
   /// Get distance to the specified points.
   Future<List<DistanceResponseMessage?>> getDistanceTo(List<DistanceRequestMessage> points) {

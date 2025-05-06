@@ -16,8 +16,8 @@ publish_to: "none" # Remove this line if you wish to publish to pub.dev
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 
-#version: 3.30.3+354
-version: 3.12.5+275
+#version: 3.30.3+365
+version: 3.12.6+276
 
 environment:
   sdk: ">=3.5.0 <4.0.0"
@@ -49,7 +49,7 @@ dependencies:
   # Form representation and validation in a generic way
   formz: ^0.6.0
   # Equality Comparisons among objects
-  equatable: ^2.0.5
+  equatable: 2.0.7
   # Dependency Injection Service Locator
   get_it: ^7.2.0
   ##! Internet
@@ -127,7 +127,7 @@ dependencies:
   flutter_riverpod: ^2.4.1
   battery_plus: ^6.0.4
   app_tracking_transparency: ^2.0.6
-  adjust_sdk: 5.0.2
+  adjust_sdk: 5.1.1
   flutter_appauth: ^9.0.0
 
   webview_flutter: 4.10.0
@@ -177,7 +177,6 @@ dependencies:
   flutter_svg_provider:
   app_settings: 5.1.1
   dotted_border: ^2.0.0+3
-  sentry_dio: 8.9.0
   linkable: ^3.0.0
   flutter_hms_gms_availability: ^3.10.0
   huawei_push: ^6.12.0+303
@@ -192,7 +191,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.2.7
+    version: 3.4.0
 
   mapness:
     path: mapness
@@ -203,7 +202,6 @@ dependencies:
   wakelock_plus: 1.2.8
   provider: ^6.0.5
   flutter_compass: ^0.8.0
-  sentry_flutter: 8.9.0
 
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
@@ -215,6 +213,7 @@ dependencies:
   flutter_linkify: ^6.0.0
   screenshot: ^3.0.0
   #flutter_typeahead: ^5.2.0
+  flutter_animate: ^4.3.0
   # To scroll list to specific index and do not calculate width and height by ourselves
   scrollable_positioned_list: ^0.3.8
 
@@ -229,7 +228,7 @@ dependencies:
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.52
+    version: ^0.0.55
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization
@@ -260,7 +259,10 @@ dependency_overrides:
   # https://github.com/flutter/packages/pull/8656
   # Because of this issue, we have to downgrade the version of webview_flutter
   webview_flutter_wkwebview: 3.17.0
-
+  flutter_insider: 3.15.1
+  geolocator_android: 4.6.1
+  sentry_flutter: 8.14.2
+  sentry_dio: 8.14.2
 
 dev_dependencies:
   build_runner: ^2.4.12
@@ -308,7 +310,6 @@ flutter:
     - assets/maps/icons/card_icon/
     - assets/maps/icons/gis_layers_icons/
     - assets/maps/metro/
-    - assets/maps/styles/
     - assets/icons/svg/home_events/
     - assets/etmam_app/icons/png/
     - assets/etmam_app/icons/svg/

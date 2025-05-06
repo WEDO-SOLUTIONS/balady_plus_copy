@@ -71,20 +71,25 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ErrorSheetV2(
-                onClose: widget.routeOnClose != null
-                    ? () {
-                        ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+                onClose: () async {
+                  switch (widget.routeOnClose) {
+                    case != null:
+                      {
+                        await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                         CommonFunctions.locationDialogShowed = false;
                         context.router.popForced(widget.routeOnClose);
                       }
-                    : () {
+                    default:
+                      {
                         if (context.router.stack.length != 1) {
                           context.router.popForced();
                         } else {
-                          context.router.navigate(const BottomMenuRoute());
+                          await context.router.navigate(const BottomMenuRoute());
                           CommonFunctions.locationDialogShowed = false;
                         }
-                      },
+                      }
+                  }
+                },
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,

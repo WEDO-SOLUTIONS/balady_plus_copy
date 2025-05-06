@@ -22,35 +22,32 @@ class ProfileInfoPage extends ConsumerWidget {
       child: SafeArea(
         top: false,
         bottom: false,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: Material(
-            color: Colors.white,
-            child: Padding(
-              padding: const EdgeInsets.only(top: Spacing.$4x),
-              child: Scaffold(
-                appBar: BaladyTopBar.iconAndText(
-                  systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                  title: context.l10n.profileInfo,
-                  colorEnabled: context.color.textAndIconsStatusAccent,
-                  leading: ActionModel(
-                    text: context.l10n.back,
-                    onPressed: () => context.router.popForced(),
-                    icon: SystemIcons.arrowCornerLeftLarge,
-                  ),
+        child: Material(
+          color: Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.only(top: Spacing.$4x),
+            child: Scaffold(
+              appBar: BaladyTopBar.iconAndText(
+                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+                title: context.l10n.profileInfo,
+                colorEnabled: context.color.textAndIconsStatusAccent,
+                leading: ActionModel(
+                  text: context.l10n.back,
+                  onPressed: () => context.router.popForced(),
+                  icon: SystemIcons.arrowCornerLeftLarge,
                 ),
-                body: ListView(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        children: [
-                          if (userData != null) PersonalData(userInfo: userData),
-                        ],
-                      ),
+              ),
+              body: ListView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        if (userData != null) PersonalData(userInfo: userData),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),

@@ -36,7 +36,9 @@ class DgisController extends _$DgisController {
 
   Future<void> onMapCreated(DgisMapController controller) async {
     await _initialize(controller);
-    _completer.complete(controller);
+    if (!_completer.isCompleted) {
+      _completer.complete(controller);
+    }
   }
 
   Future<void> _initialize(DgisMapController controller) async {
@@ -106,15 +108,15 @@ class DgisController extends _$DgisController {
         await controller.onLocationPermissionGranted(
           desiredAccuracy: DesiredAccuracyMessage.high,
         );
+        await Future.delayed(
+          const Duration(milliseconds: 100),
+          () => controller.toggleFollowState(),
+        );
       }
     } on Exception catch (e) {
       // TODO: store it to analytics
       debugPrint('Location permission error: $e');
     }
-    await Future.delayed(
-      const Duration(milliseconds: 100),
-      () => controller.toggleFollowState(),
-    );
   }
 
   /// Moves camera on Riyadh Tower

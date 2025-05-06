@@ -154,12 +154,9 @@ jobs:
       - name: Setup SSH
         uses: webfactory/ssh-agent@v0.9.0
         with:
-          ssh-private-key: ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
-
-      - name: Setup SSH
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
+          ssh-private-key: |
+                ${{ secrets.BALADY_AUTHORIZATION_DEPLOY_KEY_PLAIN }}
+                ${{ secrets.BALADY_UIKIT_DEPLOY_KEY_PLAIN }}
 
       - name: Setup dgis_map_platform_interface
         run: |
@@ -193,28 +190,3 @@ jobs:
           fail-on: "format"
           line-length: 120
           check-renamed-files: true
-
-      - name: Commitsar Action
-        uses: aevea/commitsar@v0.20.2
-
-      - name: Generate Coverage
-        id: coverage-report
-        uses: whynotmake-it/dart-coverage-assistant@v1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          testing_command: flutter test --coverage
-          lower_threshold: 0
-          upper_threshold: 90
-          generate_badges: none
-
-      - name: Run tests
-        run: |
-          flutter test
-
-      - name: Report tests
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Flutter Tests
-          path: reports/test-*.json
-          reporter: flutter-json

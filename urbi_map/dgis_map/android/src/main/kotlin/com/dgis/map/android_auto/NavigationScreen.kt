@@ -38,9 +38,9 @@ import kotlin.math.max
 import kotlin.math.round
 
 class NavigationScreen(
-        carContext: CarContext,
-        private val mapController: CarMapController,
-        private val customRenderer: CustomRenderer,
+    carContext: CarContext,
+    private val mapController: CarMapController,
+    private val customRenderer: CustomRenderer,
 ) : CarMapScreen(carContext, mapController), CarNavigationHandler.NavigationListener {
 
     private val navigationManager: NavigationManager
@@ -49,27 +49,27 @@ class NavigationScreen(
 
     init {
         navigationManager =
-                carContext.getCarService(NavigationManager::class.java).apply {
-                    setNavigationManagerCallback(
-                            object : NavigationManagerCallback {
-                                override fun onStopNavigation() = stopNavigation()
-                                override fun onAutoDriveEnabled() =
-                                        mapController.startNavigationSimulation()
-                            }
-                    )
-                }
+            carContext.getCarService(NavigationManager::class.java).apply {
+                setNavigationManagerCallback(
+                    object : NavigationManagerCallback {
+                        override fun onStopNavigation() = stopNavigation()
+                        override fun onAutoDriveEnabled() =
+                            mapController.startNavigationSimulation()
+                    }
+                )
+            }
         carNotificationManager = CarNotificationManager.from(carContext)
         appManager = carContext.getCarService(AppManager::class.java)
         lifecycle.addObserver(
-                object : DefaultLifecycleObserver {
-                    override fun onCreate(owner: LifecycleOwner) {
-                        mapController.setNavigationListener(this@NavigationScreen)
-                    }
-
-                    override fun onDestroy(owner: LifecycleOwner) {
-                        mapController.resetNavigationListener()
-                    }
+            object : DefaultLifecycleObserver {
+                override fun onCreate(owner: LifecycleOwner) {
+                    mapController.setNavigationListener(this@NavigationScreen)
                 }
+
+                override fun onDestroy(owner: LifecycleOwner) {
+                    mapController.resetNavigationListener()
+                }
+            }
         )
     }
 
@@ -88,27 +88,29 @@ class NavigationScreen(
     private var speedInfo = SpeedInfoModel()
 
     private val isNavigation: Boolean
-        get() =
-                navigationState == NavigationState.NAVIGATION ||
-                        navigationState == NavigationState.REROUTING
+        get() = navigationState == NavigationState.NAVIGATION
+                || navigationState == NavigationState.REROUTING
+
+    private val isFreeRoam: Boolean
+        get() = navigationState == NavigationState.FREE_ROAM
 
     override fun onGetTemplate(): Template {
         val actionStrip = ActionStrip.Builder()
         val trafficAction =
-                Action.Builder()
-                        .setIcon(
-                                CarIcon.Builder(
-                                                IconCompat.createWithResource(
-                                                        carContext,
-                                                        if (isTrafficEnabled)
-                                                                R.drawable.traffic_active
-                                                        else R.drawable.traffic
-                                                )
-                                        )
-                                        .build()
+            Action.Builder()
+                .setIcon(
+                    CarIcon.Builder(
+                        IconCompat.createWithResource(
+                            carContext,
+                            if (isTrafficEnabled)
+                                R.drawable.traffic_active
+                            else R.drawable.traffic
                         )
-                        .setOnClickListener { toggleTrafficControl() }
+                    )
                         .build()
+                )
+                .setOnClickListener { toggleTrafficControl() }
+                .build()
         actionStrip.addAction(trafficAction)
         if (!isNavigation) {
             //            TODO(Sergei): add favourite screen
@@ -130,16 +132,16 @@ class NavigationScreen(
         navigationTemplate.setMapActionStrip(mapActionStrip)
         navigationTemplate.setPanModeListener(panModeListener)
 
-        if (isNavigation) {
-            if (locationState == LocationState.NOT_AVAILABLE) {
+        if ((isNavigation || isFreeRoam) && locationState == LocationState.NOT_AVAILABLE) {
+            navigationTemplate.setNavigationInfo(
+                MessageInfo.Builder(getString(R.string.location_signal_lost_message))
+                    .build()
+            )
+            navigationTemplate.setBackgroundColor(CarColor.RED)
+        } else if (isNavigation) {
+            if (navigationState == NavigationState.REROUTING) {
                 navigationTemplate.setNavigationInfo(
-                        MessageInfo.Builder(getString(R.string.location_signal_lost_message))
-                                .build()
-                )
-                navigationTemplate.setBackgroundColor(CarColor.RED)
-            } else if (navigationState == NavigationState.REROUTING) {
-                navigationTemplate.setNavigationInfo(
-                        MessageInfo.Builder(getString(R.string.rerouting_message)).build()
+                    MessageInfo.Builder(getString(R.string.rerouting_message)).build()
                 )
             } else {
                 if (destinationTravelEstimate != null) {
@@ -168,16 +170,19 @@ class NavigationScreen(
                 tryPopStartNavigationMessageScreen()
                 navigationManager.navigationStarted()
             }
+
             NavigationState.FINISHED -> {
                 customRenderer.clear()
                 showEndTrip()
             }
+
             NavigationState.DISABLED -> {
                 customRenderer.clear()
                 if (prevState != NavigationState.DISABLED && !isEndTripShown) {
                     stopNavigation()
                 }
             }
+
             NavigationState.REROUTING -> {
                 tryPopStartNavigationMessageScreen()
                 val tripBuilder = Trip.Builder()
@@ -190,6 +195,10 @@ class NavigationScreen(
                 } catch (e: Exception) {
                     // TODO: Add logging here
                 }
+            }
+
+            NavigationState.FREE_ROAM -> {
+                // do nothing
             }
         }
         invalidate()
@@ -216,15 +225,15 @@ class NavigationScreen(
             unit = Distance.UNIT_METERS
         }
         destinationTravelEstimate =
-                TravelEstimate.Builder(
-                                Distance.create(distance, unit),
-                                eta.arrivalTime,
-                        )
-                        .setRemainingTimeSeconds(eta.duration)
-                        .build()
+            TravelEstimate.Builder(
+                Distance.create(distance, unit),
+                eta.arrivalTime,
+            )
+                .setRemainingTimeSeconds(eta.duration)
+                .build()
         destination =
-                if (eta.destination != null) Destination.Builder().setName(eta.destination).build()
-                else null
+            if (eta.destination != null) Destination.Builder().setName(eta.destination).build()
+            else null
         invalidate()
     }
 
@@ -238,40 +247,40 @@ class NavigationScreen(
 
         val previousStep = step
         step =
-                Step.Builder(maneuver.roadName)
-                        .setManeuver(
-                                getManeuverWithExitNumberAndAngle(
-                                        carContext,
-                                        maneuver.type,
-                                        maneuver.iconId,
-                                        maneuver.roundAboutExitNumber
-                                )
-                        )
-                        .setRoad(maneuver.roadName)
-                        .build()
+            Step.Builder(maneuver.roadName)
+                .setManeuver(
+                    getManeuverWithExitNumberAndAngle(
+                        carContext,
+                        maneuver.type,
+                        maneuver.iconId,
+                        maneuver.roundAboutExitNumber
+                    )
+                )
+                .setRoad(maneuver.roadName)
+                .build()
         val (distance, unit) = formatDistance(maneuver.distance)
         val remainingDistance = Distance.create(distance, unit)
         stepRemainingDistance = remainingDistance
 
         nextStep =
-                if (nextManeuver == null) null
-                else
-                        Step.Builder(nextManeuver.roadName)
-                                .setManeuver(
-                                        getManeuverWithExitNumberAndAngle(
-                                                carContext,
-                                                nextManeuver.type,
-                                                nextManeuver.iconId,
-                                                nextManeuver.roundAboutExitNumber,
-                                        )
-                                )
-                                .setRoad(nextManeuver.roadName)
-                                .build()
+            if (nextManeuver == null) null
+            else
+                Step.Builder(nextManeuver.roadName)
+                    .setManeuver(
+                        getManeuverWithExitNumberAndAngle(
+                            carContext,
+                            nextManeuver.type,
+                            nextManeuver.iconId,
+                            nextManeuver.roundAboutExitNumber,
+                        )
+                    )
+                    .setRoad(nextManeuver.roadName)
+                    .build()
 
         // TODO(Sergei): move update trip and send notification to separate methods
         val tripBuilder = Trip.Builder()
         val stepTravelEstimate =
-                TravelEstimate.Builder(remainingDistance, maneuver.arrivalTime).build()
+            TravelEstimate.Builder(remainingDistance, maneuver.arrivalTime).build()
 
         tripBuilder.addStep(step!!, stepTravelEstimate)
         if (destination != null && destinationTravelEstimate != null) {
@@ -282,22 +291,22 @@ class NavigationScreen(
         navigationManager.updateTrip(tripBuilder.build())
 
         val unitString =
-                when (unit) {
-                    Distance.UNIT_KILOMETERS -> getString(R.string.kilometer)
-                    else -> getString(R.string.meter)
-                }
+            when (unit) {
+                Distance.UNIT_KILOMETERS -> getString(R.string.kilometer)
+                else -> getString(R.string.meter)
+            }
         val shouldNotify =
-                previousStep != null &&
-                        (step?.road != previousStep.road ||
-                                step?.maneuver?.type != previousStep.maneuver?.type)
+            previousStep != null &&
+                    (step?.road != previousStep.road ||
+                            step?.maneuver?.type != previousStep.maneuver?.type)
         carNotificationManager.notify(
-                NavigationCarAppService.notificationId,
-                getNavigationNotification(
-                        "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
-                        maneuver.roadName,
-                        maneuver.iconId,
-                        shouldNotify,
-                ),
+            NavigationCarAppService.notificationId,
+            getNavigationNotification(
+                "${distance.toString().replace("\\.0$".toRegex(), "")} $unitString",
+                maneuver.roadName,
+                maneuver.iconId,
+                shouldNotify,
+            ),
         )
         invalidate()
     }
@@ -331,7 +340,7 @@ class NavigationScreen(
     }
 
     private fun renderSpeedInfo() {
-        if (!isNavigation) return
+        if (!isNavigation && !isFreeRoam) return
         customRenderer.render(CustomRendererData(speedInfo))
     }
 
@@ -371,15 +380,15 @@ class NavigationScreen(
         isEndTripShown = true
         val title = CarText.create(getString(R.string.end_trip_alert_title))
         val endTripAction =
-                Action.Builder()
-                        .setTitle(getString(R.string.end_trip_alert_action))
-                        .setFlags(Action.FLAG_DEFAULT)
-                        .setBackgroundColor(CarColor.RED)
-                        .setOnClickListener {
-                            appManager.dismissAlert(endTripAlertId)
-                            stopNavigation()
-                            invalidate()
-                        }
+            Action.Builder()
+                .setTitle(getString(R.string.end_trip_alert_action))
+                .setFlags(Action.FLAG_DEFAULT)
+                .setBackgroundColor(CarColor.RED)
+                .setOnClickListener {
+                    appManager.dismissAlert(endTripAlertId)
+                    stopNavigation()
+                    invalidate()
+                }
 
         val endTripAlert = Alert.Builder(endTripAlertId, title, 10000)
 
@@ -387,16 +396,16 @@ class NavigationScreen(
             endTripAlert.setSubtitle(destination!!.name!!)
         }
         endTripAlert
-                .addAction(endTripAction.build())
-                .setCallback(
-                        object : AlertCallback {
-                            override fun onCancel(reason: Int) {}
-                            override fun onDismiss() {
-                                isEndTripShown = false
-                                invalidate()
-                            }
-                        }
-                )
+            .addAction(endTripAction.build())
+            .setCallback(
+                object : AlertCallback {
+                    override fun onCancel(reason: Int) {}
+                    override fun onDismiss() {
+                        isEndTripShown = false
+                        invalidate()
+                    }
+                }
+            )
         appManager.showAlert(endTripAlert.build())
     }
 
@@ -406,47 +415,48 @@ class NavigationScreen(
         val minutes = max(round(durationProfit / 60.0).toInt(), 1)
         val subtitle = CarText.create(getString(R.string.better_route_alert_subtitle, minutes))
         val closeAction =
-                Action.Builder()
-                        .setTitle(getString(R.string.better_route_alert_close_action))
-                        .setOnClickListener {
-                            mapController.rejectBetterRoute()
-                            appManager.dismissAlert(betterRouteAlertId)
-                        }
+            Action.Builder()
+                .setTitle(getString(R.string.better_route_alert_close_action))
+                .setOnClickListener {
+                    mapController.rejectBetterRoute()
+                    appManager.dismissAlert(betterRouteAlertId)
+                }
         val chooseAction =
-                Action.Builder()
-                        .setTitle(getString(R.string.better_route_alert_choose_action))
-                        .setBackgroundColor(CarColor.PRIMARY)
-                        .setOnClickListener {
-                            mapController.acceptBetterRoute()
-                            appManager.dismissAlert(betterRouteAlertId)
-                        }
+            Action.Builder()
+                .setTitle(getString(R.string.better_route_alert_choose_action))
+                .setBackgroundColor(CarColor.PRIMARY)
+                .setOnClickListener {
+                    mapController.acceptBetterRoute()
+                    appManager.dismissAlert(betterRouteAlertId)
+                }
 
         val betterRouteAlert =
-                Alert.Builder(betterRouteAlertId, title, 10000)
-                        .setSubtitle(subtitle)
-                        .addAction(closeAction.build())
-                        .addAction(chooseAction.build())
+            Alert.Builder(betterRouteAlertId, title, 10000)
+                .setSubtitle(subtitle)
+                .addAction(closeAction.build())
+                .addAction(chooseAction.build())
         appManager.showAlert(betterRouteAlert.build())
     }
 
     private fun getManeuverWithExitNumberAndAngle(
-            carContext: CarContext,
-            type: Int,
-            iconResourceId: Int,
-            exitNumber: Int?
+        carContext: CarContext,
+        type: Int,
+        iconResourceId: Int,
+        exitNumber: Int?
     ): Maneuver {
         val icon =
-                CarIcon.Builder(IconCompat.createWithResource(carContext, iconResourceId)).build()
+            CarIcon.Builder(IconCompat.createWithResource(carContext, iconResourceId)).build()
         val maneuver = Maneuver.Builder(type).setIcon(icon)
 
         val isRoundabout =
-                when (type) {
-                    Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW,
-                    Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW,
-                    Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW_WITH_ANGLE,
-                    Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE -> true
-                    else -> false
-                }
+            when (type) {
+                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW,
+                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW,
+                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CCW_WITH_ANGLE,
+                Maneuver.TYPE_ROUNDABOUT_ENTER_AND_EXIT_CW_WITH_ANGLE -> true
+
+                else -> false
+            }
         if (isRoundabout) {
             maneuver.setRoundaboutExitNumber(exitNumber ?: 1)
         }
@@ -454,91 +464,91 @@ class NavigationScreen(
     }
 
     private fun getNavigationNotification(
-            title: String,
-            text: String,
-            iconResourceId: Int,
-            shouldNotify: Boolean,
+        title: String,
+        text: String,
+        iconResourceId: Int,
+        shouldNotify: Boolean,
     ): NotificationCompat.Builder {
         return NotificationCompat.Builder(carContext, NavigationCarAppService.channelId)
-                .setColorized(true)
-                .setColor(Color.parseColor("#147674"))
-                .setContentTitle(title)
-                .setContentText(text)
-                .setSmallIcon(IconCompat.createWithResource(carContext, iconResourceId))
-                .setOnlyAlertOnce(!shouldNotify)
-                .setOngoing(true)
-                .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_NAVIGATION)
-                .extend(
-                        CarAppExtender.Builder()
-                                .setColor(CarColor.PRIMARY)
-                                .setSmallIcon(iconResourceId)
-                                .setImportance(NotificationManagerCompat.IMPORTANCE_HIGH)
-                                .build()
-                )
+            .setColorized(true)
+            .setColor(Color.parseColor("#147674"))
+            .setContentTitle(title)
+            .setContentText(text)
+            .setSmallIcon(IconCompat.createWithResource(carContext, iconResourceId))
+            .setOnlyAlertOnce(!shouldNotify)
+            .setOngoing(true)
+            .setPriority(NotificationManagerCompat.IMPORTANCE_HIGH)
+            .setCategory(NotificationCompat.CATEGORY_NAVIGATION)
+            .extend(
+                CarAppExtender.Builder()
+                    .setColor(CarColor.PRIMARY)
+                    .setSmallIcon(iconResourceId)
+                    .setImportance(NotificationManagerCompat.IMPORTANCE_HIGH)
+                    .build()
+            )
     }
 
     private val favouriteAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.bookmark
-                                            )
-                                    )
-                                    .build()
+        Action.Builder()
+            .setIcon(
+                CarIcon.Builder(
+                    IconCompat.createWithResource(
+                        carContext,
+                        R.drawable.bookmark
                     )
-                    .setOnClickListener { openFavorites() }
+                )
                     .build()
+            )
+            .setOnClickListener { openFavorites() }
+            .build()
 
     private val routeOverviewAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.route
-                                            )
-                                    )
-                                    .build()
+        Action.Builder()
+            .setIcon(
+                CarIcon.Builder(
+                    IconCompat.createWithResource(
+                        carContext,
+                        R.drawable.route
                     )
-                    .setOnClickListener { mapController.overviewRoute() }
+                )
                     .build()
+            )
+            .setOnClickListener { mapController.overviewRoute() }
+            .build()
 
     private val searchAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.search
-                                            )
-                                    )
-                                    .build()
+        Action.Builder()
+            .setIcon(
+                CarIcon.Builder(
+                    IconCompat.createWithResource(
+                        carContext,
+                        R.drawable.search
                     )
-                    .setOnClickListener { openSearch() }
+                )
                     .build()
+            )
+            .setOnClickListener { openSearch() }
+            .build()
 
     private val settingsAction =
-            Action.Builder()
-                    .setIcon(
-                            CarIcon.Builder(
-                                            IconCompat.createWithResource(
-                                                    carContext,
-                                                    R.drawable.settings
-                                            )
-                                    )
-                                    .build()
+        Action.Builder()
+            .setIcon(
+                CarIcon.Builder(
+                    IconCompat.createWithResource(
+                        carContext,
+                        R.drawable.settings
                     )
-                    .setOnClickListener { openSettings() }
+                )
                     .build()
+            )
+            .setOnClickListener { openSettings() }
+            .build()
 
     private fun buildStopNavigationAction(): Action {
         return Action.Builder()
-                .setTitle(getString(R.string.stop_navigation_action))
-                .setOnClickListener { stopNavigation() }
-                .build()
+            .setTitle(getString(R.string.stop_navigation_action))
+            .setOnClickListener { stopNavigation() }
+            .build()
     }
 
     private companion object {

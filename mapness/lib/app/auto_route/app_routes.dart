@@ -47,7 +47,7 @@ class AppRouter extends RootStackRouter {
                 context,
                 child,
                 page,
-                isTransparent: true,
+                background: RouteBarrierColor.transparent,
               ),
             ),
             CustomRoute(
@@ -64,8 +64,18 @@ class AppRouter extends RootStackRouter {
               page: SearchRoute.page,
             ),
             AppRoute(
+              path: 'navi_search',
+              page: NaviSearchRoute.page,
+            ),
+            AppRoute(
               path: 'routingMap',
               page: RoutingMapSelectRoute.page,
+            ),
+            CustomRoute(
+              path: 'parking_add',
+              page: ParkingSpotRoute.page,
+              transitionsBuilder: TransitionsBuilders.fadeIn,
+              fullscreenDialog: true,
             ),
             AppRoute(
               path: 'poi-map',
@@ -80,16 +90,18 @@ class AppRouter extends RootStackRouter {
               page: RoutingRoutesRoute.page,
             ),
             AppRoute(
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+              durationInMilliseconds: 250,
+              path: 'routingSearch',
+              page: RoutingSearchSheetRoute.page,
+            ),
+            AppRoute(
               path: 'eta_route/:lat/:lon',
               page: EtaRouteRoute.page,
             ),
             AppRoute(
               path: 'weather_router',
               page: WeatherRoute.page,
-            ),
-            AppRoute(
-              path: 'routingSearch',
-              page: RoutingSearchSheetRoute.page,
             ),
             CustomRoute(
               path: 'road_panel_sheet',
@@ -146,6 +158,10 @@ class AppRouter extends RootStackRouter {
               page: LayersSheetRoute.page,
             ),
             CustomRoute(
+              path: 'add_phtoto_feedback',
+              page: QuickFeedbackPhotoRoute.page,
+            ),
+            CustomRoute(
               path: 'quickFeedback',
               page: QuickFeedbackRoute.page,
             ),
@@ -164,6 +180,10 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'favourites',
               page: FavouritesRoute.page,
+            ),
+            CustomRoute(
+              path: 'navi_search_favorites',
+              page: NaviFavoritesRoute.page,
             ),
             CustomRoute(
               path: 'search',
@@ -190,12 +210,17 @@ class AppRouter extends RootStackRouter {
             CustomRoute(
               path: 'poi_favorite_dialog',
               page: PoiFavoriteDialogRoute.page,
-              transitionsBuilder: TransitionsBuilders.fadeIn,
             ),
             CustomRoute(
               path: 'error_sheet_dialog',
               page: ErrorSheetDialogRoute.page,
               transitionsBuilder: TransitionsBuilders.fadeIn,
+            ),
+            CustomRoute(
+              path: 'delete_parking',
+              page: DeleteParkingRoute.page,
+              opaque: false,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
           ],
         ),

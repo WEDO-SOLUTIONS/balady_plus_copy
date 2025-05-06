@@ -14,6 +14,10 @@
 		<string>Balady Ad Hoc</string>
 		<key>ae.urbi.balady.movingViolations</key>
 		<string>Balady Moving Violations Ad Hoc</string>
+		<key>ae.urbi.balady.InsiderNotificationContent</key>
+		<string>Balady InsiderNotificationContent Ad Hoc</string>
+		<key>ae.urbi.balady.InsiderNotificationService</key>
+		<string>Balady InsiderNotificationService Ad Hoc</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>Apple Distribution</string>

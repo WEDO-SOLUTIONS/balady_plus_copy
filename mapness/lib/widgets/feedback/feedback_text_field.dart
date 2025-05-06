@@ -35,58 +35,69 @@ class FeedbackInput extends HookWidget {
       _ => null,
     };
 
-    final isRequired = field.isRequired;
-
     final controller = useTextEditingController();
+    final focusNode = useFocusNode();
 
     return FormBuilderField<String>(
-        name: field.id,
-        validator: FormBuilderValidators.compose([
-          switch (field.type) {
-            FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: isRequired),
-            FeedbackTextType.phone => FormBuilderValidators.compose([
-                FormBuilderValidators.phoneNumber(checkNullOrEmpty: isRequired),
-                FormBuilderValidators.minLength(
-                  PhoneNumberFormatter.arabicPhoneNumberMinLength,
-                  checkNullOrEmpty: isRequired,
+      name: field.id,
+      validator: FormBuilderValidators.compose([
+        switch (field.type) {
+          FeedbackTextType.email => FormBuilderValidators.email(checkNullOrEmpty: false),
+          FeedbackTextType.phone => FormBuilderValidators.compose([
+              FormBuilderValidators.phoneNumber(checkNullOrEmpty: false),
+              FormBuilderValidators.minLength(
+                PhoneNumberFormatter.arabicPhoneNumberMinLength,
+                checkNullOrEmpty: false,
+              ),
+            ]),
+          FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: false),
+          _ => (_) => null,
+        },
+      ]),
+      builder: (fieldState) {
+        final isAddress = field.id == 'address';
+        final textFieldWidget = FeedbackTextInput(
+          labelText: field.label,
+          hintText: field.hint,
+          controller: controller,
+          focusNode: focusNode,
+          errorText: fieldState.hasError ? context.l10n.feedbackTextFieldWrongFormat : null,
+          allowedInputPattern: allowedInputPattern,
+          isRequired: field.isRequired,
+          maxLength: isAddress ? null : field.maxLength,
+          keyboardType: keyboardType,
+          maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
+          onChanged: fieldState.didChange,
+          type: field.type,
+        );
+        return Column(
+          children: [
+            if (field.id == 'address')
+              GestureDetector(
+                onTap: () => _selectAddress(context, controller, fieldState),
+                child: AbsorbPointer(
+                  child: textFieldWidget,
                 ),
-              ]),
-            FeedbackTextType.url => FormBuilderValidators.url(checkNullOrEmpty: isRequired),
-            _ when isRequired => FormBuilderValidators.required(),
-            _ => (_) => null,
-          },
-        ]),
-        builder: (fieldState) => Column(
-              children: [
-                FeedbackTextInput(
-                  labelText: field.label,
-                  hintText: field.hint,
-                  controller: controller,
-                  onValidate: (_) => fieldState.isValid ? null : context.l10n.feedbackTextFieldWrongFormat,
-                  allowedInputPattern: allowedInputPattern,
-                  isRequired: field.isRequired,
-                  maxLength: field.maxLength,
-                  keyboardType: keyboardType,
-                  maxLines: field.type == FeedbackTextType.multilineText ? 5 : 1,
-                  onChanged: fieldState.didChange,
-                  type: field.type,
-                ),
-                if (field.setOnMap)
-                  SizedBox(
-                    width: double.infinity,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: Spacing.$3x),
-                      child: BaladyAppButton(
-                        buttonType: BaladyButtonType.secondary,
-                        buttonColorScheme: BaladyButtonColorScheme.accent,
-                        primaryLabel: context.l10n.setOnTheMap,
-                        primaryIcon: GeneralIcons.pin,
-                        onTap: () => _selectRoute(context, controller, fieldState),
-                      ),
-                    ),
+              ),
+            if (field.id != 'address') textFieldWidget,
+            if (field.setOnMap)
+              SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: Spacing.$3x),
+                  child: BaladyAppButton(
+                    buttonType: BaladyButtonType.secondary,
+                    buttonColorScheme: BaladyButtonColorScheme.accent,
+                    primaryLabel: context.l10n.setOnTheMap,
+                    primaryIcon: GeneralIcons.pin,
+                    onTap: () => _selectRoute(context, controller, fieldState),
                   ),
-              ],
-            ));
+                ),
+              ),
+          ],
+        );
+      },
+    );
   }
 
   Future<void> _selectRoute(
@@ -95,6 +106,22 @@ class FeedbackInput extends HookWidget {
     FormFieldState field,
   ) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
+
+    if (result == null || result is! RoutePoint) {
+      return;
+    }
+
+    final location = result.label ?? 'lat:${result.latitude}, lon:${result.longitude}';
+    controller.text = location;
+    field.didChange(location);
+  }
+
+  Future<void> _selectAddress(
+    BuildContext context,
+    TextEditingController controller,
+    FormFieldState field,
+  ) async {
+    final result = await context.router.push(const FeedbackAddressSuggester());
 
     if (result == null || result is! RoutePoint) {
       return;

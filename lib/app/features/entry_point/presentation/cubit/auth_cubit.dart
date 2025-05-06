@@ -181,11 +181,18 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     if (authState is AuthenticatedMunicipalityState) {
       _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
     } else {
+      final data = authState.profileData;
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
           token: token,
-          userInfo: const SsoUserInfo(),
+          userInfo: SsoUserInfo(
+            enName: data.enName,
+            arName: data.arName,
+            idNo: data.sub,
+            mail: data.email,
+            phone: data.phoneNumber,
+          ),
           errorMessage: "",
         ),
       );
@@ -343,12 +350,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     try {
       if (loginData == null) {
         sl<AuthenticationBloc>().add(LogoutAuthentication());
-        return;
+        // return;
       }
 
-      if (state.status == AuthStatus.notAuthenticated) {
-        return;
-      }
+      // if (state.status == AuthStatus.notAuthenticated) {
+      //   return;
+      // }
       emit(
         const EntryPointState(
           status: AuthStatus.notAuthenticated,

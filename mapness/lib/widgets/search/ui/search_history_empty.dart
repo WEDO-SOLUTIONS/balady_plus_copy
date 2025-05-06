@@ -9,14 +9,23 @@ class SearchHistoryEmpty extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: Spacing.$4x,
-          horizontal: Spacing.$6x,
-        ),
-        child: Text(
-          context.l10n.lookForUsefulPlacesCafesMallsForExampleMallNearby,
-          style: context.textStyleV3.h4Medium,
-          textAlign: TextAlign.center,
+        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const SizedBox(height: Spacing.$12x),
+            Text(
+              context.l10n.lookForPlaces,
+              style: context.textStyleV3.h4SemiBold,
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: Spacing.$3x),
+            Text(
+              context.l10n.likeShoppingMalls,
+              textAlign: TextAlign.center,
+              style: context.textStyleV3.bodySmallRegular,
+            ),
+          ],
         ),
       );
 }

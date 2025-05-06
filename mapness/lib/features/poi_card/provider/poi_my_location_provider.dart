@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/profile/domain/user_profile_data.dart';
+import 'package:mapness/entities/profile/user_profile_data.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/lib/make_address.dart';

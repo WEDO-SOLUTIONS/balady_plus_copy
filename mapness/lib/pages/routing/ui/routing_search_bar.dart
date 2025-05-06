@@ -4,12 +4,15 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
+import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
 class RoutingSearchBar extends ConsumerStatefulWidget {
@@ -63,6 +66,9 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
         controller: _controller,
         config: BaladyInputConfig(
           focusNode: _focusNode,
+          onTap: () {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
+          },
           onChanged: (query) {
             Metrics.logEventAdvanced(
               MetricsConstants.routesKeys.searchSubmit,
@@ -80,11 +86,16 @@ class _RoutingSearchBarState extends ConsumerState<RoutingSearchBar> {
               action: MetricAction.type.toString(),
               props: {'query': query},
             );
-            ref.read(searchProvider(scope.value).notifier).searchByText(query);
-            if (query.isNotEmpty) {
+            if (query.trim().isNotEmpty) {
+              ref.read(searchProvider(scope.value).notifier).searchByText(query);
+              ref.read(urbiAnalyticsProvider).track(
+                    '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
+                  );
+
               ref.read(searchHistoryProvider(scope.value).notifier).put(
                     SearchHistoryItem.fromQuery(query: query),
                   );
+              ref.read(SendStatisticProvider(query).future);
             }
           },
           hintText: widget.placeholder,

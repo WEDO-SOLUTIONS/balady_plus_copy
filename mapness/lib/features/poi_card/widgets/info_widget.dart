@@ -116,7 +116,7 @@ class InfoWidget extends ConsumerWidget {
     );
 
     return PoiContent(
-      padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$2x),
+      padding: const EdgeInsets.all(Spacing.$4x).copyWith(top: Spacing.$3x),
       data: poiContentData,
     );
   }

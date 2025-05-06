@@ -5,10 +5,10 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/routing/providers/routes_helper.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -20,7 +20,8 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/widgets/path_nav/ui/layout_size_wrapper.dart';
+import 'package:mapness/shared/ui/measure_size.dart';
+
 import 'package:urbi_utils/urbi_utils.dart';
 
 @RoutePage()
@@ -142,7 +143,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
                     ),
                   ),
                   RoutingInfo(
-                    points: points.map((e) => e.value).toList(),
+                    pointsWithLabel: points,
                     isHomeOrWork: widget.isHomeOrWork,
                   ),
                 ],

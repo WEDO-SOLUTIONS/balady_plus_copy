@@ -200,14 +200,14 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         // String base64File = base64Encode(fileBytes);
         ///////////////////////////////////////////////////////////
         myImage.Image? decodeImg = myImage.decodeImage(fileBytes);
-        DateTime? dateTime = await fetchOnlineDateTimeForKSA();
-        String date = DateFormat("yyyy-MM-dd HH:mm:ss").format(
-          dateTime ?? DateTime.now(),
-        );
+        // DateTime? dateTime = await fetchOnlineDateTimeForKSA();
+        // String date = DateFormat("yyyy-MM-dd HH:mm:ss").format(
+        //   dateTime ?? DateTime.now(),
+        // );
         // Define the black color
         myImage.drawString(
           decodeImg!,
-          date,
+          "",
           font: myImage.arial14,
           x: 100,
           y: 25,

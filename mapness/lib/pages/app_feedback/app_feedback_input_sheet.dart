@@ -11,6 +11,7 @@ import 'package:mapness/widgets/app_feedback/v2/app_feedback_sheet_header.dart';
 @RoutePage()
 class AppFeedbackInputSheet extends HookConsumerWidget {
   final String initialText;
+
   const AppFeedbackInputSheet({super.key, this.initialText = ''});
 
   @override
@@ -23,6 +24,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
     );
 
     final textEditingController = useTextEditingController(text: initialText);
+    final isValid = useState(false);
 
     return StatelessBottomSheet(
       scrollController: scrollController,
@@ -33,6 +35,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
       content: [
         AppFeedbackInput(
           textController: textEditingController,
+          isValid: (value) => isValid.value = value,
         ),
       ],
       footer: Padding(
@@ -41,6 +44,7 @@ class AppFeedbackInputSheet extends HookConsumerWidget {
           width: double.infinity,
           child: AppButton(
             primaryLabel: context.l10n.appFeedbackAddNote,
+            buttonState: isValid.value ? ButtonState.normal : ButtonState.disabled,
             buttonColorScheme: ButtonColorScheme.primary,
             onTap: () {
               context.router.popForced(textEditingController.text);

@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
+import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/navigator_auto_enable_parking.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

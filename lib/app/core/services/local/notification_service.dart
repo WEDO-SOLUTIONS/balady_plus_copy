@@ -8,12 +8,14 @@ import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:flutter_insider/flutter_insider.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'firebase_options.dart';
 import 'navigation_services.dart';
 
 /// A notification action which triggers a App navigation event
 String navigationActionId = 'id_3';
-
 @pragma('vm:entry-point')
 void notificationTapBackground(NotificationResponse notificationResponse) {
   // ignore: avoid_//print
@@ -26,11 +28,22 @@ void notificationTapBackground(NotificationResponse notificationResponse) {
     //  'notification action tapped with input: ${notificationResponse.input}');
   }
 }
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+
+  if (message.data['source'] == 'Insider') {
+    FlutterInsider.Instance.handleNotification(
+        <String, dynamic>{
+          "data": message.data
+        }
+    );
+  }
+}
 
 class NotificationService {
   static final _notifications = FlutterLocalNotificationsPlugin();
   static final StreamController<String?> selectNotificationStream =
-      StreamController<String?>.broadcast();
+  StreamController<String?>.broadcast();
 
   static init({bool initScheduled = false}) async {
     const android = AndroidInitializationSettings("@mipmap/ic_launcher");
@@ -74,26 +87,13 @@ class NotificationService {
     );
   }
 
-  // static Future showNotification({
-  //   int id = 0,
-  //   String? title,
-  //   String? body,
-  //   String? payload,
-  // }) async =>
-  //     _notifications.show(
-  //       id,
-  //       title,
-  //       body,
-  //       _notificationDetails(),
-  //       payload: payload,
-  //     );
 
   static Future<void> showScheduledNotification(
       {int id = 0,
-      String? title,
-      String? body,
-      String? payload,
-      required DateTime scheduledDate}) async {
+        String? title,
+        String? body,
+        String? payload,
+        required DateTime scheduledDate}) async {
     if (scheduledDate.isAfter(tz.TZDateTime.now(tz.local))) {
       _notifications.zonedSchedule(
         id,
@@ -104,7 +104,7 @@ class NotificationService {
         payload: payload,
         androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
         uiLocalNotificationDateInterpretation:
-            UILocalNotificationDateInterpretation.absoluteTime,
+        UILocalNotificationDateInterpretation.absoluteTime,
       );
     }
   }
@@ -117,26 +117,17 @@ class NotificationService {
     try {
       await Firebase.initializeApp();
     } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+    }
+    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 
 
-    // Set the background messaging handler early on, as a named top-level function
-    // FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-
-    /// Create an Android Notification Channel.
-    ///
-    /// We use this channel in the `AndroidManifest.xml` file to override the
-    /// default FCM channel to enable heads up notifications.
-
-    /// Update the iOS foreground notification presentation options to allow
-    /// heads up notifications.
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
       alert: true,
@@ -179,54 +170,69 @@ class NotificationService {
         .getInitialMessage()
         .then((RemoteMessage? message) {
       if (message != null) {
-       // Future.delayed(const Duration(seconds: 2), () {
-          handleMessage(message);
-       // });
+        // Future.delayed(const Duration(seconds: 2), () {
+        handleMessage(message);
+        // });
       }
     });
 
-    // showNotification(Map<String, dynamic> msg) {
-    //   var androidNotification = AndroidNotificationDetails(
-    //     'channelId',
-    //     'channelName',
-    //   );
-    //   DarwinNotificationDetails iOSPlatformChannelSpecifics =
-    //       DarwinNotificationDetails();
-    //   var notificationDetails = NotificationDetails(
-    //       android: androidNotification, iOS: iOSPlatformChannelSpecifics);
-    //   _notifications.show(0, msg['notification']['title'],
-    //       msg['notification']['body'], notificationDetails);
-    // }
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-
-      if (notification != null && android != null) {
-        _notifications.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                CommonFunctions.generateUUID(),
-                "Notification",
-                channelDescription: "Notification",
-
-                playSound: true,
 
 
-                // TODO add a proper drawable resource to android, for now using
-                //      one that already exists in example app.
-                icon: 'mipmap/ic_launcher',
-              ),
-            ));
+
+    // Register Background Handler
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+
+      if (message.data['source'] == 'Insider') {
+        FlutterInsider.Instance.handleNotification(
+            <String, dynamic>{
+              "data": message.data
+            }
+        );
       }
-    });
+      else
+        {
 
+        RemoteNotification? notification = message.notification;
+
+        AndroidNotification? android = message.notification?.android;
+
+        if (notification != null && android != null) {
+
+          _notifications.show(
+
+              notification.hashCode,
+
+              notification.title,
+
+              notification.body,
+
+              NotificationDetails(
+
+                android: AndroidNotificationDetails(
+
+                  CommonFunctions.generateUUID(),
+
+                  "Notification",
+
+                  channelDescription: "Notification",
+                  playSound: true,
+                  icon: 'mipmap/ic_launcher',
+
+                ),
+
+              ));
+
+        }
+
+
+    }
+
+  });
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
-        handleMessage(message);
+      handleMessage(message);
     });
+
+
   }
 }

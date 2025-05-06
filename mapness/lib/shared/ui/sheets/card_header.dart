@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
 sealed class CardHeaderData {
   Widget get build;
@@ -70,30 +71,7 @@ class CardHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: Spacing.$3x),
-          Padding(
-            padding: const EdgeInsets.only(bottom: Spacing.$4x),
-            child: Material(
-              borderRadius: borderRadius,
-              child: InkWell(
-                borderRadius: borderRadius,
-                onTap: onTapClose,
-                child: SizedBox(
-                  height: Spacing.$10x,
-                  width: Spacing.$10x,
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(RadiusBorder.m),
-                      color: context.color.textAndIconsBasePrimary.withAlpha(10),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(Spacing.$2x),
-                      child: SystemIcons.close.icon(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          CustomCloseButton(onClose: onTapClose),
         ],
       );
 }

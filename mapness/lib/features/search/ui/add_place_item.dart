@@ -7,7 +7,11 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class AddPlaceItem extends StatelessWidget {
-  const AddPlaceItem({super.key});
+  final VoidCallback onTapMetrics;
+  const AddPlaceItem({
+    required this.onTapMetrics,
+    super.key,
+  });
 
   @override
   // ignore: prefer_expression_function_bodies
@@ -35,7 +39,10 @@ class AddPlaceItem extends StatelessWidget {
             primaryIcon: uikit.GeneralIcons.plusCircle,
             // for the first iteration all buttons have same label. Will be changed later
             primaryLabel: context.l10n.addPlace,
-            onTap: () => context.router.push(QuickFeedbackRoute()),
+            onTap: () {
+              onTapMetrics();
+              context.router.push(QuickFeedbackRoute());
+            },
           ),
         ),
         const SizedBox(height: Spacing.$1_5x),

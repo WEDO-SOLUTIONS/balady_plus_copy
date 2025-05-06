@@ -164,7 +164,7 @@ class _FeedbackTimeSelectSheetState extends State<FeedbackTimeSelectSheet> {
               Expanded(
                 child: AppButton(
                   primaryLabel: context.l10n.feedbackBreaksSheetClose,
-                  buttonColorScheme: ButtonColorScheme.tertiary,
+                  buttonColorScheme: ButtonColorScheme.secondary,
                   onTap: () => context.router.popForced(),
                 ),
               ),

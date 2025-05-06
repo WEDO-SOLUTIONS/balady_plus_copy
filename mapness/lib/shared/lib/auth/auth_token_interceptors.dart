@@ -1,13 +1,11 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/sso_auth/data/token_provider.dart';
 
 class AuthTokenInterceptor {
   static QueuedInterceptorsWrapper tokenInterceptor(
-    AutoDisposeAsyncNotifierProviderRef ref,
+    Ref ref,
     BaseOptions baseOptions,
   ) =>
       QueuedInterceptorsWrapper(
@@ -30,7 +28,9 @@ class AuthTokenInterceptor {
 
               // Add new refresh token to headers
               final token = await ref.read(tokenProvider.future);
-              if (token.isEmpty) handler.reject(error);
+              if (token.isEmpty) {
+                handler.reject(error);
+              }
 
               final headers = options.headers;
               headers['Authorization'] = 'Bearer $token';
@@ -50,10 +50,9 @@ class AuthTokenInterceptor {
             if (e is DioException && e.response?.statusCode == 401) {
               // LogOut and Redirect to login
               // TODO: remove this crunch
-              if (!e.requestOptions.uri.origin
-                  .contains('momrah-balady.public-poc.urbi.ae')) {
+              if (!e.requestOptions.uri.origin.contains('momrah-balady.public-poc.urbi.ae')) {
                 await ref.read(authProvider.notifier).tokenExpireLogout();
-                await ref.read(appRouterProvider).push(const SigninRoute());
+                await ref.read(authProvider.notifier).doAuth();
               }
             } else if (e is DioException) {
               handler.reject(e);

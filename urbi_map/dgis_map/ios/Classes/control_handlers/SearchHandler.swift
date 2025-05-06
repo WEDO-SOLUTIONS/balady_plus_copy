@@ -74,6 +74,7 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
+        locale: String?,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         guard queryText.count > 0 else {
@@ -94,6 +95,7 @@ class SearchHandler: NSObject {
         
         let query = queryBuilder
             .setPageSize(pageSize: pageSize)
+            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
                 DirectoryFilter(
@@ -117,6 +119,7 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
+        locale: String?,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         guard let searchQuery = self.queries[query.id] else {
@@ -133,6 +136,7 @@ class SearchHandler: NSObject {
         
         var query = SearchQueryBuilder.fromQuery(query: searchQuery)
             .setPageSize(pageSize: pageSize)
+            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
                 DirectoryFilter(
@@ -156,10 +160,12 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
+        locale: String?,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         let query = SearchQueryBuilder.fromRubricIds(rubricIds: categories)
             .setPageSize(pageSize: pageSize)
+            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
                 DirectoryFilter(
@@ -182,11 +188,13 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
+        locale: String?,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         let query = SearchQueryBuilder.fromQueryText(queryText: "park")
             .setAllowedResultTypes(allowedResultTypes: [.attraction])
             .setPageSize(pageSize: pageSize)
+            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
                 DirectoryFilter(
@@ -209,11 +217,13 @@ class SearchHandler: NSObject {
         weekTimeMessage: WeekTimeSearchMessage?,
         sortingType: SortingTypeMessage,
         pageSize: Int32,
+        locale: String?,
         completion: @escaping (Result<SearchResultMessage, any Error>) -> Void
     ) {
         let query = SearchQueryBuilder.fromQueryText(queryText: "beach")
             .setAllowedResultTypes(allowedResultTypes: [.attraction])
             .setPageSize(pageSize: pageSize)
+            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setSortingType(sortingType: sortingType.toSortingType())
             .setDirectoryFilter(filter:
                 DirectoryFilter(
@@ -393,17 +403,31 @@ class SearchHandler: NSObject {
         queryText: String,
         allowedResultTypes: [SuggestedTypeMessage_]?,
         searchGeoRect: DGis.GeoRect?,
+        locale: String?,
+        suggestorType: SuggestorTypeEnum?,
+        limit: Int64?,
         completion: @escaping (Result<SuggestResultMessage, any Error>) -> Void
     ) {
         var suggestQueryBuilder = SuggestQueryBuilder
             .fromQueryText(queryText: queryText)
+            .setLocale(locale: locale != nil ? Locale.makeLocale(localeStr: locale!) : nil)
             .setAreaOfInterest(rect: searchGeoRect)
             .setSpatialRestriction(spatialRestriction: Self.saRestrictions)
         
+        if let suggestorType {
+            suggestQueryBuilder = suggestQueryBuilder.setSuggestorType(suggestorType: suggestorType.toSuggestorType())
+        }
         if let allowedResultTypes {
             suggestQueryBuilder = suggestQueryBuilder.setAllowedResultTypes(
                 allowedResultTypes: allowedResultTypes.map { $0.type.suggestedType }
             )
+        }
+        if let limit {
+            if limit >= Int64(Int32.min) && limit <= Int64(Int32.max) {
+                suggestQueryBuilder = suggestQueryBuilder.setLimit(limit: Int32(limit))
+            } else {
+                print("Value out of range for Int32")
+            }
         }
             
         let suggestQuery = suggestQueryBuilder.build()

@@ -2,10 +2,8 @@ pluginManagement {
     buildscript {
         repositories {
             mavenCentral()
-            maven {
-                // r8 maven
-                url = uri("https://storage.googleapis.com/r8-releases/raw")
-            }
+            maven { url = uri("https://storage.googleapis.com/r8-releases/raw") }
+            maven { url 'https://developer.huawei.com/repo/' } // أضف هذا السطر
         }
         dependencies {
             // r8 version

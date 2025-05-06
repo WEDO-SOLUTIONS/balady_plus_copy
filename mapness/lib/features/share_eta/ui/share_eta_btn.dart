@@ -46,54 +46,47 @@ class ShareEtaBtn extends HookConsumerWidget {
       orElse: () => false,
     );
 
-    return ContentWrapper(
-      color: context.colorsV2.staticWhite,
-      children: [
-        ContentRow(
-          onTap: () async {
-            if (isPulseactive || isEtaStreamLoading) {
-              return;
-            }
-            try {
-              await _stopSharingPrevious(ref);
-            } catch (e) {
-              log(e.toString());
-            } finally {
-              await ref.read(shareEtaProvider.notifier).startSharingEta();
-            }
-          },
-          options: ContentRowOptions(
-            padding: EdgeInsets.symmetric(
-              vertical: isPulseactive && !isEtaStreamLoading ? Spacing.$1x : Spacing.$3x,
-              horizontal: Spacing.$4x,
+    return ContentRow(
+      onTap: () async {
+        if (isPulseactive || isEtaStreamLoading) {
+          return;
+        }
+        try {
+          await _stopSharingPrevious(ref);
+        } catch (e) {
+          log(e.toString());
+        } finally {
+          await ref.read(shareEtaProvider.notifier).startSharingEta();
+        }
+      },
+      options: ContentRowOptions(
+        wrapperColor: context.colorsV2.staticWhite,
+        wrapperEnabled: true,
+        titleBuilder: (context) => Row(
+          children: [
+            Text(
+              isPulseactive || isEtaStreamLoading ? context.l10n.routeIsSharing : context.l10n.shareTripProgress,
+              style: context.textStyleV3.bodyLargeRegular.copyWith(
+                color: context.colorsV2.foregroundDefault,
+              ),
             ),
-            titleBuilder: (context) => Row(
-              children: [
-                Text(
-                  isPulseactive || isEtaStreamLoading ? context.l10n.routeIsSharing : context.l10n.shareTripProgress,
-                  style: context.textStyleV3.bodyLargeRegular.copyWith(
-                    color: context.colorsV2.foregroundDefault,
-                  ),
+            if (isPulseactive)
+              Padding(
+                padding: const EdgeInsetsDirectional.only(end: Spacing.$1_5x),
+                child: PulseIndicator(
+                  color: connectionCode != null ? context.colorsV2.errorDefault : null,
                 ),
-                if (isPulseactive)
-                  Padding(
-                    padding: const EdgeInsetsDirectional.only(end: Spacing.$1_5x),
-                    child: PulseIndicator(
-                      color: connectionCode != null ? context.colorsV2.errorDefault : null,
-                    ),
-                  )
-              ],
-            ),
-            customActionWidget: ShareEtaBtnAction(
-              type: isEtaStreamLoading
-                  ? ShareEtaBtnActionType.loading
-                  : isPulseactive
-                      ? ShareEtaBtnActionType.active
-                      : ShareEtaBtnActionType.stoped,
-            ),
-          ),
+              )
+          ],
         ),
-      ],
+        customActionWidget: ShareEtaBtnAction(
+          type: isEtaStreamLoading
+              ? ShareEtaBtnActionType.loading
+              : isPulseactive
+                  ? ShareEtaBtnActionType.active
+                  : ShareEtaBtnActionType.stoped,
+        ),
+      ),
     );
   }
 

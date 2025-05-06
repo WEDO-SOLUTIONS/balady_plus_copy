@@ -1,21 +1,20 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
+
 import 'package:balady_uikit/core/widgets/smooth_radius.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+
 import 'package:mapness/features/poi_card/domain/dto/dgis_photos_dto.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
+import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 import 'package:mapness/shared/lib/make_address.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/routing/lib/duration_distance_fmt.dart';
 import 'package:mapness/widgets/search/ui/search_tap_handler.dart';
-
-part 'widgets/search_history_gallery.dart';
 
 const prefixMapping = {
   'region': 'منطقة',
@@ -38,6 +37,7 @@ class SearchItem extends ConsumerWidget {
   final Language language;
   final GeoPointMessage? myLocation;
   final DirectoryObjectMessage result;
+  final Color? contentColor;
 
   final void Function() onTap;
 
@@ -46,6 +46,7 @@ class SearchItem extends ConsumerWidget {
     required this.onTap,
     required this.language,
     this.myLocation,
+    this.contentColor,
     super.key,
   });
 
@@ -71,23 +72,31 @@ class SearchItem extends ConsumerWidget {
     }
 
     return Material(
-      color: context.colorsV2.backgroundSurface4,
+      color: contentColor ?? context.colorsV2.backgroundSurface4,
       shape: smoothBorder(RadiusBorder.xl),
       child: SearchTapHandler(
         onTap: onTap,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (photosUrls.isNotEmpty) _PhotosGallery(photosUrls: photosUrls, photoItems: photoItems),
+            if (photosUrls.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: Spacing.$3x),
+                child: SizedBox(height: 96, child: PoiPhotosRow(objectId: objectId)),
+              ),
             ContentRowV2(
               crossAxisAlignment: CrossAxisAlignment.start,
               text: ContentRowTextOptions(
                 title: result.title,
                 titleOptions: const ContentRowTextOption(isBold: true),
                 subtitle: subtitle,
+                subtitleOptions: ContentRowTextOption(
+                  baseColor: context.colorsV3.foregroundDefault,
+                ),
                 subtitleExtra: result.makeAddress(),
-                subtitleExtraOptions: const ContentRowTextOption(
+                subtitleExtraOptions: ContentRowTextOption(
                   maxLines: 3,
+                  baseColor: context.colorsV3.foregroundSoft,
                 ),
               ),
               trailing: ContentRowCustomTrailingOptions(
@@ -104,7 +113,11 @@ class SearchItem extends ConsumerWidget {
                         return const SizedBox.shrink();
                       }
                       return ContentRowTrailingText(
-                        options: ContentRowTextTrailingOptions(text: (distanceKm * 1000).formatDistance(context.l10n)),
+                        options: ContentRowTextTrailingOptions(
+                          text: (distanceKm * 1000).formatDistance(context.l10n),
+                          textStyle:
+                              context.textStyleV3.bodySmallSemiBold.copyWith(color: context.colorsV3.foregroundSoft),
+                        ),
                       );
                     },
                   ),

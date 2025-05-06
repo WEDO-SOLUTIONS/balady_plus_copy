@@ -2,9 +2,14 @@ import 'dart:async';
 
 import 'package:intl/intl.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/lib/number_formatters.dart';
+import 'package:mapness/features/share_eta/models/eta_route_info.dart';
+import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dart';
+import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'path_nav_eta.g.dart';
@@ -20,10 +25,34 @@ class _PathNavEta extends _$PathNavEta {
 
   Future<void> _subscribe() async {
     final mapController = await ref.read(dgisControllerProvider.future);
-    final subspcription = mapController.naviDashboardEvents.listen((event) {
+    double? fullDistance;
+    bool halfRouteEventSent = false;
+    final stopwatch = Stopwatch()..start();
+
+    final subscription = mapController.naviDashboardEvents.listen((event) {
       final distance = event.distance.formatDistance();
       final duration = Duration(seconds: event.duration);
       final isExpanded = state?.isExpanded;
+      fullDistance ??= event.distance;
+
+      final distanceTraveledPart = (fullDistance! - event.distance) / fullDistance!;
+      if (distanceTraveledPart > .5 && !halfRouteEventSent) {
+        halfRouteEventSent = true;
+        final route = ref.read(etaRouteInfoProvider);
+        final currentLocation = ref.read(locationProvider);
+        ref.read(appAnalyticsProvider).navigationHalfWay(
+              origin: switch (route.startPoint) {
+                final EtaRoutePoint point => point.label ?? '${point.lat},${point.lon}',
+                _ => '',
+              },
+              destination: switch (route.endPoint) {
+                final EtaRoutePoint point => point.label ?? '${point.lat},${point.lon}',
+                _ => '',
+              },
+              spentTime: stopwatch.elapsed,
+              midPoint: currentLocation == null ? '' : '${currentLocation.latitude},${currentLocation.longitude}',
+            );
+      }
 
       state = PathNavEta(
         durationInSeconds: event.duration,
@@ -35,15 +64,21 @@ class _PathNavEta extends _$PathNavEta {
         arrivalTime: DateFormat.Hm().format(
           DateTime.now().add(duration),
         ),
+        spentTime: stopwatch.elapsed,
       ).copyWith(isExpanded: isExpanded);
     });
-    ref.onDispose(subspcription.cancel);
+    ref.onDispose(subscription.cancel);
   }
 
   void toggleIsExpanded({required bool isExpanded}) {
+
+    if (isExpanded) {
+      ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+    }
+
     state = state?.copyWith(
-      isExpanded: isExpanded,
-    );
+        isExpanded: isExpanded,
+      );
   }
 }
 

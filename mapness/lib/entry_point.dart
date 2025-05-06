@@ -26,7 +26,9 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
@@ -45,6 +47,7 @@ import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/providers/vendor_config.dart';
@@ -131,7 +134,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       // TODO(Scroollocker): Disable this feature. Because need to research fail restore cases
       // restoreState();
       clearCache();
-      checkNavigationState();
+      // TODO(wultriel): Disable this feature. Because need to research fail restore cases
+      // checkNavigationState();
       // TODO: Dmitrii.P: Is it the right place to call this method?
       // Maybe we should call it upper or in the different places too?
       final track = ref.read(urbiAnalyticsProvider).track;
@@ -153,7 +157,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   Future<void> restoreState() async {
     final state = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateKey);
     final type = ref.read(sharedPrefsProvider).getString(MapnessConstants.navigatorStateTypeKey);
-
     if (state != null) {
       final routeSearchOptions = RouteSearchOptionsMessageExt.fromString(type!);
       WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -182,57 +185,30 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     }
   }
 
-  Future<void> checkNavigationState() async {
-    final controller = await ref.read(dgisControllerProvider.future);
-    final navStateMessage = await controller.getCurrentNavigationState();
-
-    if (navStateMessage.state == NavigationState.navigation) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        final location = ref.read(locationProvider);
-        if (location != null) {
-          ref.read(appRouterProvider).push(
-                PathNavRoute(
-                  navType: navStateMessage.routeSearchOptions,
-                  initAction: null,
-                ),
-              );
-        } else {
-          _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
-            if (next != null) {
-              _locationListener?.close();
-              ref.read(appRouterProvider).push(
-                    PathNavRoute(
-                      navType: navStateMessage.routeSearchOptions,
-                      initAction: null,
-                    ),
-                  );
-            }
-          });
-        }
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final language = ref.watch(appLanguageProvider);
     final direction = ref.watch(uiDirectionProvider);
 
-    ref.listen(debugStateProvider, (previous, next) {
-      if (!next || (previous ?? false)) {
-        return;
-      }
+    ref
+      // listen for changes in car connection state. But do not rebuild widget
+      ..listen(carEnableFreeRoamProvider, (previous, next) {})
+      // listen for changes in debug state provider to show/hide the debug overlay
+      ..listen(debugStateProvider, (previous, next) {
+        if (!next || (previous ?? false)) {
+          return;
+        }
 
-      _debugOverlay = OverlayEntry(
-        builder: (context) => Theme(
-          data: Theme.of(context),
-          child: const ProviderScope(
-            child: DebugOverlay(),
+        _debugOverlay = OverlayEntry(
+          builder: (context) => Theme(
+            data: Theme.of(context),
+            child: const ProviderScope(
+              child: DebugOverlay(),
+            ),
           ),
-        ),
-      );
-      Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
-    });
+        );
+        Overlay.of(context, rootOverlay: true).insert(_debugOverlay!);
+      });
 
     return DefaultTextHeightBehavior(
       textHeightBehavior: const TextHeightBehavior(leadingDistribution: TextLeadingDistribution.even),
@@ -291,6 +267,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
   }
 
   Future<void> clearCache() async {
+    final controller = await ref.read(dgisControllerProvider.future);
+    await controller.stopNavigation();
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
+    ref.read(layersControlsProvider.notifier).updateLayerInfo();
     final poiBox = await ref.read(hiveProvider(MapnessConstants.poiDataBoxName).future);
     await poiBox.clear();
   }
@@ -338,7 +318,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         final navStateMessage = await dgisController.getCurrentNavigationState();
         await ref.read(appRouterProvider).push(
               PathNavRoute(
-                navType: navStateMessage.routeSearchOptions,
+                navType: navStateMessage.routeSearchOptions ?? RouteSearchOptionsMessage.car,
                 initAction: null,
               ),
             );
