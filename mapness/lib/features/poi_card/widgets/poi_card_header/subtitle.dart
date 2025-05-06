@@ -6,11 +6,13 @@ import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transi
 
 class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
   final String subtitle;
+  final List<InlineSpan> inlineSpans;
   final IconData? subtitleIcon;
 
   const SubtitleComponent({
     required this.subtitle,
     required this.subtitleIcon,
+    this.inlineSpans = const [],
     super.key,
   }) : super(
           defaultState: PoiCardBottomSheetState.halfOpen,
@@ -32,8 +34,8 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
       child: Row(
         children: [
           Expanded(
-            child: Text(
-              subtitle,
+            child: Text.rich(
+              TextSpan(text: subtitle, children: inlineSpans),
               style: subTitleTextStyle,
               overflow: TextOverflow.ellipsis,
               maxLines: 2,
