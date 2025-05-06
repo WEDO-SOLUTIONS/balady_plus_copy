@@ -1,8 +1,13 @@
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_route_names.dart';
 import 'package:balady_plus/app/features/services/presentation/cubit/home_services_cubit/home_services_cubit.dart';
 import 'package:balady_plus/app/features/services/presentation/cubit/sub_service_cubit/sub_service_cubit.dart';
+import 'package:balady_plus/app/features/services/presentation/widgets/home_services/mini_apps_item_widget.dart';
 import 'package:balady_plus/app/features/services/presentation/widgets/home_services/mini_apps_search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
@@ -39,18 +44,86 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
           body: BlocBuilder<HomeServicesCubit, ServicesState>(
             builder: (context, state) {
               if (state is ServicesSuccessState) {
-                return BlocProvider<ServiceCardsCubit>(
-                    create: (context) => ServiceCardsCubit(listOfServices: state.homeServices.miniApps),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: RefreshIndicator(
-                      onRefresh: () {
-                        context.read<HomeServicesCubit>().loadServices();
-                        return Future.value();
-                      },
-                      child: const MiniAppsSearchScreen(),
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0,vertical: 8),
+                      child: TextFormField(
+                        onTap: () {
+                          NavigationService.navigatorKey.currentState!.pushNamed(
+                            HomeServicesRouteName.subServicesScreen,
+                            arguments: {
+                              "services": state.homeServices.miniApps,
+                            },
+                          );
+                        },
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          hintText: "search".tr(),
+                          filled: true,
+                          isDense: true,
+                          fillColor: Colors.grey.shade200,
+                          prefixIcon: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0, vertical: 10),
+                            child: SvgPicture.asset(IconPath.search),
+                          ),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          disabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          focusedErrorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(18),
+                            borderSide: BorderSide.none,
+                          ),
+                        ),
+                      ),
                     ),
-                  ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: RefreshIndicator(
+                        onRefresh: () {
+                          context.read<HomeServicesCubit>().loadServices();
+                          return Future.value();
+                        },
+                        child: SafeArea(
+                          child: GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 10,
+                              crossAxisSpacing: 10,
+                              childAspectRatio: .9,
+                            ),
+                            itemCount: state.homeServices.miniApps.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return MiniAppsItemWidget(
+                                service: state.homeServices.miniApps[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 );
               }
 

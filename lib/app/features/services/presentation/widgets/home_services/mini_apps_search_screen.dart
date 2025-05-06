@@ -9,45 +9,48 @@ class MiniAppsSearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        const SearchServicesWidget(autofocus: false),
-        //////////////////////////////////////////////////////
-        const SizedBox(height: 8), //
-        Expanded(
-          child: BlocBuilder<ServiceCardsCubit, SubServiceState>(
-            builder: (context, state) {
-              if (state is ErrorSubServiceState) {
-                return Center(
-                  child: Text(state.message),
-                );
-              }
-              if (state is LoadedSubServiceState) {
-                return SafeArea(
-                  child: GridView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    gridDelegate:
-                    const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 3,
-                      mainAxisSpacing: 10,
-                      crossAxisSpacing: 10,
-                      childAspectRatio: .9,
+    return Scaffold(
+      appBar: AppBar(),
+      body: Column(
+        children: [
+          const SearchServicesWidget(autofocus: false),
+          //////////////////////////////////////////////////////
+          const SizedBox(height: 8), //
+          Expanded(
+            child: BlocBuilder<ServiceCardsCubit, SubServiceState>(
+              builder: (context, state) {
+                if (state is ErrorSubServiceState) {
+                  return Center(
+                    child: Text(state.message),
+                  );
+                }
+                if (state is LoadedSubServiceState) {
+                  return SafeArea(
+                    child: GridView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      gridDelegate:
+                      const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 3,
+                        mainAxisSpacing: 10,
+                        crossAxisSpacing: 10,
+                        childAspectRatio: .9,
+                      ),
+                      itemCount: state.listOfServices.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return MiniAppsItemWidget(
+                          service: state.listOfServices[index],
+                        );
+                      },
                     ),
-                    itemCount: state.listOfServices.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return MiniAppsItemWidget(
-                        service: state.listOfServices[index],
-                      );
-                    },
-                  ),
-                );
-              }
-              return const Center(child: CircularProgressIndicator());
-            },
+                  );
+                }
+                return const Center(child: CircularProgressIndicator());
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
