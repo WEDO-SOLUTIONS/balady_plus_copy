@@ -1,21 +1,19 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 
-class ClosureCard extends StatelessWidget {
-  const ClosureCard({
+class ClosedRoadCard extends StatelessWidget {
+  const ClosedRoadCard({
     required this.title,
     required this.description,
     super.key,
-    this.workDuration,
   });
 
   final String title;
   final String description;
-
-  final String? workDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +25,16 @@ class ClosureCard extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: Container(
-          margin: const EdgeInsets.all(12),
+          margin: const EdgeInsets.all(Spacing.$3x),
           decoration: BoxDecoration(
             color: color.backgroundSurface1,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(Spacing.$3x),
           ),
           child: Container(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(Spacing.$4x),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(Spacing.$3x),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -63,21 +61,9 @@ class ClosureCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    CustomCloseButton(
-                      onClose: () => context.router.popForced(),
-                    ),
+                    CustomCloseButton(onClose: context.router.popForced),
                   ],
                 ),
-                if (workDuration != null)
-                  Padding(
-                    padding: const EdgeInsets.only(top: 12),
-                    child: Text(
-                      workDuration!,
-                      style: textStyle.bodySmallRegular.copyWith(
-                        color: color.foregroundSoft.withOpacity(0.64),
-                      ),
-                    ),
-                  ),
               ],
             ),
           ),

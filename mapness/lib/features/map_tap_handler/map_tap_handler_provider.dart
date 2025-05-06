@@ -112,7 +112,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     );
 
     final router = ref.read(appRouterProvider);
-    final roadClosureRoute = RoadClosureRoute(
+    final roadClosedRoute = RoadClosedRoute(
       id: event.id,
       title: event.title,
       description: event.description,
@@ -121,13 +121,13 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
       latitude: event.latLng.latitude,
       longitude: event.latLng.longitude,
     );
-    if (router.isRouteActive(RoadClosureRoute.name)) {
+    if (router.isRouteActive(RoadClosedRoute.name)) {
       router.popAndPush(
-        roadClosureRoute,
+        roadClosedRoute,
       );
     } else {
       router.push(
-        roadClosureRoute,
+        roadClosedRoute,
       );
     }
   }
