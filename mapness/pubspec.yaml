@@ -183,6 +183,7 @@ flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/icons/svg/profile/
     - assets/icons/lottie/
     - assets/icons/svg/social/
     - assets/icons/svg/quick_filters/

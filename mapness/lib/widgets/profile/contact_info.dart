@@ -2,9 +2,12 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
+
+import '../../shared/config/package_config.dart';
 
 const momrahEmail = 'infoCS@momah.gov.sa';
 const momrahPoneNumber = '199040';
@@ -86,18 +89,13 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
             ),
             ContentRow(
               options: ContentRowOptions(
-                leadingIcon: AppIcons(
-                  iconData: switch (Directionality.of(context)) {
-                    TextDirection.ltr => GeneralIcons.phoneLTR,
-                    TextDirection.rtl => GeneralIcons.phoneRTL,
-                  },
-                  color: context.color.textAndIconsStatusAccent,
-                ),
+                leadingIcon:SvgPicture.asset('assets/icons/svg/profile/call.svg', height: 24, width: 24, package: PackageConfig.packageName,),
                 title: momrahPoneNumber,
                 subtitle: context.l10n.profileContactInformation,
               ),
               onTap: () => CommonFunctions.call(momrahPoneNumber),
             ),
+
             AnimatedBuilder(
               animation: _animationController,
               builder: (_, __) => ContentRow(
@@ -108,10 +106,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                         iconData: SystemIcons.copy,
                         color: _animation.value,
                       )),
-                  leadingIcon: AppIcons(
-                    iconData: GeneralIcons.mail,
-                    color: context.color.textAndIconsStatusAccent,
-                  ),
+                  leadingIcon: SvgPicture.asset('assets/icons/svg/profile/email.svg', height: 24, width: 24, package: PackageConfig.packageName,),
                   title: momrahEmail,
                   subtitle: context.l10n.email,
                 ),

@@ -900,6 +900,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/poi_card
   $AssetsIconsSvgPoiCardGen get poiCard => const $AssetsIconsSvgPoiCardGen();
 
+  /// Directory path: assets/icons/svg/profile
+  $AssetsIconsSvgProfileGen get profile => const $AssetsIconsSvgProfileGen();
+
   /// Directory path: assets/icons/svg/quick_filters
   $AssetsIconsSvgQuickFiltersGen get quickFilters =>
       const $AssetsIconsSvgQuickFiltersGen();
@@ -1734,6 +1737,47 @@ class $AssetsIconsSvgPoiCardGen {
   List<String> get values => [accessibility, truck];
 }
 
+class $AssetsIconsSvgProfileGen {
+  const $AssetsIconsSvgProfileGen();
+
+  /// File path: assets/icons/svg/profile/call.svg
+  String get call => 'assets/icons/svg/profile/call.svg';
+
+  /// File path: assets/icons/svg/profile/email.svg
+  String get email => 'assets/icons/svg/profile/email.svg';
+
+  /// File path: assets/icons/svg/profile/ic_language_change.svg
+  String get icLanguageChange =>
+      'assets/icons/svg/profile/ic_language_change.svg';
+
+  /// File path: assets/icons/svg/profile/info.svg
+  String get info => 'assets/icons/svg/profile/info.svg';
+
+  /// File path: assets/icons/svg/profile/question_circle.svg
+  String get questionCircle => 'assets/icons/svg/profile/question_circle.svg';
+
+  /// File path: assets/icons/svg/profile/rate.svg
+  String get rate => 'assets/icons/svg/profile/rate.svg';
+
+  /// File path: assets/icons/svg/profile/settings.svg
+  String get settings => 'assets/icons/svg/profile/settings.svg';
+
+  /// File path: assets/icons/svg/profile/website.svg
+  String get website => 'assets/icons/svg/profile/website.svg';
+
+  /// List of all assets
+  List<String> get values => [
+        call,
+        email,
+        icLanguageChange,
+        info,
+        questionCircle,
+        rate,
+        settings,
+        website
+      ];
+}
+
 class $AssetsIconsSvgQuickFiltersGen {
   const $AssetsIconsSvgQuickFiltersGen();
 
@@ -2417,7 +2461,7 @@ class $AssetsIconsSvgWeatherNightGen {
 }
 
 class Assets {
-  const Assets._();
+  Assets._();
 
   static const $AssetsIconsGen icons = $AssetsIconsGen();
   static const $AssetsImagesGen images = $AssetsImagesGen();
@@ -2458,7 +2502,7 @@ class AssetGenImage {
     bool gaplessPlayback = true,
     bool isAntiAlias = false,
     String? package,
-    FilterQuality filterQuality = FilterQuality.medium,
+    FilterQuality filterQuality = FilterQuality.low,
     int? cacheWidth,
     int? cacheHeight,
   }) {
