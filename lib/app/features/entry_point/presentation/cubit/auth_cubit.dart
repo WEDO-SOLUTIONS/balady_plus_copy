@@ -1,5 +1,9 @@
 //import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
 //   show showUpdateAppPopUpWidget;
+import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
 import 'package:balady_plus/app/features/profile_features/dashboard/presentation/bloc/dashboard_bloc.dart';
 import 'package:balady_plus/app/features/vd/vd_exports.dart';
@@ -23,11 +27,6 @@ import '../../../profile_features/delegators/delegators_exports.dart';
 import '../../data/models/get_permission_params_model.dart';
 import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
-import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
-import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
-import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
 
 part 'auth_state.dart';
 
@@ -193,6 +192,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
             idNo: data.sub,
             mail: data.email,
             phone: data.phoneNumber,
+            loginType: SsoLoginType.otp,
           ),
           errorMessage: "",
         ),
