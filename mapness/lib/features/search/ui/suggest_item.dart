@@ -69,7 +69,7 @@ class SuggestItem extends ConsumerWidget {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
         ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem);
-        ref.read(urbiAnalyticsProvider).track(
+        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
         onObjectTap(objectItem);
