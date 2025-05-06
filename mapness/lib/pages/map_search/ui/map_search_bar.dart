@@ -72,9 +72,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       }
 
       _updateText(next.searchText);
-      if (next is SearchStateLoading) {
-        _focusNode.unfocus();
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (next is SearchStateLoading) {
+          _focusNode.unfocus();
+        } else if (next is SearchStateResults) {
+          _focusNode.requestFocus();
+        }
+      });
     });
 
     return BaladySearchWithBackButtonV2(

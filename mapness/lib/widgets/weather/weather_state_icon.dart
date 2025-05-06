@@ -31,7 +31,6 @@ class WeatherStateIcon extends ConsumerWidget {
       child: SvgPicture.asset(
         iconRes,
         semanticsLabel: 'weather page',
-        package: 'mapness',
       ),
     );
   }

@@ -8,6 +8,7 @@ import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_point.dart';
@@ -41,7 +42,6 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
 }
 
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
-  final _iconAsset = 'packages/mapness/assets/icons/svg/parking_control.svg';
 
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
@@ -219,7 +219,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               longitude: _latLng!.longitude,
               elevation: 0,
             ),
-            icon: iconParking.markerIcon(),
+            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
           ),
         ),
       );
@@ -246,7 +246,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               longitude: _latLng!.longitude,
               elevation: 0,
             ),
-            icon: iconParking.markerIcon(),
+            icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
           ),
         ),
       );
@@ -281,7 +281,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       title: context.l10n.parkingSuccessfullySaved,
       firstText: context.l10n.feedbackBreaksSheetClose,
       secondText: context.l10n.share,
-      iconAsset: _iconAsset,
+      iconAsset: Assets.icons.svg.parkingControl.keyName,
       onSecondTap: () async {
         if (_latLng == null) {
           return;

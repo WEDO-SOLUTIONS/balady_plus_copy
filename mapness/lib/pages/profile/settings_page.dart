@@ -10,10 +10,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/widgets/profile/language_picker.dart';
+
+import '../../_generated/assets/assets.gen.dart';
 
 @RoutePage()
 class SettingsPage extends ConsumerStatefulWidget {
@@ -125,17 +126,15 @@ class _SettingsPageState extends ConsumerState<SettingsPage> {
   Widget? leadingIcon(Language language) => showFlags
       ? SvgPicture.asset(
           switch (language) {
-            Language.arabic => 'assets/icons/svg/sa_flag.svg',
-            Language.english => 'assets/icons/svg/uk_flag.svg',
+            Language.arabic => Assets.icons.svg.saFlag.keyName,
+            Language.english => Assets.icons.svg.ukFlag.keyName,
           },
           height: 16,
           width: 22,
-          package: PackageConfig.packageName,
         )
       : SvgPicture.asset(
-          'assets/icons/svg/profile/ic_language_change.svg',
+          Assets.icons.svg.icLanguageChange.keyName,
           height: 24,
           width: 24,
-          package: PackageConfig.packageName,
         );
 }

@@ -34,10 +34,10 @@ packages:
     dependency: "direct main"
     description:
       name: adjust_sdk
-      sha256: e262e27a76a2b86c283b95774a7393566bea52d2a6ba6581c754147302c9f175
+      sha256: "1f6ecfbc1cddd5ad41199c466c61db6bbaad250fbfe6ebdecb06a24a1cce1e15"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "5.1.1"
   analyzer:
     dependency: transitive
     description:
@@ -194,25 +194,25 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: "59dbf4562d9e7de40ba265a15d760007fab911586bed329223058ef7501d88c8"
+      sha256: "2421b88b3ef5142b102f4657b0fdc9db5fcb0debdfa9a02d696a0a71038ac580"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.52"
+    version: "0.0.55"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.12.5+275"
+    version: "3.12.6+276"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "9f00f405afbed2d3d3b563fe3f61708a03bfe6a41c2e38b4d23e56441e936964"
+      sha256: e5ddb5c79b7f62de1f3facbf151fedd21efe952881004dcee742056d2d16c729
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.3.7"
+    version: "3.4.0"
   barcode:
     dependency: transitive
     description:
@@ -1082,21 +1082,29 @@ packages:
     source: hosted
     version: "9.5.0"
   flutter_gen:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_gen
-      sha256: d7e4e57f606d73628b97765a67fdfb5a97e24cd2183e170afa8d1f62e48a9d5c
+      sha256: "4117a3ea6b26a910c715bd58abcc5a90447e70930a5b98249e94c41da9e849bb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.0"
+    version: "5.10.0"
   flutter_gen_core:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "46ecf0e317413dd065547887c43f93f55e9653e83eb98dc13dd07d40dd225325"
+      sha256: "3eaa2d3d8be58267ac4cd5e215ac965dd23cae0410dc073de2e82e227be32bfc"
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.0"
+    version: "5.10.0"
+  flutter_gen_runner:
+    dependency: "direct dev"
+    description:
+      name: flutter_gen_runner
+      sha256: e74b4ead01df3e8f02e73a26ca856759dbbe8cb3fd60941ba9f4005cd0cd19c9
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.10.0"
   flutter_hms_gms_availability:
     dependency: transitive
     description:
@@ -1289,6 +1297,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  flutter_launcher_icons:
+    dependency: transitive
+    description:
+      name: flutter_launcher_icons
+      sha256: bfa04787c85d80ecb3f8777bde5fc10c3de809240c48fa061a2c2bf15ea5211c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.3"
   flutter_linkify:
     dependency: transitive
     description:
@@ -1844,10 +1860,10 @@ packages:
     dependency: transitive
     description:
       name: image_size_getter
-      sha256: "0511799498340b70993d2dfb34b55a2247b5b801d75a6cdd4543acfcafdb12b0"
+      sha256: "9a299e3af2ebbcfd1baf21456c3c884037ff524316c97d8e56035ea8fdf35653"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.4.0"
   in_app_review:
     dependency: "direct main"
     description:
@@ -2125,10 +2141,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "4e50258b972d92b5a5c0f3a41b9379cf4339509df16cc38d940881ba77bf3a1a"
+      sha256: "50fe0bc4b16a3276ce1c1fd018844b75e7af8195fedd46bbe1f73f69cc675796"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.17"
+    version: "1.1.0"
   mask_text_input_formatter:
     dependency: "direct main"
     description:

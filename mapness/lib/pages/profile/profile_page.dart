@@ -7,9 +7,9 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/log_out_sheet.dart';
@@ -106,7 +106,7 @@ class ProfilePage extends HookConsumerWidget {
                                       ContentRowV2(
                                         onTap: () => context.router.push(const SettingsRoute()),
                                         trailing: trailing,
-                                        leading: SvgPicture.asset('assets/icons/svg/profile/settings.svg', height: 24, width: 24, package: PackageConfig.packageName,) ,
+                                        leading: SvgPicture.asset('assets/icons/svg/profile/settings.svg', height: 24, width: 24) ,
                                         text: ContentRowTextOptions(
                                           title: context.l10n.settings,
                                         ),
@@ -122,7 +122,7 @@ class ProfilePage extends HookConsumerWidget {
                                       isDividerEnabled: true,
                                       onTap: () => context.router.push(const HelpCenterRoute()),
                                       trailing: trailing,
-                                      leading:SvgPicture.asset('assets/icons/svg/profile/question_circle.svg', height: 24, width: 24, package: PackageConfig.packageName,) ,//leadingIconBuilder(GeneralIcons.questionCircle),
+                                      leading:SvgPicture.asset('assets/icons/svg/profile/question_circle.svg', height: 24, width: 24) ,//leadingIconBuilder(GeneralIcons.questionCircle),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.helpCenter,
                                       ),
@@ -133,7 +133,7 @@ class ProfilePage extends HookConsumerWidget {
                                         context.router.push(const AboutBaladyRoute());
                                       },
                                       trailing: trailing,
-                                      leading: SvgPicture.asset('assets/icons/svg/profile/info.svg', height: 24, width: 24, package: PackageConfig.packageName,) ,
+                                      leading: SvgPicture.asset('assets/icons/svg/profile/info.svg', height: 24, width: 24) ,
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
                                       ),
@@ -145,7 +145,7 @@ class ProfilePage extends HookConsumerWidget {
                                         );
                                       },
                                       trailing: trailing,
-                                      leading: SvgPicture.asset('assets/icons/svg/profile/rate.svg', height: 24, width: 24, package: PackageConfig.packageName,) ,
+                                      leading: SvgPicture.asset('assets/icons/svg/profile/rate.svg', height: 24, width: 24) ,
                                       text: ContentRowTextOptions(
                                         title: context.l10n.rateBaladyApp,
                                       ),
@@ -169,11 +169,10 @@ class ProfilePage extends HookConsumerWidget {
                                                 ),
                                               ),
                                               leading: SvgPicture.asset(
-                                                'assets/icons/svg/ic_profile_logout.svg',
+                                                Assets.icons.svg.icProfileLogout.keyName,
                                                 height: 24,
                                                 width: 24,
                                                 matchTextDirection: true,
-                                                package: PackageConfig.packageName,
                                                 colorFilter: ColorFilter.mode(
                                                   context.colorsV3.errorDefault,
                                                   BlendMode.srcIn,

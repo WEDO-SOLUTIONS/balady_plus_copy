@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -52,8 +53,8 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(RadiusBorder.xl),
                 boxShadow: Shadows.s,
-                image: const DecorationImage(
-                  image: AssetImage('assets/images/drive_home_background.png'),
+                image: DecorationImage(
+                  image: Assets.images.driveHomeBackground.provider(),
                   matchTextDirection: true,
                   fit: BoxFit.cover,
                   alignment: AlignmentDirectional.centerEnd,
@@ -73,10 +74,7 @@ class _DriveBackHomeCardState extends ConsumerState<DriveBackHomeCard> with Auto
                   ),
                   Align(
                     alignment: AlignmentDirectional.centerEnd,
-                    child: Image.asset(
-                      'assets/images/drive_home_arrow.png',
-                      matchTextDirection: true,
-                    ),
+                    child: Assets.images.driveHomeArrow.image(matchTextDirection: true),
                   ),
                   Align(
                     alignment: AlignmentDirectional.topStart,

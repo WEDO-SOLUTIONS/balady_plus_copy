@@ -9,13 +9,13 @@ import 'package:flutter/widgets.dart';
 
 class FeedbackBannerCard extends StatelessWidget {
   final String title;
-  final String imageAssetName;
+  final String path;
   final String? subtitle;
   final List<Color> gradientColors;
   final VoidCallback? onTap;
 
   const FeedbackBannerCard({
-    required this.imageAssetName,
+    required this.path,
     required this.gradientColors,
     required this.title,
     this.subtitle,
@@ -29,7 +29,7 @@ class FeedbackBannerCard extends StatelessWidget {
         child: GestureDetector(
           onTap: onTap,
           child: _FeedBackWidget(
-            asset: 'packages/mapness/assets/images/$imageAssetName',
+            asset: path,
             title: title,
             subTitle: subtitle,
             gradientColors: gradientColors,

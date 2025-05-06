@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,7 +12,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/debug_state.dart';
 import 'package:mapness/widgets/profile/contact_info.dart';
 
-import '../../shared/config/package_config.dart';
 
 @RoutePage()
 class HelpCenterPage extends ConsumerStatefulWidget {
@@ -57,7 +57,7 @@ class _HelpCenterPageState extends ConsumerState<HelpCenterPage> {
                           onTap: () => context.router.push(const MomraWebsiteRoute()),
                           options: ContentRowOptions(
                             title: context.l10n.baladyWebsite,
-                            leadingIcon: SvgPicture.asset('assets/icons/svg/profile/website.svg', height: 24, width: 24, package: PackageConfig.packageName,),
+                            leadingIcon: SvgPicture.asset('assets/icons/svg/profile/website.svg', height: 24, width: 24),
                             actionWidget: ContentRowActionOptions(
                               actionIcon: SystemIcons.arrowCornerRightLarge.icon(
                                 color: context.color.textAndIconsBaseSecondary,

@@ -7,7 +7,6 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
 
-import '../../shared/config/package_config.dart';
 
 const momrahEmail = 'infoCS@momah.gov.sa';
 const momrahPoneNumber = '199040';
@@ -89,7 +88,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
             ),
             ContentRow(
               options: ContentRowOptions(
-                leadingIcon:SvgPicture.asset('assets/icons/svg/profile/call.svg', height: 24, width: 24, package: PackageConfig.packageName,),
+                leadingIcon:SvgPicture.asset('assets/icons/svg/profile/call.svg', height: 24, width: 24),
                 title: momrahPoneNumber,
                 subtitle: context.l10n.profileContactInformation,
               ),
@@ -106,7 +105,7 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
                         iconData: SystemIcons.copy,
                         color: _animation.value,
                       )),
-                  leadingIcon: SvgPicture.asset('assets/icons/svg/profile/email.svg', height: 24, width: 24, package: PackageConfig.packageName,),
+                  leadingIcon: SvgPicture.asset('assets/icons/svg/profile/email.svg', height: 24, width: 24),
                   title: momrahEmail,
                   subtitle: context.l10n.email,
                 ),

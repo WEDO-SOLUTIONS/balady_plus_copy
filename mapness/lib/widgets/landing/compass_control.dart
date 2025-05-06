@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/providers/map/bearing_state.dart';
 import 'package:mapness/shared/ui/buttons/map_button.dart';
 
@@ -23,9 +24,8 @@ class CompassControl extends ConsumerWidget {
         child: Transform.rotate(
           angle: bearingState.angle - pi,
           child: SvgPicture.asset(
-            'assets/icons/svg/ic_control_compass.svg',
+            Assets.icons.svg.icControlCompass.keyName,
             semanticsLabel: 'MinApps Screen',
-            package: 'mapness',
           ),
         ),
       ),

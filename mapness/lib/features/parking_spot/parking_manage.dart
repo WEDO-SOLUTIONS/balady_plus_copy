@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dgis_map/library.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
@@ -22,8 +23,7 @@ const _boxName = 'parking_location';
 const _keyCache = 'parking_store_model';
 
 const parkingId = 'parking_marker';
-const iconParking = 'packages/mapness/assets/icons/svg/places_new/ic_parking.svg';
-const parkingObjectId = 10; /// This ID is needed to determine that we have opened the parking lot
+const parkingObjectId = 10;/// This ID is needed to determine that we have opened the parking lot
 
 @riverpod
 class _ParkingManage extends _$ParkingManage {
@@ -133,7 +133,7 @@ class _ParkingManage extends _$ParkingManage {
             longitude: lon,
             elevation: 1,
           ),
-          icon: iconParking.markerIcon(),
+          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
         ),
         onTap: () {
           ref.read(appRouterProvider).replaceOrPush(

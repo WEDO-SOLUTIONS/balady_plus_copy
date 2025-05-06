@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
@@ -49,7 +50,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
+          icon: Assets.icons.svg.quickFilters.icQuickHome.keyName,
           onTap: () {
             final home = favouritesState.valueOrNull?.home;
             if (home != null) {
@@ -65,7 +66,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
+          icon: Assets.icons.svg.quickFilters.icQuickWork.keyName,
           onTap: () {
             final work = favouritesState.valueOrNull?.work;
             if (work != null) {
@@ -84,7 +85,7 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       FilterItemConfig(
         filterType: FilterType.favourites,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
+        icon: Assets.icons.svg.quickFilters.icQuickBookmark.keyName,
         onTap: onFavouritesBookmarkTap,
       ),
       ...customItems,

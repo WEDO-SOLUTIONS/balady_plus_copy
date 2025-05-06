@@ -238,7 +238,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                           [
                             const SizedBox(height: Spacing.$4x),
                             FeedbackBannerCard(
-                              imageAssetName: 'city_expert.png',
+                              path: Assets.images.cityExpert.keyName,
                               title: context.l10n.cityExpert,
                               subtitle: context.l10n.cityExpertDescription,
                               gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
