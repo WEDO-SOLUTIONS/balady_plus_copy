@@ -2,7 +2,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class SetPreferencesPlaceholderWidget extends StatelessWidget {
@@ -15,7 +15,7 @@ class SetPreferencesPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: 'assets/images_svg/illustration_percent.svg',
+        asset: Assets.imagesSvg.illustrationPercent.keyName,
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
         hint: context.l10n.saudiPassOffersSetPreferencesHint,
@@ -33,7 +33,7 @@ class LoginPreferencesPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: 'assets/images_svg/illustration_percent.svg',
+        asset: Assets.imagesSvg.illustrationPercent.keyName,
         action: action,
         title: context.l10n.saudiPassOffersSetPreferences,
         hint: context.l10n.saudiPassOffersLoginHint,
@@ -51,7 +51,7 @@ class WentWrongPlaceholderWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => _PlaceholderWidget(
-        asset: 'assets/images_svg/illustration_error.svg',
+        asset: Assets.imagesSvg.illustrationError.keyName,
         action: action,
         title: context.l10n.saudiPassSomethingWentWrong,
         hint: context.l10n.saudiPassSomethingWentWrongHint,
@@ -95,7 +95,7 @@ class _PlaceholderWidget extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              SvgPicture.asset(asset, package: PackageConfig.packageName),
+              SvgPicture.asset(asset),
               const SizedBox(height: Spacing.$4x),
               Text(title, style: titleStyle),
               const SizedBox(height: Spacing.$2x),

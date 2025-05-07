@@ -119,8 +119,7 @@ class ProfilePage extends HookConsumerWidget {
                                           onTap: () => context.router.push(const ProfilePreferencesRoute()),
                                           trailing: trailing,
                                           leading: SvgPicture.asset(
-                                            'assets/icons/svg/percent.svg',
-                                            package: PackageConfig.packageName,
+                                            Assets.icons.svg.percent.keyName,
                                           ),
                                           text: ContentRowTextOptions(
                                             title: context.l10n.preferences,
