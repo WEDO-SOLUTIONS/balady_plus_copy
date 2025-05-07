@@ -27,12 +27,9 @@ class PathCardWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         alignment: alignment,
-        padding: const EdgeInsets.symmetric(
-          horizontal: Spacing.horizontalContentPaddingChipsRow,
-          vertical: Spacing.horizontalContentPaddingChipsRow,
-        ),
+        padding: const EdgeInsets.all(Spacing.$3x),
         decoration: ShapeDecoration(
-          shape: smoothBorder(CornerRadius.smallContainer),
+          shape: smoothBorder(RadiusBorder.l),
           color: context.color.surfaceBaseSecondary,
         ),
         child: child,

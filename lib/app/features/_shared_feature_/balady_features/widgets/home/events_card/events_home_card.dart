@@ -7,21 +7,18 @@ import 'package:balady_plus/app/features/events/presentation/bloc/events_event.d
 import 'package:balady_plus/app/features/events/presentation/bloc/events_state.dart';
 import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_shimmer_widget.dart';
-import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EventsHomeCard extends StatelessWidget {
-  final AppColorScheme colorScheme;
 
   final VoidCallback? onShowAll;
   final ValueChanged<SearchEventsItem>? onItemTap;
 
   const EventsHomeCard({
     super.key,
-    required this.colorScheme,
     this.onShowAll,
     this.onItemTap,
   });
@@ -97,7 +94,6 @@ class EventsHomeCard extends StatelessWidget {
                       width: MediaQuery.of(context).size.width - 60,
                       padding: const EdgeInsets.only(right: 16),
                       item: state.searchItems[index],
-                      colorScheme: colorScheme,
                     );
                   },
                 ),

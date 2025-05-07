@@ -33,11 +33,11 @@ class PinnedPlaceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Container(
         padding: const EdgeInsets.symmetric(
-          vertical: Spacing.verticalPaddingInsideCell,
-          horizontal: Spacing.horizontalPaddingInsideCell,
+          vertical: Spacing.$3x,
+          horizontal: Spacing.$2x,
         ),
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(CornerRadius.smallContainer),
+          borderRadius: BorderRadius.circular(RadiusBorder.l),
           color: context.color.surfaceBaseSecondary,
         ),
         child: Stack(
@@ -45,9 +45,7 @@ class PinnedPlaceCard extends StatelessWidget {
           children: [
             Column(
               children: [
-                const SizedBox(
-                  height: NumericBase.$2x,
-                ),
+                const SizedBox(height: Spacing.$2x),
                 InkWell(
                   onTap: onTap,
                   child: Container(
@@ -71,15 +69,13 @@ class PinnedPlaceCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: NumericBase.$1x),
+                const SizedBox(height: Spacing.$1x),
                 Text(
                   title,
                   textAlign: TextAlign.right,
                   style: context.textStyle.heading2.copyWith(color: context.color.textAndIconsBasePrimary),
                 ),
-                const SizedBox(
-                  height: NumericBase.$0_5x,
-                ),
+                const SizedBox(height: Spacing.$0_5x),
                 Text(
                   address,
                   textAlign: TextAlign.right,

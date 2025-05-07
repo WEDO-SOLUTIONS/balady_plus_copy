@@ -17,7 +17,7 @@ class DirectionText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Padding(
-        padding: const EdgeInsets.all(NumericBase.$3x),
+        padding: const EdgeInsets.all(Spacing.$3x),
         child: Align(
           alignment: Alignment(
             cos(CommonFunctions.convertDegreesToRadiansAndShift(bearing)),

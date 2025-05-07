@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-
+import 'package:mapness/shared/ui/picture/picture.dart';
 part 'default_profile_image.dart';
 
 class ProfileImageWidget extends ConsumerWidget {
