@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hijri/hijri_calendar.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+import 'package:mapness/shared/constants/names_ar.dart';
 
 class SsoUserInfo extends Equatable {
   const SsoUserInfo(
@@ -201,14 +202,14 @@ class SsoUserInfo extends Equatable {
 
   String getEmail() {
     String email =
-         mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
+        mail?.replaceAll("\u200e", '').replaceAll("\u200f", '').trim() ?? "";
     return email;
   }
 
   String getPhone() {
     return phone != null
-         ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
-         : "";
+        ? (!phone!.startsWith("0") ? "0" + phone! : phone!)
+        : "";
   }
 
   String getGender() {
@@ -217,6 +218,15 @@ class SsoUserInfo extends Equatable {
 
   String? getFullName() {
     return CommonFunctions.isAppAR ? arName : enName;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['email'] = mail;
+    data['name'] = name;
+    data['phone'] = phone;
+    data['name_ar'] = namesAr;
+    return data;
   }
 
   @override
