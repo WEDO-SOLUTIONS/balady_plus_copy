@@ -8,7 +8,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/profile/profile_image_provider.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/ui/picture/picture.dart';
+import 'package:mapness/shared/ui/picture/picture.dart' as picture;
 part 'default_profile_image.dart';
 
 class ProfileImageWidget extends ConsumerWidget {
@@ -27,7 +27,7 @@ class ProfileImageWidget extends ConsumerWidget {
     final value = profileImage.valueOrNull;
     if (value != null && value.imageBase64.isNotEmpty) {
       final imageBytes = base64Decode(value.imageBase64);
-      return Picture.large(
+      return picture.Picture.large(
         key: ValueKey(profileImage.valueOrNull!.imageBase64),
         size: dimension,
         imgBytes: imageBytes,

@@ -1,3 +1,4 @@
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
@@ -44,10 +45,10 @@ class TestMaterialApp extends ConsumerWidget {
           extensions: <ThemeExtension<dynamic>>[
             if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
             if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-            AppColorsThemeExt.palette(isDark: false),
+            AppColorsThemeExt.palette(AppColorScheme.main, isDark: false),
             AppColorsThemeV2.palette(isDark: false),
             AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
-            AppStaticColorsThemeExt.palette(),
+            AppStaticColorsThemeExt.palette(AppColorScheme.main),
           ],
         ),
         home: child,
