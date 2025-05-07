@@ -12,6 +12,7 @@ import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.coordinates.GeoRect
 import ru.dgis.sdk.directory.*
 import ru.dgis.sdk.map.*
+import ru.dgis.sdk.platform.Locale
 import java.util.UUID
 import ru.dgis.sdk.map.Map as DgisMap
 
@@ -70,6 +71,7 @@ class SearchHandler(
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
+        locale: String?,
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         val queryBuilder =
@@ -81,6 +83,7 @@ class SearchHandler(
                 queryBuilder
                         .setSortingType(sortingType.toSortingType())
                         .setPageSize(pageSize)
+                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
                         .setDirectoryFilter(
                                 DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
                         )
@@ -101,6 +104,7 @@ class SearchHandler(
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
+        locale: String?,
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         if (this.queries[queryId.id] == null) {
@@ -114,6 +118,7 @@ class SearchHandler(
                 SearchQueryBuilder.fromQuery(searchQuery)
                         .setSortingType(sortingType.toSortingType())
                         .setPageSize(pageSize)
+                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
                         .setDirectoryFilter(
                                 DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
                         )
@@ -134,12 +139,14 @@ class SearchHandler(
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
+        locale: String?,
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
                 SearchQueryBuilder.fromRubricIds(categories)
                         .setSortingType(sortingType.toSortingType())
                         .setPageSize(pageSize)
+                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
                         .setDirectoryFilter(
                                 DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
                         )
@@ -159,6 +166,7 @@ class SearchHandler(
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
+        locale: String?,
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
@@ -166,6 +174,7 @@ class SearchHandler(
                         .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
                         .setSortingType(sortingType.toSortingType())
                         .setPageSize(pageSize.toInt())
+                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
                         .setDirectoryFilter(
                                 DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
                         )
@@ -185,6 +194,7 @@ class SearchHandler(
         weekTimeMessage: WeekTimeSearchMessage? = null,
         sortingType: SortingTypeMessage,
         pageSize: Int,
+        locale: String?,
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
@@ -192,6 +202,7 @@ class SearchHandler(
                         .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
                         .setSortingType(sortingType.toSortingType())
                         .setPageSize(pageSize.toInt())
+                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
                         .setDirectoryFilter(
                                 DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
                         )
@@ -294,13 +305,24 @@ class SearchHandler(
         queryText: String,
         allowedResultTypes: List<SuggestedTypeMessage_>?,
         searchGeoRect: GeoRect?,
+        locale: String?,
+        suggestorType: SuggestorTypeEnum?,
+        limit: Int?,
         callback: (Result<SuggestResultMessage>)->Unit
     ) {
         var suggestQueryBuilder =
                 SuggestQueryBuilder.fromQueryText(queryText)
                         .setAreaOfInterest(searchGeoRect)
                         .setSpatialRestriction(saRestrictions)
-
+                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
+        
+        if(suggestorType != null) {
+            suggestQueryBuilder = suggestQueryBuilder.setSuggestorType(suggestorType.toSuggestType())
+        }
+        if (limit != null) {
+            suggestQueryBuilder = suggestQueryBuilder.setLimit(limit)
+        }
+        
         if (allowedResultTypes != null) {
             suggestQueryBuilder =
                     suggestQueryBuilder.setAllowedResultTypes(

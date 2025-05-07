@@ -103,6 +103,7 @@ class EtaRoutePoint with _$EtaRoutePoint {
   const factory EtaRoutePoint({
     final double? lat,
     final double? lon,
+    final String? label,
   }) = _EtaRoutePoint;
 
   /// Creates an [EtaRoutePoint] object from a JSON map.

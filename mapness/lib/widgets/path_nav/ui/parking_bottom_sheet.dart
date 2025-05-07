@@ -101,7 +101,7 @@ class ParkingBottomSheetPage extends HookConsumerWidget {
                       onTap: () {
                         ToastOverlay.of(context).show(
                           title: context.l10n.youCanChangeAutomaticParking,
-                          actionText: context.l10n.feedbackBreaksSheetClose,
+                          firstText: context.l10n.feedbackBreaksSheetClose,
                         );
 
                         ref.read(navigatorAutoEnableParkingProvider.notifier).toggleAutoEnableParking(value: false);

@@ -6,10 +6,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photos_row.dart';
-import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
@@ -29,7 +29,9 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
   Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     final transformPhotoSize = _transformPhotoSize(state, interpolation);
     final hideTransform = min(1.0, transformPhotoSize / photosMinHeight);
-    final isNoPhotos = isPhotosEmpty && !isPhotosLoading;
+    final _parkingObjectId = objectId == parkingObjectId;
+
+    final isNoPhotos = isPhotosEmpty && !isPhotosLoading && !_parkingObjectId;
 
     return Directionality(
       textDirection: isPhotosEmpty ? TextDirection.ltr : Directionality.of(context),
@@ -44,8 +46,7 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
                 ? AppButton(
                     buttonColorScheme: ButtonColorScheme.onColor,
                     onTap: () => context.router.push(
-                      QuickFeedbackRoute(
-                        type: QuickFeedbackType.addPhoto,
+                      QuickFeedbackPhotoRoute(
                         params: FeedbackObjectIdParams(objectId),
                       ),
                     ),

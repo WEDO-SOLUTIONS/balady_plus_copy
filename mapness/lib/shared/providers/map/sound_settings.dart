@@ -32,19 +32,27 @@ class SoundSettingsModel {
   /// Current voice language code, if value wasn't picked before, it takes value from app language
   final String voicesLanguage;
 
-  ///List of installed voices on device
-  final List<PackageMessage> installedVoices;
+  /// List of English installed voices on device
+  final List<PackageMessage> englishInstalledVoices;
 
-  ///List of available for download voices
-  final List<PackageMessage> unInstalledVoices;
+  /// List of English available for download voices
+  final List<PackageMessage> englishUnInstalledVoices;
+
+  /// List of Arabic installed voices on device
+  final List<PackageMessage> arabicInstalledVoices;
+
+  /// List of Arabic available for download voices
+  final List<PackageMessage> arabicUnInstalledVoices;
 
   /// Current voice of assistant
   final String? voiceName;
 
   const SoundSettingsModel({
     required this.voicesLanguage,
-    required this.installedVoices,
-    required this.unInstalledVoices,
+    required this.englishInstalledVoices,
+    required this.englishUnInstalledVoices,
+    required this.arabicInstalledVoices,
+    required this.arabicUnInstalledVoices,
     this.voiceInstructionIndex = 2,
     this.muffleOtherSounds = false,
     this.promptsVolumeIndex = 2,
@@ -63,8 +71,10 @@ class SoundSettingsModel {
     bool? roadCameras,
     bool? overSpeeding,
     String? voiceName,
-    List<PackageMessage>? installedVoices,
-    List<PackageMessage>? unInstalledVoices,
+    List<PackageMessage>? englishInstalledVoices,
+    List<PackageMessage>? englishUnInstalledVoices,
+    List<PackageMessage>? arabicInstalledVoices,
+    List<PackageMessage>? arabicUnInstalledVoices,
   }) =>
       SoundSettingsModel(
         voiceInstructionIndex: voiceInstructionIndex ?? this.voiceInstructionIndex,
@@ -75,8 +85,10 @@ class SoundSettingsModel {
         overSpeeding: overSpeeding ?? this.overSpeeding,
         voicesLanguage: voicesLanguage ?? this.voicesLanguage,
         voiceName: voiceName ?? this.voiceName,
-        installedVoices: installedVoices ?? this.installedVoices,
-        unInstalledVoices: unInstalledVoices ?? this.unInstalledVoices,
+        englishInstalledVoices: englishInstalledVoices ?? this.englishInstalledVoices,
+        englishUnInstalledVoices: englishUnInstalledVoices ?? this.englishUnInstalledVoices,
+        arabicInstalledVoices: arabicInstalledVoices ?? this.arabicInstalledVoices,
+        arabicUnInstalledVoices: arabicUnInstalledVoices ?? this.arabicUnInstalledVoices,
       );
 }
 
@@ -101,11 +113,13 @@ class SoundSettings extends _$SoundSettings {
       voiceName = voicePackages.map((e) => e.packageMessage).firstWhere((e) => e.id == selectedVoice).info.name;
     }
 
-    final installedVoices = <PackageMessage>[];
-    final unInstalledVoices = <PackageMessage>[];
+    final englishInstalledVoices = <PackageMessage>[];
+    final englishUnInstalledVoices = <PackageMessage>[];
 
-    final voicesLanguage =
-        sharedPrefs.getString(MapnessConstants.voicesLanguagePrefsKey) ?? language.locale.languageCode;
+    final arabicInstalledVoices = <PackageMessage>[];
+    final arabicUnInstalledVoices = <PackageMessage>[];
+
+    final voicesLanguage = sharedPrefs.getString(MapnessConstants.voicesLanguagePrefsKey) ?? language.languageCode;
     final prefsVoiceInstructionIndex = sharedPrefs.getInt(MapnessConstants.voiceInstructionIndexPrefsKey);
     final prefsMuffleOtherSounds = sharedPrefs.getBool(MapnessConstants.muffleOtherSoundsPrefsKey);
     final prefsPromptsVolumeIndex = sharedPrefs.getInt(MapnessConstants.promptsVolumeIndexPrefsKey);
@@ -114,19 +128,27 @@ class SoundSettings extends _$SoundSettings {
     final prefsOverSpeeding = sharedPrefs.getBool(MapnessConstants.overSpeedingPrefsKey);
 
     for (final package in voicePackages) {
-      if (package.language == voicesLanguage) {
+      if (Language.parceString(package.language)?.isEnglish == true) {
         if (package.packageMessage.info.installed) {
-          installedVoices.add(package.packageMessage);
+          englishInstalledVoices.add(package.packageMessage);
         } else {
-          unInstalledVoices.add(package.packageMessage);
+          englishUnInstalledVoices.add(package.packageMessage);
+        }
+      } else if (Language.parceString(package.language)?.isArabic == true) {
+        if (package.packageMessage.info.installed) {
+          arabicInstalledVoices.add(package.packageMessage);
+        } else {
+          arabicUnInstalledVoices.add(package.packageMessage);
         }
       }
     }
 
     final _defaultSoundSettings = SoundSettingsModel(
       voicesLanguage: voicesLanguage,
-      installedVoices: installedVoices,
-      unInstalledVoices: unInstalledVoices,
+      englishInstalledVoices: englishInstalledVoices,
+      englishUnInstalledVoices: englishUnInstalledVoices,
+      arabicInstalledVoices: arabicInstalledVoices,
+      arabicUnInstalledVoices: arabicUnInstalledVoices,
     ).copyWith(
       voiceInstructionIndex: prefsVoiceInstructionIndex,
       muffleOtherSounds: prefsMuffleOtherSounds,
@@ -201,8 +223,8 @@ class SoundSettings extends _$SoundSettings {
 
     state = state.copyWith(voicesLanguage: currentVoiceLanguage);
     ref.invalidateSelf();
-    if (state.installedVoices.isNotEmpty) {
-      ref.read(navigatorVoiceProvider.notifier).update(state.installedVoices.first.id);
+    if (state.englishInstalledVoices.isNotEmpty) {
+      ref.read(navigatorVoiceProvider.notifier).update(state.englishInstalledVoices.first.id);
     }
   }
 

@@ -1,10 +1,11 @@
 import 'package:dgis_map/library.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/favourites/helpers/construct_marker.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
+import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -75,7 +76,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           element,
-          LayersSvgPaths.favourites.markerIcon(),
+          Assets.icons.svg.layers.icFavPin.keyName.markerIcon(),
           router,
         ),
       );
@@ -86,7 +87,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.home!,
-          LayersSvgPaths.home.markerIcon(),
+          Assets.icons.svg.layers.icFavHome.keyName.markerIcon(),
           router,
         ),
       );
@@ -97,7 +98,7 @@ class _FavouriteMarkers extends _$FavouriteMarkers {
       markers.add(
         constructMarker(
           favItems.work!,
-          LayersSvgPaths.work.markerIcon(),
+          Assets.icons.svg.layers.icFavWork.keyName.markerIcon(),
           router,
         ),
       );

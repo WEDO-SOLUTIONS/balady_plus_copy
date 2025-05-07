@@ -5,9 +5,9 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
 import 'package:mapness/features/path_nav/lib/enums.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -165,25 +165,22 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                 Padding(
                   padding: const EdgeInsets.all(Spacing.$2x),
                   child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: context.colorsV3.backgroundSurface1,
-                              borderRadius: borderSizeS,
-                            ),
-                            padding: const EdgeInsets.all(Spacing.$2x),
-                            child: EventsOnTheRoute.parking.icon(color: context.staticColor.surfaceStatusAccent),
-                          ),
-                          Spacing.$3x.widthBox,
-                          Text(
-                            context.l10n.showParkingSuggestions,
-                            style: context.textStyleV3.bodyLargeSemiBold
-                                .copyWith(color: context.colorsV3.backgroundSurface1),
-                          ),
-                        ],
+                      Container(
+                        decoration: BoxDecoration(
+                          color: context.colorsV3.backgroundSurface1,
+                          borderRadius: borderSizeS,
+                        ),
+                        padding: const EdgeInsets.all(Spacing.$2x),
+                        child: EventsOnTheRoute.parking.icon(color: context.staticColor.surfaceStatusAccent),
+                      ),
+                      Spacing.$3x.widthBox,
+                      Expanded(
+                        child: Text(
+                          context.l10n.showParkingSuggestions,
+                          style:
+                              context.textStyleV3.bodyLargeMedium.copyWith(color: context.colorsV3.backgroundSurface1),
+                        ),
                       ),
                       AppButton(
                         size: ButtonSize.small,

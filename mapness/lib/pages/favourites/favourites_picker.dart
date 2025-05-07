@@ -123,6 +123,7 @@ class FavouritesPickerPage extends ConsumerWidget {
                               onTap: () => context.router.popForced(item),
                               isEditing: false,
                               isDeletable: false,
+                              isLongPressEnabled: false,
                               item: item,
                               isFirst: false,
                               isLast: false,

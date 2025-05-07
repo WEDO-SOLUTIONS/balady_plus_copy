@@ -1,3 +1,5 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:flutter/material.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -22,10 +24,32 @@ enum QuickFilter {
   shopping,
 }
 
+sealed class QuickFilterBase {
+  const QuickFilterBase();
+
+  List<QuickFilter> get list;
+}
+
+class QuickFilterList extends QuickFilterBase {
+  @override
+  List<QuickFilter> get list => QuickFilter.values;
+}
+
+class NaviQuickFilterList extends QuickFilterBase {
+  @override
+  List<QuickFilter> get list => [
+        QuickFilter.gasStation,
+        QuickFilter.eatOut,
+        QuickFilter.markets,
+        QuickFilter.hotels,
+        QuickFilter.mosques,
+      ];
+}
+
 extension QuickFilterExtension on QuickFilter {
-  String title(AppLocalizations locale) => switch (this) {
+  String title(AppLocalizations locale, {bool isShort = false}) => switch (this) {
         QuickFilter.mosques => locale.mosques,
-        QuickFilter.gasStation => locale.gasStations,
+        QuickFilter.gasStation => isShort ? locale.fuel : locale.gasStations,
         QuickFilter.parks => locale.parks,
         QuickFilter.hospitals => locale.hospitals,
         QuickFilter.schools => locale.schools,
@@ -36,10 +60,19 @@ extension QuickFilterExtension on QuickFilter {
         QuickFilter.recreationCenters => locale.recreationalCenters,
         QuickFilter.sportClubs => locale.sportClubs,
         QuickFilter.carServices => locale.carServices,
-        QuickFilter.markets => locale.markets,
+        QuickFilter.markets => isShort ? locale.market : locale.markets,
         QuickFilter.eatOut => locale.eatOut,
         QuickFilter.barbershops => locale.barbershops,
         QuickFilter.shopping => locale.placesToShop,
+      };
+
+  IconData? get icon => switch (this) {
+        QuickFilter.mosques => PlacesIcons.mosques,
+        QuickFilter.gasStation => PlacesIcons.gasstation,
+        QuickFilter.hotels => PlacesIcons.hotels,
+        QuickFilter.markets => PlacesIcons.markets,
+        QuickFilter.eatOut => PlacesIcons.restaurant,
+        _ => null,
       };
 
   MapMarkersType? get markerType => switch (this) {

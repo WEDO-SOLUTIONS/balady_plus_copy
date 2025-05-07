@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:dgis_map/library.dart';
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -22,96 +23,127 @@ class _Location extends _$Location {
 
   @override
   Position? build() {
-    checkLocationPermission().then((permitted) {
+    checkLocationPermission(showGiveAccessSheet: false).then((permitted) async {
       if (!permitted) {
         return;
       }
+      final isHMS = await CommonFunctions.isHuaweiDevice();
+      if (isHMS) {
+        try {
+          final locationSubscription = CommonFunctions.listenToHMSStream()?.listen(
+            (event) async {
+              state = await _getLocation(Position(
+                longitude: event.longitude!,
+                latitude: event.latitude!,
+                timestamp: DateTime.now(),
+                accuracy: event.horizontalAccuracyMeters ?? 0,
+                altitude: event.altitude ?? 0,
+                altitudeAccuracy: event.verticalAccuracyMeters ?? 0,
+                heading: event.bearing ?? 0,
+                headingAccuracy: event.bearingAccuracyDegrees ?? 0,
+                speed: event.speed ?? 0,
+                speedAccuracy: event.speedAccuracyMetersPerSecond ?? 0,
+              ));
+            },
+          );
+          if (locationSubscription != null) {
+            ref.onDispose(locationSubscription.cancel);
+          }
+        } catch (ex) {
+          debugPrint(ex.toString());
+        }
+      } else {
+        try {
+          const locationSettings = LocationSettings();
 
-      const locationSettings = LocationSettings();
+          final locationSubscription = Geolocator.getPositionStream(
+            locationSettings: locationSettings,
+          ).listen(
+            (event) async {
+              state = await _getLocation(event);
+            },
+          );
+          ref.onDispose(locationSubscription.cancel);
 
-      final locationSubscription = Geolocator.getPositionStream(
-        locationSettings: locationSettings,
-      ).listen(
-        (event) async {
-          state = await _getLocation(event);
-        },
-      );
-      ref.onDispose(locationSubscription.cancel);
-
-      return null;
+          return null;
+        } catch (ex) {
+          debugPrint(ex.toString());
+        }
+      }
     });
 
     return null;
   }
 
-  Future<bool> checkLocationPermission({String? routeOnClose}) async {
+  Future<bool> checkLocationPermission({String? routeOnClose, bool showGiveAccessSheet = true}) async {
     const routeLocation = '/request_location';
-    final serviceStatus = await perm.Permission.location.serviceStatus;
     final router = ref.read(appRouterProvider);
+    final serviceStatus = await perm.Permission.location.serviceStatus;
 
-    if (serviceStatus != perm.ServiceStatus.disabled) {
-      final status = await perm.Permission.location.request();
-
-      if (status == perm.PermissionStatus.permanentlyDenied) {
-        if (CommonFunctions.locationDialogShowed) {
-          return false;
-        }
-        if (router.isPathActive(routeLocation)) {
-          return false;
-        }
-        CommonFunctions.locationDialogShowed = true;
-
-        unawaited(
-          router
-              .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
-              .then((value) => CommonFunctions.locationDialogShowed = false),
-        );
-        return false;
-      } else if (status != perm.PermissionStatus.granted) {
-        unawaited(perm.Permission.location.request());
-        return false;
-      } else {
-        if (state == null) {
-          final isHuawei = await CommonFunctions.isHawaiiDevice();
-          Position? userLocation;
-
-          if (isHuawei) {
-            userLocation = await CommonFunctions.getLastLocationHuawei();
-          } else {
-            userLocation = await Geolocator.getLastKnownPosition();
+    if (CommonFunctions.locationDialogShowed || router.isPathActive(routeLocation)) {
+      return false;
+    }
+    try {
+      if (serviceStatus != perm.ServiceStatus.disabled) {
+        final status = await perm.Permission.location.request();
+        if (status == perm.PermissionStatus.permanentlyDenied) {
+          if (CommonFunctions.locationDialogShowed) {
+            return false;
           }
-          // final loc = await Helpers.getCurrentLocation();
-          state = await _getLocation(userLocation != null
-              ? Position(
-                  latitude: userLocation.latitude,
-                  longitude: userLocation.longitude,
-                  timestamp: userLocation.timestamp,
-                  accuracy: userLocation.accuracy,
-                  altitude: userLocation.altitude,
-                  altitudeAccuracy: userLocation.altitudeAccuracy,
-                  heading: userLocation.heading,
-                  headingAccuracy: userLocation.headingAccuracy,
-                  speed: userLocation.speed,
-                  speedAccuracy: userLocation.speedAccuracy)
-              : null);
+          if (router.isPathActive(routeLocation)) {
+            return false;
+          }
+          CommonFunctions.locationDialogShowed = true;
+
+          unawaited(
+            router
+                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
+                .then((value) => CommonFunctions.locationDialogShowed = false),
+          );
+          return false;
+        } else if (status != perm.PermissionStatus.granted) {
+          unawaited(perm.Permission.location.request());
+          return false;
+        } else {
+          if (state == null) {
+            final isHuawei = await CommonFunctions.isHuaweiDevice();
+            Position? userLocation;
+
+            if (isHuawei) {
+              userLocation = await CommonFunctions.getLastLocationHuawei();
+            } else {
+              userLocation = await Geolocator.getLastKnownPosition();
+            }
+            state = await _getLocation(userLocation != null
+                ? Position(
+                    latitude: userLocation.latitude,
+                    longitude: userLocation.longitude,
+                    timestamp: userLocation.timestamp,
+                    accuracy: userLocation.accuracy,
+                    altitude: userLocation.altitude,
+                    altitudeAccuracy: userLocation.altitudeAccuracy,
+                    heading: userLocation.heading,
+                    headingAccuracy: userLocation.headingAccuracy,
+                    speed: userLocation.speed,
+                    speedAccuracy: userLocation.speedAccuracy)
+                : null);
+          }
+
+          return true;
         }
+      } else {
+        if (showGiveAccessSheet) {
+          CommonFunctions.locationDialogShowed = true;
 
-        return true;
+          unawaited(
+            router
+                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
+                .then((value) => CommonFunctions.locationDialogShowed = false),
+          );
+        }
       }
-    } else {
-      if (CommonFunctions.locationDialogShowed) {
-        return false;
-      }
-      if (router.isPathActive(routeLocation)) {
-        return false;
-      }
-      CommonFunctions.locationDialogShowed = true;
-
-      unawaited(
-        router
-            .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
-            .then((value) => CommonFunctions.locationDialogShowed = false),
-      );
+    } catch (ex) {
+      debugPrint(ex.toString());
     }
 
     return false;
@@ -155,7 +187,6 @@ class _Location extends _$Location {
           latitude: userLocation.latitude,
           longitude: userLocation.longitude,
         ));
-
     return isLocationInsideKSA
         ? userLocation
         : Position(

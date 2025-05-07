@@ -8,10 +8,16 @@ import 'package:mapness/widgets/search/ui/search_history_empty.dart';
 import 'package:provider/provider.dart';
 
 class SearchHistory extends ConsumerWidget {
+  final Color? contentColor;
+  final Color? iconColor;
+  final EdgeInsetsGeometry? contentPadding;
   final void Function(SearchHistoryItem item) onTap;
 
   const SearchHistory({
     required this.onTap,
+    this.contentColor,
+    this.iconColor,
+    this.contentPadding,
     super.key,
   });
 
@@ -56,6 +62,9 @@ class SearchHistory extends ConsumerWidget {
       onClear: search.clear,
       onTap: onTap,
       onDelete: search.delete,
+      contentPadding: contentPadding,
+      iconColor: iconColor,
+      contentColor: contentColor,
     );
   }
 }

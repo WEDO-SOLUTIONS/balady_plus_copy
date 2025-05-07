@@ -7,10 +7,11 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/lifestyle_layers/layers_utils.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
+import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
@@ -208,13 +209,13 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
         await mapObjectManager.removeAllMarkers();
       }
       await mapObjectManager.addMarkers(markers);
-    } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory) {
+    } else if (searchState is SearchStateEmpty || searchState is SearchStateHistory && searchState.searchText.isEmpty) {
       await mapObjectManager.removeAllMarkers();
     }
   }
 
   SimpleClusterOptionsMessage _renderCluster(int objectCount) => SimpleClusterOptionsMessage(
-        icon: LayersSvgPaths.basicMarker.markerIcon(),
+        icon: Assets.icons.svg.icMarkerMNew.keyName.markerIcon(),
         text: '$objectCount',
         textStyle: MarkerTextStyleMessage(
           textPlacement: MarkerTextPlacementMessage(

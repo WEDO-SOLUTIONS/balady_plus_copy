@@ -57,34 +57,31 @@ class _MomraWebsitePageState extends ConsumerState<MomraWebsitePage> {
   @override
   Widget build(BuildContext context) => AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.dark,
-        child: Directionality(
-          textDirection: Directionality.of(context),
-          child: Material(
-            color: Colors.white,
-            child: Scaffold(
-              appBar: BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                title: context.l10n.baladyWebsite,
-                colorEnabled: context.color.textAndIconsStatusAccent,
-                leading: ActionModel(
-                  text: context.l10n.back,
-                  onPressed: () => context.router.popForced(),
-                  icon: SystemIcons.arrowCornerLeftLarge,
-                ),
+        child: Material(
+          color: Colors.white,
+          child: Scaffold(
+            appBar: BaladyTopBar.iconAndText(
+              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+              title: context.l10n.baladyWebsite,
+              colorEnabled: context.color.textAndIconsStatusAccent,
+              leading: ActionModel(
+                text: context.l10n.back,
+                onPressed: () => context.router.popForced(),
+                icon: SystemIcons.arrowCornerLeftLarge,
               ),
-              body: _isLoading
-                  ? const Center(child: Loading())
-                  : Column(
-                      children: [
-                        const SizedBox(
-                          width: 28,
-                        ),
-                        Expanded(
-                          child: WebViewWidget(controller: _controller),
-                        ),
-                      ],
-                    ),
             ),
+            body: _isLoading
+                ? const Center(child: Loading())
+                : Column(
+                    children: [
+                      const SizedBox(
+                        width: 28,
+                      ),
+                      Expanded(
+                        child: WebViewWidget(controller: _controller),
+                      ),
+                    ],
+                  ),
           ),
         ),
       );

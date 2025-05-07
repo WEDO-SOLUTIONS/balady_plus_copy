@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/bottom_menu/app_bottom_navigation_bar_item.dart';
 import 'package:mapness/widgets/bottom_menu/default_icon.dart';
@@ -26,7 +27,11 @@ class BottomMenuPage extends ConsumerWidget {
         onNavigate: (tab) {
           // Send event to analytics when route is Selected
           if (tab.activeIndex == 1) {
-            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingRoute);
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingRoute);
+          }
+
+          if (tab.activeIndex == 2 && tab.previousIndex != 2) {
+            ref.read(appAnalyticsProvider).serviceSectionVisited();
           }
         },
         builder: (_, tabsRouter, route) => Column(
@@ -76,7 +81,7 @@ class BottomMenuPage extends ConsumerWidget {
                     icon: AppBottomNavigationBarItem(
                       selected: route.activeIndex == 1,
                       iconBuilder: (ctx, isSelected) => DefaultIcon(
-                        icon: GeneralIcons.route,
+                        icon: GeneralIcons.routeStroke,
                         selected: isSelected,
                       ),
                       label: context.l10n.nav_route,

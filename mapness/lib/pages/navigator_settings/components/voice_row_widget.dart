@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/shared/providers/map/dgis_packages.dart';
 import 'package:mapness/shared/providers/navigator_voice.dart';
+import 'package:mapness/shared/utils/text_utils/voice_settings_utils.dart';
 
 class VoiceRowWidget extends ConsumerWidget {
   final PackageMessage package;
@@ -45,7 +46,7 @@ class VoiceRowWidget extends ConsumerWidget {
         ),
         wrapperColor: context.colorsV2.backgroundSurface1,
         wrapperEnabled: true,
-        title: packageInfo.name,
+        title: localizeVoicePackageName(context, packageInfo.name),
         titleStyle: context.textStyleV3.bodyLargeRegular.copyWith(
           color: context.colorsV2.foregroundDefault,
         ),

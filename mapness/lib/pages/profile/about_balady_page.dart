@@ -52,55 +52,52 @@ class _AboutBaladyPageState extends ConsumerState<AboutBaladyPage> {
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle.dark,
-      child: Directionality(
-        textDirection: Directionality.of(context),
-        child: Material(
-          color: Colors.white,
-          child: Padding(
-            padding: const EdgeInsets.only(top: Spacing.$4x),
-            child: Scaffold(
-              appBar: BaladyTopBar.iconAndText(
-                systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-                title: context.l10n.aboutApp,
-                colorEnabled: context.color.textAndIconsStatusAccent,
-                leading: ActionModel(
-                  onPressed: () => context.router.popForced(),
-                  icon: SystemIcons.arrowCornerLeftLarge,
-                ),
+      child: Material(
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.only(top: Spacing.$4x),
+          child: Scaffold(
+            appBar: BaladyTopBar.iconAndText(
+              systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+              title: context.l10n.aboutApp,
+              colorEnabled: context.color.textAndIconsStatusAccent,
+              leading: ActionModel(
+                onPressed: () => context.router.popForced(),
+                icon: SystemIcons.arrowCornerLeftLarge,
               ),
-              body: ListView(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(Spacing.$4x),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(RadiusBorder.l),
-                      child: YoutubePlayer(
-                        controller: _controller,
-                        bottomActions: const [
-                          CurrentPosition(),
-                          ProgressBar(isExpanded: true),
-                        ],
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            context.l10n.weAreHappyToConnectYouWithBaladyTeam,
-                            textDirection: direction,
-                            style: context.textStyle.text.copyWith(
-                              color: context.color.textAndIconsBasePrimary,
-                            ),
-                          ),
-                        ),
+            ),
+            body: ListView(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(Spacing.$4x),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(RadiusBorder.l),
+                    child: YoutubePlayer(
+                      controller: _controller,
+                      bottomActions: const [
+                        CurrentPosition(),
+                        ProgressBar(isExpanded: true),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          context.l10n.weAreHappyToConnectYouWithBaladyTeam,
+                          textDirection: direction,
+                          style: context.textStyle.text.copyWith(
+                            color: context.color.textAndIconsBasePrimary,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         ),

@@ -3,10 +3,10 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/active_layer.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_controls.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_state.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/parking_details.dart';
+import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/lifestyle_layers/providers/parking_details.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class ParkingLotRow extends ConsumerWidget {

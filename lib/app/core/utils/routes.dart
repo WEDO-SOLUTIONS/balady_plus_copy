@@ -19,6 +19,7 @@ import 'package:balady_plus/app/features/profile_features/rate_us/rate_us.dart';
 import 'package:balady_plus/app/features/quran/presentation/pages/quran_bookmarks.dart';
 import 'package:balady_plus/app/features/quran/quran_exports.dart';
 import 'package:balady_plus/app/features/services/core/home_services_routes/home_services_routes.dart';
+import 'package:balady_plus/app/features/services/presentation/pages/municipal_home_services_screen.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/dialogs/general_inquiries_types_dialog.dart';
 import 'package:balady_plus/app/features/transaction_inquiry/presentation/dialogs/new_request_types_dialog.dart';
@@ -641,7 +642,11 @@ class Routes {
 
     RouteName.Observer_Choose_Municipality: (context) =>
         const RegisterObserverHome(),
-    RouteName.trainingScreen: (context) => const TrainingScreen()
+    RouteName.trainingScreen: (context) => const TrainingScreen(),
+
+    RouteName.municipalServicesScreen: (context) => const MunicipalHomeServicesScreen()
+
+
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {

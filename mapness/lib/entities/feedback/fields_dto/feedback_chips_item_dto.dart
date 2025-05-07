@@ -5,16 +5,20 @@ class FeedbackChipsItemDto {
   final int id;
   final String value;
   final String? icon;
+  final String? category;
+  final String? subcategory;
 
   FeedbackChipsItemDto({
     required this.id,
     required this.value,
     this.icon,
+    this.category,
+    this.subcategory,
   });
 
   FeedbackChipsItemEntity toDomain() => FeedbackChipsItemEntity(
         id: id,
-        label: value,
+        label: subcategory ?? value,
         iconUrl: icon,
       );
 

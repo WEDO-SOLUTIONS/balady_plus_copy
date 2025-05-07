@@ -9,6 +9,7 @@ class PathNavEta {
   final bool isExpanded;
   final int durationInSeconds;
   final double rawDistance;
+  final Duration spentTime;
 
   const PathNavEta({
     required this.timeEta,
@@ -18,6 +19,7 @@ class PathNavEta {
     required this.arrivalTime,
     required this.durationInSeconds,
     required this.rawDistance,
+    required this.spentTime,
     this.isExpanded = false,
   });
 
@@ -30,6 +32,7 @@ class PathNavEta {
     bool? isExpanded,
     int? durationInSeconds,
     double? rawDistance,
+    Duration? spentTime,
   }) =>
       PathNavEta(
         timeEta: timeEta ?? this.timeEta,
@@ -40,5 +43,6 @@ class PathNavEta {
         isExpanded: isExpanded ?? this.isExpanded,
         durationInSeconds: durationInSeconds ?? this.durationInSeconds,
         rawDistance: rawDistance ?? this.rawDistance,
+        spentTime: spentTime ?? this.spentTime,
       );
 }

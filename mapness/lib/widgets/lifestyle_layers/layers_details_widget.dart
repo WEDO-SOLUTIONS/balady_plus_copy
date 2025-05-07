@@ -2,12 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:mapness/_features/lifestyle_layers/domain/building_compliance_certificate.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/investment_sites.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/point_layers_data.dart';
-import 'package:mapness/_features/lifestyle_layers/domain/white_lands.dart';
-import 'package:mapness/_features/lifestyle_layers/providers/layers_details.dart';
+import 'package:mapness/features/lifestyle_layers/models/building_compliance_certificate.dart';
+import 'package:mapness/features/lifestyle_layers/models/investment_sites.dart';
+import 'package:mapness/features/lifestyle_layers/models/point_layers_data.dart';
+import 'package:mapness/features/lifestyle_layers/models/white_lands.dart';
+import 'package:mapness/features/lifestyle_layers/providers/layers_details.dart';
 import 'package:shimmer/shimmer.dart';
 
 @RoutePage()

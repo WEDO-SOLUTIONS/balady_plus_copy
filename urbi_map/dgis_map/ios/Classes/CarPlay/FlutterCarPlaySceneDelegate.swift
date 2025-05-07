@@ -67,8 +67,13 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     func viewDidLoad(with map: DGis.Map) {
         FlutterCarPlaySceneDelegate.map = map
         
-        let navigationState = DgisMapInitializer.shared.getNavigationManager().uiModel.state
-        if navigationState == .navigation || navigationState == .routeSearch {
+        let uiModel = DgisMapInitializer.shared.getNavigationManager().uiModel
+        let isNavigationState = uiModel.state == .navigation || uiModel.state == .routeSearch
+        let routeBuildOptions = uiModel.route.routeBuildOptions
+        let isRouteNavigation = isNavigationState && routeBuildOptions != nil
+        let isFreeRoam = isNavigationState && routeBuildOptions == nil
+        
+        if isRouteNavigation {
             Self.startNavigation()
             if let maneuver = Self.currentManeuver {
                 Self.updateManeuver(maneuver)
@@ -76,6 +81,9 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             if let estimates = Self.currentEstimates {
                 Self.updateEstimates(estimates)
             }
+        } else if !isFreeRoam {
+            try? DgisMapInitializer.shared.getNavigationManager().start()
+            map.attributes.setAttributeValue(name: "navigatorOn", value: .boolean(true))
         }
     }
     
@@ -296,13 +304,15 @@ extension FlutterCarPlaySceneDelegate {
             CPTravelEstimates(distanceRemaining: distance.roundedMeters.humanReadable, timeRemaining: time),
             for: navigationSession.upcomingManeuvers.first!
         )
-        navigationSession.maneuverState = switch(distance.value) {
-        case ...0:
-                .continue
-        case ...1:
-                .execute
-        default:
-                .initial
+        if #available(iOS 17.4, *) {
+            navigationSession.maneuverState = switch(distance.value) {
+            case ...0:
+                    .continue
+            case ...1:
+                    .execute
+            default:
+                    .initial
+            }
         }
     }
     

@@ -1,0 +1,39 @@
+name: Generate Changelog on Release Branch
+
+on:
+  push:
+    branches:
+      - 'urbi-release-*'
+
+permissions:
+  contents: write
+
+jobs:
+  generate-changelog:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install conventional-changelog-cli
+        run: npm install -g conventional-changelog-cli
+
+      - name: Generate changelog with custom parser
+        run: |
+          conventional-changelog -p angular -i CHANGELOG.md -s
+
+      - name: Commit and push changelog
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add CHANGELOG.md
+          git commit -m "chore: update changelog for ${{ github.ref_name }}"
+          git push

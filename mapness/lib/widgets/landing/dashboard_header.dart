@@ -6,6 +6,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
@@ -16,6 +17,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/bottom_sheet/dgis_bottom_sheet.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
@@ -89,10 +91,10 @@ class _DashboardMenu extends ConsumerWidget {
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     title: context.l10n.go,
-                    icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                    icon: Assets.icons.svg.quickFilters.freeRoam.keyName,
                     onTap: () {
                       ref.read(locationProvider.notifier).checkLocationPermission();
-                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreLandingEngagement);
+                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
                       context.router.push(const FreeRoamRoute());
                     },
                   ),
@@ -123,12 +125,16 @@ class DashboardHeader extends ConsumerWidget {
                 group: MetricsConstants.exploreTag,
               );
 
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.exploreSearch);
+              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
               ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
+
+              ref.read(urbiAnalyticsProvider).track(
+                    '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
+                  );
               context.router.push(SearchRoute(expansion: Expansion.expanded));
             },
             child: AbsorbPointer(

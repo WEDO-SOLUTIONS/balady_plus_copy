@@ -49,6 +49,8 @@ extension Array where Element==ObjectType {
 extension ObjectType {
     fileprivate func toMessage() -> ObjectTypeMessage {
         switch self {
+        case .admDivDistrict:
+            return .admDivDistrict
         case .admDiv:
             return .admDiv
         case .attraction:

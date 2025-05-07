@@ -5,8 +5,8 @@ import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/location.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
@@ -71,25 +71,29 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
             child: Align(
               alignment: Alignment.bottomCenter,
               child: ErrorSheetV2(
-                onClose: widget.routeOnClose != null
-                    ? () {
-                        ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+                onClose: () async {
+                  switch (widget.routeOnClose) {
+                    case != null:
+                      {
+                        await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
                         CommonFunctions.locationDialogShowed = false;
                         context.router.popForced(widget.routeOnClose);
                       }
-                    : () {
+                    default:
+                      {
                         if (context.router.stack.length != 1) {
                           context.router.popForced();
                         } else {
-                          context.router.navigate(const BottomMenuRoute());
+                          await context.router.navigate(const BottomMenuRoute());
                           CommonFunctions.locationDialogShowed = false;
                         }
-                      },
+                      }
+                  }
+                },
                 errorTitle: context.l10n.locationDialogErrorTitle,
                 errorContent: context.l10n.locationDialogErrorContent,
                 buttonLabel: context.l10n.locationDialogButtonLabel,
-                assetImage: 'assets/images_svg/lost_location.svg',
-                package: PackageConfig.packageName,
+                assetImage: Assets.imagesSvg.lostLocation.keyName,
                 onRetry: () async {
                   final permissionStatus = await perm.Permission.location.status;
                   final serviceStatus = await perm.Permission.location.serviceStatus;

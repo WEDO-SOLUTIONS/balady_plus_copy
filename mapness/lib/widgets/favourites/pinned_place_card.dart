@@ -98,7 +98,7 @@ class PinnedPlaceCard extends StatelessWidget {
                   items: [
                     PopupModel(
                       title: context.l10n.route,
-                      icon: GeneralIcons.route,
+                      icon: GeneralIcons.routeStroke,
                       onTap: onTapRoute,
                       color: context.color.textAndIconsBasePrimary,
                     ),

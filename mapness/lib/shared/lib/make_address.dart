@@ -11,4 +11,12 @@ extension DirectoryObjectAddr on DirectoryObjectMessage {
 
     return [street, district?.name, districtArea?.name, region?.name].nonNulls.join(', ');
   }
+
+  String makeFullAddress() {
+    final region = address?.drilldown.firstWhereOrNull((element) => element.type == 'region');
+    final districtArea = address?.drilldown.firstWhereOrNull((element) => element.type == 'district_area');
+    final district = address?.drilldown.firstWhereOrNull((element) => element.type == 'district');
+
+    return [title, district?.name, districtArea?.name, region?.name].nonNulls.join(', ');
+  }
 }

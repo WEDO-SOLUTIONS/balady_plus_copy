@@ -6,12 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/search/ui/search_results.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 import 'package:provider/provider.dart';
 
@@ -52,6 +54,17 @@ class RoutingSearchResults extends ConsumerWidget {
               group: MetricsConstants.routesTag,
               action: MetricAction.tap.toString(),
               props: {'item': item.id?.objectId});
+
+          final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
+          if (isFromSuggest) {
+            ref.read(urbiAnalyticsProvider).track(
+                  '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
+                );
+          } else {
+            ref.read(urbiAnalyticsProvider).track(
+                  '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.fullSearchResultPressed}',
+                );
+          }
 
           ref.read(searchHistoryProvider(scope.value).notifier).put(
                 SearchHistoryItem.fromDirectoryObject(item),

@@ -1,0 +1,41 @@
+name: Update PR Target Branches for Release
+
+on:
+  push:
+    branches:
+      - 'urbi-release-*'
+
+permissions:
+  pull-requests: write
+
+jobs:
+  update-pr-target-branches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Update PR target branches
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const currentBranch = process.env.GITHUB_REF_NAME;
+            
+            const { data: pullRequests } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open'
+            });
+
+            for (const pr of pullRequests) {
+              if (pr.base.ref === currentBranch) {
+                console.log(`PR #${pr.number} already targets ${currentBranch}. Skipping.`);
+                continue;
+              }
+            
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                base: currentBranch
+              });
+              console.log(`Updated PR #${pr.number} to target branch ${process.env.CURRENT_BRANCH}`);
+            }

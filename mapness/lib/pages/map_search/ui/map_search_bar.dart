@@ -5,26 +5,30 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
-import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart' as metric_const;
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/urbi_metrics.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart' as metrics;
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchBar extends ConsumerStatefulWidget {
+  final bool requestFocus;
+  final VoidCallback onClose;
+  final bool isCloseButton;
+
   const MapSearchBar({
     required this.requestFocus,
     required this.onClose,
+    this.isCloseButton = false,
     super.key,
   });
-
-  final bool requestFocus;
-  final VoidCallback onClose;
 
   @override
   ConsumerState<MapSearchBar> createState() => _MapSearchBarState();
@@ -68,9 +72,13 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       }
 
       _updateText(next.searchText);
-      if (next is SearchStateLoading) {
-        _focusNode.unfocus();
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (next is SearchStateLoading) {
+          _focusNode.unfocus();
+        } else if (next is SearchStateResults) {
+          _focusNode.requestFocus();
+        }
+      });
     });
 
     return BaladySearchWithBackButtonV2(
@@ -80,16 +88,17 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
-            Metrics.logEventAdvanced(
-              MetricsConstants.searchKeys.searchField,
-              group: MetricsConstants.searchTag,
-              action: MetricAction.type.toString(),
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
               props: {
                 'query': query,
               },
             );
           },
           onTap: () {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.journeySearch);
             _controller.selection = TextSelection.fromPosition(
               TextPosition(
                 offset: _controller.text.length,
@@ -97,24 +106,21 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
             );
           },
           onSubmitted: (query) async {
-            Metrics.logEventAdvanced(
-              MetricsConstants.searchKeys.searchField,
-              group: MetricsConstants.searchTag,
-              action: MetricAction.type.toString(),
+            metrics.Metrics.logEventAdvanced(
+              metric_const.MetricsConstants.searchKeys.searchField,
+              group: metric_const.MetricsConstants.searchTag,
+              action: metrics.MetricAction.type.toString(),
               props: {
                 'query': query,
               },
             );
             if (query.trim().isNotEmpty) {
               await searcher.searchByText(query);
+              await ref.read(urbiAnalyticsProvider).track(
+                    '${metric_const.MetricsConstants.searchTag}::${metric_const.MetricsConstants.searchKeys.searchButtonPressed}',
+                  );
               await ref.read(searchHistoryProvider(scope.value).notifier).put(
-                    SearchHistoryItem(
-                      title: query,
-                      address: '',
-                      objectId: null,
-                      entranceId: null,
-                      createdAt: DateTime.timestamp().toIso8601String(),
-                    ),
+                    SearchHistoryItem.fromQuery(query: query),
                   );
               unawaited(ref.read(SendStatisticProvider(query).future));
             }
@@ -128,14 +134,21 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
           textStyle: context.textStyleV3.bodySmallRegular,
         ),
       ),
-      option: SearchTextBackOption(
-        text: context.l10n.cancel,
-        onPressed: () {
-          FocusScope.of(context).unfocus();
-          searcher.clear();
-          widget.onClose();
-        },
-      ),
+      option: widget.isCloseButton
+          ? SearchIconBackOption(
+              icon: SystemIcons.close,
+              onPressed: () => _onBackPressed(searcher),
+            )
+          : SearchTextBackOption(
+              text: context.l10n.cancel,
+              onPressed: () => _onBackPressed(searcher),
+            ),
     );
+  }
+
+  void _onBackPressed(Search searcher) {
+    FocusScope.of(context).unfocus();
+    searcher.clear();
+    widget.onClose();
   }
 }

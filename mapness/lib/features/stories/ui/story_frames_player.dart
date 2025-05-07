@@ -1,7 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/stories/models/story_data.dart';
+import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/story_service.dart';
@@ -16,15 +18,12 @@ class StoryFramesPlayer extends ConsumerStatefulWidget {
   final VoidCallback onNextStory;
   final VoidCallback onPreviousStory;
 
-  final void Function(String id, int page)? onMarkReed;
-
   const StoryFramesPlayer({
     required this.onNextStory,
     required this.onPreviousStory,
     required this.story,
     super.key,
     this.controller,
-    this.onMarkReed,
   });
 
   @override
@@ -103,6 +102,14 @@ class _StoryFramesPlayerState extends ConsumerState<StoryFramesPlayer> {
       duration: currentFrame.duration,
       frameIndex: currentIndex,
       frameLength: frames.length,
+      onActionPressed: (frame) {
+        final action = frame.action!;
+        if (action is NavigationFrameAction) {
+          if (action.location.contains('/quickFeedback')) {
+            ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiStories);
+          }
+        }
+      },
     );
   }
 }

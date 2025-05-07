@@ -1007,6 +1007,22 @@ enum SuggestedTypeMessage {
   unknown,
 }
 
+/// [SuggestorType] from 2GIS SDK Documentation
+enum SuggestorTypeEnum {
+  // Address suggestor.
+  address,
+  // Settlement suggestor. Can be used without specifying a project.
+  citySelector,
+  // Directory object (categories, branches, streets, cities, etc.) suggestor.
+  object,
+  // Place suggestor.
+  places,
+  // A tooltip for selecting waypoints. Optimized for searching for point objects in a single action. Rejects objects without points.
+  routeEndpoint,
+  // Category suggestor.
+  rubric,
+}
+
 class MarkedUpTextSpanMessage {
   MarkedUpTextSpanMessage(this.offset, this.length);
 
@@ -1269,7 +1285,7 @@ class NavigationStateMessage {
   NavigationStateMessage(this.state, this.routeSearchOptions);
 
   final NavigationState state;
-  final RouteSearchOptionsMessage routeSearchOptions;
+  final RouteSearchOptionsMessage? routeSearchOptions;
 }
 
 /// Represents the types of sound toggles.
@@ -1342,6 +1358,12 @@ abstract class MapApi {
 
   @async
   void followNavigation();
+
+  @async
+  void startFollowNavigation();
+
+  @async
+  void stopFollowNavigation();
 
   @async
   void selectIndoorLevel(int index);
@@ -1420,6 +1442,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1430,6 +1453,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1440,6 +1464,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1450,6 +1475,7 @@ abstract class MapApi {
     GeoRectMessage? searchRect,
     SortingTypeMessage sortingType,
     int pageSize,
+    String? locale,
   );
 
   @async
@@ -1466,6 +1492,9 @@ abstract class MapApi {
     String queryText,
     List<SuggestedTypeMessage_>? allowedResultTypes,
     GeoRectMessage? searchRect,
+    String? locale,
+    SuggestorTypeEnum? suggestorType,
+    int? limit,
   );
 
   @async

@@ -6,22 +6,23 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:intl/intl.dart' hide TextDirection;
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/weather/weather_info.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
 import 'package:mapness/features/weather/provider/weather_map_controller.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:shimmer/shimmer.dart';
 
-const weatherHeaderSize = 300.0;
+double weatherHeaderSize = 300.0;
 
 class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
+  final GlobalKey cardKey;
 
   const WeatherCardHeaderDelegate({
     required this.bottomSheetController,
+    required this.cardKey,
   });
 
   @override
@@ -31,6 +32,7 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
     bool overlapsContent,
   ) =>
       DashboardHeader(
+        cardKey: cardKey,
         bottomSheetController: bottomSheetController,
       );
 
@@ -41,14 +43,16 @@ class WeatherCardHeaderDelegate extends SliverPersistentHeaderDelegate {
   double get minExtent => weatherHeaderSize;
 
   @override
-  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => false;
+  bool shouldRebuild(SliverPersistentHeaderDelegate oldDelegate) => true;
 }
 
 class DashboardHeader extends ConsumerWidget {
   final StatefulBottomSheetController bottomSheetController;
+  final GlobalKey cardKey;
 
   const DashboardHeader({
     required this.bottomSheetController,
+    required this.cardKey,
     super.key,
   });
 
@@ -77,6 +81,7 @@ class DashboardHeader extends ConsumerWidget {
       child: Data(
         allWeatherInfo: allWeatherInfo,
         locale: locale,
+        cardKey: cardKey,
         onTap: () {
           if (bottomSheetController.state == ThreeStateBottomSheet.expanded) {
             bottomSheetController.setState(ThreeStateBottomSheet.hidden);
@@ -93,10 +98,12 @@ class Data extends ConsumerWidget {
   final AllWeatherInfoEntity? allWeatherInfo;
   final Locale locale;
   final Function()? onTap;
+  final GlobalKey cardKey;
 
   const Data({
     required this.onTap,
     required this.allWeatherInfo,
+    required this.cardKey,
     required this.locale,
     super.key,
   });
@@ -118,9 +125,7 @@ class Data extends ConsumerWidget {
     );
 
     return Container(
-      height: weatherHeaderSize,
       decoration: const BoxDecoration(
-        // color: context.color.surfaceBasePrimary,
         color: Colors.white,
         borderRadius: BorderRadius.only(
           topRight: Radius.circular(RadiusBorder.xl),
@@ -128,6 +133,8 @@ class Data extends ConsumerWidget {
         ),
       ),
       child: Column(
+        key: cardKey,
+        mainAxisSize: MainAxisSize.min,
         children: [
           Spacing.$3x.heightBox,
           Row(
@@ -240,9 +247,8 @@ class Data extends ConsumerWidget {
                           child: Center(
                             child: SvgPicture.asset(
                               isDay == true
-                                  ? 'assets/icons/svg/weather/Sun_new.svg'
-                                  : 'assets/icons/svg/weather/Moon.svg',
-                              package: PackageConfig.packageName,
+                                  ? Assets.icons.svg.weather.sunNew.keyName
+                                  : Assets.icons.svg.weather.moon.keyName,
                               height: 75,
                               width: 75,
                             ),
@@ -261,7 +267,7 @@ class Data extends ConsumerWidget {
                             style: textStyle,
                             maxLines: 1,
                           ),
-                          assetName: 'assets/icons/svg/weather/wind.svg',
+                          assetName: Assets.icons.svg.weather.wind.keyName,
                         ),
                         buildButton(
                           desc: Text(
@@ -269,7 +275,7 @@ class Data extends ConsumerWidget {
                             style: textStyle,
                             maxLines: 1,
                           ),
-                          assetName: 'assets/icons/svg/weather/pressure.svg',
+                          assetName: Assets.icons.svg.weather.pressure.keyName,
                         ),
                         buildButton(
                           desc: Text(
@@ -277,7 +283,7 @@ class Data extends ConsumerWidget {
                             style: textStyle,
                             maxLines: 1,
                           ),
-                          assetName: 'assets/icons/svg/weather/humidity.svg',
+                          assetName: Assets.icons.svg.weather.humidity.keyName,
                         ),
                       ],
                     ),
@@ -334,7 +340,6 @@ class Data extends ConsumerWidget {
                       colorIcon ?? context.color.textAndIconsBasePrimary.withOpacity(0.7),
                       BlendMode.srcIn,
                     ),
-                    package: PackageConfig.packageName,
                     matchTextDirection: true,
                   ),
                 ],

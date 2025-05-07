@@ -9,6 +9,7 @@ class StoryFrameActionButton extends StatefulWidget {
     required this.actionTheme,
     required this.action,
     required this.onNext,
+    this.onActionPressed,
     super.key,
   });
 
@@ -20,6 +21,9 @@ class StoryFrameActionButton extends StatefulWidget {
 
   /// The callback function that is called when the next button is pressed.
   final VoidCallback onNext;
+
+  /// Additional event called when the button is pressed.
+  final VoidCallback? onActionPressed;
 
   @override
   State<StoryFrameActionButton> createState() => _StoryFrameActionButtonState();
@@ -34,7 +38,9 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         'open_services' => l10n.openServices,
         'about_routes' => l10n.onboardingMoreRoutesButton,
         'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
-        'get_started' => l10n.onboardingGetStartedButton,
+        // TODO: After release delete from localizy [onboardingGetStartedButton] key
+        // It was previously used instead of "onboarding3Action"
+        'onboarding3Action' => l10n.onboarding3Action,
         _ => ''
       };
 
@@ -81,11 +87,15 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   }
 
   @override
-  Widget build(BuildContext context) => AppButton(
+  Widget build(BuildContext context) => BaladyAppButton(
         color: widget.actionTheme.backgroundColor,
         textColor: widget.actionTheme.textColor,
-        buttonColorScheme: ButtonColorScheme.primary,
+        buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+        size: BaladyButtonSize.large,
         primaryLabel: _getActionTitle(),
-        onTap: () => _onActionPressed(context),
+        onTap: () {
+          widget.onActionPressed?.call();
+          _onActionPressed(context);
+        },
       );
 }

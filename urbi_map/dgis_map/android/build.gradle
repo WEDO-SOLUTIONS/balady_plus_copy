@@ -6,6 +6,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://developer.huawei.com/repo/' }
     }
 
     dependencies {
@@ -18,9 +19,8 @@ rootProject.allprojects {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url "https://artifactory.2gis.dev/sdk-maven-release"
-        }
+        maven { url "https://artifactory.2gis.dev/sdk-maven-release" }
+        maven { url 'https://developer.huawei.com/repo/' }
         // flatDir {
         //     dirs project(':dgis_map').file('_delete_me_')
         // }
@@ -61,8 +61,12 @@ dependencies {
     implementation"com.google.android.gms:play-services-location:21.0.1"
     implementation 'androidx.car.app:app:1.4.0'
     // Dgis sdk
-    implementation "ru.dgis.sdk:sdk-full:12.4.3"
+    implementation "ru.dgis.sdk:sdk-full:12.5.0"
     // implementation (name: 'sdk-full-latest', ext: 'aar')
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'com.google.android.material:material:1.8.0'
+    implementation 'com.huawei.hms:location:6.12.0.300'
+    implementation 'com.huawei.agconnect:agconnect-core:1.6.5.300'
+    implementation 'com.huawei.hmf:tasks:1.5.2.301'
+    implementation 'com.huawei.hms:base:6.5.0.300'
 }

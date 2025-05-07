@@ -34,11 +34,11 @@ class WeatherControls extends ConsumerWidget {
                 ).copyWith(bottom: Spacing.$4x),
                 child: Row(
                   children: [
-                    const Column(
+                    Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Spacer(),
-                        Legend(),
+                        const Spacer(),
+                        const Legend(),
                         SizedBox(height: weatherHeaderSize),
                       ],
                     ),

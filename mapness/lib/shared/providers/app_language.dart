@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/features/weather/provider/forecast_weather_provider.dart';
@@ -25,6 +26,12 @@ enum Language {
         // default is arabic
         _ => Platform.localeName.toLowerCase().contains('en') ? Language.english : Language.arabic,
       };
+
+  static Language? parceString(String? s) => switch (s) {
+        'en' => Language.english,
+        'ar' => Language.arabic,
+        _ => null,
+      };
 }
 
 ///TODO need to get from context.l10n
@@ -35,8 +42,8 @@ extension LanguageData on Language {
       };
 
   String get icon => switch (this) {
-        Language.english => 'assets/icons/svg/ic_lang_en.svg',
-        Language.arabic => 'assets/icons/svg/ic_lang_ar.svg',
+        Language.english => Assets.icons.svg.icLangEn.keyName,
+        Language.arabic => Assets.icons.svg.icLangAr.keyName,
       };
 
   Locale get locale => switch (this) {
@@ -55,6 +62,10 @@ extension LanguageData on Language {
       };
 
   String get languageCode => this == Language.arabic ? 'ar_SA' : 'en_SA';
+
+  bool get isEnglish => this == Language.english;
+
+  bool get isArabic => this == Language.arabic;
 }
 
 @Riverpod(keepAlive: true)

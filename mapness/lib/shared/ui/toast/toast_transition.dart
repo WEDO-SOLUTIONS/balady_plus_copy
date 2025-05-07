@@ -3,9 +3,11 @@ part of 'toast_overlay.dart';
 class _ToastTransition extends StatefulWidget {
   final String title;
   final TextStyle? titleStyle;
-  final String? actionText;
+  final String? firstText;
+  final String? secondText;
   final VoidCallback hide;
-  final VoidCallback? onActionTap;
+  final VoidCallback? onFirstTap;
+  final VoidCallback? onSecondTap;
   final String? iconAsset;
   final IconData? iconData;
   final Color? iconColor;
@@ -26,9 +28,11 @@ class _ToastTransition extends StatefulWidget {
     this.isDismissible,
     this.isClosable = false,
     this.isFlipped = false,
-    this.actionText,
-    this.onActionTap,
+    this.firstText,
+    this.onFirstTap,
     this.iconColor,
+    this.onSecondTap,
+    this.secondText,
   });
 
   @override
@@ -64,9 +68,14 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
     }
   }
 
-  void _onActionTap() {
+  void _onFirstTap() {
     _hide();
-    widget.onActionTap?.call();
+    widget.onFirstTap?.call();
+  }
+
+  void _onSecondTap() {
+    _hide();
+    widget.onSecondTap?.call();
   }
 
   @override
@@ -86,9 +95,10 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
             child: _ToastWidget(
               title: widget.title,
               titleStyle: widget.titleStyle,
-              actionText: widget.actionText,
-              onActionTap: _onActionTap,
-              onCloseTap: widget.isClosable ? _hide : null,
+              firstText: widget.firstText,
+              secondText: widget.secondText,
+              onFirstTap: _onFirstTap,
+              onSecondTap: _onSecondTap,
               iconAsset: widget.iconAsset,
               iconData: widget.iconData,
               iconColor: widget.iconColor,
@@ -99,9 +109,10 @@ class __ToastTransitionState extends State<_ToastTransition> with SingleTickerPr
       : _ToastWidget(
           title: widget.title,
           titleStyle: widget.titleStyle,
-          actionText: widget.actionText,
-          onActionTap: _onActionTap,
-          onCloseTap: widget.isClosable ? _hide : null,
+          firstText: widget.firstText,
+          secondText: widget.secondText,
+          onFirstTap: _onFirstTap,
+          onSecondTap: _onSecondTap,
           iconAsset: widget.iconAsset,
           iconData: widget.iconData,
           iconColor: widget.iconColor,

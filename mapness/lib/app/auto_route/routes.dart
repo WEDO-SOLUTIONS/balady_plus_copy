@@ -51,10 +51,6 @@ class Routes {
           page: ImageEditorRoute.page,
         ),
         CustomRoute(
-          path: '/signin',
-          page: SigninRoute.page,
-        ),
-        CustomRoute(
           path: '/navigator_settings',
           page: NavigatorSettingsRoute.page,
         ),
@@ -74,6 +70,16 @@ class Routes {
           path: '/language_pick_sheet',
           page: LanguagePickSheetRoute.page,
           customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
+          path: '/flips_continue',
+          page: FlipsContinueRoute.page,
+        ),
+        CustomRoute(
+          path: '/feedback_address_suggester',
+          page: FeedbackAddressSuggester.page,
+          opaque: false,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
         ),
       ];
 

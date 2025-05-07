@@ -4,15 +4,19 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
+import 'package:mapness/features/search/models/search_scope.dart';
+import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/suggest_item.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/urbi_analytics.dart';
 
 class MapSuggestList extends ConsumerWidget {
   const MapSuggestList({
@@ -62,38 +66,53 @@ class MapSuggestList extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Material(
-            clipBehavior: Clip.antiAlias,
-            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
-            color: contentColor,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                itemBuilder: (context, index) => SuggestItem(
-                  suggest: suggests[index],
-                  myLocation: myLocation == null
-                      ? null
-                      : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-                  isLast: index == suggests.length - 1,
-                  onObjectTap: onObjectTap,
+          Text(
+            context.l10n.suggestedSearches,
+            style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.foregroundSoft),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+            child: Material(
+              clipBehavior: Clip.antiAlias,
+              borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
+              color: contentColor,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                  itemBuilder: (context, index) => SuggestItem(
+                    suggest: suggests[index],
+                    myLocation: myLocation == null
+                        ? null
+                        : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+                    isLast: index == suggests.length - 1,
+                    onObjectTap: onObjectTap,
+                  ),
+                  itemCount: suggests.length,
                 ),
-                itemCount: suggests.length,
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(
-              top: Spacing.$4x,
-              bottom: Spacing.$1_5x,
-            ),
+            padding: const EdgeInsets.only(bottom: Spacing.$1_5x),
             child: uikit.AppButton(
               buttonColorScheme: uikit.ButtonColorScheme.secondary,
-              primaryIcon: uikit.GeneralIcons.plusCircle,
-              primaryLabel: context.l10n.addPlace,
-              onTap: () => context.router.push(QuickFeedbackRoute()),
+              primaryIcon: uikit.SystemIcons.search,
+              primaryLabel: context.l10n.searchMore,
+              onTap: () {
+                final scope = context.read<SearchScope>();
+                final search = ref.read(searchProvider(scope.value).notifier);
+                final searchState = ref.read(searchProvider(scope.value));
+                final title = searchState.searchText;
+
+                search.searchMore(title);
+
+                ref.read(urbiAnalyticsProvider).track(
+                      '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchButtonPressed}',
+                    );
+              },
             ),
           )
         ],

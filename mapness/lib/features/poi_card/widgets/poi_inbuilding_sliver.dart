@@ -7,6 +7,7 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
@@ -71,17 +72,24 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
   Widget build(BuildContext context) => MultiSliver(
         children: [
           SliverToBoxAdapter(
-            child: FeedbackBannerCard(
-              title: context.l10n.addPlace,
-              subtitle: context.l10n.addNewPlace,
-              imageAssetName: 'add_company.png',
-              gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
-              onTap: () => context.router.push(QuickFeedbackRoute()),
+            child: Padding(
+              padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$2x + Spacing.$0_5x),
+              child: FeedbackBannerCard(
+                title: context.l10n.addPlace,
+                subtitle: context.l10n.addNewPlace,
+                path: Assets.images.addCompany.keyName,
+                gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
+                onTap: () => context.router.push(QuickFeedbackRoute()),
+              ),
             ),
           ),
           SliverPadding(
-            padding:
-                const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x, top: Spacing.$0_5x),
+            padding: const EdgeInsets.only(
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              bottom: Spacing.$4x,
+              top: Spacing.$0_5x,
+            ),
             sliver: PagedSliverList<int, OrganizationItem>.separated(
               shrinkWrapFirstPageIndicators: true,
               pagingController: pagingController,
@@ -111,7 +119,7 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
                   },
                 ),
               ),
-              separatorBuilder: (context, index) => Spacing.$4x.heightBox,
+              separatorBuilder: (context, index) => (Spacing.$3x - Spacing.$0_5x).heightBox,
             ),
           ),
         ],
@@ -160,28 +168,25 @@ class OrganizationWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         shape: smoothBorder(RadiusBorder.xl),
         color: context.color.surfaceBasePrimary,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: Spacing.$1x),
-          child: ContentRow(
-            onTap: () {
-              final itemId = item.id;
+        child: ContentRow(
+          onTap: () {
+            final itemId = item.id;
 
-              if (itemId == null) {
-                return;
-              }
+            if (itemId == null) {
+              return;
+            }
 
-              final id = int.tryParse(itemId);
-              if (id == null) {
-                return;
-              }
-              onTap?.call(id);
-            },
-            options: ContentRowOptions(
-              title: item.title,
-              subtitle: item.rubricsNames,
-              subtitleExtra: item.addressComment,
-              titleStyle: context.textStyleV3.bodyLargeSemiBold,
-            ),
+            final id = int.tryParse(itemId);
+            if (id == null) {
+              return;
+            }
+            onTap?.call(id);
+          },
+          options: ContentRowOptions(
+            title: item.title,
+            subtitle: item.rubricsNames,
+            subtitleExtra: item.addressComment,
+            titleStyle: context.textStyleV3.bodyLargeSemiBold,
           ),
         ),
       );

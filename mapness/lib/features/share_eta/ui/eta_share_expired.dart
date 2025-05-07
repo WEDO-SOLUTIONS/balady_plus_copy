@@ -3,7 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/string_ext.dart';
 
@@ -64,8 +64,7 @@ class EtaShareExpired extends StatelessWidget {
               ),
             ),
             SvgPicture.asset(
-              'assets/images_svg/illustration_error.svg',
-              package: PackageConfig.packageName,
+              Assets.imagesSvg.illustrationError.keyName,
             ),
             const SizedBox(height: Spacing.$2x),
             Text(

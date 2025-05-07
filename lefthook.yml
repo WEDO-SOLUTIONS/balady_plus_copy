@@ -1,3 +1,5 @@
+# check docs -> https://github.com/evilmartians/lefthook
+
 skip_output:
   - meta           # Skips lefthook version printing
   # - summary        # Skips summary block (successful and failed steps) printing
@@ -27,6 +29,10 @@ commit-msg:
       fail_text: "Commit message validation failed"
       runner: bash
 
+post-checkout:
+  commands:
+    run-prebuild:
+      run: just prebuild
 
 pre-push:
   scripts:

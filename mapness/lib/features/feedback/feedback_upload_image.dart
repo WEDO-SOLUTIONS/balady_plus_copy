@@ -41,7 +41,6 @@ class FeedbackUploadImage extends _$FeedbackUploadImage {
     final Dio dio = await ref.read(feedbackDioProvider.future);
 
     final fileBytes = await file.readAsBytes();
-    print('requiest: $filePath');
     state = FileUpload.progress(srcPath: filePath, progress: 0);
 
     try {
@@ -52,6 +51,7 @@ class FeedbackUploadImage extends _$FeedbackUploadImage {
         queryParameters: {'type': 'discrepancy_images'},
         data: Stream.fromIterable(fileBytes.map((e) => [e])),
         options: Options(
+          sendTimeout: const Duration(days: 1),
           headers: {
             ...dio.options.headers,
             'Content-Type': 'application/octet-stream',

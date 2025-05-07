@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/stories/models/story_frame_action.dart';
 import 'package:mapness/features/stories/models/story_frame_controller.dart';
 import 'package:mapness/features/stories/models/story_frame_data.dart';
@@ -32,6 +33,7 @@ class StoryFrameWidget extends StatefulWidget {
   final StoryTypes type;
   final VoidCallback onNext;
   final VoidCallback onPrevious;
+  final void Function(StoryFrameData)? onActionPressed;
 
   const StoryFrameWidget({
     required this.duration,
@@ -41,6 +43,7 @@ class StoryFrameWidget extends StatefulWidget {
     required this.frameLength,
     required this.onNext,
     required this.onPrevious,
+    this.onActionPressed,
     super.key,
     this.controller,
   });
@@ -127,15 +130,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
     widget.controller?.nextPage = _onNext;
     widget.controller?.prevPage = _onPrevious;
 
-    /// If the story is onboarding, the progress will be always 1
-    _progress = widget.type != StoryTypes.onboarding
-        ? Tween<double>(begin: 0, end: 1).animate(_controller)
-        : const AlwaysStoppedAnimation(1);
-
+    _progress = Tween<double>(begin: 0, end: 1).animate(_controller);
+    _progress.addListener(_onProgressListener);
     _frame = widget.frame;
-    if (widget.type != StoryTypes.onboarding) {
-      _progress.addListener(_onProgressListener);
-    }
   }
 
   void _imageLoaded() {
@@ -290,6 +287,7 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
                   actionTheme: storyTheme.actionTheme,
                   action: widget.frame.action!,
                   onNext: _onNext,
+                  onActionPressed: () => widget.onActionPressed?.call(widget.frame),
                 )
               : const SizedBox.shrink(),
         ),
@@ -319,7 +317,10 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
               builder: (context, ref, _) => AppButton.close(
                 onTap: () {
                   if (widget.frameIndex == widget.frameLength - 1) {
-                    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetircsKeys.onboardingStoriesCompleted);
+                    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.onboardingStoriesCompleted);
+                    ref.read(appAnalyticsProvider).onboardingFlowCompleted();
+                  } else {
+                    ref.read(appAnalyticsProvider).onboardingFlowSkipped();
                   }
                   StoryArgsProvider.of(context).onClose();
                 },

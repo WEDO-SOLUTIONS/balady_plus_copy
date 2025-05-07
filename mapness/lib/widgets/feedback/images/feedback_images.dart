@@ -1,26 +1,27 @@
-import 'dart:async';
-import 'dart:io';
-
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/widget_label.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
-import 'package:device_info_plus/device_info_plus.dart';
+import 'package:collection/collection.dart';
 import 'package:fast_immutable_collections/fast_immutable_collections.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mapness/entities/feedback/feedback_base_entity.dart';
-import 'package:mapness/entities/feedback/feedback_image_action_error.dart';
 import 'package:mapness/entities/feedback/fields_entity/extentions/feedback_image_format_extention.dart';
+import 'package:mapness/features/feedback/feedback_image_error.dart';
+import 'package:mapness/features/feedback/feedback_image_selector.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/shared/lib/file_upload.dart';
 import 'package:mapness/shared/lib/image_denied_dialog.dart';
+import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/widgets/feedback/images/add_image_button.dart';
+import 'package:mapness/widgets/feedback/images/feedback_image_selector_sheet.dart';
 import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
-import 'package:mapness/widgets/feedback/images/feedback_images_action_error_sheet.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:urbi_analytics/logger.dart';
 
 const _maxImageResolution = 5000;
 const _minPhotoWidth = 100;
@@ -29,7 +30,9 @@ const _photoPadding = 8.0;
 class FeedbackImages extends StatelessWidget {
   final FeedbackImageInputEntity field;
 
-  const FeedbackImages({
+  final GlobalKey<FormFieldState<IList<FileUpload>>> fieldKey = GlobalKey<FormFieldState<IList<FileUpload>>>();
+
+  FeedbackImages({
     required this.field,
     super.key,
   });
@@ -51,62 +54,75 @@ class FeedbackImages extends StatelessWidget {
               ),
             ],
           ),
-          FormBuilderField<IList<FileUpload>>(
-            name: field.id,
-            valueTransformer: (value) => value
-                ?.map(
-                  (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
-                )
-                .nonNulls
-                .toList(),
-            validator: (value) {
-              /// check does field has value
-              if (value == null || value.isEmpty) {
-                return field.isRequired ? 'NEED PHOTOS' : null;
-              }
+          Consumer(builder: (context, ref, _) {
+            ref.listen(feedbackImageSelectorProvider, (_, next) {
+              final oldValue = fieldKey.currentState?.value ?? const IList.empty();
+              final newValue = next.map((newXFile) {
+                final existing = oldValue.firstWhereOrNull((f) => f.srcPath == newXFile.path);
+                return existing ?? FileUpload.init(srcPath: newXFile.path);
+              }).toIList();
+              fieldKey.currentState?.didChange(newValue);
+            });
+            return FormBuilderField<IList<FileUpload>>(
+                key: fieldKey,
+                name: field.id,
+                initialValue:
+                    ref.read(feedbackImageSelectorProvider).map((e) => FileUpload.init(srcPath: e.path)).toIList(),
+                valueTransformer: (value) => value
+                    ?.map(
+                      (fileUpload) => fileUpload is FileUploadSuccess ? fileUpload.serverUrl : null,
+                    )
+                    .nonNulls
+                    .toList(),
+                validator: (value) {
+                  /// check does field has value
+                  if (value == null || value.isEmpty) {
+                    return field.isRequired ? 'NEED PHOTOS' : null;
+                  }
 
-              /// check are all fields uploaded
-              if (value.every((fu) => fu is FileUploadSuccess)) {
-                return null;
-              }
-              return 'UPLOAD NOT FINISHED';
-            },
-            builder: (fieldState) {
-              final value = fieldState.value ?? const IList.empty();
-
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  final imagesInRow =
-                      ((constraints.maxWidth + _photoPadding) / (_minPhotoWidth + _photoPadding)).floor();
-                  final size = (constraints.maxWidth + _photoPadding) / imagesInRow - _photoPadding;
-
-                  return Wrap(
-                    spacing: _photoPadding,
-                    runSpacing: _photoPadding,
-                    children: [
-                      if (value.length < field.maxImages)
-                        _AddImageButton(
-                          onTap: () => _handlePickImage(context, fieldState),
-                          size: size,
-                        ),
-                      ...value.indexed.map(
-                        (indexedUpload) => FeedbackImageWidget(
-                          key: ValueKey(indexedUpload),
-                          imagePath: indexedUpload.$2.srcPath,
-                          onRemove: () => fieldState.didChange(
-                            value.removeAt(indexedUpload.$1),
-                          ),
-                          onUploadStatusChange: (status) =>
-                              fieldState.didChange(value.replace(indexedUpload.$1, status)),
-                          imageSize: size,
-                        ),
-                      ),
-                    ],
-                  );
+                  /// check are all fields uploaded
+                  if (value.every((fu) => fu is FileUploadSuccess)) {
+                    return null;
+                  }
+                  return 'UPLOAD NOT FINISHED';
                 },
-              );
-            },
-          ),
+                builder: (fieldState) {
+                  final value = fieldState.value ?? const IList.empty();
+
+                  // Recreate
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      final imagesInRow =
+                          ((constraints.maxWidth + _photoPadding) / (_minPhotoWidth + _photoPadding)).floor();
+                      final size = (constraints.maxWidth + _photoPadding) / imagesInRow - _photoPadding;
+
+                      return Wrap(
+                        spacing: _photoPadding,
+                        runSpacing: _photoPadding,
+                        children: [
+                          if (value.length < field.maxImages)
+                            AddImageButton(
+                              onTap: () => _showImageSelectorDialog(context, ref),
+                              size: size,
+                            ),
+                          ...value.indexed.map(
+                            (indexedUpload) => FeedbackImageWidget(
+                              key: ValueKey(indexedUpload),
+                              imagePath: indexedUpload.$2.srcPath,
+                              onRemove: () => fieldState.didChange(
+                                value.removeAt(indexedUpload.$1),
+                              ),
+                              onUploadStatusChange: (status) =>
+                                  fieldState.didChange(value.replace(indexedUpload.$1, status)),
+                              imageSize: size,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                });
+          }),
           Spacing.$2x.heightBox,
           Text(
             context.l10n.feedbackImageVadidationDiscription(
@@ -123,77 +139,73 @@ class FeedbackImages extends StatelessWidget {
         ],
       );
 
-  Future<void> _handlePickImage(BuildContext context, FormFieldState<IList<FileUpload>> fieldState) async {
-    if (await _isGalleryPermissionDenied()) {
-      await showPermissionDeniedDialog(context);
-      return;
-    }
-
-    final selectedImages = (fieldState.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
-    final images = await _pickedImage();
-    if (images.isEmpty) {
-      return;
-    }
-
-    final pickError = await isImageSupported(
-      context,
-      images: images + selectedImages,
+  Future<void> _showImageSelectorDialog(
+    BuildContext context,
+    WidgetRef ref,
+  ) async {
+    FocusScope.of(context).unfocus();
+    final result = await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      showDragHandle: false,
+      builder: (context) => const FeedbackImageSelectorSheet(),
     );
 
-    if (pickError != null) {
-      unawaited(
-        _showImageActionErrorSheet(
-          context,
-          error: pickError,
-          onRetry: () => _handlePickImage(context, fieldState),
-        ),
-      );
+    if (result == null) {
       return;
     }
 
-    final value = fieldState.value ?? const IList.empty();
+    ref.read(feedbackImageTypeProvider.notifier).type = result;
 
-    fieldState.didChange(
-      value.addAll(
-        images.map(
-          (image) => FileUpload.init(srcPath: image.path),
-        ),
-      ),
-    );
-  }
+    try {
+      // Get previous selected images
+      final selectedImages =
+          (fieldKey.currentState?.value ?? const IList.empty()).map((e) => XFile(e.srcPath)).toList();
 
-  Future<FeedbackImagePickError?> isImageSupported(
-    BuildContext context, {
-    required List<XFile> images,
-  }) async {
-    final sizes = await Future.wait(images.map((e) => e.length()));
-    final totalSize = sizes.reduce((value, element) => value + element);
-
-    if (totalSize > field.maxSize) {
-      return FeedbackImageSizeExceededError(maxFileSize: field.maxSize);
-    }
-
-    for (final image in images) {
-      final fileType = image.path.split('.').last.toLowerCase();
-      final imageFormatAccepted = field.acceptedFormats.isNotEmpty && field.acceptedFormats.contains(fileType);
-
-      if (!imageFormatAccepted) {
-        return FeedbackImageWrongFormatError(supportedFormats: field.acceptedFormats);
+      await ref.read(feedbackImageSelectorProvider.notifier).pickImages(
+            acceptedFormats: field.acceptedFormats,
+            maxSize: field.maxSize,
+            maxImages: field.maxImages,
+            selectedImages: selectedImages,
+          );
+      FocusManager.instance.primaryFocus?.unfocus();
+    } catch (e) {
+      switch (e) {
+        case FeedbackPerrmissionError():
+          await showPermissionDeniedDialog(context, ref.read(feedbackImageTypeProvider));
+          break;
+        case FeedbackImageSizeError():
+          await _showImageActionErrorSheet(
+            context,
+            error: BaseErrorWidget(
+              buttonColorScheme: ButtonColorScheme.primary,
+              errorTitle: context.l10n.photoLimitExceeded,
+              errorLabel: context.l10n.feedbackImageLimitsError(
+                field.maxImages.toString(),
+                field.maxSize.formatAsFileSize(),
+              ),
+              buttonLabel: context.l10n.tryAgain,
+              onRetry: () {
+                Navigator.of(context).pop(true);
+              },
+              onClose: () {
+                Navigator.of(context).pop(false);
+              },
+            ),
+            onRetry: () => _showImageSelectorDialog(context, ref),
+          );
+          break;
+        default:
+          log(e.toString());
+          break;
       }
     }
-
-    return null;
-  }
-
-  Future<List<XFile>> _pickedImage() async {
-    final images = await ImagePicker().pickMultiImage();
-
-    return images;
   }
 
   Future<void> _showImageActionErrorSheet(
     BuildContext context, {
-    required FeedbackImagePickError error,
+    required Widget error,
     required AsyncCallback onRetry,
   }) async {
     final route = ModalRoute.of(context);
@@ -207,63 +219,10 @@ class FeedbackImages extends StatelessWidget {
           top: Radius.circular(RadiusBorder.l),
         ),
       ),
-      builder: (_) => FeedbackImagesActionErrorSheet(
-        error: error,
-      ),
+      builder: (_) => error,
     );
     if (needToRetry ?? false) {
       await onRetry();
     }
   }
-
-  Future<bool> _isGalleryPermissionDenied() async {
-    final Permission permission;
-
-    if (Platform.isAndroid) {
-      final androidInfo = await DeviceInfoPlugin().androidInfo;
-      if (androidInfo.version.sdkInt <= 32) {
-        permission = Permission.storage;
-      } else {
-        permission = Permission.photos;
-      }
-    } else {
-      permission = Permission.photos;
-    }
-
-    final permissionStatus = await permission.request();
-    return permissionStatus.isDenied || permissionStatus.isPermanentlyDenied;
-  }
-}
-
-class _AddImageButton extends StatelessWidget {
-  final void Function() onTap;
-  final double size;
-
-  const _AddImageButton({
-    required this.onTap,
-    required this.size,
-  });
-
-  @override
-  Widget build(BuildContext context) => ClipRRect(
-        borderRadius: BorderRadius.circular(RadiusBorder.l),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(RadiusBorder.l),
-          child: SizedBox(
-            height: size,
-            width: size,
-            child: ColoredBox(
-              color: context.colorsV2.backgroundSurface1,
-              child: Center(
-                child: Icon(
-                  GeneralIcons.plusCircle,
-                  color: context.colorsV2.accentDefault,
-                  size: size * .4,
-                ),
-              ),
-            ),
-          ),
-        ),
-      );
 }

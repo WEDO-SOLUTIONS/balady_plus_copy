@@ -112,6 +112,8 @@ apply-patches:
     git apply .github/workflows/abi_filter.patch || print_style '' 'red' 'could not apply abi filter patch'
     print_style '' 'yellow' 'remove app version force update'
     git apply mapness/scripts/disable-force-update.patch || print_style '' 'red' 'could not remove app version force update'
+    print_style '' 'yellow' 'remove splash screen to speed up development'
+    git apply mapness/scripts/disable-splash-screen.patch || print_style '' 'red' 'could not remove splash screen appearance'
 
 unapply-patches:
     #!/usr/bin/env bash
@@ -121,6 +123,8 @@ unapply-patches:
     git apply -R mapness/scripts/disable-force-update.patch || print_style '' 'red' 'could not restore app version force update'
     print_style '' 'yellow' 'remove abi filter'
     git apply -R .github/workflows/abi_filter.patch || print_style '' 'red' 'could not unapply abi filter patch'
+        print_style '' 'yellow' 'restore splash screen'
+    git apply -R mapness/scripts/disable-splash-screen.patch || print_style '' 'red' 'could not restore splash screen'
 
 xcode:
     open ios/Runner.xcworkspace

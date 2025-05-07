@@ -1,17 +1,20 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/features/poi_card/widgets/footer/footer_style.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class MyLocationPoiActions extends StatelessWidget {
   final VoidCallback? onShare;
   final VoidCallback? onCopy;
+  final VoidCallback? onParkingAdd;
 
   const MyLocationPoiActions({
     super.key,
     this.onShare,
     this.onCopy,
+    this.onParkingAdd,
   });
 
   @override
@@ -41,7 +44,7 @@ class MyLocationPoiActions extends StatelessWidget {
                   context.l10n.share_location_btn,
                   style: textStyle.copyWith(color: primary),
                 ),
-                assetName: 'assets/icons/svg/ic_share.svg',
+                assetName: Assets.icons.svg.icShare.keyName,
                 colorIcon: primary,
                 colorButton: accent,
                 onTap: onShare,
@@ -51,11 +54,19 @@ class MyLocationPoiActions extends StatelessWidget {
                   context.l10n.copy,
                   style: textStyle.copyWith(color: secondaryText),
                 ),
-                assetName: 'assets/icons/svg/ic_copy.svg',
+                assetName: Assets.icons.svg.icCopy.keyName,
                 colorIcon: secondaryText,
                 colorButton: secondary,
                 onTap: onCopy,
               ),
+              if (onParkingAdd != null)
+                ItemActionBar(
+                  icon: SystemIcons.parkingAdd,
+                  buttonType: BaladyButtonType.secondary,
+                  onPressed: () {
+                    onParkingAdd?.call();
+                  },
+                ),
             ],
           ),
         ),

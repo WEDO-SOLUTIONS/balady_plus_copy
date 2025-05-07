@@ -8,7 +8,6 @@ import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/toast/app_locale.dart';
 
 part 'toast_transition.dart';
-
 part 'toast_widget.dart';
 
 /// A widget that overlays a toast on top of its child widget.
@@ -37,7 +36,7 @@ class ToastOverlayState extends State<ToastOverlay> {
 
   OverlayEntry? _overlayEntry;
 
-  /// Displays a toast overlay with the specified [title], [actionText], and [onActionTap] callback.
+  /// Displays a toast overlay with the specified [title], [firstText], and [onFirstTap] callback.
   /// If toast is already showing, it will be replaced with the new toast.
   ///
   ///
@@ -61,8 +60,10 @@ class ToastOverlayState extends State<ToastOverlay> {
   void show({
     required String title,
     TextStyle? titleStyle,
-    String? actionText,
-    VoidCallback? onActionTap,
+    String? firstText,
+    String? secondText,
+    VoidCallback? onFirstTap,
+    VoidCallback? onSecondTap,
     String? iconAsset,
     IconData? iconData,
     Color? iconColor,
@@ -89,8 +90,10 @@ class ToastOverlayState extends State<ToastOverlay> {
               hide: hide,
               title: title,
               titleStyle: titleStyle,
-              actionText: actionText,
-              onActionTap: onActionTap,
+              firstText: firstText,
+              onFirstTap: onFirstTap,
+              secondText: secondText,
+              onSecondTap: onSecondTap,
               iconAsset: iconAsset,
               displayDuration: displayDuration,
               transitionDuration: transitionDuration,
@@ -110,7 +113,7 @@ class ToastOverlayState extends State<ToastOverlay> {
   /// The [onRetry] callback is invoked when the user taps on the action button
   ///
   /// [title] is set to 'Failed to load data'.
-  /// [actionText] is set to 'Try again'.
+  /// [firstText] is set to 'Try again'.
   /// [iconData] is set to [SystemIcons.noServer].
   ///
   /// Example usage:
@@ -126,8 +129,8 @@ class ToastOverlayState extends State<ToastOverlay> {
   }) {
     show(
       title: context.l10n.failedToLoadData,
-      actionText: context.l10n.tryAgain,
-      onActionTap: onRetry,
+      firstText: context.l10n.tryAgain,
+      onFirstTap: onRetry,
       iconData: SystemIcons.noServer,
     );
   }
@@ -137,7 +140,7 @@ class ToastOverlayState extends State<ToastOverlay> {
   /// The [onRetry] callback is invoked when the user taps on the action button
   ///
   /// [title] is set to 'You don't seem to have internet'.
-  /// [actionText] is set to 'Try again'.
+  /// [firstText] is set to 'Try again'.
   /// [iconData] is set to [SystemIcons.offline].
   ///
   /// Example usage:
@@ -153,8 +156,8 @@ class ToastOverlayState extends State<ToastOverlay> {
   }) {
     show(
       title: context.l10n.youDontSeemToHaveInternet,
-      actionText: context.l10n.tryAgain,
-      onActionTap: onRetry,
+      firstText: context.l10n.tryAgain,
+      onFirstTap: onRetry,
       iconData: SystemIcons.offline,
     );
   }

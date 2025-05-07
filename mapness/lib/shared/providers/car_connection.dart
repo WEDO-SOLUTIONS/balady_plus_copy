@@ -7,7 +7,7 @@ import 'map/dgis_controller.dart';
 part 'car_connection.g.dart';
 
 /// Getting car connection state (true/false) for Android Auto and CarPlay
-@riverpod
+@Riverpod(keepAlive: true)
 class CarConnection extends _$CarConnection {
   @override
   Future<bool> build() async {
