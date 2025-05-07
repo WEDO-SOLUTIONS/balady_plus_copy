@@ -6,14 +6,10 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
-import 'package:mapness/entities/routing/route_search_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
-import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
-import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
@@ -28,10 +24,9 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
-  final RouteSearchPoint? finishPoint;
   final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
-  PoiCardFooter({
+  const PoiCardFooter({
     required this.share,
     required this.onTapCar,
     required this.onTapFavorite,
@@ -40,21 +35,10 @@ class PoiCardFooter extends HookConsumerWidget {
     this.data,
     this.bottomSheetController,
     super.key,
-  }) : finishPoint = data != null
-            ? RouteSearchPoint(
-                coordinates: data.markerPosition!.toGeoPointMessage(),
-                dgisObjectId: data.id!,
-              )
-            : null;
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final briefInfo = ref.watch(
-      briefRouteInfoProvider(
-        finishPoint: finishPoint,
-        navType: RouteSearchOptionsMessage.car,
-      ),
-    );
     final displayShadow = useState(true);
     final bottomSheetController = this.bottomSheetController;
 
@@ -90,11 +74,6 @@ class PoiCardFooter extends HookConsumerWidget {
     final onEntranceTap = this.onEntranceTap;
 
     final parkingPoi = objectId == parkingObjectId;
-    final brief = briefInfo?.firstOrNull;
-    final carParkingLabel = [
-      brief?.getBriefRouteDescription(context.l10n),
-      brief?.getBriefRouteDistanceDescription(context.l10n),
-    ].where((e) => e != null && e.trim().isNotEmpty).join(' ');
 
     return ThrottledCallbackWidget(
       callback: share,
@@ -103,13 +82,9 @@ class PoiCardFooter extends HookConsumerWidget {
         displayShadow: displayShadow.value,
         items: [
           ItemActionBar(
-            icon: TransportIcons.car,
+            icon: TransportIcons.locationDirectionNavigator,
             buttonType: BaladyButtonType.primary,
-            label: hasContactsAndHasEntrances
-                ? null
-                : parkingPoi
-                    ? carParkingLabel
-                    : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n) ?? '',
+            label: context.l10n.poiCardDirections,
             onPressed: onTapCar,
           ),
           if (hasContactsAndHasEntrances && callPhone != null)
