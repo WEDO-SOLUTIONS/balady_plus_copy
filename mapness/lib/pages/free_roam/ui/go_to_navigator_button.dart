@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/svg.dart';
@@ -35,11 +36,11 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
   Widget build(BuildContext context) {
     listerForStart();
     return LayoutBuilder(builder: (context, constrains) {
-      const height = 52.0;
+      const height = 56.0;
       const squareSize = 40.0;
       const iconSize = 24.0;
 
-      final colorsV2 = context.colorsV2;
+      final colorsV3 = context.colorsV3;
       final alignment = context.isLTR ? Alignment.centerLeft : Alignment.centerRight;
 
       return ClipRRect(
@@ -58,52 +59,58 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
                 SizedBox(
                   width: double.infinity,
                   height: height,
-                  child: ColoredBox(color: colorsV2.accentDefault),
-                ),
-                Align(
-                  alignment: alignment,
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
-                    child: SizedBox(
-                      width: squareSize,
-                      height: squareSize,
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(RadiusBorder.s),
-                        child: ColoredBox(
-                          color: Colors.white.withOpacity(0.2),
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: ColoredBox(color: colorsV3.accentSecondarySoft),
                 ),
                 SizedBox(
                   width: constrains.maxWidth * Curves.decelerate.transform(animationProgress),
                   height: height,
-                  child: ColoredBox(
-                    color: Colors.black.withOpacity(0.2),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    context.l10n.goToNavigator,
-                    style: context.textStyleV3.bodyLargeSemiBold.copyWith(
-                      color: colorsV2.backgroundSurface1,
-                    ),
-                  ),
+                  child: ColoredBox(color: colorsV3.accentSecondaryDefault),
                 ),
                 Align(
                   alignment: alignment,
-                  child: Padding(
-                    padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
-                    child: SvgPicture.asset(
-                      Assets.icons.svg.quickFilters.freeRoam.keyName,
-                      height: iconSize,
-                      width: iconSize,
-                      colorFilter: const ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.srcIn,
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                        child: Container(
+                          width: squareSize,
+                          height: squareSize,
+                          padding: const EdgeInsets.all(Spacing.$2x),
+                          decoration: BoxDecoration(
+                            color: colorsV3.accentSecondaryOnAccentSecondary,
+                            borderRadius: BorderRadius.circular(RadiusBorder.s),
+                          ),
+                          child: SvgPicture.asset(
+                            Assets.icons.svg.quickFilters.freeRoam.keyName,
+                            height: iconSize,
+                            width: iconSize,
+                            colorFilter: ColorFilter.mode(
+                              colorsV3.accentSecondaryDefault,
+                              BlendMode.srcIn,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Spacing.$3x.widthBox,
+                      Text(
+                        context.l10n.goToNavigator,
+                        style: context.textStyleV3.bodyLargeSemiBold.copyWith(
+                          color: colorsV3.accentOnAccent,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                Align(
+                  alignment: AlignmentDirectional.centerEnd,
+                  child: AppButton(
+                    color: context.colorsV3.accentSecondarySoft,
+                    onTap: () {
+                      ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                      context.router.push(const AutostartSettingsSheetRoute());
+                    },
+                    primaryIcon: SystemIcons.close,
+                    buttonColorScheme: ButtonColorScheme.primary,
                   ),
                 ),
               ],

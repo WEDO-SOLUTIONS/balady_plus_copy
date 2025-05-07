@@ -25,7 +25,7 @@ class QuickFilter extends StatelessWidget {
               height: 24,
               width: 24,
               colorFilter: ColorFilter.mode(
-                color ?? context.color.textAndIconsBasePrimary,
+                context.colorsV3.foregroundSoft,
                 BlendMode.srcIn,
               ),
             ),

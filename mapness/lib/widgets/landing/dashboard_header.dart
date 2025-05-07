@@ -91,7 +91,7 @@ class _DashboardMenu extends ConsumerWidget {
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     title: context.l10n.go,
-                    icon: Assets.icons.svg.quickFilters.freeRoam.keyName,
+                    icon: Assets.icons.svg.quickFilters.freeRoamRoad.keyName,
                     onTap: () {
                       ref.read(locationProvider.notifier).checkLocationPermission();
                       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
