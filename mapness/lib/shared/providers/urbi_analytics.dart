@@ -13,6 +13,7 @@ class UrbiAnalytics extends _$UrbiAnalytics {
       );
 
   Future<void> trackWithPrint(String event, {Map<String, dynamic>? properties}) async {
+    // ignore: avoid_print
     print('event: $event');
     await ref.read(urbiAnalyticsProvider).track(event, properties: properties);
   }
