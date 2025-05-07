@@ -94,10 +94,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           children: [
             const Spacer(flex: 3),
             ErrorSheetV2(
-              errorTitle: context.l10n.poiObjectNotFoundTitle,
-              errorContent: context.l10n.poiObjectNotFoundContent,
-              buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
-              assetImage: Assets.imagesSvg.happyFace.keyName,
+              errorTitle: context.l10n.somethingWentWrong,
+              errorContent: context.l10n.saudiPassSomethingWentWrongHint,
+              buttonLabel: context.l10n.complete,
+              assetImage: Assets.imagesSvg.illustrationError.keyName,
               onRetry: () => context.router.popForced(),
             )
           ],
