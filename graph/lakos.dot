@@ -502,6 +502,7 @@ digraph "" {
   "/lib/widgets/path_nav/ui/continue_button.dart" [label="continue_button"];
   "/lib/widgets/path_nav/ui/eta_continue.dart" [label="eta_continue"];
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" [label="parking_bottom_sheet"];
+  "/lib/widgets/path_nav/ui/end_trip_modal.dart" [label="end_trip_modal"];
   "/lib/widgets/path_nav/ui/eta_finished.dart" [label="eta_finished"];
   "/lib/widgets/path_nav/ui/parking_bottom_banner.dart" [label="parking_bottom_banner"];
   "/lib/widgets/path_nav/lib/eta_info_widget.dart" [label="eta_info_widget"];
@@ -1837,6 +1838,7 @@ digraph "" {
             "/lib/widgets/path_nav/ui/continue_button.dart";
             "/lib/widgets/path_nav/ui/eta_continue.dart";
             "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart";
+            "/lib/widgets/path_nav/ui/end_trip_modal.dart";
             "/lib/widgets/path_nav/ui/eta_finished.dart";
             "/lib/widgets/path_nav/ui/parking_bottom_banner.dart";
             subgraph "cluster~/lib/widgets/path_nav/ui/landscape" {
@@ -3710,9 +3712,11 @@ digraph "" {
   "/lib/pages/free_roam/ui/road_panel.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
+  "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/features/free_roam/free_roam_autostart_settings.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/features/free_roam/free_roam_starter.dart";
   "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/free_roam/ui/autostart_settings_sheet.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/free_roam/ui/road_panel_sheet.dart" -> "/lib/features/free_roam/free_roam_manager.dart";
@@ -4267,6 +4271,7 @@ digraph "" {
   "/lib/widgets/path_nav/ui/eta_sheet.dart" -> "/lib/shared/providers/map/sound_settings.dart";
   "/lib/widgets/path_nav/ui/eta_sheet.dart" -> "/lib/shared/ui/measure_size.dart";
   "/lib/widgets/path_nav/ui/eta_sheet.dart" -> "/lib/widgets/path_nav/lib/utils.dart";
+  "/lib/widgets/path_nav/ui/eta_sheet.dart" -> "/lib/widgets/path_nav/ui/end_trip_modal.dart";
   "/lib/widgets/path_nav/ui/eta_sheet.dart" -> "/lib/widgets/path_nav/ui/eta_sheet_wrapper.dart";
   "/lib/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart" -> "/lib/entities/path_nav/models/path_nav_state.dart";
   "/lib/widgets/path_nav/ui/map_controls/path_nav_map_controls.dart" -> "/lib/features/path_nav/providers/path_nav_maneuver.dart";
@@ -4306,6 +4311,8 @@ digraph "" {
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/providers/map/navigator_auto_enable_parking.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/providers/map/parking_autoenabled_sheet_provider.dart";
   "/lib/widgets/path_nav/ui/parking_bottom_sheet.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
+  "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/path_nav/ui/end_trip_modal.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
   "/lib/widgets/path_nav/ui/eta_finished.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/path_nav/ui/eta_finished.dart" -> "/lib/shared/ui/measure_size.dart";
   "/lib/widgets/path_nav/ui/eta_finished.dart" -> "/lib/widgets/path_nav/ui/eta_sheet_wrapper.dart";
