@@ -21,7 +21,8 @@ class AutostartSettingsSheetPage extends ConsumerStatefulWidget {
   ConsumerState<AutostartSettingsSheetPage> createState() => AutostartSettingsSheetState();
 }
 
-class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPage> with SingleTickerProviderStateMixin {
+class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPage>
+    with SingleTickerProviderStateMixin {
   static const duration = Duration(milliseconds: 250);
   static const showHideDuration = Duration(milliseconds: 150);
 
@@ -173,10 +174,8 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
       context.router.popUntilRouteWithName(BottomMenuRoute.name);
     }
 
-    ToastOverlay.of(context).show(
-      title: context.l10n.activateAutostartNavigator,
-      iconAsset: Assets.icons.svg.icActionsContainer.keyName
-    );
+    ToastOverlay.of(context)
+        .show(title: context.l10n.activateAutostartNavigator, iconAsset: Assets.icons.svg.icActionsContainer.keyName);
   }
 
   void continueAutorun() {
