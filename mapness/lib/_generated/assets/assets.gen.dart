@@ -31,9 +31,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
-  /// File path: assets/images/banner_feedback_dashborad.png
-  AssetGenImage get bannerFeedbackDashborad => const AssetGenImage('assets/images/banner_feedback_dashborad.png');
-
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
@@ -126,7 +123,6 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
-        bannerFeedbackDashborad,
         calendarCard,
         calendarCardBrown,
         cityExpert,
@@ -261,6 +257,9 @@ class $AssetsIconsSvgGen {
 
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
+
+  /// File path: assets/icons/svg/ic_actions_container.svg
+  SvgGenImage get icActionsContainer => const SvgGenImage('assets/icons/svg/ic_actions_container.svg');
 
   /// File path: assets/icons/svg/ic_arrow_compass.svg
   SvgGenImage get icArrowCompass => const SvgGenImage('assets/icons/svg/ic_arrow_compass.svg');
@@ -424,6 +423,7 @@ class $AssetsIconsSvgGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         currentLocationIcon,
+        icActionsContainer,
         icArrowCompass,
         icBestRoute,
         icBug,
@@ -706,12 +706,6 @@ class $AssetsIconsSvgPlacesNewGen {
 class $AssetsIconsSvgQuickFiltersGen {
   const $AssetsIconsSvgQuickFiltersGen();
 
-  /// File path: assets/icons/svg/quick_filters/free_roam.svg
-  SvgGenImage get freeRoam => const SvgGenImage('assets/icons/svg/quick_filters/free_roam.svg');
-
-  /// File path: assets/icons/svg/quick_filters/ic_quick_bookmark.svg
-  SvgGenImage get icQuickBookmark => const SvgGenImage('assets/icons/svg/quick_filters/ic_quick_bookmark.svg');
-
   /// File path: assets/icons/svg/quick_filters/ic_quick_home.svg
   SvgGenImage get icQuickHome => const SvgGenImage('assets/icons/svg/quick_filters/ic_quick_home.svg');
 
@@ -719,7 +713,7 @@ class $AssetsIconsSvgQuickFiltersGen {
   SvgGenImage get icQuickWork => const SvgGenImage('assets/icons/svg/quick_filters/ic_quick_work.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [freeRoam, icQuickBookmark, icQuickHome, icQuickWork];
+  List<SvgGenImage> get values => [icQuickHome, icQuickWork];
 }
 
 class $AssetsIconsSvgWeatherGen {

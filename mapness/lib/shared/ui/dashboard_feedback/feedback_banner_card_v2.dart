@@ -260,10 +260,14 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
 
       /// Paint image if it exist.
       if (hasImage && image != null) {
-        print('heightOffset $heightOffset');
         paintImage(
           canvas: canvas,
-          rect: Rect.fromLTWH(offset.dx + heightOffset, offset.dy, 97, 87),
+          rect: Rect.fromLTWH(
+            isLTR ? offset.dx + heightOffset : size.width - imageSize.width + minTextPadding.left,
+            offset.dy,
+            97, // const
+            87, // const
+          ),
           alignment: isLTR ? Alignment.centerLeft : Alignment.centerRight,
           flipHorizontally: !isLTR,
           image: image!,
@@ -272,11 +276,13 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       }
 
       final titleOffset = Offset(
-        isLTR ? offset.dx + minTextPadding.left + imageSize.width : width - titlePainter.width,
-        offset.dy + minTextPadding.top + heightOffset,
+        isLTR ? offset.dx + minTextPadding.left + imageSize.width : width - titlePainter.width - imageSize.width,
+        isLTR
+            ? offset.dy + minTextPadding.top + heightOffset
+            : offset.dy + minTextPadding.top * 2 + heightOffset + textGap,
       );
       final subtitleOffset = Offset(
-        isLTR ? offset.dx + minTextPadding.left + imageSize.width : width - subtitlePainter.width,
+        isLTR ? offset.dx + minTextPadding.left + imageSize.width : width - subtitlePainter.width - imageSize.width,
         offset.dy + minTextPadding.top + textGap + titlePainter.height + heightOffset,
       );
 
