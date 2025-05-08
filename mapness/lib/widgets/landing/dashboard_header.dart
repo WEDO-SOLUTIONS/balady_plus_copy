@@ -89,7 +89,6 @@ class _DashboardMenu extends ConsumerWidget {
                 customFilters: [
                   FilterItemConfig(
                     filterType: FilterType.custom,
-                    title: context.l10n.go,
                     icon: TransportIcons.locationDirectionNavigator,
                     onTap: () {
                       ref.read(locationProvider.notifier).checkLocationPermission();

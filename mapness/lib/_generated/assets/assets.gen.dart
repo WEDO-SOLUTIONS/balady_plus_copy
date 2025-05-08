@@ -31,9 +31,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
-  /// File path: assets/images/banner_feedback_dashborad.png
-  AssetGenImage get bannerFeedbackDashborad => const AssetGenImage('assets/images/banner_feedback_dashborad.png');
-
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
@@ -126,7 +123,6 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
-        bannerFeedbackDashborad,
         calendarCard,
         calendarCardBrown,
         cityExpert,

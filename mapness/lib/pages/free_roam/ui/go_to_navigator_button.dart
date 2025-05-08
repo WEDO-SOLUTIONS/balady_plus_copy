@@ -78,14 +78,10 @@ class _GoToNavigatorButtonState extends ConsumerState<GoToNavigatorButton>
                             color: colorsV3.accentSecondaryOnAccentSecondary,
                             borderRadius: BorderRadius.circular(RadiusBorder.s),
                           ),
-                          child: SvgPicture.asset(
-                            Assets.icons.svg.quickFilters.freeRoam.keyName,
-                            height: iconSize,
-                            width: iconSize,
-                            colorFilter: ColorFilter.mode(
-                              colorsV3.accentSecondaryDefault,
-                              BlendMode.srcIn,
-                            ),
+                          child: Icon(
+                            TransportIcons.locationDirectionNavigator,
+                            size: iconSize,
+                            color: context.colorsV3.foregroundSoft,
                           ),
                         ),
                       ),

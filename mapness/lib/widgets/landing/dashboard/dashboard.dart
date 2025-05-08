@@ -193,15 +193,15 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   ),
                   const SizedBox(width: uikit.Spacing.$2x),
                   QuickActionButton(
-                    text: context.l10n.athkarAction,
-                    icon: General32Icons.athkarAction,
-                    onTap: () => _openAthkar(context),
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
                     text: context.l10n.quaranAction,
                     icon: General32Icons.quaranAction,
                     onTap: () => _openQuran(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.athkarAction,
+                    icon: General32Icons.athkarAction,
+                    onTap: () => _openAthkar(context),
                   ),
                 ],
               ),
