@@ -83,7 +83,9 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
       return photosMinHeight * interpolation;
     }
 
-    final isNoPhotos = isPhotosEmpty && !isPhotosLoading;
+    final _parkingObjectId = objectId == parkingObjectId;
+
+    final isNoPhotos = isPhotosEmpty && !isPhotosLoading && !_parkingObjectId;
     if (isNoPhotos && state == PoiCardBottomSheetState.halfOpen) {
       return photosMinHeight * (1 - interpolation);
     }

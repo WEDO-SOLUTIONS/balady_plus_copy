@@ -25,7 +25,7 @@ class PoiPhotosRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final parkingObject = objectId == parkingObjectId;
     final parkingPhotos = ref.read(parkingManageProvider).value?.imagesPaths;
-    final photoFiles = parkingPhotos?.map((e) => File(e)).toList();
+    final photoFiles = parkingObject ? parkingPhotos?.map((e) => File(e)).toList() ?? [] : null;
     final photosState = ref.watch(poiPhotoProvider(objectId));
 
     /// show shimmer while loading

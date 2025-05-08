@@ -3,12 +3,9 @@ import 'dart:ui';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
@@ -107,28 +104,9 @@ class FreeRoamBar extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Padding(
-        padding: const EdgeInsets.all(Spacing.$4x),
-        child: Row(
-          children: [
-            const Expanded(flex: 2, child: GoToNavigatorButton()),
-            Spacing.$2x.widthBox,
-            Expanded(
-              child: SizedBox(
-                height: 56,
-                child: AppButton(
-                  onTap: () {
-                    ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
-                    context.router.push(const AutostartSettingsSheetRoute());
-                  },
-                  buttonColorScheme: ButtonColorScheme.onColor,
-                  primaryLabel: context.l10n.cancel,
-                  textColor: context.colorsV2.foregroundDefault,
-                ),
-              ),
-            ),
-          ],
-        ),
+  Widget build(BuildContext context, WidgetRef ref) => const Padding(
+        padding: EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$3x),
+        child: GoToNavigatorButton(),
       );
 }
 
@@ -245,7 +223,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
     super.build(context);
     listerForStart();
     final color = context.color;
-    final colorsV2 = context.colorsV2;
+    final colorsV3 = context.colorsV2;
 
     final delta = launchingController.value;
     final borderRadius = lerpDouble(RadiusBorder.m, RadiusBorder.l, delta) ?? RadiusBorder.m;
@@ -271,7 +249,7 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(borderRadius),
         boxShadow: Shadows.s,
-        color: Color.lerp(colorsV2.backgroundSurface1, colorsV2.accentDefault, delta) ?? colorsV2.backgroundSurface1,
+        color: Color.lerp(colorsV3.accentOnAccent, colorsV3.accentSecondarySoft, delta) ?? colorsV3.accentOnAccent,
       ),
       child: InkWell(
         borderRadius: BorderRadius.circular(borderRadius),
@@ -314,14 +292,10 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                           color: Colors.white.withOpacity(progressOpacity * delta),
                         ),
                         child: Center(
-                          child: SvgPicture.asset(
-                            Assets.icons.svg.quickFilters.freeRoam.keyName,
-                            height: iconSize,
-                            width: iconSize,
-                            colorFilter: ColorFilter.mode(
-                              iconAndTextColor,
-                              BlendMode.srcIn,
-                            ),
+                          child: Icon(
+                            TransportIcons.locationDirectionNavigator,
+                            size: iconSize,
+                            color: context.colorsV3.foregroundSoft,
                           ),
                         ),
                       ),
@@ -333,10 +307,23 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                         alignment: AlignmentDirectional.centerStart,
                         widthFactor: delta,
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$3x),
-                          child: Text(
-                            context.l10n.launchingNavigator,
-                            style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                          child: Row(
+                            children: [
+                              Text(
+                                context.l10n.launchingNavigator,
+                                style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                              ),
+                              AppButton(
+                                color: context.colorsV3.accentSecondarySoft,
+                                onTap: () {
+                                  ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                                  context.router.push(const AutostartSettingsSheetRoute());
+                                },
+                                primaryIcon: SystemIcons.close,
+                                buttonColorScheme: ButtonColorScheme.primary,
+                              )
+                            ],
                           ),
                         ),
                       ),

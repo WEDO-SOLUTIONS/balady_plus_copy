@@ -14,6 +14,7 @@ import 'package:mapness/shared/providers/hive.dart';
 import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
+import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,7 +24,7 @@ const _boxName = 'parking_location';
 const _keyCache = 'parking_store_model';
 
 const parkingId = 'parking_marker';
-const parkingObjectId = 10;/// This ID is needed to determine that we have opened the parking lot
+const parkingObjectId = 10; /// This ID is needed to determine that we have opened the parking lot
 
 @riverpod
 class _ParkingManage extends _$ParkingManage {
@@ -62,8 +63,35 @@ class _ParkingManage extends _$ParkingManage {
   Future<void> saveStore(ParkingStoreModel model) async {
     final hive = await ref.read(hiveProvider(_boxName).future);
 
+    await ref.read(selectedMarkerProvider.notifier).removeAllMarkers();
     await hive.put(_keyCache, model.toJson());
-    await _addMarker(model.lat, model.lon);
+    await ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+    await _mapObjectManager.removeAllMarkers();
+    await _mapObjectManager.addMarker(
+      Marker(
+        id: parkingId,
+        options: MarkerOptionsMessage(
+          position: GeoPointWithElevationMessage(
+            latitude: model.lat,
+            longitude: model.lon,
+            elevation: 1,
+          ),
+          icon: Assets.icons.svg.placesNew.icParking.keyName.markerIcon(),
+        ),
+        onTap: () {
+          ref.read(appRouterProvider).replaceOrPush(
+            route: PoiCardWidgetRoute(
+              closestPoint: LatLng(latitude: model.lat, longitude: model.lon),
+              objectId: DgisObjectIdMessage(
+                objectId: parkingObjectId,
+                entranceId: 0,
+              ),
+            ),
+            toCompareRoutes: [PoiCardWidgetRoute.page],
+          );
+        },
+      ),
+    );
     state = AsyncValue.data(model);
   }
 
@@ -78,7 +106,6 @@ class _ParkingManage extends _$ParkingManage {
     final hive = await ref.read(hiveProvider(_boxName).future);
 
     await hive.delete(_keyCache);
-    await _mapObjectManager.removeAllMarkers();
     state = const AsyncValue.data(null);
   }
 
@@ -86,21 +113,26 @@ class _ParkingManage extends _$ParkingManage {
     GeoPointWithElevationMessage? geoPoint,
     String title,
   ) async {
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    final markers = selectedMarker.mapObjectManager.markers;
+    final exists = markers.any((marker) => marker.id == poiPinId);
+    if (exists) {
+      return;
+    }
+
     final lat = geoPoint?.latitude ?? 0.0;
     final lon = geoPoint?.longitude ?? 0.0;
 
     await _mapObjectManager.removeAllMarkers();
 
     final style = await _markerStyle(title);
-    await _mapObjectManager.addMarker(
-      Markers.pinMarker(
-        GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
-        text: title,
-        textStyle: style,
-        icon: Markers.defaultPinNew,
-        id: poiPinId,
-      ),
-    );
+    await selectedMarker.showMarker(Markers.pinMarker(
+      GeoPointWithElevationMessage(latitude: lat, longitude: lon, elevation: 1),
+      text: title,
+      textStyle: style,
+      icon: Markers.defaultPinNew,
+      id: poiPinId,
+    ));
   }
 
   Future<MarkerTextStyleMessage> _markerStyle(String title) async {
@@ -122,7 +154,12 @@ class _ParkingManage extends _$ParkingManage {
   }
 
   Future<void> _addMarker(double lat, double lon) async {
-    await _mapObjectManager.removeAllMarkers();
+    final selectedMarker = ref.read(selectedMarkerProvider.notifier);
+    final markers = selectedMarker.mapObjectManager.markers;
+    final exists = markers.any((marker) => marker.id == poiPinId);
+    if (exists) {
+      return;
+    }
 
     await _mapObjectManager.addMarker(
       Marker(

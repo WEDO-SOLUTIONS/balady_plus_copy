@@ -8,8 +8,8 @@ import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 
-class ClosureControls extends ConsumerWidget {
-  const ClosureControls({super.key});
+class ClosedControls extends ConsumerWidget {
+  const ClosedControls({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => SafeArea(

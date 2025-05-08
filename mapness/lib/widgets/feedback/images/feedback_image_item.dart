@@ -1,12 +1,16 @@
-part of 'feedback_image_widget.dart';
+import 'dart:io';
 
-class _FeedbackImageItem extends StatelessWidget {
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:flutter/material.dart';
+
+class FeedbackImageItem extends StatelessWidget {
   final String imagePath;
   final double imageSize;
 
-  const _FeedbackImageItem({
+  const FeedbackImageItem({
     required this.imagePath,
     required this.imageSize,
+    super.key,
   });
 
   @override

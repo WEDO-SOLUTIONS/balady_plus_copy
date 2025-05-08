@@ -23,7 +23,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/ui/feedback_banner_card.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
 import 'package:mapness/widgets/landing/dashboard_feedback_card.dart';
@@ -129,19 +129,19 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         ),
         content: [
           const SizedBox(height: uikit.Spacing.$3x),
-          FeedbackBannerCard(
-            path: Assets.images.addCompany.keyName,
+          FeedbackBannerCardV2(
+            path: Assets.images.feedbackDashboard.keyName,
             onTap: () {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
               context.router.push(QuickFeedbackRoute());
             },
             gradientColors: const [
               /// It's normal that some components are not from the design and color system too
-              Color(0xFF9F6AD7),
-              Color(0xFF7035AF),
+              Color(0xFF4EC9C0),
+              Color(0xFF2AB3A9),
             ],
-            title: context.l10n.addPlace,
-            subtitle: context.l10n.addNewPlace,
+            title: context.l10n.contribute,
+            subtitle: context.l10n.buildBaladyTogether,
           ),
           const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
@@ -159,8 +159,39 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x, vertical: uikit.Spacing.$0_5x),
               scrollDirection: Axis.horizontal,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  QuickActionButton(
+                    text: context.l10n.sendLocation,
+                    icon: General32Icons.locationAction,
+                    onTap: _openMyLocation,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.freeRoam,
+                    icon: uikit.TransportIcons.locationDirectionNavigator,
+                    onTap: _openFreeRoam,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.parkingAction,
+                    icon: General32Icons.parkingAction,
+                    onTap: _openParking,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.snapAndSendAction,
+                    icon: General32Icons.snapAndSendAction,
+                    onTap: _openSnapAndSend,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.qibla,
+                    icon: General32Icons.qiblaAction,
+                    onTap: () => _openQibla(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.quaranAction,
                     icon: General32Icons.quaranAction,
@@ -171,30 +202,6 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     text: context.l10n.athkarAction,
                     icon: General32Icons.athkarAction,
                     onTap: () => _openAthkar(context),
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.qibla,
-                    icon: General32Icons.qiblaAction,
-                    onTap: () => _openQibla(context),
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.snapAndSendAction,
-                    icon: General32Icons.snapAndSendAction,
-                    onTap: _openSnapAndSend,
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.parkingAction,
-                    icon: General32Icons.parkingAction,
-                    onTap: _openParking,
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.locationAction,
-                    icon: General32Icons.locationAction,
-                    onTap: _openMyLocation,
                   ),
                 ],
               ),
@@ -245,6 +252,11 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+  }
+
+  void _openFreeRoam() {
+    ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
+    context.router.push(const FreeRoamRoute());
   }
 
   void _openMyLocation() {
