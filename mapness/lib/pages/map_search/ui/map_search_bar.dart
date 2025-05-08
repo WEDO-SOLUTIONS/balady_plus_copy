@@ -66,7 +66,9 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
   Widget build(BuildContext context) {
     final scope = context.read<SearchScope>();
     final searcher = ref.watch(searchProvider(scope.value).notifier);
+
     ref.listen(searchProvider(scope.value), (previous, next) {
+      final isSearchInRectRequest = ref.read(searchInRectProvider).isSearchInThisAreaRequest;
       if (next.searchText.isEmpty) {
         ref.read(searchInRectProvider.notifier).update();
       }
@@ -75,7 +77,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (next is SearchStateLoading) {
           _focusNode.unfocus();
-        } else if (next is SearchStateResults) {
+        } else if (next is SearchStateResults && !isSearchInRectRequest) {
           _focusNode.requestFocus();
         }
       });
@@ -87,6 +89,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
         config: BaladyInputConfig(
           focusNode: _focusNode,
           onChanged: (query) {
+            ref.read(searchInRectProvider.notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
             metrics.Metrics.logEventAdvanced(
               metric_const.MetricsConstants.searchKeys.searchField,
