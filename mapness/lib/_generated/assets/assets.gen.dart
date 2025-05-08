@@ -64,6 +64,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/favorites_example_english.png
   AssetGenImage get favoritesExampleEnglish => const AssetGenImage('assets/images/favorites_example_english.png');
 
+  /// File path: assets/images/feedback_dashboard.png
+  AssetGenImage get feedbackDashboard => const AssetGenImage('assets/images/feedback_dashboard.png');
+
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
 
@@ -134,6 +137,7 @@ class $AssetsImagesGen {
         eventCardItemMask,
         favoritesExampleArabic,
         favoritesExampleEnglish,
+        feedbackDashboard,
         feedbackEyes,
         icArrowFeedback,
         icFlipsContinue,

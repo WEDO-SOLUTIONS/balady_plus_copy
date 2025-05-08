@@ -1,84 +1,11 @@
 import 'dart:math';
 import 'dart:ui' as ui;
 
-import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
-
-/// TODO('Ayat') Change to normal design and delete this class
-class FeedbackBannerPhoto extends ConsumerWidget {
-  const FeedbackBannerPhoto({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) => GestureDetector(
-        onTap: () {
-          ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-          context.router.push(QuickFeedbackRoute());
-        },
-        child: Container(
-          height: 96,
-          margin: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(RadiusBorder.xl),
-            image: DecorationImage(
-              image: AssetImage(Assets.images.bannerFeedbackDashborad.keyName),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Column(
-            children: [
-              Align(
-                alignment: AlignmentDirectional.topEnd,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(top: Spacing.$2x),
-                  child: SizedBox(
-                    width: Spacing.$6x,
-                    height: Spacing.$6x,
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Spacing.$1_5x),
-                        color: context.colorsV3.staticWhite.withOpacity(0.2),
-                      ),
-                      child: Center(
-                        child: Assets.images.icArrowFeedback.svg(),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              Align(
-                alignment: AlignmentDirectional.centerEnd,
-                child: Padding(
-                  padding: const EdgeInsetsDirectional.only(end: Spacing.$6x),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        context.l10n.contribute,
-                        style: context.textStyleV3.h4SemiBold,
-                      ),
-                      Text(
-                        context.l10n.buildBaladyTogether,
-                        style: context.textStyleV3.captionLargeRegular,
-                      ),
-                    ],
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      );
-}
 
 class FeedbackBannerCard extends StatelessWidget {
   final String title;
