@@ -6,9 +6,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
@@ -314,14 +312,10 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                           color: Colors.white.withOpacity(progressOpacity * delta),
                         ),
                         child: Center(
-                          child: SvgPicture.asset(
-                            Assets.icons.svg.quickFilters.freeRoam.keyName,
-                            height: iconSize,
-                            width: iconSize,
-                            colorFilter: ColorFilter.mode(
-                              iconAndTextColor,
-                              BlendMode.srcIn,
-                            ),
+                          child: Icon(
+                            TransportIcons.locationDirectionNavigator,
+                            size: iconSize,
+                            color: context.colorsV3.foregroundSoft,
                           ),
                         ),
                       ),

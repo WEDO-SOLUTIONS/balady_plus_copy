@@ -1,7 +1,7 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
@@ -50,7 +50,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
-          icon: Assets.icons.svg.quickFilters.icQuickHome.keyName,
+          icon: GeneralIcons.home,
           onTap: () {
             final home = favouritesState.valueOrNull?.home;
             if (home != null) {
@@ -66,7 +66,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
-          icon: Assets.icons.svg.quickFilters.icQuickWork.keyName,
+          icon: GeneralIcons.briefcase,
           onTap: () {
             final work = favouritesState.valueOrNull?.work;
             if (work != null) {
@@ -85,7 +85,7 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       FilterItemConfig(
         filterType: FilterType.favourites,
-        icon: Assets.icons.svg.quickFilters.icQuickBookmark.keyName,
+        icon: SystemIcons.bookmark,
         onTap: onFavouritesBookmarkTap,
       ),
       ...customItems,
@@ -95,6 +95,7 @@ class QuickFilters extends ConsumerWidget {
               filterType: FilterType.quick,
               title: filter.title(context.l10n),
               selected: filter == selectedQuickFilter,
+              icon: filter.icon,
               onTap: () => onQuickFilterTap(filter),
             ),
           ),
