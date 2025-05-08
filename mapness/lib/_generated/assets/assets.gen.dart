@@ -706,15 +706,6 @@ class $AssetsIconsSvgPlacesNewGen {
 class $AssetsIconsSvgQuickFiltersGen {
   const $AssetsIconsSvgQuickFiltersGen();
 
-  /// File path: assets/icons/svg/quick_filters/free_roam.svg
-  SvgGenImage get freeRoam => const SvgGenImage('assets/icons/svg/quick_filters/free_roam.svg');
-
-  /// File path: assets/icons/svg/quick_filters/free_roam_road.svg
-  SvgGenImage get freeRoamRoad => const SvgGenImage('assets/icons/svg/quick_filters/free_roam_road.svg');
-
-  /// File path: assets/icons/svg/quick_filters/ic_quick_bookmark.svg
-  SvgGenImage get icQuickBookmark => const SvgGenImage('assets/icons/svg/quick_filters/ic_quick_bookmark.svg');
-
   /// File path: assets/icons/svg/quick_filters/ic_quick_home.svg
   SvgGenImage get icQuickHome => const SvgGenImage('assets/icons/svg/quick_filters/ic_quick_home.svg');
 
@@ -722,7 +713,7 @@ class $AssetsIconsSvgQuickFiltersGen {
   SvgGenImage get icQuickWork => const SvgGenImage('assets/icons/svg/quick_filters/ic_quick_work.svg');
 
   /// List of all assets
-  List<SvgGenImage> get values => [freeRoam, freeRoamRoad, icQuickBookmark, icQuickHome, icQuickWork];
+  List<SvgGenImage> get values => [icQuickHome, icQuickWork];
 }
 
 class $AssetsIconsSvgWeatherGen {
