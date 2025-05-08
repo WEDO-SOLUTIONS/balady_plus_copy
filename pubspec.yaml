@@ -184,6 +184,11 @@ dependencies:
   printing: ^5.14.2
 
 
+
+  dsbridge_flutter: ^1.2.0
+  flutter_archive: ^6.0.3
+
+
   # Map urbi SDK
   dgis_map:
     path: urbi_map/dgis_map
