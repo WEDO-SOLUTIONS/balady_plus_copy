@@ -159,30 +159,19 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x, vertical: uikit.Spacing.$0_5x),
               scrollDirection: Axis.horizontal,
               child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   QuickActionButton(
-                    text: context.l10n.quaranAction,
-                    icon: General32Icons.quaranAction,
-                    onTap: () => _openQuran(context),
+                    text: context.l10n.sendLocation,
+                    icon: General32Icons.locationAction,
+                    onTap: _openMyLocation,
                   ),
                   const SizedBox(width: uikit.Spacing.$2x),
                   QuickActionButton(
-                    text: context.l10n.athkarAction,
-                    icon: General32Icons.athkarAction,
-                    onTap: () => _openAthkar(context),
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.qibla,
-                    icon: General32Icons.qiblaAction,
-                    onTap: () => _openQibla(context),
-                  ),
-                  const SizedBox(width: uikit.Spacing.$2x),
-                  QuickActionButton(
-                    text: context.l10n.snapAndSendAction,
-                    icon: General32Icons.snapAndSendAction,
-                    onTap: _openSnapAndSend,
+                    text: context.l10n.freeRoam,
+                    icon: uikit.TransportIcons.locationDirectionNavigator,
+                    onTap: _openFreeRoam,
                   ),
                   const SizedBox(width: uikit.Spacing.$2x),
                   QuickActionButton(
@@ -192,9 +181,27 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                   ),
                   const SizedBox(width: uikit.Spacing.$2x),
                   QuickActionButton(
-                    text: context.l10n.locationAction,
-                    icon: General32Icons.locationAction,
-                    onTap: _openMyLocation,
+                    text: context.l10n.snapAndSendAction,
+                    icon: General32Icons.snapAndSendAction,
+                    onTap: _openSnapAndSend,
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.qibla,
+                    icon: General32Icons.qiblaAction,
+                    onTap: () => _openQibla(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.athkarAction,
+                    icon: General32Icons.athkarAction,
+                    onTap: () => _openAthkar(context),
+                  ),
+                  const SizedBox(width: uikit.Spacing.$2x),
+                  QuickActionButton(
+                    text: context.l10n.quaranAction,
+                    icon: General32Icons.quaranAction,
+                    onTap: () => _openQuran(context),
                   ),
                 ],
               ),
@@ -245,6 +252,11 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void _openAthkar(BuildContext context) {
     ref.read(appAnalyticsProvider).quickActionSelected('athkar');
     NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+  }
+
+  void _openFreeRoam() {
+    ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
+    context.router.push(const FreeRoamRoute());
   }
 
   void _openMyLocation() {
