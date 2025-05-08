@@ -119,6 +119,33 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final photos = ref.watch(poiPhotoProvider(objectId));
     final isPhotosNotEmpty = (!photos.hasValue || photos.requireValue.items.isEmpty) && !photos.isLoading;
 
+    final finishPoint = RouteSearchPoint(
+      coordinates: data.markerPosition!.toGeoPointMessage(),
+      dgisObjectId: data.id!,
+    );
+
+    final briefInfo = ref.watch(
+      briefRouteInfoProvider(
+        finishPoint: finishPoint,
+        navType: RouteSearchOptionsMessage.car,
+      ),
+    );
+
+    final brief = briefInfo?.firstOrNull;
+
+    String? createPoiHeaderSubTitle() {
+      final parkingPoi = objectId == parkingObjectId;
+
+      final carParkingLabel = [
+        brief?.getBriefRouteDescription(context.l10n),
+        brief?.getBriefRouteDistanceDescription(context.l10n),
+      ].where((e) => e != null && e.trim().isNotEmpty).join(' ');
+
+      return parkingPoi ? carParkingLabel : briefInfo?.firstOrNull?.getBriefRouteDescription(context.l10n);
+    }
+
+    final poiHeaderSubTitle = createPoiHeaderSubTitle();
+
     return Directionality(
       textDirection: Directionality.of(context),
       child: SafeArea(
@@ -200,6 +227,17 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           header: PoiHeader(
             title: data.address?.buildingName ?? data.title,
             subTitle: _getParkingSubtitle(data.parkingInfo, context.l10n) ?? data.subtitle,
+            subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
+                ? [
+                    const TextSpan(text: ' • '),
+                    WidgetSpan(
+                      child: Icon(General16Icons.car, size: 16, color: context.colorsV3.foregroundSoft),
+                      baseline: TextBaseline.ideographic,
+                      alignment: PlaceholderAlignment.middle,
+                    ),
+                    TextSpan(text: ' $poiHeaderSubTitle'),
+                  ]
+                : [],
             parkingInfo: data.parkingInfo,
             poiCardState: poiCardState,
             tabController: _tabController,

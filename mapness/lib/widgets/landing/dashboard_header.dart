@@ -6,7 +6,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
@@ -91,7 +90,7 @@ class _DashboardMenu extends ConsumerWidget {
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     title: context.l10n.go,
-                    icon: Assets.icons.svg.quickFilters.freeRoamRoad.keyName,
+                    icon: TransportIcons.locationDirectionNavigator,
                     onTap: () {
                       ref.read(locationProvider.notifier).checkLocationPermission();
                       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);

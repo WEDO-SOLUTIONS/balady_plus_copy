@@ -9,11 +9,13 @@ class ClosedRoadCard extends StatelessWidget {
   const ClosedRoadCard({
     required this.title,
     required this.description,
+    this.workDuration,
     super.key,
   });
 
   final String title;
   final String description;
+  final String? workDuration;
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +66,16 @@ class ClosedRoadCard extends StatelessWidget {
                     CustomCloseButton(onClose: context.router.popForced),
                   ],
                 ),
+                if (workDuration != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: Text(
+                      workDuration!,
+                      style: textStyle.bodySmallRegular.copyWith(
+                        color: color.foregroundSoft.withOpacity(0.64),
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

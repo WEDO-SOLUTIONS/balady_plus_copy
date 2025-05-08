@@ -4,6 +4,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mapness/features/road_events/ui/widgets/closed_card.dart';
 import 'package:mapness/features/road_events/ui/widgets/closed_controls.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -90,8 +91,19 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
         ClosedRoadCard(
           title: title,
           description: description,
+          workDuration: _formatSchedule(widget.startTime, widget.finishTime, currentLang),
         ),
       ],
     );
+  }
+
+  String? _formatSchedule(DateTime? from, DateTime? to, String currentLang) {
+    if (from == null) {
+      return null;
+    }
+
+    final _dateFormat = DateFormat('yyyy/MM/dd', currentLang);
+
+    return '${_dateFormat.format(from)}${to != null ? '– ${_dateFormat.format(to)}' : ''}';
   }
 }
