@@ -53,7 +53,7 @@ import 'package:mapness/shared/providers/map/highlight.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
-import 'package:mapness/shared/ui/feedback_banner_card.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:sliver_tools/sliver_tools.dart';

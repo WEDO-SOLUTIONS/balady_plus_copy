@@ -9,7 +9,7 @@ import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/feedback_banner_card.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:mapness/widgets/messages/errror_message.dart';
 import 'package:shimmer/shimmer.dart';

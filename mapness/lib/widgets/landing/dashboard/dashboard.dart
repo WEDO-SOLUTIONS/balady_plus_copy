@@ -23,7 +23,7 @@ import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/location.dart';
-import 'package:mapness/shared/ui/feedback_banner_card.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart';
 import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
 import 'package:mapness/widgets/landing/dashboard/map_hidden_state_controls.dart';
 import 'package:mapness/widgets/landing/dashboard_feedback_card.dart';
@@ -129,19 +129,19 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         ),
         content: [
           const SizedBox(height: uikit.Spacing.$3x),
-          FeedbackBannerCard(
-            path: Assets.images.addCompany.keyName,
+          FeedbackBannerCardV2(
+            path: Assets.images.feedbackDashboard.keyName,
             onTap: () {
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
               context.router.push(QuickFeedbackRoute());
             },
             gradientColors: const [
               /// It's normal that some components are not from the design and color system too
-              Color(0xFF9F6AD7),
-              Color(0xFF7035AF),
+              Color(0xFF4EC9C0),
+              Color(0xFF2AB3A9),
             ],
-            title: context.l10n.addPlace,
-            subtitle: context.l10n.addNewPlace,
+            title: context.l10n.contribute,
+            subtitle: context.l10n.buildBaladyTogether,
           ),
           const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
