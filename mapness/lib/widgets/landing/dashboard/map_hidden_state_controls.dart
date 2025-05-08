@@ -313,10 +313,23 @@ class _FreeRoamState extends ConsumerState<_FreeRoamQuickAction>
                         alignment: AlignmentDirectional.centerStart,
                         widthFactor: delta,
                         child: Padding(
-                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x, end: Spacing.$3x),
-                          child: Text(
-                            context.l10n.launchingNavigator,
-                            style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$2x),
+                          child: Row(
+                            children: [
+                              Text(
+                                context.l10n.launchingNavigator,
+                                style: context.textStyleV3.bodySmallSemiBold.copyWith(color: iconAndTextColor),
+                              ),
+                              AppButton(
+                                color: context.colorsV3.accentSecondarySoft,
+                                onTap: () {
+                                  ref.read(freeRoamStarterProvider.notifier).pauseAnimation();
+                                  context.router.push(const AutostartSettingsSheetRoute());
+                                },
+                                primaryIcon: SystemIcons.close,
+                                buttonColorScheme: ButtonColorScheme.primary,
+                              )
+                            ],
                           ),
                         ),
                       ),
