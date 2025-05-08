@@ -10,7 +10,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
@@ -129,20 +128,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         ),
         content: [
           const SizedBox(height: uikit.Spacing.$3x),
-          FeedbackBannerCard(
-            path: Assets.images.addCompany.keyName,
-            onTap: () {
-              ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.addPoiBanner);
-              context.router.push(QuickFeedbackRoute());
-            },
-            gradientColors: const [
-              /// It's normal that some components are not from the design and color system too
-              Color(0xFF9F6AD7),
-              Color(0xFF7035AF),
-            ],
-            title: context.l10n.addPlace,
-            subtitle: context.l10n.addNewPlace,
-          ),
+          const FeedbackBannerPhoto(),
           const SizedBox(height: uikit.Spacing.$6x),
           StoriesWidget(
             titleWidget: Padding(
