@@ -28,5 +28,6 @@ abstract class ChatBotRepository {
 
   Future<Either<Failure, List<String>>> getPromptQuestions({required String userId});
 
+  Future<Either<Failure, List<String>>> getPromptQuestionsFollowUp({required String sessionId});
 
   }

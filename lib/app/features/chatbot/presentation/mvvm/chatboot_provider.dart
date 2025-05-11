@@ -2,10 +2,10 @@ import 'dart:async';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_cases.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/message_chatboot_provider.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/mvvm/prompt_questions_provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
@@ -38,8 +38,18 @@ class ChatBotProvider extends BaseViewModel {
 
   String? selectedOldSession;
 
-  ChatBotProvider(this.repository, {required this.sectionId}) {
+
+  ////////////////////////////////////
+  final PromptQuestionsProvider promptQuestionsProvider;
+  ValueNotifier<int> countFullUpQuestions = ValueNotifier<int>(0);
+
+  ChatBotProvider(this.repository, {required this.sectionId, required this.promptQuestionsProvider}) {
     chatBotIsEnabled();
+    countFullUpQuestions.addListener(() {
+      if (countFullUpQuestions.value >= 4) {
+        promptQuestionsProvider.getPromptQuestionsFollowUp();
+      }
+    });
   }
 
   Future sendQuestion(String question) async {
@@ -51,6 +61,7 @@ class ChatBotProvider extends BaseViewModel {
       try {
         MessageChatBotProvider provider = MessageChatBotProvider(
           repository: repository,
+          chatBotProvider: this,
           message: ValueNotifier<ChatBotMessageEntities>(
             ChatBotMessageEntities(
               question: question,
@@ -192,13 +203,12 @@ class ChatBotProvider extends BaseViewModel {
   }
 
   Future getSesionDetails(String selectedSessionID) async {
-    if (selectedSessionID == null) return;
     isLoading = true;
     notifyListeners();
     try {
       Either<Failure, dynamic> response;
       response =
-          await repository.repository.getSessionDetails(id: selectedSessionID!);
+          await repository.repository.getSessionDetails(id: selectedSessionID);
       response.fold(
         (error) {
           isLoading = false;
@@ -249,6 +259,7 @@ class ChatBotProvider extends BaseViewModel {
                 sectionId: sectionId),
           ),
           scrollController: scrollController,
+          chatBotProvider: this,
         );
 
         chatBotMessage.value.add(provider);
@@ -256,4 +267,7 @@ class ChatBotProvider extends BaseViewModel {
       }
     }
   }
+
+
+
 }

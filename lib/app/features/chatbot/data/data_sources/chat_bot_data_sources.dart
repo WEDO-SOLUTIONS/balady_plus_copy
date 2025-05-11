@@ -14,7 +14,6 @@ import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import '../models/chat_refresh_session.dart';
-import '../models/chat_refresh_session.dart';
 import '../models/session_data.dart';
 import '../models/session_details.dart';
 
@@ -34,6 +33,8 @@ abstract class ChatBotDataSources {
   Future<ChatRefreshSession?> refreshSession({required String id});
 
   Future<List<String>> getPromptQuestions({required String userId});
+
+  Future<List<String>> getPromptQuestionsFollowUp({required String sessionId});
 }
 
 class ChatBotDataSourcesImplementation extends ChatBotDataSources {
@@ -444,6 +445,55 @@ class ChatBotDataSourcesImplementation extends ChatBotDataSources {
       response = await webService.dio.get("${ApiUrl.promptQuestions}/$userId");
       if (response.data["data"]['responseCode'] == "1") {
         List data = response.data["data"]['result'] as List ;
+       var list = data.map((e) => e.toString()).toList();
+        return list;
+      }
+      return [];
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is NoDataFoundException) {
+        rethrow;
+      }
+      throw ServerException(
+        error.toString(),
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException) {
+        rethrow;
+      } else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<List<String>> getPromptQuestionsFollowUp({required String sessionId}) async {
+    Response? response;
+    try {
+      response = await webService.dio.get("${ApiUrl.promptQuestionsFollowUp}/$sessionId");
+      if (response.data["data"]['responseCode'] == "1") {
+        List data = response.data["data"]['result']['generated_questions'] as List ;
        var list = data.map((e) => e.toString()).toList();
         return list;
       }

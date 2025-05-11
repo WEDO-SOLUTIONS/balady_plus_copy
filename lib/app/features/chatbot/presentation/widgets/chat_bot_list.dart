@@ -3,6 +3,7 @@ import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_messag
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/message_chatboot_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_bubble.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/widgets/follow_up_prompt_questions_widget.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/message_bot_bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,9 +27,14 @@ class ChatBotList extends StatelessWidget {
               // int size = listMessages.length - 1;
               // ChatBotMessageEntities message = listMessages[index];
               // return ChatBotBubble(chatMessage: listMessages[index]);
-              return MessageBotBubble(messageProvide: listMessages[index]);
+              return index < listMessages.length
+                  ? MessageBotBubble(messageProvide: listMessages[index])
+                  : const FollowUpPromptQuestionsWidget();
             },
-            itemCount: listMessages.length,
+            itemCount: provider.countFullUpQuestions.value >= 4
+                // this for add new Widget have the Follow Up Prompt Questions
+                ? listMessages.length + 1
+                : listMessages.length,
             // reverse: true,
           );
         },

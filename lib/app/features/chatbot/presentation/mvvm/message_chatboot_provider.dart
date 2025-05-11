@@ -1,17 +1,17 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:balady_plus/app/core/base/base_view_model.dart';
 import 'package:balady_plus/app/core/errors/failures.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/chatbot/domain/entities/chat_bot_message_entities.dart';
 import 'package:balady_plus/app/features/chatbot/domain/use_cases/chat_bot_use_cases.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter/widgets.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MessageChatBotProvider extends BaseViewModel {
+  final ChatBotProvider chatBotProvider ;
   final SendQuestionMessageChatBot repository;
   final ScrollController scrollController;
   final ValueNotifier<ChatBotMessageEntities> message;
@@ -19,6 +19,7 @@ class MessageChatBotProvider extends BaseViewModel {
   bool isClose = false;
   String? messageID;
   MessageChatBotProvider({
+    required this.chatBotProvider,
     required this.repository,
     required this.message,
     required this.scrollController,
@@ -90,6 +91,10 @@ class MessageChatBotProvider extends BaseViewModel {
               );
               isLoading = false;
               notifyListeners();
+
+
+              chatBotProvider.countFullUpQuestions.value++;
+              chatBotProvider.countFullUpQuestions.notifyListeners();
 
               listen!.cancel();
               scrollControllerAction();

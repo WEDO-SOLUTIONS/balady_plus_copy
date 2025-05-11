@@ -9,7 +9,6 @@ import 'package:dartz/dartz.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import '../models/chat_refresh_session.dart';
-import '../models/chat_refresh_session.dart';
 import '../models/session_data.dart';
 import '../models/session_details.dart';
 
@@ -46,11 +45,9 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   Future<Either<Failure, Stream>> sendQuestionMessageSSE(
       {required String question}) async {
     try {
-      DateTime dateSendData = DateTime.now();
       final stream = await remoteDataSource.sendQuestionMessageSSE(
         question: question,
       );
-
       return Right(stream);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
@@ -158,6 +155,23 @@ class ChatBotRepositoryImplementation implements ChatBotRepository {
   Future<Either<Failure, List<String>>> getPromptQuestions({required String userId}) async {
     try {
       final data = await remoteDataSource.getPromptQuestions(userId: userId);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage));
+    }
+  }
+
+  @override
+  Future<Either<Failure, List<String>>> getPromptQuestionsFollowUp({required String sessionId}) async {
+    try {
+      final data = await remoteDataSource.getPromptQuestionsFollowUp(sessionId: sessionId);
       return Right(data);
     } on ServerException catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(

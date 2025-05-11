@@ -2,6 +2,7 @@ import 'package:balady_plus/app/core/dependency_injection/injection_container.da
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/mvvm/chatboot_provider.dart';
+import 'package:balady_plus/app/features/chatbot/presentation/mvvm/prompt_questions_provider.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/app_bar_chat_bot.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/chat_bot_list.dart';
 import 'package:balady_plus/app/features/chatbot/presentation/widgets/prompt_questions_widget.dart';
@@ -24,6 +25,9 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
   ChatBotProvider provider = ChatBotProvider(
     sl(),
     sectionId: DateTime.now().millisecondsSinceEpoch,
+    promptQuestionsProvider: PromptQuestionsProvider(
+      repository: sl(),
+    ),
   );
 
   @override
@@ -41,8 +45,13 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
       provider.intaiteChat(intailData);
     }
 
-    return ChangeNotifierProvider(
-      create: (context) => provider,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ChatBotProvider>.value(value: provider),
+        ChangeNotifierProvider<PromptQuestionsProvider>.value(
+          value: provider.promptQuestionsProvider,
+        ),
+      ],
       child: Scaffold(
         drawer: ChatHistory(),
         body: Column(
@@ -58,6 +67,7 @@ class _ChatBotScreenState extends State<ChatBotScreen> {
                           ? Column(
                               children: [
                                 ChatBotList(),
+                                // for First time open chat
                                 PromptQuestionsWidget(),
                                 SendMessageCardChatBot(),
                               ],
