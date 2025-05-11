@@ -20,6 +20,7 @@ import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
 import 'package:mapness/widgets/path_nav/lib/utils.dart';
+import 'package:mapness/widgets/path_nav/ui/end_trip_modal.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet_wrapper.dart';
 
 class EtaSheet extends ConsumerStatefulWidget {
@@ -85,6 +86,16 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
       onBetterRouteReject: widget.onBetterRouteReject,
       child: BaseRoadPanel(
         roadPanelModel: RoadPanelModelEnable(
+          onTapClose: () => showModalBottomSheet(
+            backgroundColor: Colors.transparent,
+            context: context,
+            constraints:
+                BoxConstraints(maxWidth: landscape ? MediaQuery.of(context).size.width * 0.5 : double.infinity),
+            builder: (_) => EndTripModal(
+              isLandscape: landscape,
+              onEndTripPressed: widget.onEndTripPressed,
+            ),
+          ),
           padding: EdgeInsets.only(
             left: padding,
             right: padding,
@@ -190,11 +201,7 @@ class _EtaSheetState extends ConsumerState<EtaSheet> {
             ),
           ],
           buttons: [
-            AppButton(
-              buttonColorScheme: ButtonColorScheme.warning,
-              primaryLabel: l10n.endTrip,
-              onTap: widget.onEndTripPressed,
-            ),
+            const SizedBox.shrink(),
           ],
           onTapBurger: toggle,
           isSearchShowing: !landscape,

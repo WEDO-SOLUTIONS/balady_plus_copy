@@ -6,10 +6,12 @@ import 'package:flutter/material.dart' hide CloseButton;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/dragger.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_autostart_settings.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 
 @RoutePage()
 class AutostartSettingsSheetPage extends ConsumerStatefulWidget {
@@ -19,7 +21,8 @@ class AutostartSettingsSheetPage extends ConsumerStatefulWidget {
   ConsumerState<AutostartSettingsSheetPage> createState() => AutostartSettingsSheetState();
 }
 
-class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPage> with SingleTickerProviderStateMixin {
+class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPage>
+    with SingleTickerProviderStateMixin {
   static const duration = Duration(milliseconds: 250);
   static const showHideDuration = Duration(milliseconds: 150);
 
@@ -170,6 +173,9 @@ class AutostartSettingsSheetState extends ConsumerState<AutostartSettingsSheetPa
     if (context.mounted) {
       context.router.popUntilRouteWithName(BottomMenuRoute.name);
     }
+
+    ToastOverlay.of(context)
+        .show(title: context.l10n.activateAutostartNavigator, iconAsset: Assets.icons.svg.icActionsContainer.keyName);
   }
 
   void continueAutorun() {

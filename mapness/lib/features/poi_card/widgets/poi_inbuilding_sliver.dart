@@ -14,7 +14,7 @@ import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/feedback_banner_card.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiOrganizationsSliver extends ConsumerStatefulWidget {

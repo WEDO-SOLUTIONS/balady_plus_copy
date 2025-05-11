@@ -22,7 +22,7 @@ class EtaArrivalCard extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final (streamData, metaInfo) = ref.watch(etaGeoSubscriberProvider);
 
-    final startedDate = useState(DateTime.now().toUtc());
+    final startDistance = useState<int?>(null);
 
     return Container(
       constraints: const BoxConstraints(
@@ -79,7 +79,7 @@ class EtaArrivalCard extends HookConsumerWidget {
           Directionality(
             textDirection: TextDirection.ltr,
             child: EtaRouteLine(
-              progress: _getProgress(streamData, startedDate.value),
+              progress: _getProgress(streamData, startDistance),
               image: ClipOval(
                 child: ColoredBox(
                   color: context.colorsV2.staticWhite,
@@ -114,39 +114,28 @@ class EtaArrivalCard extends HookConsumerWidget {
     context.router.popForced();
   }
 
-  double _getProgress(EtaInfoModel<dynamic>? streamData, DateTime startedDate) {
+  double _getProgress(EtaInfoModel<dynamic>? streamData, ValueNotifier<int?> startDistance) {
     if (streamData == null) {
       // we don't have enough data to calculate the progress
       return 0.5;
     }
+
     final data = streamData as EtaInfoModel<EtaInfoPayload?>;
-    final distance = data.payload?.eta?.distance;
-    final arrivalAt = data.payload?.eta?.arrivalAt;
-    // final speed = data.payload?.speed ?? 60.0; // default speed is 60 km/h
+    final distanceLeft = data.payload?.eta?.distance;
 
-    if (distance == null || arrivalAt == null) {
-      // we don't have enough data to calculate the progress
+    if (distanceLeft == null) {
+      return 0.0;
+    }
+
+    startDistance.value ??= distanceLeft;
+
+    if (startDistance.value == 0 || startDistance.value == null) {
       return 0.5;
     }
 
-    final arrivalTime = DateTime.tryParse(arrivalAt);
+    final initialDistance = startDistance.value!;
 
-    if (arrivalTime == null) {
-      // we don't have enough data to calculate the progress
-      return 0.5;
-    }
-
-    final currentTime = DateTime.now().toUtc();
-
-    final arrivalDiff = arrivalTime.difference(startedDate).inSeconds;
-    final currentDiff = currentTime.difference(startedDate).inSeconds;
-
-    final progress = currentDiff / arrivalDiff;
-
-    // Because we use only time to calculate the progress, in some cases, arival time can be in the past. In this case, we should return 1.0
-    if (progress < 0) {
-      return 1.0;
-    }
+    final progress = (initialDistance - distanceLeft) / initialDistance;
 
     return progress.clamp(0.0, 1.0);
   }

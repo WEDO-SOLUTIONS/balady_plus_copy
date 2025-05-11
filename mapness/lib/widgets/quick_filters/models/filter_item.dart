@@ -12,7 +12,7 @@ sealed class FilterItem {
 
 class FilterItemConfig extends FilterItem {
   final String? title;
-  final String? icon;
+  final IconData? icon;
   final VoidCallback onTap;
 
   FilterItemConfig({
