@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
@@ -16,6 +17,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
@@ -23,6 +25,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void register() {
     registerFunction(getAccessToken);
     registerFunction(getUserProfile);
+    registerFunction(getAppPreferences);
+    registerFunction(navigateToSuperAppScreen);
+    registerFunction(getLocation);
+    registerFunction(openCamera);
+    registerFunction(openFilePicker);
+    registerFunction(openShare);
+    registerFunction(jsLaunchUri);
+    registerFunction(trackEvent);
   }
 
   @pragma('vm:entry-point')
@@ -89,16 +99,27 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void navigateToSuperAppScreen(dynamic msg, CompletionHandler handler) {
-    // BaseResponse response = BaseResponse(
-    //   code: 200,
-    //   message: "success",
-    //   // data: {
-    //   //   "language": 'language'.tr(),
-    //   //   "theme": CommonProperties.theme,
-    //   //   "location": CommonProperties.location,
-    //   // },
-    // );
-    // handler.complete(response.jsonEncodeModel());
+    late BaseResponse response;
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      Map<String, dynamic> data = jsonDecode(msg);
+      response = BaseResponse(
+        code: 200,
+        message: "success",
+        data: null,
+      );
+      NavigationService.pushNamed(
+        routeName: data['screenName'],
+        args: data['arguments'],
+      );
+    } else {
+      response = BaseResponse(
+        code: 400,
+        message: "Invalid screen name",
+        data: null,
+      );
+    }
+
+    handler.complete(response.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
@@ -165,7 +186,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     handler.complete(response.jsonEncodeModel());
   }
 
-
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     var file = await FilePicker.platform.pickFiles(
@@ -175,7 +195,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     );
     late BaseResponse response;
     try {
-      if (file != null && file.files.isNotEmpty)  {
+      if (file != null && file.files.isNotEmpty) {
         String? path = file.files[0].path;
         if (path != null) {
           PlatformFile platformFile = file.files.first;
@@ -218,22 +238,29 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openShare(dynamic msg, CompletionHandler handler) {
-    // BaseResponse response = BaseResponse(
-    //   code: 200,
-    //   message: "success",
-    //   // data: {
-    //   //   "language": 'language'.tr(),
-    //   //   "theme": CommonProperties.theme,
-    //   //   "location": CommonProperties.location,
-    //   // },
-    // );
-    // handler.complete(response.jsonEncodeModel());
+    late BaseResponse response;
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      Share.share(msg);
+      response = BaseResponse(
+        code: 200,
+        message: "success",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      response = BaseResponse(
+        code: 400,
+        message: "Invalid share data",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void jsLaunchUri(dynamic msg, CompletionHandler handler) async {
-    if(msg != null && msg is String && msg.isNotEmpty) {
-     bool canLaunch = await canLaunchUrl(Uri.parse(msg));
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      bool canLaunch = await canLaunchUrl(Uri.parse(msg));
       if (canLaunch) {
         await launchUrl(Uri.parse(msg));
       } else {
@@ -249,7 +276,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void trackEvent(dynamic msg, CompletionHandler handler) {
-    if(msg != null && msg is String && msg.isNotEmpty) {
+    if (msg != null && msg is String && msg.isNotEmpty) {
       BaseResponse response = BaseResponse(
         code: 200,
         message: "Event tracked successfully",
