@@ -5,6 +5,7 @@ import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
@@ -14,6 +15,7 @@ import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
@@ -36,9 +38,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void getAccessToken(dynamic msg, CompletionHandler handler) {
+  void getAccessToken(dynamic msg, CompletionHandler handler) async {
+    late BaseResponse response;
     if (CommonProperties.isLoggedIn) {
-      BaseResponse response = BaseResponse(
+      response = BaseResponse(
         code: 200,
         message: "success",
         data: AccessTokenModel(
@@ -47,13 +50,30 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     } else {
-      BaseResponse response = BaseResponse(
-        code: 401,
-        message: "Unauthorized",
-        data: null,
+     await showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              response = BaseResponse(
+                code: 200,
+                message: "success",
+                data: AccessTokenModel(
+                  accessToken: CommonProperties.token,
+                ),
+              );
+            } else {
+              BaseResponse response = BaseResponse(
+                code: 401,
+                message: "Unauthorized",
+                data: null,
+              );
+            }
+          },
+        ),
       );
-      handler.complete(response.jsonEncodeModel());
     }
+    handler.complete(response.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
