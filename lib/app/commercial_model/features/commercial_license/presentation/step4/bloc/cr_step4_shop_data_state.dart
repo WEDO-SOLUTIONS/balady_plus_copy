@@ -98,6 +98,7 @@ class CrStep4ShopDataState extends Equatable {
   final BlocStatus draftStatus;
   final String? currentDistrctId;
   final bool? insidePetrolStation;
+  final List<dynamic>? lstEndorsements;
 
   const CrStep4ShopDataState(
       {this.accommodationTypesStatus = BlocStatus.initial,
@@ -165,6 +166,7 @@ class CrStep4ShopDataState extends Equatable {
       this.boardContractItems,
       this.draftLoaded,
       this.currentDistrctId,
+        this.lstEndorsements,
       this.insidePetrolStation = false,
       this.draftStatus = BlocStatus.initial});
 
@@ -181,6 +183,7 @@ class CrStep4ShopDataState extends Equatable {
       selectedBoards,
       boards,
       brand,
+      lstEndorsements,
       shopName,
       shopUnitNumber,
       blockNumber,
@@ -309,7 +312,9 @@ class CrStep4ShopDataState extends Equatable {
       bool? draftLoaded,
       BlocStatus? draftStatus,
       Nullable<String?>? currentDistrctId,
-      bool? insidePetrolStation}) {
+      bool? insidePetrolStation,
+        List<dynamic>? lstEndorsements
+      }) {
     return CrStep4ShopDataState(
         status: status ?? this.status,
         ejarVerified:
@@ -383,6 +388,7 @@ class CrStep4ShopDataState extends Equatable {
             : crContractOption.value,
         cleanContractsResponse:
             cleanContractsResponse ?? this.cleanContractsResponse,
+        lstEndorsements:lstEndorsements??this.lstEndorsements,
         selectedCleanContract: selectedCleanContract == null
             ? this.selectedCleanContract
             : selectedCleanContract.value,
@@ -420,9 +426,7 @@ class CrStep4ShopDataState extends Equatable {
         draftLoaded: draftLoaded ?? this.draftLoaded,
         draftStatus: draftStatus ?? this.draftStatus,
         insidePetrolStation: insidePetrolStation ?? this.insidePetrolStation,
-        currentDistrctId: currentDistrctId == null
-            ? this.currentDistrctId
-            : currentDistrctId.value);
+        currentDistrctId: currentDistrctId == null ? this.currentDistrctId : currentDistrctId.value);
   }
 
   bool isFormValid() {

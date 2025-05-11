@@ -932,4 +932,23 @@ class CrRepositoryImpl implements CrRepository {
           statusCode: error.statusCode, errorCode: error.errorCode));
     }
   }
+
+  @override
+  Future<Either<Failure, List<dynamic>>> getCommercialEndorsements({required int requestID}) async{
+    try {
+      final data =
+          await remoteDataSource.getCommercialEndorsements(requestID);
+      return Right(data);
+    } on ServerException catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(ServerFailure(error.errorMessage,
+          statusCode: error.statusCode, errorCode: error.errorCode));
+    }
+  }
 }

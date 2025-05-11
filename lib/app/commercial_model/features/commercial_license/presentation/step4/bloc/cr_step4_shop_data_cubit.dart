@@ -1,3 +1,5 @@
+import 'package:app_popup_menu/app_popup_menu.dart';
+import 'package:balady_plus/app/commercial_model/features/commercial_license_ownership_transfer/approval_sequence/data/data_sources/remote_data_source.dart';
 import 'package:balady_plus/app/core/services/local/use_case.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
@@ -5,11 +7,13 @@ import 'package:balady_plus/app/commercial_model/features/commercial_license/dom
 import 'package:balady_plus/app/commercial_model/features/commercial_license/domain/use_cases/get_board_contracts.dart';
 import 'package:balady_plus/app/features/vd/domain/entities/gis/gis_response.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/dependency_injection/dependency_injection_exports.dart';
 import 'package:balady_plus/app/core/errors/errors_exports.dart';
 import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
 import '../../../data/models/board_contract_response.dart';
@@ -20,6 +24,7 @@ import '../../../domain/entities/save_shop_details_request.dart';
 import '../../../domain/use_cases/fawry_salama_bills.dart';
 import '../../../domain/use_cases/fawry_salama_reports.dart';
 import '../../../domain/use_cases/get_clean_contracts.dart';
+import '../../../domain/use_cases/get_commercial_endorsements.dart';
 import '../../../domain/use_cases/get_deed_info.dart';
 import '../../../domain/use_cases/get_ejar_info.dart';
 import '../../../domain/use_cases/get_investment_contracts.dart';
@@ -30,6 +35,8 @@ import '../../../domain/use_cases/validate_salama_report.dart';
 import '../../step3/bloc/map_bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
+
+import '../widgets/endorsements_agreement.dart';
 
 part 'cr_step4_shop_data_state.dart';
 
@@ -48,6 +55,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
   final GetFawrySalamaReports _getFawrySalamaReports;
   final GetMalls _getMalls;
   final ValidateSalamaPermit _validateSalamaPermit;
+  final GetCommercailEndorsements _getCommercailEndorsements;
   final ValidateSalamaBill _validateSalamaBill;
   final ValidateSalamaReport _validateSalamaReport;
   final GetBoardContracts _getBoardContracts;
@@ -68,6 +76,7 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
         _validateSalamaBill = ValidateSalamaBill(repository: sl()),
         _validateSalamaReport = ValidateSalamaReport(repository: sl()),
         _getBoardContracts = GetBoardContracts(repository: sl()),
+        _getCommercailEndorsements= GetCommercailEndorsements(repository: sl()),
         super(const CrStep4ShopDataState());
 
   void getAccommodationTypes() async {
@@ -624,6 +633,42 @@ class CrStep4ShopDataCubit extends Cubit<CrStep4ShopDataState> {
       emit(state.copyWith(
           status: BlocStatus.success, isSalamaPermitVerified: Nullable(true)));
     });
+  }
+
+
+
+  Future<void> getEndorsements() async {
+    int requestId = sl<CommercialLicenseBloc>().state.requestId!;
+    emit(state.copyWith(status: BlocStatus.loading, errorMessage: ""));
+    final failOrSuccess = await _getCommercailEndorsements(requestId);
+
+    failOrSuccess.fold((l) {
+      emit(state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: (l as ServerFailure).errorMessage));
+    }, (res) {
+
+
+
+      if (res.isNotEmpty) {
+        BottomSheetDialog.showDraggableSheet(
+          enableDrag: false,
+            isDismissible: false,
+            NavigationService.navigatorKey.currentContext!,
+            child: EndorsementsAgreement(
+              lstEndorsements: res.map((item) => (item as String).tr()).toList() ,
+            ));
+
+      }
+
+
+      emit(state.copyWith(
+          status: BlocStatus.success,lstEndorsements: res??[]));
+    });
+
+
+
+
   }
 
   Future<void> verifySalamaBill() async {

@@ -64,6 +64,7 @@ abstract class CrRemoteDataSource {
       {InvestmentContractRequest? params});
 
   Future<CrAttachmentResponseModel> getCRAttachment({int? params});
+  Future<List<dynamic>> getCommercialEndorsements(int requestID);
 
   Future<bool> saveAttachment({required CrAttachmentRequest params});
   Future<dynamic> saveShopDetails({required SaveShopDetailsRequest params});
@@ -3770,6 +3771,81 @@ class CrRemoteDataSourceImpl extends CrRemoteDataSource {
       ),
     );
   }
+        throw ServerException("errors_server_error_2".tr(),
+            exception: APIException(
+              errorMessage: error.toString(),
+            ),
+            response: response);
+      }
+    }
+  }
+
+  @override
+  Future<List<dynamic>> getCommercialEndorsements(int requestId) async {
+    var response;
+
+    try {
+      response =
+      await webService.dio.get(CommercialModelEndPoints.getCommercialEndorsements(requestId));
+
+      var data = response.data["data"]["result"]["items"];
+
+
+
+      return data;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      var errorCode;
+      try {
+        final decodedResponse =
+        ResponseBodyModel<IssueCommercialConculsion>.fromMap(
+          error.response?.data,
+        );
+        errorCode = decodedResponse.data?.responseCode;
+      } catch (error, stackTrace) {
+        LogsViewModel().sendEventFromModel(
+          event: ErrorExceptionModel(
+            nameEvent: EventsName.handledException,
+            message: error.toString(),
+            stackTrace: stackTrace.toString(),
+          ),
+        );
+      }
+
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      print(error);
+      if (error is ServerException)
+        throw error;
+      else {
+        try {} catch (error, stackTrace) {
+          LogsViewModel().sendEventFromModel(
+            event: ErrorExceptionModel(
+              nameEvent: EventsName.handledException,
+              message: error.toString(),
+              stackTrace: stackTrace.toString(),
+            ),
+          );
+        }
         throw ServerException("errors_server_error_2".tr(),
             exception: APIException(
               errorMessage: error.toString(),

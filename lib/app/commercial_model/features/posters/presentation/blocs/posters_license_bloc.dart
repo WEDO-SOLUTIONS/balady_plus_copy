@@ -17,6 +17,7 @@ import 'package:collection/collection.dart';
 import '../../data/models/allowed_actions_response.dart';
 import '../../data/models/attachment_resposne_model.dart';
 import '../../data/models/group_item_response_model.dart';
+import '../../data/models/permit_apply_group_response_model.dart';
 import '../../data/models/permit_license_response_model.dart';
 import '../../data/models/permits_alerts_response.dart';
 import '../../data/models/poster_request_details_model.dart' hide Poster;
@@ -177,7 +178,7 @@ class PostersLicenseBloc
           error: (l as ServerFailure).errorMessage));
     }, (r) {
       emitter(state.copyWith(
-          status: BlocStatus.success, requestId: Nullable(r.requestId)));
+          status: BlocStatus.success, requestId: Nullable(r.requestId),posterViewConfigs: r.posterViewConfigs));
 
       NavigationService.navigatorKey.currentState!
           .pushNamed(CommercialRouteName.postersDetailsPage, arguments: this);

@@ -38,6 +38,7 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
   double? length;
   double? width;
   int? discountPercentage;
+  bool showMessage= false;
 
   final TextEditingController _area = TextEditingController();
 
@@ -98,11 +99,24 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                           posterType = item;
                         });
 
+                        if(state.getPosterMessaage(item!)!= null)
+                          {
+                            showMessage = true;
+                          }
+                        else
+                          {
+                            showMessage = false;
+                          }
                         attachments = await context
                                 .read<PostersLicenseBloc>()
                                 .getAttachments(posterType!.id!) ??
                             [];
-                        setState(() {});
+                        setState(() {
+
+
+
+
+                        });
                       },
                       item: posterType,
                     ),
@@ -285,6 +299,17 @@ class _AddPosterDialogState extends State<AddPosterDialog> {
                               onPressed: () {}, text: e.name ?? ""),
                         );
                       }).toList(),*/
+
+
+
+                    // context
+                    //     .read<PostersLicenseBloc>()
+                    if(showMessage==true)
+                       NotesWidget(notes:[state.getPosterMessaage(posterType!)??""]),
+
+
+
+
                     const SizedBox(
                       height: 32,
                     ),

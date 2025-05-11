@@ -437,6 +437,7 @@ class CommercialModelEndPoints {
 
   static String replyWithNote(String requestId) => "/v1/balady-commercial-initial-approval-services/reply-note/$requestId";
 
+  static String getCommercialEndorsements(int requestId) => "/v1/balady-commercial-mobile-services/endorsements/$requestId";
 
 
 

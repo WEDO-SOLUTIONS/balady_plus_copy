@@ -39,6 +39,7 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
       context.read<CrStep4ShopDataCubit>().getDeedOwnerShipsTypes();
       context.read<CrStep4ShopDataCubit>().getCleanOptions();
       context.read<CrStep4ShopDataCubit>().getMalls();
+      context.read<CrStep4ShopDataCubit>().getEndorsements();
     });
   }
 
@@ -711,6 +712,13 @@ class _CRStep4ShopDataState extends State<CRStep4ShopData> {
                                       },
                                       selected: state.boardContractNumber);
                                 }),
+                          ],
+
+                          if (state.lstEndorsements != null&&state.lstEndorsements!.isNotEmpty) ...[
+
+                            NotesWidget(
+                              notes: state.lstEndorsements!.map((item) => item as String).toList(),
+                            ),
                           ],
                           if (state.boardContractSetting == "MANUAL") ...[
                             const BillboardComponent(),

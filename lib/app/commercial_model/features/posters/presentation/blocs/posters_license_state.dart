@@ -16,6 +16,8 @@ class PostersLicenseState extends Equatable {
   final List<PermitsLicensesItem>? permitsLiceses;
   final List<PermitsLicensesItem>? selectedLicenses;
   final List<PosterItem>? posters;
+
+  final PosterViewConfigs? posterViewConfigs;
   final String? startDate;
   final String? duration;
   final List<PermitPosterTypeItem>? posterTypes;
@@ -36,6 +38,7 @@ class PostersLicenseState extends Equatable {
     this.posterTypes,
     this.currentPageValue = 0,
     this.posters,
+    this.posterViewConfigs,
     this.requestId,
     this.isDraft,
     this.error,
@@ -67,6 +70,7 @@ class PostersLicenseState extends Equatable {
         selectedLicenses,
         startDate,
         duration,
+        posterViewConfigs,
         posters,
         posterTypesStatus,
         posterTypes,
@@ -90,6 +94,7 @@ class PostersLicenseState extends Equatable {
       Nullable<int?>? requestId,
       String? selectedPeriod,
       bool? isDraft,
+        PosterViewConfigs? posterViewConfigs,
       List<PermitsLicensesItem>? permitsLiceses,
       List<PermitsLicensesItem>? selectedLicenses,
       List<PosterItem>? posters,
@@ -113,6 +118,7 @@ class PostersLicenseState extends Equatable {
         pagesList: pagesList ?? this.pagesList,
         requestId: requestId == null ? this.requestId : requestId.value,
         isDraft: isDraft ?? this.isDraft,
+        posterViewConfigs:posterViewConfigs??this.posterViewConfigs,
         permitsLiceses: permitsLiceses ?? this.permitsLiceses,
         selectedLicenses: selectedLicenses ?? this.selectedLicenses,
         error: error ?? this.error,
@@ -159,5 +165,22 @@ class PostersLicenseState extends Equatable {
       return false;
     }
     return true;
+  }
+
+ String? getPosterMessaage(PermitPosterTypeItem posterType)
+  {
+    if(posterViewConfigs?.posterTypes != null ) {
+      PosterTypes? poster = posterViewConfigs?.posterTypes!.firstWhereOrNull((item) =>
+      item.id == posterType.id);
+      if(poster != null) {
+        return posterViewConfigs?.message;
+      }
+      else
+        {
+          return null;
+        }
+    }
+    return null;
+
   }
 }

@@ -4598,8 +4598,9 @@
   "bank_iban": "Bank Iban",
   "title_congratulations_certified_observer": "Congratulations, you have been accepted as a Certified Observer",
   "description_monitoring_process_momtathel": "Congratulations! You have been accepted as a Certified Observer. You can now begin the monitoring process through the Compliant Application.",
-  "open_momtathl_app": "Proceed to the Compliant Application",
+  "open_momtathl_app" : "Proceed to the Compliant Application",
   "Activies": "Activies",
+  "commercial.endorsements.boards-instructions": "<p>As the applicant, I acknowledge and undertake to comply with all relevant rules and regulations, and agree to the following:</p>\n <p>i. Not to carry out any restoration, modification, or alteration work to the facade of the shop, the building, or any part thereof,Including (installing or removing large panels, aluminum or iron cladding, painting, or any other changes), or modifying the number of units licensed in the building permit, except after obtaining the necessary regulatory licenses from the competent authorities.</p>\n <p>ii. Full commitment to the comprehensive guide for regulating billboards in the city of Riyadh, adherence to all requirements and standards contained therein, and not to implement any advertising or commercial billboards that violate the guidelines.</p>\n <p>iii. I acknowledge that violating any of these obligations may expose me to legal accountability and the prescribed fines, and I bear full responsibility for any actions taken without obtaining the required regulatory approvals.</p>",
   "municipal_services_title": "Welcome to Municipal Services on Balady+",
   "municipal_services_message": "We are a smart gate that facilitates services — not the executing entity."
 }
