@@ -69,7 +69,7 @@ android {
                 //     'appAuthRedirectScheme': 'com.momra.balady',
                 'appAuthRedirectScheme': 'com.balady'
         ]
-        manifestPlaceholders = [partner:"baladyappuat"]
+        manifestPlaceholders = [partner:"baladyapp"]
 
     }
     signingConfigs {
