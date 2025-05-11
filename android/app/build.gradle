@@ -105,7 +105,7 @@ android {
     productFlavors {
         stg {
             dimension "default"
-            resValue "string", "app_name", "Balady | بلدي"
+            resValue "string", "app_name", "Balady+بلدي"
             versionCode 1000 + android.defaultConfig.versionCode
 //            versionNameSuffix ".stg"
 //            applicationIdSuffix ".stg"
@@ -113,11 +113,11 @@ android {
         }
         prod {
             dimension "default"
-            resValue "string", "app_name", "Balady | بلدي"
+            resValue "string", "app_name", "Balady+بلدي"
         }
         pre {
             dimension "default"
-            resValue "string", "app_name", "Balady | بلدي"
+            resValue "string", "app_name", "Balady+بلدي"
         }
     }
 
