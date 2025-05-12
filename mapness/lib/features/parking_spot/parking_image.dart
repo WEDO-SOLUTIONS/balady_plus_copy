@@ -12,12 +12,12 @@ const maxImageResolution = 5000;
 const maxImages = 10;
 const maxSizeInBytes = 5 * 1024 * 1024; // 5MB
 
-@riverpod
+@Riverpod()
 class _ParkingImage extends _$ParkingImage {
   @override
   List<XFile> build({bool isEdit = false}) {
     if (isEdit == false) {
-      return <XFile>[];
+      return stateOrNull ?? <XFile>[];
     }
 
     final data = ref.read(parkingManageProvider).valueOrNull;

@@ -29,6 +29,7 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final RouteSearchPoint? finishPoint;
+  final LatLng? closestPoint;
   final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
   PoiCardFooter({
@@ -38,6 +39,7 @@ class PoiCardFooter extends HookConsumerWidget {
     this.callPhone,
     this.onEntranceTap,
     this.data,
+    this.closestPoint,
     this.bottomSheetController,
     super.key,
   }) : finishPoint = data != null
@@ -170,14 +172,32 @@ class PoiCardFooter extends HookConsumerWidget {
           onAcceptTab: () {
             context.router.popAndPush(ParkingSpotRoute(
               address: data?.title,
-              markerPosition: data?.markerPosition,
-            ));
+                markerPosition: closestPoint != null
+                    ? GeoPointWithElevationMessage(
+                        latitude: closestPoint!.latitude,
+                        longitude: closestPoint!.longitude,
+                        elevation: 0,
+                      )
+                    : data?.markerPosition,
+              ),
+            );
           },
           onCancelTab: context.router.popForced,
         ),
       );
     } else {
-      context.router.push(ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition));
+      context.router.push(
+        ParkingSpotRoute(
+          address: data?.title,
+          markerPosition: closestPoint != null
+              ? GeoPointWithElevationMessage(
+                  latitude: closestPoint!.latitude,
+                  longitude: closestPoint!.longitude,
+                  elevation: 0,
+                )
+              : data?.markerPosition,
+        ),
+      );
     }
   }
 

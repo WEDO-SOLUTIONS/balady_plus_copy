@@ -7,6 +7,7 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
@@ -17,8 +18,12 @@ import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
+import 'package:mapness/features/routing/providers/routes.dart';
+import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/providers/app_language.dart';
+import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
@@ -42,10 +47,10 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
 }
 
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
-
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
   final _isDirty = ValueNotifier(false);
+  final ValueNotifier<bool?> _initializationMap = ValueNotifier(null);
   LatLng? _latLng;
 
   @override
@@ -77,6 +82,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     _isDirty.dispose();
     _textEditingController.dispose();
     _addressNotifier.dispose();
+    _initializationMap.dispose();
     super.dispose();
   }
 
@@ -90,6 +96,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     return Scaffold(
       backgroundColor: context.colorsV3.backgroundSurface4,
       appBar: BaladyTopBar(
+        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
         textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: context.colorsV3.foregroundDefault),
         title: widget.isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
@@ -105,18 +112,22 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                context.l10n.feedbackAddress,
-                style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault),
-              ),
               Spacing.$2x.heightBox,
-              SizedBox(
-                height: 84,
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                  child: UrbiMap(onMapCreated: _onMapCreated),
-                ),
-              ),
+              ValueListenableBuilder(
+                  valueListenable: _initializationMap,
+                  builder: (context, value, _) {
+                    if (value == false) {
+                      return const SizedBox.shrink();
+                    }
+
+                    return SizedBox(
+                      height: 108,
+                      child: ClipRRect(
+                        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                        child: UrbiMap(onMapCreated: _onMapCreated),
+                      ),
+                    );
+                  }),
               Spacing.$2x.heightBox,
               ValueListenableBuilder(
                   valueListenable: _addressNotifier,
@@ -146,7 +157,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               BaladyTextInput(
                 label: BaladyInputLabel(
                   text: context.l10n.comment,
-                  style: context.textStyleV3.captionMediumRegular,
+                  style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault)
                 ),
                 controller: _textEditingController,
                 config: BaladyInputConfig(
@@ -230,6 +241,19 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   }
 
   Future<void> _onMapCreated(DgisMapController controller) async {
+    final initialize = await controller.initialize();
+    _initializationMap.value = initialize.wasInitialized;
+
+    //Styles
+    await controller.loadStyles(MapnessConstants.mapStylesPath);
+
+    // Appearance
+    await controller.setZoomRestrictions(min: 5.5);
+    await controller.overrideLocales(ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA']);
+    await controller.setAppearance(
+        (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day);
+    await controller.setBetterRouteSettings(BetterRouteSettings.prod);
+
     final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
     await dgisMapController.onMapCreated(controller);
     if (_latLng != null) {
@@ -306,7 +330,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
   void _checkDirty() {
     final stored = ref.read(parkingManageProvider).valueOrNull;
-    final images = ref.read(parkingImageProvider());
+    final images = ref.read(parkingImageProvider(isEdit: widget.isEdit));
 
     final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
 
