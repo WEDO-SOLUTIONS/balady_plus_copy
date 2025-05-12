@@ -114,8 +114,8 @@ class AppRouter extends RootStackRouter {
               fullscreenDialog: true,
             ),
             AppRoute(
-              path: 'road_closure',
-              page: RoadClosureRoute.page,
+              path: 'road_closed',
+              page: RoadClosedRoute.page,
             ),
             AppRoute(
               path: 'auto_start_settings',
