@@ -14,26 +14,23 @@ class DimensionContrtol extends ConsumerWidget {
 
     const double iconSize = 24;
 
-    return Padding(
-      padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
-      child: MapButton(
-        onTap: () => ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions(),
-        child: SizedBox(
-          width: iconSize,
-          height: iconSize,
-          child: Center(
-            child: mapDimensionsState == MapDimensionsState.threeDimensional
-                ? Assets.icons.svg.ic3d.svg(
-                    width: iconSize,
-                    height: iconSize,
-                    colorFilter: ColorFilter.mode(context.colorsV3.foregroundDefault, BlendMode.srcIn),
-                  )
-                : Assets.icons.svg.ic2d.svg(
-                    width: iconSize,
-                    height: iconSize,
-                    colorFilter: ColorFilter.mode(context.colorsV3.foregroundDefault, BlendMode.srcIn),
-                  ),
-          ),
+    return MapButton(
+      onTap: () => ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions(),
+      child: SizedBox(
+        width: iconSize,
+        height: iconSize,
+        child: Center(
+          child: mapDimensionsState == MapDimensionsState.threeDimensional
+              ? Assets.icons.svg.ic3d.svg(
+                  width: iconSize,
+                  height: iconSize,
+                  colorFilter: ColorFilter.mode(context.colorsV3.foregroundDefault, BlendMode.srcIn),
+                )
+              : Assets.icons.svg.ic2d.svg(
+                  width: iconSize,
+                  height: iconSize,
+                  colorFilter: ColorFilter.mode(context.colorsV3.foregroundDefault, BlendMode.srcIn),
+                ),
         ),
       ),
     );

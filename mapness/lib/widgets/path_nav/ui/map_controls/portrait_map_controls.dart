@@ -72,6 +72,11 @@ class _PortraitLayout extends StatelessWidget {
                                       padding: padding,
                                       child: const TrafficParkingControl(trafficVisible: false),
                                     ),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    Padding(
+                                      padding: padding,
+                                      child: const DimensionContrtol(),
+                                    ),
                                     const Spacer(),
                                     Padding(
                                       padding: padding,
