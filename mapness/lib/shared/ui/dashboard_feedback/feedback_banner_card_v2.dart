@@ -79,11 +79,11 @@ class _FeedBackWidget extends SingleChildRenderObjectWidget {
   _RenderFeedBack createRenderObject(BuildContext context) => _RenderFeedBack(
         title: TextSpan(
           text: title,
-          style: context.textStyleV3.h4SemiBold.copyWith(color: context.colorsV3.staticWhite),
+          style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
         ),
         subTitle: TextSpan(
           text: subTitle ?? '',
-          style: context.textStyleV3.captionSmallMedium.copyWith(color: context.colorsV3.staticWhite),
+          style: context.textStyleV3.captionLargeRegular.copyWith(color: context.colorsV3.staticWhite),
         ),
         asset: asset,
         gradientColors: gradientColors,
