@@ -24,7 +24,6 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
-  final RouteSearchPoint? finishPoint;
   final LatLng? closestPoint;
   final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
