@@ -1793,6 +1793,8 @@ class CommonProperties {
   static String? deviceOs;
   static String? sessionId;
   static String? fcmToken;
+  static String? serverRootPath;
+
   static bool showEkramDriver = false;
 
   static Uuid uuidInstance = const Uuid();

@@ -22,45 +22,48 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
   @override
   void initState() {
     super.initState();
+    if(widget.servicePath.contains("index.html")) {
+      // #docregion platform_features
+      late final PlatformWebViewControllerCreationParams params;
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        params = WebKitWebViewControllerCreationParams(
+          allowsInlineMediaPlayback: true,
+          mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+        );
+      } else {
+        params = const PlatformWebViewControllerCreationParams();
+      }
 
-    // #docregion platform_features
-    late final PlatformWebViewControllerCreationParams params;
-    if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      params = WebKitWebViewControllerCreationParams(
-        allowsInlineMediaPlayback: true,
-        mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      );
-    } else {
-      params = const PlatformWebViewControllerCreationParams();
+      final DWebViewController controller =
+      DWebViewController.fromPlatformCreationParams(params);
+
+
+      controller
+        ..setBackgroundColor(Colors.white)
+        ..loadRequest(Uri.parse(widget.servicePath))
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..addJavaScriptObject(JsBridgeListener())
+        ..setNavigationDelegate(NavigationDelegate(
+          onProgress: (progress) {
+            print('process=$progress');
+          },
+          onPageStarted: (url) {
+            print('url onPageStarted');
+          },
+          onPageFinished: (url) {
+            print('url onPageFinished');
+          },
+        ));
+      _controller = controller;
     }
-
-    final DWebViewController controller =
-    DWebViewController.fromPlatformCreationParams(params);
-
-
-    controller
-      ..setBackgroundColor(Colors.white)
-      ..loadRequest(Uri.parse("http://127.0.0.1:43432/${widget.servicePath}"))
-      ..addJavaScriptObject(JsBridgeListener())
-      // ..addJavaScriptObject(JsEchoApi(), namespace: 'echo')
-      ..setNavigationDelegate(NavigationDelegate(
-        onProgress: (progress) {
-          print('process=$progress');
-        },
-        onPageStarted: (url) {
-          print('url onPageStarted');
-        },
-        onPageFinished: (url) {
-          print('url onPageFinished');
-        },
-      ));
-    _controller = controller;
   }
 
   @override
   Widget build(BuildContext context) {
-    return DWebViewWidget(controller: _controller);
+
+   return  DWebViewWidget(controller: _controller);
   }
+
 
 
   @override

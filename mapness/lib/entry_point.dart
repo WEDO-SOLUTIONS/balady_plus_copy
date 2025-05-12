@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:app_links/app_links.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
+import 'package:balady_plus/mini_apps_engine/server/CustomInAppLocalhostServer.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
@@ -13,6 +14,7 @@ import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
@@ -681,7 +683,38 @@ Future<void> runMapnessApp(FutureOr<void> Function() main) async {
   ).run(() async {
     WidgetsFlutterBinding.ensureInitialized();
     await MapnessLogger.init();
-
+   // await  startLocalHostServer();
     await main();
   });
+}
+
+
+startLocalHostServer () async {
+  try {
+
+    String serverPath="${(await getApplicationDocumentsDirectory()).path}/www";
+    bool exists = await Directory(serverPath).exists();
+    if(exists == false) {
+      await Directory(serverPath).create();
+    }
+
+    final localhostServer = CustomInAppLocalhostServer( PlatformInAppLocalhostServerCreationParams(directoryIndex: serverPath,documentRoot: serverPath, port: 8080));
+    if (!localhostServer.isRunning()) {
+      await localhostServer.start();
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        await InAppWebViewController.setWebContentsDebuggingEnabled(
+            kDebugMode);
+      }
+
+
+    }
+
+    CommonProperties.serverRootPath = serverPath;
+
+
+
+  } catch (e) {
+    print(e);
+  }
+
 }

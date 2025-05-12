@@ -4,6 +4,8 @@ import 'package:balady_plus/mini_apps_engine/presentation/pages/web_mini_apps_sc
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../bloc/mini_apps_engine_event.dart';
+
 class MiniAppsMainScreen extends StatefulWidget {
   const MiniAppsMainScreen({super.key});
 
@@ -17,8 +19,10 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
     super.initState();
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return BlocProvider(
       create: (context) => MiniAppsEngineBloc(),
       child: Scaffold(
@@ -31,10 +35,15 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
             if (state is MiniAppsEngineInitialState) {
               return const Center(child: Text('Loading ...'));
             } else if (state is MiniAppsEngineLoadedState) {
+
+            //  context.read<MiniAppsEngineBloc>().add(CheckMiniAppsEngineEvent(miniApp: testMiniApp));
               return WebMiniAppsScreen(servicePath: state.servicePath);
             } else if (state is MiniAppsEngineErrorState) {
               return Center(child: Text(state.errorMessage));
             } else if (state is MiniAppsEngineLoadingState) {
+
+
+
               return Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
