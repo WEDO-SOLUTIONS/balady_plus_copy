@@ -8,7 +8,6 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/search/models/search_scope.dart';
-import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/providers/search_history.dart';
 import 'package:mapness/features/statistic/providers/statistics_provider.dart';
@@ -35,23 +34,12 @@ class MapSearchBar extends ConsumerStatefulWidget {
 }
 
 class _MapSearchBarState extends ConsumerState<MapSearchBar> {
-  late FocusNode _focusNode;
   late TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController();
-    _focusNode = FocusNode();
-    if (widget.requestFocus) {
-      _focusNode.requestFocus();
-    }
-  }
-
-  @override
-  void dispose() {
-    _focusNode.dispose();
-    super.dispose();
   }
 
   void _updateText(String text) {
@@ -68,26 +56,17 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
     final searcher = ref.watch(searchProvider(scope.value).notifier);
 
     ref.listen(searchProvider(scope.value), (previous, next) {
-      final isSearchInRectRequest = ref.read(searchInRectProvider).isSearchInThisAreaRequest;
       if (next.searchText.isEmpty) {
         ref.read(searchInRectProvider.notifier).update();
       }
 
       _updateText(next.searchText);
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (next is SearchStateLoading) {
-          _focusNode.unfocus();
-        } else if (next is SearchStateResults && !isSearchInRectRequest) {
-          _focusNode.requestFocus();
-        }
-      });
     });
 
     return BaladySearchWithBackButtonV2(
       searchInput: BaladyTextInput.search(
         controller: _controller,
         config: BaladyInputConfig(
-          focusNode: _focusNode,
           onChanged: (query) {
             ref.read(searchInRectProvider.notifier).update();
             ref.read(searchProvider(scope.value).notifier).searchQueryChanged(query);
@@ -127,7 +106,6 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
                   );
               unawaited(ref.read(SendStatisticProvider(query).future));
             }
-            _focusNode.requestFocus();
           },
 
           hintText: context.l10n.search,
