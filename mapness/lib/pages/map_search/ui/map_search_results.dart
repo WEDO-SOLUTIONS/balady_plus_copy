@@ -84,6 +84,7 @@ class MapSearchResults extends ConsumerWidget {
     );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      FocusScope.of(context).unfocus();
       context.router.replaceOrPush(
         route: PoiCardWidgetRoute(
           objectId: DgisObjectIdMessage(
