@@ -73,6 +73,8 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
 
         let carPlayFixOn = carWindowScreenNativeBounds?.width == 800
         map.attributes.setAttributeValue(name: "carPlayFixOn", value: .boolean(carPlayFixOn))
+        
+        map.attributes.setAttributeValue(name: "camerasOn", value: .boolean(true))
 
         myLocation()
         
