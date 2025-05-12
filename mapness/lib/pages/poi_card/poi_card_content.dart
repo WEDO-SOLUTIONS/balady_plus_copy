@@ -120,8 +120,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final isPhotosNotEmpty = (!photos.hasValue || photos.requireValue.items.isEmpty) && !photos.isLoading;
 
     final finishPoint = RouteSearchPoint(
-      coordinates: data.markerPosition!.toGeoPointMessage(),
-      dgisObjectId: data.id!,
+      coordinates: widget.data.markerPosition!.toGeoPointMessage(),
+      dgisObjectId: widget.data.id!,
     );
 
     final briefInfo = ref.watch(
@@ -134,7 +134,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final brief = briefInfo?.firstOrNull;
 
     String? createPoiHeaderSubTitle() {
-      final parkingPoi = objectId == parkingObjectId;
+      final parkingPoi = widget.objectId == parkingObjectId;
 
       final carParkingLabel = [
         brief?.getBriefRouteDescription(context.l10n),
