@@ -7,14 +7,15 @@ class AccessTokenModel implements BaseData {
 
   factory AccessTokenModel.fromJson(Map<String, dynamic> json) {
     return AccessTokenModel(
-      accessToken: json['access_token'] as String,
+      accessToken: json['accessToken'] as String,
     );
   }
+
 
   @override
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
-    data['access_token'] = accessToken;
+    data['accessToken'] = accessToken;
     return data;
   }
 }
