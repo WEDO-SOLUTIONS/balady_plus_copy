@@ -40,12 +40,12 @@ class MiniAppsItemWidget extends StatelessWidget {
             CrossAxisAlignment.center,
             children: [
               ImageIconBasedTypeWidget(
-                icon: miniApp.logoKey,
+                icon: miniApp.logoKey!,
                 iconSize: 48,
               ),
               const SizedBox(height: 8),
               Text(
-                miniApp.serviceName,
+                miniApp.serviceName!,
                 style: Theme.of(context)
                     .textTheme
                     .bodyMedium!

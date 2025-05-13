@@ -53,7 +53,7 @@ class MiniAppsEngineBloc
     await prepareServerPath();
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/miniApp/v${event.miniApp.latestVersion.versionNumber}';
+        '${CommonProperties.serverRootPath}/miniApp/v${event.miniApp.latestVersion?.versionNumber}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
@@ -107,12 +107,12 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     serviceDownloadPath =
-        await prepareDownloadPath("miniApp", event.miniApp.latestVersion.versionNumber);
+        await prepareDownloadPath("miniApp", event.miniApp.latestVersion!.versionNumber!);
 
     if (serviceDownloadPath != null) {
       await startLocalHostServer(serviceDownloadPath);
       var zippedFile = await _downloadFile(
-          event.miniApp.latestVersion.serviceUrl, serviceDownloadPath!, event.miniApp.serviceName);
+          event.miniApp.latestVersion?.serviceUrl, serviceDownloadPath!, event.miniApp.serviceName!);
       if (zippedFile != null) {
         String? indexPath =
             await unarchiveAndSave(zippedFile, serviceDownloadPath!);
