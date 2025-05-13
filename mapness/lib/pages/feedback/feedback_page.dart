@@ -125,24 +125,13 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
     }
 
     final allFieldsValid = fields.every((field) {
-      final formField = formFields[field.id];
-      final value = formField?.value;
+      final value = formFields[field.id]?.value;
+
+      // check image inputs
       if (field is FeedbackImageInputEntity) {
         final images = value is IList<FileUpload> ? value.toList() : <FileUpload>[];
-
-        if (field.isRequired) {
-          if (images.isEmpty) {
-            return false;
-          }
-          final allUploaded = images.every((img) => img is FileUploadSuccess);
-          return allUploaded;
-        } else {
-          if (images.isEmpty) {
-            return true;
-          }
-          final allUploaded = images.every((img) => img is FileUploadSuccess);
-          return allUploaded;
-        }
+        final allUploaded = images.every((img) => img is FileUploadSuccess);
+        return field.isRequired ? images.isNotEmpty && allUploaded : images.isEmpty || allUploaded;
       }
 
       final String displayValue = switch (value) {
@@ -152,18 +141,15 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
         _ => value.toString(),
       };
 
-      final FeedbackTextType? fieldType = _checkFieldType(field);
+      final fieldType = _checkFieldType(field);
       final validator = validators[fieldType];
+
+      if (value is List<String>) {
+        return !value.any((element) => element.isEmpty || validator?.call(element) != null);
+      }
       final error = validator?.call(displayValue);
 
-      if (field.isRequired) {
-        return displayValue.isNotEmpty && error == null;
-      } else {
-        if (displayValue.isNotEmpty) {
-          return error == null;
-        }
-        return true;
-      }
+      return field.isRequired ? displayValue.isNotEmpty && error == null : displayValue.isEmpty || error == null;
     });
     _isFormValidNotifier.value = allFieldsValid;
   }
