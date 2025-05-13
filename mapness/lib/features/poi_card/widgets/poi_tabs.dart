@@ -159,30 +159,14 @@ class _PoiTabItem extends StatelessWidget {
                       ),
                       if (hasCounter)
                         Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            start: Spacing.$1x + Spacing.$0_5x,
-                          ),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              // Fix shape for big numbers
-                              borderRadius: count! < 100 ? null : BorderRadius.circular(50),
-                              shape: count! < 100 ? BoxShape.circle : BoxShape.rectangle,
+                          padding: const EdgeInsetsDirectional.only(start: Spacing.$1x + Spacing.$0_5x),
+                          child: FittedBox(
+                            child: Counter(
+                              count: count,
                               color: isActive ? context.colorsV3.neutralDefault : context.colorsV3.neutralMuted,
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6.5,
-                                vertical: 3,
-                              ),
-                              child: Text(
-                                '$count',
-                                style: context.textStyleV3.captionSmallMedium.copyWith(
-                                  color: context.colorsV3.staticWhite,
-                                ),
-                              ),
-                            ),
                           ),
-                        ),
+                        )
                     ],
                   ),
                 ),

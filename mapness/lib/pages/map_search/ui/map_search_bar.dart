@@ -77,7 +77,7 @@ class _MapSearchBarState extends ConsumerState<MapSearchBar> {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (next is SearchStateLoading) {
           _focusNode.unfocus();
-        } else if (next is SearchStateResults && !isSearchInRectRequest) {
+        } else if (next is SearchStateResults && !isSearchInRectRequest && previous is SearchStateLoading) {
           _focusNode.requestFocus();
         }
       });
