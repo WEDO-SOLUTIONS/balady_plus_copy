@@ -5,8 +5,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 class RemoteConfig {
   //////  Not Used
-  // static String get baladyToken => _RemoteConfig.baladyToken[env]!;
-  // static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
+  static String get baladyToken => _RemoteConfig.baladyToken[env]!;
+  static String get xBaladyToken => _RemoteConfig.xBaladyToken[env]!;
   // static String get ewaaUrl => _RemoteConfig.ewaaUrl[env]!;
   // static String get publicLicenseShareURL => _RemoteConfig.publicLicenseShareURL[env]!;
 
@@ -15,7 +15,7 @@ class RemoteConfig {
 
   ////   Need Stop Using it
   // static String get pegaURL => _RemoteConfig.pegaURL[env]!;
-  // static String get gis => _RemoteConfig.gis[env]!;
+  static String get gis => _RemoteConfig.gis[env]!;
   // static String get apigeeUsername => "__APIGEE-USERNAME__";
   static String get apigeeUsername {
     String apigeeUserName = '__APIGEE_USERNAME__';
@@ -65,6 +65,7 @@ class RemoteConfig {
         ? apigeeURL
         : dotenv.env['APIGEE_URL'] ?? "default"; // Get from .env
   }
+
 
   // static String get hmCode => "__HM-CODE__";
   static String get hmCode {
@@ -190,6 +191,17 @@ class _RemoteConfig {
   //   prodVal: "__PROD-SSO-SECRET__",
   //   urbiPreVal: "__STG-SSO-SECRET__",
   // );
+
+
+
+
+  static final gis = _initValues<String>(
+    devVal: "https://gisappstg.momra.gov.sa",
+    stgVal: "https://gisappstg.momra.gov.sa",
+    preVal: "https://gisappstg.momra.gov.sa",
+    prodVal: "https://gisapps.momra.gov.sa",
+    urbiPreVal: "https://gisappstg.momra.gov.sa",
+  );
 
   /////////////////////////
   static final ssoUrl = _initValues<String>(
@@ -639,6 +651,22 @@ class _RemoteConfig {
         "Key_name": "create_complianceLocation",
       },
     },
+  );
+
+  static final baladyToken = _initValues<String>(
+    devVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    stgVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    preVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+    prodVal: "BEDD09A1277C4E099DEB80D0AEFAA245",
+    urbiPreVal: "E48C0CF6386948D5A22D8F4AD46B9CBB",
+  );
+
+  static final xBaladyToken = _initValues<String>(
+    devVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    stgVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    preVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
+    prodVal: "BE2019B8FECE4DACA5275BE2STGPROD",
+    urbiPreVal: "5EBC1331132E4C55B9726AFFA5D6B6F4",
   );
 
   static final ewaaUrl = _initValues<String>(
