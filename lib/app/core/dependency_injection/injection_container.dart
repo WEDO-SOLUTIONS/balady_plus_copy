@@ -12,6 +12,9 @@ import 'package:balady_plus/app/features/weather/data/repositories/weather_repos
 import 'package:balady_plus/app/features/weather/domain/repositories/weather_repository.dart';
 import 'package:balady_plus/app/features/weather/domain/usecases/get_weather_info.dart';
 import 'package:balady_plus/app/features/weather/presentation/bloc/weather_bloc.dart';
+import 'package:balady_plus/mini_apps_engine/data/datasource/events_data_source.dart';
+import 'package:balady_plus/mini_apps_engine/data/repositories/mini_apps_repository.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 
 import 'package:dio/dio.dart' show Dio;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart'
@@ -79,9 +82,8 @@ void initialize() {
   //? Dashboard
   EventsInjection.init();
 
-
   sl.registerLazySingleton<NetworkConnection>(
-        () => NetworkConnectionImplementation(sl()),
+    () => NetworkConnectionImplementation(sl()),
   );
 
   //! Core
@@ -89,9 +91,6 @@ void initialize() {
   // sl.registerLazySingleton(() => CRMWebService(dio: Dio()));
   sl.registerLazySingleton(
       () => BottomNavBarCubit(initialNavBar: BottomNavBar.home));
-
-
-
 
 // Weather
   //Blocs
@@ -101,20 +100,20 @@ void initialize() {
   sl.registerLazySingleton(() => GetWeatherInfo(repository: sl()));
   //Repository
   sl.registerLazySingleton<WeatherRepository>(
-        () => WeatherRepositoryImpl(
+    () => WeatherRepositoryImpl(
       sl(),
       sl(),
     ),
   );
   //DataSources
   sl.registerLazySingleton<WeatherRemoteDataSource>(
-        () => WeatherRemoteDataSourceImpl(
+    () => WeatherRemoteDataSourceImpl(
       webService: sl(),
     ),
   );
 
   sl.registerLazySingleton<WeatherLocalDataSource>(
-        () => WeatherLocalDataSourceImpl(),
+    () => WeatherLocalDataSourceImpl(),
   );
 
   sl.registerLazySingleton(() => const BridgeParams());
@@ -125,7 +124,6 @@ void initialize() {
   sl.registerLazySingleton(() => const PackageDetails());
   sl.registerLazySingleton(() => LocationCubit());
   sl.registerLazySingleton(() => SplashCubit(splashRemoteDataSource: sl()));
-
 
   sl.registerLazySingleton(
     () => EventsBloc()..add(const events.GetSearchEvent()),
@@ -142,7 +140,6 @@ void initialize() {
 
   sl.registerLazySingleton<UrbiSearchProvider>(() => UrbiSearchProvider());
 
-
   /////////////// End
   //  Noification
   sl.registerLazySingleton<NotificationsRemoteDataSource>(
@@ -156,31 +153,42 @@ void initialize() {
   sl.registerLazySingleton<NotificationManager>(
       () => NotificationManager(repository: sl()));
 
-  sl.registerLazySingleton<SplashRemoteDataSource>(() => SplashRemoteDataSourceImpl(webService: sl()));
+  sl.registerLazySingleton<SplashRemoteDataSource>(
+      () => SplashRemoteDataSourceImpl(webService: sl()));
 
 
-
+  //// For Mini Apps Engine
+  sl.registerLazySingleton<MiniAppsLocalDataSource>(
+      () => MiniAppsDataSourceImplementation(
+            webServices: sl<WebService>(),
+          ));
+  sl.registerLazySingleton<MiniAppsRepository>(() => MiniAppsRepository(
+        localDataSource: sl<MiniAppsLocalDataSource>(),
+      ));
+  sl.registerLazySingleton<HomeMiniAppsListCubit>(() => HomeMiniAppsListCubit(
+        homeServicesUseCases: sl<MiniAppsRepository>(),
+      ));
 
   /////////////// get All Authentication Model Injection Container
   switch (sl<EnvType>().name) {
     case "dev":
-      slAuthentication.registerLazySingleton(
-              () => BaladyAuthorizationEnvType.dev);
+      slAuthentication
+          .registerLazySingleton(() => BaladyAuthorizationEnvType.dev);
       break;
     case "stg":
-      slAuthentication.registerLazySingleton(
-              () => BaladyAuthorizationEnvType.stg);
+      slAuthentication
+          .registerLazySingleton(() => BaladyAuthorizationEnvType.stg);
       break;
     case "pre":
-      slAuthentication.registerLazySingleton(
-              () => BaladyAuthorizationEnvType.pre);
+      slAuthentication
+          .registerLazySingleton(() => BaladyAuthorizationEnvType.pre);
       break;
     case "prod":
-      slAuthentication.registerLazySingleton(
-              () => BaladyAuthorizationEnvType.prod);
+      slAuthentication
+          .registerLazySingleton(() => BaladyAuthorizationEnvType.prod);
     case "urbiPre":
-      slAuthentication.registerLazySingleton(
-              () => BaladyAuthorizationEnvType.urbiPre);
+      slAuthentication
+          .registerLazySingleton(() => BaladyAuthorizationEnvType.urbiPre);
       break;
   }
   AuthenticationInjection.initialize();
