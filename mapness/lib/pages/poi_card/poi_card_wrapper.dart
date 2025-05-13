@@ -48,6 +48,12 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    FocusScope.of(context).unfocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
