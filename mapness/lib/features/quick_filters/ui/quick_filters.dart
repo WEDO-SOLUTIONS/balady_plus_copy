@@ -88,6 +88,7 @@ class QuickFilters extends ConsumerWidget {
             (filter) => FilterItemConfig(
               filterType: FilterType.quick,
               title: filter.title(context.l10n),
+              icon: filter.icon,
               onTap: () => onQuickFilterTap(filter),
             ),
           ),
