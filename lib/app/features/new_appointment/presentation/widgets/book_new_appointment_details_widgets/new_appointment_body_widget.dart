@@ -155,7 +155,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               if (item != null) model.catetgoryType = item;
               model.validateForm();
             },
-            label: '${("bookNewAppointmentVisitCategoryWord").tr()} *',
+            label: ("bookNewAppointmentVisitCategoryWord").tr(),
             hint: ("bookNewAppointmentVisitCategoryWord").tr(),
             searchHint: ("searchFor").tr(),
           ),
@@ -176,7 +176,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
               //
             }
           },
-          label: '${("homeUpComingAppointmentMunicipality").tr()} *',
+          label: ("homeUpComingAppointmentMunicipality").tr(),
           hint: ("bookNewAppointmentMunicipalityDropDownHintWord").tr(),
           searchHint: ("search_for_municipality").tr(),
         ),
@@ -187,7 +187,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getMainClassifications(item);
             model.validateForm();
           },
-          label: '${("homeUpComingAppointmentMunicipalEntity").tr()} *',
+          label: ("homeUpComingAppointmentMunicipalEntity").tr(),
           hint: ("bookNewAppointmentMunicipalDropDownHintWord").tr(),
           searchHint: ("search_for_sub_municipality").tr(),
           errorText: ('select_municipality_first').tr(),
@@ -199,7 +199,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getSubClassifications(item);
             model.validateForm();
           },
-          label: '${("service_main_classification").tr()} *',
+          label: ("service_main_classification").tr(),
           hint: ("service_main_classification_hint").tr(),
           searchHint: ("search_for_main_classification").tr(),
           errorText: ('select_sub_municipality_first').tr(),
@@ -212,7 +212,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
             if (item != null) model.getServiceConfig(item);
             model.validateForm();
           },
-          label: '${("service_sub_main_classification").tr()} *',
+          label: ("service_sub_main_classification").tr(),
           hint: ("service_sub_main_classification_hint").tr(),
           searchHint: ("search_for_sub_classification").tr(),
           errorText: ('select_main_classification_first').tr(),
@@ -265,7 +265,7 @@ class _AppointmentInfoSection extends State<AppointmentInfoSection> {
           label: model.serviceConfigResponse?.data?.result?.first
                       .prevTransNoRequired ==
                   true
-              ? '${("bookNewAppointmentServiceNumberFieldLabelWord").tr()} *'
+              ? ("bookNewAppointmentServiceNumberFieldLabelWord").tr()
               : ("bookNewAppointmentServiceNumberFieldLabelWord").tr(),
           hintText: ("bookNewAppointmentServiceNumberFieldHintWord").tr(),
           keyboardType: TextInputType.text,

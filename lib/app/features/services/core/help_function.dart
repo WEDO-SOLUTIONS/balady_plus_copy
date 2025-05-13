@@ -51,8 +51,11 @@ void tackYouAction(BuildContext context, Service service) async {
       isFullHeight: false,
       dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
       currentRouteName: RouteName.postersStartService,
-      child:  NotAuthorizedIndivisualDialog(),
+      child: NotAuthorizedIndivisualDialog(),
     );
+    if (CommonProperties.selectedDelegator != null) {
+      tackYouAction(context, service);
+    }
     return;
   }
 
