@@ -35,6 +35,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openShare);
     registerFunction(jsLaunchUri);
     registerFunction(trackEvent);
+    registerFunction(trackLogsErrors);
+    registerFunction(openDirectionsMap);
   }
 
   @pragma('vm:entry-point')
@@ -302,7 +304,47 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         message: "Event tracked successfully",
         data: null,
       );
-      CommonFunctions.sendEventToAnalytics(msg);
+      CommonFunctions.sendUXCamEvent(msg);
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 400,
+        message: "Invalid event data",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void trackLogsErrors(dynamic msg, CompletionHandler handler) {
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      BaseResponse response = BaseResponse(
+        code: 200,
+        message: "Event tracked successfully",
+        data: null,
+      );
+      // CommonFunctions.sendEventToAnalytics(msg);
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      // BaseResponse response = BaseResponse(
+      //   code: 400,
+      //   message: "Invalid event data",
+      //   data: null,
+      // );
+      // handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void openDirectionsMap(dynamic msg, CompletionHandler handler) {
+    if (msg != null && msg is String && msg.isNotEmpty) {
+      BaseResponse response = BaseResponse(
+        code: 200,
+        message: "Event tracked successfully",
+        data: null,
+      );
+      // CommonFunctions.launchMap(latitude, longitude)
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(

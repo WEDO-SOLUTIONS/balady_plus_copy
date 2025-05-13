@@ -5,7 +5,7 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 
-import '../../../super_app_js_bridge/js_bridge_listener.dart';
+import '../../../../super_app_js_bridge/js_bridge_listener.dart';
 class WebviewInterperter extends StatefulWidget {
   String servicePath;
 

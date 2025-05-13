@@ -1,10 +1,11 @@
+import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
-import 'package:balady_plus/mini_apps_engine/presentation/pages/web_mini_apps_screen.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../bloc/mini_apps_engine_event.dart';
+import '../../bloc/mini_apps_engine_event.dart';
 
 class MiniAppsMainScreen extends StatefulWidget {
   const MiniAppsMainScreen({super.key});
@@ -22,9 +23,9 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
   @override
   Widget build(BuildContext context) {
-
+    MiniAppModel data = ModalRoute.of(context)?.settings.arguments as MiniAppModel;
     return BlocProvider(
-      create: (context) => MiniAppsEngineBloc(),
+      create: (context) => MiniAppsEngineBloc(miniApp: data),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
