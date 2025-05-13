@@ -1,11 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/colors/app_colors_theme.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
-import 'package:balady_uikit/core/colors/colors_v2/app_colors_theme_v2.dart';
 import 'package:balady_uikit/core/colorsV2/app_theme.dart';
 import 'package:balady_uikit/core/colorsV2/themes.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles.dart';
-import 'package:balady_uikit/core/typography/text_theme_styles_v3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';

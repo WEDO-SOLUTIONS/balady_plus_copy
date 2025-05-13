@@ -6,14 +6,13 @@ import 'package:flutter/material.dart';
 
 import 'custom_memory_image_provider.dart';
 
+const tagPicture = 'tagPicture';
+
 /// Use [Picture] class to display images on the screen. This class has 3 constructors, which have 3 different sizes
 /// [Picture.small] = 24dp, [Picture.medium] = 36dp, [Picture.large] = 48dp
 /// if the [imgPath] or [imgBytes] field is not passed, then the default placeholder will be used
 /// See also:
 /// * [Figma Design] (https://www.figma.com/file/owbsr9Pf0mQSEHXlbiPGOv/Balady-%E2%80%93-Components-Library?type=design&node-id=2036-6850&mode=design&t=irJk3D60Qs2500JN-0), design specs
-
-const tagPicture = 'tagPicture';
-
 @Deprecated('Use [Avatar] widget from balady_uikit instead')
 class Picture extends StatelessWidget {
   final String? imgPath;
