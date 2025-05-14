@@ -110,8 +110,8 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                             const SliverGridDelegateWithFixedCrossAxisCount(
                               crossAxisCount: 3,
                               mainAxisSpacing: 10,
-                              crossAxisSpacing: 10,
-                              childAspectRatio: .93,
+                              crossAxisSpacing: 5,
+                              childAspectRatio: .75,
                             ),
                             itemCount: state.homeServices.miniApps.length,
                             itemBuilder: (BuildContext context, int index) {
