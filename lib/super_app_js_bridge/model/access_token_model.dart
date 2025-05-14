@@ -19,3 +19,17 @@ class AccessTokenModel implements BaseData {
     return data;
   }
 }
+
+
+class CookiesModel implements BaseData {
+  String cookies;
+
+  CookiesModel({required this.cookies});
+
+  @override
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['cookies'] = cookies;
+    return data;
+  }
+}
