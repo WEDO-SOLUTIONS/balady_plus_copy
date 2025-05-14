@@ -39,6 +39,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openDirectionsMap);
   }
 
+  // Done
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
@@ -52,7 +53,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     } else {
-     await showDialog(
+      await showDialog(
         context: NavigationService.navigatorKey.currentContext!,
         builder: (ctx) => NeedLoginDialog(
           onSuccessLogin: (bool? isSuccess) async {
@@ -296,6 +297,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+  // Done Tested
   @pragma('vm:entry-point')
   void trackEvent(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
@@ -316,6 +318,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+  // Done Tested
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
@@ -336,15 +339,22 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+  // Done Tested
   @pragma('vm:entry-point')
-  void openDirectionsMap(dynamic msg, CompletionHandler handler) {
-    if (msg != null && msg is String && msg.isNotEmpty) {
+  void openDirectionsMap(dynamic data, CompletionHandler handler) {
+    if (data != null && data is Map) {
       BaseResponse response = BaseResponse(
         code: 200,
         message: "Event tracked successfully",
         data: null,
       );
-      // CommonFunctions.launchMap(latitude, longitude)
+
+      CommonFunctions.launchMap(
+        LatLng(
+          latitude: data["latitude"],
+          longitude: data["longitude"],
+        ),
+      );
       handler.complete(response.jsonEncodeModel());
     } else {
       BaseResponse response = BaseResponse(

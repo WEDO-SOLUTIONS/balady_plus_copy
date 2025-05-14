@@ -101,6 +101,9 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
           }
 
           request.response.headers.contentType = contentType;
+          request.response.headers.add("Access-Control-Allow-Origin", "*");
+          request.response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE");
+          request.response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
           request.response.add(body);
           request.response.close();
         });
