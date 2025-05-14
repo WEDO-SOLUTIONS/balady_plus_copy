@@ -25,14 +25,12 @@ String serviceURL =
 //String serviceURL = 'https://drive.usercontent.google.com/download?id=17B7J9A4UFwdtW25BdzIs9g7XopSFGKXU&export=download&authuser=0&confirm=t&uuid=900eacde-a137-4792-b514-0561c1b92651&at=ALoNOgl9NUZcnovldcXh7hiYnq2T%3A1746965764624';
 // String serviceURL = 'https://drive.google.com/uc?export=download&id=1jNZaTK6PMC_aTwZ8PHJQfEO3r2OyGFRy';
 
-
 String? serviceDownloadPath;
 
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
-
-
   final MiniAppModel miniApp;
+
   // final GetSearchEvents _getSearchEvents;
   // final GetEventDetails _getEventDetails;
 
@@ -51,9 +49,10 @@ class MiniAppsEngineBloc
   void _checkMiniAppsEngine(
       CheckMiniAppsEngineEvent event, Emitter emit) async {
     await prepareServerPath();
+
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/miniApp/v${event.miniApp.latestVersion?.versionNumber}';
+        '${CommonProperties.serverRootPath}/miniApp/${event.miniApp.latestVersion?.versionNumber}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
@@ -76,8 +75,7 @@ class MiniAppsEngineBloc
         await Directory(serviceDownloadPath!).create();
       }
 
-      serviceDownloadPath =
-          '${CommonProperties.serverRootPath!}/$dir/v$version';
+      serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir/$version';
       exists = await Directory(serviceDownloadPath!).exists();
       if (exists == false) {
         await Directory(serviceDownloadPath!).create();
@@ -106,13 +104,17 @@ class MiniAppsEngineBloc
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
-    serviceDownloadPath =
-        await prepareDownloadPath("miniApp", event.miniApp.latestVersion!.versionNumber!);
+    serviceDownloadPath = await prepareDownloadPath(
+        "miniApp", event.miniApp.latestVersion!.versionNumber!);
 
     if (serviceDownloadPath != null) {
       await startLocalHostServer(serviceDownloadPath);
       var zippedFile = await _downloadFile(
-          event.miniApp.latestVersion?.serviceUrl, serviceDownloadPath!, event.miniApp.serviceName!);
+        event.miniApp.latestVersion!.packageMetaDataDto!.id,
+        serviceDownloadPath!,
+        event.miniApp.serviceName!,
+        emit,
+      );
       if (zippedFile != null) {
         String? indexPath =
             await unarchiveAndSave(zippedFile, serviceDownloadPath!);
@@ -133,64 +135,62 @@ class MiniAppsEngineBloc
     }
   }
 
-  // Future<File?> _downloadFile(
-  //     Emitter emitter, String url, String fileName) async {
-  //   var tempDir = await getTemporaryDirectory();
-  //   String fullPath = "${tempDir.path}/$fileName.zip'";
-  //   File file = File(fullPath);
-  //   if (await file.exists()) {
-  //     return file;
-  //   } else {
-  //     WebService webService = sl<WebService>();
-  //     try {
-  //       Response response = await webService.dio.get(
-  //         url,
-  //         onReceiveProgress: (received, total) {
-  //           if (total != -1) {
-  //             emitter(
-  //               MiniAppsEngineLoadingState(
-  //                 progress: (received / total * 100).toStringAsFixed(1),
-  //               ),
-  //             );
-  //           }
-  //         },
-  //         options: Options(
-  //           responseType: ResponseType.bytes,
-  //           followRedirects: false,
-  //           validateStatus: (status) {
-  //             return (status ?? 501) < 500;
-  //           },
-  //         ),
-  //       );
-  //       print(response.headers);
-  //       File file = File(fullPath);
-  //     //  var raf = file.openSync(mode: FileMode.write);
-  //       // response.data is List<int> type
-  //        file.writeAsBytes(response.data,flush: true);
-  //       //raf.writeByte(response.data);
-  //      // await raf.close();
-  //       return file;
-  //     } catch (error, stackTrace) {
-  //       print(error);
-  //     }
-  //     return null;
-  //   }
-  // }
-
   Future<File?> _downloadFile(
-      String url, String downloadPath, String zipFileName) async {
+    String fileId,
+    String downloadPath,
+    String fileName,
+    Emitter emitter,
+  ) async {
+    WebService webService = sl<WebService>();
     try {
-      var req = await http.Client().get(Uri.parse(url));
-      if (req.statusCode == 200) {
-        var file = File('$downloadPath/${zipFileName}.zip');
-
-        return file.writeAsBytes(req.bodyBytes);
-      }
-    } catch (e) {
-      return null;
+      Response response = await webService.dio.get(
+        // "v1/dms-services/download-file/$fileId",
+        serviceURL,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            emitter(
+              MiniAppsEngineLoadingState(
+                progress: (received / total * 100).toStringAsFixed(1),
+              ),
+            );
+          }
+        },
+        options: Options(
+          headers: {
+            "x-app-id" : "BaladyMiniApps"
+          },
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          validateStatus: (status) {
+            return (status ?? 501) < 500;
+          },
+        ),
+      );
+      var file = File('$downloadPath/$fileName.zip');
+      return file.writeAsBytes(response.data);
+    } catch (error, stackTrace) {
+      print(error);
     }
     return null;
   }
+
+  // Future<File?> _downloadFile(
+  //   String url,
+  //   String downloadPath,
+  //   String zipFileName,
+  // ) async {
+  //   try {
+  //     var req = await http.Client().get(Uri.parse(url));
+  //     if (req.statusCode == 200) {
+  //       var file = File('$downloadPath/$zipFileName.zip');
+  //
+  //       return file.writeAsBytes(req.bodyBytes);
+  //     }
+  //   } catch (e) {
+  //     return null;
+  //   }
+  //   return null;
+  // }
 
   unarchiveAndSave(var zippedFile, String extractPath) async {
     String indexFilePath = "";

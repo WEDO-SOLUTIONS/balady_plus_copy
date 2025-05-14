@@ -393,6 +393,10 @@ class RouteName {
 
   static String trainingScreen = "trainingScreen";
 
+
+
+  static String miniAppsMainScreen = "miniAppsMainScreen";
+
 }
 
 class EtmamRoutesNames {

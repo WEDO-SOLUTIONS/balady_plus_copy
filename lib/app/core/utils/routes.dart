@@ -1,5 +1,6 @@
 import 'package:balady_plus/app/features/force_update/presentation/pages/forceUpdatePage.dart';
 import 'package:balady_plus/app/features/splash/presentation/pages/splash_page.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/mini_apps_main_screen.dart';
 import 'package:flutter/material.dart'
     show
         AppBar,
@@ -28,35 +29,14 @@ class Routes {
   static Map<String, Widget Function(BuildContext)> routesApp = {
     RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
     RouteName.splashScreen: (context) => const SplashPage(),
-
     RouteName.forceUpdateRoute: (context) => ForceUpdatePage(),
-
-
     RouteName.inappWebview: (context) => const InAppWebViewPage(),
-
     RouteName.dmsImageFullScreen: (context) => const ViewDMSImageScreen(),
     RouteName.apigeeImageFullScreen: (context) => const ViewAPIGEEImageScreen(),
-
-    // RouteName.serviceCards: (context) => const ServiceCardsPage(),
-
-    //? General Services
-
-
     RouteName.qiblahCompass: (context) => const QiblahWebViewPage(),
-
-    //! Setting
-
-
-    // -------  VD ---------
-
-
     RouteName.successRoute: (context) => const SuccessScreen(),
 
-
-
-
-
-
+    RouteName.miniAppsMainScreen: (context) => const MiniAppsMainScreen(),
   };
 
   static Map<String, Widget Function(BuildContext)> routes() {

@@ -40,6 +40,10 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
           if (state is HomeMiniAppsListSuccessState) {
             return SafeArea(
               child: GridView.builder(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 16,
+                ),
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 gridDelegate:

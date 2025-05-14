@@ -95,18 +95,19 @@ class LatestVersion {
 
 class PackageMetaDataDto {
   PackageMetaDataDto({
-    this.id,
+    required this.id,
     this.extension,
     this.size,
     this.name,});
 
-  PackageMetaDataDto.fromJson(dynamic json) {
-    id = json['id'];
-    extension = json['extension'];
-    size = json['size'];
-    name = json['name'];
-  }
-  String? id;
+  factory PackageMetaDataDto.fromJson(dynamic json) => PackageMetaDataDto(
+    id : json['id'] ?? "",
+    extension : json['extension'],
+    size : json['size'],
+    name : json['name'],
+  );
+
+  String id;
   String? extension;
   String? size;
   String? name;
