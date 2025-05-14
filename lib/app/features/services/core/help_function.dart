@@ -23,7 +23,8 @@ void checkIfLogin(BuildContext context, Service service) {
           tackYouAction(context, service);
         } else {
           showDialog(
-            context: context,
+            
+            context: NavigationService.navigatorKey.currentState!.context,
             builder: (ctx) => NeedLoginDialog(
               onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {

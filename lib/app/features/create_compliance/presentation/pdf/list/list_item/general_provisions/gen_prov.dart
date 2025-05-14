@@ -61,7 +61,7 @@ class _GeneralProvisionsState extends State<GeneralProvisions> {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 17,
-                    fontFamily: 'Frutiger',
+                    fontFamily: 'packages/balady_uikit/Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
