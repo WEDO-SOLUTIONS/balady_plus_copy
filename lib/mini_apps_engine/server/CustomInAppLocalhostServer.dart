@@ -74,9 +74,8 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
           try {
             if (Platform.isAndroid) {
 
-              body = (await rootBundle.load(Uri.decodeFull(path)))
-                  .buffer
-                  .asUint8List();
+              final file =  File(Uri.decodeFull(path));
+              body = await file.readAsBytes();
             }
             else {
               body = (await rootBundle.load(Uri.decodeFull(path)))
