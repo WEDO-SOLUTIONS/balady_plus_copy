@@ -9,7 +9,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/profile/log_out_sheet.dart';
@@ -30,13 +29,13 @@ class ProfilePage extends HookConsumerWidget {
       iconColor: context.colorsV3.foregroundMuted,
     );
     final Widget Function(IconData icon) leadingIconBuilder = (icon) => Icon(
-      icon,
-      color: context.colorsV3.accentDefault,
-      size: 24,
-    );
+          icon,
+          color: context.colorsV3.accentDefault,
+          size: 24,
+        );
     final userData = ref.watch(authProvider);
     final backgroundColor =
-    userData.valueOrNull != null ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
+        userData.valueOrNull != null ? context.colorsV3.staticWhite : context.colorsV3.staticDarkblue;
 
     final overlay = switch (ThemeData.estimateBrightnessForColor(backgroundColor)) {
       Brightness.dark => SystemUiOverlayStyle.light,
@@ -94,19 +93,19 @@ class ProfilePage extends HookConsumerWidget {
                                         data: (data) => data == null
                                             ? const SizedBox.shrink()
                                             : ContentRowV2(
-                                          isDividerEnabled: true,
-                                          onTap: () => context.router.push(const ProfileInfoRoute()),
-                                          trailing: trailing,
-                                          leading: leadingIconBuilder(GeneralIcons.userCircle),
-                                          text: ContentRowTextOptions(
-                                            title: context.l10n.account,
-                                          ),
-                                        ),
+                                                isDividerEnabled: true,
+                                                onTap: () => context.router.push(const ProfileInfoRoute()),
+                                                trailing: trailing,
+                                                leading: leadingIconBuilder(GeneralIcons.userCircle),
+                                                text: ContentRowTextOptions(
+                                                  title: context.l10n.account,
+                                                ),
+                                              ),
                                       ),
                                       ContentRowV2(
                                         onTap: () => context.router.push(const SettingsRoute()),
                                         trailing: trailing,
-                                        leading: leadingIconBuilder(SystemIcons.settings),
+                                        leading: SvgPicture.asset('assets/icons/svg/profile/settings.svg', height: 24, width: 24) ,
                                         text: ContentRowTextOptions(
                                           title: context.l10n.settings,
                                         ),
@@ -122,7 +121,7 @@ class ProfilePage extends HookConsumerWidget {
                                       isDividerEnabled: true,
                                       onTap: () => context.router.push(const HelpCenterRoute()),
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.questionCircle),
+                                      leading:SvgPicture.asset('assets/icons/svg/profile/question_circle.svg', height: 24, width: 24) ,//leadingIconBuilder(GeneralIcons.questionCircle),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.helpCenter,
                                       ),
@@ -133,7 +132,7 @@ class ProfilePage extends HookConsumerWidget {
                                         context.router.push(const AboutBaladyRoute());
                                       },
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.infoCircle),
+                                      leading: SvgPicture.asset('assets/icons/svg/profile/info.svg', height: 24, width: 24) ,
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
                                       ),
@@ -145,7 +144,7 @@ class ProfilePage extends HookConsumerWidget {
                                         );
                                       },
                                       trailing: trailing,
-                                      leading: leadingIconBuilder(GeneralIcons.star),
+                                      leading: SvgPicture.asset('assets/icons/svg/profile/rate.svg', height: 24, width: 24) ,
                                       text: ContentRowTextOptions(
                                         title: context.l10n.rateBaladyApp,
                                       ),
@@ -158,30 +157,29 @@ class ProfilePage extends HookConsumerWidget {
                                   data: (data) => data == null
                                       ? const SizedBox.shrink()
                                       : ContentWrapper(
-                                    color: context.colorsV3.backgroundSurface1,
-                                    children: [
-                                      ContentRowV2(
-                                        onTap: () => _logOut(context, ref, isLoading),
-                                        text: ContentRowTextOptions(
-                                          title: context.l10n.signOut,
-                                          titleOptions: ContentRowTextOption(
-                                            baseColor: context.colorsV3.errorDefault,
-                                          ),
+                                          color: context.colorsV3.backgroundSurface1,
+                                          children: [
+                                            ContentRowV2(
+                                              onTap: () => _logOut(context, ref, isLoading),
+                                              text: ContentRowTextOptions(
+                                                title: context.l10n.signOut,
+                                                titleOptions: ContentRowTextOption(
+                                                  baseColor: context.colorsV3.errorDefault,
+                                                ),
+                                              ),
+                                              leading: SvgPicture.asset(
+                                                'assets/icons/svg/ic_profile_logout.svg',
+                                                height: 24,
+                                                width: 24,
+                                                matchTextDirection: true,
+                                                colorFilter: ColorFilter.mode(
+                                                  context.colorsV3.errorDefault,
+                                                  BlendMode.srcIn,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-
-                                        leading: SvgPicture.asset(
-                                          'assets/icons/svg/ic_profile_logout.svg',
-                                          height: 24,
-                                          width: 24,
-                                          matchTextDirection: true,
-                                          colorFilter: ColorFilter.mode(
-                                            context.colorsV3.errorDefault,
-                                            BlendMode.srcIn,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
                                 ),
                               ],
                             ),
