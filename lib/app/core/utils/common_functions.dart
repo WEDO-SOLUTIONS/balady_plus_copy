@@ -980,10 +980,9 @@ class CommonFunctions {
 
   static void openBaladyWebView(String? url,
       {bool isObjections = false}) async {
-    print(url);
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(NoParams());
+    final failureOrSuccessForCookie = await getCookie(true);
     EasyLoading.dismiss();
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());
@@ -1268,7 +1267,7 @@ class CommonFunctions {
     if (redirectUrl == null) return;
     EasyLoading.show();
     GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(NoParams());
+    final failureOrSuccessForCookie = await getCookie(true);
     EasyLoading.dismiss();
     failureOrSuccessForCookie.fold((l) {
       CommonFunctions.showError("server_error_1".tr());

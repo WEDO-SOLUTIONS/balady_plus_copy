@@ -107,11 +107,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void getCookies(dynamic msg, CompletionHandler handler) async{
 
+
     late BaseResponse response;
     if (CommonProperties.isLoggedIn) {
       EasyLoading.show();
       GetCookie getCookie = GetCookie(repository: sl());
-      final failureOrSuccessForCookie = await getCookie(NoParams());
+      final failureOrSuccessForCookie = await getCookie(false);
       EasyLoading.dismiss();
       failureOrSuccessForCookie.fold((l) {
         CommonFunctions.showError("server_error_1".tr());
@@ -136,7 +137,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           if (isSuccess ?? false) {
             EasyLoading.show();
             GetCookie getCookie = GetCookie(repository: sl());
-            final failureOrSuccessForCookie = await getCookie(NoParams());
+            final failureOrSuccessForCookie = await getCookie(false);
             EasyLoading.dismiss();
             failureOrSuccessForCookie.fold((l) {
               CommonFunctions.showError("server_error_1".tr());

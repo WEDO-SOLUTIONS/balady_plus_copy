@@ -549,10 +549,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         FlutterUxcam.setUserProperty("name", user.arName ?? "");
       }
 
-      final failureOrSuccessForCookie = await _getCookie(NoParams());
+      final failureOrSuccessForCookie = await _getCookie(true);
 
       await failureOrSuccessForCookie.fold((l) async {
-        final failureOrSuccessForCookie = await _getCookie(NoParams());
+        final failureOrSuccessForCookie = await _getCookie(true);
         await failureOrSuccessForCookie.fold((failure) {
           emit(state.copyWith(
             status: AuthStatus.failure,
