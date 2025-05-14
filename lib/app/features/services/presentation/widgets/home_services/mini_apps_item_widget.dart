@@ -54,6 +54,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                       fontFamily:
                       AppConfig.appFontType,
+                      overflow: TextOverflow.ellipsis
                     ),
                     textScaler: TextScaler.noScaling,
                     textAlign: TextAlign.center,

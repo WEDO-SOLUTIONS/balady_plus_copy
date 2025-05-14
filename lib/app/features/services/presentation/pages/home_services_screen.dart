@@ -111,7 +111,7 @@ class _HomeServicesScreenState extends State<HomeServicesScreen> {
                               crossAxisCount: 3,
                               mainAxisSpacing: 10,
                               crossAxisSpacing: 10,
-                              childAspectRatio: .9,
+                              childAspectRatio: .93,
                             ),
                             itemCount: state.homeServices.miniApps.length,
                             itemBuilder: (BuildContext context, int index) {
