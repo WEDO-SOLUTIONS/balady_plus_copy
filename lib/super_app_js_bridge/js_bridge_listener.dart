@@ -17,15 +17,21 @@ import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../app/core/dependency_injection/injection_container.dart';
+import '../app/core/services/local/use_case.dart';
+import '../app/features/entry_point/domain/use_cases/get_cookie.dart';
+
 class JsBridgeListener extends JavaScriptNamespaceInterface {
   @override
   void register() {
     registerFunction(getAccessToken);
+    registerFunction(getCookies);
     registerFunction(getUserProfile);
     registerFunction(getAppPreferences);
     registerFunction(navigateToSuperAppScreen);
@@ -97,6 +103,72 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
+  @pragma('vm:entry-point')
+  void getCookies(dynamic msg, CompletionHandler handler) async{
+
+    late BaseResponse response;
+    if (CommonProperties.isLoggedIn) {
+      EasyLoading.show();
+      GetCookie getCookie = GetCookie(repository: sl());
+      final failureOrSuccessForCookie = await getCookie(NoParams());
+      EasyLoading.dismiss();
+      failureOrSuccessForCookie.fold((l) {
+        CommonFunctions.showError("server_error_1".tr());
+      }, (r) async {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          data: CookiesModel(
+            cookies: r,
+          ),
+        );
+        handler.complete(response.jsonEncodeModel());
+
+      });
+
+
+    } else {
+      await showDialog(
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (ctx) => NeedLoginDialog(
+        onSuccessLogin: (bool? isSuccess) async {
+          if (isSuccess ?? false) {
+            EasyLoading.show();
+            GetCookie getCookie = GetCookie(repository: sl());
+            final failureOrSuccessForCookie = await getCookie(NoParams());
+            EasyLoading.dismiss();
+            failureOrSuccessForCookie.fold((l) {
+              CommonFunctions.showError("server_error_1".tr());
+            }, (r) async {
+              response = BaseResponse(
+                code: 200,
+                message: "success",
+                data: CookiesModel(
+                  cookies: r,
+                ),
+              );
+              handler.complete(response.jsonEncodeModel());
+
+            });
+          } else {
+            BaseResponse response = BaseResponse(
+              code: 401,
+              message: "Unauthorized",
+              data: null,
+            );
+            handler.complete(response.jsonEncodeModel());
+          }
+        },
+      ),
+      );
+    }
+
+
+  }
+
+
+
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
