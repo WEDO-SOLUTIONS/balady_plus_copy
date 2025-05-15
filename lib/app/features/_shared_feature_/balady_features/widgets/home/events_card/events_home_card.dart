@@ -13,7 +13,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 class EventsHomeCard extends StatelessWidget {
-
   final VoidCallback? onShowAll;
   final ValueChanged<SearchEventsItem>? onItemTap;
 
