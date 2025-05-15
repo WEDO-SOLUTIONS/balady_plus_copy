@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -43,7 +44,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_home.svg',
+          icon: GeneralIcons.home,
           onTap: () {
             final home = favouritesState.valueOrNull?.home;
             if (home != null) {
@@ -59,7 +60,7 @@ class QuickFilters extends ConsumerWidget {
         FilterItemConfig(
           filterType: FilterType.work,
           title: context.l10n.work,
-          icon: 'assets/icons/svg/quick_filters/ic_quick_work.svg',
+          icon: GeneralIcons.briefcase,
           onTap: () {
             final work = favouritesState.valueOrNull?.work;
             if (work != null) {
@@ -78,7 +79,7 @@ class QuickFilters extends ConsumerWidget {
     final items = [
       FilterItemConfig(
         filterType: FilterType.favourites,
-        icon: 'assets/icons/svg/quick_filters/ic_quick_bookmark.svg',
+        icon: SystemIcons.bookmark,
         onTap: onFavouritesBookmarkTap,
       ),
       ...customItems,
