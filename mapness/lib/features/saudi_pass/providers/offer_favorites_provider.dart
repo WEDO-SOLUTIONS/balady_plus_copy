@@ -13,6 +13,13 @@ class OfferFavorites extends _$OfferFavorites {
   @override
   OfferFavoritesState build(String offerId) => OfferFavoritesState.initial;
 
+  void syncState({required bool isFavorite}) {
+    state = switch (isFavorite) {
+      true => OfferFavoritesState.added,
+      false => OfferFavoritesState.removed,
+    };
+  }
+
   Future<void> addToFavorites() async {
     await _sendRequest(favorite: true);
   }

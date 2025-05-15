@@ -177,8 +177,34 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
   OfferViewImpl(this.offer, this.ref, this.saudiPassRepository, [this.reloadOffers]);
 
   @override
-  void onTap() {
-    ref.read(appRouterProvider).push(OfferRoute(offerId: offer.id));
+  Future<void> onTap() async {
+    final offerFavorites = ref.read(offerFavoritesProvider(offerId).notifier);
+
+    final keepAliveOfferFavorites = offerFavorites.ref.keepAlive();
+
+    offerFavorites.syncState(isFavorite: isHeartRedAndFilled);
+
+    await ref.read(appRouterProvider).push(OfferRoute(offerId: offer.id));
+
+    _syncState(ref.read(offerFavoritesProvider(offerId)));
+
+    keepAliveOfferFavorites.close();
+  }
+
+  void _syncState(OfferFavoritesState offerFavoritesState) {
+    switch (offerFavoritesState) {
+      case OfferFavoritesState.initial:
+      case OfferFavoritesState.loading:
+      case OfferFavoritesState.error:
+        return;
+      case OfferFavoritesState.added:
+        isHeartRedAndFilled = true;
+        break;
+      case OfferFavoritesState.removed:
+        isHeartRedAndFilled = false;
+        break;
+    }
+    notifyListeners();
   }
 
   @override
