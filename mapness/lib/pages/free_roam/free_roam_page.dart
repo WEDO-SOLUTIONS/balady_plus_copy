@@ -20,6 +20,7 @@ import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -191,36 +192,29 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                           isControlsActive = true;
                           startControlsDisapearTimer();
                         },
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: padding,
-                              child: TrafficParkingControl(),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: padding,
-                              child: Row(
+                        child: const Padding(
+                          padding: padding,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              TrafficParkingControl(),
+                              SizedBox(height: uikit.Spacing.$2x),
+                              DimensionContrtol(),
+                              Spacer(),
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   IndoorControl(),
                                   ZoomControl(),
                                 ],
                               ),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: padding,
-                              child: CompassControl(),
-                            ),
-                            SizedBox(height: uikit.Spacing.$2x),
-                            Padding(
-                              padding: padding,
-                              child: FollowControl(),
-                            ),
-                            SizedBox(height: uikit.Spacing.$3x),
-                          ],
+                              Spacer(),
+                              CompassControl(),
+                              SizedBox(height: uikit.Spacing.$2x),
+                              FollowControl(),
+                              SizedBox(height: uikit.Spacing.$3x),
+                            ],
+                          ),
                         ),
                       ),
                     ),
