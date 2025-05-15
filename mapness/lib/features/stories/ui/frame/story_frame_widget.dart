@@ -130,15 +130,9 @@ class _StoryFrameWidgetState extends State<StoryFrameWidget>
     widget.controller?.nextPage = _onNext;
     widget.controller?.prevPage = _onPrevious;
 
-    /// If the story is onboarding, the progress will be always 1
-    _progress = widget.type != StoryTypes.onboarding
-        ? Tween<double>(begin: 0, end: 1).animate(_controller)
-        : const AlwaysStoppedAnimation(1);
-
+    _progress = Tween<double>(begin: 0, end: 1).animate(_controller);
+    _progress.addListener(_onProgressListener);
     _frame = widget.frame;
-    if (widget.type != StoryTypes.onboarding) {
-      _progress.addListener(_onProgressListener);
-    }
   }
 
   void _imageLoaded() {

@@ -1772,7 +1772,7 @@ class _ServiceCalculatorScreenState extends BaseState<ServiceCalculatorScreen,
         ]),
         changeToFirst: true,
         confirmTextStyle: const TextStyle(
-            fontFamily: 'Frutiger',
+            fontFamily: 'packages/balady_uikit/Frutiger',
             fontSize: 15,
             fontWeight: FontWeight.w700,
             fontStyle: FontStyle.normal,

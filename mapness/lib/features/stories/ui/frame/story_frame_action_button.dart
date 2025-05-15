@@ -38,7 +38,9 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
         'open_services' => l10n.openServices,
         'about_routes' => l10n.onboardingMoreRoutesButton,
         'balady_features' => l10n.onboardingMoreBaladyFeaturesButton,
-        'get_started' => l10n.onboardingGetStartedButton,
+        // TODO: After release delete from localizy [onboardingGetStartedButton] key
+        // It was previously used instead of "onboarding3Action"
+        'onboarding3Action' => l10n.onboarding3Action,
         _ => ''
       };
 
@@ -85,10 +87,11 @@ class _StoryFrameActionButtonState extends State<StoryFrameActionButton> {
   }
 
   @override
-  Widget build(BuildContext context) => AppButton(
+  Widget build(BuildContext context) => BaladyAppButton(
         color: widget.actionTheme.backgroundColor,
         textColor: widget.actionTheme.textColor,
-        buttonColorScheme: ButtonColorScheme.primary,
+        buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+        size: BaladyButtonSize.large,
         primaryLabel: _getActionTitle(),
         onTap: () {
           widget.onActionPressed?.call();

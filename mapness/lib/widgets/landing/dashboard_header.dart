@@ -89,8 +89,7 @@ class _DashboardMenu extends ConsumerWidget {
                 customFilters: [
                   FilterItemConfig(
                     filterType: FilterType.custom,
-                    title: context.l10n.go,
-                    icon: 'assets/icons/svg/quick_filters/free_roam.svg',
+                    icon: TransportIcons.locationDirectionNavigator,
                     onTap: () {
                       ref.read(locationProvider.notifier).checkLocationPermission();
                       ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);

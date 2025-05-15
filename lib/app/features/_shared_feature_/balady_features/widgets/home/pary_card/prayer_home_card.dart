@@ -10,7 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:provider/provider.dart';
 
 class PrayerHomeCard extends StatelessWidget {
@@ -51,15 +51,14 @@ class PrayerHomeCard extends StatelessWidget {
                       image: DecorationImage(
                         image: AssetImage(
                           state.nextPrayer!.prayer == Prayers.fajr
-                              ? "assets/images/sunrise_pray.png"
+                              ? Assets.images.sunrisePray.keyName
                               : state.nextPrayer!.prayer == Prayers.dhuhr
-                                  ? "assets/images/sunrise_pray.png" // day
+                                  ? Assets.images.sunrisePray.keyName // day
                                   : state.nextPrayer!.prayer == Prayers.asr
-                                      ? "assets/images/sunrise_pray.png" // day
+                                      ? Assets.images.sunrisePray.keyName // day
                                       : state.nextPrayer!.prayer == Prayers.maghrib
-                                          ? "assets/images/sunrise_pray.png" // sunset
-                                          : "assets/images/sunrise_pray.png", // night
-                          package: PackageConfig.packageName,
+                                          ? Assets.images.sunrisePray.keyName // sunset
+                                          : Assets.images.sunrisePray.keyName, // night
                         ),
                         fit: BoxFit.cover,
                       ),
@@ -121,8 +120,7 @@ class PrayerHomeCard extends StatelessWidget {
                                             builder: (context, state) {
                                               bool isNotificationDisabled = state.isNotificationDisable;
                                               return SvgPicture.asset(
-                                                "assets/icons/svg/ic_notification.svg",
-                                                package: PackageConfig.packageName,
+                                                Assets.icons.svg.icNotification.keyName,
                                                 colorFilter: ColorFilter.mode(
                                                   isNotificationDisabled ? const Color(0x99FFFFFF) : Colors.white,
                                                   BlendMode.srcIn,

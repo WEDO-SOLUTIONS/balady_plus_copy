@@ -8,7 +8,7 @@ import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/extensions/int_extention.dart';
 import 'package:mapness/widgets/feedback/images/add_image_button.dart';
-import 'package:mapness/widgets/feedback/images/feedback_image_widget.dart';
+import 'package:mapness/widgets/feedback/images/feedback_image_preview.dart';
 
 class SelectedImages extends ConsumerStatefulWidget {
   final bool isEdit;
@@ -26,18 +26,12 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
   List<XFile> _images = [];
 
   @override
-  void initState() {
-    _images = widget.isEdit ? [] : ref.read(parkingImageProvider);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     const _photoPadding = Spacing.$2x;
     const _imageSize = 62.0;
 
-    _images = ref.watch(parkingImageProvider);
-    final imageProvider = ref.watch(parkingImageProvider.notifier);
+    _images = ref.watch(parkingImageProvider(isEdit: widget.isEdit));
+    final imageProvider = ref.watch(parkingImageProvider(isEdit: widget.isEdit).notifier);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,11 +53,10 @@ class SelectedImagesState extends ConsumerState<SelectedImages> {
                 size: _imageSize,
               ),
             ..._images.indexed.map(
-              (indexedUpload) => FeedbackImageWidget(
+              (indexedUpload) => FeedbackImagePreview(
                 key: ValueKey(indexedUpload),
                 imagePath: indexedUpload.$2.path,
                 onRemove: () => imageProvider.removeImage(indexedUpload.$2),
-                onUploadStatusChange: (_) {},
                 imageSize: _imageSize,
               ),
             ),

@@ -1,6 +1,7 @@
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 
@@ -30,7 +31,7 @@ sealed class RoutePoint {
 
 class RoutePointMyLocation extends RoutePoint {
   @override
-  String get icon => 'assets/icons/svg/ic_routing_location.svg';
+  String get icon => Assets.icons.svg.icRoutingLocation.keyName;
 
   @override
   bool get isNotEmpty => true;
@@ -67,7 +68,7 @@ class RoutePointCoordinates extends RoutePoint {
   final String? address;
 
   @override
-  String get icon => 'assets/icons/svg/ic_routing_circle.svg';
+  String get icon => Assets.icons.svg.icRoutingCircle.keyName;
 
   @override
   bool get isNotEmpty => true;
@@ -103,7 +104,7 @@ class RoutePointDirectoryObject extends RoutePoint {
   final DirectoryObjectMessage? object;
 
   @override
-  String get icon => 'assets/icons/svg/ic_routing_circle.svg';
+  String get icon => Assets.icons.svg.icRoutingCircle.keyName;
 
   @override
   bool get isNotEmpty => object != null;
@@ -139,7 +140,7 @@ class RoutePointFavouriteItem extends RoutePoint {
   final FavouriteItem? item;
 
   @override
-  String get icon => 'assets/icons/svg/ic_routing_circle.svg';
+  String get icon => Assets.icons.svg.icRoutingCircle.keyName;
 
   @override
   bool get isNotEmpty => item != null;

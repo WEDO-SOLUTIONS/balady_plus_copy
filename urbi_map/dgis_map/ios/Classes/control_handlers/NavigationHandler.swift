@@ -291,8 +291,19 @@ class NavigationHandler {
     }
     
     func setNavigatorVoice(_ id: String, completion: @escaping (Result<Void, any Error>) -> Void) {
-        self.navigationManager.voiceSelector.voice = voiceManager.voices.first { $0.id == id }?.navigationVoice
-        completion(Result.success(()))
+
+        
+        guard let selectedVoice = voiceManager.voices.first(where: { $0.id == id && $0.progress == 100}) else {
+                completion(.failure(FlutterError(
+                    code: "NavigationError",
+                    message: "Voice not found or not downloaded yet",
+                    details: nil)))
+                return
+            }
+            
+            
+        navigationManager.voiceSelector.voice = selectedVoice.navigationVoice
+        completion(.success(()))
     }
     
     func simulationSpeed(speed: Double) {

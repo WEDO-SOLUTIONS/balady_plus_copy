@@ -42,40 +42,43 @@ class PersonalData extends ConsumerWidget {
                 subtitle: context.l10n.profileSettingsLastName,
               ),
             ),
-            ContentRow(
-              options: ContentRowOptions(
-                dividerEnabled: true,
-                title: userInfo.mail ?? '',
-                subtitle: context.l10n.email,
-              ),
-            ),
-            ContentRow(
-              options: ContentRowOptions(
-                dividerEnabled: true,
-                title: userInfo.dob ?? '',
-                subtitle: context.l10n.dateOfBirth,
-              ),
-            ),
-            ContentRow(
-              options: ContentRowOptions(
-                dividerEnabled: true,
-                title: userInfo.arName ?? '',
-                subtitle: context.l10n.arabicFullName,
-              ),
-            ),
-            ContentRow(
-              options: ContentRowOptions(
-                dividerEnabled: true,
-                title: userInfo.enName ?? '',
-                subtitle: context.l10n.englishFullName,
-              ),
-            ),
-            ContentRow(
-              options: ContentRowOptions(
-                title: userInfo.nationality ?? '',
-                subtitle: context.l10n.nationality,
-              ),
-            ),
+            if (userInfo.loginType == SsoLoginType.nationalId)
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.mail ?? '',
+                    subtitle: context.l10n.email,
+                  ),
+                ),
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.dob ?? '',
+                    subtitle: context.l10n.dateOfBirth,
+                  ),
+                ),
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.arName ?? '',
+                    subtitle: context.l10n.arabicFullName,
+                  ),
+                ),
+                ContentRow(
+                  options: ContentRowOptions(
+                    dividerEnabled: true,
+                    title: userInfo.enName ?? '',
+                    subtitle: context.l10n.englishFullName,
+                  ),
+                ),
+                ContentRow(
+                  options: ContentRowOptions(
+                    title: userInfo.nationality ?? '',
+                    subtitle: context.l10n.nationality,
+                  ),
+                ),
+              ]),
           ]),
         ],
       ),

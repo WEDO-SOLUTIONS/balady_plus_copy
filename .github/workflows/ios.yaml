@@ -59,21 +59,19 @@ jobs:
           echo "CI_IS_PR=${CI_IS_PR}" >> ${GITHUB_ENV}
           echo "PATH=${PATH}:/opt/homebrew/bin" >> ${GITHUB_ENV}
 
-      - name: Setup keychain
+      - name: AdSedare
         env:
           FILE_BALADY_CER: ${{ secrets.FILE_BALADY_CER }}
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
           FILE_APPSTORE_KEY: ${{ secrets.FILE_APPSTORE_KEY }}
         run: |
-          zsh .github/scripts/setup_keychain.sh
+          export PATH="/Users/user/.rvm/rubies/ruby-3.4.2/bin:$PATH"
+          zsh .github/scripts/run_adsedare.sh
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: "3.24.3"
-          channel: "stable"
-          cache: true
+        run: |
+          fvm use 3.24.3
 
       - name: "Setup just"
         uses: extractions/setup-just@v2
@@ -100,8 +98,6 @@ jobs:
         run: |
           KC="$HOME/Library/Keychains/build.keychain"
           KC_PASS='build-pass'
-
-          zsh .github/scripts/ad_hoc_patch.sh
 
           git apply mapness/scripts/sdkkey.patch || echo 'could not apply sdk key patch'
           git apply mapness/scripts/icon.patch || echo 'could not apply ios icon patch'

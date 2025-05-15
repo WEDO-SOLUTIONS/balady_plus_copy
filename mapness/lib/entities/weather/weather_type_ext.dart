@@ -1,5 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:intl/intl.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 
 extension WeatherMapTypeExt on WeatherMapType {
   String measureUnit() => switch (this) {
@@ -45,8 +46,8 @@ extension WeatherMapTypeExt on WeatherMapType {
       };
 
   String iconRes() => switch (this) {
-        WeatherMapType.precipitation => 'assets/icons/svg/weather/umbrella_empty.svg',
-        WeatherMapType.temperature => 'assets/icons/svg/weather/thermometer_empty.svg',
+        WeatherMapType.precipitation => Assets.icons.svg.weather.umbrellaEmpty.keyName,
+        WeatherMapType.temperature => Assets.icons.svg.weather.thermometerEmpty.keyName,
       };
 
   // ignore_for_file: missing_whitespace_between_adjacent_strings

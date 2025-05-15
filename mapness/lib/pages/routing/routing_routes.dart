@@ -58,7 +58,7 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-
+    FocusScope.of(context).unfocus();
     final locationPermission = ref.read(locationProvider.notifier);
 
     /// if route from user location make sure he has location permission

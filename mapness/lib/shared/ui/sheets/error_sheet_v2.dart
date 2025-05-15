@@ -3,9 +3,8 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
 import 'package:mapness/_features/common/widgets/dragger.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -73,8 +72,7 @@ class ErrorSheetV2 extends StatelessWidget {
                 builder: (context) {
                   if (assetImage == null || assetImage?.isEmpty == true) {
                     return SvgPicture.asset(
-                      'assets/images_svg/sad_face.svg',
-                      package: PackageConfig.packageName,
+                      Assets.imagesSvg.sadFace.keyName,
                     );
                   }
 
