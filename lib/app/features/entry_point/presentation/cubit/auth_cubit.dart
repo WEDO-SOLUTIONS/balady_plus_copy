@@ -177,7 +177,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
     AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
     if (authState is AuthenticatedMunicipalityState) {
-      _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+      _saveDataLogin(token: token, isFromEtmam: isFromEtmam,authState:authState);
     } else {
       final data = authState.profileData;
       emit(
@@ -550,6 +550,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   void _saveDataLogin({
     required SSOToken token,
     required bool isFromEtmam,
+    required AuthenticatedMunicipalityState authState,
   }) async {
     print(" ");
     print(" ");
@@ -575,7 +576,15 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           state.copyWith(
             status: AuthStatus.authenticated,
             token: token,
-            userInfo: user,
+            userInfo: user.copyWith(
+              name: authState.profileData.firstNameArabic,
+              sname: authState.profileData.lastNameArabic,
+              enName: authState.profileData.enName,
+              arName: authState.profileData.arName,
+              mail: authState.profileData.email,
+              phone: authState.profileData.phoneNumber,
+              loginType: SsoLoginType.nationalId,
+            ),
             errorMessage: "",
           ),
         );
