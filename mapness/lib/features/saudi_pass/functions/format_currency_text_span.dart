@@ -3,7 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 
 TextSpan formatCurrencyTextSpan(num amount, Language language, Locale locale, [double? iconSize]) {
-  // ignore: prefer_const_declarations
+  // ignore: prefer_const_declarations, unused_local_variable
   final _quickFixAvoidTreeShaking = GeneralIcons.sar;
 
   return TextSpan(
