@@ -77,6 +77,21 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
     }
 
+    // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
+    //
+    // Example: The user put a point on the map in a field (or desert). If we don't change markerPosition to closestPoint,
+    // we'll go to the center of this object, not to the point the user put.
+    // The "Desert" object has an id and a conditional center of this object. And wherever the user puts a mark,
+    // if we do not specify this point, the route will lead the user to the conditional center
+    if (widget.closestPoint != null) {
+      final closestPoint = widget.closestPoint!;
+      data?.markerPosition = GeoPointWithElevationMessage(
+        latitude: closestPoint.latitude,
+        longitude: closestPoint.longitude,
+        elevation: 0,
+      );
+    }
+
     final objectId = data?.id?.objectId;
 
     /// loading progress indicator
