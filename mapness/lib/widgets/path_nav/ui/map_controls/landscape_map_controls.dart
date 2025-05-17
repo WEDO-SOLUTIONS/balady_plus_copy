@@ -74,9 +74,8 @@ class _LandscapeLayout extends StatelessWidget {
                         child: Column(
                           children: [
                             const TrafficParkingControl(parkingVisible: false),
-                            //TODO(scroollocker): Enable when prepare release
-                            // const SizedBox(height: uikit.Spacing.$2x),
-                            // const DimensionContrtol(),
+                            const SizedBox(height: uikit.Spacing.$2x),
+                            const DimensionContrtol(),
                             const Spacer(),
                             const ZoomControl(),
                             const Spacer(),
