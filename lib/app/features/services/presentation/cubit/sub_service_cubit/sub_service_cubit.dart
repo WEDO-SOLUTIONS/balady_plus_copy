@@ -15,18 +15,28 @@ class ServiceCardsCubit extends Cubit<SubServiceState> {
   void searchServices(String query) {
     if (query.isEmpty) {
       textFormSearchController.text = "";
-      emit(LoadedSubServiceState(listOfServices: listOfServices));
+      List<Service> clearedList =
+          List.from(listOfServices); // Create a new copy
+      emit(LoadedSubServiceState(
+          listOfServices: clearedList)); // Emit with cleared list
     } else {
-      final List<Service> filteredServices = listOfServices
-          .where(
-            (service) => service.title.toLowerCase().contains(
-                  query.toLowerCase(),
-                ),
-          )
+      List<Service> filteredServices = listOfServices
+          .expand((service) => service.subServices)
+          .where((subService) =>
+              subService.title.toLowerCase().contains(query.toLowerCase()))
           .toList();
-      emit(//
+
+      if (filteredServices.isEmpty) {
+        filteredServices = listOfServices
+            .where((service) =>
+                service.title.toLowerCase().contains(query.toLowerCase()))
+            .toList();
+      }
+
+      emit(
         LoadedSubServiceState(
-          listOfServices: filteredServices,
+          listOfServices:
+              filteredServices.isEmpty ? [listOfServices[1]] : filteredServices,
         ),
       );
     }
