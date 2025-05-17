@@ -54,7 +54,9 @@ class RoutingMapControls extends ConsumerWidget {
                           LayersControl(),
                           SizedBox(height: 8),
                           TrafficControl(),
-                          SizedBox(height: 8),
+                          //TODO(scroollocker): Enable when prepare release
+                          // SizedBox(height: uikit.Spacing.$2x),
+                          // DimensionContrtol(),
                           Spacer(),
                           ZoomControl(),
                           Spacer(),

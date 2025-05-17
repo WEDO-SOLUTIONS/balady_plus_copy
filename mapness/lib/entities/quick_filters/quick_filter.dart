@@ -79,7 +79,7 @@ extension QuickFilterExtension on QuickFilter {
           },
         QuickFilter.eatOut => {
             Language.english: 'Eat out',
-            Language.arabic: 'تناول الطعام بالخارج',
+            Language.arabic: 'مطاعم',
           },
       };
 

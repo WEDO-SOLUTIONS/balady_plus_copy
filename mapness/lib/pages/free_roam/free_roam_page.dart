@@ -191,36 +191,30 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                           isControlsActive = true;
                           startControlsDisapearTimer();
                         },
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Padding(
-                              padding: padding,
-                              child: TrafficParkingControl(),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: padding,
-                              child: Row(
+                        child: const Padding(
+                          padding: padding,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              TrafficParkingControl(),
+                              //TODO(scroollocker): Enable when prepare release
+                              // SizedBox(height: uikit.Spacing.$2x),
+                              // DimensionContrtol(),
+                              Spacer(),
+                              Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   IndoorControl(),
                                   ZoomControl(),
                                 ],
                               ),
-                            ),
-                            Spacer(),
-                            Padding(
-                              padding: padding,
-                              child: CompassControl(),
-                            ),
-                            SizedBox(height: uikit.Spacing.$2x),
-                            Padding(
-                              padding: padding,
-                              child: FollowControl(),
-                            ),
-                            SizedBox(height: uikit.Spacing.$3x),
-                          ],
+                              Spacer(),
+                              CompassControl(),
+                              SizedBox(height: uikit.Spacing.$2x),
+                              FollowControl(),
+                              SizedBox(height: uikit.Spacing.$3x),
+                            ],
+                          ),
                         ),
                       ),
                     ),
