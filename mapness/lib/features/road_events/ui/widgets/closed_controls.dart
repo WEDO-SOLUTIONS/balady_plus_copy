@@ -1,4 +1,3 @@
-import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/widgets/landing/compass_control.dart';
@@ -8,7 +7,6 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
-import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 
 class ClosedControls extends ConsumerWidget {
   const ClosedControls({super.key});
@@ -43,8 +41,9 @@ class ClosedControls extends ConsumerWidget {
                     const SizedBox(height: 8),
                     const TrafficControl(),
                     const Spacer(),
-                    const SizedBox(height: uikit.Spacing.$2x),
-                    const DimensionContrtol(),
+                    //TODO(scroollocker): Enable when prepare release
+                    // const SizedBox(height: uikit.Spacing.$2x),
+                    // const DimensionContrtol(),
                     const ZoomControl(),
                     const Spacer(),
                     const CompassControl(),

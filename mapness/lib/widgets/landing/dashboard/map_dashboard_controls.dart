@@ -11,7 +11,6 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
-import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
@@ -101,8 +100,9 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                               const LayersControl(),
                               const SizedBox(height: uikit.Spacing.$2x),
                               const TrafficControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const DimensionContrtol(),
+                              //TODO(scroollocker): Enable when prepare release
+                              // const SizedBox(height: uikit.Spacing.$2x),
+                              // const DimensionContrtol(),
                               const Spacer(),
                               const ZoomControl(),
                               const Spacer(),
