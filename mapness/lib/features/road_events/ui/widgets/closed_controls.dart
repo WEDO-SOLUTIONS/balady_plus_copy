@@ -41,6 +41,9 @@ class ClosedControls extends ConsumerWidget {
                     const SizedBox(height: 8),
                     const TrafficControl(),
                     const Spacer(),
+                    //TODO(scroollocker): Enable when prepare release
+                    // const SizedBox(height: uikit.Spacing.$2x),
+                    // const DimensionContrtol(),
                     const ZoomControl(),
                     const Spacer(),
                     const CompassControl(),

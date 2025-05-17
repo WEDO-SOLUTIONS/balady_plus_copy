@@ -21,7 +21,7 @@ class FeedbackBoolToggle extends HookWidget {
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: Spacing.$4x),
-      decoration: BoxDecoration(border: Border(bottom: border, top: border)),
+      decoration: BoxDecoration(border: Border(bottom: isSelected.value ? BorderSide.none : border, top: border)),
       child: Column(
         children: [
           Row(

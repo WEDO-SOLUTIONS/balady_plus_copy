@@ -62,6 +62,9 @@ class PoiCardMapControls extends StatelessWidget {
                               );
                             },
                           ),
+                          //TODO(scroollocker): Enable when prepare release
+                          // const SizedBox(height: ui_kit.Spacing.$2x),
+                          // const DimensionContrtol(),
                           const Spacer(),
                           const ZoomControl(),
                           const Spacer(),
