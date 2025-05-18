@@ -48,6 +48,12 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    FocusScope.of(context).unfocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
@@ -69,6 +75,21 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
 
     if (isParkingPoi) {
       storeParking.addPinParking(storeParkingData?.markerPosition, context.l10n.yourParkingSpot);
+    }
+
+    // We need to leave this block of code to specify the point where the route will be built. (BSA-2415)
+    //
+    // Example: The user put a point on the map in a field (or desert). If we don't change markerPosition to closestPoint,
+    // we'll go to the center of this object, not to the point the user put.
+    // The "Desert" object has an id and a conditional center of this object. And wherever the user puts a mark,
+    // if we do not specify this point, the route will lead the user to the conditional center
+    if (widget.closestPoint != null) {
+      final closestPoint = widget.closestPoint!;
+      data?.markerPosition = GeoPointWithElevationMessage(
+        latitude: closestPoint.latitude,
+        longitude: closestPoint.longitude,
+        elevation: 0,
+      );
     }
 
     final objectId = data?.id?.objectId;
@@ -94,10 +115,10 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
           children: [
             const Spacer(flex: 3),
             ErrorSheetV2(
-              errorTitle: context.l10n.poiObjectNotFoundTitle,
-              errorContent: context.l10n.poiObjectNotFoundContent,
-              buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
-              assetImage: Assets.imagesSvg.happyFace.keyName,
+              errorTitle: context.l10n.somethingWentWrong,
+              errorContent: context.l10n.saudiPassSomethingWentWrongHint,
+              buttonLabel: context.l10n.complete,
+              assetImage: Assets.imagesSvg.illustrationError.keyName,
               onRetry: () => context.router.popForced(),
             )
           ],

@@ -7,7 +7,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/sso_auth/data/auth_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
@@ -169,7 +168,7 @@ class ProfilePage extends HookConsumerWidget {
                                                 ),
                                               ),
                                               leading: SvgPicture.asset(
-                                                Assets.icons.svg.icProfileLogout.keyName,
+                                                'assets/icons/svg/ic_profile_logout.svg',
                                                 height: 24,
                                                 width: 24,
                                                 matchTextDirection: true,

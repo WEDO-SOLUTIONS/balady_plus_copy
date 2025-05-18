@@ -72,6 +72,12 @@ class _PortraitLayout extends StatelessWidget {
                                       padding: padding,
                                       child: const TrafficParkingControl(trafficVisible: false),
                                     ),
+                                    //TODO(scroollocker): Enable when prepare release
+                                    // const SizedBox(height: uikit.Spacing.$2x),
+                                    // Padding(
+                                    //   padding: padding,
+                                    //   child: const DimensionContrtol(),
+                                    // ),
                                     const Spacer(),
                                     Padding(
                                       padding: padding,

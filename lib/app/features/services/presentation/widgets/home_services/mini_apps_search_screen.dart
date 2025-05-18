@@ -34,7 +34,7 @@ class MiniAppsSearchScreen extends StatelessWidget {
                         crossAxisCount: 3,
                         mainAxisSpacing: 10,
                         crossAxisSpacing: 10,
-                        childAspectRatio: .9,
+                        childAspectRatio: .93,
                       ),
                       itemCount: state.listOfServices.length,
                       itemBuilder: (BuildContext context, int index) {

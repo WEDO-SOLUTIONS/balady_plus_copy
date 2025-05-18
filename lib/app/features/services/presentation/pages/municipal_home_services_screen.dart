@@ -44,20 +44,18 @@ class _MunicipalHomeServicesScreenState
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: sl<HomeServicesCubit>(),
-      child: BlocConsumer<DashboardBloc, DashboardState>(
-        listener: (context, dashboardState) {},
-        builder: (context, dashboardState) {
+      child: BlocBuilder<HomeServicesCubit, ServicesState>(
+        builder: (context, servicesState) {
           return Scaffold(
             resizeToAvoidBottomInset: false,
             backgroundColor: Colors.grey.shade100,
-            appBar: AppBar(
+            appBar: (servicesState as ServicesSuccessState).homeServices.miniApps.isEmpty ? null : AppBar(
               title: Text("municipal_services".tr()),
               centerTitle: true,
               titleTextStyle: Theme.of(context).textTheme.titleLarge,
               backgroundColor: Colors.transparent,
               leading: const BackButton(color: Colors.black),
               elevation: 0,
-              actions: [],
             ),
             body: BlocBuilder<HomeServicesCubit, ServicesState>(
               builder: (context, state) {
@@ -220,7 +218,6 @@ class _MunicipalHomeServicesScreenState
                     ],
                   );
                 }
-
                 return const Center(
                   child: CircularProgressIndicator(),
                 );

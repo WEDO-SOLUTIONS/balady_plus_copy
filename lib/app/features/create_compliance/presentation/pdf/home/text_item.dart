@@ -21,7 +21,7 @@ class TextItem extends StatelessWidget {
             style: TextStyle(
               color: const Color(0xFF145E75),
               fontSize: size,
-              fontFamily: 'Frutiger',
+              fontFamily: 'packages/balady_uikit/Frutiger',
               fontWeight: FontWeight.w700,
             ),
           ),
@@ -34,7 +34,7 @@ class TextItem extends StatelessWidget {
               color: Color(0xFF52525B),
               fontSize: 14,
               height: 1.4,
-              fontFamily: 'Frutiger',
+              fontFamily: 'packages/balady_uikit/Frutiger',
               fontWeight: FontWeight.w600,
             ),
           ),

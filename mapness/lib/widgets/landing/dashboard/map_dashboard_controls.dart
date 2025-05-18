@@ -100,6 +100,9 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                               const LayersControl(),
                               const SizedBox(height: uikit.Spacing.$2x),
                               const TrafficControl(),
+                              //TODO(scroollocker): Enable when prepare release
+                              // const SizedBox(height: uikit.Spacing.$2x),
+                              // const DimensionContrtol(),
                               const Spacer(),
                               const ZoomControl(),
                               const Spacer(),

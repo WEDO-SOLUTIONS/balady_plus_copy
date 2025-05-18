@@ -46,7 +46,7 @@ class QuranMenuCardWidget extends StatelessWidget {
                               maxLines: 2,
                               fontWeight: AppFontWeight.medium,
                               fontSize: 26,
-                              fontFamily: "HafsSmart",
+                              // fontFamily: "HafsSmart",
                               fontColor: AppColor.black,
                             ),
                           ),
