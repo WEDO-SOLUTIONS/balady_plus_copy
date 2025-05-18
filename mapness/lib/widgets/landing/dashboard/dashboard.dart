@@ -4,8 +4,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -103,6 +103,13 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             ),
           ),
         ),
+        backgroundColorDelegate: (controller) {
+          final state = controller.state;
+          if (state == ThreeStateBottomSheet.expanded) {
+            return Colors.black.withOpacity(.4);
+          }
+          return null;
+        },
         outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
         outsideOpacityDelegate: (controller) {
           final aspectRatio = controller.aspectRatio;
