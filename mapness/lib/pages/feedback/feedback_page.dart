@@ -109,6 +109,9 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
 
+    if (widget.objectId != null) {
+      context.router.popForced();
+    }
     context.router.replace(
       FeedbackSentRoute(
         payloadId: payloadId,
