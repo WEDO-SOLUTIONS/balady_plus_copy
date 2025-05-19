@@ -43,6 +43,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(trackEvent);
     registerFunction(trackLogsErrors);
     registerFunction(openDirectionsMap);
+    registerFunction(openWebView);
   }
 
   // Done
