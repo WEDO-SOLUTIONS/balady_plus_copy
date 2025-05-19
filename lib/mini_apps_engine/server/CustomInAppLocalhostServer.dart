@@ -7,6 +7,8 @@ import 'package:flutter/services.dart' show rootBundle;
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
 import 'MimeTypeResolver.dart';
+import 'package:shelf/shelf.dart';
+import 'package:shelf/shelf_io.dart' as io;
 
 class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
 
@@ -51,17 +53,25 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
     }
     this._started = true;
 
-    final completer = Completer();
 
-    runZonedGuarded(() {
-      HttpServer.bind('127.0.0.1', _port, shared: _shared).then((server) {
-        print('Server running on http://localhost:' + _port.toString());
+    final handler = const Pipeline()
+      //  .addMiddleware(_addCorsHeaders as Middleware)
+        .addHandler((Request request) async {
+      if (request.method == 'OPTIONS') {
+        final corsHeaders = {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+          'Access-Control-Allow-Headers': '*',
+        };
+        return Response.ok('', headers: corsHeaders);
+      }
+      // Proxy request to target server
+      final targetUrl = request.requestedUri;
 
-        this._server = server;
+      try {
 
-        server.listen((HttpRequest request) async {
+        if( targetUrl.origin.toString().contains("localhost")==true && request.url.queryParameters['url'] == null) {
           Uint8List body = Uint8List(0);
-
           var path = request.requestedUri.path;
           path = (path.startsWith('/')) ? path.substring(1) : path;
           path += (path.endsWith('/')) ? _directoryIndex : '';
@@ -73,8 +83,7 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
 
           try {
             if (Platform.isAndroid) {
-
-              final file =  File(Uri.decodeFull(path));
+              final file = File(Uri.decodeFull(path));
               body = await file.readAsBytes();
             }
             else {
@@ -82,37 +91,147 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
                   .buffer
                   .asUint8List();
             }
-
           } catch (e) {
-            print(Uri.decodeFull(path));
-            print(e.toString());
-            request.response.close();
-            return;
+            return Response.badRequest(
+              body: 'can not load url',
+            );
           }
 
-          var contentType = ContentType('text', 'html', charset: 'utf-8');
+         // var contentType = ContentType('text', 'html', charset: 'utf-8');
+          String content= "text/html";
           if (!request.requestedUri.path.endsWith('/') &&
+
               request.requestedUri.pathSegments.isNotEmpty) {
             final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
             if (mimeType != null) {
-              contentType = _getContentTypeFromMimeType(mimeType);
+             // contentType = _getContentTypeFromMimeType(mimeType);
+              content=  _getContentTypeFromMimeType(mimeType);
             }
           }
 
-          request.response.headers.contentType = contentType;
-          request.response.headers.add("Access-Control-Allow-Origin", "*");
-          request.response.headers.add("Access-Control-Allow-Methods", "GET,PUT,PATCH,POST,DELETE");
-          request.response.headers.add("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-          request.response.add(body);
-          request.response.close();
-        });
+          final corsHeaders = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': '*',
 
-        completer.complete();
-      });
-    }, (e, stackTrace) => print('Error: $e $stackTrace'));
+            "Content-Type": content,
+          };
+        return  Response.ok(
+            body,
+            headers: corsHeaders,
+          );
 
-    return completer.future;
+
+        }
+
+        else {
+
+          final imageUrl = request.url.queryParameters['url'];
+          final client = HttpClient();
+          final proxyRequest = await client.getUrl(Uri.parse(imageUrl!));
+          final proxyResponse = await proxyRequest.close();
+          final corsHeaders = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': '*',
+          };
+          return Response.ok(
+            proxyResponse,
+            headers: corsHeaders,
+          );
+        }
+
+      } catch (e) {
+        return Response.internalServerError(body: 'Error: $e');
+      }
+    });
+
+
+    final server = await io.serve(handler, '127.0.0.1', _port, shared: _shared);
+    this._server = server;
+
+    // runZonedGuarded(() {
+    //  // HttpServer.bind('127.0.0.1', _port, shared: _shared).then((server) {
+    //
+    //     this._server = server;
+    //
+    //     // server.listen((HttpRequest request) async {
+    //     //   Uint8List body = Uint8List(0);
+    //     //   var path = request.requestedUri.path;
+    //     //   path = (path.startsWith('/')) ? path.substring(1) : path;
+    //     //   path += (path.endsWith('/')) ? _directoryIndex : '';
+    //     //   if (path == '') {
+    //     //     // if the path still empty, try to load the index file
+    //     //     path = _directoryIndex;
+    //     //   }
+    //     //   path = _documentRoot + path;
+    //     //
+    //     //   try {
+    //     //     if (Platform.isAndroid) {
+    //     //
+    //     //       final file =  File(Uri.decodeFull(path));
+    //     //       body = await file.readAsBytes();
+    //     //     }
+    //     //     else {
+    //     //       body = (await rootBundle.load(Uri.decodeFull(path)))
+    //     //           .buffer
+    //     //           .asUint8List();
+    //     //     }
+    //     //
+    //     //   } catch (e) {
+    //     //     print(Uri.decodeFull(path));
+    //     //     print(e.toString());
+    //     //     request.response.close();
+    //     //     return;
+    //     //   }
+    //     //
+    //     //   var contentType = ContentType('text', 'html', charset: 'utf-8');
+    //     //   if (!request.requestedUri.path.endsWith('/') &&
+    //     //       request.requestedUri.pathSegments.isNotEmpty) {
+    //     //     final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
+    //     //     if (mimeType != null) {
+    //     //       contentType = _getContentTypeFromMimeType(mimeType);
+    //     //     }
+    //     //   }
+    //     //   request.response.headers.contentType = contentType;
+    //     //  // await _proxyRequest(request);
+    //     //   request.response.add(body);
+    //     //   request.response.close();
+    //     //
+    //     // });
+    //
+    //
+    //   //  completer.complete();
+    //  // });
+    // }, (e, stackTrace) => print('Error: $e $stackTrace'));
+
+   // return completer.future;
   }
+
+
+  Middleware _addCorsHeaders() {
+    return (Handler innerHandler) {
+      return (Request request) async {
+        // Handle OPTIONS preflight request
+        if (request.method == 'OPTIONS') {
+          return Response.ok('', headers: _corsHeaders);
+        }
+
+        // Process the request
+        final response = await innerHandler(request);
+
+        // Add CORS headers to response
+        return response.change(headers: _corsHeaders);
+      };
+    };
+  }
+
+// CORS headers
+  final _corsHeaders = {
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+    'Access-Control-Allow-Headers': '*',
+  };
 
   @override
   Future<void> close() async {
@@ -130,21 +249,29 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
     return this._server != null;
   }
 
-  ContentType _getContentTypeFromMimeType(String mimeType) {
+  String _getContentTypeFromMimeType(String mimeType) {
     final contentType = mimeType.split('/');
     String? charset;
 
     if (_isTextFile(mimeType)) {
       charset = 'utf-8';
+      return "${contentType[0]}/${contentType[1]};$charset";
+    }
+    else {
+      return "${contentType[0]}/${contentType[1]}";
     }
 
-    return ContentType(contentType[0], contentType[1], charset: charset);
+
+    //return ContentType(contentType[0], contentType[1], charset: charset);
   }
 
   bool _isTextFile(String mimeType) {
     final textFile = RegExp(r'^text\/|^application\/(javascript|json)');
     return textFile.hasMatch(mimeType);
   }
+
+
+
 
 
 }
