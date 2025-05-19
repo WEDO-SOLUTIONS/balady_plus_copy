@@ -371,6 +371,22 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
+  @pragma('vm:entry-point')
+  void openWebView(dynamic dataUri, CompletionHandler handler) async {
+    if (dataUri != null && dataUri is Map) {
+      if (dataUri["url"] != null) {
+        CommonFunctions.openBaladyWebView(dataUri["url"]);
+      } else {
+        BaseResponse response = BaseResponse(
+          code: 400,
+          message: "Can't open url",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+      }
+    }
+  }
+
   // Done Tested
   @pragma('vm:entry-point')
   void trackEvent(dynamic msg, CompletionHandler handler) {
@@ -395,6 +411,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   // Done Tested
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
+
+    print("######################################################################");
+    print("######################################################################");
+    print(msg);
+    print("######################################################################");
+    print("######################################################################");
     if (msg != null && msg is String && msg.isNotEmpty) {
       BaseResponse response = BaseResponse(
         code: 200,
@@ -422,7 +444,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         message: "Event tracked successfully",
         data: null,
       );
-
       CommonFunctions.launchMap(
         LatLng(
           latitude: data["latitude"],
