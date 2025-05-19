@@ -27,7 +27,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
-          title: const Text('mini Apps viewer'),
+          title: Text(data.serviceName ?? ""),
           leading: IconButton(
             icon: const Icon(Icons.close),
             onPressed: () {
