@@ -10,8 +10,7 @@ TextSpan formatCurrencyTextSpan(num amount, Language language, Locale locale, [d
     text: '$amount ',
     children: [
       switch (language) {
-        Language.english => const TextSpan(text: 'SAR'),
-        Language.arabic => GeneralIcons.sarSpan(style: GeneralIcons.sarSpan().style?.copyWith(fontSize: iconSize)),
+        _ => GeneralIcons.sarSpan(style: GeneralIcons.sarSpan().style?.copyWith(fontSize: iconSize)),
       }
     ],
   );
