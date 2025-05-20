@@ -177,6 +177,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     BaseResponse response = BaseResponse(
       code: 200,
       message: "success",
+      eventName: "AppPreferences",
       data: JsPreferencesModel(
         language: 'locale'.tr(),
         themeType: "dark",
@@ -356,10 +357,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void jsLaunchUri(dynamic msg, CompletionHandler handler) async {
-    if (msg != null && msg is String && msg.isNotEmpty) {
-      bool canLaunch = await canLaunchUrl(Uri.parse(msg));
+    if (msg != null && msg is Map) {
+      bool canLaunch = await canLaunchUrl(Uri.parse(msg['uri']));
       if (canLaunch) {
-        await launchUrl(Uri.parse(msg));
+        await launchUrl(Uri.parse(msg['uri']));
       } else {
         BaseResponse response = BaseResponse(
           code: 400,
