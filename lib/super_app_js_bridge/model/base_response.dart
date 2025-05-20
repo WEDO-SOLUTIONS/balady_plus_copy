@@ -4,13 +4,15 @@ class BaseResponse {
   int? code;
   String? message;
   BaseData? data;
+  String eventName;
 
-  BaseResponse({this.code, this.message, required this.data});
+  BaseResponse({this.code, this.message, required this.data,required this.eventName});
 
   factory BaseResponse.fromJson(Map<String, dynamic> json, BaseData data) {
     return BaseResponse(
       code: json['code'] as int?,
       message: json['message'] as String?,
+      eventName: json['eventName'] as String,
       data: data,
     );
   }
@@ -19,6 +21,7 @@ class BaseResponse {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['code'] = code;
     data['message'] = message;
+    data['eventName'] = eventName;
     data['data'] = this.data?.toJson();
     return data;
   }
