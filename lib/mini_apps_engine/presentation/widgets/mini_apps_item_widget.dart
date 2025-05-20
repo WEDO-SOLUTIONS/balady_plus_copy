@@ -19,27 +19,27 @@ class MiniAppsItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-      // if (CommonProperties.isLoggedInMunicipality) {
+      if (miniApp.latestVersion?.needLogin == false || CommonProperties.isLoggedInMunicipality) {
         NavigationService.pushNamed(
           routeName: RouteName.miniAppsMainScreen,
           args: miniApp,
         );
-      // } else {
-      //   showDialog(
-      //     context: context,
-      //     builder: (ctx) =>
-      //         NeedLoginDialog(
-      //           onSuccessLogin: (bool? isSuccess) async {
-      //             if (isSuccess ?? false) {
-      //               NavigationService.pushNamed(
-      //                 routeName: RouteName.miniAppsMainScreen,
-      //                 args: miniApp,
-      //               );
-      //             }
-      //           },
-      //         ),
-      //   );
-      // }
+      } else {
+        showDialog(
+          context: context,
+          builder: (ctx) =>
+              NeedLoginDialog(
+                onSuccessLogin: (bool? isSuccess) async {
+                  if (isSuccess ?? false) {
+                    NavigationService.pushNamed(
+                      routeName: RouteName.miniAppsMainScreen,
+                      args: miniApp,
+                    );
+                  }
+                },
+              ),
+        );
+      }
         // if (service.actionValue == "smart_advisor") {
         //   checkIfLogin(
         //     context,
