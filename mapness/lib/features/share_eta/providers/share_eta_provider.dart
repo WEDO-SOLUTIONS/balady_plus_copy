@@ -256,6 +256,14 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> startSharingLiveLocation(int durationInMinutes) async {
+    final existingToken = EtaStreamStorage().state.streamToken;
+    final existingStreamId = EtaStreamStorage().state.streamId;
+
+    if (existingToken != null && existingStreamId != null) {
+      _shareLiveLocationDialog(existingToken, existingStreamId, durationInMinutes);
+      return;
+    }
+
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
       state = _streamType = EtaStreamType.geo;
@@ -276,6 +284,14 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> startSharingEta() async {
+    final existingToken = EtaStreamStorage().state.streamToken;
+    final existingStreamId = EtaStreamStorage().state.streamId;
+
+    if (existingToken != null && existingStreamId != null) {
+      shareCurrentStream(EtaStreamType.eta);
+      return;
+    }
+
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
 
@@ -378,6 +394,29 @@ class ShareEta extends _$ShareEta {
         : context.l10n.seeLiveLocationMin(inMinutes.toString());
 
     Share.share('$duration\n$shareUrl');
+  }
+
+  void shareCurrentStream(EtaStreamType type) {
+    final tokenId = EtaStreamStorage().state.streamToken;
+    final streamId = EtaStreamStorage().state.streamId;
+    final duration = EtaStreamStorage().state.durationInMinutes;
+
+    if (tokenId == null || streamId == null) {
+      return;
+    }
+
+    if (type == EtaStreamType.geo) {
+      if (duration != null) {
+        _shareLiveLocationDialog(tokenId, streamId, duration);
+      }
+    } else if (type == EtaStreamType.eta) {
+      final eta = ref.read(pathNavEtaProvider);
+      if (eta != null) {
+        final formatter = DateFormat('HH:mm');
+        final arrivalDate = DateTime.now().add(Duration(seconds: eta.durationInSeconds));
+        _shareEtaDialog(tokenId, streamId, formatter.format(arrivalDate));
+      }
+    }
   }
 
   Future<void> _shareEtaDialog(String tokenId, String streamId, String arrivalAt) async {
