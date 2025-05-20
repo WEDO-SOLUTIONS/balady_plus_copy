@@ -391,6 +391,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void trackEvent(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
+
+      print("%%%%%%%%%  $msg %%%%%%%%%");
       BaseResponse response = BaseResponse(
         code: 200,
         message: "Event tracked successfully",
@@ -411,12 +413,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   // Done Tested
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
-
-    print("######################################################################");
-    print("######################################################################");
-    print(msg);
-    print("######################################################################");
-    print("######################################################################");
+    print("############## $msg ##############");
     if (msg != null && msg is String && msg.isNotEmpty) {
       BaseResponse response = BaseResponse(
         code: 200,

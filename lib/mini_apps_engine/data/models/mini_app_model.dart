@@ -10,6 +10,7 @@ class MiniAppModel {
   MiniAppModel.fromJson(dynamic json) {
     id = json['id'];
     serviceName = json['serviceName'];
+    serviceKey = json['serviceKey'];
     description = json['description'];
     entity = json['entity'];
     logoKey = json['logoKey'];
@@ -17,6 +18,7 @@ class MiniAppModel {
   }
   String? id;
   String? serviceName;
+  String? serviceKey;
   String? description;
   String? entity;
   String? logoKey;

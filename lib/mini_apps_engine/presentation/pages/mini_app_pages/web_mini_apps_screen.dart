@@ -30,6 +30,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
   void initState()  {
 
     super.initState();
+
     if (widget.servicePath.contains("index.html")) {
       // #docregion platform_features
       late final PlatformWebViewControllerCreationParams params;
