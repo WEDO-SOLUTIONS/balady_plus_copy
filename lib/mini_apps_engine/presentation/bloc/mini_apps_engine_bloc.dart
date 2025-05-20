@@ -4,13 +4,12 @@ import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-import 'package:dio/dio.dart';
-import 'package:flutter_archive/flutter_archive.dart';
 
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:bloc/bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path_provider/path_provider.dart';
@@ -19,7 +18,7 @@ import 'package:http/http.dart' as http;
 import '../../server/CustomInAppLocalhostServer.dart';
 
 // this is work
-String serviceURL = 'https://drive.usercontent.google.com/download?id=1Pdqcqm2vLxL5W_joFqWZ0-BOPvtnHXbY&export=download&authuser=0&confirm=t&uuid=c7a531f8-a3d4-4ef9-8618-dce27abd565d&at=ALoNOgkXqA9sd_XIATrjEFJu82_z:1747646752034';
+String serviceURL = 'https://drive.usercontent.google.com/download?id=1ApSOrTGS48sr6qgevStpF2bFihTytPt-&export=download&authuser=0&confirm=t&uuid=498cd087-8cc5-448b-9f66-411a88783b49&at=ALoNOglBbnSovTX-Szx2aUk7Q3Mb:1747727434890';
 
 String? serviceDownloadPath;
 
@@ -48,7 +47,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/miniAppTestV39/${event.miniApp.latestVersion?.versionNumber}';
+        '${CommonProperties.serverRootPath}/miniAppTestV48/${event.miniApp.latestVersion?.versionNumber}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
@@ -101,15 +100,17 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     serviceDownloadPath = await prepareDownloadPath(
-        "miniAppTestV39", event.miniApp.latestVersion!.versionNumber!);
+        "miniAppTestV48", event.miniApp.latestVersion!.versionNumber!);
 
     if (serviceDownloadPath != null) {
       await startLocalHostServer(serviceDownloadPath);
+      print("object");
+
       var zippedFile = await _downloadFile(
-        event.miniApp.latestVersion!.packageMetaDataDto!.id,
+        event.miniApp.latestVersion?.packageMetaDataDto?.id ?? "",
         serviceDownloadPath!,
         event.miniApp.serviceName!,
-        // emit,
+        emit,
       );
       if (zippedFile != null) {
         String? indexPath =
@@ -131,62 +132,62 @@ class MiniAppsEngineBloc
     }
   }
 
-  // Future<File?> _downloadFile(
-  //   String fileId,
-  //   String downloadPath,
-  //   String fileName,
-  //   Emitter emitter,
-  // ) async {
-  //   WebService webService = sl<WebService>();
-  //   try {
-  //     Response response = await webService.dio.get(
-  //       // "v1/dms-mobile/files/$fileId",
-  //       serviceURL,
-  //       onReceiveProgress: (received, total) {
-  //         if (total != -1) {
-  //           emitter(
-  //             MiniAppsEngineLoadingState(
-  //               progress: (received / total * 100).toStringAsFixed(1),
-  //             ),
-  //           );
-  //         }
-  //       },
-  //       options: Options(
-  //         headers: {
-  //           "X-Service-Id" : 3
-  //         },
-  //         responseType: ResponseType.bytes,
-  //         followRedirects: false,
-  //         validateStatus: (status) {
-  //           return (status ?? 501) < 500;
-  //         },
-  //       ),
-  //     );
-  //     var file = File('$downloadPath/$fileName.zip');
-  //     return file.writeAsBytes(response.data);
-  //   } catch (error, stackTrace) {
-  //     print(error);
-  //   }
-  //   return null;
-  // }
-
   Future<File?> _downloadFile(
-    String url,
+    String fileId,
     String downloadPath,
-    String zipFileName,
+    String fileName,
+    Emitter emitter,
   ) async {
+    WebService webService = sl<WebService>();
     try {
-      var req = await http.Client().get(Uri.parse(serviceURL));
-      if (req.statusCode == 200) {
-        var file = File('$downloadPath/$zipFileName.zip');
-
-        return file.writeAsBytes(req.bodyBytes);
-      }
-    } catch (e) {
-      return null;
+      Response response = await webService.dio.get(
+        "v1/dms-mobile/files/$fileId",
+        // serviceURL,
+        onReceiveProgress: (received, total) {
+          if (total != -1) {
+            emitter(
+              MiniAppsEngineLoadingState(
+                progress: (received / total * 100).toStringAsFixed(1),
+              ),
+            );
+          }
+        },
+        options: Options(
+          headers: {
+            "X-Service-Id" : 3
+          },
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          validateStatus: (status) {
+            return (status ?? 501) < 500;
+          },
+        ),
+      );
+      var file = File('$downloadPath/$fileName.zip');
+      return file.writeAsBytes(response.data);
+    } catch (error, stackTrace) {
+      print(error);
     }
     return null;
   }
+
+  // Future<File?> _downloadFile(
+  //   String url,
+  //   String downloadPath,
+  //   String zipFileName,
+  // ) async {
+  //   try {
+  //     var req = await http.Client().get(Uri.parse(serviceURL));
+  //     if (req.statusCode == 200) {
+  //       var file = File('$downloadPath/$zipFileName.zip');
+  //
+  //       return file.writeAsBytes(req.bodyBytes);
+  //     }
+  //   } catch (e) {
+  //     return null;
+  //   }
+  //   return null;
+  // }
 
   unarchiveAndSave(var zippedFile, String extractPath) async {
     String indexFilePath = "";
