@@ -57,9 +57,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   void initState() {
     super.initState();
 
-    final stored = ref
-        .read(parkingManageProvider)
-        .valueOrNull;
+    final stored = ref.read(parkingManageProvider).valueOrNull;
 
     if (widget.isEdit && stored != null) {
       _textEditingController.text = stored.comment;
@@ -91,7 +89,8 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   @override
   Widget build(BuildContext context) {
     ref
-      ..watch(parkingSpotMapProvider.notifier)..watch(parkingManageProvider.notifier)
+      ..watch(parkingSpotMapProvider.notifier)
+      ..watch(parkingManageProvider.notifier)
       ..listen(parkingImageProvider(isEdit: widget.isEdit), (_, __) => _checkDirty());
 
     return Scaffold(
@@ -116,12 +115,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               Spacing.$2x.heightBox,
               ValueListenableBuilder(
                   valueListenable: _initializationMap,
-                  builder: (context, value, _) {
-                    if (value == null || value == false) {
-                      return const SizedBox.shrink();
-                    }
-
-                    return SizedBox(
+                  builder: (context, value, _) => SizedBox(
                       height: 108,
                       child: ClipRRect(
                         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
@@ -130,8 +124,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                           key: const Key('ParkingSpotDGISMapKey'),
                         ),
                       ),
-                    );
-                  }),
+                    )),
               Spacing.$2x.heightBox,
               ValueListenableBuilder(
                   valueListenable: _addressNotifier,
@@ -162,7 +155,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                 label: BaladyInputLabel(
                     text: context.l10n.comment,
                     style:
-                    context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault)),
+                        context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault)),
                 controller: _textEditingController,
                 config: BaladyInputConfig(
                   isDisposed: false,
@@ -173,20 +166,21 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                 ),
               ),
               Spacing.$4x.heightBox,
-              SelectedImages(isEdit: widget.isEdit,),
+              SelectedImages(
+                isEdit: widget.isEdit,
+              ),
               const Spacer(),
               ValueListenableBuilder<bool>(
                 valueListenable: _isDirty,
-                builder: (_, canSave, __) =>
-                    SizedBox(
-                      width: double.infinity,
-                      child: AppButton(
-                        buttonColorScheme: ButtonColorScheme.primary,
-                        buttonState: canSave ? ButtonState.normal : ButtonState.disabled,
-                        primaryLabel: context.l10n.save,
-                        onTap: canSave ? () => _onTapSave(context) : null,
-                      ),
-                    ),
+                builder: (_, canSave, __) => SizedBox(
+                  width: double.infinity,
+                  child: AppButton(
+                    buttonColorScheme: ButtonColorScheme.primary,
+                    buttonState: canSave ? ButtonState.normal : ButtonState.disabled,
+                    primaryLabel: context.l10n.save,
+                    onTap: canSave ? () => _onTapSave(context) : null,
+                  ),
+                ),
               ),
               Spacing.$0_5x.heightBox,
               Center(
@@ -205,7 +199,6 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
 
   Future<void> _onTapChangeLocation(BuildContext context) async {
     final result = await context.router.push(const RoutingMapSelectRoute());
-
 
     if (result == null || result is! RoutePoint) {
       return;
@@ -337,9 +330,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   }
 
   void _checkDirty() {
-    final stored = ref
-        .read(parkingManageProvider)
-        .valueOrNull;
+    final stored = ref.read(parkingManageProvider).valueOrNull;
     final images = ref.read(parkingImageProvider(isEdit: widget.isEdit));
 
     final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
