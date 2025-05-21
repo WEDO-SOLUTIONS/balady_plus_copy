@@ -23,7 +23,6 @@ class _HajjRcmc extends _$HajjRcmc {
     try {
       final appLanguage = ref.watch(appLanguageProvider);
       final camera = ref.watch(cameraPositionProvider);
-      print('camera.zoom ${camera?.zoom}');
       if (camera != null && camera.zoom < _zoomInVisibleMarkers) {
         return [];
       }
