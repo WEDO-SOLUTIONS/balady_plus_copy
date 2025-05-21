@@ -22,7 +22,8 @@ class WebMiniAppsScreen extends StatefulWidget {
 
 class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
   late final DWebViewController _controller;
-  static bool locationDialogShowed = false;
+  bool _isLoading = true;
+  double _progress = 0;
 
   @override
   void initState()  {
@@ -54,18 +55,31 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
         ..addJavaScriptObject(JsBridgeListener())
         ..setNavigationDelegate(NavigationDelegate(
           onProgress: (progress) {
-            print('process=$progress');
+            setState(() {
+              _progress = progress / 100;
+            });
           },
           onPageStarted: (url) {
-            print('url onPageStarted');
+            setState(() {
+              _isLoading = true;
+            });
           },
           onPageFinished: (url) {
-            _injectPermissionHandlingScript();
+            setState(() {
+              _isLoading = false;
+            });
+           _injectPermissionHandlingScript();
+
+          },
+          onWebResourceError: (WebResourceError error) {
+            setState(() {
+              _isLoading = false;
+            });
           },
         ));
 
       _controller = controller;
-      _injectPermissionHandlingScript();
+     _injectPermissionHandlingScript();
 
       if (Platform.isAndroid) {
         (_controller.platform as AndroidWebViewController).setGeolocationPermissionsPromptCallbacks(
@@ -90,7 +104,26 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
   @override
   Widget build(BuildContext context) {
 
-    return  DWebViewWidget(controller: _controller);
+    return  Stack(children: [
+      DWebViewWidget(controller: _controller),
+      if (_isLoading)
+        Column(
+          children: [
+            LinearProgressIndicator(
+              value: _progress,
+              backgroundColor: Colors.grey[200],
+              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+            ),
+            const Expanded(
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            ),
+          ],
+        ),
+
+    ]
+   );
   }
 
   void _injectPermissionHandlingScript() {
