@@ -32,33 +32,3 @@ String hashRequest(
   final base64 = base64Encode(digest.bytes);
   return base64;
 }
-
-String? breakMarkerLabel(String? text, {int maxCharsPerLine = 40}) {
-  if (text == null || text.trim().isEmpty) {
-    return null;
-  }
-
-  final words = text.trim().split(RegExp(r'\s+'));
-  final buffer = StringBuffer();
-  int charCount = 0;
-
-  for (int i = 0; i < words.length; i++) {
-    final word = words[i];
-
-    if (charCount + word.length > maxCharsPerLine) {
-      if (charCount > 0) {
-        buffer.write('\n');
-      }
-      buffer.write(word);
-      charCount = word.length;
-    } else {
-      if (charCount > 0) {
-        buffer.write(' ');
-        charCount++;
-      }
-      buffer.write(word);
-      charCount += word.length;
-    }
-  }
-  return buffer.toString();
-}

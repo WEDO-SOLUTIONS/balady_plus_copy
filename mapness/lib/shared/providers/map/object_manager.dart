@@ -13,6 +13,9 @@ class MapObjectLayers {
   /// Default layer for map objects. Used for all objects e.g. POI.
   static const defaultLayerId = '920277';
 
+  /// Layer for hajj markers
+  static const hajjLayerId = '331464';
+
   /// Layer for markers that should be on the top of all other objects.
   /// E.g. My location marker because it should be on top of my location circle.
   static const priorityLayerId = '977194';
@@ -44,6 +47,12 @@ class MapObjectManagerSettings {
         name: 'balady_search',
         layerId: MapObjectLayers.defaultLayerId,
       );
+
+  factory MapObjectManagerSettings.hajj() => const MapObjectManagerSettings._(
+        name: 'hajj_custom_marker',
+        layerId: MapObjectLayers.hajjLayerId,
+      );
+
   factory MapObjectManagerSettings.myLocation() => const MapObjectManagerSettings._(
         name: 'my_location',
         layerId: MapObjectLayers.priorityLayerId,

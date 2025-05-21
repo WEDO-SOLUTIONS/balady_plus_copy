@@ -99,7 +99,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
         ),
         closestPoint: event.latLng,
       ),
-      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, RoutingRoutesRoute.page, HajjPoiCardRoute.page],
     );
   }
 
@@ -150,7 +150,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
             ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
             : event.latLng,
       ),
-      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
     );
   }
 }
