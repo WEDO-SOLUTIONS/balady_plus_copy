@@ -17,9 +17,8 @@ import 'package:http/http.dart' as http;
 
 import '../../server/CustomInAppLocalhostServer.dart';
 
-// this is work
 String serviceURL =
-    'https://drive.usercontent.google.com/download?id=1Ccv-YQ0A9MkrUBBaj_PnfP7vGY_OK3qU&export=download&authuser=0&confirm=t&uuid=78c3a28a-3558-450c-9c16-0bd501fdafef&at=ALoNOgl36R9HkZ6L-LYJetxWXktb:1747768857912';
+    'https://drive.usercontent.google.com/download?id=1UYA1ePWzxcGz-kIiNgB-qPiQwUvw84oP&export=download&authuser=0&confirm=t&uuid=2691074e-9660-45c5-9187-b44ffed1d6d3&at=ALoNOgmNkXqvkonYsOM1d3FEeLkC:1747827525206';
 String serviceURLSnapAndSend =
     'https://drive.usercontent.google.com/download?id=1pP7dq3vm0_eJ_LO2xal-yhFklz0sQ6J0&export=download&authuser=0&confirm=t&uuid=978d22d5-08e3-40ab-bc6b-ec1da8e8999e&at=ALoNOgly3Q4x1aTS5XlGdAT0QZcq:1747730928317';
 
@@ -50,7 +49,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}/${event.miniApp.latestVersion?.versionNumber}';
+        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}V12/${event.miniApp.latestVersion?.versionNumber}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
@@ -103,7 +102,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     serviceDownloadPath = await prepareDownloadPath(
-        "${event.miniApp.serviceKey}",
+        "${event.miniApp.serviceKey}V12",
         event.miniApp.latestVersion!.versionNumber!);
 
     if (serviceDownloadPath != null) {
@@ -147,9 +146,10 @@ class MiniAppsEngineBloc
   ) async {
     WebService webService = sl<WebService>();
     try {
+
       Response response = await webService.dio.get(
-        "v1/dms-mobile/files/$fileId",
-        // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
+        // "v1/dms-mobile/files/$fileId",
+        serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(

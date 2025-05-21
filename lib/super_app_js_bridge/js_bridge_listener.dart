@@ -46,6 +46,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openWebView);
   }
 
+
   // Done
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
@@ -191,8 +192,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         language: 'locale'.tr(),
         themeType: "dark",
         colors: {
-          "primary": AppColor.primary900Light,
-          "secondary": AppColor.secondary900Light,
+          "primary": AppColor.primary900Light.value,
+          "secondary": AppColor.secondary900Light.value,
           // "background": AppColor.backgroundColor,
           // "text": AppColor.textColor,
           // "error": AppColor.errorColor,
@@ -201,6 +202,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         },
       ),
     );
+
     handler.complete(response.jsonEncodeModel());
   }
 
