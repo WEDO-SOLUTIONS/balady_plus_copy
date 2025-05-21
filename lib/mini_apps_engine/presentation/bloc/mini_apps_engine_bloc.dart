@@ -56,7 +56,7 @@ class MiniAppsEngineBloc
     if (exists) {
       await startLocalHostServer(dir, event.miniApp.serviceKey);
       String servicePath = '$dir/index.html'.replaceAll(
-          CommonProperties.serverRootPath!, "http://localhost:${event.miniApp.serviceKey == "municipalservice" ? 8383 : 8282}");
+          CommonProperties.serverRootPath!, "http://localhost:${event.miniApp.serviceKey == "municipalservice" ? 8282 : 8383}");
       emit(MiniAppsEngineLoadedState(servicePath: servicePath));
     } else {
       add(DownloadMiniAppsEngineEvent(miniApp: event.miniApp));
@@ -207,7 +207,7 @@ class MiniAppsEngineBloc
 
           if (file.name.contains("index.html")) {
             indexFilePath = outFile.path.replaceAll(
-                CommonProperties.serverRootPath!, "http://localhost:${serviceKey == "municipalservice" ? 8383 : 8282}");
+                CommonProperties.serverRootPath!, "http://localhost:${serviceKey == "municipalservice" ? 8282 : 8383}");
           }
 
           outFile = await outFile.create(recursive: true);
@@ -262,7 +262,7 @@ class MiniAppsEngineBloc
       final localhostServer = CustomInAppLocalhostServer(
           PlatformInAppLocalhostServerCreationParams(
               documentRoot: serverPath,
-              port: serviceKey == "municipalservice" ? 8383 : 8282,
+              port: serviceKey == "municipalservice" ? 8282 : 8383,
               shared: true));
       if (!localhostServer.isRunning()) {
         await localhostServer.start();

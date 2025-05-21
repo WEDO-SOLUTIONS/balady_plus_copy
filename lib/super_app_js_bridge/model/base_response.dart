@@ -3,16 +3,15 @@ import 'dart:convert';
 class BaseResponse {
   int code;
   String message;
-  String? eventName;
   BaseData? data;
+  String eventName;
 
-  BaseResponse({required this.code, this.eventName, required this.message, required this.data});
+  BaseResponse({required this.code,required this.message, required this.data,required this.eventName});
 
   factory BaseResponse.fromJson(Map<String, dynamic> json, BaseData data) {
     return BaseResponse(
       code: json['code'] as int,
       message: json['message'] as String,
-      eventName: json['eventName'] as String,
       data: data,
     );
   }

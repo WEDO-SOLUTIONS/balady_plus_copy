@@ -54,12 +54,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       response = BaseResponse(
         code: 200,
         message: "success",
+        eventName: "getAccessToken",
         data: AccessTokenModel(
           accessToken: CommonProperties.token,
         ),
       );
       handler.complete(response.jsonEncodeModel());
-    } else {
+    }
+    else {
       await showDialog(
         context: NavigationService.navigatorKey.currentContext!,
         builder: (ctx) => NeedLoginDialog(
@@ -68,6 +70,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               response = BaseResponse(
                 code: 200,
                 message: "success",
+                eventName: "getAccessToken",
                 data: AccessTokenModel(
                   accessToken: CommonProperties.token,
                 ),
@@ -75,6 +78,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             } else {
               BaseResponse response = BaseResponse(
                 code: 401,
+                eventName: "getAccessToken",
                 message: "Unauthorized",
                 data: null,
               );
@@ -92,6 +96,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       BaseResponse response = BaseResponse(
         code: 200,
         message: "success",
+        eventName: "getUserProfile",
         data: UserProfileModel.fromJson(CommonProperties.userInfo!.toJson()),
       );
       handler.complete(response.jsonEncodeModel());
@@ -99,6 +104,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       BaseResponse response = BaseResponse(
         code: 401,
         message: "Unauthorized",
+        eventName: "getUserProfile",
         data: null,
       );
       handler.complete(response.jsonEncodeModel());
@@ -120,6 +126,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       }, (r) async {
         response = BaseResponse(
           code: 200,
+          eventName: "getCookies",
           message: "success",
           data: CookiesModel(
             cookies: r,
@@ -145,6 +152,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             }, (r) async {
               response = BaseResponse(
                 code: 200,
+                eventName: "getCookies",
                 message: "success",
                 data: CookiesModel(
                   cookies: r,
@@ -156,6 +164,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           } else {
             BaseResponse response = BaseResponse(
               code: 401,
+              eventName: "getCookies",
               message: "Unauthorized",
               data: null,
             );
@@ -203,6 +212,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       response = BaseResponse(
         code: 200,
         message: "success",
+        eventName: "navigateToSuperAppScreen",
         data: null,
       );
       NavigationService.pushNamed(
@@ -212,6 +222,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       response = BaseResponse(
         code: 400,
+        eventName: "navigateToSuperAppScreen",
         message: "Invalid screen name",
         data: null,
       );
@@ -227,6 +238,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       BaseResponse response = BaseResponse(
         code: 200,
         message: "success",
+        eventName: "getLocation",
         data: JsLocationModel(
           latitude: latLng.latitude,
           longitude: latLng.longitude,
@@ -236,6 +248,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       BaseResponse response = BaseResponse(
         code: 401,
+        eventName: "getLocation",
         message: "Can't get location",
         data: null,
       );
@@ -255,9 +268,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         // CommonFunctions.showError(('file_size_error').tr());
         response = BaseResponse(
           code: 405,
+          eventName: "openImagePicker",
           message: "File size exceeds limit",
           data: null,
         );
+
       } else {
         String path = image.path;
         String fileName =
@@ -267,9 +282,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         JsFilesModel file = JsFilesModel(
           fileBase64: base64File,
           fileName: fileName,
+         // fileBytes:fileBytes,
+          filePath: path
         );
         response = BaseResponse(
           code: 200,
+          eventName: "openImagePicker",
           message: "success",
           data: file,
         );
@@ -277,10 +295,13 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       response = BaseResponse(
         code: 300,
+        eventName: "openImagePicker",
         message: "Can't get image",
         data: null,
       );
     }
+
+    var x= response.jsonEncodeModel();
     handler.complete(response.jsonEncodeModel());
   }
 
@@ -308,11 +329,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             JsFilesModel file = JsFilesModel(
               fileBase64: base64File,
               fileName: fileName,
+             // fileBytes: fileBytes,
+                filePath: path
             );
             response = BaseResponse(
               code: 200,
               message: "success",
               data: file,
+              eventName: "openFilePicker"
             );
           }
         }
@@ -321,16 +345,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           code: 300,
           message: "Can't get file",
           data: null,
+            eventName: "openFilePicker"
         );
       }
     } on PlatformException catch (error, stackTrace) {
       response = BaseResponse(
         code: 500,
         message: "Error occurred",
+        eventName: "openFilePicker",
         data: null,
       );
     }
-
     handler.complete(response.jsonEncodeModel());
   }
 
@@ -341,6 +366,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       Share.share(msg);
       response = BaseResponse(
         code: 200,
+        eventName: "openShare",
         message: "success",
         data: null,
       );
@@ -348,6 +374,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       response = BaseResponse(
         code: 400,
+        eventName: "openShare",
         message: "Invalid share data",
         data: null,
       );
@@ -364,6 +391,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       } else {
         BaseResponse response = BaseResponse(
           code: 400,
+          eventName: "jsLaunchUri",
           message: "Can't open url",
           data: null,
         );
@@ -380,6 +408,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       } else {
         BaseResponse response = BaseResponse(
           code: 400,
+          eventName: "openWebView",
           message: "Can't open url",
           data: null,
         );
@@ -396,6 +425,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       print("%%%%%%%%%  $msg %%%%%%%%%");
       BaseResponse response = BaseResponse(
         code: 200,
+        eventName: "trackEvent",
         message: "Event tracked successfully",
         data: null,
       );
@@ -404,6 +434,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       BaseResponse response = BaseResponse(
         code: 400,
+        eventName: "trackEvent",
         message: "Invalid event data",
         data: null,
       );
@@ -418,6 +449,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     if (msg != null && msg is String && msg.isNotEmpty) {
       BaseResponse response = BaseResponse(
         code: 200,
+        eventName: "trackLogsErrors",
         message: "Event tracked successfully",
         data: null,
       );
@@ -439,6 +471,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     if (data != null && data is Map) {
       BaseResponse response = BaseResponse(
         code: 200,
+        eventName: "openDirectionsMap",
         message: "Event tracked successfully",
         data: null,
       );
@@ -452,6 +485,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     } else {
       BaseResponse response = BaseResponse(
         code: 400,
+        eventName: "openDirectionsMap",
         message: "Invalid event data",
         data: null,
       );

@@ -69,8 +69,7 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
       final targetUrl = request.requestedUri;
 
       try {
-
-        if( targetUrl.origin.toString().contains("localhost")==true && request.url.queryParameters['url'] == null) {
+        if( targetUrl.origin.toString().contains("localhost")==true && request.url.queryParameters['url'] == null&& request.url.queryParameters['zip'] == null) {
           Uint8List body = Uint8List(0);
           var path = request.requestedUri.path;
           path = (path.startsWith('/')) ? path.substring(1) : path;
@@ -126,9 +125,11 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
 
         else {
 
-          final imageUrl = request.url.queryParameters['url'];
+
+          var requestUrl = request.url.queryParameters['url'];
+          requestUrl ??= request.url.queryParameters['zip'];
           final client = HttpClient();
-          final proxyRequest = await client.getUrl(Uri.parse(imageUrl!));
+          final proxyRequest = await client.getUrl(Uri.parse(requestUrl!));
           final proxyResponse = await proxyRequest.close();
           final corsHeaders = {
             'Access-Control-Allow-Origin': '*',
