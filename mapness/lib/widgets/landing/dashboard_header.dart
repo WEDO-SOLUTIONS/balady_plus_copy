@@ -126,7 +126,7 @@ class DashboardHeader extends ConsumerWidget {
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
 
-              ref.read(urbiAnalyticsProvider).track(
+              ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                     '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
                   );
               context.router.push(SearchRoute(expansion: Expansion.expanded));

@@ -57,11 +57,11 @@ class RoutingSearchResults extends ConsumerWidget {
 
           final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
           if (isFromSuggest) {
-            ref.read(urbiAnalyticsProvider).track(
+            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                   '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
                 );
           } else {
-            ref.read(urbiAnalyticsProvider).track(
+            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                   '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.fullSearchResultPressed}',
                 );
           }
