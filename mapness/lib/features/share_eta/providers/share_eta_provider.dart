@@ -255,15 +255,22 @@ class ShareEta extends _$ShareEta {
     }
   }
 
-  Future<void> startSharingLiveLocation(int durationInMinutes) async {
+  void checkExistStream([int? durationInMinutes]) {
     final existingToken = EtaStreamStorage().state.streamToken;
     final existingStreamId = EtaStreamStorage().state.streamId;
 
     if (existingToken != null && existingStreamId != null) {
-      _shareLiveLocationDialog(existingToken, existingStreamId, durationInMinutes);
+      if (durationInMinutes == null) {
+        shareCurrentStream(EtaStreamType.eta);
+      } else {
+        _shareLiveLocationDialog(existingToken, existingStreamId, durationInMinutes);
+      }
       return;
     }
+  }
 
+  Future<void> startSharingLiveLocation(int durationInMinutes) async {
+    checkExistStream(durationInMinutes);
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
       state = _streamType = EtaStreamType.geo;
@@ -284,13 +291,7 @@ class ShareEta extends _$ShareEta {
   }
 
   Future<void> startSharingEta() async {
-    final existingToken = EtaStreamStorage().state.streamToken;
-    final existingStreamId = EtaStreamStorage().state.streamId;
-
-    if (existingToken != null && existingStreamId != null) {
-      shareCurrentStream(EtaStreamType.eta);
-      return;
-    }
+    checkExistStream();
 
     try {
       final etaService = ref.read(etaServiceProvider.notifier);
