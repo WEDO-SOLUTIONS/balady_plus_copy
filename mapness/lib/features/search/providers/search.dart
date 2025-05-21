@@ -186,8 +186,8 @@ class Search extends _$Search {
       // and user types more than 2 symbols
       if (query.length > 2 && state is SearchStateEmpty) {
         await ref
-            .read(urbiAnalyticsProvider)
-            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySuggestResult}');
 
         _fullSearchTimer?.cancel();
         _fullSearchTimer = Timer(
@@ -199,8 +199,8 @@ class Search extends _$Search {
       }
       // -- Analytics
       await ref
-          .read(urbiAnalyticsProvider)
-          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
+          .read(urbiAnalyticsProvider.notifier)
+          .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestResult}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: fetchSuggest');
       // -- Analytics
@@ -333,12 +333,12 @@ class Search extends _$Search {
       // -- Analytics
       if (state is SearchStateEmpty) {
         await ref
-            .read(urbiAnalyticsProvider)
-            .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
+            .read(urbiAnalyticsProvider.notifier)
+            .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.emptySearchResult}');
       }
       await ref
-          .read(urbiAnalyticsProvider)
-          .track('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
+          .read(urbiAnalyticsProvider.notifier)
+          .trackWithPrint('${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.searchResult_}');
       await AdvancedMetrics.instance.stopSearchResponse(track: ref.read(urbiAnalyticsProvider).track);
       await mixpanel?.track('Search: searchByText');
       // -- Analytics
