@@ -151,6 +151,12 @@ class AppRouter extends RootStackRouter {
               page: IwishFeedbackCommentRoute.page,
               transitionsBuilder: TransitionsBuilders.slideBottom,
             ),
+            AppRoute(
+              path: 'addPhoto',
+              barrierDismissible: false,
+              page: AddPhotoRoute.page,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
             CustomRoute(
               path: 'layers_sheet',
               page: LayersSheetRoute.page,
