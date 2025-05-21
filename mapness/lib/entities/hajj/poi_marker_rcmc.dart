@@ -15,7 +15,6 @@ class PoiMarkerRcmc {
   @JsonKey(name: 'contact_info')
   final String? contactInfo;
 
-
   PoiMarkerRcmc({
     required this.id,
     required this.categoryId,

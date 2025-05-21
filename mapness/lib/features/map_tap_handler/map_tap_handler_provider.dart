@@ -99,7 +99,12 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
         ),
         closestPoint: event.latLng,
       ),
-      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, RoutingRoutesRoute.page, HajjPoiCardRoute.page],
+      toCompareRoutes: [
+        ShareMyLocationRoute.page,
+        PoiCardWidgetRoute.page,
+        RoutingRoutesRoute.page,
+        HajjPoiCardRoute.page
+      ],
     );
   }
 
