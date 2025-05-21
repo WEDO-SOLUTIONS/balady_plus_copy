@@ -50,7 +50,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}V45/${event.miniApp.latestVersion?.versionNumber}';
+        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}/${event.miniApp.latestVersion?.versionNumber}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
@@ -103,7 +103,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     serviceDownloadPath = await prepareDownloadPath(
-        "${event.miniApp.serviceKey}V45",
+        "${event.miniApp.serviceKey}",
         event.miniApp.latestVersion!.versionNumber!);
 
     if (serviceDownloadPath != null) {
@@ -148,8 +148,8 @@ class MiniAppsEngineBloc
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        // "v1/dms-mobile/files/$fileId",
-        serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
+        "v1/dms-mobile/files/$fileId",
+        // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
