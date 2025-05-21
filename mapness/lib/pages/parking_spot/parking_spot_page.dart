@@ -173,7 +173,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                 ),
               ),
               Spacing.$4x.heightBox,
-              SelectedImages(isEdit: widget.isEdit, address: widget.address,),
+              SelectedImages(isEdit: widget.isEdit,),
               const Spacer(),
               ValueListenableBuilder<bool>(
                 valueListenable: _isDirty,
