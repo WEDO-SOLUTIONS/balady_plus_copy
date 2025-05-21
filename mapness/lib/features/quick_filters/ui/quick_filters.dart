@@ -41,7 +41,8 @@ class QuickFilters extends ConsumerWidget {
 
     final favourites = <FilterItem>[
       if (favouritesState.valueOrNull?.home != null)
-        FilterItemConfig(
+        
+      (
           filterType: FilterType.home,
           title: context.l10n.home,
           icon: GeneralIcons.home,
