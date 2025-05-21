@@ -49,7 +49,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}V12/${event.miniApp.latestVersion?.versionNumber}';
+        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}/${event.miniApp.latestVersion?.versionNumber}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
@@ -102,7 +102,7 @@ class MiniAppsEngineBloc
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     serviceDownloadPath = await prepareDownloadPath(
-        "${event.miniApp.serviceKey}V12",
+        "${event.miniApp.serviceKey}",
         event.miniApp.latestVersion!.versionNumber!);
 
     if (serviceDownloadPath != null) {
