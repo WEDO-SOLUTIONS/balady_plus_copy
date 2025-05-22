@@ -279,10 +279,10 @@ class MiniAppsEngineBloc
 
         }
 
-      if (defaultTargetPlatform == TargetPlatform.android) {
-        await InAppWebViewController.setWebContentsDebuggingEnabled(
-            kDebugMode);
-      }
+      // if (defaultTargetPlatform == TargetPlatform.android) {
+      //   await InAppWebViewController.setWebContentsDebuggingEnabled(
+      //       kDebugMode);
+      // }
 
       CommonProperties.serverRootPath = serverPath;
     } catch (e) {

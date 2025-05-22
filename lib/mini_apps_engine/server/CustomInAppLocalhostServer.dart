@@ -168,7 +168,7 @@ class CustomInAppLocalhostServer {
 
   @override
   bool isRunning() {
-    return this._server != null;
+    return this._server != null && _started==true;
   }
 
   String _getContentTypeFromMimeType(String mimeType) {
