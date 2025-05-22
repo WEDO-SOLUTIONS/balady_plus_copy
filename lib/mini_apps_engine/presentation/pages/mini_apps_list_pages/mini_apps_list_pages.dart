@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-
 class HomeMiniAppsListPages extends StatefulWidget {
   const HomeMiniAppsListPages({super.key});
 
@@ -33,15 +32,31 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
       body: BlocBuilder<HomeMiniAppsListCubit, HomeMiniAppsListState>(
         builder: (context, state) {
           if (state is HomeMiniAppsListFiledState) {
-            return Center(
-              child: Text(state.errors),
+
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.max,
+              children: [
+                Text(state.errors),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      BlocProvider.of<HomeMiniAppsListCubit>(context)
+                          .loadMiniApps();
+                    },
+                    child: Text("refresh".tr()),
+                  ),
+                ),
+              ],
             );
           }
           if (state is HomeMiniAppsListSuccessState) {
             return RefreshIndicator(
               onRefresh: () async {
-                BlocProvider.of<HomeMiniAppsListCubit>(context)
-                    .loadMiniApps();
+                BlocProvider.of<HomeMiniAppsListCubit>(context).loadMiniApps();
               },
               child: SafeArea(
                 child: GridView.builder(
@@ -51,8 +66,7 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                   ),
                   physics: const NeverScrollableScrollPhysics(),
                   shrinkWrap: true,
-                  gridDelegate:
-                  const SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
                     mainAxisSpacing: 4,
                     crossAxisSpacing: 4,
