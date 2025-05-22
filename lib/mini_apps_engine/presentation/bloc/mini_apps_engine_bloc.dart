@@ -22,7 +22,7 @@ import '../../server/CustomInAppLocalhostServer.dart';
 
 
 CustomInAppLocalhostServer? localhostServer;
-int? portNumber=8888;
+int? portNumber=8080;
 
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
@@ -263,15 +263,17 @@ class MiniAppsEngineBloc
               documentRoot: serverPath,
               port: portNumber!,
               shared: true));
-      if (!localhostServer!.isRunning()&& localhostServer?.documentRoot==serverPath) {
-        await localhostServer!.start();
+      if ( localhostServer?.documentRoot==serverPath+"/") {
+        if(!localhostServer!.isRunning()) {
+          await localhostServer!.start();
+        }
 
       }
       else
         {
         await localhostServer?.close();
-         var rng = new Random();
-          portNumber = rng.nextInt(8080) + 8090;
+
+          portNumber= generateRandomPort(portNumber!);
           localhostServer = CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams(documentRoot: serverPath, port: portNumber!, shared: true));
           await localhostServer!.start();
 
@@ -290,6 +292,20 @@ class MiniAppsEngineBloc
     }
   }
 
+  int generateRandomPort(int oldPort) {
+    final random = Random();
+    int newPort= 8080 + random.nextInt(11);// 8080 to 8090 inclusive
+
+    if(newPort!=oldPort)
+      {
+       return newPort;
+      }
+    else
+      {
+       return generateRandomPort(oldPort);
+      }
+
+  }
   @override
   Future<void> close() {
     //localhostServer?.close(); // Cancel any subscriptions

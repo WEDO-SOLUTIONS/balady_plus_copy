@@ -51,7 +51,6 @@ class CustomInAppLocalhostServer {
 
 
       final handler = const Pipeline()
-      //  .addMiddleware(_addCorsHeaders as Middleware)
           .addHandler((Request request) async {
         if (request.method == 'OPTIONS') {
           final corsHeaders = {
@@ -146,93 +145,13 @@ class CustomInAppLocalhostServer {
           handler, '127.0.0.1', _port, shared: _shared);
       this._server = server;
 
-      // runZonedGuarded(() {
-      //  // HttpServer.bind('127.0.0.1', _port, shared: _shared).then((server) {
-      //
-      //     this._server = server;
-      //
-      //     // server.listen((HttpRequest request) async {
-      //     //   Uint8List body = Uint8List(0);
-      //     //   var path = request.requestedUri.path;
-      //     //   path = (path.startsWith('/')) ? path.substring(1) : path;
-      //     //   path += (path.endsWith('/')) ? _directoryIndex : '';
-      //     //   if (path == '') {
-      //     //     // if the path still empty, try to load the index file
-      //     //     path = _directoryIndex;
-      //     //   }
-      //     //   path = _documentRoot + path;
-      //     //
-      //     //   try {
-      //     //     if (Platform.isAndroid) {
-      //     //
-      //     //       final file =  File(Uri.decodeFull(path));
-      //     //       body = await file.readAsBytes();
-      //     //     }
-      //     //     else {
-      //     //       body = (await rootBundle.load(Uri.decodeFull(path)))
-      //     //           .buffer
-      //     //           .asUint8List();
-      //     //     }
-      //     //
-      //     //   } catch (e) {
-      //     //     print(Uri.decodeFull(path));
-      //     //     print(e.toString());
-      //     //     request.response.close();
-      //     //     return;
-      //     //   }
-      //     //
-      //     //   var contentType = ContentType('text', 'html', charset: 'utf-8');
-      //     //   if (!request.requestedUri.path.endsWith('/') &&
-      //     //       request.requestedUri.pathSegments.isNotEmpty) {
-      //     //     final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
-      //     //     if (mimeType != null) {
-      //     //       contentType = _getContentTypeFromMimeType(mimeType);
-      //     //     }
-      //     //   }
-      //     //   request.response.headers.contentType = contentType;
-      //     //  // await _proxyRequest(request);
-      //     //   request.response.add(body);
-      //     //   request.response.close();
-      //     //
-      //     // });
-      //
-      //
-      //   //  completer.complete();
-      //  // });
-      // }, (e, stackTrace) => print('Error: $e $stackTrace'));
-
-      // return completer.future;
-    }
+   }
     catch (e)
     {
       print(e.toString());
     }
   }
 
-
-  Middleware _addCorsHeaders() {
-    return (Handler innerHandler) {
-      return (Request request) async {
-        // Handle OPTIONS preflight request
-        if (request.method == 'OPTIONS') {
-          return Response.ok('', headers: _corsHeaders);
-        }
-
-        // Process the request
-        final response = await innerHandler(request);
-
-        // Add CORS headers to response
-        return response.change(headers: _corsHeaders);
-      };
-    };
-  }
-
-// CORS headers
-  final _corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': '*',
-  };
 
   @override
   Future<void> close() async {
@@ -246,13 +165,9 @@ class CustomInAppLocalhostServer {
 
   }
 
-  Future<void> updateDocumentRoot(String newDocumentRoot) async {
-    this._documentRoot= newDocumentRoot;
-  }
 
   @override
   bool isRunning() {
-
     return this._server != null;
   }
 
