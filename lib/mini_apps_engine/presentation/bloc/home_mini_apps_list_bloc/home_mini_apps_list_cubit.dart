@@ -11,10 +11,10 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   HomeMiniAppsListCubit({
     required this.homeServicesUseCases,
   }) : super(const HomeMiniAppsListLoadingState()) {
-    loadServices();
+    loadMiniApps();
   }
 
-  Future<void> loadServices() async {
+  Future<void> loadMiniApps() async {
     emit(const HomeMiniAppsListLoadingState());
     homeServicesUseCases.getMiniAppsList().then(
       (value) {

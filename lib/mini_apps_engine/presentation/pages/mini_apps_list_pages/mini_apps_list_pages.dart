@@ -38,27 +38,33 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
             );
           }
           if (state is HomeMiniAppsListSuccessState) {
-            return SafeArea(
-              child: GridView.builder(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 16,
+            return RefreshIndicator(
+              onRefresh: () async {
+                BlocProvider.of<HomeMiniAppsListCubit>(context)
+                    .loadMiniApps();
+              },
+              child: SafeArea(
+                child: GridView.builder(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 16,
+                  ),
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  gridDelegate:
+                  const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 10,
+                    crossAxisSpacing: 10,
+                    childAspectRatio: .9,
+                  ),
+                  itemCount: state.miniAppsList.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return MiniAppsItemWidget(
+                      miniApp: state.miniAppsList[index],
+                    );
+                  },
                 ),
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                gridDelegate:
-                const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 3,
-                  mainAxisSpacing: 10,
-                  crossAxisSpacing: 10,
-                  childAspectRatio: .9,
-                ),
-                itemCount: state.miniAppsList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return MiniAppsItemWidget(
-                    miniApp: state.miniAppsList[index],
-                  );
-                },
               ),
             );
           }

@@ -7,6 +7,7 @@ import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:huawei_location/huawei_location.dart' as hms;
 import 'package:geolocator/geolocator.dart' as geo_locator;
@@ -1618,7 +1619,8 @@ class CommonFunctions {
 
   static void refreshHomePage() async {
     // Add This Line to When change lang app lade new data with the lang.
-    // sl<EventsBloc>().add(const events.GetSearchEvent());
+
+    sl<HomeMiniAppsListCubit>().loadMiniApps();
     // sl<CalendarBloc>().add(const calendar.GetSearchEvent());
     // BlocProvider.of<DashboardBloc>(
     //         NavigationService.navigatorKey.currentContext!)
