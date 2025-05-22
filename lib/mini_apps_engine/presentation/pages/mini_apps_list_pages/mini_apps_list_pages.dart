@@ -54,9 +54,9 @@ class _HomeMiniAppsListPagesState extends State<HomeMiniAppsListPages> {
                   gridDelegate:
                   const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3,
-                    mainAxisSpacing: 10,
-                    crossAxisSpacing: 10,
-                    childAspectRatio: .9,
+                    mainAxisSpacing: 4,
+                    crossAxisSpacing: 4,
+                    childAspectRatio: .75,
                   ),
                   itemCount: state.miniAppsList.length,
                   itemBuilder: (BuildContext context, int index) {

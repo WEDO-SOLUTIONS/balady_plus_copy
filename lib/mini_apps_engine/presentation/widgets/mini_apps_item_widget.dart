@@ -67,7 +67,7 @@ class MiniAppsItemWidget extends StatelessWidget {
                 icon: miniApp.logoKey!,
                 iconSize: 48,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 2),
               Text(
                 miniApp.serviceName!,
                 style: Theme.of(context)
