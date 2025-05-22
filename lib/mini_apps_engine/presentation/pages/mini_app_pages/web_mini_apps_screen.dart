@@ -50,6 +50,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
       controller
         ..setBackgroundColor(Colors.white)
+        ..clearCache()
         ..loadRequest(Uri.parse(widget.servicePath))
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..addJavaScriptObject(JsBridgeListener())
@@ -68,7 +69,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
             setState(() {
               _isLoading = false;
             });
-           _injectPermissionHandlingScript();
+          // _injectPermissionHandlingScript();
 
           },
           onWebResourceError: (WebResourceError error) {
@@ -79,7 +80,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
         ));
 
       _controller = controller;
-     _injectPermissionHandlingScript();
+    // _injectPermissionHandlingScript();
 
       if (Platform.isAndroid) {
         (_controller.platform as AndroidWebViewController).setGeolocationPermissionsPromptCallbacks(
