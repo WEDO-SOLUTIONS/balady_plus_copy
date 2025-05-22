@@ -10,7 +10,7 @@ import 'MimeTypeResolver.dart';
 import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
-class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
+class CustomInAppLocalhostServer {
 
   bool _started = false;
   HttpServer? _server;
@@ -19,13 +19,7 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
   String _directoryIndex = 'index.html';
   String _documentRoot = './';
 
-  CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams params)
-      : super.implementation(
-    params is DefaultInAppLocalhostServerCreationParams
-        ? params
-        : DefaultInAppLocalhostServerCreationParams
-        .fromPlatformInAppLocalhostServerCreationParams(params),
-  ) {
+  CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams params) {
     this._port = params.port;
     this._directoryIndex = params.directoryIndex;
     this._documentRoot = (params.documentRoot.endsWith('/'))
@@ -48,165 +42,171 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
 
   @override
   Future<void> start() async {
-    if (this._started) {
-      throw Exception('Server already started on http://localhost:$_port');
-    }
-    this._started = true;
 
-
-    final handler = const Pipeline()
-      //  .addMiddleware(_addCorsHeaders as Middleware)
-        .addHandler((Request request) async {
-      if (request.method == 'OPTIONS') {
-        final corsHeaders = {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-          'Access-Control-Allow-Headers': '*',
-        };
-        return Response.ok('', headers: corsHeaders);
+    try {
+      if (this._started) {
+        throw Exception('Server already started on http://localhost:$_port');
       }
-      // Proxy request to target server
-      final targetUrl = request.requestedUri;
+      this._started = true;
 
-      try {
-        if( targetUrl.origin.toString().contains("localhost")==true && request.url.queryParameters['url'] == null&& request.url.queryParameters['zip'] == null) {
-          Uint8List body = Uint8List(0);
-          var path = request.requestedUri.path;
-          path = (path.startsWith('/')) ? path.substring(1) : path;
-          path += (path.endsWith('/')) ? _directoryIndex : '';
-          if (path == '') {
-            // if the path still empty, try to load the index file
-            path = _directoryIndex;
-          }
-          path = _documentRoot + path;
 
-          try {
-            if (Platform.isAndroid) {
-              final file = File(Uri.decodeFull(path));
-              body = await file.readAsBytes();
+      final handler = const Pipeline()
+      //  .addMiddleware(_addCorsHeaders as Middleware)
+          .addHandler((Request request) async {
+        if (request.method == 'OPTIONS') {
+          final corsHeaders = {
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+            'Access-Control-Allow-Headers': '*',
+          };
+          return Response.ok('', headers: corsHeaders);
+        }
+        // Proxy request to target server
+        final targetUrl = request.requestedUri;
+
+        try {
+          if (targetUrl.origin.toString().contains("localhost") == true &&
+              request.url.queryParameters['url'] == null &&
+              request.url.queryParameters['zip'] == null) {
+            Uint8List body = Uint8List(0);
+            var path = request.requestedUri.path;
+            path = (path.startsWith('/')) ? path.substring(1) : path;
+            path += (path.endsWith('/')) ? _directoryIndex : '';
+            if (path == '') {
+              // if the path still empty, try to load the index file
+              path = _directoryIndex;
             }
-            else {
-              body = (await rootBundle.load(Uri.decodeFull(path)))
-                  .buffer
-                  .asUint8List();
+            path = _documentRoot + path;
+
+            try {
+              if (Platform.isAndroid) {
+                final file = File(Uri.decodeFull(path));
+                body = await file.readAsBytes();
+              }
+              else {
+                body = (await rootBundle.load(Uri.decodeFull(path)))
+                    .buffer
+                    .asUint8List();
+              }
+            } catch (e) {
+              return Response.badRequest(
+                body: 'can not load url',
+              );
             }
-          } catch (e) {
-            return Response.badRequest(
-              body: 'can not load url',
+
+            // var contentType = ContentType('text', 'html', charset: 'utf-8');
+            String content = "text/html";
+            if (!request.requestedUri.path.endsWith('/') &&
+
+                request.requestedUri.pathSegments.isNotEmpty) {
+              final mimeType = MimeTypeResolver.lookup(
+                  request.requestedUri.path);
+              if (mimeType != null) {
+                // contentType = _getContentTypeFromMimeType(mimeType);
+                content = _getContentTypeFromMimeType(mimeType);
+              }
+            }
+
+            final corsHeaders = {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': '*',
+
+              "Content-Type": content,
+            };
+            return Response.ok(
+              body,
+              headers: corsHeaders,
             );
           }
 
-         // var contentType = ContentType('text', 'html', charset: 'utf-8');
-          String content= "text/html";
-          if (!request.requestedUri.path.endsWith('/') &&
-
-              request.requestedUri.pathSegments.isNotEmpty) {
-            final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
-            if (mimeType != null) {
-             // contentType = _getContentTypeFromMimeType(mimeType);
-              content=  _getContentTypeFromMimeType(mimeType);
-            }
+          else {
+            var requestUrl = request.url.queryParameters['url'];
+            requestUrl ??= request.url.queryParameters['zip'];
+            final client = HttpClient();
+            final proxyRequest = await client.getUrl(Uri.parse(requestUrl!));
+            final proxyResponse = await proxyRequest.close();
+            final corsHeaders = {
+              'Access-Control-Allow-Origin': '*',
+              'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+              'Access-Control-Allow-Headers': '*',
+            };
+            return Response.ok(
+              proxyResponse,
+              headers: corsHeaders,
+            );
           }
-
-          final corsHeaders = {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': '*',
-
-            "Content-Type": content,
-          };
-        return  Response.ok(
-            body,
-            headers: corsHeaders,
-          );
-
-
+        } catch (e) {
+          return Response.internalServerError(body: 'Error: $e');
         }
-
-        else {
-
-
-          var requestUrl = request.url.queryParameters['url'];
-          requestUrl ??= request.url.queryParameters['zip'];
-          final client = HttpClient();
-          final proxyRequest = await client.getUrl(Uri.parse(requestUrl!));
-          final proxyResponse = await proxyRequest.close();
-          final corsHeaders = {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-            'Access-Control-Allow-Headers': '*',
-          };
-          return Response.ok(
-            proxyResponse,
-            headers: corsHeaders,
-          );
-        }
-
-      } catch (e) {
-        return Response.internalServerError(body: 'Error: $e');
-      }
-    });
+      });
 
 
-    final server = await io.serve(handler, '127.0.0.1', _port, shared: _shared);
-    this._server = server;
+      final server = await io.serve(
+          handler, '127.0.0.1', _port, shared: _shared);
+      this._server = server;
 
-    // runZonedGuarded(() {
-    //  // HttpServer.bind('127.0.0.1', _port, shared: _shared).then((server) {
-    //
-    //     this._server = server;
-    //
-    //     // server.listen((HttpRequest request) async {
-    //     //   Uint8List body = Uint8List(0);
-    //     //   var path = request.requestedUri.path;
-    //     //   path = (path.startsWith('/')) ? path.substring(1) : path;
-    //     //   path += (path.endsWith('/')) ? _directoryIndex : '';
-    //     //   if (path == '') {
-    //     //     // if the path still empty, try to load the index file
-    //     //     path = _directoryIndex;
-    //     //   }
-    //     //   path = _documentRoot + path;
-    //     //
-    //     //   try {
-    //     //     if (Platform.isAndroid) {
-    //     //
-    //     //       final file =  File(Uri.decodeFull(path));
-    //     //       body = await file.readAsBytes();
-    //     //     }
-    //     //     else {
-    //     //       body = (await rootBundle.load(Uri.decodeFull(path)))
-    //     //           .buffer
-    //     //           .asUint8List();
-    //     //     }
-    //     //
-    //     //   } catch (e) {
-    //     //     print(Uri.decodeFull(path));
-    //     //     print(e.toString());
-    //     //     request.response.close();
-    //     //     return;
-    //     //   }
-    //     //
-    //     //   var contentType = ContentType('text', 'html', charset: 'utf-8');
-    //     //   if (!request.requestedUri.path.endsWith('/') &&
-    //     //       request.requestedUri.pathSegments.isNotEmpty) {
-    //     //     final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
-    //     //     if (mimeType != null) {
-    //     //       contentType = _getContentTypeFromMimeType(mimeType);
-    //     //     }
-    //     //   }
-    //     //   request.response.headers.contentType = contentType;
-    //     //  // await _proxyRequest(request);
-    //     //   request.response.add(body);
-    //     //   request.response.close();
-    //     //
-    //     // });
-    //
-    //
-    //   //  completer.complete();
-    //  // });
-    // }, (e, stackTrace) => print('Error: $e $stackTrace'));
+      // runZonedGuarded(() {
+      //  // HttpServer.bind('127.0.0.1', _port, shared: _shared).then((server) {
+      //
+      //     this._server = server;
+      //
+      //     // server.listen((HttpRequest request) async {
+      //     //   Uint8List body = Uint8List(0);
+      //     //   var path = request.requestedUri.path;
+      //     //   path = (path.startsWith('/')) ? path.substring(1) : path;
+      //     //   path += (path.endsWith('/')) ? _directoryIndex : '';
+      //     //   if (path == '') {
+      //     //     // if the path still empty, try to load the index file
+      //     //     path = _directoryIndex;
+      //     //   }
+      //     //   path = _documentRoot + path;
+      //     //
+      //     //   try {
+      //     //     if (Platform.isAndroid) {
+      //     //
+      //     //       final file =  File(Uri.decodeFull(path));
+      //     //       body = await file.readAsBytes();
+      //     //     }
+      //     //     else {
+      //     //       body = (await rootBundle.load(Uri.decodeFull(path)))
+      //     //           .buffer
+      //     //           .asUint8List();
+      //     //     }
+      //     //
+      //     //   } catch (e) {
+      //     //     print(Uri.decodeFull(path));
+      //     //     print(e.toString());
+      //     //     request.response.close();
+      //     //     return;
+      //     //   }
+      //     //
+      //     //   var contentType = ContentType('text', 'html', charset: 'utf-8');
+      //     //   if (!request.requestedUri.path.endsWith('/') &&
+      //     //       request.requestedUri.pathSegments.isNotEmpty) {
+      //     //     final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
+      //     //     if (mimeType != null) {
+      //     //       contentType = _getContentTypeFromMimeType(mimeType);
+      //     //     }
+      //     //   }
+      //     //   request.response.headers.contentType = contentType;
+      //     //  // await _proxyRequest(request);
+      //     //   request.response.add(body);
+      //     //   request.response.close();
+      //     //
+      //     // });
+      //
+      //
+      //   //  completer.complete();
+      //  // });
+      // }, (e, stackTrace) => print('Error: $e $stackTrace'));
 
-   // return completer.future;
+      // return completer.future;
+    }
+    catch (e)
+    {
+      print(e.toString());
+    }
   }
 
 
@@ -243,10 +243,16 @@ class CustomInAppLocalhostServer extends PlatformInAppLocalhostServer {
     print('Server running on http://localhost:$_port closed');
     this._started = false;
     this._server = null;
+
+  }
+
+  Future<void> updateDocumentRoot(String newDocumentRoot) async {
+    this._documentRoot= newDocumentRoot;
   }
 
   @override
   bool isRunning() {
+
     return this._server != null;
   }
 

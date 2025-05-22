@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
@@ -18,25 +19,18 @@ import 'package:http/http.dart' as http;
 import '../../server/CustomInAppLocalhostServer.dart';
 
 // this is work
-String serviceURL =
-    'https://drive.usercontent.google.com/download?id=1Ccv-YQ0A9MkrUBBaj_PnfP7vGY_OK3qU&export=download&authuser=0&confirm=t&uuid=78c3a28a-3558-450c-9c16-0bd501fdafef&at=ALoNOgl36R9HkZ6L-LYJetxWXktb:1747768857912';
-String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=1pP7dq3vm0_eJ_LO2xal-yhFklz0sQ6J0&export=download&authuser=0&confirm=t&uuid=978d22d5-08e3-40ab-bc6b-ec1da8e8999e&at=ALoNOgly3Q4x1aTS5XlGdAT0QZcq:1747730928317';
 
-String? serviceDownloadPath;
+
+CustomInAppLocalhostServer? localhostServer;
+int? portNumber=8888;
 
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniAppModel miniApp;
-
-  // final GetSearchEvents _getSearchEvents;
-  // final GetEventDetails _getEventDetails;
+  String? serviceDownloadPath;
 
   MiniAppsEngineBloc({required this.miniApp})
-      :
-        // _getSearchEvents = GetSearchEvents(repository: sl()),
-        // _getEventDetails = GetEventDetails(repository: sl()),
-        super(const MiniAppsEngineInitialState()) {
+      :super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
     on<DownloadMiniAppsEngineEvent>(_downloadMiniAppsEngine);
@@ -46,18 +40,23 @@ class MiniAppsEngineBloc
 
   void _checkMiniAppsEngine(
       CheckMiniAppsEngineEvent event, Emitter emit) async {
+
+
     await prepareServerPath();
 
     /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
     String dir =
-        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}/${event.miniApp.latestVersion?.versionNumber}';
+        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
       await startLocalHostServer(dir, event.miniApp.serviceKey);
-      String servicePath = '$dir/index.html'.replaceAll(
-          CommonProperties.serverRootPath!, "http://localhost:${event.miniApp.serviceKey == "municipalservice" ? 8282 : 8383}");
-      emit(MiniAppsEngineLoadedState(servicePath: servicePath));
+      String servicePath = '$dir/index.html'.replaceAll(CommonProperties.serverRootPath!, "http://localhost:$portNumber");
+     // await Future.delayed(const Duration(seconds: 10));
+      emit(MiniAppsEngineLoadedState(servicePath: servicePath));;
+
+
+
     } else {
       add(DownloadMiniAppsEngineEvent(miniApp: event.miniApp));
     }
@@ -108,7 +107,6 @@ class MiniAppsEngineBloc
 
     if (serviceDownloadPath != null) {
       await startLocalHostServer(serviceDownloadPath,event.miniApp.serviceKey);
-      print("object");
 
       var zippedFile = await _downloadFile(
         event.miniApp.latestVersion?.packageMetaDataDto?.id ?? "",
@@ -120,7 +118,7 @@ class MiniAppsEngineBloc
       if (zippedFile != null) {
 
         String? indexPath =
-            await unarchiveAndSave(zippedFile, serviceDownloadPath!,event.miniApp.serviceKey ?? "");
+            await unarchiveAndSave(zippedFile, serviceDownloadPath!);
         if (indexPath == null) {
           if (zippedFile.existsSync()) {
             zippedFile.delete();
@@ -147,9 +145,9 @@ class MiniAppsEngineBloc
   ) async {
     WebService webService = sl<WebService>();
     try {
-      Response response = await webService.dio.get(
-        "v1/dms-mobile/files/$fileId",
-        // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
+      Response response = await webService.dio.get(fileId,
+       // "v1/dms-mobile/files/$fileId",
+         // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
@@ -194,7 +192,7 @@ class MiniAppsEngineBloc
   //   return null;
   // }
 
-  unarchiveAndSave(var zippedFile, String extractPath,String serviceKey) async {
+  unarchiveAndSave(var zippedFile, String extractPath) async {
     String indexFilePath = "";
     var bytes = zippedFile.readAsBytesSync();
     var archive = ZipDecoder().decodeBytes(bytes);
@@ -207,7 +205,7 @@ class MiniAppsEngineBloc
 
           if (file.name.contains("index.html")) {
             indexFilePath = outFile.path.replaceAll(
-                CommonProperties.serverRootPath!, "http://localhost:${serviceKey == "municipalservice" ? 8282 : 8383}");
+                CommonProperties.serverRootPath!, "http://localhost:$portNumber");
           }
 
           outFile = await outFile.create(recursive: true);
@@ -259,22 +257,45 @@ class MiniAppsEngineBloc
         await Directory(serverPath).create();
       }
 
-      final localhostServer = CustomInAppLocalhostServer(
+    //  localhostServer?.close();
+      localhostServer ??= CustomInAppLocalhostServer(
           PlatformInAppLocalhostServerCreationParams(
               documentRoot: serverPath,
-              port: serviceKey == "municipalservice" ? 8282 : 8383,
+              port: portNumber!,
               shared: true));
-      if (!localhostServer.isRunning()) {
-        await localhostServer.start();
-        if (defaultTargetPlatform == TargetPlatform.android) {
-          await InAppWebViewController.setWebContentsDebuggingEnabled(
-              kDebugMode);
+      if (!localhostServer!.isRunning()&& localhostServer?.documentRoot==serverPath) {
+        await localhostServer!.start();
+
+      }
+      else
+        {
+        await localhostServer?.close();
+         var rng = new Random();
+          portNumber = rng.nextInt(8080) + 8090;
+          localhostServer = CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams(documentRoot: serverPath, port: portNumber!, shared: true));
+          await localhostServer!.start();
+
         }
+
+      if (defaultTargetPlatform == TargetPlatform.android) {
+        await InAppWebViewController.setWebContentsDebuggingEnabled(
+            kDebugMode);
       }
 
       CommonProperties.serverRootPath = serverPath;
     } catch (e) {
-      print(e);
+
+      print(e.toString());
+
     }
   }
+
+  @override
+  Future<void> close() {
+    //localhostServer?.close(); // Cancel any subscriptions
+    return super.close(); // Close the BLoC's own stream
+  }
+
+
+
 }
