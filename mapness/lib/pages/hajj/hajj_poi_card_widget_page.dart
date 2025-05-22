@@ -14,11 +14,11 @@ import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_heade
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
-import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/widgets/hajj/hajj_info_widget.dart';
 import 'package:mapness/widgets/hajj/hajj_poi_card_footer.dart';
 import 'package:mapness/widgets/hajj/hajj_poi_header.dart';
+import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 @RoutePage()
@@ -68,7 +68,7 @@ class _HajjPoiCardPageState extends ConsumerState<HajjPoiCardPage> with SingleTi
             header: HajjPoiHeader(
               poiMarkerRcmc: widget.poiMarkerRcmc,
               onTapClose: () {
-                ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+                ref.read(selectedMarkerProvider.notifier).removeMarker(hajjPoiPinId);
                 context.router.popForced();
               },
             ),

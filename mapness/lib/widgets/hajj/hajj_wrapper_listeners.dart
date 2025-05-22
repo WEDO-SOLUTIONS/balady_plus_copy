@@ -18,6 +18,7 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
+final hajjPoiPinId = 'hajj_poi_pin_id';
 class HajjWrapperListeners extends ConsumerStatefulWidget {
   final Widget child;
 
@@ -31,6 +32,7 @@ class HajjWrapperListeners extends ConsumerStatefulWidget {
 }
 
 class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
+
   final _settings = MapObjectManagerSettings.hajj();
   final _sizeMarkersHajj = 24.0;
   final _fontSizePin = 13.0;
@@ -111,7 +113,7 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
           text: text,
           textStyle: _buildTextStyle(isArabic: hasArabic, isPin: true, isDark: isDark),
           icon: Markers.defaultPinNew,
-          id: poiPinId,
+          id: hajjPoiPinId,
           maxCharsPerLine: _maxCharsPerLine),
       settings: _settings,
     );
