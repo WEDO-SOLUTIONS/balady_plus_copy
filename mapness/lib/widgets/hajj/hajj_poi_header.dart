@@ -1,6 +1,5 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
@@ -24,7 +23,10 @@ class HajjPoiHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => ColoredBox(
         color: context.colorsV2.backgroundSurface2,
         child: Padding(
-          padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x),
+          padding: const EdgeInsets.only(
+            left: Spacing.$4x,
+            right: Spacing.$4x,
+          ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -71,7 +73,7 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
       interpolation: scale,
       child: Padding(
         padding: const EdgeInsets.only(
-          top: Spacing.$3x,
+          top: Spacing.$2x,
           bottom: Spacing.$3x,
         ),
         child: Column(
@@ -86,7 +88,6 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
                 crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
-            Spacing.$1x.heightBox,
           ],
         ),
       ),
