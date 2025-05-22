@@ -1,4 +1,5 @@
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
@@ -22,8 +23,18 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   Widget build(BuildContext context) {
     MiniAppModel data =
         ModalRoute.of(context)?.settings.arguments as MiniAppModel;
-    return BlocProvider(
-      create: (context) => MiniAppsEngineBloc(miniApp: data),
+
+    HomeMiniAppsListSuccessState state =
+        BlocProvider.of<HomeMiniAppsListCubit>(context).state
+            as HomeMiniAppsListSuccessState;
+
+    return BlocProvider<MiniAppsEngineBloc>(
+      create: (context) {
+        if(state.municipalAppBloc != null && state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey) {
+          return state.municipalAppBloc!;
+        }
+        return MiniAppsEngineBloc(miniApp: data);
+      },
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(

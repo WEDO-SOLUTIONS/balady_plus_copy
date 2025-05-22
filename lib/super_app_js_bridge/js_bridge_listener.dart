@@ -24,7 +24,6 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app/core/dependency_injection/injection_container.dart';
-import '../app/core/services/local/use_case.dart';
 import '../app/features/entry_point/domain/use_cases/get_cookie.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
@@ -44,6 +43,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(trackLogsErrors);
     registerFunction(openDirectionsMap);
     registerFunction(openWebView);
+    registerFunction(checkPermission);
   }
 
   // Done
@@ -60,8 +60,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         ),
       );
       handler.complete(response.jsonEncodeModel());
-    }
-    else {
+    } else {
       await showDialog(
         context: NavigationService.navigatorKey.currentContext!,
         builder: (ctx) => NeedLoginDialog(
@@ -112,9 +111,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void getCookies(dynamic msg, CompletionHandler handler) async{
-
-
+  void getCookies(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
     if (CommonProperties.isLoggedIn) {
       EasyLoading.show();
@@ -133,53 +130,44 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           ),
         );
         handler.complete(response.jsonEncodeModel());
-
       });
-
-
     } else {
       await showDialog(
-      context: NavigationService.navigatorKey.currentContext!,
-      builder: (ctx) => NeedLoginDialog(
-        onSuccessLogin: (bool? isSuccess) async {
-          if (isSuccess ?? false) {
-            EasyLoading.show();
-            GetCookie getCookie = GetCookie(repository: sl());
-            final failureOrSuccessForCookie = await getCookie(false);
-            EasyLoading.dismiss();
-            failureOrSuccessForCookie.fold((l) {
-              CommonFunctions.showError("server_error_1".tr());
-            }, (r) async {
-              response = BaseResponse(
-                code: 200,
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              EasyLoading.show();
+              GetCookie getCookie = GetCookie(repository: sl());
+              final failureOrSuccessForCookie = await getCookie(false);
+              EasyLoading.dismiss();
+              failureOrSuccessForCookie.fold((l) {
+                CommonFunctions.showError("server_error_1".tr());
+              }, (r) async {
+                response = BaseResponse(
+                  code: 200,
+                  eventName: "getCookies",
+                  message: "success",
+                  data: CookiesModel(
+                    cookies: r,
+                  ),
+                );
+                handler.complete(response.jsonEncodeModel());
+              });
+            } else {
+              BaseResponse response = BaseResponse(
+                code: 401,
                 eventName: "getCookies",
-                message: "success",
-                data: CookiesModel(
-                  cookies: r,
-                ),
+                message: "Unauthorized",
+                data: null,
               );
               handler.complete(response.jsonEncodeModel());
-
-            });
-          } else {
-            BaseResponse response = BaseResponse(
-              code: 401,
-              eventName: "getCookies",
-              message: "Unauthorized",
-              data: null,
-            );
-            handler.complete(response.jsonEncodeModel());
-          }
-        },
-      ),
+            }
+          },
+        ),
       );
     }
-
-
   }
-
-
-
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
@@ -191,8 +179,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         language: 'locale'.tr(),
         themeType: "dark",
         colors: {
-          "primary": AppColor.primary900Light,
-          "secondary": AppColor.secondary900Light,
+          "primary": AppColor.primary900Light.value,
+          "secondary": AppColor.secondary900Light.value,
           // "background": AppColor.backgroundColor,
           // "text": AppColor.textColor,
           // "error": AppColor.errorColor,
@@ -229,6 +217,52 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
 
     handler.complete(response.jsonEncodeModel());
+  }
+
+  @pragma('vm:entry-point')
+  void checkPermission(dynamic data, CompletionHandler handler) async {
+    if (data != null && data is Map) {
+      String permissionName = data["permission_name"];
+      bool state = false;
+      BaseResponse response;
+      switch (permissionName) {
+        case "location":
+          state = await CommonFunctions.checkLocationSettings(
+            NavigationService.navigatorKey.currentContext!,
+          );
+          break;
+        case "camera":
+          state = await CommonFunctions.checkCameraSettings(
+            NavigationService.navigatorKey.currentContext!,
+          );
+          break;
+        default:
+          response = BaseResponse(
+            code: 400,
+            message: "Invalid permission name",
+            eventName: "checkPermission",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+          return;
+      }
+      if (state) {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "checkPermission",
+          data: null,
+        );
+      } else {
+        response = BaseResponse(
+          code: 401,
+          message: "Permission denied",
+          eventName: "checkPermission",
+          data: null,
+        );
+      }
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
@@ -272,7 +306,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           message: "File size exceeds limit",
           data: null,
         );
-
       } else {
         String path = image.path;
         String fileName =
@@ -280,11 +313,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         final fileBytes = await File(path).readAsBytes();
         String base64File = base64Encode(fileBytes);
         JsFilesModel file = JsFilesModel(
-          fileBase64: base64File,
-          fileName: fileName,
-         // fileBytes:fileBytes,
-          filePath: path
-        );
+            fileBase64: base64File,
+            fileName: fileName,
+            // fileBytes:fileBytes,
+            filePath: path);
         response = BaseResponse(
           code: 200,
           eventName: "openImagePicker",
@@ -301,7 +333,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     }
 
-    var x= response.jsonEncodeModel();
+    var x = response.jsonEncodeModel();
     handler.complete(response.jsonEncodeModel());
   }
 
@@ -327,26 +359,23 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             final fileBytes = await File(path).readAsBytes();
             String base64File = base64Encode(fileBytes);
             JsFilesModel file = JsFilesModel(
-              fileBase64: base64File,
-              fileName: fileName,
-             // fileBytes: fileBytes,
-                filePath: path
-            );
+                fileBase64: base64File,
+                fileName: fileName,
+                // fileBytes: fileBytes,
+                filePath: path);
             response = BaseResponse(
-              code: 200,
-              message: "success",
-              data: file,
-              eventName: "openFilePicker"
-            );
+                code: 200,
+                message: "success",
+                data: file,
+                eventName: "openFilePicker");
           }
         }
       } else {
         response = BaseResponse(
-          code: 300,
-          message: "Can't get file",
-          data: null,
-            eventName: "openFilePicker"
-        );
+            code: 300,
+            message: "Can't get file",
+            data: null,
+            eventName: "openFilePicker");
       }
     } on PlatformException catch (error, stackTrace) {
       response = BaseResponse(
@@ -359,6 +388,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     handler.complete(response.jsonEncodeModel());
   }
 
+  /// TODO: Need To Test
   @pragma('vm:entry-point')
   void openShare(dynamic msg, CompletionHandler handler) {
     late BaseResponse response;
@@ -417,11 +447,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  // Done Tested
   @pragma('vm:entry-point')
   void trackEvent(dynamic msg, CompletionHandler handler) {
     if (msg != null && msg is String && msg.isNotEmpty) {
-
       print("%%%%%%%%%  $msg %%%%%%%%%");
       BaseResponse response = BaseResponse(
         code: 200,
@@ -442,7 +470,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  // Done Tested
   @pragma('vm:entry-point')
   void trackLogsErrors(dynamic msg, CompletionHandler handler) {
     print("############## $msg ##############");
@@ -465,7 +492,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
   }
 
-  // Done Tested
   @pragma('vm:entry-point')
   void openDirectionsMap(dynamic data, CompletionHandler handler) {
     if (data != null && data is Map) {
