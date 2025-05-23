@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -27,11 +25,7 @@ class _ParkingImage extends _$ParkingImage {
     return data?.imagesPaths.map((e) => XFile(e)).toList() ?? <XFile>[];
   }
 
-  Future<void> onAddImages() async {
-    final picked = await ref.read(appRouterProvider).push<List<XFile>>(
-          const AddPhotoRoute(),
-        );
-
+  Future<void> onAddImages(List<XFile>? picked) async {
     if (picked != null) {
       final filtered = await _filterValidImages(picked);
       state = state + filtered;

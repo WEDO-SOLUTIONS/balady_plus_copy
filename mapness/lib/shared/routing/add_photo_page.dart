@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
-import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,7 +14,6 @@ import 'package:urbi_analytics/logger.dart';
 
 @RoutePage()
 class AddPhotoPage extends ConsumerWidget {
-  static const _maxImageResolution = 5000;
   static const _maxImages = 10;
   static const _maxSizeInBytes = 5 * 1024 * 1024; // 5MB
   static const _acceptedFormats = ['png', 'jpg', 'jpeg'];
@@ -29,20 +27,21 @@ class AddPhotoPage extends ConsumerWidget {
       ..listen(feedbackImageSelectorProvider, (_, next) {});
 
     return Scaffold(
-      backgroundColor: context.colorsV3.screenOverlayDimming60,
-      body: Align(
-        alignment: Alignment.bottomCenter,
-        child: FeedbackImageSelectorSheet(
-          onSelect: (type) async {
-            switch (type) {
-              case FeedbackImageSelectorType.camera:
-              case FeedbackImageSelectorType.gallery:
-                await _handleCategories(ref, type!, context);
-              case null:
-                context.router.popForced();
-                return;
-            }
-          },
+      body: SafeArea(
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: FeedbackImageSelectorSheet(
+            onSelect: (type) async {
+              switch (type) {
+                case FeedbackImageSelectorType.camera:
+                case FeedbackImageSelectorType.gallery:
+                  await _handleCategories(ref, type!, context);
+                case null:
+                  context.router.popForced();
+                  return;
+              }
+            },
+          ),
         ),
       ),
     );

@@ -28,6 +28,7 @@ class _ParkingSpotMap extends _$ParkingSpotMap {
   }
 
   Future<void> onMapCreated(DgisMapController controller) async {
+    await controller.initialize();
     await controller.loadStyles(MapnessConstants.mapStylesPath);
 
     // Appearance
