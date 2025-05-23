@@ -19,6 +19,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
 
 final hajjPoiPinId = 'hajj_poi_pin_id';
+
 class HajjWrapperListeners extends ConsumerStatefulWidget {
   final Widget child;
 
@@ -32,7 +33,6 @@ class HajjWrapperListeners extends ConsumerStatefulWidget {
 }
 
 class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
-
   final _settings = MapObjectManagerSettings.hajj();
   final _sizeMarkersHajj = 24.0;
   final _fontSizePin = 13.0;
@@ -63,7 +63,9 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
         }
 
         final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-        final markers = (newState.value ?? []).map((item) => _createMarker(item, isRtl, isDarkMode)).toList();
+        final markers = (newState.value ?? [])
+            .map((item) => _createMarker(item, isRtl, isDarkMode))
+            .toList();
 
         await objectManager.removeAllMarkers();
         await objectManager.addMarkers(markers);
@@ -85,14 +87,18 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
       onTap: () => _onMarkerTap(item, isRtl, isDark),
       options: MarkerOptionsMessage(
         text: text,
-        textStyle: _buildTextStyle(isArabic: hasArabic, isPin: false, isDark: isDark),
+        textStyle:
+            _buildTextStyle(isArabic: hasArabic, isPin: false, isDark: isDark),
         position: GeoPointWithElevationMessage(
           latitude: item.latitude,
           longitude: item.longitude,
           elevation: 0,
         ),
         isVisible: true,
-        icon: item.categoryId.categoryFromId()?.iconPath.markerIcon(size: _sizeMarkersHajj),
+        icon: item.categoryId
+            .categoryFromId()
+            ?.iconPath
+            .markerIcon(size: _sizeMarkersHajj),
       ),
     );
   }
@@ -111,7 +117,8 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
             elevation: 1,
           ),
           text: text,
-          textStyle: _buildTextStyle(isArabic: hasArabic, isPin: true, isDark: isDark),
+          textStyle:
+              _buildTextStyle(isArabic: hasArabic, isPin: true, isDark: isDark),
           icon: Markers.defaultPinNew,
           id: hajjPoiPinId,
           maxCharsPerLine: _maxCharsPerLine),

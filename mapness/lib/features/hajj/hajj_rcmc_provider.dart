@@ -1,6 +1,7 @@
 import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
+import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,8 +12,7 @@ final hajjRcmcProvider = _hajjRcmcProvider;
 
 @riverpod
 class _HajjRcmc extends _$HajjRcmc {
-  late final _baseUrl = 'https://dev-api.wedo.solutions:4433/1.1';
-  late final _rcmcUrl = '$_baseUrl/rcmc-markers?p1=39.643626,21.637784&p2=40.036879,21.198644';
+  late final _rcmcUrl = 'rcmc-markers?p1=39.643626,21.637784&p2=40.036879,21.198644';
   late final _zoomInVisibleMarkers = 11.0;
 
   List<PoiMarkerRcmc> _cached = <PoiMarkerRcmc>[];
@@ -21,6 +21,8 @@ class _HajjRcmc extends _$HajjRcmc {
   @override
   Future<List<PoiMarkerRcmc>> build() async {
     try {
+      final env = await ref.read(dgisEnvironmentProvider.future);
+      final url = env.url + _rcmcUrl;
       final appLanguage = ref.watch(appLanguageProvider);
       final camera = ref.watch(cameraPositionProvider);
       if (camera != null && camera.zoom < _zoomInVisibleMarkers) {
@@ -42,7 +44,7 @@ class _HajjRcmc extends _$HajjRcmc {
         ],
       );
 
-      final response = await dio.get(_rcmcUrl);
+      final response = await dio.get(url);
 
       final List<dynamic> jsonList = response.data;
       final result = jsonList.map((e) => PoiMarkerRcmc.fromJson(e)).toList();
