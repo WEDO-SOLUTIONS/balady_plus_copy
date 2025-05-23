@@ -18,12 +18,9 @@ import 'package:mapness/features/parking_spot/model/parking_store_model.dart';
 import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
-import 'package:mapness/features/routing/providers/routes.dart';
-import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
-import 'package:mapness/shared/providers/app_language.dart';
-import 'package:mapness/shared/providers/dark_mode.dart';
+import 'package:mapness/shared/providers/map_initialization.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
@@ -46,7 +43,9 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
   ConsumerState<ParkingSpotPage> createState() => _ParkingSpotState();
 }
 
+
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
+  final _keyMapParkingSpot = 'ParkingSpotDGISMapKey';
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
   final _isDirty = ValueNotifier(false);
@@ -97,7 +96,9 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
       backgroundColor: context.colorsV3.backgroundSurface4,
       appBar: BaladyTopBar(
         systemUiOverlayStyle: SystemUiOverlayStyle.dark,
-        textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+        textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
+          color: context.colorsV3.foregroundDefault,
+        ),
         title: widget.isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
           padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
@@ -121,7 +122,7 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                         borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                         child: UrbiMap(
                           onMapCreated: _onMapCreated,
-                          key: const Key('ParkingSpotDGISMapKey'),
+                          key: Key(_keyMapParkingSpot),
                         ),
                       ),
                     )),
@@ -242,18 +243,8 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   }
 
   Future<void> _onMapCreated(DgisMapController controller) async {
-    final initialize = await controller.initialize();
+    final initialize = await ref.read(mapInitializationProvider(controller: controller).future);
     _initializationMap.value = initialize.wasInitialized;
-
-    //Styles
-    await controller.loadStyles(MapnessConstants.mapStylesPath);
-
-    // Appearance
-    await controller.setZoomRestrictions(min: 5.5);
-    await controller.overrideLocales(ref.read(appLanguageProvider) == Language.arabic ? ['ar-SA'] : ['en-SA']);
-    await controller.setAppearance(
-        (await ref.read(darkModeProvider.future)).isDark ? MapAppearanceMessage.night : MapAppearanceMessage.day);
-    await controller.setBetterRouteSettings(BetterRouteSettings.prod);
 
     final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
     await dgisMapController.onMapCreated(controller);

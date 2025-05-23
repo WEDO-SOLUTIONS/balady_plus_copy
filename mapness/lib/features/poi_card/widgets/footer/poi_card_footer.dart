@@ -25,7 +25,8 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
   final LatLng? closestPoint;
-  final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
+  final StatefulBottomSheetController<PoiCardBottomSheetState>?
+      bottomSheetController;
 
   const PoiCardFooter({
     required this.share,
@@ -47,8 +48,9 @@ class PoiCardFooter extends HookConsumerWidget {
     if (bottomSheetController != null) {
       useEffect(() {
         void updateShadow() {
-          final isHidden = bottomSheetController.state == PoiCardBottomSheetState.hidden &&
-              bottomSheetController.interpolation == 0.0;
+          final isHidden =
+              bottomSheetController.state == PoiCardBottomSheetState.hidden &&
+                  bottomSheetController.interpolation == 0.0;
           if (!isHidden != displayShadow.value) {
             displayShadow.value = !isHidden;
           }
@@ -65,8 +67,10 @@ class PoiCardFooter extends HookConsumerWidget {
     ref.watch(favouriteCacheProvider).valueOrNull;
     final provider = ref.watch(favouriteCacheProvider.notifier);
     final isFavourite = objectId != null && provider.isFavourite(objectId);
-    final favouriteItem = objectId != null ? provider.getFavouriteOrNull(objectId) : null;
-    final iconData = isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
+    final favouriteItem =
+        objectId != null ? provider.getFavouriteOrNull(objectId) : null;
+    final iconData =
+        isFavourite ? SystemIcons.bookmarkFill : SystemIcons.bookmark;
 
     final hasEntrances = data?.entrances.isNotEmpty == true;
     final hasContacts = data?.contactInfos.isNotEmpty == true;
@@ -111,7 +115,9 @@ class PoiCardFooter extends HookConsumerWidget {
           ItemActionBar(
             icon: SystemIcons.share,
             buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
+            label: hasContactsAndHasEntrances || parkingPoi
+                ? null
+                : context.l10n.share,
             onPressed: throttledShare,
           ),
           if (!parkingPoi)
@@ -124,7 +130,8 @@ class PoiCardFooter extends HookConsumerWidget {
             ItemActionBar(
               icon: SystemIcons.edit,
               buttonType: BaladyButtonType.secondary,
-              onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
+              onPressed: () =>
+                  context.router.push(ParkingSpotRoute(isEdit: true)),
             ),
           if (parkingPoi)
             ItemActionBar(
@@ -145,8 +152,9 @@ class PoiCardFooter extends HookConsumerWidget {
           title: context.l10n.createNewParkingSpot,
           desc: context.l10n.currentParkingSpaceRemoved,
           onAcceptTab: () {
-            context.router.popAndPush(ParkingSpotRoute(
-              address: data?.title,
+            context.router.popAndPush(
+              ParkingSpotRoute(
+                address: data?.title,
                 markerPosition: closestPoint != null
                     ? GeoPointWithElevationMessage(
                         latitude: closestPoint!.latitude,

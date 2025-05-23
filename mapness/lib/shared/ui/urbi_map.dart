@@ -2,7 +2,6 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-
 class UrbiMap extends ConsumerWidget {
   const UrbiMap({
     required this.onMapCreated,
