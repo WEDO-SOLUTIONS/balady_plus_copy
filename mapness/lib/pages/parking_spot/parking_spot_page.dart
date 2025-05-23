@@ -20,7 +20,6 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
-import 'package:mapness/shared/providers/map_initialization.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
@@ -49,7 +48,6 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
   final _isDirty = ValueNotifier(false);
-  final ValueNotifier<bool?> _initializationMap = ValueNotifier(null);
   LatLng? _latLng;
 
   @override
@@ -81,7 +79,6 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     _isDirty.dispose();
     _textEditingController.dispose();
     _addressNotifier.dispose();
-    _initializationMap.dispose();
     super.dispose();
   }
 
@@ -114,18 +111,16 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Spacing.$2x.heightBox,
-              ValueListenableBuilder(
-                  valueListenable: _initializationMap,
-                  builder: (context, value, _) => SizedBox(
-                      height: 108,
-                      child: ClipRRect(
-                        borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                        child: UrbiMap(
-                          onMapCreated: _onMapCreated,
-                          key: Key(_keyMapParkingSpot),
-                        ),
-                      ),
-                    )),
+              SizedBox(
+                height: 108,
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+                  child: UrbiMap(
+                    onMapCreated: _onMapCreated,
+                    key: Key(_keyMapParkingSpot),
+                  ),
+                ),
+              ),
               Spacing.$2x.heightBox,
               ValueListenableBuilder(
                   valueListenable: _addressNotifier,
@@ -243,9 +238,6 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   }
 
   Future<void> _onMapCreated(DgisMapController controller) async {
-    final initialize = await ref.read(mapInitializationProvider(controller: controller).future);
-    _initializationMap.value = initialize.wasInitialized;
-
     final dgisMapController = ref.read(parkingSpotMapProvider.notifier);
     await dgisMapController.onMapCreated(controller);
     if (_latLng != null) {
