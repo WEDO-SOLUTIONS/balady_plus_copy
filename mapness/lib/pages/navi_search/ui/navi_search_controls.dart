@@ -8,6 +8,7 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 
 class NaviSearchSheetControls extends ConsumerStatefulWidget {
   final uikit.StatefulBottomSheetController scrollController;
@@ -68,9 +69,8 @@ class _NaviSearchSheetControlsState extends ConsumerState<NaviSearchSheetControl
                             const LayersControl(),
                             const SizedBox(height: uikit.Spacing.$2x),
                             const TrafficControl(),
-                            //TODO(scroollocker): Enable when prepare release
-                            // const SizedBox(height: uikit.Spacing.$2x),
-                            // const DimensionContrtol(),
+                            const SizedBox(height: uikit.Spacing.$2x),
+                            const DimensionContrtol(),
                             const Spacer(),
                             const ZoomControl(),
                             const Spacer(),

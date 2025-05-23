@@ -8,6 +8,7 @@ import 'package:mapness/shared/lib/metrics/load_time.dart';
 import 'package:mapness/shared/lib/metrics/lost_gps.dart';
 import 'package:mapness/shared/lib/metrics/route_calculation.dart';
 import 'package:mapness/shared/lib/metrics/search_response_time.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -302,6 +303,12 @@ class AdvancedMetrics {
   static const _timeout = Duration(seconds: 2);
   Future<List<double>?> _getLocation() async {
     try {
+      final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      final isGranded = await Permission.location.isGranted;
+
+      if (!isGranded || !serviceEnabled) {
+        return null;
+      }
       final location = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.medium,
         timeLimit: _timeout,

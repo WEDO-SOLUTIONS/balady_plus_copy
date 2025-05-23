@@ -20,6 +20,7 @@ import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_sheet.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
@@ -197,9 +198,8 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               TrafficParkingControl(),
-                              //TODO(scroollocker): Enable when prepare release
-                              // SizedBox(height: uikit.Spacing.$2x),
-                              // DimensionContrtol(),
+                              SizedBox(height: uikit.Spacing.$2x),
+                              DimensionContrtol(),
                               Spacer(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

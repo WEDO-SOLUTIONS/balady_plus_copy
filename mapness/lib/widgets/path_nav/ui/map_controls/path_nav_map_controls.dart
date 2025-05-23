@@ -16,6 +16,7 @@ import 'package:mapness/widgets/landing/compass_control.dart';
 import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/route_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 
 part 'landscape_map_controls.dart';

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/shared/test_utils/test_material_app.dart';
 import 'package:mapness/widgets/app_feedback/v2/rating_bar.dart';
 
@@ -10,11 +9,7 @@ void main() {
     late ProviderContainer container;
 
     setUpAll(() {
-      container = ProviderContainer(overrides: [
-        colorSchemeProvider.overrideWith(
-          MockColorSchemeProvider.new,
-        ),
-      ]);
+      container = ProviderContainer();
     });
 
     tearDownAll(() {

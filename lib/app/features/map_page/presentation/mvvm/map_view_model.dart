@@ -251,8 +251,8 @@ class MapViewModel extends BaseViewModel {
       searchController.text = selectedCategory.value != null ? selectedCategory.value!.displayName() : queryText;
 
       SearchResultMessage data = selectedCategory.value != null
-          ? await controller.searchByCategory(
-              selectedCategory.value!,
+          ? await controller.searchByRubrics(
+              selectedCategory.value!.rubrics,
               sortingType: SortingTypeMessage.byRelevance,
               isOpenNow: false,
               searchRect: _lastHandledEvent?.visibleRect.geoRectMessage(),
@@ -266,10 +266,10 @@ class MapViewModel extends BaseViewModel {
                 )
               : await controller.search(
                   queryText,
-                  categories: [
-                    SearchCategoryMessage.gasStations,
-                    SearchCategoryMessage.mousques,
-                    SearchCategoryMessage.restaurants,
+                  rubricIds: [
+                    ...SearchCategoryMessage.gasStations.rubrics,
+                    ...SearchCategoryMessage.mousques.rubrics,
+                    ...SearchCategoryMessage.restaurants.rubrics,
                   ],
                   sortingType: SortingTypeMessage.byRelevance,
                   isOpenNow: false,

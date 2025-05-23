@@ -103,23 +103,23 @@ class RoutesCarousel extends ConsumerWidget {
   EdgeInsets padding({required int index, required int length, required bool isLtr}) {
     if (length == 1) {
       return const EdgeInsets.only(
-        left: Spacing.horizontalPaddingInsideWrapper,
-        right: Spacing.horizontalPaddingInsideWrapper,
+        left: Spacing.$4x,
+        right: Spacing.$4x,
       );
     }
     EdgeInsets result;
     if (index == 0) {
       result = const EdgeInsets.only(
-        left: Spacing.horizontalPaddingInsideWrapper,
-        right: Spacing.horizontalGapBetweenChips / 2,
+        left: Spacing.$4x,
+        right: Spacing.$2x / 2,
       );
     } else if (index == length - 1) {
       result = const EdgeInsets.only(
-        left: Spacing.horizontalGapBetweenChips / 2,
-        right: Spacing.horizontalPaddingInsideWrapper,
+        left: Spacing.$2x / 2,
+        right: Spacing.$4x,
       );
     } else {
-      result = const EdgeInsets.symmetric(horizontal: Spacing.horizontalGapBetweenChips / 2);
+      result = const EdgeInsets.symmetric(horizontal: Spacing.$2x / 2);
     }
     return isLtr ? result : result.flipped;
   }

@@ -16,7 +16,7 @@ class SearchTapHandler extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => InkWell(
-        borderRadius: BorderRadius.circular(CornerRadius.baseContainer),
+        borderRadius: BorderRadius.circular(RadiusBorder.xl),
         splashColor: splashColor ?? context.color.surfaceContrastLow,
         splashFactory: InkRipple.splashFactory,
         onTap: () async {

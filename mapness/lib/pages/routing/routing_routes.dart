@@ -42,11 +42,21 @@ class RoutingRoutesPage extends ConsumerStatefulWidget {
 class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   late List<RouteParamsPointWithLabel> points;
   late final ValueNotifier<double> _bottomHeightNotifier = ValueNotifier(0);
+  bool _permissionRequested = false;
 
   @override
   void initState() {
     super.initState();
     points = widget.points;
+
+    if (!_permissionRequested && widget.points.any((p) => p.value == null)) {
+      _permissionRequested = true;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ref.read(locationProvider.notifier).checkLocationPermission(
+              routeOnClose: RoutingRoutesRoute.name,
+            );
+      });
+    }
   }
 
   @override
@@ -59,14 +69,6 @@ class _RoutingRoutesPageState extends ConsumerState<RoutingRoutesPage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     FocusScope.of(context).unfocus();
-    final locationPermission = ref.read(locationProvider.notifier);
-
-    /// if route from user location make sure he has location permission
-    if (widget.points.map((e) => e.value).any((element) => element == null)) {
-      locationPermission.checkLocationPermission(
-        routeOnClose: RoutingRoutesRoute.name,
-      );
-    }
   }
 
   @override

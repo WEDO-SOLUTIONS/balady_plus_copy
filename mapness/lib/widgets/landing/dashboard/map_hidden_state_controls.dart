@@ -9,7 +9,6 @@ import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/free_roam/free_roam_animation_mixin.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
 import 'package:mapness/pages/free_roam/ui/go_to_navigator_button.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/landing/map_quick_filters.dart';
@@ -151,7 +150,6 @@ class QuickSearchBar extends StatelessWidget {
               child: MapQuickFilters(
                 forMap: true,
                 itemScrollController: quickScrollController,
-                id: QuickFilterScreen.controls,
                 customFilters: [
                   FilterItemBuilder(
                     filterType: FilterType.custom,

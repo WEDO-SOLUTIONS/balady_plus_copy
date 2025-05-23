@@ -11,4 +11,10 @@ class UrbiAnalytics extends _$UrbiAnalytics {
   Analytics build() => createClient(
         Configuration('balady-metrics.urbi.ae/metrics-api'),
       );
+
+  Future<void> trackWithPrint(String event, {Map<String, dynamic>? properties}) async {
+    // ignore: avoid_print
+    print('event: $event');
+    await ref.read(urbiAnalyticsProvider).track(event, properties: properties);
+  }
 }
