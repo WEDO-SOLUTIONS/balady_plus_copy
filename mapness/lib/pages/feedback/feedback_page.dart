@@ -76,6 +76,9 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
   }
 
   void _collectForm({required String categoryId, int? objectId}) {
+    if (widget.objectId != null) {
+      context.router.popForced();
+    }
     final formState = _formKey.currentState;
     if (formState == null) {
       return;
@@ -109,9 +112,6 @@ class _FeedbackPageState extends ConsumerState<FeedbackPage> {
       // may be mem overflow, but esimate as impossible
       ..keepAliveForAWhile();
 
-    if (widget.objectId != null) {
-      context.router.popForced();
-    }
     context.router.replace(
       FeedbackSentRoute(
         payloadId: payloadId,
