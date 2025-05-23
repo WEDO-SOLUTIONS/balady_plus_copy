@@ -42,7 +42,6 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
   ConsumerState<ParkingSpotPage> createState() => _ParkingSpotState();
 }
 
-
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   final _keyMapParkingSpot = 'ParkingSpotDGISMapKey';
   late final TextEditingController _textEditingController = TextEditingController();

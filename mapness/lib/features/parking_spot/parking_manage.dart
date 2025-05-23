@@ -48,11 +48,9 @@ class _ParkingManage extends _$ParkingManage {
     final cachedData = await hive.get(_keyCache);
 
     if (cachedData is Map) {
-      final model =
-          ParkingStoreModel.fromJson(Map<String, dynamic>.from(cachedData));
+      final model = ParkingStoreModel.fromJson(Map<String, dynamic>.from(cachedData));
 
-      final isExpired =
-          DateTime.now().difference(model.dateTime) > const Duration(hours: 24);
+      final isExpired = DateTime.now().difference(model.dateTime) > const Duration(hours: 24);
       if (isExpired) {
         await hive.delete(_keyCache);
         return null;
@@ -143,8 +141,7 @@ class _ParkingManage extends _$ParkingManage {
   Future<MarkerTextStyleMessage> _markerStyle(String title) async {
     final darkMode = await ref.watch(darkModeProvider.future);
     final isArabic = ref.read(appLanguageProvider) == Language.arabic;
-    final font =
-        title.containsArabic() || isArabic ? poiMapFontAr : poiMapFontEn;
+    final font = title.containsArabic() || isArabic ? poiMapFontAr : poiMapFontEn;
 
     return MarkerTextStyleMessage(
       fontSize: 13,
@@ -188,10 +185,7 @@ class _ParkingManage extends _$ParkingManage {
                 entranceId: 0,
               ),
             ),
-            toCompareRoutes: [
-              ShareMyLocationRoute.page,
-              PoiCardWidgetRoute.page
-            ],
+            toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
           );
         },
       ),
