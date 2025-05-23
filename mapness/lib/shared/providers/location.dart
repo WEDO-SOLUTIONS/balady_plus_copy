@@ -102,7 +102,6 @@ class _Location extends _$Location {
           );
           return false;
         } else if (status != perm.PermissionStatus.granted) {
-          unawaited(perm.Permission.location.request());
           return false;
         } else {
           if (state == null) {
