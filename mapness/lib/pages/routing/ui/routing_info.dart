@@ -47,8 +47,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
 
-  ProviderSubscription? _locationListener;
-
   @override
   void initState() {
     super.initState();
@@ -90,7 +88,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void dispose() {
     _navType.dispose();
-    _locationListener?.close();
     super.dispose();
   }
 
