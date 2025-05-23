@@ -47,8 +47,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
 
-  ProviderSubscription? _locationListener;
-
   @override
   void initState() {
     super.initState();
@@ -59,12 +57,7 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
       if (location != null) {
         unawaited(_calculateNavigationType(location));
       } else {
-        _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
-          if (next != null) {
-            _locationListener?.close();
-            unawaited(_calculateNavigationType(next));
-          }
-        });
+        context.router.popForced();
       }
     }
 
@@ -95,7 +88,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void dispose() {
     _navType.dispose();
-    _locationListener?.close();
     super.dispose();
   }
 
