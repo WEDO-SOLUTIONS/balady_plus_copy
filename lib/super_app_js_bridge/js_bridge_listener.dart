@@ -189,7 +189,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         },
       ),
     );
-    handler.complete(response.jsonEncodeModel());
+    var dataJson = response.toJson();
+    var dataJsonString = response.jsonEncodeModel();
+    handler.complete(dataJsonString);
   }
 
   @pragma('vm:entry-point')

@@ -61,3 +61,17 @@ class MiniAppsEngineErrorState extends MiniAppsEngineState {
     return MiniAppsEngineErrorState(errorMessage: errorMessage);
   }
 }
+
+
+class FailedDownloadState extends MiniAppsEngineState {
+
+  const FailedDownloadState();
+
+  @override
+  List<Object> get props => [];
+
+  @override
+  MiniAppsEngineState copyWith() {
+    return const FailedDownloadState();
+  }
+}

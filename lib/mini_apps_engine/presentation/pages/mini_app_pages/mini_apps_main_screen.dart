@@ -1,10 +1,14 @@
+import 'package:balady_plus/app/core/remote_services/pega_web_service.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_bloc.dart';
+import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/pages/mini_app_pages/web_mini_apps_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 class MiniAppsMainScreen extends StatefulWidget {
   const MiniAppsMainScreen({super.key});
@@ -30,7 +34,8 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
 
     return BlocProvider<MiniAppsEngineBloc>(
       create: (context) {
-        if(state.municipalAppBloc != null && state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey) {
+        if (state.municipalAppBloc != null &&
+            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey) {
           return state.municipalAppBloc!;
         }
         return MiniAppsEngineBloc(miniApp: data);
@@ -47,13 +52,22 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
           ),
         ),
         body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
-          builder: (context, state) {
+          builder: (contextBloc, state) {
             if (state is MiniAppsEngineInitialState) {
               return const Center(child: Text('Loading ...'));
             } else if (state is MiniAppsEngineLoadedState) {
               return WebMiniAppsScreen(servicePath: state.servicePath);
             } else if (state is MiniAppsEngineErrorState) {
               return Center(child: Text(state.errorMessage));
+            } else if (state is FailedDownloadState) {
+              return ReloadWidget(
+                errorMessage: "errors_server_error_1".tr(),
+                onTab: () {
+                  BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
+                    DownloadMiniAppsEngineEvent(miniApp: data),
+                  );
+                },
+              );
             } else if (state is MiniAppsEngineLoadingState) {
               return Center(
                 child: Column(
