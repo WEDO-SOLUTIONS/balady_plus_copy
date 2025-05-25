@@ -21,12 +21,13 @@ String serviceURL =
 String serviceURLSnapAndSend =
     'https://drive.usercontent.google.com/download?id=1ZyuipZXASuNjZA6hw13i3RAj6vfV7MGX&export=download&authuser=0&confirm=t&uuid=8062122e-3e36-4f28-b714-d80d61108494&at=ALoNOgmP4jwor9aG-3f6RCHV9WyH:1748149964300';
 
-CustomInAppLocalhostServer? localhostServer;
+// CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniAppModel miniApp;
+  CustomInAppLocalhostServer? localhostServer;
   String? serviceDownloadPath;
   late String basePathService;
 
@@ -130,12 +131,11 @@ class MiniAppsEngineBloc
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
       String pathService =
           '$basePathService/${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
-      // portNumber = generateRandomPort(portNumber);
 
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
           documentRoot: pathService,
-          port: portNumber,
+          port: generateRandomPort(portNumber),
           shared: true,
         ),
       );
@@ -149,8 +149,9 @@ class MiniAppsEngineBloc
 
       String servicePath = '$pathService/index.html'.replaceAll(
         pathService,
-        "http://localhost:$portNumber",
+        "http://localhost:${localhostServer!.port}",
       );
+
       emit(MiniAppsEngineLoadedState(servicePath: servicePath));
     } catch (e) {
       print(e.toString());

@@ -20,30 +20,26 @@ class CustomInAppLocalhostServer {
 
   CustomInAppLocalhostServer(
       PlatformInAppLocalhostServerCreationParams params) {
-    this._port = params.port;
-    this._directoryIndex = params.directoryIndex;
-    this._documentRoot = (params.documentRoot.endsWith('/'))
+    _port = params.port;
+    _directoryIndex = params.directoryIndex;
+    _documentRoot = (params.documentRoot.endsWith('/'))
         ? params.documentRoot
         : '${params.documentRoot}/';
-    this._shared = params.shared;
+    _shared = params.shared;
   }
 
-  @override
   int get port => _port;
 
-  @override
   String get directoryIndex => _directoryIndex;
 
   @override
   String get documentRoot => _documentRoot;
 
-  @override
   bool get shared => _shared;
 
-  @override
   Future<void> start() async {
     try {
-      if (this._started) {
+      if (_started) {
         throw Exception('Server already started on http://localhost:$_port');
       }
       this._started = true;
@@ -94,7 +90,8 @@ class CustomInAppLocalhostServer {
             String content = "text/html";
             if (!request.requestedUri.path.endsWith('/') &&
                 request.requestedUri.pathSegments.isNotEmpty) {
-              final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
+              final mimeType =
+                  MimeTypeResolver.lookup(request.requestedUri.path);
               if (mimeType != null) {
                 // contentType = _getContentTypeFromMimeType(mimeType);
                 content = _getContentTypeFromMimeType(mimeType);
@@ -132,29 +129,33 @@ class CustomInAppLocalhostServer {
         }
       });
 
-      final server =
-          await io.serve(handler, '127.0.0.1', _port, shared: _shared);
-      this._server = server;
+      final server = await io.serve(
+        handler,
+        '127.0.0.1',
+        _port,
+        shared: _shared,
+      );
+      print('Server running on http://localhost:$_port');
+      _server = server;
     } catch (e) {
       print(e.toString());
     }
   }
+
   ///flutter: Server running on http://localhost:8080 closed
 
-  @override
   Future<void> close() async {
-    if (this._server == null) {
+    if (_server == null) {
       return;
     }
-    await this._server!.close(force: true);
+    await _server!.close(force: true);
     print('Server running on http://localhost:$_port closed');
-    this._started = false;
-    this._server = null;
+    _started = false;
+    _server = null;
   }
 
-  @override
   bool isRunning() {
-    return this._server != null && _started == true;
+    return _server != null && _started == true;
   }
 
   String _getContentTypeFromMimeType(String mimeType) {
