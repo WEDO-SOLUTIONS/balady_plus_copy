@@ -11,131 +11,155 @@ import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:http/http.dart' as http;
 
 import '../../server/CustomInAppLocalhostServer.dart';
 
 String serviceURL =
-    'https://drive.usercontent.google.com/download?id=1uP-dYH3y7sxVATDwMB4XvINIPWspZFMq&export=download&authuser=0&confirm=t&uuid=5cd42fd8-b038-4830-b75d-5f985b83cb8e&at=ALoNOgnXkKDo1SX4qtAkeHV-itd2:1748149094212';
+    'https://drive.usercontent.google.com/download?id=1sfLL4rXbmSK5H9xANMpLobmN6CkBQJQJ&export=download&authuser=0&confirm=t&uuid=b7d70e6c-7db5-486d-88cd-0d673c08034a&at=ALoNOgl6QT25Qq2KJmmh8rtR-pcs%3A1748172351387';
 String serviceURLSnapAndSend =
     'https://drive.usercontent.google.com/download?id=1ZyuipZXASuNjZA6hw13i3RAj6vfV7MGX&export=download&authuser=0&confirm=t&uuid=8062122e-3e36-4f28-b714-d80d61108494&at=ALoNOgmP4jwor9aG-3f6RCHV9WyH:1748149964300';
 
 CustomInAppLocalhostServer? localhostServer;
-int? portNumber = 8080;
+int portNumber = 8080;
 
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniAppModel miniApp;
   String? serviceDownloadPath;
+  late String basePathService;
 
   MiniAppsEngineBloc({required this.miniApp})
       : super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
     on<DownloadMiniAppsEngineEvent>(_downloadMiniAppsEngine);
+    on<OpenServerEngineEvent>(_openLocalHostServer);
 
     add(CheckMiniAppsEngineEvent(miniApp: miniApp));
   }
 
   void _checkMiniAppsEngine(
       CheckMiniAppsEngineEvent event, Emitter emit) async {
-    await prepareServerPath();
-
-    /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
+    // await prepareServerPath();
+    basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
     String dir =
-        '${CommonProperties.serverRootPath}/${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+        '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
     File file = File('$dir/index.html');
     bool exists = await file.exists();
     if (exists) {
-      await startLocalHostServer(dir, event.miniApp.serviceKey);
-      String servicePath = '$dir/index.html'.replaceAll(
-          CommonProperties.serverRootPath!, "http://localhost:$portNumber");
-      // await Future.delayed(const Duration(seconds: 10));
-      emit(MiniAppsEngineLoadedState(servicePath: servicePath));
+      add(OpenServerEngineEvent(miniApp: miniApp));
     } else {
       add(DownloadMiniAppsEngineEvent(miniApp: event.miniApp));
     }
     return;
   }
 
-  Future<String?> prepareDownloadPath(String dir, String version) async {
-    try {
-      serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir';
-      bool exists = await Directory(serviceDownloadPath!).exists();
-      if (exists == false) {
-        await Directory(serviceDownloadPath!).create();
-      }
+  // Future<String?> prepareDownloadPath(String dir, String version) async {
+  //   try {
+  //     serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir';
+  //     bool exists = await Directory(serviceDownloadPath!).exists();
+  //     if (exists == false) {
+  //       await Directory(serviceDownloadPath!).create();
+  //     }
+  //
+  //     serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir/$version';
+  //     exists = await Directory(serviceDownloadPath!).exists();
+  //     if (exists == false) {
+  //       await Directory(serviceDownloadPath!).create();
+  //     }
+  //
+  //     return serviceDownloadPath;
+  //   } catch (e) {
+  //     return null;
+  //   }
+  // }
 
-      serviceDownloadPath = '${CommonProperties.serverRootPath!}/$dir/$version';
-      exists = await Directory(serviceDownloadPath!).exists();
-      if (exists == false) {
-        await Directory(serviceDownloadPath!).create();
-      }
-
-      return serviceDownloadPath;
-    } catch (e) {
-      return null;
-    }
-  }
-
-  prepareServerPath() async {
-    try {
-      String serverRootPath =
-          "${(await getApplicationDocumentsDirectory()).path}/www";
-      bool existsss = await Directory(serverRootPath).exists();
-      if (existsss == false) {
-        await Directory(serverRootPath).create();
-      }
-      CommonProperties.serverRootPath = serverRootPath;
-    } catch (e) {}
-  }
+  // prepareServerPath() async {
+  //   try {
+  //     String serverRootPath =
+  //         "${(await getApplicationDocumentsDirectory()).path}/www";
+  //     bool existsss = await Directory(serverRootPath).exists();
+  //     if (existsss == false) {
+  //       await Directory(serverRootPath).create();
+  //     }
+  //     CommonProperties.serverRootPath = serverRootPath;
+  //   } catch (e) {}
+  // }
 
   void _downloadMiniAppsEngine(
       DownloadMiniAppsEngineEvent event, Emitter emit) async {
     emit(const MiniAppsEngineLoadingState(progress: '0'));
 
-    /// TODO : Need replace teh "miniApp" from teh event.miniApp.dir or event.miniApp.nameKey
-    serviceDownloadPath = await prepareDownloadPath(
-        "${event.miniApp.serviceKey}",
-        event.miniApp.latestVersion!.versionNumber!);
-
-    if (serviceDownloadPath != null) {
-      await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
-
-      var zippedFile = await _downloadFile(
-        event.miniApp.latestVersion?.packageMetaDataDto?.id ?? "",
-        serviceDownloadPath!,
-        event.miniApp.serviceName!,
-        event.miniApp.serviceKey!,
-        emit,
+    serviceDownloadPath = "$basePathService${event.miniApp.serviceKey}";
+    Directory directoryApp = Directory(serviceDownloadPath!);
+    bool exists = await directoryApp.exists();
+    // chick if have old version of the app delete it
+    if(exists) {
+      await directoryApp.delete(recursive: true);
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      directoryApp = Directory(serviceDownloadPath!);
+      await directoryApp.create(recursive: true);
+    } else {
+      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      directoryApp = Directory(serviceDownloadPath!);
+      await directoryApp.create(recursive: true);
+    }
+    var zippedFile = await _downloadFile(
+      event.miniApp.latestVersion?.packageMetaDataDto?.id ?? "",
+      serviceDownloadPath!,
+      event.miniApp.serviceKey!,
+      emit,
+    );
+    if (zippedFile != null) {
+      await unarchiveAndSave(zippedFile, serviceDownloadPath!);
+      add(OpenServerEngineEvent(miniApp: event.miniApp));
+    } else {
+      emit(
+        const MiniAppsEngineErrorState(
+          errorMessage: "Failed to download the file",
+        ),
       );
-      if (zippedFile != null) {
-        String? indexPath =
-            await unarchiveAndSave(zippedFile, serviceDownloadPath!);
-        if (indexPath == null) {
-          if (zippedFile.existsSync()) {
-            zippedFile.delete();
-          }
+    }
+  }
 
-          emit(const MiniAppsEngineErrorState(
-              errorMessage: "Failed to unarchive the file"));
-          return;
-        }
-        emit(MiniAppsEngineLoadedState(servicePath: indexPath));
+
+  void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
+    try {
+      // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
+      String pathService =
+          '$basePathService/${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      portNumber = generateRandomPort(portNumber);
+
+      localhostServer ??= CustomInAppLocalhostServer(
+        PlatformInAppLocalhostServerCreationParams(
+          documentRoot: pathService,
+          port: portNumber,
+          shared: true,
+        ),
+      );
+      bool isRunning = localhostServer!.isRunning();
+      if (isRunning) {
+        await localhostServer?.close();
+        await localhostServer!.start();
       } else {
-        emit(const MiniAppsEngineErrorState(
-            errorMessage: "Failed to download the file"));
+        await localhostServer!.start();
       }
+
+      String servicePath = '$pathService/index.html'.replaceAll(
+        pathService,
+        "http://localhost:$portNumber",
+      );
+      emit(MiniAppsEngineLoadedState(servicePath: servicePath));
+    } catch (e) {
+      print(e.toString());
     }
   }
 
   Future<File?> _downloadFile(
     String fileId,
     String downloadPath,
-    String fileName,
     String serviceKey,
     Emitter emitter, {
     int retryCounter = 0,
@@ -164,7 +188,8 @@ class MiniAppsEngineBloc
           },
         ),
       );
-      var file = File('$downloadPath/$fileName.zip');
+
+      var file = File('$downloadPath/$serviceKey.zip');
       return file.writeAsBytes(response.data);
     } catch (error, stackTrace) {
       if (retryCounter < 3) {
@@ -172,7 +197,6 @@ class MiniAppsEngineBloc
         return _downloadFile(
           fileId,
           downloadPath,
-          fileName,
           serviceKey,
           emitter,
           retryCounter: retryCounter + 1,
@@ -185,37 +209,19 @@ class MiniAppsEngineBloc
     return null;
   }
 
-  // Future<File?> _downloadFile(
-  //   String url,
-  //   String downloadPath,
-  //   String zipFileName,
-  // ) async {
-  //   try {
-  //     var req = await http.Client().get(Uri.parse(serviceURL));
-  //     if (req.statusCode == 200) {
-  //       var file = File('$downloadPath/$zipFileName.zip');
-  //
-  //       return file.writeAsBytes(req.bodyBytes);
-  //     }
-  //   } catch (e) {
-  //     return null;
-  //   }
-  //   return null;
-  // }
-
   unarchiveAndSave(var zippedFile, String extractPath) async {
-    String indexFilePath = "";
     var bytes = zippedFile.readAsBytesSync();
     var archive = ZipDecoder().decodeBytes(bytes);
     try {
       for (var file in archive) {
-        //  var fileName = '${CommonProperties.serverRootPath}/${file.name}';
+        //  var fileName = '$basePathService/${file.name}';
         if (file.isFile && !file.name.contains("__MACOSX")) {
           var outFile = File('$extractPath/${file.name}');
           if (file.name.contains("index.html")) {
-            indexFilePath = outFile.path.replaceAll(
-                CommonProperties.serverRootPath!,
-                "http://localhost:$portNumber");
+            // indexFilePath = outFile.path.replaceAll(
+            //   basePathService,
+            //   "http://localhost:$portNumber",
+            // );
           }
           outFile = await outFile.create(recursive: true);
           await outFile.writeAsBytes(file.content);
@@ -224,8 +230,7 @@ class MiniAppsEngineBloc
     } catch (e) {
       print("Test");
     }
-
-    return indexFilePath;
+    // return indexFilePath;
   }
 
 // Future<String?> unarchiveAndSave(File zippedFile,emitter) async {
@@ -259,53 +264,9 @@ class MiniAppsEngineBloc
   //   return indexFilePath;
   // }
 
-  startLocalHostServer(serverPath, serviceKey) async {
-    try {
-      bool exists = await Directory(serverPath).exists();
-      if (exists == false) {
-        await Directory(serverPath).create();
-      }
-
-      //  localhostServer?.close();
-      localhostServer ??= CustomInAppLocalhostServer(
-        PlatformInAppLocalhostServerCreationParams(
-          documentRoot: serverPath,
-          port: portNumber!,
-          shared: true,
-        ),
-      );
-      if (localhostServer?.documentRoot == serverPath + "/") {
-        if (!localhostServer!.isRunning()) {
-          await localhostServer!.start();
-        }
-      } else {
-        await localhostServer?.close();
-
-        portNumber = generateRandomPort(portNumber!);
-        localhostServer = CustomInAppLocalhostServer(
-          PlatformInAppLocalhostServerCreationParams(
-            documentRoot: serverPath,
-            port: portNumber!,
-            shared: true,
-          ),
-        );
-        await localhostServer!.start();
-      }
-
-      // if (defaultTargetPlatform == TargetPlatform.android) {
-      //   await InAppWebViewController.setWebContentsDebuggingEnabled(
-      //       kDebugMode);
-      // }
-
-      CommonProperties.serverRootPath = serverPath;
-    } catch (e) {
-      print(e.toString());
-    }
-  }
-
   int generateRandomPort(int oldPort) {
     final random = Random();
-    int newPort = 8080 + random.nextInt(11); // 8080 to 8090 inclusive
+    int newPort = 8080 + random.nextInt(22); // 8080 to 8090 inclusive
 
     if (newPort != oldPort) {
       return newPort;
@@ -315,8 +276,8 @@ class MiniAppsEngineBloc
   }
 
   @override
-  Future<void> close() {
-    //localhostServer?.close(); // Cancel any subscriptions
-    return super.close(); // Close the BLoC's own stream
+  Future<void> close() async {
+    await localhostServer?.close();
+    return super.close();
   }
 }

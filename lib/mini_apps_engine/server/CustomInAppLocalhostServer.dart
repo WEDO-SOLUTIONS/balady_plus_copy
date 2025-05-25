@@ -11,7 +11,6 @@ import 'package:shelf/shelf.dart';
 import 'package:shelf/shelf_io.dart' as io;
 
 class CustomInAppLocalhostServer {
-
   bool _started = false;
   HttpServer? _server;
   int _port = 8080;
@@ -19,7 +18,8 @@ class CustomInAppLocalhostServer {
   String _directoryIndex = 'index.html';
   String _documentRoot = './';
 
-  CustomInAppLocalhostServer(PlatformInAppLocalhostServerCreationParams params) {
+  CustomInAppLocalhostServer(
+      PlatformInAppLocalhostServerCreationParams params) {
     this._port = params.port;
     this._directoryIndex = params.directoryIndex;
     this._documentRoot = (params.documentRoot.endsWith('/'))
@@ -42,16 +42,13 @@ class CustomInAppLocalhostServer {
 
   @override
   Future<void> start() async {
-
     try {
       if (this._started) {
         throw Exception('Server already started on http://localhost:$_port');
       }
       this._started = true;
 
-
-      final handler = const Pipeline()
-          .addHandler((Request request) async {
+      final handler = const Pipeline().addHandler((Request request) async {
         if (request.method == 'OPTIONS') {
           final corsHeaders = {
             'Access-Control-Allow-Origin': '*',
@@ -81,8 +78,7 @@ class CustomInAppLocalhostServer {
               if (Platform.isAndroid) {
                 final file = File(Uri.decodeFull(path));
                 body = await file.readAsBytes();
-              }
-              else {
+              } else {
                 body = (await rootBundle.load(Uri.decodeFull(path)))
                     .buffer
                     .asUint8List();
@@ -94,12 +90,11 @@ class CustomInAppLocalhostServer {
             }
 
             // var contentType = ContentType('text', 'html', charset: 'utf-8');
+
             String content = "text/html";
             if (!request.requestedUri.path.endsWith('/') &&
-
                 request.requestedUri.pathSegments.isNotEmpty) {
-              final mimeType = MimeTypeResolver.lookup(
-                  request.requestedUri.path);
+              final mimeType = MimeTypeResolver.lookup(request.requestedUri.path);
               if (mimeType != null) {
                 // contentType = _getContentTypeFromMimeType(mimeType);
                 content = _getContentTypeFromMimeType(mimeType);
@@ -110,16 +105,13 @@ class CustomInAppLocalhostServer {
               'Access-Control-Allow-Origin': '*',
               'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
               'Access-Control-Allow-Headers': '*',
-
               "Content-Type": content,
             };
             return Response.ok(
               body,
               headers: corsHeaders,
             );
-          }
-
-          else {
+          } else {
             var requestUrl = request.url.queryParameters['url'];
             requestUrl ??= request.url.queryParameters['zip'];
             final client = HttpClient();
@@ -140,18 +132,14 @@ class CustomInAppLocalhostServer {
         }
       });
 
-
-      final server = await io.serve(
-          handler, '127.0.0.1', _port, shared: _shared);
+      final server =
+          await io.serve(handler, '127.0.0.1', _port, shared: _shared);
       this._server = server;
-
-   }
-    catch (e)
-    {
+    } catch (e) {
       print(e.toString());
     }
   }
-
+  ///flutter: Server running on http://localhost:8080 closed
 
   @override
   Future<void> close() async {
@@ -162,13 +150,11 @@ class CustomInAppLocalhostServer {
     print('Server running on http://localhost:$_port closed');
     this._started = false;
     this._server = null;
-
   }
-
 
   @override
   bool isRunning() {
-    return this._server != null && _started==true;
+    return this._server != null && _started == true;
   }
 
   String _getContentTypeFromMimeType(String mimeType) {
@@ -178,11 +164,9 @@ class CustomInAppLocalhostServer {
     if (_isTextFile(mimeType)) {
       charset = 'utf-8';
       return "${contentType[0]}/${contentType[1]};$charset";
-    }
-    else {
+    } else {
       return "${contentType[0]}/${contentType[1]}";
     }
-
 
     //return ContentType(contentType[0], contentType[1], charset: charset);
   }
@@ -191,9 +175,4 @@ class CustomInAppLocalhostServer {
     final textFile = RegExp(r'^text\/|^application\/(javascript|json)');
     return textFile.hasMatch(mimeType);
   }
-
-
-
-
-
 }

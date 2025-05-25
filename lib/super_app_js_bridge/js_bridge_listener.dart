@@ -114,58 +114,38 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void getCookies(dynamic msg, CompletionHandler handler) async {
     late BaseResponse response;
     if (CommonProperties.isLoggedIn) {
-      EasyLoading.show();
       GetCookie getCookie = GetCookie(repository: sl());
       final failureOrSuccessForCookie = await getCookie(false);
-      EasyLoading.dismiss();
-      failureOrSuccessForCookie.fold((l) {
-        CommonFunctions.showError("server_error_1".tr());
-      }, (r) async {
-        response = BaseResponse(
-          code: 200,
-          eventName: "getCookies",
-          message: "success",
-          data: CookiesModel(
-            cookies: r,
-          ),
-        );
-        handler.complete(response.jsonEncodeModel());
-      });
-    } else {
-      await showDialog(
-        context: NavigationService.navigatorKey.currentContext!,
-        builder: (ctx) => NeedLoginDialog(
-          onSuccessLogin: (bool? isSuccess) async {
-            if (isSuccess ?? false) {
-              EasyLoading.show();
-              GetCookie getCookie = GetCookie(repository: sl());
-              final failureOrSuccessForCookie = await getCookie(false);
-              EasyLoading.dismiss();
-              failureOrSuccessForCookie.fold((l) {
-                CommonFunctions.showError("server_error_1".tr());
-              }, (r) async {
-                response = BaseResponse(
-                  code: 200,
-                  eventName: "getCookies",
-                  message: "success",
-                  data: CookiesModel(
-                    cookies: r,
-                  ),
-                );
-                handler.complete(response.jsonEncodeModel());
-              });
-            } else {
-              BaseResponse response = BaseResponse(
-                code: 401,
-                eventName: "getCookies",
-                message: "Unauthorized",
-                data: null,
-              );
-              handler.complete(response.jsonEncodeModel());
-            }
-          },
-        ),
+      failureOrSuccessForCookie.fold(
+        (l) {
+          BaseResponse response = BaseResponse(
+            code: 401,
+            message: "failure get cookies",
+            eventName: "getCookies",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+        },
+        (r) async {
+          response = BaseResponse(
+            code: 200,
+            eventName: "getCookies",
+            message: "success",
+            data: CookiesModel(
+              cookies: r,
+            ),
+          );
+          handler.complete(response.jsonEncodeModel());
+        },
       );
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 401,
+        message: "Unauthorized",
+        eventName: "getUserProfile",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
     }
   }
 

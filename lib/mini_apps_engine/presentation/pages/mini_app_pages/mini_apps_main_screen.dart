@@ -32,66 +32,72 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
         BlocProvider.of<HomeMiniAppsListCubit>(context).state
             as HomeMiniAppsListSuccessState;
 
-    return BlocProvider<MiniAppsEngineBloc>(
-      create: (context) {
-        if (state.municipalAppBloc != null &&
-            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey) {
-          return state.municipalAppBloc!;
-        }
-        return MiniAppsEngineBloc(miniApp: data);
-      },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text(data.serviceName ?? ""),
-          leading: IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ),
-        body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
-          builder: (contextBloc, state) {
-            if (state is MiniAppsEngineInitialState) {
-              return const Center(child: Text('Loading ...'));
-            } else if (state is MiniAppsEngineLoadedState) {
-              return WebMiniAppsScreen(servicePath: state.servicePath);
-            } else if (state is MiniAppsEngineErrorState) {
-              return Center(child: Text(state.errorMessage));
-            } else if (state is FailedDownloadState) {
-              return ReloadWidget(
-                errorMessage: "errors_server_error_1".tr(),
-                onTab: () {
-                  BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
-                    DownloadMiniAppsEngineEvent(miniApp: data),
-                  );
-                },
-              );
-            } else if (state is MiniAppsEngineLoadingState) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const CircularProgressIndicator(),
-                    const SizedBox(height: 16),
-                    Text(
-                      state.progress,
-                      style: const TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
+    Widget body = Scaffold(
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: Text(data.serviceName ?? ""),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            Navigator.of(context).pop();
           },
         ),
-        // floatingActionButton: favoriteButton(),
+      ),
+      body: BlocBuilder<MiniAppsEngineBloc, MiniAppsEngineState>(
+        builder: (contextBloc, state) {
+          if (state is MiniAppsEngineInitialState) {
+            return const Center(child: Text('Loading ...'));
+          } else if (state is MiniAppsEngineLoadedState) {
+            return WebMiniAppsScreen(servicePath: state.servicePath);
+          } else if (state is MiniAppsEngineErrorState) {
+            return Center(child: Text(state.errorMessage));
+          } else if (state is FailedDownloadState) {
+            return ReloadWidget(
+              errorMessage: "errors_server_error_1".tr(),
+              onTab: () {
+                BlocProvider.of<MiniAppsEngineBloc>(contextBloc).add(
+                  DownloadMiniAppsEngineEvent(miniApp: data),
+                );
+              },
+            );
+          } else if (state is MiniAppsEngineLoadingState) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                    state.progress,
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
       ),
     );
+
+    return (state.municipalAppBloc != null &&
+            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey)
+        ? BlocProvider.value(
+            value: state.municipalAppBloc!
+              ..add(
+                OpenServerEngineEvent(miniApp: data),
+              ),
+            child: body,
+          )
+        : BlocProvider<MiniAppsEngineBloc>(
+            create: (context) {
+              return MiniAppsEngineBloc(miniApp: data);
+            },
+            child: body,
+          );
   }
 
   @override

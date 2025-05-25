@@ -28,3 +28,14 @@ class DownloadMiniAppsEngineEvent extends MiniAppsEngineEvent {
   List<Object> get props => [];
 }
 
+
+
+class OpenServerEngineEvent extends MiniAppsEngineEvent {
+  final MiniAppModel miniApp;
+
+  const OpenServerEngineEvent({required this.miniApp});
+
+  @override
+  List<Object> get props => [];
+}
+
