@@ -130,7 +130,7 @@ class MiniAppsEngineBloc
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
       String pathService =
           '$basePathService/${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
-      portNumber = generateRandomPort(portNumber);
+      // portNumber = generateRandomPort(portNumber);
 
       localhostServer ??= CustomInAppLocalhostServer(
         PlatformInAppLocalhostServerCreationParams(
@@ -156,6 +156,7 @@ class MiniAppsEngineBloc
       print(e.toString());
     }
   }
+
 
   Future<File?> _downloadFile(
     String fileId,
