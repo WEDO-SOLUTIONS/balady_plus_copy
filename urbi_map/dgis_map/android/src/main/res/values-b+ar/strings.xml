@@ -18,11 +18,14 @@
   <string name="grant_access_action">السماح بالوصول</string>
 
   <!-- Search -->
-  <string name="searchNothingFound">لم يتم العثور على شيء. حاول تغيير البحث أو تغيير الموقع</string>
+  <string name="search_history">تاريخ</string>
+  <string name="search_nothing_found">لم يتم العثور على شيء</string>
+  <string name="enter_from_keyboard">أدخل من لوحة المفاتيح</string>
 
   <!-- Common -->
   <string name="driving_notification_title">التنقل باستخدام خرائط بلدي</string>
   <string name="you_dont_seem_to_have_internet_description">يبدو أنه لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال</string>
   <string name="meter">م</string>
   <string name="kilometer">كم</string>
+  <string name="back">رجوع</string>
 </resources>

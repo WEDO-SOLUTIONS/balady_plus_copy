@@ -118,8 +118,8 @@ class NavigationScreen(
         } else {
             actionStrip.addAction(routeOverviewAction)
         }
-        //        TODO(Sergei): add search and settings screens
-        //        actionStrip.addAction(searchAction)
+        actionStrip.addAction(searchAction)
+        //        TODO(Sergei): add settings screens
         //        actionStrip.addAction(settingsAction)
         if (isNavigation) {
             actionStrip.addAction(buildStopNavigationAction())
@@ -363,7 +363,7 @@ class NavigationScreen(
     }
 
     private fun openSearch() {
-        // TODO(Sergei): open search screen
+        screenManager.push(CategorySearchScreen(carContext, mapController))
     }
 
     private fun openSettings() {

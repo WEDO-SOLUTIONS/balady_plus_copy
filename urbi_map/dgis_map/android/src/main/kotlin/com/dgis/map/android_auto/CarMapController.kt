@@ -10,6 +10,7 @@ import ru.dgis.sdk.coordinates.Bearing
 import ru.dgis.sdk.coordinates.GeoPoint
 import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.directory.SearchManager
+import ru.dgis.sdk.directory.Suggest
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
 import ru.dgis.sdk.map.AttributeValue
@@ -224,6 +225,15 @@ class CarMapController(
         searchHandler.search(queryText, pageSize, resultCallback, errorCallback)
     }
 
+    fun suggest(
+        queryText: String,
+        limit: Int,
+        resultCallback: (result: List<Suggest>) -> Unit,
+        errorCallback: ((exception: Exception) -> Unit)? = null
+    ) {
+        searchHandler.suggest(queryText, limit, resultCallback, errorCallback)
+    }
+
     fun toggleTrafficControl() {
         trafficControlModel?.onClicked()
     }
@@ -317,7 +327,7 @@ class CarMapController(
         )
     }
 
-    fun setCameraPadding(padding: Padding){
+    fun setCameraPadding(padding: Padding) {
         val map = this.map ?: return
         map.camera.padding = padding
     }
