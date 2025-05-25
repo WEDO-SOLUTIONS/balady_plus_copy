@@ -145,8 +145,9 @@ class MiniAppsEngineBloc
   ) async {
     WebService webService = sl<WebService>();
     try {
-      Response response = await webService.dio.get(fileId,
-       // "v1/dms-mobile/files/$fileId",
+      Response response = await webService.dio.get(
+        // fileId,
+       "v1/dms-mobile/files/$fileId",
          // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         onReceiveProgress: (received, total) {
           if (total != -1) {
