@@ -12,7 +12,6 @@ class PoiMarkerRcmc {
   final double latitude;
   final double longitude;
   final String? address;
-  @JsonKey(name: 'contact_info')
   final String? contactInfo;
 
   PoiMarkerRcmc({
