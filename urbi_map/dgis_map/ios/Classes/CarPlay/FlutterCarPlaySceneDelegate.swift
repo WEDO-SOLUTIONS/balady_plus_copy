@@ -55,6 +55,10 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             makeMyLocationButton()
         ]
         
+        mapTemplate.leadingNavigationBarButtons = [
+            makeSearchButton(interfaceController: interfaceController),
+        ]
+        
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
             makeTrafficButton(),
@@ -95,6 +99,22 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     ) {
         FlutterCarPlaySceneDelegate.map = nil
         Self.delegate?.onConnectionStateChanged(connected: false)
+    }
+    
+    private var searchTemplateDelegate: CarPlaySearchTemplateDelegate?
+    
+    func makeSearchButton(interfaceController: CPInterfaceController) -> CPBarButton {
+        let searchImage = UIImage(named: "Search")!
+        return CPBarButton(image: searchImage) { _ in
+            guard let map = FlutterCarPlaySceneDelegate.map else { return }
+            self.searchTemplateDelegate = CarPlaySearchTemplateDelegate(
+                interfaceController: interfaceController,
+                map: map
+            )
+            let searchTemplate = CPSearchTemplate()
+            searchTemplate.delegate = self.searchTemplateDelegate
+            interfaceController.pushTemplate(searchTemplate, animated: true) { _, __ in }
+        }
     }
 }
 
