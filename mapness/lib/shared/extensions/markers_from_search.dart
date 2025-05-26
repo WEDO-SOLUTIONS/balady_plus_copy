@@ -60,8 +60,8 @@ String _breakLineInTwo(String inputString) {
 extension MarkerFromSearchResultMessage on SearchResultMessage {
   static const _invalidMarkerId = 'invalid';
   static const _propertyKey = 'objectId';
-  static const _poiMapFontAr = 'FrutigerLTArabic65Bold';
-  static const _poiMapFontEn = 'GolosText_SemiBold';
+  static const poiMapFontAr = 'FrutigerLTArabic65Bold';
+  static const poiMapFontEn = 'GolosText_SemiBold';
 
   Future<List<Marker>> getMarkers({
     required AppRouter router,
@@ -115,7 +115,7 @@ extension MarkerFromSearchResultMessage on SearchResultMessage {
               color: isDark ? 0xD3FFFFFF : 0xff1B1B1B,
               strokeColor: isDark ? 0xff1B1B1B : 0xD3FFFFFF,
               fontSize: 13,
-              fontName: text.containsArabic() || isRtl ? _poiMapFontAr : _poiMapFontEn,
+              fontName: text.containsArabic() || isRtl ? poiMapFontAr : poiMapFontEn,
               textOffset: 4,
               strokeWidth: 1,
               textPlacement: MarkerTextPlacementMessage(
@@ -158,6 +158,11 @@ enum MapMarkersType {
   beauty,
   barbershops,
   recreationCenters,
+  waterPlaces,
+  medicalHelp,
+  hajjSupport,
+  kiosksRetail,
+  additional,
 }
 
 extension IconPathFromMapMarkersType on MapMarkersType {
@@ -182,6 +187,11 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.beauty => Assets.icons.svg.placesNew.icBeauty.keyName,
         MapMarkersType.barbershops => Assets.icons.svg.placesNew.icBarbershop.keyName,
         MapMarkersType.recreationCenters => Assets.icons.svg.placesNew.icRecreation.keyName,
+        MapMarkersType.waterPlaces => Assets.icons.svg.placesNew.icWaterPlaces.keyName,
+        MapMarkersType.medicalHelp => Assets.icons.svg.placesNew.icMedicalHelp.keyName,
+        MapMarkersType.hajjSupport => Assets.icons.svg.placesNew.icHajjSupport.keyName,
+        MapMarkersType.kiosksRetail => Assets.icons.svg.placesNew.icKiosksRetail.keyName,
+        MapMarkersType.additional => Assets.icons.svg.placesNew.icAdditional.keyName,
       };
 }
 
@@ -210,6 +220,11 @@ extension BigIconPath on String {
       'ic_barbershop.svg': Assets.icons.svg.placesBigNew.icBarbershop.keyName,
       'ic_beauty.svg': Assets.icons.svg.placesBigNew.icBeauty.keyName,
       'ic_recreation.svg': Assets.icons.svg.placesBigNew.icRecreation.keyName,
+      'ic_water_places.svg': Assets.icons.svg.placesBigNew.icWaterPlaces.keyName,
+      'ic_medical_help.svg': Assets.icons.svg.placesBigNew.icMedicalHelp.keyName,
+      'ic_hajj_support.svg': Assets.icons.svg.placesBigNew.icHajjSupport.keyName,
+      'ic_kiosks_retail.svg': Assets.icons.svg.placesBigNew.icKiosksRetail.keyName,
+      'ic_additional.svg': Assets.icons.svg.placesBigNew.icAdditional.keyName,
     };
 
     return bigIcons[iconName] ?? Markers.defaultPinNew;
