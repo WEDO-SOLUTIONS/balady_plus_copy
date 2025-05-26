@@ -14,11 +14,12 @@ class UserProfileModel implements BaseData {
   });
 
   factory UserProfileModel.fromJson(Map<String, dynamic> json) {
+
     return UserProfileModel(
-      email: json['email'] as String,
-      name: json['name'] as String,
+      email: json['mail'] as String,
+      name: json['en_name'] as String,
       phone: json['phone'] as String,
-      nameAr: json['name_ar'] as String,
+      nameAr: json['ar_name'] as String,
     );
   }
 
