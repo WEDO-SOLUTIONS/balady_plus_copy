@@ -145,7 +145,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
               _collapseBottomSheet();
             },
           ),
-          // MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
@@ -162,7 +161,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                   ),
                   child: Column(
                     children: [
-                      // const SizedBox(height: Spacing.$1_5x),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
                         child: MapSearchBar(
