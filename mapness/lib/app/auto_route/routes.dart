@@ -76,6 +76,12 @@ class Routes {
           page: FlipsContinueRoute.page,
         ),
         CustomRoute(
+          path: '/addPhoto',
+          page: AddPhotoRoute.page,
+          transitionsBuilder: TransitionsBuilders.slideBottom,
+          customRouteBuilder: RouteBuilders.modalSheetBuilder,
+        ),
+        CustomRoute(
           path: '/feedback_address_suggester',
           page: FeedbackAddressSuggester.page,
           opaque: false,
