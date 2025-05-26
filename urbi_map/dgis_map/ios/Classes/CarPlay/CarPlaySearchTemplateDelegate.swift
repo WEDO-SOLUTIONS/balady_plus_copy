@@ -68,8 +68,6 @@ class CarPlaySearchTemplateDelegate: NSObject, CPSearchTemplateDelegate {
     private func createSuggestMessageCPListItem(suggestMessage: SuggestMessage)
         -> CPListItem
     {
-        let markerPosition = suggestMessage.handler.objectHandler?.item
-            .markerPosition
         let item = CPListItem(
             text: suggestMessage.title.text,
             detailText: suggestMessage.subtitle.text
