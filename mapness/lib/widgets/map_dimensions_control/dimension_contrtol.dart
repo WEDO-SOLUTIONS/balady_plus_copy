@@ -15,10 +15,7 @@ class DimensionContrtol extends ConsumerWidget {
     const double iconSize = 24;
 
     if (mapDimensionsState == MapDimensionsState.hide) {
-      return const SizedBox(
-        width: iconSize,
-        height: iconSize,
-      );
+      return const Spacer();
     }
 
     return MapButton(
