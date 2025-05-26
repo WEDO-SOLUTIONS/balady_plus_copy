@@ -41,7 +41,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
       ),
       body: BlocProvider(
         create: (context) =>
-            EkramInquiryGraveBloc()..add(GetEkramCitiesEvent()),
+            EkramInquiryGraveBloc()..add(const GetEkramCitiesEvent()),
         child: BlocConsumer<EkramInquiryGraveBloc, EkramInquiryGraveState>(
           listener: (context, state) {
             print(state);
@@ -57,6 +57,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                   child: SingleChildScrollView(
                     child: Column(children: [
                       CustomTextFieldWidget(
+                        isRequired: true,
                         label: "name".tr(),
                         onChanged: (String? val) {
                           context
@@ -66,6 +67,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
+                        showOptional:true,
                         items: state.nationalIdTypes ?? [],
                         value: state.selectedNationalIdType,
                         onEmptyList: () async {
@@ -93,6 +95,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                       ),
                       const CustomVerticalSpace(height: 16),
                       CustomLookUpLongDialog(
+                        showOptional:true,
                         items: state.cities ?? [],
                         value: state.selectedCity,
                         onEmptyList: () async {
@@ -112,6 +115,8 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                         hint: ("burial_city").tr(),
                       ),
                       CustomLookUpLongDialog(
+
+                        showOptional:true,
                         items: state.nationalities ?? [],
                         value: state.selectedNationality,
                         onEmptyList: () {
@@ -136,7 +141,7 @@ class _InquiryGraveDetailsPageState extends State<InquiryGraveDetailsPage> {
                           onPressed: () {
                             context
                                 .read<EkramInquiryGraveBloc>()
-                                .add(FindCemetriesEvent());
+                                .add(const FindCemetriesEvent());
                           },
                           text: "searchButton".tr())
                     ]),

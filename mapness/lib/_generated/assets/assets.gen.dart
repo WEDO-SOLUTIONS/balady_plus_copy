@@ -258,14 +258,14 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
 
-  /// File path: assets/icons/svg/ic_actions_container.svg
-  SvgGenImage get icActionsContainer => const SvgGenImage('assets/icons/svg/ic_actions_container.svg');
-
   /// File path: assets/icons/svg/ic_2d.svg
   SvgGenImage get ic2d => const SvgGenImage('assets/icons/svg/ic_2d.svg');
 
   /// File path: assets/icons/svg/ic_3d.svg
   SvgGenImage get ic3d => const SvgGenImage('assets/icons/svg/ic_3d.svg');
+
+  /// File path: assets/icons/svg/ic_actions_container.svg
+  SvgGenImage get icActionsContainer => const SvgGenImage('assets/icons/svg/ic_actions_container.svg');
 
   /// File path: assets/icons/svg/ic_arrow_compass.svg
   SvgGenImage get icArrowCompass => const SvgGenImage('assets/icons/svg/ic_arrow_compass.svg');
@@ -432,9 +432,9 @@ class $AssetsIconsSvgGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         currentLocationIcon,
-        icActionsContainer,
         ic2d,
         ic3d,
+        icActionsContainer,
         icArrowCompass,
         icBestRoute,
         icBug,

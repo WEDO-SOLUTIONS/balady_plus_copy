@@ -10,14 +10,14 @@ class ReadOnlyField extends StatelessWidget {
   final double? hieght;
   final BoxDecoration? decoration;
 
-  ReadOnlyField(
+   ReadOnlyField(
       {super.key,
-        this.subTitle,
-        required this.title,
-        this.subTitleColor,
-        this.showSpace = true,
-        this.decoration,
-        this.hieght = 55,
+      this.subTitle,
+      required this.title,
+      this.subTitleColor,
+      this.showSpace = true,
+      this.decoration,
+      this.hieght = 55,
       });
 
   @override

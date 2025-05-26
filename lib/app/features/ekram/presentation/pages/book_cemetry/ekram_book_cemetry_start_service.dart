@@ -13,7 +13,7 @@ import '../../../../../core/utils/constants/ux_cam_events.dart';
 import '../../../../_shared_feature_/presentation/buttons/elevated_button_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/default_appbar_widget.dart';
 import '../../../../_shared_feature_/presentation/widgets/draw_icon_based_type_widget.dart';
-import '../../blocs/ekram_requests_bloc/ekram_requests_bloc.dart';
+import '../../blocs/driver_request_bloc/transport_requests_bloc.dart';
 
 class EkramBookCemetryStartService extends StatefulWidget {
   const EkramBookCemetryStartService({super.key});
@@ -36,8 +36,8 @@ class _EkramBookCemetryStartServiceState
 
   @override
   Widget build(BuildContext context) {
-    EkramRequestsBloc? ekramRequestsBloc =
-        ModalRoute.of(context)!.settings.arguments as EkramRequestsBloc?;
+    TransportRequestsBloc? ekramRequestsBloc =
+        ModalRoute.of(context)!.settings.arguments as TransportRequestsBloc?;
 
     return Scaffold(
       appBar: DefaultAppBarWidget(

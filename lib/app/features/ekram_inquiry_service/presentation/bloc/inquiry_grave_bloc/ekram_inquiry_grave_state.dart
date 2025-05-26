@@ -75,10 +75,24 @@ class EkramInquiryGraveState extends Equatable {
   }
 
   bool isFormValid() {
-    if (selectedNationalIdType != null && (nationalId?.isEmpty ?? true))
+    if (fullName?.isEmpty ?? true) {
       return false;
+    }
+    else {
+      if (nationalId != null&&nationalId?.isNotEmpty == true) {
+        if(selectedNationalIdType != null) {
+          return true;
+        } else {
+          return false;
+        }
 
-    if (fullName?.isEmpty ?? true) return false;
+      }
+      else {
+        return true;
+      }
+    }
+
+
     return true;
   }
 }

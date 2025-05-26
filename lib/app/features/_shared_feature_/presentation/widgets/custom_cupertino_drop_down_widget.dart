@@ -204,7 +204,6 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
   final double? marginBottom;
   final bool isLoading;
   final bool? isButtonDisabled;
-  final bool? readOnly;
 
   CustomTapWidgetForLongDialog(
       {Key? key,
@@ -219,8 +218,7 @@ class CustomTapWidgetForLongDialog extends StatefulWidget {
       this.isLoading = false,
       this.showOptional = false,
       this.showHintAsTitle = false,
-      this.isButtonDisabled,
-      this.readOnly})
+      this.isButtonDisabled})
       : super(key: key);
 
   @override
@@ -243,23 +241,20 @@ class _CustomTapWidgetForLongDialog
             marginBottom: widget.marginBottom,
             onTap: widget.items.isNotEmpty
                 ? () async {
-
-              if(widget.readOnly!= true) {
-                FocusManager.instance.primaryFocus?.unfocus();
-                await CustomPopUpsWidgets.showBottomSheet(
-                  NavigationService.navigatorKey.currentContext!,
-                  child: IncidentTypeWithSearchDialog(
-                    onSelect: (DropDownItem item) =>
-                        widget.onChangeType(item),
-                    items: widget.items,
-                    selectedItem: widget.value,
-                    isButtonDisabled: widget.isButtonDisabled,
-                    title:
-                    widget.showHintAsTitle ? widget.hint : widget.label,
-                    searchHint: widget.searchHint ?? ("searchFor").tr(),
-                  ),
-                );
-              }
+                    FocusManager.instance.primaryFocus?.unfocus();
+                    await CustomPopUpsWidgets.showBottomSheet(
+                      NavigationService.navigatorKey.currentContext!,
+                      child: IncidentTypeWithSearchDialog(
+                        onSelect: (DropDownItem item) =>
+                            widget.onChangeType(item),
+                        items: widget.items,
+                        selectedItem: widget.value,
+                        isButtonDisabled: widget.isButtonDisabled,
+                        title:
+                            widget.showHintAsTitle ? widget.hint : widget.label,
+                        searchHint: widget.searchHint ?? ("searchFor").tr(),
+                      ),
+                    );
                   }
                 : () {
                     FocusManager.instance.primaryFocus?.unfocus();

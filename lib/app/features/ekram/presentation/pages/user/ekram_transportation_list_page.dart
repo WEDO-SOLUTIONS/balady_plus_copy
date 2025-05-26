@@ -3,7 +3,7 @@ import 'package:balady_plus/app/core/dependency_injection/dependency_injection_e
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show
         EkramTransporationCardWidget,
-        EkramRequestsBloc,
+        TransportRequestsBloc,
         ShowFilterEvent,
         GetMoreDeceasedTransportRequestsEvent,
         GetDeceasedTransportRequestsEvent,
@@ -13,6 +13,7 @@ import 'package:balady_plus/etmam_app/core/utils/Debouncer.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_app_bar_widget.dart';
@@ -63,16 +64,10 @@ class _EkramTransportationListPageState
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => EkramRequestsBloc(
-          getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
-          isDriver: false)
+      create: (context) => TransportRequestsBloc(
+          getDeceasedTransportRequests: sl(), isDriver: false)
         ..add(GetDeceasedTransportRequestsEvent(isDriver: false)),
-      child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
+      child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {
           if (state.status == BlocStatus.failure) {
             CommonFunctions.showError(state.errorMessage ?? "");
@@ -83,7 +78,7 @@ class _EkramTransportationListPageState
               if (_scrollContrller.position.maxScrollExtent ==
                   _scrollContrller.offset) {
                 context
-                    .read<EkramRequestsBloc>()
+                    .read<TransportRequestsBloc>()
                     .add(GetMoreDeceasedTransportRequestsEvent(isDriver: true));
               }
             });
@@ -91,40 +86,74 @@ class _EkramTransportationListPageState
         },
         builder: (context, state) {
           return Scaffold(
-            appBar: DefaultAppBarWidget(
-              title: 'ekram_benf_transport'.tr(),
-              bottom: AppBarSeachBar(
-                onChanged: (value) {
-                  _debouncer.run(() {
-                    context.read<EkramRequestsBloc>().add(
-                        GetDeceasedTransportRequestsEvent(
-                            isDriver: false, text: value));
-                  });
-                },
-              ),
-              actions: [
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  margin: const EdgeInsets.symmetric(vertical: 8),
-                  child: InkWell(
+            appBar: AppBar(
+              titleSpacing: 0,
+              automaticallyImplyLeading: false,
+              backgroundColor: Colors.transparent,
+              iconTheme: const IconThemeData(color: Colors.black),
+              elevation: 0,
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    icon: const Icon(Icons.arrow_back_ios,
+                        color: AppColor.black),
+                    onPressed: () {
+                      Navigator.of(context).pop(); // Navigate back
+                    },
+                  ),
+                  Expanded(
+                    child: Text(
+                      "ekram_benf_transport".tr(),
+                      maxLines: 2,
+                      style: const TextStyle(
+                        color: AppColor.black,
+                        fontSize: 18.0, // Adjust font size for readability
+                        fontWeight: FontWeight.w600,
+                      ),
+                      textAlign: TextAlign.start, // Center the title
+                    ),
+                  ),
+
+                  InkWell(
                     onTap: () => NavigationService.navigatorKey.currentState!
                         .pushNamed(
                             RouteName.EkramRequestTransportationStartService,
-                            arguments: context.read<EkramRequestsBloc>()),
-                    child: CircleIcon(
+                            arguments: context.read<TransportRequestsBloc>()),
+                    child: CircleAvatar(
                       backgroundColor: AppColor.primary50Light,
-                      icon: IconPath.add,
-                      circleSize: 48.0,
-                      iconSize: 30.0,
+                      child: SvgPicture.asset(
+                        IconPath.add,
+                        width: 40,
+                        height: 40,
+                      ),
                     ),
                   ),
-                ),
-                FilterIcon(
-                  onTap: () async {
-                    context.read<EkramRequestsBloc>().add(ShowFilterEvent());
-                  },
-                ),
-              ],
+                  const SizedBox(width: 8.0), // Add consistent spacing
+                  // InkWell(
+                  //   onTap: () async {
+                  //     context
+                  //         .read<TransportRequestsBloc>()
+                  //         .add(ShowFilterEvent());
+                  //   },
+                  //   child: CircleAvatar(
+                  //     backgroundColor: AppColor.primary50Light,
+                  //     child: SvgPicture.asset(
+                  //       IconPath.filter,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
+              ),
+              // bottom: AppBarSeachBar(
+              //   onChanged: (value) {
+              //     _debouncer.run(() {
+              //       context.read<TransportRequestsBloc>().add(
+              //           GetDeceasedTransportRequestsEvent(
+              //               isDriver: false, text: value));
+              //     });
+              //   },
+              // ),
             ),
             body: Stack(
               children: [
@@ -157,12 +186,12 @@ class _EkramTransportationListPageState
                                   ekramTransportationItem:
                                       state.deceasedRequestItems![index],
                                   OnDetailsPress: () {
-                                    context.read<EkramRequestsBloc>().add(
-                                        GetDeceasedTransportRequestDetailsEvent(
-                                            isDriver: false,
-                                            requestId: state
-                                                .deceasedRequestItems![index]
-                                                .requestId!));
+                                    NavigationService.navigatorKey.currentState!
+                                        .pushNamed(
+                                            RouteName
+                                                .driverEkramTransportationDetailsScreen,
+                                            arguments: state
+                                                .deceasedRequestItems![index]);
                                   },
                                 ),
                                 CustomVerticalSpace(
@@ -180,7 +209,7 @@ class _EkramTransportationListPageState
                   ],
                 ),
                 if (state.status == BlocStatus.loadingShimmer)
-                  CustomShimmerListWidget(
+                  const CustomShimmerListWidget(
                     height: 274,
                     itemCount: 3,
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -188,7 +217,7 @@ class _EkramTransportationListPageState
                 if (state.status == BlocStatus.retry)
                   ReloadWidget(
                     onTab: () {
-                      context.read<EkramRequestsBloc>().add(
+                      context.read<TransportRequestsBloc>().add(
                           GetDeceasedTransportRequestsEvent(isDriver: false));
                     },
                   ),

@@ -57,6 +57,7 @@ import '../../features/_shared_feature_/data/entities/package_details.dart';
 import '../../features/_shared_feature_/presentation/dialogs/location_backgorund_consent.dart';
 import '../../features/_shared_feature_/presentation/dialogs/upload_file_dialog.dart';
 import '../../features/_shared_feature_/presentation/pages/pdf_view.dart';
+import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
 import '../../features/_shared_feature_/presentation/widgets/custom_popups_widgets.dart';
 import '../../features/calendar/presentation/bloc/calendar_bloc.dart';
 import '../../features/entry_point/domain/use_cases/get_cookie.dart';
@@ -528,13 +529,14 @@ class CommonFunctions {
   }
 
   static String getFormattedTimeEkram(String? timeStr,
-      {Duration? subtractedDuration}) {
+      {Duration? subtractedDuration,String? formate}) {
+
     String formattedTime = "";
     print(timeStr);
     try {
       String biddingEndingTime = timeStr ?? "";
       DateTime tempTime =
-          DateFormat("yyyy/M/dd hh:mm").parse(biddingEndingTime);
+          DateFormat(formate??"HH:mm").parse(biddingEndingTime);
       String time = DateFormat("h:mm a", isAppAR ? 'ar_SA' : 'en_US')
           .format(tempTime)
           .toString();
@@ -557,7 +559,7 @@ class CommonFunctions {
     String formattedTime = "";
     try {
       String biddingEndingTime = timeStr ?? "";
-      DateTime tempTime = DateFormat("yyyy/M/dd H:mm").parse(biddingEndingTime);
+      DateTime tempTime = DateFormat("yyyy/M/dd").parse(biddingEndingTime);
       String time = DateFormat("yyyy/M/dd").format(tempTime).toString();
       formattedTime = time;
     } catch (error, stackTrace) {
@@ -722,6 +724,7 @@ class CommonFunctions {
     String? body,
     bool authorization = false,
     String? corelationId,
+        String? xserviceId,
   }) {
     //var encodedURL = Uri.encodeComponent(url);
 
@@ -729,6 +732,7 @@ class CommonFunctions {
     message = url + method;
 
     if (corelationId != null) message += corelationId;
+    if (xserviceId != null) message += xserviceId;
     if (authorization) message += 'Bearer ${CommonProperties.token}';
 
     if (body != null) {
@@ -1497,7 +1501,16 @@ class CommonFunctions {
         if (serviceId == 2) {
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.dmsImageFullScreen, arguments: fileUrl);
-        } else {
+        }
+        else if(serviceId==0)
+          {
+            NavigationService.navigatorKey.currentState!.push(MaterialPageRoute(
+                builder: (context) => ViewAPIGEEImageScreen(imgUrl: fileUrl,xServiceId: "${serviceId!}",)));
+          }
+
+        else {
+
+
           NavigationService.navigatorKey.currentState!
               .pushNamed(RouteName.apigeeImageFullScreen, arguments: fileUrl);
         }
@@ -1704,6 +1717,56 @@ class CommonFunctions {
     }
   }
 
+
+
+  static String? hijriToGregorian(String? hijriDate ) {
+
+    try
+    {
+      if(hijriDate != null && hijriDate.isNotEmpty) {
+
+        List<int> dateSplitted =
+        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
+            .split("/")
+            .map((e) => int.parse(e))
+            .toList();
+        var gDate = HijriCalendar();
+        DateTime gorgianDate = gDate.hijriToGregorian(
+            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
+        String? gorgian  = DateFormat('yyyy/MM/dd').format(gorgianDate);
+
+
+        return CommonFunctions.padHijriDate(gorgian);
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
+  static String? gregorianToHijri(String? gorgianDate ) {
+    try
+    {
+      if(gorgianDate != null && gorgianDate.isNotEmpty) {
+        List<int> dateSplitted = gorgianDate!.split("/").map((e) => int.parse(e)).toList();
+        String hijri = HijriCalendar.fromDate(
+            DateTime(dateSplitted[0], dateSplitted[1], dateSplitted[2]))
+            .toFormat("yyyy/mm/dd");
+        return CommonFunctions.padHijriDate(hijri);
+      }
+      return null;
+    }
+    catch(e)
+    {
+      return null;
+    }
+
+  }
+
+
   static String getIssueCrWarning3() {
     if (CommonFunctions.isAppAR) {
       return '<p class="m-0 ng-star-inserted">عزيزي المستفيد... يمكنك الاطلاع على لائحة استيفاء اشتراطات اللوحات التجارية من خلال زيارة الرابط التالي: <a target="_balnk" href="https://balady.gov.sa/Services/DownloadUserGuide/218">لائحة استيفاء اشتراطات اللوحات التجارية</a></p>';
@@ -1750,34 +1813,6 @@ class CommonFunctions {
     return false;
   }
 
-
-  static String? hijriToGregorian(String? hijriDate ) {
-
-    try
-    {
-      if(hijriDate != null && hijriDate.isNotEmpty) {
-
-        List<int> dateSplitted =
-        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
-            .split("/")
-            .map((e) => int.parse(e))
-            .toList();
-        var gDate = HijriCalendar();
-        DateTime gorgianDate = gDate.hijriToGregorian(
-            dateSplitted[0], dateSplitted[1], dateSplitted[2]);
-        String? gorgian  = DateFormat('yyyy/MM/dd').format(gorgianDate);
-
-
-        return CommonFunctions.padHijriDate(gorgian);
-      }
-      return null;
-    }
-    catch(e)
-    {
-      return null;
-    }
-
-  }
 
 
   /////////////

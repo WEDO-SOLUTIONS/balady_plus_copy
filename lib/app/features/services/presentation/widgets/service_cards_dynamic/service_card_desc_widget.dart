@@ -650,8 +650,7 @@ class ServiceCardDescDynamicWidget extends StatelessWidget {
                             ],
                           ),
                         )
-                      :
-              SizedBox.expand(
+                      : SizedBox.expand(
                           child: Column(
                             children: [
                               SizedBox(

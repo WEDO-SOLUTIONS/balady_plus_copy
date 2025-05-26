@@ -293,8 +293,8 @@ class RouteName {
   static const ekramSelectRequestTypeScreen = 'ekramSelectRequestTypeScreen';
   static const ekramRequestTransportationScreen =
       'RequestsTransportingAndPreparingDeceased_Create_Details_Page';
-  static const ekramTransportationDetailsScreen =
-      'RequestsTransportingAndPreparingDeceased_Details_Page';
+  static const IdenticalListPage =
+      'IdenticalListPage';
   static const driverEkramTransportationDetailsScreen =
       'FuneralDriver_Details_Page';
 

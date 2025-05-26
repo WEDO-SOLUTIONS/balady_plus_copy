@@ -1,24 +1,24 @@
 import 'package:balady_plus/app/features/ekram/domain/entities/deceased_request_details/deceased_request_details.dart';
 import 'package:equatable/equatable.dart';
 
-class UploadLetterParamas extends Equatable {
+class UploadAttachmentParamas extends Equatable {
   final int? id;
   final int attachTypeId;
   final String contentType;
   final String fileContent;
-  final int requestId;
+  final int? requestId;
   final String fileName;
 
-  final List<TransportAttachResponseDto> otherFiles;
+  final List<TransportAttachResponseDto>? otherFiles;
 
-  UploadLetterParamas(
+  UploadAttachmentParamas(
       {required this.attachTypeId,
       required this.contentType,
       required this.fileContent,
       required this.id,
-      required this.requestId,
+       this.requestId,
       required this.fileName,
-      required this.otherFiles});
+       this.otherFiles});
 
   Map<String, dynamic> toMap() => {
         "deceasedTransportRequestAttach": [
@@ -29,8 +29,8 @@ class UploadLetterParamas extends Equatable {
             "fileContent": fileContent,
             "fileName": fileName
           },
-          if (otherFiles.isNotEmpty)
-            ...otherFiles.map((e) {
+          if (otherFiles != null && otherFiles!.isNotEmpty)
+            ...otherFiles!.map((e) {
               return {
                 "id": e.id,
                 "attachTypeId": e.attachmentType,

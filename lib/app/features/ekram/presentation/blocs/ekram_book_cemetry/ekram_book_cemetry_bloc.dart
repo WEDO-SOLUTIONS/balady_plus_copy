@@ -1,6 +1,7 @@
 import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/death_info.dart';
 import 'package:balady_plus/app/features/ekram/data/model/user_info_response_model/deceased_info.dart';
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     hide ApplicantInfoSection, AgreementSection;
 import 'package:equatable/equatable.dart';
@@ -33,14 +34,14 @@ import '../../../domain/entities/user_info_response.dart';
 import '../../../domain/use_cases/book_cemetry.dart';
 import '../../../domain/use_cases/check_user_info.dart';
 import '../../../domain/use_cases/get_active_cities.dart';
-import '../../../domain/use_cases/get_cemetries.dart';
+import '../../../domain/use_cases/get_cemetries_lookup.dart';
 import '../../../domain/use_cases/get_countries.dart';
 import '../../../domain/use_cases/get_ekram_lookups.dart';
 import '../../../domain/use_cases/get_nationality_types.dart';
 import '../../widgets/ekram_book_cemetry/agreement_section.dart';
 import '../../widgets/ekram_book_cemetry/applicant_info_section.dart';
 import '../../widgets/ekram_book_cemetry/cemetry_deceased_info_section.dart';
-import '../ekram_requests_bloc/ekram_requests_bloc.dart';
+import '../driver_request_bloc/transport_requests_bloc.dart';
 
 part 'ekram_book_cemetry_event.dart';
 
@@ -57,7 +58,7 @@ class EkramBookCemetryBloc
   final thirdNameController = TextEditingController();
   final fourthNameController = TextEditingController();
 
-  EkramRequestsBloc? ekramRequestsBloc;
+  TransportRequestsBloc? ekramRequestsBloc;
   late List pagesList = [
     const ApplicantInfoSection(),
     const CemetryDeceasedInfoSection(),
@@ -90,15 +91,16 @@ class EkramBookCemetryBloc
         _getNationalities = GetNationalities(repository: sl()),
         _getCountreies = GetCountreies(repository: sl()),
         _getEkramCities = GetEkramCities(repository: sl()),
-        super(EkramBookCemetryState(
-          isMuslim: true,
-          isFetus: false,
-          isPandemicDeath: false,
-          fullName: CommonProperties.userInfo?.arName ?? "",
-          mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
-          requestType: trans("ekram_request_type"),
-          selectedCemetryType: LookUpItem(name: 'any_type'.tr(), id: 0),
-        )) {
+        super(
+          EkramBookCemetryState(
+            isMuslim: true,
+            isFetus: false,
+            isPandemicDeath: false,
+            fullName: CommonProperties.userInfo?.arName ?? "",
+            mobileNumber: CommonProperties.userInfo?.getPhone() ?? "",
+            requestType: trans("ekram_request_type"),
+          ),
+        ) {
     on<EkramBookCemetryEvent>((event, emit) {});
     on<ChangeAgreementEvent>(_changeAgreementHandler);
 
@@ -542,7 +544,7 @@ class EkramBookCemetryBloc
   Future<List<LookUpItem>?> getNationalities() async {
     emit(state.copyWith(status: BlocStatus.loading));
 
-    final failureOrSuccess = await _getNationalities(NoParams());
+    final failureOrSuccess = await _getNationalities(null);
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
         status: BlocStatus.failure,
@@ -613,8 +615,7 @@ class EkramBookCemetryBloc
     }, (success) {
       emit(state.copyWith(
         status: BlocStatus.success,
-        cemetryTypeItems: success.data?.result
-          ?..add(LookUpItem(name: 'any_type'.tr(), id: 0)),
+        cemetryTypeItems: success.data?.result,
         errorMessage: "",
       ));
       return success.data?.result;

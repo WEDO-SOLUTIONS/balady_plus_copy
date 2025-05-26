@@ -6,11 +6,11 @@ import '../../../../core/services/local/use_case.dart';
 import '../../data/model/add_trip_params.dart';
 import '../repositories/ekram_repository.dart';
 
-class AddTrip extends UseCase<ResponseBodyModel, AddTripParams> {
+class AddTrip extends UseCase<ResponseBodyModel, List<dynamic>> {
   final EkramRepository repository;
   AddTrip({required this.repository});
   @override
-  Future<Either<Failure, ResponseBodyModel>> call(AddTripParams params) async {
-    return await repository.addTrip(params);
+  Future<Either<Failure, ResponseBodyModel>> call(List<dynamic> params) async {
+    return await repository.addTrip(params[0],params[1]);
   }
 }

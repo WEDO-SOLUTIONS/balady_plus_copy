@@ -15,6 +15,7 @@ import '../../../../_shared_feature_/presentation/widgets/draw_line_widget.dart'
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../objectable_transactions/presentation/widgets/summery_widgets/field_data.dart';
 import '../../../domain/entities/trip_details.dart';
+import '../driver/trip_datetime_widget.dart';
 
 class TripDetailsDialogCard extends StatelessWidget {
   final TripDetails tripDetails;
@@ -140,18 +141,18 @@ class TripDetailsDialogCard extends StatelessWidget {
         Row(
           children: [
             Expanded(
-                child: TripDetailsDateTime(
+                child: TripDateTimeWidget(
               date: CommonFunctions.getFormattedDateEkram(
                   tripDetails.currentTripStationArrivalTime ?? ""),
               time: CommonFunctions.getFormattedTimeEkram(
-                  tripDetails.currentTripStationArrivalTime ?? ""),
+                  tripDetails.currentTripStationArrivalTime ?? ""), title: 'time',
             )),
             Expanded(
-                child: TripDetailsDateTime(
+                child: TripDateTimeWidget(
               date: CommonFunctions.getFormattedDateEkram(
                   tripDetails.nextTripStationArrivalTime ?? ""),
               time: CommonFunctions.getFormattedTimeEkram(
-                  tripDetails.nextTripStationArrivalTime ?? ""),
+                  tripDetails.nextTripStationArrivalTime ?? ""), title: 'time',
             )),
           ],
         ),

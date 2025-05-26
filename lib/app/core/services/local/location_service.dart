@@ -1,6 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:background_location/background_location.dart';
+import 'package:balady_plus/app/core/services/local/helpers.dart';
+import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
 import 'package:geolocator/geolocator.dart' as geoLocator;
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../features/ekram/domain/entities/update_driver_location_params.dart';
 import '../../../features/ekram/domain/use_cases/update_driver_location.dart';
@@ -9,53 +15,43 @@ import '../../dependency_injection/injection_container.dart';
 class EkramLocationService {
   static double? latitde;
   static double? longtitude;
-  static Timer? _timer;
-  UpadateDriverLocation updateDriverLocation =
-      UpadateDriverLocation(repository: sl());
+
+  UpadateDriverLocation updateDriverLocation = UpadateDriverLocation(repository: sl());
   bool startTracking = false;
-  StreamSubscription<geoLocator.Position>? positionStream;
-  void startTrackingService() {
-    print("Locatioin Servvice tracking  Start $startTracking");
 
-    positionStream = geoLocator.Geolocator.getPositionStream(
-            locationSettings: geoLocator.LocationSettings(distanceFilter: 5))
-        .listen((event) {
-      latitde = event.latitude;
-      longtitude = event.longitude;
-    });
-  }
-
-  void startTimer() {
-    print("Locatioin Servvice Start $startTracking");
-    if (startTracking) {
-      startTrackingService();
-      if (longtitude != null && latitde != null) {
-        updateDriverLocation(
-            UpdateDriverLocationParams(x: longtitude!, y: latitde!));
-      }
-      _timer = Timer(Duration(minutes: 1), () {
-        if (longtitude != null && latitde != null) {
+  Future<void> StartTracking(int requestId) async {
+    if(startTracking) {
+      // await BackgroundLocation.setAndroidNotification(
+      //   title: 'Background service is running',
+      //   message: 'Background location in progress',
+      //   icon: '@mipmap/ic_launcher',
+      // );
+      //await BackgroundLocation.setAndroidConfiguration(1000);
+      await BackgroundLocation.startLocationService(
+          distanceFilter: 200);
+      BackgroundLocation.getLocationUpdates((location) {
+        if (location.longitude != null && location.latitude != null) {
           updateDriverLocation(
-              UpdateDriverLocationParams(x: longtitude!, y: latitde!));
+              UpdateDriverLocationParams(x: location.longitude!,
+                  y: location.latitude!,
+                  requestId: requestId));
         }
       });
     }
   }
 
-  void start() {
+
+
+  void start(int requestId) {
     startTracking = true;
-    startTrackingService();
-    startTimer();
+    StartTracking(requestId);
+
   }
 
   void stop() {
     startTracking = false;
-    cancelTimer();
+    BackgroundLocation.stopLocationService();
   }
 
-  void cancelTimer() {
-    print("Locatioin Servvice Cancel");
-    _timer?.cancel();
-    positionStream?.cancel();
-  }
+
 }

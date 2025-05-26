@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 
 import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
 import '../../../../../core/services/local/helpers.dart';
+import '../../../../../core/utils/constants/app_colors.dart';
 import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
 import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
 import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
@@ -99,10 +101,21 @@ class _ApplicantInfoTextFieldsSectionState
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ReadOnlyField(
+            //
+            //   title: trans("ekramFullName"),
+            //   subTitle: state.fullName ?? "",
+            // ),
+
             ReadOnlyField(
-              title: trans("ekramFullName"),
+              title: "ekramFullName".tr(),
               subTitle: state.fullName ?? "",
+              subTitleColor:AppColor.grey1000.withOpacity(0.5),
+              decoration:  BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+
             ),
+
+
             CustomVerticalSpace(height: 20),
             ReadOnlyField(
               title: trans("ekramMobile"),

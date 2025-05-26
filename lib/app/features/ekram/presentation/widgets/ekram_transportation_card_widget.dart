@@ -12,18 +12,18 @@ import '../../../_shared_feature_/presentation/widgets/draw_line_widget.dart';
 import '../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../home_page/presentation/widgets/home_tag.dart';
 import '../../../objectable_transactions/presentation/widgets/request_parameter.dart';
+import '../../data/model/driver/transport_request_item_model.dart';
 import '../../domain/entities/deceased_transport_requests/transport_request_item.dart';
-import 'ekram_driver_request_card_widget.dart';
+import 'driver/request_card_widget.dart';
 import 'ekram_status_widget.dart';
 
 class EkramTransporationCardWidget extends StatelessWidget {
-  final TransportRequestItem ekramTransportationItem;
+  final TransportRequestItemModel ekramTransportationItem;
   final Function OnDetailsPress;
   const EkramTransporationCardWidget(
-      {Key? key,
+      {super.key,
       required this.ekramTransportationItem,
-      required this.OnDetailsPress})
-      : super(key: key);
+      required this.OnDetailsPress});
 
   @override
   Widget build(BuildContext context) {
@@ -41,18 +41,18 @@ class EkramTransporationCardWidget extends StatelessWidget {
             Row(
               children: [
                 const DrawIconBasedTypeWidget(icon: IconPath.requests),
-                CustomHorizontalSpace(
+                const CustomHorizontalSpace(
                   width: 4,
                 ),
                 Expanded(
                   child: CustomTextWidget(
-                    '#${ekramTransportationItem.requestId.toString()}',
+                    '${'request'.tr()} ${ekramTransportationItem.requestId.toString()}#',
                     textStyle: AppStyle.requestNumberTextStle,
                     textAlign: TextAlign.start,
                   ),
                 ),
                 HomeTag(
-                  title: ekramTransportationItem.requestStatus ?? "",
+                  title: ekramTransportationItem.requestStatusName ?? "",
                   backgroundColor: AppColor.secondary100Light,
                 ),
               ],
@@ -74,18 +74,43 @@ class EkramTransporationCardWidget extends StatelessWidget {
                     value: ekramTransportationItem.deceasedName ?? "",
                   ),
                   RequestParameter(
-                    title: 'ekram_death_city'.tr(),
-                    value: ekramTransportationItem.deathCityName ?? "",
-                  ),
-                  RequestParameter(
-                    title: 'burial_city'.tr(),
-                    value: ekramTransportationItem.burialCityName ?? "",
-                  ),
-                  RequestParameter(
-                    title: 'ekram_transport_status'.tr(),
+                    title: 'nationality'.tr(),
                     value:
-                        ekramTransportationItem.deathTransferStatusDesc ?? "",
+                        ekramTransportationItem.deceasedNationalityName ?? "",
                   ),
+                  RequestParameter(
+                    title: 'sex'.tr(),
+                    value: ekramTransportationItem.genderName ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'ekramReligion'.tr(),
+                    value: ekramTransportationItem.isMuslim == true
+                        ? 'muslim'.tr()
+                        : ekramTransportationItem.isMuslim == false
+                            ? 'non_muslim'.tr()
+                            : "",
+                  ),
+                  RequestParameter(
+                    title: 'ekramHospital'.tr(),
+                    value: ekramTransportationItem.hospitalName ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'burialDate'.tr(),
+                    value: ekramTransportationItem.burialDate ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'ekram_orgnization_name'.tr(),
+                    value: ekramTransportationItem.hospitalName ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'driver_name'.tr(),
+                    value: ekramTransportationItem.driverName ?? "",
+                  ),
+                  RequestParameter(
+                    title: 'driverMobile'.tr(),
+                    value: ekramTransportationItem.driverMobile ?? "",
+                  ),
+
                   /* RequestParameter(
                     title: 'transportationStatus'.tr(),
                     value: ekramTransportationItem

@@ -17,7 +17,7 @@ class CrStep2ActivityDataState extends Equatable {
   final double? totalArea;
   final String? unitCount;
 
-  final WorkersTypesEnum? workerType;
+  final WorkersTypes? workerType;
 
   final List<AddetionalActivityItem>? addetionalActivityItems;
   final List<AddetionalActivityItemDetails>? addetionalActivityItemDetails;
@@ -99,7 +99,7 @@ class CrStep2ActivityDataState extends Equatable {
       CrLookupsEntity? selectedAccommodationType,
       String? errorMessage,
       double? totalArea,
-      WorkersTypesEnum? workerType,
+      WorkersTypes? workerType,
       List<AddetionalActivityItem>? addetionalActivityItems,
       List<AddetionalActivityItemDetails>? addetionalActivityItemDetails,
       BlocStatus? additionalActivityListStatus,

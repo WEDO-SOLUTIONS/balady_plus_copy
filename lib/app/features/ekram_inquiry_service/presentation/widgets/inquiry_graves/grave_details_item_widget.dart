@@ -1,20 +1,22 @@
-import 'package:balady_plus/app/features/_shared_feature_/shared_feature_exports.dart';
 import 'package:flutter/material.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 
-import '../../../../../core/services/local/navigation_services.dart';
 import '../../../../../core/utils/constants/app_colors.dart';
-import '../../../../../core/utils/constants/route_names.dart';
 import '../../../../objectable_transactions/presentation/widgets/request_parameter.dart';
-import '../../../data/models/find_cemetry_response_model.dart';
 import '../../../data/models/find_grave_response_model.dart';
 
 class GraveDetailsItemWidget extends StatelessWidget {
   final FindGraveItem item;
   const GraveDetailsItemWidget({super.key, required this.item});
-
   @override
   Widget build(BuildContext context) {
+    String graveLvls = '';
+    if (item.graveLocation != null) {
+      for (final graveLocationItem in item.graveLocation!) {
+        graveLvls =
+            '${graveLocationItem.levelName}/${graveLocationItem.propertyName}/${graveLocationItem.propertyValue}';
+      }
+    }
     return Container(
       margin: const EdgeInsets.only(top: 8, bottom: 8, left: 16, right: 16),
       padding: const EdgeInsets.all(16),
@@ -53,6 +55,10 @@ class GraveDetailsItemWidget extends StatelessWidget {
                 RequestParameter(
                   title: 'cemeteryName'.tr(),
                   value: item.cemeteryName ?? "",
+                ),
+                RequestParameter(
+                  title: 'cemetry_number'.tr(),
+                  value: graveLvls,
                 ),
               ],
             ),

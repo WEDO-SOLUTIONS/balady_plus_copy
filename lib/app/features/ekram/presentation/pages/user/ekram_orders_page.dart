@@ -5,7 +5,7 @@ import 'package:balady_plus/app/features/ekram/ekram_exports.dart'
     show
         EkramBookingCardWidget,
         EkramTransporationCardWidget,
-        EkramRequestsBloc,
+        TransportRequestsBloc,
         GetDeceasedTransportRequestDetailsEvent,
         GetDeceasedTransportRequestsEvent,
         EkramRequestsState;
@@ -36,15 +36,10 @@ class _EkramOrdersPageState extends State<EkramOrdersPage> {
   Widget build(BuildContext context) {
     return BlocProvider(
       // value: sl<EkramRequestsBloc>(),
-      create: (context) => EkramRequestsBloc(
+      create: (context) => TransportRequestsBloc(
           getDeceasedTransportRequests: sl(),
-          getDeceasedTransportRequestDetails: sl(),
-          getDeceasedDriverRequestDetails: sl(),
-          getLookUp: sl(),
-          getLocations: sl(),
-          getStatus: sl(),
           isDriver: false),
-      child: BlocConsumer<EkramRequestsBloc, EkramRequestsState>(
+      child: BlocConsumer<TransportRequestsBloc, EkramRequestsState>(
         listener: (context, state) {},
         builder: (context, state) {
           return Scaffold(
@@ -55,7 +50,7 @@ class _EkramOrdersPageState extends State<EkramOrdersPage> {
               actionOnPress: () {
                 NavigationService.navigatorKey.currentState!.pushNamed(
                     RouteName.ekramSelectRequestTypeScreen,
-                    arguments: context.read<EkramRequestsBloc>());
+                    arguments: context.read<TransportRequestsBloc>());
               },
             ),
             body: SingleChildScrollView(
@@ -103,7 +98,7 @@ class _EkramOrdersPageState extends State<EkramOrdersPage> {
                           ekramTransportationItem:
                               state.deceasedRequestItems![index],
                           OnDetailsPress: () {
-                            context.read<EkramRequestsBloc>().add(
+                            context.read<TransportRequestsBloc>().add(
                                 GetDeceasedTransportRequestDetailsEvent(
                                     isDriver: false,
                                     requestId: state
@@ -124,7 +119,7 @@ class _EkramOrdersPageState extends State<EkramOrdersPage> {
                   if (state.status == BlocStatus.retry)
                     ReloadWidget(
                       onTab: () {
-                        context.read<EkramRequestsBloc>().add(
+                        context.read<TransportRequestsBloc>().add(
                             GetDeceasedTransportRequestsEvent(isDriver: false));
                       },
                     ),

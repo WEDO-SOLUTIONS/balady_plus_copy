@@ -560,7 +560,6 @@ class CrStep4ShopDataState extends Equatable {
     return (cleanTypeATTACHSERVICE() || cleanTypeService());
   }
 
-
   bool boardContractsOPTINAL() {
     return locationResponse?.boardContractSetting == "OPTIONAL";
   }

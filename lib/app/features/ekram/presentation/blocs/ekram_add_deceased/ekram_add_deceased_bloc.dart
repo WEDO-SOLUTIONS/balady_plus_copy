@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/features/ekram/domain/use_cases/get_cemetries.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
 import 'package:collection/collection.dart';
 
@@ -24,7 +25,6 @@ import '../../../domain/use_cases/baquie_approval.dart';
 import '../../../domain/use_cases/check_user_info.dart';
 import '../../../domain/use_cases/get_active_grave_request_details.dart';
 import '../../../domain/use_cases/get_burial_cities.dart';
-import '../../../domain/use_cases/get_cemetries.dart';
 import '../../../domain/use_cases/get_ekram_lookups.dart';
 import '../../../domain/use_cases/get_nationality_types.dart';
 import '../../../domain/use_cases/get_orgnizations.dart';
@@ -100,8 +100,8 @@ class EkramAddDeceasedBloc
 
     on<SelectOrgnizationEvent>(_changeOrgnizationHandler);
     on<GetBaquieApprovalEvent>(_getBaquieApprovalHandler);
-    getCitiesHandler();
     getNationalTypesHandler();
+    getCitiesHandler();
     getCemetryTypeItemsHandler();
     getBurialTimesItemsHandler();
   }
@@ -305,7 +305,7 @@ class EkramAddDeceasedBloc
       errorMessage: "",
     ));
 
-    final failureOrSuccess = await _getNationalities(NoParams());
+    final failureOrSuccess = await _getNationalities(null);
 
     return failureOrSuccess.fold((failure) {
       emit(state.copyWith(
@@ -552,7 +552,8 @@ class EkramAddDeceasedBloc
 
       final failureOrSuccess = await _checkUserInfo(UserInfoRequestParams(
           dob: state.data.deceassedDOBHijri ?? "",
-          nationalId: state.data.deceassedId ?? "", identityType: state.data.identityType ?? 0));
+          nationalId: state.data.deceassedId ?? "",
+          identityType: state.data.identityType ?? 0));
 
       failureOrSuccess.fold((failure) {
         emitter(state.copyWith(
@@ -561,14 +562,18 @@ class EkramAddDeceasedBloc
         ));
       }, (success) {
         String firstName = success.data?.result?.deceasedInfo?.firstName ?? "";
-        String secondName = success.data?.result?.deceasedInfo?.secondName ?? "";
+        String secondName =
+            success.data?.result?.deceasedInfo?.secondName ?? "";
         String thirdName = success.data?.result?.deceasedInfo?.thirdName ?? "";
-        String fourthName = success.data?.result?.deceasedInfo?.fourthName ?? "";
+        String fourthName =
+            success.data?.result?.deceasedInfo?.fourthName ?? "";
         // int? gender = success.data?.result?.genderCode;
-        bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim ;
+        bool? isMuslim = success.data?.result?.deceasedInfo?.isMuslim;
 
         LookUpItem? nationality = state.nationalities?.firstWhereOrNull(
-            (element) => element.id == success.data?.result?.deceasedInfo?.nationalityId);
+            (element) =>
+                element.id ==
+                success.data?.result?.deceasedInfo?.nationalityId);
         emitter(state.copyWith(
             status: BlocStatus.success,
             cemetries: [],

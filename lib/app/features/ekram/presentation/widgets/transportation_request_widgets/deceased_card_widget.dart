@@ -78,13 +78,13 @@ class DeceasedCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('name'),
                         details: deceasedItem.firstName ?? "",
                       )),
                       CustomHorizontalSpace(width: 12),
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('ekramReligion'),
                         details: deceasedItem.isMuslim == false
                             ? "non_muslim".tr()
@@ -98,13 +98,13 @@ class DeceasedCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('ekramNationality'),
                         details: deceasedItem.nationalityId?.name ?? "",
                       )),
                       CustomHorizontalSpace(width: 12),
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('ekramGender'),
                         details: deceasedItem.gender == 1
                             ? "male".tr()
@@ -116,7 +116,7 @@ class DeceasedCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('burialDestination'),
                         details: deceasedItem.multipleCityRequest == false
                             ? "burial_in_death_city".tr()
@@ -124,7 +124,7 @@ class DeceasedCardWidget extends StatelessWidget {
                       )),
                       CustomHorizontalSpace(width: 12),
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('burialCity'),
                         details: deceasedItem.multipleCityRequest == false
                             ? deceasedItem.deathCity?.name ?? ""
@@ -136,7 +136,7 @@ class DeceasedCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                         title: trans('needSpecialTransfer'),
                         details: deceasedItem.specialTransferNeeded ?? false
                             ? trans('yes')
@@ -145,7 +145,7 @@ class DeceasedCardWidget extends StatelessWidget {
                       CustomHorizontalSpace(width: 12),
                       if (deceasedItem.specialTransferReasonId != null)
                         Expanded(
-                            child: EkramHeaderAndDescWidget(
+                            child: EkramHeaderAndDescWidget_With_Background(
                           title: trans('reasonForSpecialTransfer'),
                           details:
                               deceasedItem.specialTransferReasonId?.name ?? "",
@@ -153,7 +153,7 @@ class DeceasedCardWidget extends StatelessWidget {
                       if (deceasedItem.specialTransferOtherReason != null &&
                           deceasedItem.specialTransferOtherReason!.isNotEmpty)
                         Expanded(
-                            child: EkramHeaderAndDescWidget(
+                            child: EkramHeaderAndDescWidget_With_Background(
                           title: trans('reasonForSpecialTransfer'),
                           details:
                               deceasedItem.specialTransferOtherReason ?? "",
@@ -164,7 +164,7 @@ class DeceasedCardWidget extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                          child: EkramHeaderAndDescWidget(
+                          child: EkramHeaderAndDescWidget_With_Background(
                               title: trans('cemetry_name'),
                               details:
                                   deceasedItem.selectedCemetry?.name ?? "")),

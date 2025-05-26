@@ -20,6 +20,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
   final int? requestNum;
   final double currentStep;
   final int pageLength;
+  final bool? hideBtnBack;
   final VoidCallback backOnPress;
   final VoidCallback onTapCloseAction;
 
@@ -29,6 +30,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
     required this.backOnPress,
     required this.pageLength,
     required this.onTapCloseAction,
+    this.hideBtnBack,
     this.requestNum,
   }) : super(key: key);
 
@@ -42,22 +44,24 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
       leadingWidth: double.maxFinite,
       leading: GestureDetector(
         behavior: HitTestBehavior.translucent,
-        onTap: backOnPress,
+        onTap: hideBtnBack == true ? null : backOnPress,
         child: Container(
           margin: const EdgeInsetsDirectional.only(start: 10),
           child: Row(
             children: [
-              CustomTextIconButtonWidget(
-                text: ('back').tr(),
-                icon: SvgPicture.asset(IconPath.vdAppBarBack),
-                iconTextTweenSpace: 5,
-                textStyle: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppColor.blackModern700Light,
-                    fontFamily: Constants.appFontType),
-                onPressed: backOnPress,
-              ),
+              hideBtnBack == true
+                  ? const SizedBox.shrink()
+                  : CustomTextIconButtonWidget(
+                      text: ('back').tr(),
+                      icon: SvgPicture.asset(IconPath.vdAppBarBack),
+                      iconTextTweenSpace: 5,
+                      textStyle: const TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                          color: AppColor.blackModern700Light,
+                          fontFamily: Constants.appFontType),
+                      onPressed: backOnPress,
+                    ),
               if (requestNum != null)
                 Expanded(
                   flex: 6,
@@ -124,7 +128,7 @@ class DetailsAppBarTwo extends StatelessWidget implements PreferredSizeWidget {
               percent: currentStep / pageLength,
               barRadius: const Radius.circular(33),
               backgroundColor: AppColor.primary100Light,
-              linearGradient: LinearGradient(colors: [
+              linearGradient: const LinearGradient(colors: [
                 AppColor.primary900Light,
                 Color(0xff159EBB),
               ]),

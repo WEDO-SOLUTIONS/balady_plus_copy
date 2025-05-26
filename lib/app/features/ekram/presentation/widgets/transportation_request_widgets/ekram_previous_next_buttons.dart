@@ -12,7 +12,8 @@ import '../../../../../core/utils/enums/enums.dart';
 import '../../../../_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 
 class EkramPreviousNextButtons extends StatelessWidget {
-  const EkramPreviousNextButtons({Key? key}) : super(key: key);
+  VoidCallback? btnPressed;
+   EkramPreviousNextButtons({Key? key,required this.btnPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,17 +34,7 @@ class EkramPreviousNextButtons extends StatelessWidget {
             btnTextColor: isBtnDisabled ? AppColor.black400 : AppColor.white,
             btnPressed: isBtnDisabled
                 ? () {}
-                : () {
-                    if (!isLastPage) {
-                      context
-                          .read<EkramRequestTransportationBloc>()
-                          .add(GoToNextPageEvent());
-                    } else {
-                      context
-                          .read<EkramRequestTransportationBloc>()
-                          .add(SubmitRequestEvent());
-                    }
-                  },
+                : btnPressed,
             btnRadius: 8,
             btnText: isLastPage ? "ekramSubmitOrder".tr() : ("next").tr(),
             btnTextSize: 16,

@@ -1,18 +1,21 @@
-import 'package:balady_plus/app/features/_shared_feature_/presentation/fields/read_only_field.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/paths/icon_paths.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
+import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
+import 'package:balady_plus/app/features/new_appointment/presentation/core/models/lookup_list_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../../../../etmam_app/core/utils/constants/app_config.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:localize_and_translate/localize_and_translate.dart';
 import '../../../../../core/services/local/helpers.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_cupertino_drop_down_widget.dart';
-import '../../../../_shared_feature_/presentation/widgets/custom_spaces_widgets.dart';
-import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_field_widget.dart';
-import '../../../../new_appointment/presentation/core/models/lookup_list_model.dart';
+import '../../../../../core/utils/enums/app_font_weights.dart';
+import '../../../../_shared_feature_/presentation/fields/read_only_field.dart';
+import '../../../../_shared_feature_/presentation/widgets/texts/custom_text_widget.dart';
 import '../../../../vd/presentation/widgets/vd_header_desc_widget.dart';
 
 class ApplicantInfoSection extends StatelessWidget {
-  const ApplicantInfoSection({Key? key}) : super(key: key);
+  const ApplicantInfoSection({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -25,153 +28,144 @@ class ApplicantInfoSection extends StatelessWidget {
             Expanded(
               child: SingleChildScrollView(
                 child: Container(
-                  margin: EdgeInsets.only(top: 24, left: 16, right: 16),
+                  margin: const EdgeInsets.only(top: 24, left: 16, right: 16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       VdHeaderDesc(
                         header: Helpers.translatingWord("ekram_main_data"),
                       ),
-                      ApplicantInfoTextFieldsSection()
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(15.0)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                SvgPicture.asset(IconPath.editIcon),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'applicantInfo'.tr(),
+                                  style: const TextStyle(
+                                    color: AppColor.black,
+                                    fontSize: 20.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )
+                              ],
+                            ),
+                            ReadOnlyField(
+                              hieght: 55,
+                              title: "health_submitter_name".tr(),
+                              subTitle: state.requestDetailsModel?.mainInfo
+                                      ?.submitterInfo?.fullName ??
+                                  state.fullName!,
+                              subTitleColor: AppColor.grey1000.withOpacity(0.5),
+                              decoration: BoxDecoration(
+                                  color: AppColor.blackModern300Light
+                                      .withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            ReadOnlyField(
+                              hieght: 55,
+                              title: "driver_card_applicant_mobile".tr(),
+                              subTitle: state.requestDetailsModel?.mainInfo
+                                      ?.submitterInfo?.mobileNumber ??
+                                  state.mobileNumber!,
+                              subTitleColor: AppColor.grey1000.withOpacity(0.5),
+                              decoration: BoxDecoration(
+                                  color: AppColor.blackModern300Light
+                                      .withOpacity(0.4),
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            CustomTextFieldWidget(
+                                label: "ekramRelationShip".tr(),
+                                initialValue: state
+                                        .requestDetailsModel
+                                        ?.mainInfo
+                                        ?.submitterInfo
+                                        ?.relationship ??
+                                    "",
+                                hintText: "ekramRelationShip".tr(),
+                                onChanged: (String? text) {
+                                  if (text != null) {
+                                    context
+                                        .read<EkramRequestTransportationBloc>()
+                                        .add(SetApplicantInfoEvent(
+                                            relation: text));
+                                  }
+                                },
+                                onValidate: (String? value) {
+                                  return null;
+                                }),
+                            CustomLookUpLongDialog(
+                              items: const [],
+                              value: LookUpItem(
+                                  name: 'transportation_from_hospital'.tr(),
+                                  id: 3),
+                              isDisbaled: true,
+                              onChangeType: (LookUpItem? item) {},
+                              label: "deceasedTransportationStatus".tr(),
+                              hint: "",
+                            ),
+                            Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
+                                  color: const Color(0x0e7fa891)),
+                              child: const Text(
+                                'لحالات النقل من غير المستشفى، يرجى مراجعة الجهات ذات العلاقة:\n\u2022 مراجعة الشرطة للوفاة داخل المنزل.\n\u2022 مراجعة المرور للوفاة بسبب حادث.\n\u2022 مراجعة الدفاع المدني بسبب حادث غير مروري.\n',
+                                style: TextStyle(color: Color(0xff155F75)),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-            EkramPreviousNextButtons()
-          ],
-        );
-      },
-    );
-  }
-}
 
-class ApplicantInfoTextFieldsSection extends StatefulWidget {
-  ApplicantInfoTextFieldsSection({Key? key}) : super(key: key);
+            InkWell(
+              onTap: () async {
 
-  @override
-  State<ApplicantInfoTextFieldsSection> createState() =>
-      _ApplicantInfoTextFieldsSectionState();
-}
-
-class _ApplicantInfoTextFieldsSectionState
-    extends State<ApplicantInfoTextFieldsSection> {
-  //final fullNameTextEditController = TextEditingController();
-  //final mobileTextEditController = TextEditingController();
-  //final applicantTypeTextEditController = TextEditingController();
-//  final relationShipTextEditController = TextEditingController();
-
-  //final fullNameFocusNode = FocusNode();
-  // final mobileFocusNode = FocusNode();
-  // final applicantTypeFocusNode = FocusNode();
-  //final relationShipFocusNode = FocusNode();
-
-  @override
-  void dispose() {
-    // fullNameTextEditController.clear();
-    // fullNameTextEditController.dispose();
-    // mobileTextEditController.clear();
-    //  mobileTextEditController.dispose();
-    //  applicantTypeTextEditController.clear();
-    // applicantTypeTextEditController.dispose();
-    // applicantTypeTextEditController.clear();
-    // relationShipTextEditController.dispose();
-
-    // fullNameFocusNode.dispose();
-    // mobileFocusNode.dispose();
-    // applicantTypeFocusNode.dispose();
-    //   relationShipFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<EkramRequestTransportationBloc,
-        EkramRequestTransportationState>(
-      builder: (context, state) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ReadOnlyField(
-              title: trans("submitterName"),
-              subTitle: state.fullName ?? "",
-            ),
-            const CustomVerticalSpace(height: 20),
-            ReadOnlyField(
-              title: trans("driver_card_applicant_mobile"),
-              subTitle: state.mobileNumber ?? "",
-            ),
-            const CustomVerticalSpace(height: 20),
-            CustomTextFieldWidget(
-                label: trans("ekramRelationShipOptional"),
-                hintText: trans("ekramRelationShipOptional"),
-                initialValue: state.relation,
-                maxLines: 1,
-                textInputAction: TextInputAction.done,
-                keyboardType: TextInputType.text,
-                onChanged: (String? text) {
-                  context
-                      .read<EkramRequestTransportationBloc>()
-                      .add(ChangeRelationShipEvent(text: text));
-                },
-                onValidate: (String? value) {}),
-            const CustomVerticalSpace(height: 20),
-            CustomLookUpLongDialog(
-              items: state.cities ?? [],
-              value: state.selectedCity,
-              onEmptyList: () async {
-                return context
-                    .read<EkramRequestTransportationBloc>()
-                    .getCitiesHandler();
-              },
-              onChangeType: (LookUpItem? item) {
-                if (item != null) {
-                  context
-                      .read<EkramRequestTransportationBloc>()
-                      .add(GetHospitalsEvent(city: item));
-                }
-              },
-              label: Helpers.translatingWord("burialCity"),
-              hint: Helpers.translatingWord("burialCity"),
-            ),
-            ReadOnlyField(
-                title: trans("deceasedTransportationStatus"),
-                subTitle: trans("transportation_from_hospital")),
-            CustomLookUpLongDialog(
-              items: state.hospitals ?? [],
-              value: state.selectedHospital,
-              onChangeType: (LookUpItem? item) {
                 context
                     .read<EkramRequestTransportationBloc>()
-                    .add(SelectHospitalEvent(item: item));
+                    .add(const saveDeceasedInfoEvent(isDarft: true));
               },
-              onEmptyList: () {
-                context
-                    .read<EkramRequestTransportationBloc>()
-                    .add(GetHospitalsEvent(city: state.selectedCity!));
-              },
-              label: Helpers.translatingWord("ekramHospital"),
-              hint: Helpers.translatingWord("ekramHospital"),
+              child: Container(
+                padding: const EdgeInsets.all(16),
+                width: double.infinity,
+                margin:const EdgeInsets.all(16) ,
+                decoration:  BoxDecoration(color: Colors.transparent, border: Border.all(color: AppColor.borderBlck, width: 1), borderRadius: BorderRadius.circular(6)),
+                //:BoxDecoration(color: AppColor.blackModern300Light.withOpacity(0.4), borderRadius: BorderRadius.circular(8)),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+
+                    CustomTextWidget(
+                      "SaveAsDraft".tr(),
+                      fontSize: 14,
+                      fontWeight: AppFontWeight.bold,
+                      fontColor: AppColor.borderBlck,
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+              ),
             ),
-            if (state.selectedHospital?.id == -1)
-              CustomTextFieldWidget(
-                  label: Helpers.translatingWord("hospital_name"),
-                  hintText: Helpers.translatingWord("hospital_name"),
-                  initialValue: state.otherHospitalName,
-                  maxLines: 1,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.text,
-                  onChanged: (String? text) {
-                    context
-                        .read<EkramRequestTransportationBloc>()
-                        .add(ChangeHospitalOtherNameEvent(text: text));
-                  },
-                  onValidate: (String? value) {}),
+            EkramPreviousNextButtons(btnPressed: () {
+              context
+                  .read<EkramRequestTransportationBloc>()
+                  .add(const saveDeceasedInfoEvent());
+            })
           ],
         );
       },

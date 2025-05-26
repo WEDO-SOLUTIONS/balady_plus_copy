@@ -1,16 +1,19 @@
+import 'dart:async';
 import 'dart:io';
 
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:app_links/app_links.dart';
 import 'package:balady_authorization/auth_package.dart';
+import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/remote_config.dart';
 import 'package:balady_plus/app/features/force_update/presentation/core/force_update_cubit.dart';
+import 'package:balady_plus/app/features/ekram/domain/entities/deceased_transport_requests/verify_deceased_params.dart';
+import 'package:balady_plus/app/features/ekram/presentation/blocs/ekram_request_transportation_bloc/ekram_request_transportation_bloc.dart';
 import 'package:balady_plus/app/features/map_page/presentation/mvvm/map_view_model.dart';
 import 'package:balady_plus/app/features/splash/data/splash_remote_data_source.dart';
 import 'package:balady_plus/app/features/splash/presentation/cubit/splash_cubit.dart';
 import 'package:bot_toast/bot_toast.dart'
     show BotToastInit, BotToastNavigatorObserver;
 import 'package:country_picker/country_picker.dart' show CountryLocalizations;
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' show BlocProvider;
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -19,7 +22,6 @@ import 'package:localize_and_translate/localize_and_translate.dart'
     show Translation, translator;
 import 'package:mapness/entry_point.dart';
 import 'package:provider/provider.dart';
-import 'package:syncfusion_localizations/syncfusion_localizations.dart';
 
 import './core/dependency_injection/dependency_injection_exports.dart' show sl;
 import './core/services/services_exports.dart' show NavigationService;
@@ -88,10 +90,13 @@ class AppWidget extends StatefulWidget {
 }
 
 class AppWidgetState extends State<AppWidget> {
+  late AppLinks _appLinks;
+  StreamSubscription<Uri>? _linkSubscription;
   @override
   void initState() {
     super.initState();
     initInsider();
+    initDeepLinks();
   }
 
   Future initInsider() async {
@@ -122,6 +127,55 @@ class AppWidgetState extends State<AppWidget> {
   }
 
   void callback() {}
+
+  Future<void> initDeepLinks() async {
+    _appLinks = AppLinks();
+    final appLink = await _appLinks.getInitialLink();
+
+    _linkSubscription = _appLinks.uriLinkStream.listen((uri) async {
+      try {
+
+        /// TODO: Need Move this lojec after the aap get the profile data
+        /// TODO: need chick if the user not login in make this action
+        Future.delayed(const Duration(seconds: 2)).then((test){
+          // String url = uri.toString();
+          final decodeFull = Uri.decodeFull(uri.toString());
+          final parse = Uri.parse(decodeFull);
+          final url = Uri.parse(parse.fragment);
+
+          if(url.path.contains("ekram/mobile/transport")) {
+            if(CommonProperties.userInfo != null) {
+              Map data = url.queryParameters;
+              var bloc = EkramRequestTransportationBloc(
+                getCities: sl(),
+                getRequestDetails: sl(),
+                getHospitals: sl(),
+                getNationalities: sl(),
+                applyDeceasedTransport: sl(),
+                getCemeteryTypesLookUp: sl(),
+              );
+              bloc.add(
+                VerifyDeceasedEvent(
+                  params: VerifyDeceasedParams(
+                    identityNumber: data['identityNumber'] ?? '',
+                    identityType: int.tryParse(data['identityType']) ?? 0 ,
+                    birthDate: data['birthDate'] ?? '',
+                    submitterBirthDate: CommonProperties.userInfo!.getHijriBirthDate(),
+                    submitterMobile: CommonProperties.userInfo!.getPhone(),
+                  ),
+                  fromDeepLink:  true,
+                ),
+              );
+            }
+          }
+
+        });
+        print('_linkSubscription $uri');
+      } catch (e) {
+        print(e);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

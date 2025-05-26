@@ -51,12 +51,12 @@ class CommercialInjectionContainer {
 
 
     //////////////////////////////////////////////////////////
-
-    CrInjection.init();
     RenewCommercialInjection.init();
+    CrInjection.init();
     CommercialsTobaccoInjection.init();
     CommercialsPostersInjection.init();
     CommercialsPermits24Injection.init();
+
     CommercialDebtInjection.init();
 
   }

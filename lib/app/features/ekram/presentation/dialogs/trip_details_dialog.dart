@@ -3,7 +3,7 @@ import 'package:balady_plus/app/features/ekram/data/model/trips_details_params.d
 import 'package:balady_plus/app/features/ekram/domain/entities/add_trip_dialog_params.dart';
 import 'package:balady_plus/app/features/ekram/domain/entities/trip_details.dart';
 import 'package:balady_plus/app/features/ekram/ekram_exports.dart';
-import 'package:balady_plus/app/features/ekram/presentation/dialogs/add_trip_dialog.dart';
+import 'package:balady_plus/app/features/ekram/presentation/pages/driver/request_trips.dart';
 import 'package:balady_plus/app/features/ekram/presentation/widgets/trip_details_dialog_widgets/police_letter.dart';
 import 'package:collection/collection.dart';
 
@@ -114,23 +114,23 @@ class TripDetailsDialog extends StatelessWidget {
                         EnhancedCustomElevatedButtonWidget(
                           btnTextColor: AppColor.white,
                           btnPressed: () async {
-                            final result =
-                                await CustomPopUpsWidgets.showBottomSheet(
-                                    context,
-                                    child: AddTripDialog(
-                                      params: getCurrentAddTripData(
-                                          state.tripDetails?.lastOrNull,
-                                          state.deathInfo,
-                                          trips: state.tripDetails),
-                                    ),
-                                    height: MediaQuery.of(context).size.height *
-                                        0.95);
-
-                            if (result != null) {
-                              context
-                                  .read<TripDetailsBloc>()
-                                  .add(GetTripsDetailsInDialogEvent());
-                            }
+                            // final result =
+                            //     await CustomPopUpsWidgets.showBottomSheet(
+                            //         context,
+                            //         child: AddTrip_new(
+                            //           params: getCurrentAddTripData(
+                            //               state.tripDetails?.lastOrNull,
+                            //               state.deathInfo,
+                            //               trips: state.tripDetails),
+                            //         ),
+                            //         height: MediaQuery.of(context).size.height *
+                            //             0.95);
+                            //
+                            // if (result != null) {
+                            //   context
+                            //       .read<TripDetailsBloc>()
+                            //       .add(GetTripsDetailsInDialogEvent());
+                            // }
                           },
                           btnText:
                               Helpers.translatingWord("register_trip_details"),
@@ -178,45 +178,45 @@ class TripDetailsDialog extends StatelessWidget {
     );
   }
 
-  AddTripDialogParams getCurrentAddTripData(
-      TripDetails? lastTrip, DeceasedInfoResponseDtoList info,
-      {List<TripDetails>? trips}) {
-    if (lastTrip == null) {
-      return AddTripDialogParams(
-          deathCityId: info.deathCityId,
-          deathInfoId: info.deathInfoId,
-          currentTripStationArrivalTime:
-              info.driverAssignDateTime?.replaceAll("-", "/"),
-          currentTripStationId: info.transferOrganizationId,
-          currentTripStationLocationX: double.tryParse(
-            info.transferOrganizationX ?? "",
-          ),
-          currentTripStationLocationY: double.tryParse(
-            info.transferOrganizationY ?? "",
-          ),
-          currentTripStationName: info.transferOrganizationName,
-          currentTripStationTypeId: 30502,
-          cemetryId: info.cemeteryId,
-          cemetryName: info.cemeteryName,
-          trips: trips);
-    } else {
-      return AddTripDialogParams(
-          deathCityId: info.deathCityId,
-          deathInfoId: info.deathInfoId,
-          currentTripStationArrivalTime:
-              lastTrip.nextTripStationArrivalTime?.replaceAll("-", "/"),
-          currentTripStationId: lastTrip.nextTripStationId,
-          currentTripStationLocationX: double.tryParse(
-            lastTrip.nextTripStationLocationX ?? "",
-          ),
-          currentTripStationLocationY: double.tryParse(
-            lastTrip.nextTripStationLocationY ?? "",
-          ),
-          currentTripStationName: lastTrip.nextTripStationName,
-          currentTripStationTypeId: lastTrip.nextTripStationTypeId,
-          cemetryId: info.cemeteryId,
-          cemetryName: info.cemeteryName,
-          trips: trips);
-    }
-  }
+  // AddTripParameter getCurrentAddTripData(
+  //     TripDetails? lastTrip, DeceasedInfoResponseDtoList info,
+  //     {List<TripDetails>? trips}) {
+  //   if (lastTrip == null) {
+  //     return AddTripParameter(
+  //         deathCityId: info.deathCityId,
+  //         deathInfoId: info.deathInfoId,
+  //         currentTripStationArrivalTime:
+  //             info.driverAssignDateTime?.replaceAll("-", "/"),
+  //         currentTripStationId: info.transferOrganizationId,
+  //         currentTripStationLocationX: double.tryParse(
+  //           info.transferOrganizationX ?? "",
+  //         ),
+  //         currentTripStationLocationY: double.tryParse(
+  //           info.transferOrganizationY ?? "",
+  //         ),
+  //         currentTripStationName: info.transferOrganizationName,
+  //         currentTripStationTypeId: 30502,
+  //         cemetryId: info.cemeteryId,
+  //         cemetryName: info.cemeteryName,
+  //         trips: trips);
+  //   } else {
+  //     return AddTripParameter(
+  //         deathCityId: info.deathCityId,
+  //         deathInfoId: info.deathInfoId,
+  //         currentTripStationArrivalTime:
+  //             lastTrip.nextTripStationArrivalTime?.replaceAll("-", "/"),
+  //         currentTripStationId: lastTrip.nextTripStationId,
+  //         currentTripStationLocationX: double.tryParse(
+  //           lastTrip.nextTripStationLocationX ?? "",
+  //         ),
+  //         currentTripStationLocationY: double.tryParse(
+  //           lastTrip.nextTripStationLocationY ?? "",
+  //         ),
+  //         currentTripStationName: lastTrip.nextTripStationName,
+  //         currentTripStationTypeId: lastTrip.nextTripStationTypeId,
+  //         cemetryId: info.cemeteryId,
+  //         cemetryName: info.cemeteryName,
+  //         trips: trips);
+  //   }
+  // }
 }

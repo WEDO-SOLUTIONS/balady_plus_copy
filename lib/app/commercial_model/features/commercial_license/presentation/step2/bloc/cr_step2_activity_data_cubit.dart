@@ -130,7 +130,7 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
     emit(state.copyWith(totalArea: area, errorMessage: ""));
   }
 
-  void updateWorkerType(WorkersTypesEnum type) {
+  void updateWorkerType(WorkersTypes type) {
     emit(state.copyWith(workerType: type, errorMessage: ""));
   }
 
@@ -406,19 +406,19 @@ class CrStep2ActivityDataCubit extends Cubit<CrStep2ActivityDataState> {
 
       RecordInfo? recordInfo = sl<CommercialLicenseBloc>().state.recordInfo;
       print("EEE");
-      WorkersTypesEnum? workerType;
+      WorkersTypes? workerType;
       bool? atmFeesPaid;
       IsicActivity? selectedIsicActivity = state.selectedIsicActivity;
       SubActivityEntity? selectedSubActivity = state.selectedSubActivity;
       print("HHHH");
       if (requestData?.activityInfo?.workerTypeId == 1) {
-        workerType = WorkersTypesEnum.men;
+        workerType = WorkersTypes.men;
       }
       if (requestData?.activityInfo?.workerTypeId == 2) {
-        workerType = WorkersTypesEnum.women;
+        workerType = WorkersTypes.women;
       }
       if (requestData?.activityInfo?.workerTypeId == 3) {
-        workerType = WorkersTypesEnum.menWomen;
+        workerType = WorkersTypes.menWomen;
       }
 
       if (requestData?.activityInfo?.atmActivity == true) {

@@ -37,7 +37,15 @@ class _SubmitApplicationSuccessfullyNewState
 
   @override
   Widget build(BuildContext context) {
-    (String from, CrSubmitResponse submitResponse, double totalCost, ) arguments = ModalRoute.of(context)!.settings.arguments as (String from, CrSubmitResponse submitResponse, double totalCost,);
+    (
+      String from,
+      CrSubmitResponse submitResponse,
+      double totalCost,
+    ) arguments = ModalRoute.of(context)!.settings.arguments as (
+      String from,
+      CrSubmitResponse submitResponse,
+      double totalCost,
+    );
     CrSubmitResponse submitResponse = arguments.$2;
     return WillPopScope(
       onWillPop: () async {
