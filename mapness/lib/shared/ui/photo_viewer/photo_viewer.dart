@@ -31,7 +31,9 @@ class _PhotoViewerPageState extends State<PhotoViewerPage> {
   @override
   void initState() {
     super.initState();
-    pageController = PageController(initialPage: widget.currentPhotoIndex,);
+    pageController = PageController(
+      initialPage: widget.currentPhotoIndex,
+    );
     pageController.addListener(updateTitle);
     isAppBarVisible = ValueNotifier(true);
     WidgetsBinding.instance.addPostFrameCallback((_) {
