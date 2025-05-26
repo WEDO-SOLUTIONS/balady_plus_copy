@@ -21,25 +21,17 @@ class RoadClosedPage extends StatefulHookConsumerWidget {
   const RoadClosedPage({
     required this.id,
     required this.title,
-    required this.description,
     required this.startTime,
     required this.finishTime,
-    required this.latitude,
-    required this.longitude,
-    this.onClose,
     this.hasBarrier = false,
     super.key,
   });
 
   final DgisObjectId id;
   final String title;
-  final String description;
   final DateTime? startTime;
   final DateTime? finishTime;
-  final double latitude;
-  final double longitude;
 
-  final VoidCallback? onClose;
   final bool hasBarrier;
   @override
   ConsumerState<RoadClosedPage> createState() => _RoadClosedPageState();
@@ -69,7 +61,6 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
     final scrollController = useStatelessBottomsheetController(
       onClose: (controller) {
         unawaited(removeSelection());
-        widget.onClose?.call();
       },
       heightModel: BottomSheetHeightModel.fixed(120),
     );
@@ -77,18 +68,20 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
 
     // TODO(@alexstrnik) switch back to widget.title after SDK fix
     // This is a workaround to fix the title and description that is not localized
-    // When it will be fixed, we can switch back to widget.title and widget.description
+    // When it will be fixed, we can switch back to widget.title
     final titleLang = LanguageDetector.detectLanguage(widget.title);
     var title = widget.title;
     if (titleLang.localeForMapness != currentLang) {
       title = context.l10n.roadBlocking;
     }
 
-    // final descriptionLang = LanguageDetector.detectLanguage(widget.description);
-    // var description = widget.description;
-    // if (descriptionLang.localeForMapness != currentLang) {
-    //   description = context.l10n.roadBlockingDescription;
-    // }
+    final schedule = _formatSchedule(
+      widget.startTime,
+      widget.finishTime,
+      currentLang,
+      context.l10n,
+    );
+
     return Stack(
       children: [
         if (widget.hasBarrier)
@@ -131,12 +124,10 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
                 left: Spacing.$4x,
                 right: Spacing.$4x,
               ),
-              child: Text('${context.l10n.dates}: ${_formatSchedule(
-                widget.startTime,
-                widget.finishTime,
-                currentLang,
-                context.l10n,
-              )}'),
+              child: Text(
+                '${context.l10n.dates}: $schedule',
+                style: context.textStyleV3.bodySmallRegular,
+              ),
             ),
           ],
           scrollController: scrollController,
@@ -185,7 +176,6 @@ class _RoadClosedPageState extends ConsumerState<RoadClosedPage> {
 
   Future<void> _onClose() async {
     await removeSelection();
-    widget.onClose?.call();
     context.router.popForced();
   }
 }
