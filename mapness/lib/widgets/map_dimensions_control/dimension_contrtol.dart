@@ -14,6 +14,10 @@ class DimensionContrtol extends ConsumerWidget {
 
     const double iconSize = 24;
 
+    if (mapDimensionsState == MapDimensionsState.hide) {
+      return const Spacer();
+    }
+
     return MapButton(
       onTap: () => ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions(),
       child: SizedBox(
