@@ -22,7 +22,7 @@ class _HajjRcmc extends _$HajjRcmc {
   Future<List<PoiMarkerRcmc>> build() async {
     try {
       final env = await ref.read(dgisEnvironmentProvider.future);
-      final String url = (env.url + _rcmcUrl).replaceFirst('/api', '');
+      final String url = env.url.replaceFirst('/api', '') + _rcmcUrl;
       final appLanguage = ref.watch(appLanguageProvider);
       final camera = ref.watch(cameraPositionProvider);
       if (camera != null && camera.zoom < _zoomInVisibleMarkers) {
