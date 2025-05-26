@@ -225,7 +225,7 @@ class SsoUserInfo extends Equatable {
     data['email'] = mail;
     data['name'] = name;
     data['phone'] = phone;
-    data['name_ar'] = namesAr;
+    data['name_ar'] = arName;
     return data;
   }
 
