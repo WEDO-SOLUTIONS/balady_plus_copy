@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import '../../../../../../core/dependency_injection/injection_container.dart';
 import '../../../../../../features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../../../../../../features/_shared_feature_/shared_feature_exports.dart';
 import '../../../commercial_license_exports.dart';
@@ -54,36 +55,39 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                         DropDownWithTitle(
                             selectedValue: state.gisResponse?.getFullAddress(),
                             title: "loaction".tr(),
+
                             onTap: () async {
                               //Navigator
 
-                              NavigationService.navigatorKey.currentState!
-                                  .pushNamed(
-                                RouteName.crMapScreen,
-                                arguments: context.read<MapBloc>(),
-                              )
-                                  .then((value) {
-                                if (value != null) {
-                                  MapScreenParams? params =
-                                      value as MapScreenParams;
-                                  context.read<MapBloc>().emit(state.copyWith(
-                                      gisResponse: params.gisResponse,
-                                      location: params.gisParams,
-                                      mapNo:
-                                          params.gisResponse?.planNo != "Null"
-                                              ? params.gisResponse?.planNo ?? ""
-                                              : "",
-                                      landNo: params.gisResponse?.parcelNo !=
-                                              "Null"
-                                          ? params.gisResponse?.parcelNo ?? ""
-                                          : ""));
+                              if(sl<CommercialLicenseBloc>().state.isFromIntialApproval !=true) {
+                                NavigationService.navigatorKey.currentState!
+                                    .pushNamed(
+                                  RouteName.crMapScreen,
+                                  arguments: context.read<MapBloc>(),
+                                )
+                                    .then((value) {
+                                  if (value != null) {
+                                    MapScreenParams? params =
+                                    value as MapScreenParams;
+                                    context.read<MapBloc>().emit(state.copyWith(
+                                        gisResponse: params.gisResponse,
+                                        location: params.gisParams,
+                                        mapNo:
+                                        params.gisResponse?.planNo != "Null"
+                                            ? params.gisResponse?.planNo ?? ""
+                                            : "",
+                                        landNo: params.gisResponse?.parcelNo !=
+                                            "Null"
+                                            ? params.gisResponse?.parcelNo ?? ""
+                                            : ""));
 
-                                  if (params.gisResponse?.municipalityId ==
-                                      "003201") {
-                                    showOlaMessage();
+                                    if (params.gisResponse?.municipalityId ==
+                                        "003201") {
+                                      showOlaMessage();
+                                    }
                                   }
-                                }
-                              });
+                                });
+                              }
                             }),
                         ReadOnlyField(
                           subTitle: state.gisResponse?.region,
@@ -106,7 +110,8 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                           title: "street".tr(),
                         ),
                         if (state.draftStatus == BlocStatus.success) ...[
-                          CustomTextFieldWidget(
+
+                          sl<CommercialLicenseBloc>().state.isFromIntialApproval !=true?CustomTextFieldWidget(
                             label: "planNumber".tr(),
                             hintText: "enter_plan_number".tr(),
                             controller: context.read<MapBloc>().mapNpController,
@@ -126,7 +131,12 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                                   .read<MapBloc>()
                                   .add(UpdateFieldsEvent(mapNo: value));
                             },
+                          ):ReadOnlyField(
+                            subTitle: context.read<MapBloc>().mapNpController.text,
+                            title: "planNumber".tr(),
                           ),
+
+                          sl<CommercialLicenseBloc>().state.isFromIntialApproval !=true?
                           CustomTextFieldWidget(
                             label: "parcel_number".tr(),
                             hintText: "enter_parcel_no".tr(),
@@ -148,7 +158,11 @@ class _CRStep3GeolocationDataState extends State<CRStep3GeolocationData> {
                                   .read<MapBloc>()
                                   .add(UpdateFieldsEvent(landNo: value));
                             },
-                          )
+
+                          ):ReadOnlyField(
+                            subTitle: context.read<MapBloc>().landNpController.text,
+                            title: "parcel_number".tr(),
+                          ),
                         ],
                       ],
                     ),

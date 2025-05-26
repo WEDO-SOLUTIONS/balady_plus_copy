@@ -346,7 +346,7 @@ class RouteName {
   static const commercialLicenseQueryDetails =
       'QueryCommercialLicense_query_details_Screen';
 
-  static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
+  // static const surveyReportInqueryOverView = 'SurveyReportOverview_Screen';
   static const surveyReportInquery = 'SurveyReportInquery_Screen';
   static const surveyReportInqueryDetails = 'SurveyReportInqueryDetails_Screen';
 

@@ -15,7 +15,8 @@ import 'bottom_sheet_dialogs.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 class NotAuthorizedIndivisualDialog extends StatelessWidget {
-  const NotAuthorizedIndivisualDialog({super.key});
+  String? routName;
+  NotAuthorizedIndivisualDialog({super.key,this.routName});
 
   @override
   Widget build(BuildContext context) {
@@ -96,7 +97,7 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                   await BottomSheetDialog.showDraggableSheet(
                     context,
                     dialogKeyName: DialogName.delegatorsDialog,
-                    currentRouteName: RouteName.commercialLicenseServicePage,
+                    currentRouteName: routName??RouteName.commercialLicenseServicePage,
                     child: DelegatorList(
                       fromService: true,
                       delegatorsCubit: sl<DelegatorsCubit>(),
@@ -104,14 +105,14 @@ class NotAuthorizedIndivisualDialog extends StatelessWidget {
                   );
                   Navigator.of(context).pop();
                 } catch (error, stackTrace) {
-    LogsViewModel().sendEventFromModel(
-      event: ErrorExceptionModel(
-        nameEvent: EventsName.handledException,
-        message: error.toString(),
-        stackTrace: stackTrace.toString(),
-      ),
-    );
-  }
+                  LogsViewModel().sendEventFromModel(
+                    event: ErrorExceptionModel(
+                      nameEvent: EventsName.handledException,
+                      message: error.toString(),
+                      stackTrace: stackTrace.toString(),
+                    ),
+                  );
+                }
               },
               text: "switch_to_entity".tr()),
           SizedBox(

@@ -202,7 +202,7 @@ dependencies:
   wakelock_plus: 1.2.8
   provider: ^6.0.5
   flutter_compass: ^0.8.0
-  sentry_flutter: 8.9.0
+  sentry_flutter: 8.14.2
   app_links: ^6.3.2
   flutter_html:
   curl_logger_dio_interceptor: ^1.0.0
@@ -263,7 +263,6 @@ dependency_overrides:
   webview_flutter_wkwebview: 3.17.0
   flutter_insider: 3.15.1
   geolocator_android: 4.6.1
-  sentry_flutter: 8.14.2
   sentry_dio: 8.14.2
 
 dev_dependencies:

@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:collection/collection.dart';
 
 import 'package:collection/collection.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../../../core/errors/failures.dart';
 import '../../../../../core/services/local/navigation_services.dart';

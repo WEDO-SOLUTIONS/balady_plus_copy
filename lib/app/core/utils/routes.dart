@@ -628,8 +628,8 @@ class Routes {
 
 
 
-    RouteName.surveyReportInqueryOverView: (context) =>
-        const SurveyReportOverviewScreen(),
+     // RouteName.surveyReportInqueryOverView: (context) =>
+     //     const SurveyReportOverviewScreen(),
     RouteName.surveyReportInquery: (context) =>
         const SurveyReportInqueryScreen(),
     RouteName.surveyReportInqueryDetails: (context) =>
