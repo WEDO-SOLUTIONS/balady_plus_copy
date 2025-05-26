@@ -83,73 +83,57 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       );
 
     if (!_hasConnection) {
-      return SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: MapLostInternet(
-              onTap: () async {
-                await ref.read(networkStatusProvider.notifier).update();
-                _updateInternetStatus(context, ref.read(networkStatusProvider));
-              },
-            ),
+      return SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: MapLostInternet(
+            onTap: () async {
+              await ref.read(networkStatusProvider.notifier).update();
+              _updateInternetStatus(context, ref.read(networkStatusProvider));
+            },
           ),
         ),
       );
     }
 
     return searchState.map(
-      empty: () => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: MapSearchEmpty(),
-        ),
+      empty: () => const SafeArea(
+        top: false,
+        child: MapSearchEmpty(),
       ),
-      history: () => const SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSearchHistory(),
-        ),
+      history: () => const SafeArea(
+        top: false,
+        child: MapSearchHistory(),
       ),
-      loading: () => SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: Center(
-            child: Loading(
-              orientation: Axis.vertical,
-              size: LoaderSize.large,
-              title: context.l10n.loading,
-            ),
+      loading: () => SafeArea(
+        top: false,
+        child: Center(
+          child: Loading(
+            orientation: Axis.vertical,
+            size: LoaderSize.large,
+            title: context.l10n.loading,
           ),
         ),
       ),
-      suggest: (suggest) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSuggestList(
-            suggest: suggest,
-          ),
+      suggest: (suggest) => SafeArea(
+        top: false,
+        child: MapSuggestList(
+          suggest: suggest,
         ),
       ),
-      results: (results) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSearchResults(
-            results: results,
-            scrollController: widget.scrollController,
-          ),
+      results: (results) => SafeArea(
+        top: false,
+        child: MapSearchResults(
+          results: results,
+          scrollController: widget.scrollController,
         ),
       ),
-      failure: (query, errorMessage) => SliverToBoxAdapter(
-        child: BaseErrorWidget(
-          errorLabel: errorMessage,
-          onRetry: () {
-            ref.read(searchProvider(scope.value).notifier).searchByText(query);
-          },
-        ),
+      failure: (query, errorMessage) => BaseErrorWidget(
+        errorLabel: errorMessage,
+        onRetry: () {
+          ref.read(searchProvider(scope.value).notifier).searchByText(query);
+        },
       ),
     );
   }
