@@ -227,8 +227,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
     imageSize = Size(textHeight * aspectRatio, textHeight);
 
     /// Set the size of the Widget.
-    final textWidth = max(titlePainter.width, subtitlePainter.width);
-    size = Size(max(constraints.minWidth, textWidth + imageSize.width), textHeight);
+    size = Size(constraints.maxWidth, textHeight);
   }
 
   @override

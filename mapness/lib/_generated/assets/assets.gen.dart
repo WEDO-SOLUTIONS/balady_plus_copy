@@ -34,9 +34,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
-  /// File path: assets/images/calendar_card_brown.png
-  AssetGenImage get calendarCardBrown => const AssetGenImage('assets/images/calendar_card_brown.png');
-
   /// File path: assets/images/city_expert.png
   AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
 
@@ -51,9 +48,6 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/eta_sheet_background.png
   AssetGenImage get etaSheetBackground => const AssetGenImage('assets/images/eta_sheet_background.png');
-
-  /// File path: assets/images/event_card_item_mask.png
-  AssetGenImage get eventCardItemMask => const AssetGenImage('assets/images/event_card_item_mask.png');
 
   /// File path: assets/images/favorites_example_arabic.png
   AssetGenImage get favoritesExampleArabic => const AssetGenImage('assets/images/favorites_example_arabic.png');
@@ -124,13 +118,11 @@ class $AssetsImagesGen {
         addCompany,
         addPhoto,
         calendarCard,
-        calendarCardBrown,
         cityExpert,
         darkMapPreview,
         driveHomeArrow,
         driveHomeBackground,
         etaSheetBackground,
-        eventCardItemMask,
         favoritesExampleArabic,
         favoritesExampleEnglish,
         feedbackDashboard,
@@ -258,14 +250,14 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/current_location_icon.svg
   SvgGenImage get currentLocationIcon => const SvgGenImage('assets/icons/svg/current_location_icon.svg');
 
-  /// File path: assets/icons/svg/ic_actions_container.svg
-  SvgGenImage get icActionsContainer => const SvgGenImage('assets/icons/svg/ic_actions_container.svg');
-
   /// File path: assets/icons/svg/ic_2d.svg
   SvgGenImage get ic2d => const SvgGenImage('assets/icons/svg/ic_2d.svg');
 
   /// File path: assets/icons/svg/ic_3d.svg
   SvgGenImage get ic3d => const SvgGenImage('assets/icons/svg/ic_3d.svg');
+
+  /// File path: assets/icons/svg/ic_actions_container.svg
+  SvgGenImage get icActionsContainer => const SvgGenImage('assets/icons/svg/ic_actions_container.svg');
 
   /// File path: assets/icons/svg/ic_arrow_compass.svg
   SvgGenImage get icArrowCompass => const SvgGenImage('assets/icons/svg/ic_arrow_compass.svg');
@@ -429,9 +421,9 @@ class $AssetsIconsSvgGen {
   /// List of all assets
   List<SvgGenImage> get values => [
         currentLocationIcon,
-        icActionsContainer,
         ic2d,
         ic3d,
+        icActionsContainer,
         icArrowCompass,
         icBestRoute,
         icBug,
@@ -534,6 +526,9 @@ class $AssetsIconsSvgLayersGen {
 class $AssetsIconsSvgPlacesBigNewGen {
   const $AssetsIconsSvgPlacesBigNewGen();
 
+  /// File path: assets/icons/svg/places_big_new/ic_additional.svg
+  SvgGenImage get icAdditional => const SvgGenImage('assets/icons/svg/places_big_new/ic_additional.svg');
+
   /// File path: assets/icons/svg/places_big_new/ic_barbershop.svg
   SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_big_new/ic_barbershop.svg');
 
@@ -555,14 +550,23 @@ class $AssetsIconsSvgPlacesBigNewGen {
   /// File path: assets/icons/svg/places_big_new/ic_gym.svg
   SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_big_new/ic_gym.svg');
 
+  /// File path: assets/icons/svg/places_big_new/ic_hajj_support.svg
+  SvgGenImage get icHajjSupport => const SvgGenImage('assets/icons/svg/places_big_new/ic_hajj_support.svg');
+
   /// File path: assets/icons/svg/places_big_new/ic_hospital_place.svg
   SvgGenImage get icHospitalPlace => const SvgGenImage('assets/icons/svg/places_big_new/ic_hospital_place.svg');
 
   /// File path: assets/icons/svg/places_big_new/ic_hotels.svg
   SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_big_new/ic_hotels.svg');
 
+  /// File path: assets/icons/svg/places_big_new/ic_kiosks_retail.svg
+  SvgGenImage get icKiosksRetail => const SvgGenImage('assets/icons/svg/places_big_new/ic_kiosks_retail.svg');
+
   /// File path: assets/icons/svg/places_big_new/ic_markets.svg
   SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_big_new/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_big_new/ic_medical_help.svg
+  SvgGenImage get icMedicalHelp => const SvgGenImage('assets/icons/svg/places_big_new/ic_medical_help.svg');
 
   /// File path: assets/icons/svg/places_big_new/ic_medicine_ltr.svg
   SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_big_new/ic_medicine_ltr.svg');
@@ -591,11 +595,15 @@ class $AssetsIconsSvgPlacesBigNewGen {
   /// File path: assets/icons/svg/places_big_new/ic_tooth.svg
   SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_big_new/ic_tooth.svg');
 
+  /// File path: assets/icons/svg/places_big_new/ic_water_places.svg
+  SvgGenImage get icWaterPlaces => const SvgGenImage('assets/icons/svg/places_big_new/ic_water_places.svg');
+
   /// File path: assets/icons/svg/places_big_new/ic_wc.svg
   SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_big_new/ic_wc.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        icAdditional,
         icBarbershop,
         icBeach,
         icBeauty,
@@ -603,9 +611,12 @@ class $AssetsIconsSvgPlacesBigNewGen {
         icEvents,
         icGasstationLtr,
         icGym,
+        icHajjSupport,
         icHospitalPlace,
         icHotels,
+        icKiosksRetail,
         icMarkets,
+        icMedicalHelp,
         icMedicineLtr,
         icMosques,
         icPark,
@@ -615,12 +626,16 @@ class $AssetsIconsSvgPlacesBigNewGen {
         icSchoolLtr,
         icShopping,
         icTooth,
+        icWaterPlaces,
         icWc
       ];
 }
 
 class $AssetsIconsSvgPlacesNewGen {
   const $AssetsIconsSvgPlacesNewGen();
+
+  /// File path: assets/icons/svg/places_new/ic_additional.svg
+  SvgGenImage get icAdditional => const SvgGenImage('assets/icons/svg/places_new/ic_additional.svg');
 
   /// File path: assets/icons/svg/places_new/ic_barbershop.svg
   SvgGenImage get icBarbershop => const SvgGenImage('assets/icons/svg/places_new/ic_barbershop.svg');
@@ -643,14 +658,23 @@ class $AssetsIconsSvgPlacesNewGen {
   /// File path: assets/icons/svg/places_new/ic_gym.svg
   SvgGenImage get icGym => const SvgGenImage('assets/icons/svg/places_new/ic_gym.svg');
 
+  /// File path: assets/icons/svg/places_new/ic_hajj_support.svg
+  SvgGenImage get icHajjSupport => const SvgGenImage('assets/icons/svg/places_new/ic_hajj_support.svg');
+
   /// File path: assets/icons/svg/places_new/ic_hospital_place.svg
   SvgGenImage get icHospitalPlace => const SvgGenImage('assets/icons/svg/places_new/ic_hospital_place.svg');
 
   /// File path: assets/icons/svg/places_new/ic_hotels.svg
   SvgGenImage get icHotels => const SvgGenImage('assets/icons/svg/places_new/ic_hotels.svg');
 
+  /// File path: assets/icons/svg/places_new/ic_kiosks_retail.svg
+  SvgGenImage get icKiosksRetail => const SvgGenImage('assets/icons/svg/places_new/ic_kiosks_retail.svg');
+
   /// File path: assets/icons/svg/places_new/ic_markets.svg
   SvgGenImage get icMarkets => const SvgGenImage('assets/icons/svg/places_new/ic_markets.svg');
+
+  /// File path: assets/icons/svg/places_new/ic_medical_help.svg
+  SvgGenImage get icMedicalHelp => const SvgGenImage('assets/icons/svg/places_new/ic_medical_help.svg');
 
   /// File path: assets/icons/svg/places_new/ic_medicine_ltr.svg
   SvgGenImage get icMedicineLtr => const SvgGenImage('assets/icons/svg/places_new/ic_medicine_ltr.svg');
@@ -682,11 +706,15 @@ class $AssetsIconsSvgPlacesNewGen {
   /// File path: assets/icons/svg/places_new/ic_tooth.svg
   SvgGenImage get icTooth => const SvgGenImage('assets/icons/svg/places_new/ic_tooth.svg');
 
+  /// File path: assets/icons/svg/places_new/ic_water_places.svg
+  SvgGenImage get icWaterPlaces => const SvgGenImage('assets/icons/svg/places_new/ic_water_places.svg');
+
   /// File path: assets/icons/svg/places_new/ic_wc.svg
   SvgGenImage get icWc => const SvgGenImage('assets/icons/svg/places_new/ic_wc.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
+        icAdditional,
         icBarbershop,
         icBeach,
         icBeauty,
@@ -694,9 +722,12 @@ class $AssetsIconsSvgPlacesNewGen {
         icEventsLtr,
         icGasstationLtr,
         icGym,
+        icHajjSupport,
         icHospitalPlace,
         icHotels,
+        icKiosksRetail,
         icMarkets,
+        icMedicalHelp,
         icMedicineLtr,
         icMosques,
         icPark,
@@ -707,6 +738,7 @@ class $AssetsIconsSvgPlacesNewGen {
         icSchoolLtr,
         icShopping,
         icTooth,
+        icWaterPlaces,
         icWc
       ];
 }

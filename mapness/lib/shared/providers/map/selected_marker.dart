@@ -24,11 +24,11 @@ class SelectedMarker extends _$SelectedMarker {
         ).notifier,
       );
 
-  Future<void> showMarker(Marker marker) async {
+  Future<void> showMarker(Marker marker, {MapObjectManagerSettings? settings}) async {
     final searchObjectManager = ref.read(
       mapObjectManagerProvider(
-        named: searchSettings.name,
-        layerId: searchSettings.layerId,
+        named: settings?.name ?? searchSettings.name,
+        layerId: settings?.layerId ?? searchSettings.layerId,
       ).notifier,
     );
 

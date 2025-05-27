@@ -3,6 +3,10 @@ digraph "" {
   node [shape=rect style="filled,rounded" fontname=Arial fontsize=15 fillcolor=Lavender penwidth=1.3];
   edge [penwidth=1.3];
   "/lib/widgets/layers/layer_sliver_list.dart" [label="layer_sliver_list"];
+  "/lib/widgets/hajj/hajj_poi_card_footer.dart" [label="hajj_poi_card_footer"];
+  "/lib/widgets/hajj/hajj_poi_header.dart" [label="hajj_poi_header"];
+  "/lib/widgets/hajj/hajj_info_widget.dart" [label="hajj_info_widget"];
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" [label="hajj_wrapper_listeners"];
   "/lib/widgets/parking_spot/selected_images.dart" [label="selected_images"];
   "/lib/widgets/parking_spot/parking_control.dart" [label="parking_control"];
   "/lib/widgets/quick_filters/ui/quick_filters.dart" [label="quick_filters"];
@@ -190,6 +194,7 @@ digraph "" {
   "/lib/app/auto_route/others/routes_observer.dart" [label="routes_observer"];
   "/lib/app/auto_route/others/route_builder.dart" [label="route_builder"];
   "/lib/app/auto_route/others/transparent_barrier.dart" [label="transparent_barrier"];
+  "/lib/entities/hajj/poi_marker_rcmc.dart" [label="poi_marker_rcmc"];
   "/lib/entities/city_contain/dto/city_rect.dart" [label="city_rect"];
   "/lib/entities/city_contain/dto/location_point.dart" [label="location_point"];
   "/lib/entities/quick_filters/quick_filter.dart" [label="quick_filter"];
@@ -252,9 +257,11 @@ digraph "" {
   "/lib/entities/weather/weather_params.dart" [label="weather_params"];
   "/lib/entities/weather/weather_type_ext.dart" [label="weather_type_ext"];
   "/lib/entities/weather/weather_info.dart" [label="weather_info"];
+  "/lib/entities/search/models/search_region_bound.dart" [label="search_region_bound"];
   "/lib/entities/search/models/search_history.dart" [label="search_history"];
   "/lib/entities/search/models/rubric_marker_info.dart" [label="rubric_marker_info"];
   "/lib/entities/mini_apps/presentation_mode.dart" [label="presentation_mode"];
+  "/lib/features/hajj/hajj_rcmc_provider.dart" [label="hajj_rcmc_provider"];
   "/lib/features/parking_spot/parking_spot_map.dart" [label="parking_spot_map"];
   "/lib/features/parking_spot/model/parking_store_model.dart" [label="parking_store_model"];
   "/lib/features/parking_spot/parking_image.dart" [label="parking_image"];
@@ -504,6 +511,7 @@ digraph "" {
   "/lib/features/search/ui/search_scope.dart" [label="search_scope"];
   "/lib/features/search/providers/search.dart" [label="search"];
   "/lib/features/search/providers/search_history.dart" [label="search_history"];
+  "/lib/features/search/providers/search_region_bound_provider.dart" [label="search_region_bound_provider"];
   "/lib/features/search/providers/search_pagination.dart" [label="search_pagination"];
   "/lib/features/search/models/search_state.dart" [label="search_state"];
   "/lib/features/search/models/search_scope.dart" [label="search_scope"];
@@ -515,6 +523,7 @@ digraph "" {
   "/lib/_generated/protocol/protocol.pbjson.dart" [label="protocol.pbjson"];
   "/lib/_generated/protocol/protocol.pb.dart" [label="protocol.pb"];
   "/lib/_generated/assets/assets.gen.dart" [label="assets.gen"];
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" [label="hajj_poi_card_widget_page"];
   "/lib/pages/parking_spot/parking_spot_page.dart" [label="parking_spot_page"];
   "/lib/pages/parking_spot/parking_dialog_page.dart" [label="parking_dialog_page"];
   "/lib/pages/poi_card/poi_card_widget_page.dart" [label="poi_card_widget_page"];
@@ -559,13 +568,13 @@ digraph "" {
   "/lib/pages/kiblah/providers/fake_compass.dart" [label="fake_compass"];
   "/lib/pages/kiblah/providers/kaaba_bearing.dart" [label="kaaba_bearing"];
   "/lib/pages/map_search/ui/map_search_results.dart" [label="map_search_results"];
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" [label="map_search_content_v2"];
   "/lib/pages/map_search/ui/map_search_bar.dart" [label="map_search_bar"];
   "/lib/pages/map_search/ui/map_search_empty.dart" [label="map_search_empty"];
   "/lib/pages/map_search/ui/map_lost_internet.dart" [label="map_lost_internet"];
   "/lib/pages/map_search/ui/map_search_controls.dart" [label="map_search_controls"];
   "/lib/pages/map_search/ui/map_search_history.dart" [label="map_search_history"];
   "/lib/pages/map_search/ui/map_suggest_list.dart" [label="map_suggest_list"];
-  "/lib/pages/map_search/ui/map_search_content.dart" [label="map_search_content"];
   "/lib/pages/map_search/ui/map_search_header_delegate.dart" [label="map_search_header_delegate"];
   "/lib/pages/map_search/search_page.dart" [label="search_page"];
   "/lib/pages/map_search/map_search_sheet.dart" [label="map_search_sheet"];
@@ -739,6 +748,7 @@ digraph "" {
   "/lib/shared/config/environment_config.dart" [label="environment_config"];
   "/lib/shared/entities/coordinates.dart" [label="coordinates"];
   "/lib/shared/routing/transculent_page.dart" [label="transculent_page"];
+  "/lib/shared/routing/add_photo_page.dart" [label="add_photo_page"];
   "/lib/shared/providers/debug_state.dart" [label="debug_state"];
   "/lib/shared/providers/hive.dart" [label="hive"];
   "/lib/shared/providers/dgis_http_network.dart" [label="dgis_http_network"];
@@ -819,6 +829,13 @@ digraph "" {
         subgraph "cluster~/lib/widgets/layers" {
           label="layers";
           "/lib/widgets/layers/layer_sliver_list.dart";
+        }
+        subgraph "cluster~/lib/widgets/hajj" {
+          label="hajj";
+          "/lib/widgets/hajj/hajj_poi_card_footer.dart";
+          "/lib/widgets/hajj/hajj_poi_header.dart";
+          "/lib/widgets/hajj/hajj_info_widget.dart";
+          "/lib/widgets/hajj/hajj_wrapper_listeners.dart";
         }
         subgraph "cluster~/lib/widgets/parking_spot" {
           label="parking_spot";
@@ -1168,6 +1185,10 @@ digraph "" {
       }
       subgraph "cluster~/lib/entities" {
         label="entities";
+        subgraph "cluster~/lib/entities/hajj" {
+          label="hajj";
+          "/lib/entities/hajj/poi_marker_rcmc.dart";
+        }
         subgraph "cluster~/lib/entities/city_contain" {
           label="city_contain";
           subgraph "cluster~/lib/entities/city_contain/dto" {
@@ -1294,6 +1315,7 @@ digraph "" {
           label="search";
           subgraph "cluster~/lib/entities/search/models" {
             label="models";
+            "/lib/entities/search/models/search_region_bound.dart";
             "/lib/entities/search/models/search_history.dart";
             "/lib/entities/search/models/rubric_marker_info.dart";
           }
@@ -1305,6 +1327,10 @@ digraph "" {
       }
       subgraph "cluster~/lib/features" {
         label="features";
+        subgraph "cluster~/lib/features/hajj" {
+          label="hajj";
+          "/lib/features/hajj/hajj_rcmc_provider.dart";
+        }
         subgraph "cluster~/lib/features/parking_spot" {
           label="parking_spot";
           "/lib/features/parking_spot/parking_spot_map.dart";
@@ -1834,6 +1860,7 @@ digraph "" {
             label="providers";
             "/lib/features/search/providers/search.dart";
             "/lib/features/search/providers/search_history.dart";
+            "/lib/features/search/providers/search_region_bound_provider.dart";
             "/lib/features/search/providers/search_pagination.dart";
           }
           subgraph "cluster~/lib/features/search/models" {
@@ -1867,6 +1894,10 @@ digraph "" {
       }
       subgraph "cluster~/lib/pages" {
         label="pages";
+        subgraph "cluster~/lib/pages/hajj" {
+          label="hajj";
+          "/lib/pages/hajj/hajj_poi_card_widget_page.dart";
+        }
         subgraph "cluster~/lib/pages/parking_spot" {
           label="parking_spot";
           "/lib/pages/parking_spot/parking_spot_page.dart";
@@ -1977,13 +2008,13 @@ digraph "" {
           subgraph "cluster~/lib/pages/map_search/ui" {
             label="ui";
             "/lib/pages/map_search/ui/map_search_results.dart";
+            "/lib/pages/map_search/ui/map_search_content_v2.dart";
             "/lib/pages/map_search/ui/map_search_bar.dart";
             "/lib/pages/map_search/ui/map_search_empty.dart";
             "/lib/pages/map_search/ui/map_lost_internet.dart";
             "/lib/pages/map_search/ui/map_search_controls.dart";
             "/lib/pages/map_search/ui/map_search_history.dart";
             "/lib/pages/map_search/ui/map_suggest_list.dart";
-            "/lib/pages/map_search/ui/map_search_content.dart";
             "/lib/pages/map_search/ui/map_search_header_delegate.dart";
           }
         }
@@ -2312,6 +2343,7 @@ digraph "" {
         subgraph "cluster~/lib/shared/routing" {
           label="routing";
           "/lib/shared/routing/transculent_page.dart";
+          "/lib/shared/routing/add_photo_page.dart";
         }
         subgraph "cluster~/lib/shared/providers" {
           label="providers";
@@ -2429,6 +2461,32 @@ digraph "" {
   "/lib/widgets/layers/layer_sliver_list.dart" -> "/lib/features/lifestyle_layers/providers/layers_state.dart";
   "/lib/widgets/layers/layer_sliver_list.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/layers/layer_sliver_list.dart" -> "/lib/shared/lib/auth/auth_methods.dart";
+  "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/widgets/helpers/throttled_callback_widget.dart";
+  "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
+  "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/subtitle.dart";
+  "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/title.dart";
+  "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/shared/ui/sheets/card_header.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/features/poi_card/provider/poi_card_actions_provider.dart";
+  "/lib/widgets/hajj/hajj_info_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/features/hajj/hajj_rcmc_provider.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/features/lifestyle_layers/configs/layers_consts.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/extensions/int_extention.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/extensions/markers_from_search.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/extensions/string_ext.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/providers/dark_mode.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/providers/map/object_manager.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/providers/map/point_of_interest.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/providers/map/selected_marker.dart";
+  "/lib/widgets/hajj/hajj_wrapper_listeners.dart" -> "/lib/shared/ui/markers/markers.dart";
   "/lib/widgets/parking_spot/selected_images.dart" -> "/lib/features/parking_spot/parking_image.dart";
   "/lib/widgets/parking_spot/selected_images.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/parking_spot/selected_images.dart" -> "/lib/shared/extensions/int_extention.dart";
@@ -2822,7 +2880,6 @@ digraph "" {
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/landing/compass_control.dart";
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/landing/follow_control.dart";
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
-  "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/weather/weather_card_header.dart";
   "/lib/widgets/weather/weather_controls.dart" -> "/lib/widgets/weather/weather_state_icon.dart";
   "/lib/widgets/landing/joy_parks_card.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/widgets/landing/joy_parks_card.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -3054,6 +3111,15 @@ digraph "" {
   "/lib/entities/weather/weather_type_ext.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/entities/search/models/search_history.dart" -> "/lib/shared/lib/make_address.dart";
   "/lib/entities/search/models/rubric_marker_info.dart" -> "/lib/shared/extensions/markers_from_search.dart";
+  "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/base_dio.dart";
+  "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/dgis_environment.dart";
+  "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/map/camera_position.dart";
+  "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/features/routing/providers/routes.dart";
+  "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/shared/constants/constants.dart";
+  "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/shared/providers/app_language.dart";
+  "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/shared/providers/dark_mode.dart";
   "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/features/parking_spot/parking_image.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/_generated/assets/assets.gen.dart";
@@ -3061,6 +3127,7 @@ digraph "" {
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/app/auto_route/poi_card_ext.dart";
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/features/lifestyle_layers/configs/layers_consts.dart";
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/features/parking_spot/model/parking_store_model.dart";
+  "/lib/features/parking_spot/parking_manage.dart" -> "/lib/features/poi_card/provider/poi_card_closing.dart";
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/shared/extensions/string_ext.dart";
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/features/parking_spot/parking_manage.dart" -> "/lib/shared/providers/dark_mode.dart";
@@ -3079,11 +3146,11 @@ digraph "" {
   "/lib/features/road_events/ui/widgets/closed_controls.dart" -> "/lib/widgets/landing/traffic_control.dart";
   "/lib/features/road_events/ui/widgets/closed_controls.dart" -> "/lib/widgets/landing/zoom_control.dart";
   "/lib/features/road_events/ui/widgets/closed_controls.dart" -> "/lib/widgets/map_dimensions_control/dimension_contrtol.dart";
-  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/features/road_events/ui/widgets/closed_card.dart";
-  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/features/road_events/ui/widgets/closed_controls.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/hooks/stateless_botomsheet_controller_hook.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/providers/map/highlight.dart";
+  "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/utils/language_detector.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/extensions/organizations_ext.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
@@ -3490,6 +3557,7 @@ digraph "" {
   "/lib/features/share_eta/ui/share_eta_btn_action.dart" -> "/lib/features/share_eta/ui/eta_share_control_sheet/eta_share_control_sheet.dart";
   "/lib/features/share_eta/ui/eta_share_control_sheet/eta_share_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/features/share_eta/ui/eta_share_control_sheet/eta_share_control_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
+  "/lib/features/share_eta/ui/eta_share_control_sheet/eta_share_control_sheet.dart" -> "/lib/features/share_eta/models/eta_stream_payload.dart";
   "/lib/features/share_eta/ui/eta_share_control_sheet/eta_share_control_sheet.dart" -> "/lib/features/share_eta/providers/share_eta_provider.dart";
   "/lib/features/share_eta/ui/eta_share_control_sheet/eta_share_control_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/share_eta/ui/eta_share_control_sheet/eta_sharing_time_sheet.dart" -> "/lib/features/share_eta/entities/share_eta_time_type.dart";
@@ -3921,6 +3989,11 @@ digraph "" {
   "/lib/features/search/providers/search.dart" -> "/lib/shared/utils/language_detector.dart";
   "/lib/features/search/providers/search_history.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/features/search/providers/search_history.dart" -> "/lib/shared/providers/hive.dart";
+  "/lib/features/search/providers/search_region_bound_provider.dart" -> "/lib/entities/search/models/search_region_bound.dart";
+  "/lib/features/search/providers/search_region_bound_provider.dart" -> "/lib/shared/lib/deeplink_functions.dart";
+  "/lib/features/search/providers/search_region_bound_provider.dart" -> "/lib/shared/providers/base_dio.dart";
+  "/lib/features/search/providers/search_region_bound_provider.dart" -> "/lib/shared/providers/location.dart";
+  "/lib/features/search/providers/search_region_bound_provider.dart" -> "/lib/shared/providers/vendor_config.dart";
   "/lib/features/search/providers/search_pagination.dart" -> "/lib/shared/providers/map/dgis_controller.dart";
   "/lib/features/search/models/search_state.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/export/mapness_functions.dart" -> "/lib/app/auto_route/app_routes.dart";
@@ -3962,6 +4035,20 @@ digraph "" {
   "/lib/_generated/protocol/protocol.pbserver.dart" -> "/lib/_generated/protocol/protocol.pb.dart" [style=dashed];
   "/lib/_generated/protocol/protocol.pb.dart" -> "/lib/_generated/protocol/protocol.pbenum.dart";
   "/lib/_generated/protocol/protocol.pb.dart" -> "/lib/_generated/protocol/protocol.pbenum.dart" [style=dashed];
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/entities/routing/route_params_point.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/domain/poi_card_state_mapper.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/provider/poi_card_actions_provider.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/photos_header/poi_photos_header.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/shared/providers/map/selected_marker.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/widgets/hajj/hajj_info_widget.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/widgets/hajj/hajj_poi_card_footer.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/widgets/hajj/hajj_poi_header.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/widgets/hajj/hajj_wrapper_listeners.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/entities/routing/route_point.dart";
@@ -4138,6 +4225,7 @@ digraph "" {
   "/lib/pages/favourites/favourites_search.dart" -> "/lib/widgets/favourites/screen/favourites_search_screen.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/common/providers/shared_prefs.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_features/common/providers/ui_direction.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/app/auto_route/app_routes.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/entities/app_feedback/app_feedback_payload.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/entities/path_nav/models/path_nav_state.dart";
@@ -4146,6 +4234,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/lifestyle_layers/providers/active_layer.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/lifestyle_layers/providers/layers_state.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/path_nav/providers/path_nav_eta.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/path_nav/providers/path_nav_message.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/routing/providers/routes.dart";
@@ -4154,6 +4243,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/features/share_eta/providers/share_eta_provider.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/car_connection.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/location.dart";
@@ -4165,6 +4255,7 @@ digraph "" {
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/map/sound_settings.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/ui/measure_size.dart";
+  "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/shared/ui/toast/toast_overlay.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/eta_continue.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/eta_finished.dart";
   "/lib/pages/path_nav/path_nav_page.dart" -> "/lib/widgets/path_nav/ui/eta_sheet.dart";
@@ -4211,6 +4302,18 @@ digraph "" {
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/pages/map_search/ui/map_search_results.dart" -> "/lib/widgets/search/ui/search_item.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/_features/common/providers/network_status.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/features/search/models/search_scope.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/features/search/models/search_state.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/features/search/providers/search.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_lost_internet.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_search_empty.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_search_history.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_search_results.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_suggest_list.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/shared/providers/urbi_analytics.dart";
+  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/entities/search/models/search_history.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/features/advert_metrics/advert_metrics.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/features/landing/search_in_rect.dart";
@@ -4259,18 +4362,6 @@ digraph "" {
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/shared/providers/location.dart";
   "/lib/pages/map_search/ui/map_suggest_list.dart" -> "/lib/shared/providers/urbi_analytics.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/_features/common/providers/network_status.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/features/search/models/search_scope.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/features/search/models/search_state.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/features/search/providers/search.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/pages/map_search/ui/map_lost_internet.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/pages/map_search/ui/map_search_empty.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/pages/map_search/ui/map_search_history.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/pages/map_search/ui/map_search_results.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/pages/map_search/ui/map_suggest_list.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/shared/providers/urbi_analytics.dart";
-  "/lib/pages/map_search/ui/map_search_content.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/pages/map_search/ui/map_search_header_delegate.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/pages/map_search/ui/map_search_header_delegate.dart" -> "/lib/pages/map_search/ui/map_search_bar.dart";
   "/lib/pages/map_search/search_page.dart" -> "/lib/pages/map_search/map_search_sheet.dart";
@@ -4283,9 +4374,10 @@ digraph "" {
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/features/search/models/search_state.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/features/search/providers/search.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/features/search/ui/search_scope.dart";
-  "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/pages/map_search/ui/map_search_content.dart";
+  "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/pages/landing/landing_state_mapper.dart";
+  "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/pages/map_search/ui/map_search_bar.dart";
+  "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/pages/map_search/ui/map_search_content_v2.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/pages/map_search/ui/map_search_controls.dart";
-  "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/pages/map_search/ui/map_search_header_delegate.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/pages/map_search/map_search_sheet.dart" -> "/lib/shared/lib/urbi_metrics.dart";
@@ -4647,6 +4739,7 @@ digraph "" {
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/map/camera_padding.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/shared/providers/media_query.dart";
+  "/lib/pages/landing/landing_page.dart" -> "/lib/widgets/hajj/hajj_wrapper_listeners.dart";
   "/lib/pages/landing/landing_page.dart" -> "/lib/widgets/landing/dashboard/dashboard.dart";
   "/lib/pages/onboard/onboard_page.dart" -> "/lib/features/stories/models/story_types.dart";
   "/lib/pages/onboard/onboard_page.dart" -> "/lib/pages/stories/stories_page.dart";
@@ -4752,10 +4845,6 @@ digraph "" {
   "/lib/shared/ui/bottom_sheet/dgis_bottom_sheet.dart" -> "/lib/shared/ui/bottom_sheet/ui/widget_size_notifier.dart";
   "/lib/shared/ui/balady_logo/balady_logo.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/shared/ui/balady_logo/balady_logo.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/shared/ui/urbi_map.dart" -> "/lib/features/routing/providers/routes.dart";
-  "/lib/shared/ui/urbi_map.dart" -> "/lib/shared/constants/constants.dart";
-  "/lib/shared/ui/urbi_map.dart" -> "/lib/shared/providers/dark_mode.dart";
-  "/lib/shared/ui/urbi_map.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/ui/toast/app_locale.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/ui/toast/toast_overlay.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/ui/toast/toast_overlay.dart" -> "/lib/shared/ui/toast/app_locale.dart";
@@ -4776,7 +4865,7 @@ digraph "" {
   "/lib/shared/ui/sheets/card_header.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/shared/ui/sheets/loading_thanks_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/ui/markers/markers.dart" -> "/lib/_generated/assets/assets.gen.dart";
-  "/lib/shared/ui/markers/markers.dart" -> "/lib/shared/utils/common_function.dart";
+  "/lib/shared/ui/markers/markers.dart" -> "/lib/shared/extensions/string_ext.dart";
   "/lib/shared/ui/expandable_widget/expandable_widget.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/shared/ui/loading/service_not_available_sheet.dart" -> "/lib/_features/common/widgets/dragger.dart";
   "/lib/shared/ui/loading/service_not_available_sheet.dart" -> "/lib/_generated/assets/assets.gen.dart";
@@ -4823,11 +4912,19 @@ digraph "" {
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/extensions/string_ext.dart";
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/lib/urbi_metrics.dart";
   "/lib/shared/extensions/markers_from_search.dart" -> "/lib/shared/ui/markers/markers.dart";
+  "/lib/shared/extensions/int_extention.dart" -> "/lib/shared/extensions/markers_from_search.dart";
   "/lib/shared/extensions/time_range_extension.dart" -> "/lib/entities/feedback/feedback_base_entity.dart";
   "/lib/shared/extensions/time_range_extension.dart" -> "/lib/shared/extensions/time_of_day_extension.dart";
   "/lib/shared/extensions/parking_store_model_ext.dart" -> "/lib/features/parking_spot/model/parking_store_model.dart";
   "/lib/shared/extensions/parking_store_model_ext.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/shared/extensions/parking_store_model_ext.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/features/feedback/feedback_image_error.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/features/feedback/feedback_image_selector.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/shared/extensions/int_extention.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/shared/lib/image_denied_dialog.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
+  "/lib/shared/routing/add_photo_page.dart" -> "/lib/widgets/feedback/images/feedback_image_selector_sheet.dart";
   "/lib/shared/providers/dgis_http_network.dart" -> "/lib/shared/lib/auth/auth_token_interceptors.dart";
   "/lib/shared/providers/dgis_http_network.dart" -> "/lib/shared/providers/app_language.dart";
   "/lib/shared/providers/dgis_http_network.dart" -> "/lib/shared/providers/dgis_environment.dart";

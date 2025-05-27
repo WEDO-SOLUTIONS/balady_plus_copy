@@ -20,13 +20,13 @@ import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 class InfoWidget extends ConsumerWidget {
   final DirectoryObjectMessage? objectInfo;
   final QrLicenseMessage? qrTradeLicense;
-  final VoidCallback onEntrancesTap;
+  final VoidCallback? onEntrancesTap;
   final RouteSearchPoint? finishPoint;
 
   InfoWidget({
-    required this.objectInfo,
-    required this.qrTradeLicense,
-    required this.onEntrancesTap,
+    this.objectInfo,
+    this.qrTradeLicense,
+    this.onEntrancesTap,
     super.key,
   }) : finishPoint = objectInfo != null
             ? RouteSearchPoint(

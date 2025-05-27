@@ -11,6 +11,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
@@ -20,6 +21,7 @@ import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/active_layer.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
 import 'package:mapness/features/path_nav/providers/path_nav_message.dart';
 import 'package:mapness/features/routing/providers/routes.dart';
@@ -28,6 +30,7 @@ import 'package:mapness/features/share_eta/providers/eta_route_info_provider.dar
 import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
 import 'package:mapness/shared/constants/constants.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/car_connection.dart';
 import 'package:mapness/shared/providers/location.dart';
@@ -39,6 +42,7 @@ import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/measure_size.dart';
+import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_continue.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_finished.dart';
 import 'package:mapness/widgets/path_nav/ui/eta_sheet.dart';
@@ -513,28 +517,27 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     context.router.popUntilRouteWithName(BottomMenuRoute.name);
 
-    // TODO(Ayat): temporarily hides
-    // final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
-    // final position = ref.read(locationProvider);
-    //
-    // ToastOverlay.of(context).show(
-    //   title: ctx.l10n.youWantSaveParking,
-    //   firstText: ctx.l10n.feedbackBreaksSheetClose,
-    //   secondText: ctx.l10n.save,
-    //   iconAsset: _iconAsset,
-    //   onSecondTap: () {
-    //     rootNavigatorKey.currentContext?.router.push(
-    //       ParkingSpotRoute(
-    //         isEdit: !parkingManage,
-    //         markerPosition: GeoPointWithElevationMessage(
-    //           latitude: position?.latitude ?? 0,
-    //           longitude: position?.longitude ?? 0,
-    //           elevation: 1,
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // );
+    final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
+    final position = ref.read(locationProvider);
+
+    ToastOverlay.of(context).show(
+      title: ctx.l10n.youWantSaveParking,
+      firstText: ctx.l10n.feedbackBreaksSheetClose,
+      secondText: ctx.l10n.save,
+      iconAsset: Assets.icons.svg.icParkingSpot.keyName,
+      onSecondTap: () {
+        rootNavigatorKey.currentContext?.router.push(
+          ParkingSpotRoute(
+            isEdit: !parkingManage,
+            markerPosition: GeoPointWithElevationMessage(
+              latitude: position?.latitude ?? 0,
+              longitude: position?.longitude ?? 0,
+              elevation: 1,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   /// If I enable parking during [FreeRoam], after the check is completed they are hidden if hidden from [Layers].

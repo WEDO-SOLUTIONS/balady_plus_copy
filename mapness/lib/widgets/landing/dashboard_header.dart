@@ -87,10 +87,12 @@ class _DashboardMenu extends ConsumerWidget {
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     icon: TransportIcons.locationDirectionNavigator,
-                    onTap: () {
-                      ref.read(locationProvider.notifier).checkLocationPermission();
-                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-                      context.router.push(const FreeRoamRoute());
+                    onTap: () async {
+                      final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+                      if (isAllowed) {
+                        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+                        await context.router.push(const FreeRoamRoute());
+                      }
                     },
                   ),
                 ],

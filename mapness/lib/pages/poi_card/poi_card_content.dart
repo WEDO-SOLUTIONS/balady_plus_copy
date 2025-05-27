@@ -22,8 +22,6 @@ class _PoiCardContent extends ConsumerStatefulWidget {
 class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   late final ValueNotifier<PoiTabsType> _tabType;
-  late final DirectoryObjectMessage data = widget.data;
-  late final int objectId = widget.objectId;
   late final PoiCardState? poiCardState = widget.poiCardState;
 
   late final StatefulBottomSheetController<PoiCardBottomSheetState> _bottomSheetController =
@@ -49,6 +47,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
   void didUpdateWidget(covariant _PoiCardContent oldWidget) {
     super.didUpdateWidget(oldWidget);
 
+    final _parkingObjectId = widget.objectId == parkingObjectId;
+    _tabType.value = _parkingObjectId ? PoiTabsType.parking : PoiTabsType.info;
     _tabController.animateTo(0);
   }
 
@@ -61,7 +61,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       vsync: this,
     );
 
-    final _parkingObjectId = objectId == parkingObjectId;
+    final _parkingObjectId = widget.objectId == parkingObjectId;
     _tabType = ValueNotifier(_parkingObjectId ? PoiTabsType.parking : PoiTabsType.info);
     _tabController.addListener(
       () {
@@ -109,19 +109,19 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       },
     );
 
-    final name = data.buildingInfo.buildingName;
+    final name = widget.data.buildingInfo.buildingName;
     if (name != null) {
-      data.title = name;
+      widget.data.title = name;
     }
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
-    final photos = ref.watch(poiPhotoProvider(objectId));
+    final photos = ref.watch(poiPhotoProvider(widget.objectId));
     final isPhotosNotEmpty = (!photos.hasValue || photos.requireValue.items.isEmpty) && !photos.isLoading;
 
     final finishPoint = RouteSearchPoint(
-      coordinates: data.markerPosition!.toGeoPointMessage(),
-      dgisObjectId: data.id!,
+      coordinates: widget.data.markerPosition!.toGeoPointMessage(),
+      dgisObjectId: widget.data.id!,
     );
 
     final briefInfo = ref.watch(
@@ -134,7 +134,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     final brief = briefInfo?.firstOrNull;
 
     String? createPoiHeaderSubTitle() {
-      final parkingPoi = objectId == parkingObjectId;
+      final parkingPoi = widget.objectId == parkingObjectId;
 
       final carParkingLabel = [
         brief?.getBriefRouteDescription(context.l10n),
@@ -159,22 +159,23 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
           outside: PoiCardMapControlsWrapper(
               bottomSheetController: _bottomSheetController,
               // we should not use objectIdForIndoorLevels if POI has levelId
-              objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : objectId),
-          topHeader: PoiPhotosHeader(objectId: objectId),
+              objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId),
+          topHeader: PoiPhotosHeader(objectId: widget.objectId),
           footer: PoiCardFooter(
+            closestPoint: widget.closestPoint,
             bottomSheetController: _bottomSheetController,
-            data: data,
+            data: widget.data,
             share: () {
               Metrics.logEventAdvanced(MetricsConstants.poiKeys.share,
                   group: MetricsConstants.poiTag,
                   action: MetricAction.tap.toString(),
                   props: {
-                    'object_id': data.id?.objectId,
+                    'object_id': widget.data.id?.objectId,
                     'closest_point': '${widget.closestPoint?.latitude},${widget.closestPoint?.longitude}'
                   });
 
               return poiActions.share(
-                objectId: objectId,
+                objectId: widget.objectId,
                 markerCoords: widget.closestPoint,
               );
             },
@@ -183,10 +184,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                   group: MetricsConstants.poiTag,
                   action: MetricAction.tap.toString(),
                   props: {
-                    'objectId': objectId,
+                    'objectId': widget.objectId,
                   });
 
-              final phoneNumber = data.getContactsInfoModels().firstWhereOrNull(
+              final phoneNumber = widget.data.getContactsInfoModels().firstWhereOrNull(
                     (element) => element.type == ContactsInfoType.phone,
                   );
               if (phoneNumber?.value != null) {
@@ -194,7 +195,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               }
             },
             onEntranceTap: () => poiActions.toggleEntrances(
-              data,
+              widget.data,
               () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
               widget.closestPoint,
             ),
@@ -211,22 +212,22 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
               _openRoutingRoutes(
                 context,
-                data.id!.objectId,
-                data.title,
+                widget.data.id!.objectId,
+                widget.data.title,
                 RouteParamsPoint(
-                  latitude: data.markerPosition!.latitude,
-                  longitude: data.markerPosition!.longitude,
-                  objectId: data.id?.objectId,
-                  entranceId: data.id?.entranceId,
-                  levelId: data.levelId,
+                  latitude: widget.data.markerPosition!.latitude,
+                  longitude: widget.data.markerPosition!.longitude,
+                  objectId: widget.data.id?.objectId,
+                  entranceId: widget.data.id?.entranceId,
+                  levelId: widget.data.levelId,
                 ),
               );
             },
-            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: data, favouriteItem: item),
+            onTapFavorite: (item) => _onFavoriteTap(context: context, ref: ref, data: widget.data, favouriteItem: item),
           ),
           header: PoiHeader(
-            title: data.address?.buildingName ?? data.title,
-            subTitle: _getParkingSubtitle(data.parkingInfo, context.l10n) ?? data.subtitle,
+            title: widget.data.address?.buildingName ?? widget.data.title,
+            subTitle: _getParkingSubtitle(widget.data.parkingInfo, context.l10n) ?? widget.data.subtitle,
             subTitleExtraInlineSpans: (poiHeaderSubTitle != null)
                 ? [
                     const TextSpan(text: ' • '),
@@ -238,10 +239,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     TextSpan(text: ' $poiHeaderSubTitle'),
                   ]
                 : [],
-            parkingInfo: data.parkingInfo,
+            parkingInfo: widget.data.parkingInfo,
             poiCardState: poiCardState,
             tabController: _tabController,
-            data: data,
+            data: widget.data,
             onTapClose: () {
               Metrics.logEventAdvanced(
                 MetricsConstants.poiKeys.exitButton,
@@ -251,7 +252,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
 
               ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
               ref.read(parkingManageProvider.notifier).restoreMarker();
-              ref.read(highlightProvider.notifier).removeHighlight(data.id!);
+              ref.read(highlightProvider.notifier).removeHighlight(widget.data.id!);
               context.router.popForced();
             },
           ),
@@ -278,7 +279,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                               onTap: () {
                                 context.router.push(QuickFeedbackRoute(
                                   type: QuickFeedbackType.editCompany,
-                                  params: FeedbackObjectIdParams(objectId),
+                                  params: FeedbackObjectIdParams(widget.objectId),
                                 ));
                               },
                             ),
@@ -286,7 +287,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                               objectInfo: poiCardState?.gisObjectIdMessage,
                               qrTradeLicense: poiCardState?.qrTradeLicense,
                               onEntrancesTap: () => poiActions.toggleEntrances(
-                                data,
+                                widget.data,
                                 () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
                                 widget.closestPoint,
                               ),
@@ -294,10 +295,10 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                           ],
                         ),
                       ),
-                    PoiTabsType.photos => PoiPhotoCardSliver(objectId: data.id?.objectId ?? 0),
+                    PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                     PoiTabsType.organizations => PoiOrganizationsSliver(
                         state: poiCardState,
-                        objectId: data.id!,
+                        objectId: widget.data.id!,
                         bottomTabsHeight: PoiCardFooter.height + 2 * PoiCardFooter.padding,
                       ),
                     PoiTabsType.parking => const SliverPadding(

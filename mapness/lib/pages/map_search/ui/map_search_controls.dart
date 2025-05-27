@@ -127,7 +127,6 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                   ),
                 ),
               ),
-              SizedBox(height: widget.collapsedSize),
             ],
           ),
         ),

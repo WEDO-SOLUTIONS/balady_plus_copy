@@ -1,3 +1,5 @@
+import 'package:mapness/shared/extensions/markers_from_search.dart';
+
 extension SizeExtention on num {
   String formatAsFileSize({
     int fractionDigits = 2,
@@ -33,5 +35,22 @@ extension SizeExtention on num {
     }
 
     return '$formattedResult${metrics[currentMetric]}';
+  }
+
+  MapMarkersType? categoryFromId() {
+    switch (this) {
+      case 1:
+        return MapMarkersType.waterPlaces;
+      case 2:
+        return MapMarkersType.medicalHelp;
+      case 3:
+        return MapMarkersType.hajjSupport;
+      case 4:
+        return MapMarkersType.kiosksRetail;
+      case 5:
+        return MapMarkersType.additional;
+      default:
+        return MapMarkersType.additional;
+    }
   }
 }

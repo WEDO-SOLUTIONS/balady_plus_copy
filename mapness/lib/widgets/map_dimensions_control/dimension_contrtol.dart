@@ -14,13 +14,17 @@ class DimensionContrtol extends ConsumerWidget {
 
     const double iconSize = 24;
 
+    if (mapDimensionsState == MapDimensionsState.hide) {
+      return const Spacer();
+    }
+
     return MapButton(
       onTap: () => ref.read(mapDimensionsControlProvider.notifier).toggleMapDimensions(),
       child: SizedBox(
         width: iconSize,
         height: iconSize,
         child: Center(
-          child: mapDimensionsState == MapDimensionsState.threeDimensional
+          child: mapDimensionsState == MapDimensionsState.twoDimensional
               ? Assets.icons.svg.ic3d.svg(
                   width: iconSize,
                   height: iconSize,

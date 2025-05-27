@@ -7,13 +7,9 @@ import 'package:mapness/widgets/weather/weather_card_header.dart';
 import 'package:mapness/widgets/weather/weather_day_card.dart';
 
 class WeatherDashboard extends ConsumerStatefulWidget {
-  final double biggestHeight;
-  final double biggestWidth;
   final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
 
   const WeatherDashboard({
-    required this.biggestHeight,
-    required this.biggestWidth,
     required this.bottomSheetController,
     super.key,
   });

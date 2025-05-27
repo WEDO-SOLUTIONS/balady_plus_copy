@@ -102,7 +102,7 @@ class _LocationErrorSheetState extends ConsumerState<LocationErrorSheetPage> wit
                   /// So here we firstly check - Has app permissions? And if it doesn't - we redirect user to app settings
                   /// On android, if user turn off a gps service - we redirect him to service settings page
 
-                  if (permissionStatus.isPermanentlyDenied) {
+                  if (permissionStatus.isPermanentlyDenied || permissionStatus.isDenied) {
                     await perm.openAppSettings();
                   } else if (!permissionStatus.isGranted) {
                     await perm.Permission.location.request();
