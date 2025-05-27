@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/features/hajj/hajj_rcmc_provider.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/metro/metro_layer_provider.dart';
@@ -41,7 +42,8 @@ class GlobalScopes extends ConsumerWidget {
       ..watch(trafficStateProvider.select((_) => null))
       ..watch(metroLayerProvider.select((_) => null))
       ..watch(metroLayerVisibleProvider.select((_) => null))
-      ..watch(parkingManageProvider.select((_) => null));
+      ..watch(parkingManageProvider.select((_) => null))
+      ..watch(hajjRcmcProvider.select((_) => null));
 
     return child;
   }

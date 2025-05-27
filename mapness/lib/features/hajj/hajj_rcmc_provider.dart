@@ -33,6 +33,7 @@ class _HajjRcmc extends _$HajjRcmc {
         return _cached ?? [];
       }
 
+      _cached = [];
       _cacheLanguage = appLanguage;
       final dio = ref.read(baseDioProvider);
       dio.options.headers = {'X-Language': appLanguage.baladyCompat};

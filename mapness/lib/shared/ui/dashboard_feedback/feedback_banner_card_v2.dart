@@ -311,7 +311,7 @@ class _RenderFeedBack extends RenderBox with RenderObjectWithChildMixin<RenderBo
       needsCompositing,
       offset,
       rect,
-      RRect.fromRectAndRadius(rect, const Radius.circular(RadiusBorder.ml)),
+      RRect.fromRectAndRadius(rect, const Radius.circular(RadiusBorder.xl)),
       paintCard,
       oldLayer: layer as ClipRRectLayer?,
     );
