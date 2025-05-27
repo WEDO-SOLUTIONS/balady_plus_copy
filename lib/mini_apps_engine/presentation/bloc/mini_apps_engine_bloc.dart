@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
 import 'package:balady_plus/app/core/services/global/web_service.dart';
-import 'package:balady_plus/app/core/utils/common_functions.dart';
 
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/mini_apps_engine_event.dart';
@@ -17,9 +16,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../server/CustomInAppLocalhostServer.dart';
 
 String serviceURL =
-    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=e962f3cd-7580-41c2-a152-9d9ff759d7ec&at=ALoNOgk4zopvfWP3a7YSO1PEIT8j:1748354954995';
+    'https://drive.usercontent.google.com/download?id=14cw5-3MYv4xS6Hr44qoILIN96SqwYBS-&export=download&authuser=0&confirm=t&uuid=eac5cdc9-8792-4afd-8a78-dd4f949522df&at=ALoNOgnzaMlQ7p_vgltptOWUsDOj:1748340773878';
 String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=e962f3cd-7580-41c2-a152-9d9ff759d7ec&at=ALoNOgk4zopvfWP3a7YSO1PEIT8j:1748354954995';
+    'https://drive.usercontent.google.com/download?id=19At2Bmvs2J2kNV8dQGAluRnBWTi0Y9OD&export=download&authuser=0&confirm=t&uuid=141aebbc-e538-4c3d-a45b-ec13a88ba8cb&at=ALoNOglijeakcJiIsIkN26nDMhIA:1748322595232';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
@@ -97,13 +96,15 @@ class MiniAppsEngineBloc
     Directory directoryApp = Directory(serviceDownloadPath!);
     bool exists = await directoryApp.exists();
     // chick if have old version of the app delete it
-    if(exists) {
+    if (exists) {
       await directoryApp.delete(recursive: true);
-      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      serviceDownloadPath =
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     } else {
-      serviceDownloadPath = "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
+      serviceDownloadPath =
+          "$serviceDownloadPath/${event.miniApp.latestVersion!.versionNumber!}";
       directoryApp = Directory(serviceDownloadPath!);
       await directoryApp.create(recursive: true);
     }
@@ -124,7 +125,6 @@ class MiniAppsEngineBloc
       );
     }
   }
-
 
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
@@ -158,7 +158,6 @@ class MiniAppsEngineBloc
     }
   }
 
-
   Future<File?> _downloadFile(
     String fileId,
     String downloadPath,
@@ -172,6 +171,7 @@ class MiniAppsEngineBloc
         // fileId,
         // "v1/dms-mobile/files/$fileId",
         serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
+        // "https://drive.usercontent.google.com/download?id=1BXCyidB55xqOX9TaixFCV07Al084Agwa&export=download&authuser=0&confirm=t&uuid=5d1ecff5-ae7c-49c8-81d7-e00a25065d0c&at=ALoNOglgrG9Np4CKDSc8lOKCfzeH:1748344450449",
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
@@ -193,7 +193,7 @@ class MiniAppsEngineBloc
 
       var file = File('$downloadPath/$serviceKey.zip');
       return file.writeAsBytes(response.data);
-    } catch (error, stackTrace) {
+    } catch (error) {
       if (retryCounter < 3) {
         // Retry downloading the file up to 3 times
         return _downloadFile(
