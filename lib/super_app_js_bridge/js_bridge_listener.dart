@@ -25,6 +25,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../app/core/dependency_injection/injection_container.dart';
 import '../app/features/entry_point/domain/use_cases/get_cookie.dart';
+import 'package:add_2_calendar/add_2_calendar.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
   @override
@@ -44,6 +45,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openDirectionsMap);
     registerFunction(openWebView);
     registerFunction(checkPermission);
+    registerFunction(sendToCalender);
   }
 
   // Done
@@ -139,11 +141,22 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         },
       );
     } else {
-      BaseResponse response = BaseResponse(
-        code: 401,
-        message: "Unauthorized",
-        eventName: "getUserProfile",
-        data: null,
+      await showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              response = BaseResponse(
+                code: 200,
+                message: "success",
+                eventName: "getAccessToken",
+                data: AccessTokenModel(
+                  accessToken: CommonProperties.token,
+                ),
+              );
+            }
+          },
+        ),
       );
       handler.complete(response.jsonEncodeModel());
     }
@@ -500,4 +513,68 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
+  @pragma('vm:entry-point')
+  void sendToCalender(dynamic data, CompletionHandler handler) {
+    if (data != null && data is Map) {
+      BaseResponse response = BaseResponse(
+        code: 200,
+        eventName: "sendToCalender",
+        message: "added to calender successfully",
+        data: null,
+      );
+      try{
+        Add2Calendar.addEvent2Cal(
+          buildEvent(
+            title: data["title"] ?? "",
+            desc: "",
+            url: "",
+            city: "",
+            startDate: DateTime.parse(data["startDate"]),
+            endDate: DateTime.parse(data["endDate"]),
+          ),
+        );
+      } catch(e){
+        BaseResponse response = BaseResponse(
+          code: 400,
+          eventName: "sendToCalender",
+          message: "failed to add",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+      }
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 400,
+        eventName: "sendToCalender",
+        message: "failed to add",
+        data: null,
+      );
+      print('data: $data');
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+}
+
+
+Event buildEvent({
+  required String title,
+  required String desc,
+  required String city,
+  required DateTime startDate,
+  required DateTime endDate,
+  required String url,
+}) {
+  return Event(
+    title: title,
+    description: desc,
+    location: city,
+    startDate: startDate,
+    endDate: endDate,
+    allDay: false,
+    iosParams: IOSParams(
+      url: url,
+    ),
+  );
 }

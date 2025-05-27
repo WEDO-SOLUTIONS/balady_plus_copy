@@ -17,9 +17,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../server/CustomInAppLocalhostServer.dart';
 
 String serviceURL =
-    'https://drive.usercontent.google.com/download?id=1cFnJwYST3UGxv8MP04hdlhMpzF-mXuQR&export=download&authuser=0&confirm=t&uuid=489fbdee-00d8-4b99-8106-1946cafe8666&at=ALoNOgntH0wxKTJ4ylnHh3aZgNEO:1748266272571';
+    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=225f66cc-d009-4d5e-91fa-2f17da04cfde&at=ALoNOgnmy6PMxOL19CsKKO1fk0j-:1748332602557';
 String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=19At2Bmvs2J2kNV8dQGAluRnBWTi0Y9OD&export=download&authuser=0&confirm=t&uuid=141aebbc-e538-4c3d-a45b-ec13a88ba8cb&at=ALoNOglijeakcJiIsIkN26nDMhIA:1748322595232';
+    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=225f66cc-d009-4d5e-91fa-2f17da04cfde&at=ALoNOgnmy6PMxOL19CsKKO1fk0j-:1748332602557';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
@@ -170,8 +170,8 @@ class MiniAppsEngineBloc
     try {
       Response response = await webService.dio.get(
         // fileId,
-        "v1/dms-mobile/files/$fileId",
-        // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
+        // "v1/dms-mobile/files/$fileId",
+        serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
@@ -268,7 +268,7 @@ class MiniAppsEngineBloc
 
   int generateRandomPort(int oldPort) {
     final random = Random();
-    int newPort = 8000 + random.nextInt(999); // 8080 to 8090 inclusive
+    int newPort = 8080 + random.nextInt(22); // 8080 to 8090 inclusive
 
     if (newPort != oldPort) {
       return newPort;
