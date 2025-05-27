@@ -17,9 +17,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../server/CustomInAppLocalhostServer.dart';
 
 String serviceURL =
-    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=225f66cc-d009-4d5e-91fa-2f17da04cfde&at=ALoNOgnmy6PMxOL19CsKKO1fk0j-:1748332602557';
+    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=e962f3cd-7580-41c2-a152-9d9ff759d7ec&at=ALoNOgk4zopvfWP3a7YSO1PEIT8j:1748354954995';
 String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=225f66cc-d009-4d5e-91fa-2f17da04cfde&at=ALoNOgnmy6PMxOL19CsKKO1fk0j-:1748332602557';
+    'https://drive.usercontent.google.com/download?id=1fOJKPHoY5kAqreGPe-vTSd4ZA7APZkR2&export=download&authuser=0&confirm=t&uuid=e962f3cd-7580-41c2-a152-9d9ff759d7ec&at=ALoNOgk4zopvfWP3a7YSO1PEIT8j:1748354954995';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
