@@ -3025,6 +3025,7 @@ digraph "" {
   "/lib/widgets/messages/errror_message.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/messages/errror_message.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
+  "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/hajj/hajj_rcmc_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/lifestyle_layers/providers/layers_controls.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/map_tap_handler/map_tap_handler_provider.dart";
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/features/metro/metro_layer_provider.dart";
