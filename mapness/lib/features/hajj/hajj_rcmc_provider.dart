@@ -15,7 +15,7 @@ class _HajjRcmc extends _$HajjRcmc {
   late final _rcmcUrl = 'rcmc-markers?p1=39.643626,21.637784&p2=40.036879,21.198644';
   late final _zoomInVisibleMarkers = 11.0;
 
-  List<PoiMarkerRcmc> _cached = <PoiMarkerRcmc>[];
+  List<PoiMarkerRcmc>? _cached;
   Language? _cacheLanguage;
 
   @override
@@ -29,10 +29,12 @@ class _HajjRcmc extends _$HajjRcmc {
         return [];
       }
 
-      if (_cached.isNotEmpty && _cacheLanguage == appLanguage) {
-        return _cached;
+      if (_cached != null && _cacheLanguage == appLanguage) {
+        return _cached ?? [];
       }
 
+      _cached = [];
+      _cacheLanguage = appLanguage;
       final dio = ref.read(baseDioProvider);
       dio.options.headers = {'X-Language': appLanguage.baladyCompat};
       dio.interceptors.addAll(
@@ -49,11 +51,10 @@ class _HajjRcmc extends _$HajjRcmc {
       final List<dynamic> jsonList = response.data;
       final result = jsonList.map((e) => PoiMarkerRcmc.fromJson(e)).toList();
       _cached = result;
-      _cacheLanguage = appLanguage;
 
       return result;
     } catch (e) {
-      rethrow;
+      return _cached = [];
     }
   }
 }
