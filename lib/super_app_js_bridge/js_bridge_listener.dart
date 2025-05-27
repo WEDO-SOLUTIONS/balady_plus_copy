@@ -141,11 +141,22 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         },
       );
     } else {
-      BaseResponse response = BaseResponse(
-        code: 401,
-        message: "Unauthorized",
-        eventName: "getUserProfile",
-        data: null,
+      await showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              response = BaseResponse(
+                code: 200,
+                message: "success",
+                eventName: "getAccessToken",
+                data: AccessTokenModel(
+                  accessToken: CommonProperties.token,
+                ),
+              );
+            }
+          },
+        ),
       );
       handler.complete(response.jsonEncodeModel());
     }

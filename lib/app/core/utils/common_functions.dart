@@ -20,8 +20,7 @@ import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart' show PlatformFile;
 import 'package:firebase_analytics/firebase_analytics.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart'
-    show EventTransformer;
+import 'package:flutter_bloc/flutter_bloc.dart' show EventTransformer;
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_hms_gms_availability/flutter_hms_gms_availability.dart';
@@ -39,10 +38,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:sentry_dio/sentry_dio.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart' show RateLimit, Switch;
-import 'package:url_launcher/url_launcher.dart'
-    show LaunchMode,  launchUrl;
+import 'package:url_launcher/url_launcher.dart' show LaunchMode, launchUrl;
 import 'package:uuid/uuid.dart';
-
 
 import '../../app.dart';
 import '../../features/_shared_feature_/data/entities/file_data_item.dart';
@@ -96,9 +93,7 @@ import 'enums/enums.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
-
 import 'package:http/http.dart' as http;
-
 
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 
@@ -196,7 +191,7 @@ class CommonFunctions {
     PackageDetails info = sl();
     NotificationRequest request = NotificationRequest();
     request.fcmToken = fcm;
-    request.FCMTokenSource = await isHuaweiDevice()?"HUAWEI":"FIREBASE";
+    request.FCMTokenSource = await isHuaweiDevice() ? "HUAWEI" : "FIREBASE";
     request.appId = GeneralKey.appId;
     request.device = device;
     request.appVersion = info.version;
@@ -219,7 +214,6 @@ class CommonFunctions {
   }
 
   static final locationService = hms.FusedLocationProviderClient();
-
 
   static Stream<hms.Location>? listenToHMSStream() {
     return locationService.onLocationData;
@@ -266,7 +260,8 @@ class CommonFunctions {
       if (location.latitude != null && location.longitude != null) {
         debugPrint(
             'amr getCurrentLocationHuawei ${location.latitude}, ${location.longitude}');
-        return LatLng(latitude:location.latitude!, longitude:location.longitude!);
+        return LatLng(
+            latitude: location.latitude!, longitude: location.longitude!);
       } else {
         await locationService.requestLocationUpdates(request);
       }
@@ -289,13 +284,15 @@ class CommonFunctions {
       if (isHuawei) {
         final position = await locationService.getLastLocation();
         if (position.latitude != null && position.longitude != null) {
-          return LatLng(latitude:position.latitude!, longitude:position.longitude!);
+          return LatLng(
+              latitude: position.latitude!, longitude: position.longitude!);
         }
       } else {
         geo_locator.Position? position;
         position = await geo_locator.Geolocator.getLastKnownPosition();
         if (position?.latitude != null && position?.longitude != null) {
-          return LatLng(latitude:position!.latitude, longitude:position.longitude);
+          return LatLng(
+              latitude: position!.latitude, longitude: position.longitude);
         }
       }
     } catch (error, stackTrace) {
@@ -417,9 +414,6 @@ class CommonFunctions {
 
     await OpenFile.open(url);
   }
-
-
-
 
   static String getDayName(String? dateStr) {
     String dayName = "";
@@ -763,7 +757,8 @@ class CommonFunctions {
 
   // add isMunicipality to check if the user is access municipality services
   // or life style services, make teh default value is false for life style services
-  static Future<bool> onLogin({bool isMunicipality = false}) async => await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
+  static Future<bool> onLogin({bool isMunicipality = false}) async =>
+      await sl<EntryPointCubit>().onLogin(isMunicipality: isMunicipality);
 
   static bool doesContainsLettrs(String str) {
     RegExp r = RegExp(r"[a-zA-Z\u0621-\u064A]");
@@ -981,24 +976,45 @@ class CommonFunctions {
 
   static void openBaladyWebView(String? url,
       {bool isObjections = false}) async {
-    EasyLoading.show();
-    GetCookie getCookie = GetCookie(repository: sl());
-    final failureOrSuccessForCookie = await getCookie(true);
-    EasyLoading.dismiss();
-    failureOrSuccessForCookie.fold((l) {
-      CommonFunctions.showError("server_error_1".tr());
-    }, (r) async {
-      Navigator.of(NavigationService.navigatorKey.currentContext!).pushNamed(
-        RouteName.inappWebview,
-        arguments: (requestNum: ''.tr(), url: url, isObjections: isObjections),
+    if (CommonProperties.isLoggedIn) {
+      EasyLoading.show();
+      GetCookie getCookie = GetCookie(repository: sl());
+      final failureOrSuccessForCookie = await getCookie(true);
+      EasyLoading.dismiss();
+      failureOrSuccessForCookie.fold(
+        (l) {
+          CommonFunctions.showError("server_error_1".tr());
+        },
+        (r) async {
+          Navigator.of(NavigationService.navigatorKey.currentContext!)
+              .pushNamed(
+            RouteName.inappWebview,
+            arguments: (
+              requestNum: ''.tr(),
+              url: url,
+              isObjections: isObjections
+            ),
+          );
+        },
       );
-    });
+    } else {
+      await showDialog(
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (ctx) => NeedLoginDialog(
+          onSuccessLogin: (bool? isSuccess) async {
+            if (isSuccess ?? false) {
+              openBaladyWebView(url, isObjections: isObjections);
+            }
+          },
+        ),
+      );
+    }
   }
 
   static showError(String error, [bool? isHtml]) {
     if (error.isNotEmpty) {
-
-      if (error.contains("https")||error.toLowerCase().contains("momra.gov.sa")) {
+      if (error.contains("https") ||
+          error.toLowerCase().contains("momra.gov.sa")) {
         CustomPopUpsWidgets.showHTMLErrorMessageDialog(
             NavigationService.navigatorKey.currentContext!,
             error,
@@ -1466,9 +1482,6 @@ class CommonFunctions {
     }
   }
 
-
-
-
   static void showApigeeFile(String fileUrl, String fileName,
       {int? serviceId}) async {
     print(fileName);
@@ -1731,35 +1744,26 @@ class CommonFunctions {
     return false;
   }
 
-
-  static String? hijriToGregorian(String? hijriDate ) {
-
-    try
-    {
-      if(hijriDate != null && hijriDate.isNotEmpty) {
-
+  static String? hijriToGregorian(String? hijriDate) {
+    try {
+      if (hijriDate != null && hijriDate.isNotEmpty) {
         List<int> dateSplitted =
-        CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
-            .split("/")
-            .map((e) => int.parse(e))
-            .toList();
+            CommonFunctions.replaceArabicNumberWithEnglish(hijriDate!)
+                .split("/")
+                .map((e) => int.parse(e))
+                .toList();
         var gDate = HijriCalendar();
         DateTime gorgianDate = gDate.hijriToGregorian(
             dateSplitted[0], dateSplitted[1], dateSplitted[2]);
-        String? gorgian  = DateFormat('yyyy/MM/dd').format(gorgianDate);
-
+        String? gorgian = DateFormat('yyyy/MM/dd').format(gorgianDate);
 
         return CommonFunctions.padHijriDate(gorgian);
       }
       return null;
-    }
-    catch(e)
-    {
+    } catch (e) {
       return null;
     }
-
   }
-
 
   /////////////
   static Future<DateTime?> fetchOnlineDateTimeForKSA() async {
@@ -1771,7 +1775,7 @@ class CommonFunctions {
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final dateTimeString =
-        data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
+            data['datetime']; // Example: "2023-12-30T18:45:32.123456+03:00"
         return DateTime.parse(dateTimeString);
       } else {
         print('Failed to fetch time: ${response.statusCode}');
@@ -1782,7 +1786,6 @@ class CommonFunctions {
       return null;
     }
   }
-
 }
 
 class CommonProperties {
@@ -1794,6 +1797,7 @@ class CommonProperties {
   static String? deviceOs;
   static String? sessionId;
   static String? fcmToken;
+
   // static String? serverRootPath;
 
   static bool showEkramDriver = false;
@@ -1843,13 +1847,16 @@ class CommonProperties {
   //   return null;
   // }
 
+  static bool get isLoggedInMunicipality =>
+      sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
 
-  static bool get isLoggedInMunicipality => sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState;
-  static bool get isLoggedIn => sl<AuthenticationBloc>().state is AuthenticatedState;
-
+  static bool get isLoggedIn =>
+      sl<AuthenticationBloc>().state is AuthenticatedState;
 
   static GISParams? get userLocation => sl<LocationCubit>().state.gisParams;
-  static GISResponse? get userLocationGIS => sl<LocationCubit>().state.gisResponse;
+
+  static GISResponse? get userLocationGIS =>
+      sl<LocationCubit>().state.gisResponse;
 
   //static SsoUserInfo? userInfo = sl<EntryPointCubit>().state.userInfo;
 
@@ -1859,7 +1866,7 @@ class CommonProperties {
   //static String token =
   //  "eyJhbGciOiJSUzI1NiIsImtpZCI6IjhFRDBCN0UzRjNDOTFBOEQwMUU3MEMxRUM4MTNGQTJBRjgxOEQ5MUZSUzI1NiIsIng1dCI6Imp0QzM0X1BKR28wQjV3d2V5QlA2S3ZnWTJSOCIsInR5cCI6ImF0K2p3dCJ9.eyJpc3MiOiJodHRwczovL3Nzb2FwcGRldi5tb21yYS5nb3Yuc2EiLCJuYmYiOjE2ODcwNjI0OTMsImlhdCI6MTY4NzA2MjQ5MywiZXhwIjoxNjg4MjcyMDkzLCJhdWQiOlsiRW1wbG95ZWVBZG1pbnN0cmF0aW9uLkFwaSIsImh0dHBzOi8vc3NvYXBwZGV2Lm1vbXJhLmdvdi5zYS9yZXNvdXJjZXMiXSwic2NvcGUiOlsib3BlbmlkIiwicHJvZmlsZSIsIkVtcGxveWVlQWRtaW5zdHJhdGlvbi5BcGkiLCJvZmZsaW5lX2FjY2VzcyJdLCJhbXIiOlsicHdkIl0sImNsaWVudF9pZCI6ImJhbGFkeV9tb2JpbGVfYXBwIiwic3ViIjoiMWVjZDY2NTYtMzlhMC00YmFkLTg2OWQtNjIxZGFmNWY4YmYyIiwiYXV0aF90aW1lIjoxNjg3MDYyNDkyLCJpZHAiOiJsb2NhbCIsInJvbGUiOlsiUm9sZV9MaWNlbnNlQWdlbmN5IiwiSW5zdGl0dXRlcyIsIkJhbGFkeV9BZG1pbl9Nb2JpbGUiLCJCYWxhZHlfT3RoZXIiLCJMaWNlbnNlU3RhbmRhcmRBY3Rpdml0eUFkbWluIiwiQ0FOX1NLSVBfQ09PS0lFX1ZBTElEQVRPUiIsIkxpY2Vuc2VTdGFuZGFyZEFjdGl2aXR5RGF0YUVudHJ5Il0sImVtYWlsIjoic3Vwcml5YS5qb25uYWR1bEBpbm92YXIuY29tIiwicGhvbmVfbnVtYmVyIjoiNTU3NjA5NzIyIiwibmFtZSI6IjEwMDU4MzAwODYiLCJ0aWQiOiIyMTMiLCJ0bm0iOiLYo9mF2KfZhtipINin2YTZhdiv2YrZhtipINin2YTZhdmG2YjYsdipIiwibWFpbCI6InN1cHJpeWEuam9ubmFkdWxAaW5vdmFyLmNvbSIsInNleCI6IjEiLCJkb2IiOiIwNy8wOC8xOTc2IiwicGhvbmUiOiIwNTU3NjA5NzIyIiwiYXJfbmFtZSI6Iti52KjYr9in2YTZhNmHINi02KfZgdmKINi52YLZitmEINin2YTYudmG2LLZiiIsImVuX25hbWUiOiJBQkRVTExBSCBTSEFGSSBBIEFMQU5BWkkiLCJpZF9ubyI6IjEwMDU4MzAwODYiLCJuaWQiOiIxMTMiLCJuYXRpb25hbGl0eSI6Itiz2LnZiNiv2YoiLCJpZF90eXBlIjoiMSIsInNuYW1lIjoi2LnYqNiv2KfZhNmE2Ycs2LTYp9mB2Yos2LnZgtmK2YQs2KfZhNi52YbYstmKIiwidGVuYW50cyI6Ilt7XCJUZW5hbnROYW1lXCI6XCLYp9mE2YbYt9in2YIg2KfZhNij2YjZhFwiLFwiVGVuYW50SWRcIjo2NDksXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINin2YTYtNix2KfYpti5INin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE3OSxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi52YXYsdipINin2YTZgdix2LnZitipXCIsXCJUZW5hbnRJZFwiOjE4MCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItio2YTYr9mK2Kkg2KfZhNi02YjZgtmK2Kkg2KfZhNmB2LHYudmK2KlcIixcIlRlbmFudElkXCI6MTg3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTZg9io2LHZiSDZiNin2YTYrdmD2YjZhdmK2KlcIixcIlRlbmFudElkXCI6NjQ3LFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KXYr9in2LHYqSDYp9mE2YXYtNin2LHZiti5INin2YTYqtis2KfYsdmK2Kkg2YjYp9mE2KfYs9iq2KvZhdin2LHZitipXCIsXCJUZW5hbnRJZFwiOjY0OCxcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItin2YTZhti32KfZgiDYp9mE2KvYp9mG2YpcIixcIlRlbmFudElkXCI6NjUwLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjpmYWxzZX0se1wiVGVuYW50TmFtZVwiOlwi2KfZhNmG2LfYp9mCINin2YTYq9in2YTYq1wiLFwiVGVuYW50SWRcIjo2NTEsXCJUZW5hbnRUeXBlXCI6XCJ0ZW5hbnRcIixcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfSx7XCJUZW5hbnROYW1lXCI6XCLZiNiy2KfYsdipINin2YTYtNim2YjZhiDYp9mE2KjZhNiv2YrYqSDZiNin2YTZgtix2YjZitipINmI2KfZhNin2LPZg9in2YZcIixcIlRlbmFudElkXCI6MTIxMixcIlRlbmFudFR5cGVcIjpcInRlbmFudFwiLFwiR292SWRcIjpudWxsLFwiSXNEZWZhdWx0VGVuYW50XCI6ZmFsc2V9LHtcIlRlbmFudE5hbWVcIjpcItij2YXYp9mG2Kkg2KfZhNmF2K_ZitmG2Kkg2KfZhNmF2YbZiNix2KlcIixcIlRlbmFudElkXCI6MjEzLFwiVGVuYW50VHlwZVwiOlwidGVuYW50XCIsXCJHb3ZJZFwiOm51bGwsXCJJc0RlZmF1bHRUZW5hbnRcIjp0cnVlfSx7XCJUZW5hbnROYW1lXCI6XCLYqNmE2K_ZitipINi62LHYqCDYudix2LnYsVwiLFwiVGVuYW50SWRcIjo1NTUsXCJUZW5hbnRUeXBlXCI6bnVsbCxcIkdvdklkXCI6bnVsbCxcIklzRGVmYXVsdFRlbmFudFwiOmZhbHNlfV0iLCJibWFpbCI6IiIsInNpZCI6IjQ2MkFENTM1Njc0NjREMzM0RkE0MkRENzBBMDhFQUJBIiwianRpIjoiRjQ3Mjc2Q0RCMTREREFGRUI5Rjc0RjAxQ0M3NkM2QzAifQ.OaiWru1BmWD_SbYYRNsmH7SWavSRrckOoMpBfVExBvUHWWgIh4vsUYPC2Xupw2z6F0s7Tuo2te27GVloPaVAQBJpMwZNYiu-rbPbEJ7x_EclxBXsXqIzL55ygqr8E0f332BDX6BDaNMDo_yt5oHfHE38FjHYP7E5tan0KA75bW9JI1psus9E2POoDKVea1MR3w_XNagHZsCyOY7QTJDrC9WFv3cRRTWDpHns9sxcliq7jgz28jeJnQ4Yv5wdgvKL5yUiPkVYzaVlCf5WTdt7N2xZckzR5a3PJ7ogmsosT19ZyQKlXhqAeZd1AEXUZCW4FNNGXdacfb1h6uocN92YnQ";
   static LatLng defaultLocation =
-      const LatLng(latitude:24.76836756001484, longitude:46.720988751704304);
+      const LatLng(latitude: 24.76836756001484, longitude: 46.720988751704304);
 }
 
 /*const _fakeUser = SsoUserInfo(
