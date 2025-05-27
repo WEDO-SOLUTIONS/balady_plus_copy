@@ -86,24 +86,7 @@ class _Location extends _$Location {
     try {
       if (serviceStatus != perm.ServiceStatus.disabled) {
         final status = await perm.Permission.location.request();
-        if (status == perm.PermissionStatus.permanentlyDenied) {
-          if (CommonFunctions.locationDialogShowed) {
-            return false;
-          }
-          if (router.isPathActive(routeLocation)) {
-            return false;
-          }
-          CommonFunctions.locationDialogShowed = true;
-
-          unawaited(
-            router
-                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
-                .then((value) => CommonFunctions.locationDialogShowed = false),
-          );
-          return false;
-        } else if (status != perm.PermissionStatus.granted) {
-          return false;
-        } else {
+        if (status == perm.PermissionStatus.granted) {
           if (state == null) {
             final isHuawei = await CommonFunctions.isHuaweiDevice();
             Position? userLocation;
@@ -129,6 +112,21 @@ class _Location extends _$Location {
           }
 
           return true;
+        } else {
+          if (CommonFunctions.locationDialogShowed) {
+            return false;
+          }
+          if (router.isPathActive(routeLocation)) {
+            return false;
+          }
+          CommonFunctions.locationDialogShowed = true;
+
+          unawaited(
+            router
+                .push(LocationErrorSheetRoute(routeOnClose: routeOnClose))
+                .then((value) => CommonFunctions.locationDialogShowed = false),
+          );
+          return false;
         }
       } else {
         if (showGiveAccessSheet) {
