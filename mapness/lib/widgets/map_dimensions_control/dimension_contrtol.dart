@@ -24,7 +24,7 @@ class DimensionContrtol extends ConsumerWidget {
         width: iconSize,
         height: iconSize,
         child: Center(
-          child: mapDimensionsState == MapDimensionsState.threeDimensional
+          child: mapDimensionsState == MapDimensionsState.twoDimensional
               ? Assets.icons.svg.ic3d.svg(
                   width: iconSize,
                   height: iconSize,
