@@ -7,10 +7,14 @@ echo "$FILE_BALADY_P12" | base64 --decode > $AD_HOC_PRIVATE_KEY
 momrahBundle='momra.balady.ios'
 urbiBundle='ae.urbi.balady'
 
+momrahTeamId='9VKA788PDD'
+urbiTeamId='A34FT8KT4H'
+
 appDisplayNameProd='$(APP_DISPLAY_NAME)';
 appDisplayNameDev='Balady Dev';
 
 sed -i '' "s/$momrahBundle/$urbiBundle/" ios/Runner.xcodeproj/project.pbxproj
+sed -i '' "s/$momrahTeamId/$urbiTeamId/" ios/Runner.xcodeproj/project.pbxproj
 sed -i '' "s/$appDisplayNameProd/$appDisplayNameDev/" ios/Runner/Info.plist
 git apply mapness/scripts/ios-appgroups.patch || echo 'could not apply ios appgroups patch'
 

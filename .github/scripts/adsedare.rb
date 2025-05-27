@@ -20,8 +20,9 @@ provider = AdsedareMattermost::Provider.new(
 )
 Starship::set_provider(provider)
 
-$adsedare.patch_project("ios/Runner.xcodeproj", "A34FT8KT4H")
+
 $adsedare.renew_profiles("ios/Runner.xcodeproj", "773CV7UR97")
+$adsedare.patch_project("ios/Runner.xcodeproj")
 $adsedare.install_profiles("ios/Runner.xcodeproj")
 $adsedare.create_keychain(KC, KC_PASS)
 $adsedare.make_export_options("ios/Runner.xcodeproj", "ios/ad_hoc_options.plist")
