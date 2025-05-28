@@ -23,13 +23,12 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
   }
 
   Future<bool> getVersionInfo() async {
-    try {
+    // try {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String currentVersionNumber = packageInfo.version;
       String type = Platform.isAndroid ? "ANDROID" : "IOS";
       var isSuccess = false;
       var body;
-      try {
         body = await webService
             .getApigeeRequest(
               ApiConstants.forceUpdate,
@@ -43,15 +42,7 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
               const Duration(seconds: 10),
             );
         isSuccess = body["state"];
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-      }
+    
 
       if (isSuccess == true) {
         VersionInfo response =
@@ -62,47 +53,48 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
           response.data?.result?.forceUpdate,
         );
       } else {
-        try {
-          body = await webService
-              .getApigeeRequest(
-                ApiConstants.forceUpdate,
-                queryParams: {
-                  'appID': "balady_mobile",
-                  'type': type,
-                },
-                autoLogout: false,
-              )
-              .timeout(const Duration(seconds: 10));
-          isSuccess = body["state"];
-        } catch (error, stackTrace) {
-          LogsViewModel().sendEventFromModel(
-            event: ErrorExceptionModel(
-              nameEvent: EventsName.handledException,
-              message: error.toString(),
-              stackTrace: stackTrace.toString(),
-            ),
-          );
-        }
+          emit(const NotHaveForceUpdateState());
+      //   try {
+      //     body = await webService
+      //         .getApigeeRequest(
+      //           ApiConstants.forceUpdate,
+      //           queryParams: {
+      //             'appID': "balady_mobile",
+      //             'type': type,
+      //           },
+      //           autoLogout: false,
+      //         )
+      //         .timeout(const Duration(seconds: 10));
+      //     isSuccess = body["state"];
+      //   } catch (error, stackTrace) {
+      //     LogsViewModel().sendEventFromModel(
+      //       event: ErrorExceptionModel(
+      //         nameEvent: EventsName.handledException,
+      //         message: error.toString(),
+      //         stackTrace: stackTrace.toString(),
+      //       ),
+      //     );
+      //   }
 
-        if (isSuccess == true) {
-          VersionInfo response =
-              VersionInfo.fromJson(json.decode((body["data"])));
-        return compareVersion(
-            currentVersionNumber,
-            response.data?.result?.versionNumber,
-            response.data?.result?.forceUpdate,
-          );
-        }
+      //   if (isSuccess == true) {
+      //     VersionInfo response =
+      //         VersionInfo.fromJson(json.decode((body["data"])));
+      //   return compareVersion(
+      //       currentVersionNumber,
+      //       response.data?.result?.versionNumber,
+      //       response.data?.result?.forceUpdate,
+      //     );
+      //   }
       }
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
-      );
-    }
+    // } catch (error, stackTrace) {
+    //   LogsViewModel().sendEventFromModel(
+    //     event: ErrorExceptionModel(
+    //       nameEvent: EventsName.handledException,
+    //       message: error.toString(),
+    //       stackTrace: stackTrace.toString(),
+    //     ),
+    //   );
+    // }
 
     return false;
   }
