@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
@@ -61,8 +62,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  final _initialExpansion = Expansion.middle;
-
   @override
   void initState() {
     super.initState();
@@ -111,6 +110,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   Widget build(BuildContext context) {
     final bottomSafeArea = MediaQuery.of(context).padding.bottom;
     final collapsedHeight = 88 + bottomSafeArea;
+    final contentColor = context.colorsV2.backgroundSurface1;
+    final containerColor = context.colorsV2.backgroundSurface4;
 
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
@@ -150,26 +151,15 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
             child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
                 animateOpening: false,
                 keepContentBehindFooter: true,
+                backgroundColor: containerColor,
                 scrollController: _statefulBottomSheetController,
                 topHeaderOffset: 0.0,
                 header: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(16),
-                      topLeft: Radius.circular(16),
-                    ),
-                  ),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                        child: MapSearchBar(
-                          requestFocus: widget.requestFocus,
-                          onClose: onClose,
-                        ),
-                      ),
-                      const SizedBox(height: Spacing.$4x),
-                    ],
+                  color: contentColor,
+                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(bottom: Spacing.$4x),
+                  child: MapSearchBar(
+                    requestFocus: widget.requestFocus,
+                    onClose: onClose,
                   ),
                 ),
                 outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
@@ -221,17 +211,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
         ),
       );
-
-  void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-        Expansion.middle => setState(() {
-            currentSize = 0.8;
-          }),
-        Expansion.collapsed => setState(() {
-            currentSize = 0.1;
-          }),
-        Expansion.hidden => _removeAllMarkersAndPop(),
-        _ => null,
-      };
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {

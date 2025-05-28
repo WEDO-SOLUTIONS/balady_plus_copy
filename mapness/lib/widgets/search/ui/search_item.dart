@@ -72,7 +72,7 @@ class SearchItem extends ConsumerWidget {
     }
 
     return Material(
-      color: contentColor ?? context.colorsV2.backgroundSurface4,
+      color: contentColor ?? context.colorsV2.backgroundSurface1,
       shape: smoothBorder(RadiusBorder.xl),
       child: SearchTapHandler(
         onTap: onTap,
