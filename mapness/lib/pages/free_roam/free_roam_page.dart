@@ -199,7 +199,7 @@ class FreeRoamPageState extends ConsumerState<FreeRoamPage> {
                             children: [
                               TrafficParkingControl(),
                               SizedBox(height: uikit.Spacing.$2x),
-                              DimensionContrtol(),
+                              DimensionControl(),
                               Spacer(),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

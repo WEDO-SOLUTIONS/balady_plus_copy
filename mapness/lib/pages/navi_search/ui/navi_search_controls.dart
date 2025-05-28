@@ -70,7 +70,7 @@ class _NaviSearchSheetControlsState extends ConsumerState<NaviSearchSheetControl
                             const SizedBox(height: uikit.Spacing.$2x),
                             const TrafficControl(),
                             const SizedBox(height: uikit.Spacing.$2x),
-                            const DimensionContrtol(),
+                            const DimensionControl(),
                             const Spacer(),
                             const ZoomControl(),
                             const Spacer(),
