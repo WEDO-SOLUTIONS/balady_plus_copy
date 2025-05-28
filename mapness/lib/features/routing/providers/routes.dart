@@ -42,24 +42,27 @@ class Routes extends _$Routes {
     );
 
     final routesCompleter = Completer<List<RouteInfo>>();
-    final subscribtion = dgisController.value?.routesInfoChangedEvents.listen((event) async {
+    final subscription = dgisController.value?.routesInfoChangedEvents.listen((event) async {
       await dgisController.value?.showRoutes();
       await AdvancedMetrics.instance.stopRouteCalculation(track: ref.read(urbiAnalyticsProvider).track);
-      routesCompleter.complete(event.routes);
-    });
-    Timer(const Duration(minutes: 2), () {
-      if (routesCompleter.isCompleted) {
-        return;
+      if (!routesCompleter.isCompleted) {
+        routesCompleter.complete(event.routes);
       }
-      routesCompleter.completeError(TimeoutException('no routes fond in time'));
     });
 
     ref.onDispose(() {
-      subscribtion?.cancel();
+      subscription?.cancel();
     });
 
     await dgisController.value?.setRouteParams(params);
-    return routesCompleter.future;
+    try {
+      return await routesCompleter.future.timeout(
+        const Duration(seconds: 30),
+        onTimeout: () => throw TimeoutException('Timeout while waiting for routes'),
+      );
+    } catch (e) {
+      throw TimeoutException('Timeout while waiting for routes');
+    }
   }
 }
 
