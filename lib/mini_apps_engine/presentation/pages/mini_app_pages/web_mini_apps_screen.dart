@@ -8,6 +8,8 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../../../app/core/services/local/navigation_services.dart';
+import '../../../../app/core/utils/common_functions.dart';
 import '../../../../app/features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
 import '../../../../app/features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
 import '../../../../app/features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
@@ -46,7 +48,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
       DWebViewController.fromPlatformCreationParams(params,onPermissionRequest: (request) {
         request.grant();
       });
-
+      _controller = controller;
 
       controller
         ..setBackgroundColor(Colors.white)
@@ -60,26 +62,29 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
               _progress = progress / 100;
             });
           },
-          onPageStarted: (url) {
-            setState(() {
-              _isLoading = true;
-            });
+          onPageStarted: (url) async{
+            // setState(() {
+            //   _isLoading = true;
+            // });
+            await CommonFunctions.checkCameraSettings(
+              NavigationService.navigatorKey.currentContext!,
+            );
           },
           onPageFinished: (url) {
-            setState(() {
-              _isLoading = false;
-            });
+            // setState(() {
+            //   _isLoading = false;
+            // });
            _injectPermissionHandlingScript();
 
           },
           onWebResourceError: (WebResourceError error) {
-            setState(() {
-              _isLoading = false;
-            });
+            // setState(() {
+            //   _isLoading = false;
+            // });
           },
         ));
 
-      _controller = controller;
+
     _injectPermissionHandlingScript();
 
       if (Platform.isAndroid) {
@@ -88,7 +93,6 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
             // Handle permission request
 
             return const GeolocationPermissionsResponse(
-
               allow: true,  // Or implement your own permission logic
               retain: true,
             );
@@ -100,11 +104,12 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
       }
     }
+
   }
 
   @override
   Widget build(BuildContext context) {
-
+    return   DWebViewWidget(controller: _controller);
     return  Stack(children: [
       DWebViewWidget(controller: _controller),
       if (_isLoading)
