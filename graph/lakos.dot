@@ -2464,7 +2464,6 @@ digraph "" {
   "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
   "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/widgets/hajj/hajj_poi_card_footer.dart" -> "/lib/widgets/helpers/throttled_callback_widget.dart";
   "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/entities/hajj/poi_marker_rcmc.dart";
   "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/widgets/hajj/hajj_poi_header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
