@@ -56,7 +56,7 @@ class RoutingMapControls extends ConsumerWidget {
                           SizedBox(height: 8),
                           TrafficControl(),
                           SizedBox(height: uikit.Spacing.$2x),
-                          DimensionContrtol(),
+                          DimensionControl(),
                           Spacer(),
                           ZoomControl(),
                           Spacer(),

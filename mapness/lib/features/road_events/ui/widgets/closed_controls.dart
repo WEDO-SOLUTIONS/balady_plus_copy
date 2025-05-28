@@ -44,7 +44,7 @@ class ClosedControls extends ConsumerWidget {
                     const TrafficControl(),
                     const Spacer(),
                     const SizedBox(height: uikit.Spacing.$2x),
-                    const DimensionContrtol(),
+                    const DimensionControl(),
                     const ZoomControl(),
                     const Spacer(),
                     const CompassControl(),
