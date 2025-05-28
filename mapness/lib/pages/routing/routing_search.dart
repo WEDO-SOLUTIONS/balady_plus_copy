@@ -103,7 +103,6 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
             child: SafeArea(
               bottom: false,
               child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                animateOpening: false,
                 keepContentBehindFooter: true,
                 scrollController: _statefulBottomSheetController,
                 outsideOpacityDelegate: StatefulSheetDelegateFunction(
