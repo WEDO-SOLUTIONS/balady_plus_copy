@@ -50,20 +50,19 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void initState() {
     super.initState();
-    if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
-      unawaited(_calculateNavigationType(null));
-    } else {
-      final location = ref.read(locationProvider);
-      if (location != null) {
-        unawaited(_calculateNavigationType(location));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
+        unawaited(_calculateNavigationType(null));
       } else {
-        context.router.popForced();
+        final location = ref.read(locationProvider);
+        if (location != null) {
+          unawaited(_calculateNavigationType(location));
+        } else {
+          context.router.popForced();
+        }
       }
-    }
-
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => setCameraPadding(),
-    );
+      setCameraPadding();
+    });
   }
 
   void setCameraPadding() {

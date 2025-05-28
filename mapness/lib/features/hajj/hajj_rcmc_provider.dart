@@ -17,7 +17,7 @@ final hajjRcmcProvider = _hajjRcmcProvider;
 class _HajjRcmc extends _$HajjRcmc {
   final _refreshTimer = const Duration(minutes: 10);
   late final _rcmcUrl = 'rcmc-markers?p1=39.643626,21.637784&p2=40.036879,21.198644';
-  late final _zoomInVisibleMarkers = 11.0;
+  late final _zoomInVisibleMarkers = 12.0;
 
   List<PoiMarkerRcmc>? _cached;
   Language? _cacheLanguage;
