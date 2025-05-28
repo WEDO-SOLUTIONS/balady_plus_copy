@@ -20,12 +20,12 @@ import 'package:provider/provider.dart';
 class NaviSearchResults extends ConsumerWidget {
   const NaviSearchResults({
     required this.results,
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
   final SearchResultMessage results;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -49,7 +49,7 @@ class NaviSearchResults extends ConsumerWidget {
     return SearchResults(
       isShowAddPlace: false,
       results: results,
-      scrollController: scrollController,
+      bottomSheetContentScrollController: bottomSheetContentScrollController,
       loaderBuilder: (context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 12),
         child: Center(

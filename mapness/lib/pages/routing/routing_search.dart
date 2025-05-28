@@ -7,13 +7,13 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/pages/landing/landing_state_mapper.dart';
+import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/pages/routing/ui/routing_search_bar.dart';
 import 'package:mapness/pages/routing/ui/routing_search_content.dart';
-import 'package:mapness/widgets/landing/dashboard/map_dashboard_controls.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 
 @RoutePage()
 class RoutingSearchSheetPage extends ConsumerStatefulWidget {
@@ -32,10 +32,12 @@ class RoutingSearchSheetPage extends ConsumerStatefulWidget {
   ConsumerState<RoutingSearchSheetPage> createState() => _RoutingSearchSheetState();
 }
 
-class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _dgisSheetController;
-  final kbVisibilityController = KeyboardVisibilityController();
+class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> with WidgetsBindingObserver {
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _statefulBottomSheetController;
+  double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
+  final kbVisibilityController = KeyboardVisibilityController();
+  final settings = MapObjectManagerSettings.search();
 
   bool visible = true;
   bool isFirstLaunch = false;
@@ -43,7 +45,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   @override
   void initState() {
     super.initState();
-    _dgisSheetController = StatefulBottomSheetController(
+    _statefulBottomSheetController = StatefulBottomSheetController(
       initialState: ThreeStateBottomSheet.expanded,
       behavior: AspectRatioSnappingBehavior(aspectRatios: {
         0.0,
@@ -52,24 +54,8 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
       }),
       stateMapper: const LandingStateMapper(),
     );
-
-    _dgisSheetController.addListener(
-      () {
-        if (_dgisSheetController.state == ThreeStateBottomSheet.open && context.mounted) {
-          setState(() {
-            isFirstLaunch = true;
-          });
-        } else if (_dgisSheetController.state == ThreeStateBottomSheet.hidden && context.mounted) {
-          if (isFirstLaunch) {
-            setState(() {
-              isFirstLaunch = false;
-              ref.read(appRouterProvider).back();
-            });
-          }
-        }
-      },
-    );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
+    WidgetsBinding.instance.addObserver(this);
 
     if (widget.initialQuery != null) {
       WidgetsBinding.instance.addPostFrameCallback(
@@ -81,22 +67,44 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
   }
 
   @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.inactive) {
+      _unfocusSearchField();
+    }
+  }
+
+  @override
   void dispose() {
-    _dgisSheetController.dispose();
+    _statefulBottomSheetController.dispose();
     _keyboardVisible.cancel();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => SearchScope(
-        named: SearchScopeEnum.routes,
-        child: LayoutBuilder(
-          builder: (context, constraints) => NotificationListener<ScrollNotification>(
+  Widget build(BuildContext context) {
+    final bottomSafeArea = MediaQuery.of(context).padding.bottom;
+    final collapsedHeight = 88 + bottomSafeArea;
+
+    return SearchScope(
+      named: SearchScopeEnum.routes,
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _unfocusSearchField();
+              _collapseBottomSheet();
+            },
+          ),
+          NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
             child: SafeArea(
               bottom: false,
               child: StatefulBottomSheet<ThreeStateBottomSheet>(
-                outside: MapDashboardControls(_dgisSheetController, key: const ValueKey('RoutesControls')),
+                keepContentBehindFooter: true,
+                scrollController: _statefulBottomSheetController,
                 outsideOpacityDelegate: StatefulSheetDelegateFunction(
                   function: (controller) {
                     final aspectRatio = controller.aspectRatio;
@@ -107,15 +115,16 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
                     final isSheetStateOpen = state == ThreeStateBottomSheet.open;
                     final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-                    final isFull =
-                        (_dgisSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-                            isSheetCoversHalfOfTheScreen;
+                    final isFull = (_statefulBottomSheetController.isEnabled &&
+                            isSheetStateOpen &&
+                            isSheetScrolledForHalfOfTheState) ||
+                        isSheetCoversHalfOfTheScreen;
 
                     return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
                   },
                 ),
+                outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
                 key: const ValueKey('ROUTING SEARCH SHEET'),
-                scrollController: _dgisSheetController,
                 header: Column(
                   children: [
                     Padding(
@@ -132,19 +141,15 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
                 content: [
                   RoutingSearchContent(
                     showMyLocation: widget.showMyLocation,
-                    scrollController: _dgisSheetController,
+                    bottomSheetContentScrollController: _statefulBottomSheetController,
                   ),
                 ],
               ),
             ),
           ),
-        ),
-      );
-
-  void _unFocusOnScroll() {
-    if (kbVisibilityController.isVisible) {
-      FocusManager.instance.primaryFocus?.unfocus();
-    }
+        ],
+      ),
+    );
   }
 
   bool _onNotification(ScrollNotification notification) {
@@ -156,23 +161,27 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
       // This check is necessary because the [ScrollStartNotification] is called even on the scroll of the TextField
       // when the user is typing a long text and the TextField is scrolling to show it
       if (notification.dragDetails != null) {
-        _unFocusOnScroll();
+        _unfocusSearchField();
       }
     }
     return true;
   }
 
-  void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
-      return;
+  void _unfocusSearchField() {
+    if (kbVisibilityController.isVisible) {
+      FocusManager.instance.primaryFocus?.unfocus();
     }
-    final currentExp = _dgisSheetController.state;
-    if (currentExp == ThreeStateBottomSheet.expanded || currentExp == ThreeStateBottomSheet.open) {
+  }
+
+  void _onKeyboardToggle(bool kbState) {
+    if (!kbState || _statefulBottomSheetController.state == ThreeStateBottomSheet.expanded) {
       return;
     }
 
-    Future.delayed(Durations.short1).then((_) {
-      _dgisSheetController.setState(ThreeStateBottomSheet.expanded);
-    });
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.expanded);
+  }
+
+  void _collapseBottomSheet() {
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.open);
   }
 }
