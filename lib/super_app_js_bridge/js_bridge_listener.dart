@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:archive/archive.dart';
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
@@ -13,18 +14,23 @@ import 'package:balady_plus/super_app_js_bridge/model/js_preferences_model.dart'
 import 'package:balady_plus/super_app_js_bridge/model/location_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/user_profile_model.dart';
 import 'package:dgis_map/library.dart';
+import 'package:dio/dio.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../app/core/dependency_injection/injection_container.dart';
+import '../app/core/services/global/web_service.dart';
 import '../app/features/entry_point/domain/use_cases/get_cookie.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
+
+import 'model/download_file_paths_model.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
   @override
@@ -46,6 +52,8 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(checkPermission);
     registerFunction(sendToCalender);
     registerFunction(getPrayerTime);
+    registerFunction(downloadAndExtractInAssets);
+
   }
 
   // Done
@@ -328,16 +336,16 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     }
 
-    var x = response.jsonEncodeModel();
+
     handler.complete(response.jsonEncodeModel());
   }
 
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     var file = await FilePicker.platform.pickFiles(
-      type: FileType.any,
+      type: FileType.custom,
       allowMultiple: false,
-      // allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
+       allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
     );
     late BaseResponse response;
     try {
@@ -668,6 +676,92 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
+
+  @pragma('vm:entry-point')
+  void downloadAndExtractInAssets(dynamic data, CompletionHandler handler) async {
+    if (data != null && data is Map) {
+      try {
+        var tempDir = await getTemporaryDirectory();
+        String fullPath = "${tempDir.path}/quran.zip'";
+        File file = File(fullPath);
+        if (await file.exists()) {
+          await unarchiveAndSave(file, handler);
+        } else {
+          WebService webService = sl();
+
+          Response response = await webService.dio.get(data['url'],
+
+            //Received data with List<int>
+            options: Options(
+                responseType: ResponseType.bytes,
+                followRedirects: false,
+                validateStatus: (status) {
+                  return (status ?? 501) < 500;
+                }
+            ),
+          );
+
+          File file = File(fullPath);
+          var raf = file.openSync(mode: FileMode.write);
+          // response.data is List<int> type
+          raf.writeFromSync(response.data);
+          await raf.close();
+
+          await unarchiveAndSave(file, handler);
+        }
+      }
+      catch (e) {
+          BaseResponse response = BaseResponse(
+            code: 500,
+            eventName: "downloadAndExtractInAssets",
+            message: "failure",
+            data: null,
+          );
+          handler.complete(response.jsonEncodeModel());
+        }
+
+
+    }
+  }
+
+
+  unarchiveAndSave(var zippedFile,CompletionHandler handler) async {
+
+    try {
+      var bytes = zippedFile.readAsBytesSync();
+      var archive = ZipDecoder().decodeBytes(bytes);
+      for (var file in archive) {
+
+        if (file.isFile && !file.name.contains("__MACOSX")) {
+          var outFile = File('${CommonProperties.currentLocalServerDirectory}/assets/assets/quran/${file.name}');
+          outFile = await outFile.create(recursive: true);
+          await outFile.writeAsBytes(file.content);
+        }
+      }
+
+      final files =
+      Directory('${CommonProperties.currentLocalServerDirectory}/assets/assets/quran').listSync();
+
+      BaseResponse response = BaseResponse(
+        code: 200,
+        eventName: "downloadAndExtractInAssets",
+        message: "successfully",
+        data: DownloadFilePathModel(path: 'assets/quran/data2'),
+      );
+      handler.complete(response.jsonEncodeModel());
+    } catch (e) {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        eventName: "downloadAndExtractInAssets",
+        message: "failure",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+    // return indexFilePath;
+  }
+
+
 }
 
 Event buildEvent({
@@ -690,3 +784,7 @@ Event buildEvent({
     ),
   );
 }
+
+
+
+

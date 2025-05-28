@@ -1797,7 +1797,7 @@ class CommonProperties {
   static String? deviceOs;
   static String? sessionId;
   static String? fcmToken;
-
+  static String? currentLocalServerDirectory;
   // static String? serverRootPath;
 
   static bool showEkramDriver = false;
