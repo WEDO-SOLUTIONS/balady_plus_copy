@@ -7,7 +7,6 @@ class _PortraitLayout extends StatelessWidget {
   final ValueNotifier<bool> showControls;
   final Widget maneuverAndLimitWidget;
   final Widget compassControlWidget;
-  final VoidCallback toggleExpansionNotifier;
   final VoidCallback? onRoutePressed;
   final VoidCallback? onUserActivity;
   final Widget pathNavFollowControlWidget;
@@ -22,7 +21,6 @@ class _PortraitLayout extends StatelessWidget {
     required this.pathNavFollowControlWidget,
     required this.padding,
     required this.navType,
-    required this.toggleExpansionNotifier,
     this.onRoutePressed,
     this.onUserActivity,
   });
@@ -32,19 +30,6 @@ class _PortraitLayout extends StatelessWidget {
         bottom: false,
         child: Stack(
           children: [
-            ValueListenableBuilder(
-              valueListenable: navigationState,
-              builder: (context, state, child) {
-                if (state == PathNavState.finished) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: toggleExpansionNotifier,
-                    child: const SizedBox.expand(),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [

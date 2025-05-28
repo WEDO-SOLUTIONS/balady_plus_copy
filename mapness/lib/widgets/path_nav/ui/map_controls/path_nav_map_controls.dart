@@ -42,8 +42,6 @@ class PathNavMapControls extends StatelessWidget {
     super.key,
   });
 
-  void toggleExpansionNotifier() {}
-
   @override
   Widget build(BuildContext context) {
     const compassControlWidget = CompassControl();
@@ -100,7 +98,6 @@ class PathNavMapControls extends StatelessWidget {
             compassControlWidget: compassControlWidget,
             pathNavFollowControlWidget: pathNavFollowControlWidget,
             padding: padding,
-            toggleExpansionNotifier: toggleExpansionNotifier,
             onUserActivity: onUserActivity,
             showControls: showControls,
           );
@@ -113,7 +110,6 @@ class PathNavMapControls extends StatelessWidget {
             compassControlWidget: compassControlWidget,
             pathNavFollowControlWidget: pathNavFollowControlWidget,
             padding: padding,
-            toggleExpansionNotifier: toggleExpansionNotifier,
             onRoutePressed: onRoutePressed,
             onUserActivity: onUserActivity,
             showControls: showControls,
