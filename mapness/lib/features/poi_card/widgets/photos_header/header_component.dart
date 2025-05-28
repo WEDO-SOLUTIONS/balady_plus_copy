@@ -3,7 +3,8 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+// import 'package:flutter/widgets.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -43,14 +44,15 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
           child: Padding(
             padding: EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: isNoPhotos ? Spacing.$3x : 0.0),
             child: isNoPhotos
-                ? AppButton(
-                    buttonColorScheme: ButtonColorScheme.onColor,
+                ? BaladyAppButton(
+                    buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
                     onTap: () => context.router.push(
                       QuickFeedbackPhotoRoute(
                         params: FeedbackObjectIdParams(objectId),
                       ),
                     ),
-                    size: ButtonSize.small,
+                    color: context.color.surfaceBasePrimary,
+                    size: BaladyButtonSize.small,
                     primaryIcon: GeneralIcons.plusCircleFilled,
                     primaryLabel: context.l10n.addPhoto,
                     textColor: context.colorsV3.accentDefault,

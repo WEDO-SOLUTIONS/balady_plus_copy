@@ -113,61 +113,76 @@ class PoiPhotosRow extends ConsumerWidget {
     /// scrollable list of photos
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 12),
-      itemBuilder: (context, index) {
-        Widget loadingShimmerImage = LoadingShimmerImage(
-          onImageTap: (name, {isAsset}) =>
-              context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
-          imageUrl: previewUrls[index],
-          file: photoFiles?[index],
-          fit: BoxFit.cover,
-        );
-        if (index == photos.length - 1) {
-          loadingShimmerImage = Stack(
-            children: [
-              loadingShimmerImage,
-              Center(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    alignment: Alignment.center,
-                    color: Colors.white.withOpacity(0.2),
-                    child: Text(
-                      context.l10n.allPhotos,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                        shadows: [
-                          Shadow(
-                            blurRadius: 4,
-                            color: Colors.black45,
-                            offset: Offset(1, 1),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+      itemBuilder: (context, index) => Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(12),
+          child: AspectRatio(
+            key: ValueKey(photos[index]),
+            aspectRatio: 1,
+            child: POIPhotoItem(
+              isLast: index == photos.length - 1,
+              child: LoadingShimmerImage(
+                onImageTap: (name, {isAsset}) =>
+                    context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
+                imageUrl: previewUrls[index],
+                file: photoFiles?[index],
+                fit: BoxFit.cover,
               ),
-            ],
-          );
-        }
-
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(12),
-            child: AspectRatio(
-              key: ValueKey(photos[index]),
-              aspectRatio: 1,
-              child: loadingShimmerImage,
             ),
           ),
-        );
-      },
+        ),
+      ),
       itemCount: min(photos.length, 10),
       scrollDirection: Axis.horizontal,
       separatorBuilder: (context, index) => const SizedBox(width: 6),
+    );
+  }
+}
+
+class POIPhotoItem extends StatelessWidget {
+  const POIPhotoItem({
+    required this.child,
+    required this.isLast,
+    super.key,
+  });
+
+  final Widget child;
+  final bool isLast;
+
+  @override
+  Widget build(BuildContext context) {
+    if (!isLast) {
+      return child;
+    }
+    return Stack(
+      children: [
+        child,
+        Center(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              alignment: Alignment.center,
+              color: Colors.white.withOpacity(0.2),
+              child: Text(
+                context.l10n.allPhotos,
+                style: const TextStyle(
+                  fontSize: 14,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                  shadows: [
+                    Shadow(
+                      blurRadius: 4,
+                      color: Colors.black45,
+                      offset: Offset(1, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
