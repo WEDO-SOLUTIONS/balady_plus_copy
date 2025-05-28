@@ -9,9 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -74,7 +72,6 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
-    _setupTapListener();
     WidgetsBinding.instance.addObserver(this);
 
     _statefulBottomSheetController.addListener(() {
@@ -249,15 +246,6 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
         .removeAllMarkers();
     ref.read(searchInRectProvider.notifier).update();
     context.router.popForced();
-  }
-
-  void _setupTapListener() {
-    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
-      if (context.router.isRouteActive(SearchRoute.name)) {
-        _unfocusSearchField();
-        _collapseBottomSheet();
-      }
-    });
   }
 
   void _collapseBottomSheet() {
