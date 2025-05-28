@@ -158,11 +158,17 @@ enum MapMarkersType {
   beauty,
   barbershops,
   recreationCenters,
-  waterPlaces,
   medicalHelp,
+  healthCenter,
+  hospital,
+  fireStation,
+  policeStation,
+  waterPlaces,
+  lostAndFound,
   hajjSupport,
   kiosksRetail,
   additional,
+  stairs,
 }
 
 extension IconPathFromMapMarkersType on MapMarkersType {
@@ -192,6 +198,12 @@ extension IconPathFromMapMarkersType on MapMarkersType {
         MapMarkersType.hajjSupport => Assets.icons.svg.placesNew.icHajjSupport.keyName,
         MapMarkersType.kiosksRetail => Assets.icons.svg.placesNew.icKiosksRetail.keyName,
         MapMarkersType.additional => Assets.icons.svg.placesNew.icAdditional.keyName,
+        MapMarkersType.healthCenter => Assets.icons.svg.placesNew.icHealthCenter.keyName,
+        MapMarkersType.hospital => Assets.icons.svg.placesNew.icHospital.keyName,
+        MapMarkersType.fireStation => Assets.icons.svg.placesNew.icFireStation.keyName,
+        MapMarkersType.policeStation => Assets.icons.svg.placesNew.icPoliceStation.keyName,
+        MapMarkersType.lostAndFound => Assets.icons.svg.placesNew.icLostAndFound.keyName,
+        MapMarkersType.stairs => Assets.icons.svg.placesNew.icStairs.keyName,
       };
 }
 
@@ -225,6 +237,12 @@ extension BigIconPath on String {
       'ic_hajj_support.svg': Assets.icons.svg.placesBigNew.icHajjSupport.keyName,
       'ic_kiosks_retail.svg': Assets.icons.svg.placesBigNew.icKiosksRetail.keyName,
       'ic_additional.svg': Assets.icons.svg.placesBigNew.icAdditional.keyName,
+      'ic_health_center.svg': Assets.icons.svg.placesBigNew.icHealthCenter.keyName,
+      'ic_hospital.svg': Assets.icons.svg.placesBigNew.icHospital.keyName,
+      'ic_fire_station.svg': Assets.icons.svg.placesBigNew.icFireStation.keyName,
+      'ic_police_station.svg': Assets.icons.svg.placesBigNew.icPoliceStation.keyName,
+      'ic_lost_and_found.svg': Assets.icons.svg.placesBigNew.icLostAndFound.keyName,
+      'ic_stairs.svg': Assets.icons.svg.placesBigNew.icStairs.keyName,
     };
 
     return bigIcons[iconName] ?? Markers.defaultPinNew;
