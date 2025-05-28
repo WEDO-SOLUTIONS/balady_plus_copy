@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:balady_plus/app/core/services/local/helpers.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
@@ -17,7 +17,6 @@ import 'package:dsbridge_flutter/dsbridge_flutter.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:share_plus/share_plus.dart';
@@ -46,6 +45,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(openWebView);
     registerFunction(checkPermission);
     registerFunction(sendToCalender);
+    registerFunction(getPrayerTime);
   }
 
   // Done
@@ -523,7 +523,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         message: "added to calender successfully",
         data: null,
       );
-      try{
+      try {
         Add2Calendar.addEvent2Cal(
           buildEvent(
             title: data["title"] ?? "",
@@ -534,7 +534,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
             endDate: DateTime.parse(data["endDate"]),
           ),
         );
-      } catch(e){
+      } catch (e) {
         BaseResponse response = BaseResponse(
           code: 400,
           eventName: "sendToCalender",
@@ -555,8 +555,120 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       handler.complete(response.jsonEncodeModel());
     }
   }
-}
 
+  @pragma('vm:entry-point')
+  void getPrayerTime(dynamic data, CompletionHandler handler) {
+    if (data != null && data is Map) {
+      try {
+        final notifications = data['notifications'];
+
+        if (notifications != null &&
+            notifications is List &&
+            notifications.isNotEmpty) {
+          final Map<String, List<Map>> notificationsByType = {};
+
+          // Process and group notifications
+          for (var notification in notifications) {
+            if (notification is Map) {
+              final String title = notification['title'] ?? '';
+              if (!notificationsByType.containsKey(title)) {
+                notificationsByType[title] = [];
+              }
+              notificationsByType[title]!.add(notification);
+            }
+          }
+
+          // For each prayer type, only schedule the next occurrence
+          for (var entry in notificationsByType.entries) {
+            final notificationsForType = entry.value;
+
+            // Sort notifications by date (ascending)
+            notificationsForType.sort((a, b) {
+              final dateA = DateTime.tryParse(a['scheduled_date'] ?? '') ??
+                  DateTime(2000);
+              final dateB = DateTime.tryParse(b['scheduled_date'] ?? '') ??
+                  DateTime(2000);
+              return dateA.compareTo(dateB);
+            });
+
+            // Find the next notification that's in the future
+            final now = DateTime.now();
+            Map? nextNotification;
+
+            for (var notification in notificationsForType) {
+              final scheduledDateStr = notification['scheduled_date'] ?? '';
+              if (scheduledDateStr.isNotEmpty) {
+                try {
+                  final scheduledDate = DateTime.parse(scheduledDateStr);
+                  if (scheduledDate.isAfter(now)) {
+                    nextNotification = notification;
+                    break; // Found the next notification
+                  }
+                } catch (e) {
+                  debugPrint('Error parsing date: $e');
+                }
+              }
+            }
+
+            // If no future notification found, use the first one (for tomorrow)
+            nextNotification ??= notificationsForType.isNotEmpty
+                ? notificationsForType.first
+                : null;
+
+            // Schedule or cancel the notification
+            if (nextNotification != null) {
+              final int id = nextNotification['id'] ?? 0;
+              final String title = nextNotification['title'] ?? '';
+              final String scheduledDateStr =
+                  nextNotification['scheduled_date'] ?? '';
+              final bool isEnabled = nextNotification['is_enabled'] ?? false;
+
+              if (isEnabled && scheduledDateStr.isNotEmpty) {
+                try {
+                  final scheduledDate = DateTime.parse(scheduledDateStr);
+
+                  // Schedule notification using NotificationService
+                  NotificationService.showScheduledNotification(
+                      id: id, title: title, scheduledDate: scheduledDate);
+                } catch (e) {
+                  debugPrint('Error parsing date: $e');
+                }
+              } else if (!isEnabled) {
+                // Cancel notification if disabled
+                NotificationService.cancel(id);
+              }
+            }
+          }
+        }
+
+        // Return success response
+        BaseResponse response = BaseResponse(
+          code: 200,
+          eventName: "getPrayerTime",
+          message: "Prayer notifications processed successfully",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+      } catch (e) {
+        BaseResponse response = BaseResponse(
+          code: 400,
+          eventName: "getPrayerTime",
+          message: "Error processing prayer notifications: $e",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
+      }
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 400,
+        eventName: "getPrayerTime",
+        message: "Invalid prayer time data",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+}
 
 Event buildEvent({
   required String title,
