@@ -6,7 +6,8 @@ enum SearchScopeEnum {
   map('MapSearch'),
   favourites('FavouritesSearch'),
   routes('RoutingSearch'),
-  feedback('FeedbackSearch');
+  feedback('FeedbackSearch'),
+  navi('NaviSearch');
 
   final String value;
   const SearchScopeEnum(this.value);

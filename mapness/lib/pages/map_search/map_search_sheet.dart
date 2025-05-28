@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
-import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
@@ -11,10 +10,8 @@ import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -23,6 +20,7 @@ import 'package:mapness/pages/map_search/ui/map_search_bar.dart';
 import 'package:mapness/pages/map_search/ui/map_search_content_v2.dart';
 import 'package:mapness/pages/map_search/ui/map_search_controls.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/bottom_sheet_controller_helper_extension.dart';
 import 'package:mapness/shared/extensions/markers_from_search.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -51,9 +49,7 @@ class MapSearchSheet extends ConsumerStatefulWidget {
 }
 
 class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBindingObserver {
-  late final DgisBottomSheetController _dgisSheetController;
-  late final StatefulBottomSheetController<uikit.ThreeStateBottomSheet> _statefulBottomSheetController;
-  late final ScrollController _searchResultsScrollController;
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _statefulBottomSheetController;
   double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final kbVisibilityController = KeyboardVisibilityController();
@@ -65,15 +61,17 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   @override
   void initState() {
     super.initState();
-    _dgisSheetController = DgisBottomSheetController();
-    _searchResultsScrollController = ScrollController();
+
     _statefulBottomSheetController = StatefulBottomSheetController(
       initialState: ThreeStateBottomSheet.expanded,
-      behavior: AspectRatioSnappingBehavior(aspectRatios: {0.0, if (Platform.isIOS) .3 else .38, .931}),
+      behavior: AspectRatioSnappingBehavior(aspectRatios: {
+        0.0,
+        if (Platform.isIOS) .3 else .38,
+        .931,
+      }),
       stateMapper: const LandingStateMapper(),
     );
     _keyboardVisible = kbVisibilityController.onChange.listen(_onKeyboardToggle);
-    _setupTapListener();
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -98,8 +96,8 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   @override
   void dispose() {
+    _statefulBottomSheetController.dispose();
     _keyboardVisible.cancel();
-    _dgisSheetController.dispose();
     _streamSubscription?.cancel();
     WidgetsBinding.instance.removeObserver(this);
 
@@ -148,7 +146,9 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
           NotificationListener<ScrollNotification>(
             onNotification: _onNotification,
-            child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
+            child: SafeArea(
+              bottom: false,
+              child: StatefulBottomSheet<ThreeStateBottomSheet>(
                 animateOpening: false,
                 keepContentBehindFooter: true,
                 backgroundColor: containerColor,
@@ -164,9 +164,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 outside: MapSearchSheetControls(currentSize: currentSize, collapsedSize: collapsedHeight),
                 content: [
                   MapSearchContent(
-                    scrollController: _searchResultsScrollController,
+                    bottomSheetContentScrollController: _statefulBottomSheetController,
                   ),
-                ]),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -233,20 +235,11 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
+    if (!kbState || _statefulBottomSheetController.state == ThreeStateBottomSheet.expanded) {
       return;
     }
-    final currentExp = _dgisSheetController.currentExpansion;
-    if (currentExp == Expansion.expanded || currentExp == Expansion.middle) {
-      return;
-    }
-    // We need to wait because of the rebuild the sheet state
-    // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
-    // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
-    // we will get set wrong [Expansion] value
-    Future.delayed(Durations.short2).then((_) {
-      _dgisSheetController.animateTo(Expansion.expanded);
-    });
+
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.expanded);
   }
 
   void onClose() {
@@ -272,16 +265,7 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
     context.router.popForced();
   }
 
-  void _setupTapListener() {
-    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
-      if (context.router.isRouteActive(SearchRoute.name)) {
-        _unfocusSearchField();
-        _collapseBottomSheet();
-      }
-    });
-  }
-
   void _collapseBottomSheet() {
-    _dgisSheetController.animateTo(Expansion.collapsed);
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.hidden);
   }
 }

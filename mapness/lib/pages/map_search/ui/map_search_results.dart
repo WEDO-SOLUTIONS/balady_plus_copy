@@ -21,12 +21,12 @@ import 'package:provider/provider.dart';
 class MapSearchResults extends ConsumerWidget {
   const MapSearchResults({
     required this.results,
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
   final SearchResultMessage results;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -51,7 +51,7 @@ class MapSearchResults extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
       child: SearchResults(
         results: results,
-        scrollController: scrollController,
+        bottomSheetContentScrollController: bottomSheetContentScrollController,
         loaderBuilder: (context) => Center(
           child: CircularProgressIndicator(
             color: context.colorsV2.accentDefault,

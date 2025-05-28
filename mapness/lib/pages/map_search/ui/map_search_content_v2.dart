@@ -17,10 +17,9 @@ import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
-  final ScrollController scrollController;
-
+  final ScrollController bottomSheetContentScrollController;
   const MapSearchContent({
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
@@ -126,7 +125,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         top: false,
         child: MapSearchResults(
           results: results,
-          scrollController: widget.scrollController,
+          bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
         ),
       ),
       failure: (query, errorMessage) => BaseErrorWidget(
