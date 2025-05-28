@@ -5,11 +5,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/widgets/helpers/throttled_callback_widget.dart';
 
 class HajjPoiCardFooter extends HookConsumerWidget {
   final PoiMarkerRcmc poiMarkerRcmc;
-  final Future Function() share;
   final VoidCallback? callPhone;
   final VoidCallback onTapCar;
   final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
@@ -17,7 +15,6 @@ class HajjPoiCardFooter extends HookConsumerWidget {
   const HajjPoiCardFooter({
     required this.onTapCar,
     required this.poiMarkerRcmc,
-    required this.share,
     this.callPhone,
     this.bottomSheetController,
     super.key,
@@ -44,31 +41,22 @@ class HajjPoiCardFooter extends HookConsumerWidget {
       });
     }
 
-    return ThrottledCallbackWidget(
-      callback: share,
-      resetAfterFutureCompleted: true,
-      builder: (context, throttledShare) => BottomActionBar(
-        displayShadow: displayShadow.value,
-        items: [
+    return BottomActionBar(
+      displayShadow: displayShadow.value,
+      items: [
+        ItemActionBar(
+          icon: TransportIcons.locationDirectionNavigator,
+          buttonType: BaladyButtonType.primary,
+          label: context.l10n.poiCardDirections,
+          onPressed: onTapCar,
+        ),
+        if (poiMarkerRcmc.contactInfo != null && callPhone != null)
           ItemActionBar(
-            icon: TransportIcons.locationDirectionNavigator,
-            buttonType: BaladyButtonType.primary,
-            label: context.l10n.poiCardDirections,
-            onPressed: onTapCar,
-          ),
-          if (poiMarkerRcmc.contactInfo != null && callPhone != null)
-            ItemActionBar(
-              icon: GeneralIcons.phoneLTR,
-              buttonType: BaladyButtonType.secondary,
-              onPressed: callPhone!,
-            ),
-          ItemActionBar(
-            icon: SystemIcons.share,
+            icon: GeneralIcons.phoneLTR,
             buttonType: BaladyButtonType.secondary,
-            onPressed: throttledShare,
+            onPressed: callPhone!,
           ),
-        ],
-      ),
+      ],
     );
   }
 }

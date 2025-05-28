@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -12,14 +15,31 @@ final hajjRcmcProvider = _hajjRcmcProvider;
 
 @riverpod
 class _HajjRcmc extends _$HajjRcmc {
+  final _refreshTimer = const Duration(minutes: 10);
   late final _rcmcUrl = 'rcmc-markers?p1=39.643626,21.637784&p2=40.036879,21.198644';
-  late final _zoomInVisibleMarkers = 11.0;
+  late final _zoomInVisibleMarkers = 12.0;
 
   List<PoiMarkerRcmc>? _cached;
   Language? _cacheLanguage;
+  Timer? _timer;
+
+  Dio get dio => ref.read(baseDioProvider)
+    ..interceptors.clear()
+    ..interceptors.add(
+      PrettyDioLogger(responseBody: false),
+    );
 
   @override
   Future<List<PoiMarkerRcmc>> build() async {
+    ref.onDispose(() {
+      _timer?.cancel();
+    });
+
+    _startAutoRefresh();
+    return _fetchMarkers();
+  }
+
+  Future<List<PoiMarkerRcmc>> _fetchMarkers() async {
     try {
       final env = await ref.read(dgisEnvironmentProvider.future);
       final String url = env.url.replaceFirst('/api', '') + _rcmcUrl;
@@ -35,17 +55,8 @@ class _HajjRcmc extends _$HajjRcmc {
 
       _cached = [];
       _cacheLanguage = appLanguage;
-      final dio = ref.read(baseDioProvider);
-      dio.options.headers = {'X-Language': appLanguage.baladyCompat};
-      dio.interceptors.addAll(
-        [
-          PrettyDioLogger(
-            /// Since protobufs are just binary files what a purpose to print it
-            responseBody: false,
-          ),
-        ],
-      );
 
+      dio.options.headers = {'X-Language': appLanguage.baladyCompat};
       final response = await dio.get(url);
 
       final List<dynamic> jsonList = response.data;
@@ -56,5 +67,12 @@ class _HajjRcmc extends _$HajjRcmc {
     } catch (e) {
       return _cached = [];
     }
+  }
+
+  void _startAutoRefresh() {
+    _timer = Timer.periodic(_refreshTimer, (_) {
+      _cached = null;
+      ref.invalidateSelf();
+    });
   }
 }

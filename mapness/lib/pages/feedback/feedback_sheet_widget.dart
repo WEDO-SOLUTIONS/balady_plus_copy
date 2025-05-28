@@ -10,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 
 enum FeedbackSheetState {
   success,
@@ -84,7 +85,7 @@ class FeedbackSheetWidget extends HookWidget {
         color: Colors.transparent,
         child: Stack(
           children: [
-            SafeArea(
+            SafeAreaPadding(
               child: StatelessBottomSheet(
                 backgroundColor: context.colorsV2.backgroundSurface1,
                 scrollController: sheetController,

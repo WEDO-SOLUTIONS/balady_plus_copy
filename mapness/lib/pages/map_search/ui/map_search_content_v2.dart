@@ -12,16 +12,14 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
-  final ScrollController scrollController;
-
+  final ScrollController bottomSheetContentScrollController;
   const MapSearchContent({
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
@@ -61,6 +59,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
     _hasConnection = ref.watch(networkStatusProvider);
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
@@ -106,13 +105,13 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         top: false,
         child: MapSearchHistory(),
       ),
-      loading: () => SafeArea(
-        top: false,
-        child: Center(
+      loading: () => SizedBox(
+        height: height * .8,
+        child: const Center(
           child: Loading(
             orientation: Axis.vertical,
+            backgroundColor: Colors.transparent,
             size: LoaderSize.large,
-            title: context.l10n.loading,
           ),
         ),
       ),
@@ -126,7 +125,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
         top: false,
         child: MapSearchResults(
           results: results,
-          scrollController: widget.scrollController,
+          bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
         ),
       ),
       failure: (query, errorMessage) => BaseErrorWidget(

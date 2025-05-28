@@ -12,7 +12,6 @@ import 'package:mapness/pages/map_search/ui/map_lost_internet.dart';
 import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:mapness/widgets/favourites/search/favourites_search_results.dart';
@@ -116,7 +115,7 @@ class _FavouritesSearchContentState extends ConsumerState<FavouritesSearchConten
           child: MapSearchHistory(),
         ),
       ),
-      loading: () => SliverFillRemaining(
+      loading: () => const SliverFillRemaining(
         hasScrollBody: false,
         child: SafeArea(
           top: false,
@@ -124,7 +123,6 @@ class _FavouritesSearchContentState extends ConsumerState<FavouritesSearchConten
             child: Loading(
               orientation: Axis.vertical,
               size: LoaderSize.large,
-              title: context.l10n.loading,
             ),
           ),
         ),

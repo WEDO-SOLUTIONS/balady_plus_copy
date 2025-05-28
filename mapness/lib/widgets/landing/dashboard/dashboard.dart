@@ -96,32 +96,34 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             ),
           ),
         ),
-        backgroundColorDelegate: (controller) {
+        backgroundColorDelegate: uikit.StatefulSheetDelegateFunction(function: (controller) {
           final state = controller.state;
           if (state == ThreeStateBottomSheet.expanded) {
             return Colors.black.withOpacity(.4);
           }
           return null;
-        },
+        }),
         outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
-        outsideOpacityDelegate: (controller) {
-          final aspectRatio = controller.aspectRatio;
-          final interpolation = controller.interpolation;
-          final state = controller.state;
+        outsideOpacityDelegate: uikit.StatefulSheetDelegateFunction(
+          function: (controller) {
+            final aspectRatio = controller.aspectRatio;
+            final interpolation = controller.interpolation;
+            final state = controller.state;
 
-          final freeRoamState = ref.watch(freeRoamStarterProvider);
-          final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+            final freeRoamState = ref.watch(freeRoamStarterProvider);
+            final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
-          final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-          final isSheetStateOpen = state == uikit.ThreeStateBottomSheet.open;
-          final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+            final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
+            final isSheetStateOpen = state == uikit.ThreeStateBottomSheet.open;
+            final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-          final isFull = isGoToNavigatorShown ||
-              (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-              isSheetCoversHalfOfTheScreen;
+            final isFull = isGoToNavigatorShown ||
+                (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+                isSheetCoversHalfOfTheScreen;
 
-          return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-        },
+            return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+          },
+        ),
         sliverBeforeContent: SliverPersistentHeader(
           delegate: DashboardHeaderDelegate(vsync: this),
           pinned: true,

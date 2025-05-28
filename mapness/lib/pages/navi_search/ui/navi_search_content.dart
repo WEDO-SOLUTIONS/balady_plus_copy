@@ -20,10 +20,10 @@ import 'package:mapness/widgets/navi_search/navi_quick_filter.dart';
 import 'package:provider/provider.dart';
 
 class NaviSearchContent extends ConsumerStatefulWidget {
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   const NaviSearchContent({
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
@@ -148,7 +148,7 @@ class _MapSearchContentState extends ConsumerState<NaviSearchContent> {
             padding: const EdgeInsets.only(top: Spacing.$4x),
             child: NaviSearchResults(
               results: results,
-              scrollController: widget.scrollController,
+              bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
             ),
           ),
         ),

@@ -1,0 +1,173 @@
+import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:balady_uikit/core/widgets/dragger.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
+import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
+import 'package:mapness/features/path_nav/lib/extensions.dart';
+import 'package:mapness/features/path_nav/providers/path_nav_eta.dart';
+import 'package:mapness/features/share_eta/providers/eta_websocket_status_provider.dart';
+import 'package:mapness/features/share_eta/providers/share_eta_provider.dart';
+import 'package:mapness/features/share_eta/providers/websocket_type_provider.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/providers/map/parking_autoenabled_sheet_provider.dart';
+import 'package:mapness/widgets/path_nav/lib/utils.dart';
+import 'package:mapness/widgets/path_nav/ui/end_trip_modal.dart';
+import 'package:urbi_utils/urbi_utils.dart';
+
+part 'finished_state_title.dart';
+part 'running_state_title.dart';
+part 'paused_state_title.dart';
+
+class EtaHeader extends ConsumerWidget {
+  final PathNavState state;
+
+  final VoidCallback? onSearchPressed;
+  final VoidCallback? onTapRoute;
+  final VoidCallback onEndTripPressed;
+  final VoidCallback onContinuePressed;
+  final StatelessBottomSheetController sheetController;
+
+  const EtaHeader({
+    required this.onEndTripPressed,
+    required this.onContinuePressed,
+    required this.sheetController,
+    required this.state,
+    this.onSearchPressed,
+    this.onTapRoute,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final eta = ref.watch(pathNavEtaProvider);
+    final landscape = MediaQuery.orientationOf(context) == Orientation.landscape;
+
+    ref
+      ..watch(etaWebsocketStatusProvider.select((_) => null))
+      ..watch(websocketTypeProvider.select((_) => null))
+      ..watch(shareEtaProvider.select((_) => null));
+
+    final backgroundColor =
+        state == PathNavState.paused ? context.colorsV3.accentSecondaryDefault : context.colorsV3.backgroundSurface1;
+
+    return Directionality(
+      textDirection: TextDirection.ltr,
+      child: GestureDetector(
+        onTap: () {
+          if (state == PathNavState.paused) {
+            onContinuePressed();
+          } else if (state == PathNavState.running) {
+            ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: false);
+            sheetController.open(duration: BaseRoadPanel.animationDuration);
+          }
+        },
+        child: AnimatedSwitcher(
+          duration: Durations.long1,
+          switchInCurve: Curves.easeInOut,
+          switchOutCurve: Curves.easeInOut,
+          child: ColoredBox(
+            key: ValueKey(state),
+            color: backgroundColor,
+            child: SizedBox(
+              height: 60,
+              child: Padding(
+                padding: const EdgeInsets.only(
+                  right: Spacing.$3x,
+                  left: Spacing.$3x,
+                ),
+                child: Column(
+                  children: [
+                    if (state != PathNavState.paused)
+                      const Padding(
+                        padding: EdgeInsets.only(top: Spacing.$1x, bottom: Spacing.$1x),
+                        child: Dragger(),
+                      )
+                    else
+                      SizedBox(height: state == PathNavState.paused ? Spacing.$2x + Spacing.$0_5x : Spacing.$3x),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment:
+                          state != PathNavState.finished ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+                      children: [
+                        if (state != PathNavState.paused)
+                          if (!landscape && onSearchPressed != null || state == PathNavState.finished)
+                            _Button(
+                              icon: SystemIcons.search,
+                              onTap: onSearchPressed!,
+                            )
+                          else
+                            onTapRoute != null
+                                ? _Button(
+                                    icon: GeneralIcons.routeStroke,
+                                    onTap: onTapRoute!,
+                                  )
+                                : SizedBox(width: ButtonSize.small.height),
+                        Expanded(
+                            child: switch (state) {
+                          PathNavState.running => _RunningStateTitle(eta: eta),
+                          PathNavState.finished => const _FinishedStateTitle(),
+                          PathNavState.paused => _PausedStateTitle(eta: eta),
+                        }),
+                        if (state != PathNavState.paused)
+                          ListenableBuilder(
+                            listenable: sheetController,
+                            builder: (context, _) => AnimatedSwitcher(
+                              duration: Durations.medium1,
+                              child: _Button(
+                                key: ValueKey(sheetController.isClosed),
+                                icon: !sheetController.isClosed ? SystemIcons.arrowCornerDownSmall : SystemIcons.close,
+                                onTap: () {
+                                  if (sheetController.isClosed) {
+                                    openEndTripSheet(context, landscape: landscape);
+                                  } else {
+                                    sheetController.close(duration: BaseRoadPanel.animationDuration);
+                                  }
+                                },
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void openEndTripSheet(BuildContext context, {required bool landscape}) => showModalBottomSheet(
+        backgroundColor: Colors.transparent,
+        barrierColor: Colors.transparent,
+        context: context,
+        builder: (_) => EndTripModal(
+          isLandscape: landscape,
+          onEndTripPressed: onEndTripPressed,
+        ),
+      );
+}
+
+class _Button extends StatelessWidget {
+  final IconData? icon;
+  final VoidCallback onTap;
+  const _Button({
+    required this.onTap,
+    this.icon,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => BaladyAppButton(
+        innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
+        size: BaladyButtonSize.small,
+        primaryIcon: icon,
+        buttonType: BaladyButtonType.secondary,
+        buttonColorScheme: BaladyButtonColorScheme.neutral,
+        onTap: onTap,
+      );
+}

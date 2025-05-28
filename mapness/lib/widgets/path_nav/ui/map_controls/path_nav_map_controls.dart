@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:dgis_map/library.dart';
@@ -19,38 +17,30 @@ import 'package:mapness/widgets/landing/zoom_control.dart';
 import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/path_nav/ui/path_nav_follow_control.dart';
 
-part 'landscape_map_controls.dart';
 part 'portrait_map_controls.dart';
+part 'landscape_map_controls.dart';
 
 // TODO(Ayat) change controls and take them from uikit
 class PathNavMapControls extends StatelessWidget {
   final ValueNotifier<double> bottomHeightNotifier;
   final ValueNotifier<PathNavState> navigationState;
-  final ValueNotifier<bool> expansionNotifier;
+
   final RouteSearchOptionsMessage navType;
   final ValueNotifier<bool> showControls;
   final VoidCallback? onRoutePressed;
   final VoidCallback? onUserActivity;
 
-  static const padding = EdgeInsets.symmetric(horizontal: 12);
+  static const padding = EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x);
 
   const PathNavMapControls({
     required this.bottomHeightNotifier,
     required this.navigationState,
-    required this.expansionNotifier,
     required this.showControls,
     required this.navType,
     this.onRoutePressed,
     this.onUserActivity,
     super.key,
   });
-
-  void toggleExpansionNotifier() {
-    final value = expansionNotifier.value;
-    if (value) {
-      expansionNotifier.value = !value;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,12 +94,10 @@ class PathNavMapControls extends StatelessWidget {
           return _LandscapeLayout(
             navType: navType,
             navigationState: navigationState,
-            expansionNotifier: expansionNotifier,
             maneuverAndLimitWidget: maneuverAndLimitWidget,
             compassControlWidget: compassControlWidget,
             pathNavFollowControlWidget: pathNavFollowControlWidget,
             padding: padding,
-            toggleExpansionNotifier: toggleExpansionNotifier,
             onUserActivity: onUserActivity,
             showControls: showControls,
           );
@@ -118,12 +106,10 @@ class PathNavMapControls extends StatelessWidget {
             navType: navType,
             bottomHeightNotifier: bottomHeightNotifier,
             navigationState: navigationState,
-            expansionNotifier: expansionNotifier,
             maneuverAndLimitWidget: maneuverAndLimitWidget,
             compassControlWidget: compassControlWidget,
             pathNavFollowControlWidget: pathNavFollowControlWidget,
             padding: padding,
-            toggleExpansionNotifier: toggleExpansionNotifier,
             onRoutePressed: onRoutePressed,
             onUserActivity: onUserActivity,
             showControls: showControls,
