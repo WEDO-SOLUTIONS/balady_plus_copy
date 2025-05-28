@@ -41,7 +41,7 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
           heightFactor: hideTransform,
           alignment: isPhotosEmpty ? AlignmentDirectional.topStart : Alignment.topCenter,
           child: Padding(
-            padding: EdgeInsetsDirectional.only(bottom: Spacing.$2x, start: isNoPhotos ? Spacing.$3x : 0.0),
+            padding: EdgeInsetsDirectional.only(bottom: Spacing.$4x, start: isNoPhotos ? Spacing.$3x : 0.0),
             child: isNoPhotos
                 ? AppButton(
                     buttonColorScheme: ButtonColorScheme.onColor,

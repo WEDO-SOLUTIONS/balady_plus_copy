@@ -49,11 +49,11 @@ class CustomCloseButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.m),
-                  color: context.colorsV3.neutralContainerDefault.withOpacity(0.12),
+                  color: context.color.surfaceBaseSecondary,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.$2x),
-                  child: SystemIcons.close.icon(color: context.colorsV3.neutralOnContainer),
+                  child: SystemIcons.close.icon(color: context.color.textAndIconsBaseSecondary),
                 ),
               ),
             ),

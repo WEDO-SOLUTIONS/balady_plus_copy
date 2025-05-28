@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:ui';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:collection/collection.dart';
@@ -9,6 +10,7 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
+import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/ui/loading_image/loading_shimmer_image.dart';
 import 'package:shimmer/shimmer.dart';
@@ -112,13 +114,45 @@ class PoiPhotosRow extends ConsumerWidget {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       itemBuilder: (context, index) {
-        final loadingShimmerImage = LoadingShimmerImage(
+        Widget loadingShimmerImage = LoadingShimmerImage(
           onImageTap: (name, {isAsset}) =>
               context.router.push(PhotoViewerRoute(photoPaths: photos, currentPhotoIndex: index)),
           imageUrl: previewUrls[index],
           file: photoFiles?[index],
           fit: BoxFit.cover,
         );
+        if (index == photos.length - 1) {
+          loadingShimmerImage = Stack(
+            children: [
+              loadingShimmerImage,
+              Center(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    alignment: Alignment.center,
+                    color: Colors.white.withOpacity(0.2),
+                    child: Text(
+                      context.l10n.allPhotos,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.white,
+                        fontWeight: FontWeight.w600,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 4,
+                            color: Colors.black45,
+                            offset: Offset(1, 1),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: ClipRRect(
