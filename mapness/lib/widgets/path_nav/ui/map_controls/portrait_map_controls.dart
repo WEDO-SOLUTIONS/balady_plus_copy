@@ -75,7 +75,7 @@ class _PortraitLayout extends StatelessWidget {
                                     const SizedBox(height: uikit.Spacing.$2x),
                                     Padding(
                                       padding: padding,
-                                      child: const DimensionContrtol(),
+                                      child: const DimensionControl(),
                                     ),
                                     const Spacer(),
                                     Padding(
