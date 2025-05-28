@@ -61,8 +61,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
 
   ClusteringMapObjectManager? _clustering;
 
-  final _initialExpansion = Expansion.middle;
-
   @override
   void initState() {
     super.initState();
@@ -151,7 +149,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
                 animateOpening: false,
                 keepContentBehindFooter: true,
                 scrollController: _statefulBottomSheetController,
-                topHeaderOffset: 0.0,
                 header: Container(
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
@@ -221,17 +218,6 @@ class _MapSearchSheetState extends ConsumerState<MapSearchSheet> with WidgetsBin
           ),
         ),
       );
-
-  void _onExpansionChanged(Expansion expansion) => switch (expansion) {
-        Expansion.middle => setState(() {
-            currentSize = 0.8;
-          }),
-        Expansion.collapsed => setState(() {
-            currentSize = 0.1;
-          }),
-        Expansion.hidden => _removeAllMarkersAndPop(),
-        _ => null,
-      };
 
   bool _onNotification(ScrollNotification notification) {
     if (notification is ScrollStartNotification) {

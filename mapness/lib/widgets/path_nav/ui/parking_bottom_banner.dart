@@ -18,10 +18,12 @@ class ParkingBanner extends ConsumerStatefulWidget {
   final ValueNotifier<PathNavState> navigationState;
   final bool isHomeOrWork;
   final RouteSearchOptionsMessage navigatorType;
+  final StatelessBottomSheetController? bottomSheetController;
 
   const ParkingBanner({
     required this.navigationState,
     required this.navigatorType,
+    this.bottomSheetController,
     this.isHomeOrWork = false,
     super.key,
   });
@@ -81,7 +83,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
 
     if (_animationController.isCompleted ||
         eta == null ||
-        eta.isExpanded == true ||
+        widget.bottomSheetController?.isClosed == false ||
         eta.distanceEtaUnits == DistanceUnits.km) {
       return const SizedBox.shrink();
     }
@@ -108,8 +110,6 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
           child: Container(
             height: 56,
             margin: const EdgeInsets.only(
-              left: Spacing.$4x,
-              right: Spacing.$4x,
               bottom: Spacing.$3x,
             ),
             decoration: const BoxDecoration(boxShadow: boxShadow),
@@ -190,6 +190,7 @@ class _ParkingBannerState extends ConsumerState<ParkingBanner> with SingleTicker
                         color: Colors.transparent,
                         onTap: () {
                           _animationController.value = 1.0;
+                          widget.bottomSheetController?.close();
                           ref.read(parkingAutoenabledSheetProvider.notifier).showParkingAutoEnableSheet(value: true);
                         },
                       ),

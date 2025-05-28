@@ -97,21 +97,23 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> {
               bottom: false,
               child: StatefulBottomSheet<ThreeStateBottomSheet>(
                 outside: MapDashboardControls(_dgisSheetController, key: const ValueKey('RoutesControls')),
-                outsideOpacityDelegate: (controller) {
-                  final aspectRatio = controller.aspectRatio;
-                  final interpolation = controller.interpolation;
-                  final state = controller.state;
+                outsideOpacityDelegate: StatefulSheetDelegateFunction(
+                  function: (controller) {
+                    final aspectRatio = controller.aspectRatio;
+                    final interpolation = controller.interpolation;
+                    final state = controller.state;
 
-                  final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-                  final isSheetStateOpen = state == ThreeStateBottomSheet.open;
-                  final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+                    final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
+                    final isSheetStateOpen = state == ThreeStateBottomSheet.open;
+                    final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-                  final isFull =
-                      (_dgisSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-                          isSheetCoversHalfOfTheScreen;
+                    final isFull =
+                        (_dgisSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+                            isSheetCoversHalfOfTheScreen;
 
-                  return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-                },
+                    return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+                  },
+                ),
                 key: const ValueKey('ROUTING SEARCH SHEET'),
                 scrollController: _dgisSheetController,
                 header: Column(
