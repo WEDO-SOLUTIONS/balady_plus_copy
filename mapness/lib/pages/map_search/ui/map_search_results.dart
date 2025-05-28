@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
@@ -46,23 +47,24 @@ class MapSearchResults extends ConsumerWidget {
       }
     }
 
-    return SearchResults(
-      results: results,
-      scrollController: scrollController,
-      loaderBuilder: (context) => Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12),
-        child: Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: Spacing.$3x),
+      child: SearchResults(
+        results: results,
+        scrollController: scrollController,
+        loaderBuilder: (context) => Center(
           child: CircularProgressIndicator(
             color: context.colorsV2.accentDefault,
           ),
         ),
-      ),
-      itemBuilder: (context, item) => SearchItem(
-        result: item,
-        language: language,
-        myLocation:
-            myLocation == null ? null : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
-        onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+        itemBuilder: (context, item) => SearchItem(
+          result: item,
+          language: language,
+          myLocation: myLocation == null
+              ? null
+              : GeoPointMessage(latitude: myLocation.latitude, longitude: myLocation.longitude),
+          onTap: () => _onResultTap(context, item, _sendSuggestionPressed),
+        ),
       ),
     );
   }
