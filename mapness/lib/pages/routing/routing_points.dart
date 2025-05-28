@@ -169,7 +169,7 @@ class _RoutingPointsSheetState extends ConsumerState<RoutingPointsSheet> {
 
     ref.read(searchProvider(SearchScopeEnum.routes.value).notifier).clear();
 
-    await ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
+    await ref.read(urbiAnalyticsProvider).track(
           '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
         );
     final value = await context.router.push(
