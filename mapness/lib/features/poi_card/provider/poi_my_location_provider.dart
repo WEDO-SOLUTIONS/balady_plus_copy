@@ -29,6 +29,19 @@ class PoiMyLocationState {
     required this.title,
     required this.isAuthorized,
   });
+
+  PoiMyLocationState copyWith({
+    String? address,
+    LatLng? location,
+    String? title,
+    bool? isAuthorized,
+  }) =>
+      PoiMyLocationState(
+        address: address ?? this.address,
+        location: location ?? this.location,
+        title: title ?? this.title,
+        isAuthorized: isAuthorized ?? this.isAuthorized,
+      );
 }
 
 @riverpod
@@ -39,32 +52,35 @@ class PoiMyLocation extends _$PoiMyLocation {
     required PoiCameraConfig? cameraConfig,
   }) async {
     final dgisController = await ref.read(dgisControllerProvider.future);
-    String? address;
 
     if (closestPoint == null || cameraConfig == null) {
       return null;
     }
 
+    final coordinatesAddress = '${closestPoint.latitude}, ${closestPoint.longitude}';
+
     unawaited(_cameraAnimation(closestPoint));
 
-    try {
-      final data = await dgisController.search(
-        '${closestPoint.latitude}, ${closestPoint.longitude}',
-        sortingType: SortingTypeMessage.byDistance,
-      );
-
+    unawaited(dgisController
+        .search(
+      '${closestPoint.latitude}, ${closestPoint.longitude}',
+      sortingType: SortingTypeMessage.byDistance,
+    )
+        .then((data) {
       if (data.firstPage?.items.isNotEmpty == true) {
-        address = data.firstPage!.items.firstOrNull?.makeAddress();
-        address ??= '${closestPoint.latitude}, ${closestPoint.longitude}';
-      }
-    } catch (_) {}
+        String? address = data.firstPage!.items.firstOrNull?.makeAddress();
+        address ??= coordinatesAddress;
 
-    final userData = ref.watch(authProvider).requireValue;
+        state = AsyncValue.data(state.valueOrNull?.copyWith(address: address));
+      }
+    }));
+
+    final userData = ref.watch(authProvider).valueOrNull;
 
     final language = ref.read(appLanguageProvider);
     final title = userData?.getLocalizedFirstAndLastName(language);
     return PoiMyLocationState(
-      address: address,
+      address: coordinatesAddress,
       location: closestPoint,
       title: title,
       isAuthorized: CommonProperties.isLoggedIn,

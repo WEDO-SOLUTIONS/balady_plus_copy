@@ -6,8 +6,8 @@ class EntryPointState extends Equatable {
   final SSOToken? token;
   final ApigeeTokenResponse? apigeeToken;
   final SsoUserInfo? userInfo;
-  final DelegatorEntity? selectedDelegator;
-  final AgentEntity? selectedAgent;
+  // final DelegatorEntity? selectedDelegator;
+  // final AgentEntity? selectedAgent;
   final bool showSplash;
 
   final String? cityId;
@@ -27,8 +27,8 @@ class EntryPointState extends Equatable {
     this.cityName,
     this.errorMessage,
     this.userInfo,
-    this.selectedDelegator,
-    this.selectedAgent,
+    // this.selectedDelegator,
+    // this.selectedAgent,
     this.userLocation,
     this.userLocationGIS,
     this.showSplash = true,
@@ -44,8 +44,8 @@ class EntryPointState extends Equatable {
     final String? cityId,
     final String? cityName,
     SsoUserInfo? userInfo,
-    Nullable<DelegatorEntity?>? selectedDelegator,
-    Nullable<AgentEntity?>? selectedAgent,
+    // Nullable<DelegatorEntity?>? selectedDelegator,
+    // Nullable<AgentEntity?>? selectedAgent,
     GISParams? userLocation,
     GISResponse? userLocationGIS,
     bool? showSplash,
@@ -59,8 +59,8 @@ class EntryPointState extends Equatable {
       userInfo: userInfo ?? this.userInfo,
       blocStatus: blocStatus ?? this.blocStatus,
       apigeeToken: apigeeToken ?? this.apigeeToken,
-      selectedDelegator: selectedDelegator == null ? this.selectedDelegator : selectedDelegator.value,
-      selectedAgent: selectedAgent == null ? this.selectedAgent : selectedAgent.value,
+      // selectedDelegator: selectedDelegator == null ? this.selectedDelegator : selectedDelegator.value,
+      // selectedAgent: selectedAgent == null ? this.selectedAgent : selectedAgent.value,
       userLocation: userLocation ?? this.userLocation,
       userLocationGIS: userLocationGIS ?? this.userLocationGIS,
       gisStatus: gisStatus ?? this.gisStatus,
@@ -82,8 +82,8 @@ class EntryPointState extends Equatable {
         cityId,
         blocStatus,
         apigeeToken,
-        selectedDelegator,
-        selectedAgent,
+        // selectedDelegator,
+        // selectedAgent,
         userLocation,
         userLocationGIS,
         gisStatus,

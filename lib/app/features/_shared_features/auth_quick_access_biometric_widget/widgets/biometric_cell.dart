@@ -2,6 +2,7 @@ import 'package:balady_authorization/auth_package.dart';
 import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
 import 'package:balady_authorization/src/shared/authentication_routes/authentication_route_names.dart';
 import 'package:balady_plus/app/core/services/local/navigation_services.dart';
+import 'package:balady_plus/app/core/utils/constants/app_config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,6 +60,7 @@ class AuthBiometricCell extends StatelessWidget {
                                     color: const Color(0xFF1E2A36),
                                     fontSize: 16,
                                     fontWeight: FontWeight.w400,
+                                    fontFamily: AppConfig.appFontType,
                                     // height: 24,
                                   ),
                         ),

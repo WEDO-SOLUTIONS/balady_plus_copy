@@ -78,17 +78,17 @@ class ProfileCard extends StatelessWidget {
         if (isListItem) {
           if (delegator != null) {
             context.read<DelegatorsCubit>().selectDelegator(delegator);
-            context.read<EntryPointCubit>().selectDelegator(delegator);
+            // context.read<EntryPointCubit>().selectDelegator(delegator);
           }
           if (agent != null) {
             context.read<DelegatorsCubit>().selectAgent(agent);
-            context.read<EntryPointCubit>().selectAgent(agent);
+            // context.read<EntryPointCubit>().selectAgent(agent);
           }
           if (agent == null && delegator == null) {
             context.read<DelegatorsCubit>().selectDelegator(delegator);
-            context.read<EntryPointCubit>().selectDelegator(delegator);
+            // context.read<EntryPointCubit>().selectDelegator(delegator);
             context.read<DelegatorsCubit>().selectAgent(agent);
-            context.read<EntryPointCubit>().selectAgent(agent);
+            // context.read<EntryPointCubit>().selectAgent(agent);
           }
 
           Navigator.of(context).pop();

@@ -3,7 +3,7 @@ import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
@@ -14,15 +14,13 @@ class ParkingControl extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final result = ref.watch(parkingManageProvider).valueOrNull;
+    final result = ref.read(parkingManageProvider).valueOrNull;
+    final cameraPosition = ref.watch(cameraPositionProvider);
 
     if (result == null) {
       return const SizedBox.shrink();
     }
 
-    final cameraPosition = ref.read(cameraPositionProvider);
-
-    const iconParking = 'packages/mapness/assets/icons/svg/parking_control.svg';
     return Padding(
       padding: const EdgeInsetsDirectional.only(start: Spacing.$1_5x),
       child: SizedBox(
@@ -56,7 +54,7 @@ class ParkingControl extends ConsumerWidget {
           },
           child: Padding(
             padding: const EdgeInsets.all(Spacing.$1_5x),
-            child: SvgPicture.asset(iconParking),
+            child: Assets.icons.svg.parkingControl.svg(),
           ),
         ),
       ),

@@ -1,22 +1,19 @@
-import 'dart:convert';
+import 'package:balady_plus/app/core/remote_services/api_constants.dart';
+import 'package:dio/dio.dart';
 import 'dart:io';
+import 'package:balady_plus/app/core/dependency_injection/injection_container.dart';
+import 'package:balady_plus/app/core/services/global/web_service.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:version/version.dart';
 
-import '../../../../core/base/base_view_model.dart';
-import '../../../../core/remote_services/api_constants.dart';
-import '../../../../core/remote_services/pega_web_service.dart';
 import '../../data/VersionInfo.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 part 'force_update_state.dart';
 
-
 class ForceUpdateCubit extends Cubit<ForceUpdateState> {
-
-  final webService = locator<PegaWebService>();
+  final webService = sl<WebService>();
 
   ForceUpdateCubit() : super(const ForceUpdateState()) {
     getVersionInfo();
@@ -27,88 +24,34 @@ class ForceUpdateCubit extends Cubit<ForceUpdateState> {
       PackageInfo packageInfo = await PackageInfo.fromPlatform();
       String currentVersionNumber = packageInfo.version;
       String type = Platform.isAndroid ? "ANDROID" : "IOS";
-      var isSuccess = false;
-      var body;
-      try {
-        body = await webService
-            .getApigeeRequest(
-              ApiConstants.forceUpdate,
-              queryParams: {
-                'appID': "balady_mobile",
-                'type': type,
-              },
-              autoLogout: false,
-            )
-            .timeout(
-              const Duration(seconds: 10),
-            );
-        isSuccess = body["state"];
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-      }
-
-      if (isSuccess == true) {
-        VersionInfo response =
-            VersionInfo.fromJson(json.decode((body["data"])));
-        return  compareVersion(
-          currentVersionNumber,
-          response.data?.result?.versionNumber,
-          response.data?.result?.forceUpdate,
-        );
-      } else {
-        try {
-          body = await webService
-              .getApigeeRequest(
-                ApiConstants.forceUpdate,
-                queryParams: {
-                  'appID': "balady_mobile",
-                  'type': type,
-                },
-                autoLogout: false,
-              )
-              .timeout(const Duration(seconds: 10));
-          isSuccess = body["state"];
-        } catch (error, stackTrace) {
-          LogsViewModel().sendEventFromModel(
-            event: ErrorExceptionModel(
-              nameEvent: EventsName.handledException,
-              message: error.toString(),
-              stackTrace: stackTrace.toString(),
-            ),
-          );
-        }
-
-        if (isSuccess == true) {
-          VersionInfo response =
-              VersionInfo.fromJson(json.decode((body["data"])));
-        return compareVersion(
-            currentVersionNumber,
-            response.data?.result?.versionNumber,
-            response.data?.result?.forceUpdate,
-          );
-        }
-      }
-    } catch (error, stackTrace) {
-      LogsViewModel().sendEventFromModel(
-        event: ErrorExceptionModel(
-          nameEvent: EventsName.handledException,
-          message: error.toString(),
-          stackTrace: stackTrace.toString(),
-        ),
+      Response respons;
+      respons = await webService.dio.get(
+        ApiConstants.forceUpdate,
+        queryParameters: {
+          'appID': "balady_mobile",
+          'type': type,
+        },
       );
+      VersionInfo response = VersionInfo.fromJson(respons.data);
+      return compareVersion(
+        currentVersionNumber,
+        response.data?.result?.versionNumber,
+        response.data?.result?.forceUpdate,
+      );
+    } catch (error, stackTrace) {
+      emit(const NotHaveForceUpdateState());
+      // Log the error if needed
+      print("Error fetching version info: $error");
+      print("Stack trace: $stackTrace");
     }
-
     return false;
   }
 
   bool compareVersion(
-      String? currentVersionNo, String? latestVersionNo, bool? forceUpdate)  {
+    String? currentVersionNo,
+    String? latestVersionNo,
+    bool? forceUpdate,
+  ) {
     if (currentVersionNo != null &&
         latestVersionNo != null &&
         forceUpdate != null) {

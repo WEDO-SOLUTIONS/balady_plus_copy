@@ -45,7 +45,7 @@
 			<string>insider</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>insiderbaladyappuat</string>
+				<string>insiderbaladyapp</string>
 			</array>
 		</dict>
 	</array>

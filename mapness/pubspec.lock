@@ -194,25 +194,25 @@ packages:
     dependency: transitive
     description:
       name: balady_authorization
-      sha256: "2421b88b3ef5142b102f4657b0fdc9db5fcb0debdfa9a02d696a0a71038ac580"
+      sha256: cf3e7481398245fe69d13f62fa3fed8560607e82c06594d108764bd702e5b623
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "0.0.55"
+    version: "0.0.59"
   balady_plus:
     dependency: "direct main"
     description:
       path: ".."
       relative: true
     source: path
-    version: "3.30.3+365"
+    version: "3.12.7+277"
   balady_uikit:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: e5ddb5c79b7f62de1f3facbf151fedd21efe952881004dcee742056d2d16c729
+      sha256: "743a000d18d862b4dd02fc3b701c9873055baa0ee986b827b191b7cb8f23f26b"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.4.0"
+    version: "3.4.3"
   barcode:
     dependency: transitive
     description:
@@ -505,18 +505,18 @@ packages:
     dependency: transitive
     description:
       name: connectivity_plus
-      sha256: "224a77051d52a11fbad53dd57827594d3bd24f945af28bd70bab376d68d437f0"
+      sha256: "051849e2bd7c7b3bc5844ea0d096609ddc3a859890ec3a9ac4a65a2620cc1f99"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.2"
+    version: "6.1.4"
   connectivity_plus_platform_interface:
     dependency: transitive
     description:
       name: connectivity_plus_platform_interface
-      sha256: cf1d1c28f4416f8c654d7dc3cd638ec586076255d407cef3ddbdaf178272a71a
+      sha256: "42657c1715d48b167930d5f34d00222ac100475f73d10162ddf43e714932f204"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.4"
+    version: "2.0.1"
   convert:
     dependency: transitive
     description:
@@ -1085,26 +1085,26 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_gen
-      sha256: d7e4e57f606d73628b97765a67fdfb5a97e24cd2183e170afa8d1f62e48a9d5c
+      sha256: "4117a3ea6b26a910c715bd58abcc5a90447e70930a5b98249e94c41da9e849bb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.0"
+    version: "5.10.0"
   flutter_gen_core:
     dependency: transitive
     description:
       name: flutter_gen_core
-      sha256: "46ecf0e317413dd065547887c43f93f55e9653e83eb98dc13dd07d40dd225325"
+      sha256: "3eaa2d3d8be58267ac4cd5e215ac965dd23cae0410dc073de2e82e227be32bfc"
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.0"
+    version: "5.10.0"
   flutter_gen_runner:
     dependency: "direct dev"
     description:
       name: flutter_gen_runner
-      sha256: "77f0a02fc30d9fcf2549fe874eb3fde091435724904bcbb1af60aa40cbfab1f4"
+      sha256: e74b4ead01df3e8f02e73a26ca856759dbbe8cb3fd60941ba9f4005cd0cd19c9
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.0"
+    version: "5.10.0"
   flutter_hms_gms_availability:
     dependency: transitive
     description:
@@ -1297,6 +1297,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0"
+  flutter_launcher_icons:
+    dependency: transitive
+    description:
+      name: flutter_launcher_icons
+      sha256: bfa04787c85d80ecb3f8777bde5fc10c3de809240c48fa061a2c2bf15ea5211c
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.14.3"
   flutter_linkify:
     dependency: transitive
     description:
@@ -1844,10 +1852,10 @@ packages:
     dependency: transitive
     description:
       name: image_size_getter
-      sha256: "0511799498340b70993d2dfb34b55a2247b5b801d75a6cdd4543acfcafdb12b0"
+      sha256: "9a299e3af2ebbcfd1baf21456c3c884037ff524316c97d8e56035ea8fdf35653"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.0"
+    version: "2.4.0"
   in_app_review:
     dependency: "direct main"
     description:
@@ -1888,6 +1896,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.0+1"
+  internet_connection_checker_plus:
+    dependency: transitive
+    description:
+      name: internet_connection_checker_plus
+      sha256: "5aea4a1ee0fcca736980a7d04d96fe8c0b53dea330690053305a5c5392230112"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.7.2"
   intl:
     dependency: "direct main"
     description:
@@ -2125,10 +2141,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "8a9b552ec09db40b1795ac5d6eb68cd41c5060f01731d676bf3dd481ced70895"
+      sha256: "244245abe55a1e5f74858526ccbaab9bafcfa1e26560cd03f9cb98ef2a94c93c"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.0.18"
+    version: "1.1.2"
   mask_text_input_formatter:
     dependency: "direct main"
     description:

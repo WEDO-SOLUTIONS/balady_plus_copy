@@ -116,8 +116,8 @@ class AppRouter extends RootStackRouter {
               fullscreenDialog: true,
             ),
             AppRoute(
-              path: 'road_closure',
-              page: RoadClosureRoute.page,
+              path: 'road_closed',
+              page: RoadClosedRoute.page,
             ),
             AppRoute(
               path: 'auto_start_settings',
@@ -218,7 +218,7 @@ class AppRouter extends RootStackRouter {
             ),
             CustomRoute(
               path: 'delete_parking',
-              page: DeleteParkingRoute.page,
+              page: ParkingDialogRoute.page,
               opaque: false,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),

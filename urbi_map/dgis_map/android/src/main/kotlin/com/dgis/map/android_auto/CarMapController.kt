@@ -12,6 +12,7 @@ import ru.dgis.sdk.directory.DirectoryObject
 import ru.dgis.sdk.directory.SearchManager
 import ru.dgis.sdk.geometry.ComplexGeometry
 import ru.dgis.sdk.geometry.PointGeometry
+import ru.dgis.sdk.map.AttributeValue
 import ru.dgis.sdk.map.BearingSource
 import ru.dgis.sdk.map.CameraAnimationType
 import ru.dgis.sdk.map.CameraPosition
@@ -30,6 +31,7 @@ import ru.dgis.sdk.map.Zoom
 import ru.dgis.sdk.map.ZoomControlButton
 import ru.dgis.sdk.map.ZoomControlModel
 import ru.dgis.sdk.map.calcPosition
+import ru.dgis.sdk.map.setAttribute
 import ru.dgis.sdk.navigation.RouteBuildOptions
 import ru.dgis.sdk.navigation.getVoiceManager
 import ru.dgis.sdk.platform.Locale as SdkLocale
@@ -81,6 +83,7 @@ class CarMapController(
             sdkContext, MyLocationControllerSettings(bearingSource = BearingSource.AUTO)
         )
         map.addSource(mapSource)
+        map.setAttribute("camerasOn", AttributeValue(true))
 
         myLocationControlModel = MyLocationControlModel(map)
         zoomControlModel = ZoomControlModel(map)

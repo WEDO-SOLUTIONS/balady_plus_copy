@@ -135,14 +135,13 @@ class NotificationService {
       sound: true,
     );
 
-    FirebaseMessaging.instance.getToken().then((value) {
-      if (value != null && value.isNotEmpty) {
-        CommonProperties.fcmToken = value;
-
-        Future.delayed(const Duration(seconds: 15), () {
+    Future.delayed(const Duration(seconds: 15), () {
+      FirebaseMessaging.instance.getToken().then((value) {
+        if (value != null && value.isNotEmpty) {
+          CommonProperties.fcmToken = value;
           CommonFunctions.updateNotificationSettings(value);
-        });
-      }
+        }
+      });
     });
 
     Future<void> launchURL(String strUrl) async {

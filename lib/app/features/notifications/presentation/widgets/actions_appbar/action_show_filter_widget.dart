@@ -56,23 +56,9 @@ class ActionShowFilterWidget extends StatelessWidget {
       ),
     );
     EntryPointCubit auth = context.read<EntryPointCubit>();
-    final selectedAgent = auth.state.selectedAgent;
-    final selectedDelegator = auth.state.selectedDelegator;
-    if (selectedAgent != null) {
-      cubit.params.persoana = {
-        "x-owner-actor-type-id": "person",
-        "x-owner-actor-id-type-id": "identity-number",
-        "x-owner-actor-id-value": selectedAgent.ownerNumber,
-        "x-owner-actor-id-source-id": "moi",
-      };
-    } else if (selectedDelegator != null) {
-      cubit.params.persoana = {
-        "x-owner-actor-type-id": "cr",
-        "x-owner-actor-id-type-id": "national-number",
-        "x-owner-actor-id-value": selectedDelegator.unifiedNationalNumber,
-        "x-owner-actor-id-source-id": "mci",
-      };
-    } else if (auth.state.userInfo != null) {
+    // final selectedAgent = auth.state.selectedAgent;
+    // final selectedDelegator = auth.state.selectedDelegator;
+    if (auth.state.userInfo != null) {
       cubit.params.persoana = {
         "x-owner-actor-type-id": "person",
         "x-owner-actor-id-type-id": "identity-number",

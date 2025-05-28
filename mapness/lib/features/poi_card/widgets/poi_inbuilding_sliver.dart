@@ -7,13 +7,14 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/poi_card/extensions/organizations_ext.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/ui/feedback_banner_card.dart';
+import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
 class PoiOrganizationsSliver extends ConsumerStatefulWidget {
@@ -76,15 +77,19 @@ class _PoiInBuildingSliverState extends ConsumerState<PoiOrganizationsSliver> {
               child: FeedbackBannerCard(
                 title: context.l10n.addPlace,
                 subtitle: context.l10n.addNewPlace,
-                imageAssetName: 'add_company.png',
+                path: Assets.images.addCompany.keyName,
                 gradientColors: const [Color(0xFF9F6AD7), Color(0xFF7035AF)],
                 onTap: () => context.router.push(QuickFeedbackRoute()),
               ),
             ),
           ),
           SliverPadding(
-            padding:
-                const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$4x, top: Spacing.$0_5x),
+            padding: const EdgeInsets.only(
+              left: Spacing.$4x,
+              right: Spacing.$4x,
+              bottom: Spacing.$4x,
+              top: Spacing.$0_5x,
+            ),
             sliver: PagedSliverList<int, OrganizationItem>.separated(
               shrinkWrapFirstPageIndicators: true,
               pagingController: pagingController,
