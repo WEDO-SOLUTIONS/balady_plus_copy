@@ -2559,7 +2559,6 @@ digraph "" {
   "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/pages/map_search/ui/map_search_empty.dart";
   "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/pages/map_search/ui/map_search_history.dart";
   "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/pages/map_search/ui/map_suggest_list.dart";
-  "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/widgets/favourites/search/favourites_search_content.dart" -> "/lib/widgets/favourites/search/favourites_search_results.dart";
@@ -4294,7 +4293,6 @@ digraph "" {
   "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_search_history.dart";
   "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_search_results.dart";
   "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/pages/map_search/ui/map_suggest_list.dart";
-  "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/shared/providers/urbi_analytics.dart";
   "/lib/pages/map_search/ui/map_search_content_v2.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/pages/map_search/ui/map_search_bar.dart" -> "/lib/entities/search/models/search_history.dart";
