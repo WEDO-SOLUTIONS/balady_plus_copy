@@ -16,9 +16,9 @@ import 'package:path_provider/path_provider.dart';
 import '../../server/CustomInAppLocalhostServer.dart';
 
 String serviceURL =
-    'https://drive.usercontent.google.com/download?id=14cw5-3MYv4xS6Hr44qoILIN96SqwYBS-&export=download&authuser=0&confirm=t&uuid=eac5cdc9-8792-4afd-8a78-dd4f949522df&at=ALoNOgnzaMlQ7p_vgltptOWUsDOj:1748340773878';
+    'https://drive.usercontent.google.com/download?id=1MSPdeQJCkWjjJV8nQaiqboP8MDdcuqT8&export=download&authuser=0&confirm=t&uuid=22f51c93-de09-46ab-b2ff-0c94c8461b07&at=ALoNOgkZWgk5_88-6KxfSBbUMpel:1748412019691';
 String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=19At2Bmvs2J2kNV8dQGAluRnBWTi0Y9OD&export=download&authuser=0&confirm=t&uuid=141aebbc-e538-4c3d-a45b-ec13a88ba8cb&at=ALoNOglijeakcJiIsIkN26nDMhIA:1748322595232';
+    'https://drive.usercontent.google.com/download?id=1MSPdeQJCkWjjJV8nQaiqboP8MDdcuqT8&export=download&authuser=0&confirm=t&uuid=22f51c93-de09-46ab-b2ff-0c94c8461b07&at=ALoNOgkZWgk5_88-6KxfSBbUMpel:1748412019691';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
@@ -129,6 +129,12 @@ class MiniAppsEngineBloc
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
+      if(state is MiniAppsEngineLoadingState) {
+        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
+        if(!tempState.progress.contains("100")) {
+          return;
+        }
+      }
       String pathService =
           '$basePathService/${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
 
