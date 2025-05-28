@@ -2,8 +2,8 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/entities/routing/route_point.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class RouteEditor extends StatelessWidget {
@@ -91,7 +91,6 @@ class DestinationRow extends StatelessWidget {
               height: 24,
               child: SvgPicture.asset(
                 icon,
-                package: PackageConfig.packageName,
                 color: context.color.textAndIconsStatusAccent,
                 // colorFilter: ColorFilter.mode(
                 // index == 0 ? NonThemeColor.color3 : context.color.strokeAccent,
@@ -119,8 +118,7 @@ class DestinationRow extends StatelessWidget {
                 width: 24,
                 height: 24,
                 child: SvgPicture.asset(
-                  'assets/icons/svg/ic_drag_indicator.svg',
-                  package: PackageConfig.packageName,
+                  Assets.icons.svg.icDragIndicator.keyName,
                 ),
               ),
             ),

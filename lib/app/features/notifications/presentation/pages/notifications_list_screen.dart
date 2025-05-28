@@ -33,33 +33,10 @@ class NotificationsListScreen extends StatelessWidget {
           create: (_) {
             NotificationRepositoryImplementation listRepository = sl();
             EntryPointCubit auth = context.read<EntryPointCubit>();
-            final selectedAgent = auth.state.selectedAgent;
-            final selectedDelegator = auth.state.selectedDelegator;
+            // final selectedAgent = auth.state.selectedAgent;
+            // final selectedDelegator = auth.state.selectedDelegator;
             late Map<String, dynamic> persoana;
-            if (selectedAgent != null) {
-              persoana = {
-                "typeId": "person",
-                "ids": [
-                  {
-                    "typeId": "identity-number",
-                    "value": selectedAgent.ownerNumber,
-                    "sourceId": "moi",
-                    "attributes": {"type": selectedAgent.ownerTypeId}
-                  }
-                ]
-              };
-            } else if (selectedDelegator != null) {
-              persoana = {
-                "typeId": "cr",
-                "ids": [
-                  {
-                    "typeId": "national-number",
-                    "value": selectedDelegator.unifiedNationalNumber,
-                    "sourceId": "mci"
-                  }
-                ]
-              };
-            } else if (auth.state.userInfo != null) {
+            if (auth.state.userInfo != null) {
               persoana = {
                 "typeId": "person",
                 "ids": [

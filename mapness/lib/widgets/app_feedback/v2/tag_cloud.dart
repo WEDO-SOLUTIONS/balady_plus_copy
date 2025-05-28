@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_tag_mapper.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 class TagCloud extends HookWidget {
@@ -78,7 +77,6 @@ class TagCloud extends HookWidget {
                       colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
                       width: Spacing.$4x,
                       height: Spacing.$4x,
-                      package: PackageConfig.packageName,
                     ),
                   ],
                 ),

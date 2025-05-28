@@ -2,7 +2,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/ui/buttons/labeled_elevated_button.dart';
 
@@ -23,8 +23,7 @@ class ErrorMessage extends StatelessWidget {
     return Column(
       children: [
         SvgPicture.asset(
-          'assets/images_svg/sad_face.svg',
-          package: PackageConfig.packageName,
+          Assets.imagesSvg.sadFace.keyName,
         ),
         const SizedBox(height: 16),
         text(context.l10n.somethingWentWrong),

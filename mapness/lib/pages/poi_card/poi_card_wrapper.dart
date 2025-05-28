@@ -48,6 +48,12 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    FocusScope.of(context).unfocus();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final viewModelProvider = poiCardProviderProvider(
       widget.objectId.objectId,
@@ -97,8 +103,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
               errorTitle: context.l10n.poiObjectNotFoundTitle,
               errorContent: context.l10n.poiObjectNotFoundContent,
               buttonLabel: context.l10n.poiObjectNotFoundButtonLabel,
-              assetImage: 'assets/images_svg/happy_face.svg',
-              package: PackageConfig.packageName,
+              assetImage: Assets.imagesSvg.happyFace.keyName,
               onRetry: () => context.router.popForced(),
             )
           ],

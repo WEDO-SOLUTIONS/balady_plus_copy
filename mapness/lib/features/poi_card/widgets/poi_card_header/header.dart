@@ -19,6 +19,7 @@ const poiHeaderHeight = 210.0;
 class PoiHeader extends ConsumerWidget {
   final String title;
   final String subTitle;
+  final List<InlineSpan> subTitleExtraInlineSpans;
   final PoiCardState? poiCardState;
   final TabController? tabController;
   final ParkingInfoMessage? parkingInfo;
@@ -33,6 +34,7 @@ class PoiHeader extends ConsumerWidget {
     this.tabController,
     this.parkingInfo,
     this.data,
+    this.subTitleExtraInlineSpans = const [],
     super.key,
     this.poiCardState,
   });
@@ -71,6 +73,7 @@ class PoiHeader extends ConsumerWidget {
               subTitle: CardHeaderWidget(
                 child: SubtitleComponent(
                   subtitle: _subTitle,
+                  inlineSpans: subTitleExtraInlineSpans,
                   subtitleIcon: subtitleIcon,
                 ),
               ),

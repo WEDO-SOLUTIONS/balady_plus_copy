@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mapness/_features/common/providers/user_state.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 
 class UserStatePicker extends StatelessWidget {
   const UserStatePicker({super.key});
@@ -46,10 +46,9 @@ class UserStateRow extends ConsumerWidget {
           child: Row(
             children: [
               SvgPicture.asset(
-                currentLanguage == userState ? 'assets/icons/svg/ic_radio_on.svg' : 'assets/icons/svg/ic_radio_off.svg',
+                currentLanguage == userState ? Assets.icons.svg.icRadioOn.keyName : Assets.icons.svg.icRadioOff.keyName,
                 height: 24,
                 width: 24,
-                package: PackageConfig.packageName,
               ),
               const Spacer(),
               Text(

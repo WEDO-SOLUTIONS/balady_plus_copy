@@ -1,8 +1,6 @@
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 
 class QuickFilter extends StatelessWidget {
@@ -21,15 +19,10 @@ class QuickFilter extends StatelessWidget {
   Widget build(BuildContext context) {
     final leadingIcon = item.icon != null
         ? ChipIconWidgetV2(
-            ({color}) => SvgPicture.asset(
-              item.icon!,
-              height: 24,
-              width: 24,
-              package: PackageConfig.packageName,
-              colorFilter: ColorFilter.mode(
-                color ?? context.color.textAndIconsBasePrimary,
-                BlendMode.srcIn,
-              ),
+            ({color}) => Icon(
+              item.icon,
+              size: 24,
+              color: context.colorsV3.foregroundSoft,
             ),
           )
         : null;

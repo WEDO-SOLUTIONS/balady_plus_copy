@@ -1,6 +1,9 @@
-import 'package:balady_plus/app/features/delegators/domain/entities/agent_entity.dart';
-import 'package:balady_plus/app/features/delegators/domain/entities/delegator_entity.dart';
-import 'package:balady_plus/app/features/delegators/presentation/delegators_cubit/delegators_cubit.dart';
+//import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/shared_feature_exports.dart'
+//   show showUpdateAppPopUpWidget;
+import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
+import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
+import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
+import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:balady_plus/app/features/entry_point/domain/use_cases/get_test_data.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_params.dart';
 import 'package:balady_plus/app/features/location/domain/entities/gis/gis_response.dart';
@@ -22,11 +25,6 @@ import '../../../../core/utils/utils_exports.dart';
 import '../../../location/presentation/bloc/location_bloc.dart';
 import '../../domain/use_cases/get_ekram_permission.dart';
 import '../../entry_point_exports.dart';
-import 'package:balady_plus/app/events_logs/balady_logs.dart';
-
-import 'package:balady_authorization/src/authentication/models/login_data_model.dart';
-import 'package:balady_authorization/src/authentication/bloc/authentication_bloc.dart';
-import 'package:balady_authorization/src/authentication/bloc/action_login_cubit/action_login_cubit.dart';
 
 part 'auth_state.dart';
 
@@ -176,10 +174,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         );
       });
     }
-    AuthenticatedState authState =
-        sl<AuthenticationBloc>().state as AuthenticatedState;
+    AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
     if (authState is AuthenticatedMunicipalityState) {
-      _saveDataLogin(token: token, isFromEtmam: isFromEtmam);
+      _saveDataLogin(token: token, isFromEtmam: isFromEtmam,authState:authState);
     } else {
       final data = authState.profileData;
       emit(
@@ -187,19 +184,21 @@ class EntryPointCubit extends Cubit<EntryPointState> {
           status: AuthStatus.authenticated,
           token: token,
           userInfo: SsoUserInfo(
+            name: data.firstNameArabic,
+            sname: data.lastNameArabic,
             enName: data.enName,
             arName: data.arName,
             idNo: data.sub,
             mail: data.email,
             phone: data.phoneNumber,
+            loginType: SsoLoginType.otp,
           ),
           errorMessage: "",
         ),
       );
     }
 
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
 
@@ -234,9 +233,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
               "access_token": success.accessToken,
               "idToken": success.idToken,
               "expires_in": success.accessTokenExpirationDateTime != null
-                  ? DateTime.now()
-                      .difference(success.accessTokenExpirationDateTime!)
-                      .inSeconds
+                  ? DateTime.now().difference(success.accessTokenExpirationDateTime!).inSeconds
                   : 3500000,
               "token_type": success.tokenType,
               "refresh_token": success.refreshToken,
@@ -297,11 +294,9 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   }
 
   Future<bool> refreshAPIGeeToken() async {
-    DateTime? expireTime =
-        DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
+    DateTime? expireTime = DateTime.tryParse(state.apigeeToken?.expirationTime ?? "");
 
-    if (expireTime == null ||
-        (expireTime.difference(DateTime.now()).inHours <= 2)) {
+    if (expireTime == null || (expireTime.difference(DateTime.now()).inHours <= 2)) {
       final failureOrSuccess = await _getAPIgeeToken(NoParams());
       return await failureOrSuccess.fold((failure) {
         return false;
@@ -316,13 +311,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> checkifTokenExpired() async {
     if (state.status == AuthStatus.notAuthenticated) {
-      DateTime? expireTime =
-          DateTime.tryParse(state.token?.expirationTime ?? "");
+      DateTime? expireTime = DateTime.tryParse(state.token?.expirationTime ?? "");
 
       if (expireTime != null) {
-        if (!DateTime.now()
-            .add(const Duration(minutes: 15))
-            .isBefore(expireTime)) {
+        if (!DateTime.now().add(const Duration(minutes: 15)).isBefore(expireTime)) {
           if (state.token?.refreshToken != null) {
             return await refreshToken(state.token!.refreshToken!);
           }
@@ -356,13 +348,12 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         } catch (e) {
           EasyLoading.dismiss();
         }
-        sl<DelegatorsCubit>().clearDelegators();
+        // sl<DelegatorsCubit>().clearDelegators();
         await _clearAuth(NoParams());
         clearSSOInfo();
       }
 
-      if (CommonProperties.fcmToken != null &&
-          CommonProperties.fcmToken!.isNotEmpty) {
+      if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
         CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
       }
       EasyLoading.dismiss();
@@ -389,7 +380,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     }
     if (sl<AuthenticationBloc>().state is AuthenticatedMunicipalityState) {
       await _clearAuth(NoParams());
-      sl<DelegatorsCubit>().clearDelegators();
+      // sl<DelegatorsCubit>().clearDelegators();
       clearSSOInfo();
       try {
         await _logout(NoParams());
@@ -397,8 +388,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
         EasyLoading.dismiss();
       }
     }
-    if (CommonProperties.fcmToken != null &&
-        CommonProperties.fcmToken!.isNotEmpty) {
+    if (CommonProperties.fcmToken != null && CommonProperties.fcmToken!.isNotEmpty) {
       CommonFunctions.updateNotificationSettings(CommonProperties.fcmToken!);
     }
     CommonFunctions.showError("session_ended_error".tr());
@@ -407,12 +397,10 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
   Future<void> refreshSSOProfile() async {
     try {
-      AuthenticatedState authState =
-          sl<AuthenticationBloc>().state as AuthenticatedState;
+      AuthenticatedState authState = sl<AuthenticationBloc>().state as AuthenticatedState;
       if (authState is AuthenticatedMunicipalityState) {
         final failureOrSuccessForProfile = await _getProfile(NoParams());
-        await failureOrSuccessForProfile.fold((failure) async {},
-            (success) async {
+        await failureOrSuccessForProfile.fold((failure) async {}, (success) async {
           final failureOrSuccess = await _saveSSOProfile(success);
           if (failureOrSuccess.isRight()) {
             emit(state.copyWith(
@@ -449,7 +437,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
     sharedPrefs.storeGuestInfo(null, null, null);
     await CookieManager.instance().deleteAllCookies();
-    sl<DelegatorsCubit>().clearDelegators();
+    // sl<DelegatorsCubit>().clearDelegators();
   }
 
   testData() async {
@@ -461,15 +449,13 @@ class EntryPointCubit extends Cubit<EntryPointState> {
     emit(state.copyWith(userLocationGIS: response, userLocation: params));
   }
 
-  void selectDelegator(DelegatorEntity? delegator) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
-  }
+  // void selectDelegator(DelegatorEntity? delegator) {
+  //   emit(state.copyWith(selectedDelegator: Nullable(delegator), selectedAgent: Nullable(null)));
+  // }
 
-  void selectAgent(AgentEntity? agent) {
-    emit(state.copyWith(
-        selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
-  }
+  // void selectAgent(AgentEntity? agent) {
+  //   emit(state.copyWith(selectedDelegator: Nullable(null), selectedAgent: Nullable(agent)));
+  // }
 
   Future<(GISParams, GISResponse)?> getUserLocationData() async {
     emit(state.copyWith(gisStatus: BlocStatus.loading));
@@ -477,13 +463,11 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
     if (latlng == null) {
     } else {
-      emit(state.copyWith(
-          userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
+      emit(state.copyWith(userLocation: GISParams(x: latlng.longitude, y: latlng.latitude)));
 
       GetGISData getgis = GetGISData(repository: sl());
 
-      var result =
-          await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
+      var result = await getgis(GISParams(x: latlng.longitude, y: latlng.latitude));
       result.fold((l) {
         emit(state.copyWith(gisStatus: BlocStatus.failure));
       }, (r) {
@@ -515,6 +499,7 @@ class EntryPointCubit extends Cubit<EntryPointState> {
   void _saveDataLogin({
     required SSOToken token,
     required bool isFromEtmam,
+    required AuthenticatedMunicipalityState authState,
   }) async {
     print(" ");
     print(" ");
@@ -534,14 +519,21 @@ class EntryPointCubit extends Cubit<EntryPointState> {
 
       Map<String, dynamic> decodedToken = JwtDecoder.decode(token.token ?? "");
       SsoUserInfo user = SsoUserInfoModel.fromJson(decodedToken);
-      final failureOrSuccess =
-          await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
+      final failureOrSuccess = await _saveSSOProfile(SsoUserInfoModel.fromJson(decodedToken));
       if (failureOrSuccess.isRight()) {
         emit(
           state.copyWith(
             status: AuthStatus.authenticated,
             token: token,
-            userInfo: user,
+            userInfo: user.copyWith(
+              name: authState.profileData.firstNameArabic,
+              sname: authState.profileData.lastNameArabic,
+              enName: authState.profileData.enName,
+              arName: authState.profileData.arName,
+              mail: authState.profileData.email,
+              phone: authState.profileData.phoneNumber,
+              loginType: SsoLoginType.nationalId,
+            ),
             errorMessage: "",
           ),
         );

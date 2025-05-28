@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/pages/navigator_settings/components/dark_map_mode_row_widget.dart';
 import 'package:mapness/shared/providers/dark_mode.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -13,8 +14,6 @@ class DarkMapPageContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dark = ref.watch(darkModeProvider);
-    const darkMapPreview = 'assets/images/dark_map_preview.jpg';
-    const lightMapPreview = 'assets/images/light_map_preview.jpg';
 
     return Padding(
       padding: const EdgeInsets.all(Spacing.$4x).copyWith(bottom: 0),
@@ -26,7 +25,9 @@ class DarkMapPageContent extends ConsumerWidget {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(RadiusBorder.xl),
               child: Image.asset(
-                dark.valueOrNull?.isDark ?? false ? darkMapPreview : lightMapPreview,
+                dark.valueOrNull?.isDark ?? false
+                    ? Assets.images.darkMapPreview.keyName
+                    : Assets.images.lightMapPreview.keyName,
                 fit: BoxFit.cover,
                 filterQuality: FilterQuality.high,
                 height: switch (MediaQuery.of(context).orientation) {

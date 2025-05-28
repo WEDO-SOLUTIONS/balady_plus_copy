@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:dgis_map/library.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/favourites/providers/favourite_markers.dart';
@@ -676,7 +677,7 @@ class LayersControls extends _$LayersControls {
                     longitude: e.latLng?.longitude ?? 0,
                     elevation: 0,
                   ),
-                  icon: LayersSvgPaths.invest.markerIcon(),
+                  icon: Assets.icons.svg.layers.icInvestPin.keyName.markerIcon(),
                   textStyle: MarkerTextStyleMessage(
                     color: NonThemeColor.color26.value,
                     strokeColor: Colors.white.value,

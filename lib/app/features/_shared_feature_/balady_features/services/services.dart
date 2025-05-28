@@ -236,10 +236,6 @@ class BaladyServices {
     return null;
   }
 
-  static void openObjections() {
-    NavigationService.navigatorKey.currentState
-        ?.pushNamed(RouteName.objectableTransactions);
-  }
 
   static Future<bool> checkLocationSettings(BuildContext context) {
     return CommonFunctions.checkLocationSettings(context);

@@ -29,7 +29,6 @@ class RouteName {
   static const locationPage = 'Smart_Assistant_Location_Page';
 
   //! Setting
-  static const personalInformation = '/personalInformation';
   static const dashboard = 'Dashboard_Page';
   static const notificationPage = '/notificationPage';
   static const requests = 'My_Requests_Page';
@@ -392,6 +391,7 @@ class RouteName {
   static const Observer_Choose_Municipality = 'Observer_Choose_Municipality';
 
   static String trainingScreen = "trainingScreen";
+  static String municipalServicesScreen = "municipalServicesScreen";
 
 
 

@@ -39,6 +39,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
         
         let mapView = DgisCarPlayMapView()
+        mapView.carWindowScreenNativeBounds = templateApplicationScene.carWindow.screen.nativeBounds
         mapView.delegate = self
         FlutterCarPlaySceneDelegate.mapView = mapView
         

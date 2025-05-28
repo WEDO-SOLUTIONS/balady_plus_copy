@@ -4,6 +4,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 
 @RoutePage()
@@ -17,7 +18,6 @@ class FlipsContinuePage extends StatefulWidget {
 class _FlipsContinuePageState extends State<FlipsContinuePage> {
   final _flipsDuration = const Duration(milliseconds: 1000);
   final _popDuration = const Duration(milliseconds: 400);
-  final _pathImage = 'packages/mapness/assets/images/ic_flips_continue.png';
 
   @override
   void initState() {
@@ -43,7 +43,7 @@ class _FlipsContinuePageState extends State<FlipsContinuePage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image.asset(_pathImage),
+              Image.asset(Assets.images.icFlipsContinue.keyName),
               Spacing.$4x.heightBox,
               Text(
                 context.l10n.theScreenFlipsContinue,

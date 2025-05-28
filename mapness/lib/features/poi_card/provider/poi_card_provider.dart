@@ -7,6 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/poi_card/data/poi_data_service.dart';
 import 'package:mapness/features/poi_card/data/qr_license_repository.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
@@ -99,6 +100,7 @@ class PoiCardProvider extends _$PoiCardProvider {
   }) async {
     ref.onDispose(() {
       ref.read(selectedMarkerProvider.notifier).removeMarker(poiPinId);
+      ref.read(parkingManageProvider.notifier).restoreMarker();
     });
 
     state = const AsyncValue.loading();

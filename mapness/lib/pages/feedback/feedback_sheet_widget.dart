@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
-import 'package:mapness/shared/config/package_config.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
@@ -117,9 +117,8 @@ class FeedbackSheetWidget extends HookWidget {
                               child: SizedBox(
                                 width: 180.0,
                                 child: SvgPicture.asset(
-                                  'assets/images_svg/illustration_notifications.svg',
+                                  Assets.imagesSvg.illustrationNotifications.keyName,
                                   matchTextDirection: true,
-                                  package: PackageConfig.packageName,
                                 ),
                               ),
                             ),

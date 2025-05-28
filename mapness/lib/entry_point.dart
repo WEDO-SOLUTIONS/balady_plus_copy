@@ -397,7 +397,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await Future.delayed(const Duration(seconds: 8));
       }
       CommonFunctions.openMovingViolations(uri);
-    } else if (url.toString().isNotEmpty) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains("insiderbaladyapp") ) {
       await ref.watch(appRouterProvider).pushNamed(url.toString());
     }
   }

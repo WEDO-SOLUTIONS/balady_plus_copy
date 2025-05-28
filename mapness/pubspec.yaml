@@ -40,7 +40,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.4.0
+    version: 3.4.3
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -121,7 +121,7 @@ dependencies:
   fast_immutable_collections: 11.0.0
   adjust_sdk: 5.1.1
   flutter_animate: ^4.3.0
-  flutter_gen: ^5.4.0
+  flutter_gen: 5.10.0
 
   # TODO: upgrade after pdfx will be updated
   device_info_plus: 11.1.1
@@ -142,7 +142,7 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.0.18
+    version: 1.1.2
   equatable: 2.0.7
   flutter_insider: ^3.15.2
 
@@ -183,19 +183,23 @@ flutter:
   assets:
     - assets/
     - assets/icons/svg/
+    - assets/icons/svg/profile/
     - assets/icons/lottie/
-    - assets/icons/svg/social/
     - assets/icons/svg/quick_filters/
     - assets/icons/svg/weather/
-    - assets/icons/svg/weather/night/
-    - assets/icons/svg/weather/day/
     - assets/icons/svg/layers/
-    - assets/icons/svg/places/
-    - assets/icons/svg/places_big/
     - assets/icons/svg/places_big_new/
     - assets/icons/svg/places_new/
-    - assets/icons/svg/poi_card/
     - assets/images/
     - assets/images_svg/
     - assets/maps/configs/
     - packages/map_styles/src/styles.2gis
+
+flutter_gen:
+  assets:
+    outputs:
+      package_parameter_enabled: true # <- Add this line.
+  output: lib/_generated/assets
+  line_length: 120
+  integrations:
+    flutter_svg: true

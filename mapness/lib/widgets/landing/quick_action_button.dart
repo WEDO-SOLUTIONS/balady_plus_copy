@@ -40,11 +40,15 @@ class QuickActionButton extends StatelessWidget {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
-            child: Text(
-              text,
-              style: context.textStyleV3.captionSmallMedium,
+          SizedBox(
+            width: buttonSize,
+            child: Padding(
+              padding: const EdgeInsets.only(top: Spacing.$1x + Spacing.$0_5x),
+              child: Text(
+                text,
+                style: context.textStyleV3.captionSmallMedium,
+                textAlign: TextAlign.center,
+              ),
             ),
           ),
         ],

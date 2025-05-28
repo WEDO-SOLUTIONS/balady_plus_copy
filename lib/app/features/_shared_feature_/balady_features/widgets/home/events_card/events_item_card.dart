@@ -7,7 +7,7 @@ import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/shared/config/package_config.dart';
+import 'package:mapness/_generated/assets/assets.gen.dart';
 
 class EventItemCard extends StatelessWidget {
   final SearchEventsItem item;
@@ -62,8 +62,7 @@ class EventItemCard extends StatelessWidget {
                     width: MediaQuery.of(context).size.width,
                     height: 200,
                     child: Image.asset(
-                      'assets/images/event_card_item_mask.png',
-                      package: PackageConfig.packageName,
+                      Assets.images.eventCardItemMask.keyName,
                       fit: BoxFit.cover,
                     ),
                   ),
