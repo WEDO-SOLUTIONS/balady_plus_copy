@@ -60,7 +60,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
   @override
   Widget build(BuildContext context) {
-    final height = MediaQuery.of(context).size.height;
+    final height = MediaQuery.sizeOf(context).height;
     _hasConnection = ref.watch(networkStatusProvider);
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
