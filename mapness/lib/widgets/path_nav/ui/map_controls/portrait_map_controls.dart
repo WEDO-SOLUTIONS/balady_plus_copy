@@ -4,7 +4,6 @@ class _PortraitLayout extends StatelessWidget {
   final RouteSearchOptionsMessage navType;
   final ValueNotifier<double> bottomHeightNotifier;
   final ValueNotifier<PathNavState> navigationState;
-  final ValueNotifier<bool> expansionNotifier;
   final ValueNotifier<bool> showControls;
   final Widget maneuverAndLimitWidget;
   final Widget compassControlWidget;
@@ -17,7 +16,6 @@ class _PortraitLayout extends StatelessWidget {
   const _PortraitLayout({
     required this.bottomHeightNotifier,
     required this.navigationState,
-    required this.expansionNotifier,
     required this.maneuverAndLimitWidget,
     required this.compassControlWidget,
     required this.showControls,
@@ -128,7 +126,7 @@ class _PortraitLayout extends StatelessWidget {
                 ),
                 ValueListenableBuilder(
                   valueListenable: bottomHeightNotifier,
-                  builder: (context, value, _) => min(value, 120.0).heightBox,
+                  builder: (context, value, _) => value.heightBox,
                 )
               ],
             ),

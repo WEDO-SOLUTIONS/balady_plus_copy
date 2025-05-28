@@ -10,6 +10,7 @@ import 'package:mapness/entities/favourites/favourite_item.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/shared/ui/sheets/error_sheet.dart';
 import 'package:mapness/shared/ui/sheets/loading_sheet.dart';
 
@@ -66,7 +67,7 @@ class _PoiFavoriteDialogPageState extends ConsumerState<PoiFavoriteDialogPage> {
       color: context.colorsV2.foregroundDefault,
     );
 
-    return SafeArea(
+    return SafeAreaPadding(
       child: StatelessBottomSheet(
         scrollController: scrollController,
         backgroundColor: context.colorsV2.backgroundSurface4,

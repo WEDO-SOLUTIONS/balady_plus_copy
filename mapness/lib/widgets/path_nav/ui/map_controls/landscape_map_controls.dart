@@ -5,7 +5,7 @@ class _LandscapeLayout extends StatelessWidget {
   final RouteSearchOptionsMessage navType;
 
   final ValueNotifier<PathNavState> navigationState;
-  final ValueNotifier<bool> expansionNotifier;
+
   final ValueNotifier<bool> showControls;
   final Widget maneuverAndLimitWidget;
   final Widget compassControlWidget;
@@ -19,7 +19,6 @@ class _LandscapeLayout extends StatelessWidget {
   const _LandscapeLayout({
     required this.navType,
     required this.navigationState,
-    required this.expansionNotifier,
     required this.showControls,
     required this.maneuverAndLimitWidget,
     required this.toggleExpansionNotifier,

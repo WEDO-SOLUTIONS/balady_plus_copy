@@ -230,10 +230,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 extensions: <ThemeExtension<dynamic>>[
                   if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                  AppColorsThemeExt.palette(AppColorScheme.main, isDark: false),
+                  AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
-                  AppStaticColorsThemeExt.palette(AppColorScheme.main),
+                  AppStaticColorsThemeExt.palette(),
                 ],
               ),
               builder: (context, child) => child != null

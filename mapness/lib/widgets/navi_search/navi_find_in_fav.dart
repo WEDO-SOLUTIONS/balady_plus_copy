@@ -26,7 +26,7 @@ class NaviFindInFav extends ConsumerWidget {
                 color: context.colorsV3.accentDefault,
               ),
               trailing: ContentRowTextTrailingOptions(
-                icon: SystemIcons.arrowCornerRightLarge,
+                icon: SystemIcons.arrowCornerRightSmall,
                 iconColor: context.colorsV3.foregroundMuted,
               ),
               text: ContentRowTextOptions(title: context.l10n.findInFav),

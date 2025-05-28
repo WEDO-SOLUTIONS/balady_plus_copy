@@ -2,8 +2,9 @@ import 'dart:math';
 
 import 'package:balady_uikit/balady_uikit.dart';
 
-extension StatefulBottomSheetControllerEx<T> on StatefulBottomSheetController<T> {
-  double Function(StatefulBottomSheetController<ThreeStateBottomSheet>)? get defaultOpacityDelegate => (controller) {
+extension StatefulBottomSheetControllerEx on StatefulBottomSheetController<ThreeStateBottomSheet> {
+  StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>? get defaultOpacityDelegate =>
+      StatefulSheetDelegateFunction(function: (controller) {
         final aspectRatio = controller.aspectRatio;
         final interpolation = controller.interpolation;
         final state = controller.state;
@@ -16,5 +17,5 @@ extension StatefulBottomSheetControllerEx<T> on StatefulBottomSheetController<T>
             isSheetCoversHalfOfTheScreen;
 
         return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-      };
+      });
 }
