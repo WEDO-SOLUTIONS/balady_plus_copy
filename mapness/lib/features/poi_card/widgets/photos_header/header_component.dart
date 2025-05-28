@@ -50,7 +50,7 @@ class HeaderComponent extends BottomSheetStateComponent<PoiCardBottomSheetState>
                         params: FeedbackObjectIdParams(objectId),
                       ),
                     ),
-                    color: context.color.surfaceBasePrimary,
+                    color: context.colorsV3.staticWhite,
                     size: BaladyButtonSize.small,
                     primaryIcon: GeneralIcons.plusCircleFilled,
                     primaryLabel: context.l10n.addPhoto,
