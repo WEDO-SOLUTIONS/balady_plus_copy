@@ -36,13 +36,12 @@ class DgisController extends _$DgisController {
 
   Future<void> onMapCreated(DgisMapController controller) async {
     await _initialize(controller);
-  }
-
-  Future<void> _initialize(DgisMapController controller) async {
     if (!_completer.isCompleted) {
       _completer.complete(controller);
     }
+  }
 
+  Future<void> _initialize(DgisMapController controller) async {
     await _setupControllerItself(controller);
     await _setupLocation(controller);
     await _setupVisibleRectUpdates(controller);
