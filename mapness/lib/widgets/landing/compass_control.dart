@@ -15,8 +15,7 @@ class CompassControl extends ConsumerWidget {
     final bearingState = ref.watch(bearingStateProvider);
     final bearingNotifier = ref.watch(bearingStateProvider.notifier);
 
-    return AnimatedOpacity(
-      opacity: bearingState.bearing == 0 ? 0 : 1,
+    return AnimatedSwitcher(
       duration: const Duration(milliseconds: 250),
       child: MapButton(
         borderRadius: BorderRadius.circular(24),
