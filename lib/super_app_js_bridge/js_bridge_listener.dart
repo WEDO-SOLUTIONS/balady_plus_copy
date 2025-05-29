@@ -755,8 +755,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         }
 
       }
-      final files =
-      Directory('${CommonProperties.currentLocalServerDirectory}/assets/assets/quran').listSync();
 
       BaseResponse response = BaseResponse(
         code: 200,
