@@ -22,7 +22,7 @@ class CompassControl extends ConsumerWidget {
         borderRadius: BorderRadius.circular(24),
         onTap: bearingNotifier.onCompassTap,
         child: Transform.rotate(
-          angle: bearingState.angle - pi,
+          angle: bearingState.angle - pi - pi / 4,
           child: SvgPicture.asset(
             Assets.icons.svg.icControlCompass.keyName,
             semanticsLabel: 'MinApps Screen',
