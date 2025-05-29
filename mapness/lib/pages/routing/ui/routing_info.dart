@@ -26,6 +26,7 @@ import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class RoutingInfo extends ConsumerStatefulWidget {
   final List<RouteParamsPointWithLabel> pointsWithLabel;
@@ -47,30 +48,32 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
 
   final ValueNotifier<bool> _isNavTypeLoading = ValueNotifier(true);
 
-  ProviderSubscription? _locationListener;
-
   @override
   void initState() {
     super.initState();
-    if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
-      unawaited(_calculateNavigationType(null));
-    } else {
-      final location = ref.read(locationProvider);
-      if (location != null) {
-        unawaited(_calculateNavigationType(location));
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (widget.points.firstOrNull != null && widget.points.lastOrNull != null) {
+        unawaited(_calculateNavigationType(null));
       } else {
-        _locationListener = ref.listenManual<Position?>(locationProvider, (_, next) {
-          if (next != null) {
-            _locationListener?.close();
-            unawaited(_calculateNavigationType(next));
-          }
-        });
-      }
-    }
+        Position? location = ref.read(locationProvider);
+        if (location != null) {
+          unawaited(_calculateNavigationType(location));
+        } else {
+          // TODO(Ayat) rewriting to human form is a temporary fix
+          final isGranded = await Permission.location.isGranted;
 
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) => setCameraPadding(),
-    );
+          if (!isGranded) {
+            context.router.popForced();
+            return;
+          }
+          // Due to the addition of checks on Huawei, it was not possible to get the provider's
+          // location during the first installation, I made this method so as not to catch a crash
+          location = await Geolocator.getCurrentPosition();
+          unawaited(_calculateNavigationType(location));
+        }
+      }
+      setCameraPadding();
+    });
   }
 
   void setCameraPadding() {
@@ -95,7 +98,6 @@ class _RoutingInfoState extends ConsumerState<RoutingInfo> {
   @override
   void dispose() {
     _navType.dispose();
-    _locationListener?.close();
     super.dispose();
   }
 

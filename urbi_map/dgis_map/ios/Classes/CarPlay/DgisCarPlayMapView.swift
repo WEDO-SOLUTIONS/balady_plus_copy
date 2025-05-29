@@ -117,37 +117,38 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     }
     
     func mapTemplate(_ mapTemplate: CPMapTemplate, panWith direction: CPMapTemplate.PanDirection) {
-        let shiftedPoint = ScreenPoint(x: 0.5, y: 0.5)
+        let dx = Float(carWindowScreenNativeBounds!.width / 8)
+        let dy = Float(carWindowScreenNativeBounds!.height / 8)
         
-        var screenShift = ScreenShift(dx: 0, dy: 0)
-        if direction == .left {
-            screenShift = ScreenShift(dx: -5, dy: 0)
-        }
-        else if direction == .right {
-            screenShift = ScreenShift(dx: 5, dy: 0 )
-        }
-        else if direction == .up {
-            screenShift = ScreenShift(dx: 0, dy: -5)
-        }
-        else if direction == .down {
-            screenShift = ScreenShift(dx: 0, dy: 5)
+        let screenShift: ScreenShift? = switch direction {
+        case .left: ScreenShift(dx: dx, dy: 0)
+        case .right: ScreenShift(dx: -dx, dy: 0 )
+        case .up: ScreenShift(dx: 0, dy: dy)
+        case .down: ScreenShift(dx: 0, dy: -dy)
+        default: nil
         }
         
-        self.eventProcessor!.process(
-            event: DirectMapShiftEvent(
-                screenShift: screenShift,
-                shiftedPoint: shiftedPoint,
-                timestamp: TimeInterval(CACurrentMediaTime())
+        if let screenShift {
+            let shiftedPoint = ScreenPoint(
+                x: Float(carWindowScreenNativeBounds!.width / 2),
+                y: Float(carWindowScreenNativeBounds!.height / 2)
             )
-        )
+            self.processDirectEvent(
+                event: DirectMapShiftEvent(
+                    screenShift: screenShift,
+                    shiftedPoint: shiftedPoint,
+                    timestamp: TimeInterval(CACurrentMediaTime())
+                )
+            )
+        }
     }
     
     func mapTemplate(_ mapTemplate: CPMapTemplate, didUpdatePanGestureWithTranslation translation: CGPoint, velocity: CGPoint) {
-        self.eventProcessor?.process(
+        self.processDirectEvent(
             event: DirectMapShiftEvent(
                 screenShift: ScreenShift(
-                    dx: Float(translation.x),
-                    dy: Float(translation.y)
+                    dx: Float(translation.x) * 1.5,
+                    dy: Float(translation.y) * 1.5
                 ),
                 shiftedPoint: ScreenPoint.init(translation),
                 timestamp: TimeInterval(CACurrentMediaTime())
@@ -155,6 +156,16 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
         )
     }
     
+    private func processDirectEvent(event: DGis.Event) {
+        self.eventProcessor?.process(event: DirectMapControlBeginEvent())
+        self.eventProcessor?.process(event: event)
+        self.eventProcessor?.process(
+            event: DirectMapControlEndEvent(
+                timestamp: TimeInterval(CACurrentMediaTime())
+            )
+        )
+    }
+
     func zoomIn() {
         zoomControlModel?.setPressed(button: .zoomIn, value: true)
         zoomControlModel?.setPressed(button: .zoomIn, value: false)
@@ -180,7 +191,7 @@ class DgisCarPlayMapView: UIViewController, CPMapTemplateDelegate {
     
     func myLocation() {
         guard let camera = map?.camera, let myLocationControlModel,
-        let myLocation = try? DgisMapInitializer.shared.getSdkContainer().locationService.lastLocation?.coordinates else {
+              let myLocation = try? DgisMapInitializer.shared.getSdkContainer().locationService.lastLocation?.coordinates else {
             return
         }
         

@@ -92,7 +92,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                         ],
                       ),
                       const SizedBox(
-                        height: Spacing.verticalGapBetweenChips,
+                        height: Spacing.$2x,
                       ),
                       Text(
                         'enable_disable_notifications'.tr(),
@@ -101,7 +101,7 @@ class _NotificationsSettingCellState extends State<NotificationsSettingCell> {
                         ),
                       ),
                       const SizedBox(
-                        height: Spacing.verticalGapBetweenChips,
+                        height: Spacing.$2x,
                       ),
                       state.isChecked
                           ? GestureDetector(

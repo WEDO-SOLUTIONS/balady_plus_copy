@@ -11,6 +11,7 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/parking_spot/parking_control.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
@@ -68,52 +69,61 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
                         top: uikit.Spacing.$3x,
                         right: uikit.Spacing.$3x,
                       ),
-                      child: Row(
+                      child: Column(
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                          Expanded(
+                            child: Row(
+                              children: [
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const WeatherControl(),
+                                        uikit.Spacing.$1_5x.heightBox,
+                                        const ParkingControl(),
+                                      ],
+                                    ),
+                                    const Spacer(),
+                                    const IndoorControl(),
+                                    const Spacer(),
+                                    SizedBox(
+                                      height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
+                                          ? controlsHeight * (1 - widget.scrollController.interpolation)
+                                          : 0,
+                                    )
+                                  ],
+                                ),
+                                const Spacer(),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    const LayersControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    const TrafficControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    const DimensionControl(),
+                                    const Spacer(),
+                                    const ZoomControl(),
+                                    const Spacer(),
+                                    const CompassControl(),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    ComplianceBuildingLegend(),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: uikit.Spacing.$2x),
+                          const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Row(
-                                children: [
-                                  const WeatherControl(),
-                                  uikit.Spacing.$1_5x.heightBox,
-                                  const ParkingControl(),
-                                ],
-                              ),
-                              const Spacer(),
-                              const IndoorControl(),
-                              const Spacer(),
-                              const EtaSharingControl(),
-                              uikit.Spacing.$4x.heightBox,
-                              SizedBox(
-                                height: widget.scrollController.state == uikit.ThreeStateBottomSheet.hidden
-                                    ? controlsHeight * (1 - widget.scrollController.interpolation)
-                                    : 0,
-                              )
+                              EtaSharingControl(),
+                              FollowControl(),
                             ],
                           ),
-                          const Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              const LayersControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const TrafficControl(),
-                              //TODO(scroollocker): Enable when prepare release
-                              // const SizedBox(height: uikit.Spacing.$2x),
-                              // const DimensionContrtol(),
-                              const Spacer(),
-                              const ZoomControl(),
-                              const Spacer(),
-                              const CompassControl(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              ComplianceBuildingLegend(),
-                              const SizedBox(height: uikit.Spacing.$2x),
-                              const FollowControl(),
-                              uikit.Spacing.$4x.heightBox,
-                            ],
-                          ),
+                          uikit.Spacing.$4x.heightBox,
                         ],
                       ),
                     ),

@@ -3,17 +3,14 @@ import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/balady_features/balady_exports.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_network_icon_widget.dart';
 import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_spaces_widgets.dart';
-import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:mapness/_generated/assets/assets.gen.dart';
 
 class EventItemCard extends StatelessWidget {
   final SearchEventsItem item;
   final double? width;
   final EdgeInsets? padding;
-  final AppColorScheme colorScheme;
   final ValueChanged<SearchEventsItem>? onItemTap;
 
   const EventItemCard({
@@ -22,7 +19,6 @@ class EventItemCard extends StatelessWidget {
     this.width,
     this.padding,
     this.onItemTap,
-    required this.colorScheme,
   });
 
   @override
@@ -55,18 +51,6 @@ class EventItemCard extends StatelessWidget {
                   placeHolderWidget: SvgPicture.asset(ImagePath.calendarBackground),
                 ),
               ),
-              if (colorScheme == AppColorScheme.brown)
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(14),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width,
-                    height: 200,
-                    child: Image.asset(
-                      Assets.images.eventCardItemMask.keyName,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(14),

@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_expression_function_bodies
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -17,7 +19,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_uxcam/flutter_uxcam.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:mapness/_features/common/providers/color_scheme.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/_features/common/providers/ui_direction.dart';
 import 'package:mapness/_features/common/widgets/eager_init_widget.dart';
@@ -216,7 +217,6 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         textDirection: direction,
         child: Consumer(
           builder: (context, ref, child) {
-            final colorScheme = ref.watch(colorSchemeProvider);
             return MaterialApp.router(
               routerConfig: ref.read(appRouterProvider).config(
                     navigatorObservers: () => [
@@ -230,10 +230,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
                 extensions: <ThemeExtension<dynamic>>[
                   if (language == Language.arabic) ThemeTextStyles.arabic() else ThemeTextStyles.english(),
                   if (language == Language.arabic) ThemeTextStylesV3.frutiger() else ThemeTextStylesV3.golos(),
-                  AppColorsThemeExt.palette(colorScheme, isDark: false),
+                  AppColorsThemeExt.palette(isDark: false),
                   AppColorsThemeV2.palette(isDark: false),
                   AppColorsThemeV3.palette(themes: BaladyAppThemes.light),
-                  AppStaticColorsThemeExt.palette(colorScheme),
+                  AppStaticColorsThemeExt.palette(),
                 ],
               ),
               builder: (context, child) => child != null

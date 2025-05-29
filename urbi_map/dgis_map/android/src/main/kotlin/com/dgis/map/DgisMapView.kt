@@ -489,7 +489,7 @@ class DgisMapView(
 
     override fun search(
             queryText: String,
-            categories: SearchCategoriesMessage?,
+            rubrics: List<Long>?,
             spatialRestriction: List<GeoPointMessage>?,
             weekTime: WeekTimeSearchMessage?,
             searchRect: GeoRectMessage?,
@@ -500,7 +500,7 @@ class DgisMapView(
     ) {
         searchHandler?.search(
                 queryText = queryText,
-                categories = categories?.categories?.flatMap { it.category.toRubrics() },
+                rubricIds = rubrics?.map { RubricId(it) },
                 spatialRestriction = spatialRestriction?.map { it.toGeoPoint() },
                 searchGeoRect = searchRect?.toGeoRect(),
                 weekTimeMessage = weekTime,
@@ -533,54 +533,6 @@ class DgisMapView(
         )
     }
 
-    override fun searchByCategory(
-            category: SearchCategoryMessage,
-            spatialRestriction: List<GeoPointMessage>?,
-            weekTime: WeekTimeSearchMessage?,
-            searchRect: GeoRectMessage?,
-            sortingType: SortingTypeMessage,
-            pageSize: Long,
-            locale: String?,
-            callback: (Result<SearchResultMessage>) -> Unit
-    ) {
-        if (category == SearchCategoryMessage.PARKS) {
-            searchHandler?.searchByParkCategory(
-                    searchGeoRect = searchRect?.toGeoRect(),
-                    spatialRestriction = spatialRestriction?.map { it.toGeoPoint() },
-                    weekTimeMessage = weekTime,
-                    sortingType = sortingType,
-                    pageSize = pageSize.toInt(),
-                    locale = locale,
-                    callback = callback
-            )
-            return
-        }
-
-        if (category == SearchCategoryMessage.BEACHES) {
-            searchHandler?.searchByBeachCategory(
-                    searchGeoRect = searchRect?.toGeoRect(),
-                    spatialRestriction = spatialRestriction?.map { it.toGeoPoint() },
-                    weekTimeMessage = weekTime,
-                    sortingType = sortingType,
-                    pageSize = pageSize.toInt(),
-                    locale = locale,
-                    callback = callback
-            )
-            return
-        }
-
-        searchHandler?.searchByCategories(
-                categories = category.toRubrics(),
-                spatialRestriction = spatialRestriction?.map { it.toGeoPoint() },
-                searchGeoRect = searchRect?.toGeoRect(),
-                weekTimeMessage = weekTime,
-                sortingType = sortingType,
-                pageSize = pageSize.toInt(),
-                locale = locale,
-                callback = callback
-        )
-    }
-
     override fun searchByRubrics(
             rubrics: List<Long>,
             spatialRestriction: List<GeoPointMessage>?,
@@ -591,8 +543,8 @@ class DgisMapView(
             locale: String?,
             callback: (Result<SearchResultMessage>) -> Unit
     ) {
-        searchHandler?.searchByCategories(
-                categories = rubrics.map { RubricId(it) },
+        searchHandler?.searchByRubrics(
+                rubricIds = rubrics.map { RubricId(it) },
                 spatialRestriction = spatialRestriction?.map { it.toGeoPoint() },
                 searchGeoRect = searchRect?.toGeoRect(),
                 weekTimeMessage = weekTime,

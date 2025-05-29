@@ -20,12 +20,12 @@ import 'package:provider/provider.dart';
 class RoutingSearchResults extends ConsumerWidget {
   const RoutingSearchResults({
     required this.results,
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
   final SearchResultMessage results;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -35,7 +35,7 @@ class RoutingSearchResults extends ConsumerWidget {
 
     return SearchResults(
       results: results,
-      scrollController: scrollController,
+      bottomSheetContentScrollController: bottomSheetContentScrollController,
       loaderBuilder: (context) => const Padding(
         padding: EdgeInsets.symmetric(vertical: 12),
         child: Center(
@@ -57,11 +57,11 @@ class RoutingSearchResults extends ConsumerWidget {
 
           final isFromSuggest = ref.read(searchProvider(scope.value).notifier).searchFromSuggest;
           if (isFromSuggest) {
-            ref.read(urbiAnalyticsProvider).track(
+            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                   '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
                 );
           } else {
-            ref.read(urbiAnalyticsProvider).track(
+            ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                   '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.fullSearchResultPressed}',
                 );
           }

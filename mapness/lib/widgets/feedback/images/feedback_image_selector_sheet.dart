@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
+import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -19,7 +20,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final sheetController = useStatelessBottomsheetController(
-      onClose: (_) => onSelect != null ? onSelect?.call(null) : Navigator.of(context).pop(),
+      onClose: (_) => onSelect != null ? onSelect?.call(null) : context.router.popForced,
     );
 
     return StatelessBottomSheet(
@@ -92,9 +93,7 @@ class FeedbackImageSelectorSheet extends HookWidget {
             ),
           ]),
         ),
-        const SizedBox(
-          height: Spacing.$4x,
-        ),
+        Spacing.$4x.heightBox
       ],
     );
   }

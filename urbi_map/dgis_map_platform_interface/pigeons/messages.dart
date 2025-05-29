@@ -1058,6 +1058,9 @@ class SuggestResultMessage {
   final List<SuggestMessage> suggests;
 }
 
+/// We created this for convenience, but now we don't have to use this class
+/// You can find all information about rubric ids inside [QuickFilter] class
+@Deprecated("We don't have to use this class because we have to send rubricIds and keep this ids on Flutter side")
 enum SearchCategoryMessage {
   mousques,
   gasStations,
@@ -1436,7 +1439,7 @@ abstract class MapApi {
   @async
   SearchResultMessage search(
     String queryText,
-    SearchCategoriesMessage? categories,
+    List<int>? rubrics,
     List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
@@ -1448,17 +1451,6 @@ abstract class MapApi {
   @async
   SearchResultMessage searchByQuery(
     SearchQueryMessage query,
-    List<GeoPointMessage>? spatialRestriction,
-    WeekTimeSearchMessage? weekTime,
-    GeoRectMessage? searchRect,
-    SortingTypeMessage sortingType,
-    int pageSize,
-    String? locale,
-  );
-
-  @async
-  SearchResultMessage searchByCategory(
-    SearchCategoryMessage category,
     List<GeoPointMessage>? spatialRestriction,
     WeekTimeSearchMessage? weekTime,
     GeoRectMessage? searchRect,
