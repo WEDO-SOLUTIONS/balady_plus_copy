@@ -4,6 +4,7 @@ import 'dart:math';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/balady_uikit.dart' as uikit;
 import 'package:flutter/material.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -105,7 +106,7 @@ class _RoutingSearchSheetState extends ConsumerState<RoutingSearchSheetPage> wit
               child: StatefulBottomSheet<ThreeStateBottomSheet>(
                 keepContentBehindFooter: true,
                 scrollController: _statefulBottomSheetController,
-                outsideOpacityDelegate: StatefulSheetDelegateFunction(
+                outsideOpacityDelegate: StatefulSheetDelegateFunction<double, uikit.ThreeStateBottomSheet>(
                   function: (controller) {
                     final aspectRatio = controller.aspectRatio;
                     final interpolation = controller.interpolation;
