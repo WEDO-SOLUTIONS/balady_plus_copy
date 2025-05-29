@@ -9,9 +9,8 @@ import 'package:mapness/widgets/path_nav/ui/navi_sheet_panel.dart';
 
 class EndTripModal extends HookWidget {
   final VoidCallback? onEndTripPressed;
-  final bool isLandscape;
 
-  const EndTripModal({required this.isLandscape, super.key, this.onEndTripPressed});
+  const EndTripModal({super.key, this.onEndTripPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +19,10 @@ class EndTripModal extends HookWidget {
     );
 
     final viewPaddingOf = MediaQuery.viewPaddingOf(context);
+    final isLandscape = MediaQuery.orientationOf(context) == Orientation.landscape;
 
     return Align(
-      alignment: AlignmentDirectional.bottomStart,
+      alignment: Alignment.bottomLeft,
       child: Padding(
         padding: viewPaddingOf.copyWith(left: viewPaddingOf.left + (isLandscape ? Spacing.$4x : 0.0)),
         child: ConstrainedBox(
@@ -45,11 +45,12 @@ class EndTripModal extends HookWidget {
                   ),
                   PositionedDirectional(
                     end: Spacing.$4x,
-                    child: AppButton(
-                      innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$2x),
-                      size: ButtonSize.small,
+                    child: BaladyAppButton(
+                      innerPadding: const EdgeInsets.symmetric(horizontal: Spacing.$1_5x),
+                      size: BaladyButtonSize.small,
                       primaryIcon: SystemIcons.arrowCornerDownLarge,
-                      buttonColorScheme: ButtonColorScheme.tertiary,
+                      buttonType: BaladyButtonType.secondary,
+                      buttonColorScheme: BaladyButtonColorScheme.neutral,
                       onTap: Navigator.of(context).pop,
                     ),
                   ),

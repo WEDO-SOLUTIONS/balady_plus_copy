@@ -468,7 +468,7 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
     await ref.read(urbiAnalyticsProvider).track(MapnessConstants.analyticsTripStopped);
 
     await _endTrip(action: () {
-      if (context.mounted) {
+      if (mounted) {
         context.router.popUntilRouteWithName(BottomMenuRoute.name);
       }
     });
@@ -488,19 +488,14 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
 
     await _endTrip();
 
-    if (!ctx.mounted) {
+    if (!mounted) {
       return;
     }
 
     context.router.popUntilRouteWithName(BottomMenuRoute.name);
 
-    if (!ctx.mounted) {
+    if (!mounted) {
       return;
-    }
-
-    // We don't show the feedback page in landscape mode
-    if (MediaQuery.of(context).orientation != Orientation.landscape) {
-      await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
     }
 
     final parkingManage = ref.read(parkingManageProvider).valueOrNull == null;
@@ -524,6 +519,15 @@ class PathNavPageState extends ConsumerState<PathNavPage> with WidgetsBindingObs
         );
       },
     );
+
+    if (!mounted) {
+      return;
+    }
+
+    // We don't show the feedback page in landscape mode
+    if (MediaQuery.of(context).orientation != Orientation.landscape) {
+      await ctx.router.push(AppFeedbackSheet(source: FeedbackSource.navi));
+    }
   }
 
   /// If I enable parking during [FreeRoam], after the check is completed they are hidden if hidden from [Layers].
