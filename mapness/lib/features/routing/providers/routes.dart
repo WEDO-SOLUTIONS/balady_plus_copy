@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_features/common/providers/shared_prefs.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_better_route.dart';
@@ -41,22 +42,23 @@ class Routes extends _$Routes {
       ),
     );
 
-    final routesCompleter = Completer<List<RouteInfo>>();
+    final cancelableCompleter = CancelableCompleter<List<RouteInfo>>();
     final subscription = dgisController.value?.routesInfoChangedEvents.listen((event) async {
       await dgisController.value?.showRoutes();
       await AdvancedMetrics.instance.stopRouteCalculation(track: ref.read(urbiAnalyticsProvider).track);
-      if (!routesCompleter.isCompleted) {
-        routesCompleter.complete(event.routes);
+      if (!cancelableCompleter.isCompleted) {
+        cancelableCompleter.complete(event.routes);
       }
     });
 
     ref.onDispose(() {
       subscription?.cancel();
+      cancelableCompleter.operation.cancel();
     });
 
     await dgisController.value?.setRouteParams(params);
     try {
-      return await routesCompleter.future.timeout(
+      return await cancelableCompleter.operation.value.timeout(
         const Duration(seconds: 30),
         onTimeout: () => throw TimeoutException('Timeout while waiting for routes'),
       );
