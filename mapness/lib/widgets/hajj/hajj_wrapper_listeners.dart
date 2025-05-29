@@ -3,6 +3,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
 import 'package:mapness/entities/hajj/poi_marker_rcmc.dart';
@@ -34,6 +35,7 @@ class HajjWrapperListeners extends ConsumerStatefulWidget {
 
 class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
   final _settings = MapObjectManagerSettings.hajj();
+  final _eqList = const DeepCollectionEquality().equals;
   final _sizeMarkersHajj = 24.0;
   final _fontSizePin = 13.0;
   final _fontSizeMarker = 11.0;
@@ -53,12 +55,12 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
       ..listen(hajjRcmcProvider, (prevState, newState) async {
         final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
 
-        final hasVisualChange = _previousIsDarkMode != isDarkMode;
+        final hasVisualNotChange = _previousIsDarkMode == isDarkMode;
         _previousIsDarkMode = isDarkMode;
 
-        final dataChanged = prevState?.value != newState.value;
+        final dataNotChanged = _eqList(prevState?.value, newState.value);
 
-        if (!dataChanged && !hasVisualChange) {
+        if (dataNotChanged && hasVisualNotChange) {
           return;
         }
 
