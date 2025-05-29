@@ -16,11 +16,11 @@ class AppCloseButton extends StatelessWidget {
           child: InkWell(
             borderRadius: BorderRadius.circular(8),
             onTap: onPressed,
-            child: const Padding(
-              padding: EdgeInsets.all(8),
+            child: Padding(
+              padding: const EdgeInsets.all(8),
               child: Icon(
                 Icons.close,
-                color: NonThemeColor.color58,
+                color: context.colorsV3.neutralOnContainer,
               ),
             ),
           ),
@@ -49,11 +49,11 @@ class CustomCloseButton extends StatelessWidget {
               child: DecoratedBox(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(RadiusBorder.m),
-                  color: context.colorsV3.neutralContainerDefault.withOpacity(0.12),
+                  color: context.colorsV3.neutralContainerDefault.withOpacity(.12),
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(Spacing.$2x),
-                  child: SystemIcons.close.icon(color: context.colorsV3.neutralOnContainer),
+                  child: SystemIcons.close.icon(color: context.color.textAndIconsBaseSecondary),
                 ),
               ),
             ),
