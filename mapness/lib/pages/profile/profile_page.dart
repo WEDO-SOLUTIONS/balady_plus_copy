@@ -104,7 +104,7 @@ class ProfilePage extends HookConsumerWidget {
                                       ContentRowV2(
                                         onTap: () => context.router.push(const SettingsRoute()),
                                         trailing: trailing,
-                                        leading: SvgPicture.asset('assets/icons/svg/profile/settings.svg', height: 24, width: 24) ,
+                                        leading: leadingIconBuilder(SystemIcons.settings),
                                         text: ContentRowTextOptions(
                                           title: context.l10n.settings,
                                         ),
@@ -120,7 +120,7 @@ class ProfilePage extends HookConsumerWidget {
                                       isDividerEnabled: true,
                                       onTap: () => context.router.push(const HelpCenterRoute()),
                                       trailing: trailing,
-                                      leading:SvgPicture.asset('assets/icons/svg/profile/question_circle.svg', height: 24, width: 24) ,//leadingIconBuilder(GeneralIcons.questionCircle),
+                                      leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.helpCenter,
                                       ),
@@ -131,7 +131,7 @@ class ProfilePage extends HookConsumerWidget {
                                         context.router.push(const AboutBaladyRoute());
                                       },
                                       trailing: trailing,
-                                      leading: SvgPicture.asset('assets/icons/svg/profile/info.svg', height: 24, width: 24) ,
+                                      leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
                                       ),
@@ -143,7 +143,7 @@ class ProfilePage extends HookConsumerWidget {
                                         );
                                       },
                                       trailing: trailing,
-                                      leading: SvgPicture.asset('assets/icons/svg/profile/rate.svg', height: 24, width: 24) ,
+                                      leading: leadingIconBuilder(GeneralIcons.star),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.rateBaladyApp,
                                       ),
