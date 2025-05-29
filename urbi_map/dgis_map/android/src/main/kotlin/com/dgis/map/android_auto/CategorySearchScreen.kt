@@ -52,6 +52,6 @@ class CategorySearchScreen(
     }
 
     private fun openHistory() {
-        // open search history
+        screenManager.push(SearchHistoryScreen(carContext, mapController))
     }
 }
