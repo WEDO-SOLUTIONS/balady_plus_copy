@@ -3,7 +3,8 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:balady_uikit/core/widgets/dragger.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_eta.dart';
 import 'package:mapness/entities/path_nav/models/path_nav_state.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
@@ -21,7 +22,7 @@ part 'finished_state_title.dart';
 part 'running_state_title.dart';
 part 'paused_state_title.dart';
 
-class EtaHeader extends ConsumerWidget {
+class EtaHeader extends HookConsumerWidget {
   final PathNavState state;
 
   final VoidCallback? onSearchPressed;
@@ -52,6 +53,27 @@ class EtaHeader extends ConsumerWidget {
 
     final backgroundColor =
         state == PathNavState.paused ? context.colorsV3.accentSecondaryDefault : context.colorsV3.backgroundSurface1;
+
+    /// Animating hide and close buttons based on the sheet interpolation.
+    final animation = useAnimationController(
+      initialValue: sheetController.isClosed ? 1.0 : 0.0,
+    );
+    useEffect(() {
+      final listener = () {
+        animation.value = sheetController.interpolation;
+      };
+      sheetController.addListener(listener);
+      return () => sheetController.removeListener(listener);
+    }, [sheetController]);
+
+    final isClosedButtonVisible = useState(!sheetController.isClosed);
+    useEffect(() {
+      final listener = () {
+        isClosedButtonVisible.value = sheetController.interpolation < 0.5;
+      };
+      sheetController.addListener(listener);
+      return () => sheetController.removeListener(listener);
+    }, [sheetController]);
 
     return Directionality(
       textDirection: TextDirection.ltr,
@@ -113,20 +135,36 @@ class EtaHeader extends ConsumerWidget {
                         }),
                         if (state != PathNavState.paused)
                           ListenableBuilder(
-                            listenable: sheetController,
-                            builder: (context, _) => AnimatedSwitcher(
-                              duration: Durations.medium1,
-                              child: _Button(
-                                key: ValueKey(sheetController.isClosed),
-                                icon: !sheetController.isClosed ? SystemIcons.arrowCornerDownSmall : SystemIcons.close,
-                                onTap: () {
-                                  if (sheetController.isClosed) {
-                                    openEndTripSheet(context, landscape: landscape);
-                                  } else {
-                                    sheetController.close(duration: BaseRoadPanel.animationDuration);
-                                  }
-                                },
-                              ),
+                            listenable: isClosedButtonVisible,
+                            builder: (context, _) => Stack(
+                              children: [
+                                IgnorePointer(
+                                  ignoring: !isClosedButtonVisible.value,
+                                  child: FadeTransition(
+                                    key: const ValueKey('hide_button'),
+                                    opacity: ReverseAnimation(animation),
+                                    child: _Button(
+                                      icon: SystemIcons.arrowCornerDownLarge,
+                                      onTap: () {
+                                        sheetController.close(duration: BaseRoadPanel.animationDuration);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                IgnorePointer(
+                                  ignoring: isClosedButtonVisible.value,
+                                  child: FadeTransition(
+                                    key: const ValueKey('close_button'),
+                                    opacity: animation,
+                                    child: _Button(
+                                      icon: SystemIcons.close,
+                                      onTap: () {
+                                        openEndTripSheet(context);
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                       ],
@@ -141,12 +179,11 @@ class EtaHeader extends ConsumerWidget {
     );
   }
 
-  void openEndTripSheet(BuildContext context, {required bool landscape}) => showModalBottomSheet(
+  void openEndTripSheet(BuildContext context) => showModalBottomSheet(
         backgroundColor: Colors.transparent,
         barrierColor: Colors.transparent,
         context: context,
         builder: (_) => EndTripModal(
-          isLandscape: landscape,
           onEndTripPressed: onEndTripPressed,
         ),
       );
