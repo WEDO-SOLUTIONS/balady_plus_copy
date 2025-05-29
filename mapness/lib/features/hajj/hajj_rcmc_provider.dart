@@ -15,7 +15,7 @@ final hajjRcmcProvider = _hajjRcmcProvider;
 
 @riverpod
 class _HajjRcmc extends _$HajjRcmc {
-  final _refreshTimer = const Duration(minutes: 10);
+  final _refreshTimer = const Duration(minutes: 1);
   late final _rcmcUrl = 'rcmc-markers?p1=39.643626,21.637784&p2=40.036879,21.198644';
   late final _zoomInVisibleMarkers = 12.0;
 
