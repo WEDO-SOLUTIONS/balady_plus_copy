@@ -681,11 +681,12 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   void downloadAndExtractInAssets(dynamic data, CompletionHandler handler) async {
     if (data != null && data is Map) {
       try {
+        String? exratctPath= data['pathFile'];
         var tempDir = await getTemporaryDirectory();
         String fullPath = "${tempDir.path}/quran.zip'";
         File file = File(fullPath);
         if (await file.exists()) {
-          await unarchiveAndSave(file, handler);
+          await unarchiveAndSave(exratctPath,file, handler);
         } else {
           WebService webService = sl();
 
@@ -707,7 +708,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           raf.writeFromSync(response.data);
           await raf.close();
 
-          await unarchiveAndSave(file, handler);
+          await unarchiveAndSave(exratctPath,file, handler);
         }
       }
       catch (e) {
@@ -725,28 +726,41 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
 
-  unarchiveAndSave(var zippedFile,CompletionHandler handler) async {
-
+  unarchiveAndSave(String? extractPath,var zippedFile,CompletionHandler handler) async {
     try {
+      extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
       var archive = ZipDecoder().decodeBytes(bytes);
+      String? filesPath= null;
+      int counter=0;
       for (var file in archive) {
 
         if (file.isFile && !file.name.contains("__MACOSX")) {
-          var outFile = File('${CommonProperties.currentLocalServerDirectory}/assets/assets/quran/${file.name}');
+          var outFile = File('${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
           outFile = await outFile.create(recursive: true);
+          if(counter==0) {
+            filesPath = outFile.path;
+            counter++;
+          }
           await outFile.writeAsBytes(file.content);
         }
       }
 
-      final files =
-      Directory('${CommonProperties.currentLocalServerDirectory}/assets/assets/quran').listSync();
+      if(filesPath != null) {
+        filesPath = filesPath.replaceAll(
+            "${CommonProperties.currentLocalServerDirectory}/assets/", "");
+        final lastIndex = filesPath.lastIndexOf('/');
+        if (lastIndex != -1) {
+          filesPath= filesPath.substring(0, lastIndex);
+        }
+
+      }
 
       BaseResponse response = BaseResponse(
         code: 200,
         eventName: "downloadAndExtractInAssets",
         message: "successfully",
-        data: DownloadFilePathModel(path: 'assets/quran/data2'),
+        data: DownloadFilePathModel(path: filesPath!),
       );
       handler.complete(response.jsonEncodeModel());
     } catch (e) {
