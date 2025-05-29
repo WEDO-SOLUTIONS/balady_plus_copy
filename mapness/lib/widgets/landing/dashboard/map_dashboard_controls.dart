@@ -59,7 +59,7 @@ class _MapDashboardControlsState extends ConsumerState<MapDashboardControls> {
   @override
   Widget build(BuildContext context) => ValueListenableBuilder<bool>(
         valueListenable: _hideControllerNotifier,
-        builder: (context, isHide, child) => AnimatedSwitcher(
+        builder: (context, isHide, child) => AnimatedSize(
           duration: const Duration(milliseconds: 250),
           child: isHide
               ? const SizedBox.shrink()
