@@ -215,7 +215,7 @@ class SearchHistoryScreen(
         marker?.draw(canvas)
         val paint = Paint().apply {
             color = Color.WHITE
-            textSize = 28f
+            textSize = 18f
             textAlign = Paint.Align.CENTER
             isAntiAlias = true
         }
