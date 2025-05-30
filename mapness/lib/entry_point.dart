@@ -410,9 +410,10 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     final isParkingPoi = dgisObjectId == parkingObjectId;
 
     if (isParkingPoi && storeParkingData == null) {
-      if (location != null) {
-        await _poiDeepLinkByCoords(location.latitude, location.longitude);
-      }
+      // BSA-2479: If the parking data is not available, we cannot open the parking spot.
+      // if (location != null) {
+      //   await _poiDeepLinkByCoords(location.latitude, location.longitude);
+      // }
       return;
     }
 
