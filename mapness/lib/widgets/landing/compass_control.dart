@@ -30,20 +30,23 @@ class CompassControl extends HookConsumerWidget {
       return null;
     }, [bearingState.bearing]);
 
-    return FadeTransition(
-      opacity: animation,
-      child: SizeTransition(
-        sizeFactor: animation,
-        child: ScaleTransition(
-          scale: animation,
-          child: MapButton(
-            borderRadius: BorderRadius.circular(24),
-            onTap: bearingNotifier.onCompassTap,
-            child: Transform.rotate(
-              angle: bearingState.angle - pi - pi / 4,
-              child: SvgPicture.asset(
-                Assets.icons.svg.icControlCompass.keyName,
-                semanticsLabel: 'MinApps Screen',
+    return SizedBox(
+      width: 48,
+      child: FadeTransition(
+        opacity: animation,
+        child: SizeTransition(
+          sizeFactor: animation,
+          child: ScaleTransition(
+            scale: animation,
+            child: MapButton(
+              borderRadius: BorderRadius.circular(24),
+              onTap: bearingNotifier.onCompassTap,
+              child: Transform.rotate(
+                angle: bearingState.angle - pi - pi / 4,
+                child: SvgPicture.asset(
+                  Assets.icons.svg.icControlCompass.keyName,
+                  semanticsLabel: 'MinApps Screen',
+                ),
               ),
             ),
           ),
