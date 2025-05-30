@@ -16,6 +16,7 @@ import 'package:mapness/features/share_eta/ui/share_eta_btn.dart';
 import 'package:mapness/pages/navigator_settings/utils/sound_type_extension.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/sound_settings.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/widgets/path_nav/ui/better_route_button.dart';
 import 'package:mapness/widgets/path_nav/ui/header/navi_eta_header.dart';
 import 'package:mapness/widgets/path_nav/ui/parking_bottom_banner.dart';
@@ -70,7 +71,9 @@ class _NaviPanelLandscapeState extends ConsumerState<NaviSheetPanel> {
   @override
   void initState() {
     super.initState();
-    ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+    if (ref.read(mediaQueryInfoProvider)?.orientation == Orientation.landscape) {
+      ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+    }
   }
 
   @override

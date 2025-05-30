@@ -65,6 +65,8 @@ jobs:
           FILE_BALADY_MOBILEPROVISION: ${{ secrets.FILE_BALADY_MOBILEPROVISION }}
           FILE_BALADY_P12: ${{ secrets.FILE_BALADY_P12 }}
           FILE_APPSTORE_KEY: ${{ secrets.FILE_APPSTORE_KEY }}
+          ADSEDARE_MM_TOKEN: ${{ secrets.ADSEDARE_MM_TOKEN }}
+          APPLE_DEVELOPER_PASSWORD: ${{ secrets.APPLE_DEVELOPER_PASSWORD }}
         run: |
           export PATH="/Users/user/.rvm/rubies/ruby-3.4.2/bin:$PATH"
           zsh .github/scripts/run_adsedare.sh
