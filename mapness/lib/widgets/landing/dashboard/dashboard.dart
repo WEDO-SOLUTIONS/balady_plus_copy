@@ -120,11 +120,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                 (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
                 isSheetCoversHalfOfTheScreen;
 
-            return isSheetScrolledForHalfOfTheState
-                ? 0
-                : !isFull
-                    ? 1.0
-                    : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+            return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
           },
         ),
         sliverBeforeContent: SliverPersistentHeader(
