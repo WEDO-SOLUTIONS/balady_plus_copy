@@ -30,6 +30,7 @@ import 'package:mapness/entities/search/models/search_history.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
+import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
@@ -379,6 +380,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
           // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
           await Future.delayed(const Duration(milliseconds: 300));
         }
+
         await _poiDeeplinkById(id, location);
       }
     } else if (latitude != null && longitude != null) {
@@ -404,6 +406,17 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
     final appRouter = ref.watch(appRouterProvider);
+    final storeParkingData = await ref.read(parkingManageProvider.future);
+    final isParkingPoi = dgisObjectId == parkingObjectId;
+
+    if (isParkingPoi && storeParkingData == null) {
+      // BSA-2479: If the parking data is not available, we cannot open the parking spot.
+      // if (location != null) {
+      //   await _poiDeepLinkByCoords(location.latitude, location.longitude);
+      // }
+      return;
+    }
+
     await appRouter.replaceOrPush(
       route: PoiCardWidgetRoute(
         objectId: DgisObjectIdMessage(
