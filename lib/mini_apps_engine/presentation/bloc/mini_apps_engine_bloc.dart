@@ -16,9 +16,9 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../server/CustomInAppLocalhostServer.dart';
 
-String serviceURL = 'https://drive.usercontent.google.com/download?id=1WGT42OhavAkmOugxoph1H0_Gkx_SKWBm&export=download&authuser=0&confirm=t&uuid=49b66a5d-7c76-4e1f-a876-e2bff844cdac&at=ALoNOglYuQiXSzjFYlvg-ikDUt1Y%3A1748440914622';
+String serviceURL = 'https://drive.usercontent.google.com/download?id=1nCHiqUkWnA7ggGd5yMsK2D9aflgfnoEL&export=download&authuser=0&confirm=t&uuid=4519e96c-167c-4120-a5ec-d816cda1e493&at=ALoNOglcT6ZG9LHGPHeowbRWow_T:1748774205254';
 String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=1MSPdeQJCkWjjJV8nQaiqboP8MDdcuqT8&export=download&authuser=0&confirm=t&uuid=22f51c93-de09-46ab-b2ff-0c94c8461b07&at=ALoNOgkZWgk5_88-6KxfSBbUMpel:1748412019691';
+    'https://drive.usercontent.google.com/download?id=1nCHiqUkWnA7ggGd5yMsK2D9aflgfnoEL&export=download&authuser=0&confirm=t&uuid=4519e96c-167c-4120-a5ec-d816cda1e493&at=ALoNOglcT6ZG9LHGPHeowbRWow_T:1748774205254';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
@@ -174,8 +174,8 @@ class MiniAppsEngineBloc
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        // fileId,
-        "v1/dms-mobile/files/$fileId",
+        downloadPath,
+        // "v1/dms-mobile/files/downloadPath",
         // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         // "https://drive.usercontent.google.com/download?id=1BXCyidB55xqOX9TaixFCV07Al084Agwa&export=download&authuser=0&confirm=t&uuid=5d1ecff5-ae7c-49c8-81d7-e00a25065d0c&at=ALoNOglgrG9Np4CKDSc8lOKCfzeH:1748344450449",
         onReceiveProgress: (received, total) {
