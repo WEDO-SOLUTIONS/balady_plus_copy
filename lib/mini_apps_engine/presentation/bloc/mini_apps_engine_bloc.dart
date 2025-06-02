@@ -165,7 +165,7 @@ class MiniAppsEngineBloc
   }
 
   Future<File?> _downloadFile(
-    String fileId,
+    String urlDownload,
     String downloadPath,
     String serviceKey,
     Emitter emitter, {
@@ -174,7 +174,7 @@ class MiniAppsEngineBloc
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        downloadPath,
+        urlDownload,
         // "v1/dms-mobile/files/downloadPath",
         // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         // "https://drive.usercontent.google.com/download?id=1BXCyidB55xqOX9TaixFCV07Al084Agwa&export=download&authuser=0&confirm=t&uuid=5d1ecff5-ae7c-49c8-81d7-e00a25065d0c&at=ALoNOglgrG9Np4CKDSc8lOKCfzeH:1748344450449",
