@@ -693,7 +693,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
           Response response = await webService.dio.get(
             data['url'],
-
+            onReceiveProgress: (received, total) {
+              if (total != -1) {
+               print("object");
+              }
+            },
             //Received data with List<int>
             options: Options(
                 responseType: ResponseType.bytes,
