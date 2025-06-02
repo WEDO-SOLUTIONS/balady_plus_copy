@@ -3,9 +3,8 @@ import 'dart:math';
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/services/services_exports.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
-import 'package:balady_uikit/balady_uikit.dart' as uikit hide Stories;
+import 'package:balady_uikit/balady_uikit.dart' hide Stories;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/icons/general_32_icons.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart' hide ScrollPosition, SearchBar;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,7 +15,6 @@ import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/free_roam/free_roam_starter.dart';
 import 'package:mapness/features/landing/map_controls.dart';
-import 'package:mapness/features/landing/search_by_rubrics.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -40,7 +38,7 @@ class Dashboard extends ConsumerStatefulWidget {
     super.key,
   });
 
-  final uikit.StatefulBottomSheetController<uikit.ThreeStateBottomSheet> bottomSheetController;
+  final StatefulBottomSheetController<ThreeStateBottomSheet> bottomSheetController;
 
   @override
   ConsumerState<Dashboard> createState() => _DashboardState();
@@ -63,21 +61,15 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
 
   @override
   Widget build(BuildContext context) {
-    ref
-      ..listen(searchByRubricsQueryProvider, (previous, next) {
-        if (next != null) {
-          widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
-        }
-      })
-      ..listen(layersControlsProvider, (previous, next) {
-        if (next.layersVisible) {
-          widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
-        }
-      });
+    ref.listen(layersControlsProvider, (previous, next) {
+      if (next.layersVisible) {
+        widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+      }
+    });
 
     return SafeArea(
       bottom: false,
-      child: uikit.StatefulBottomSheet<uikit.ThreeStateBottomSheet>(
+      child: StatefulBottomSheet<ThreeStateBottomSheet>(
         animateOpening: false,
         keepContentBehindFooter: true,
         scrollController: widget.bottomSheetController,
@@ -86,7 +78,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
         header: const DashboardHeader(),
         footer: IgnorePointer(
           child: SizedBox(
-            height: uikit.Spacing.$16x + uikit.Spacing.$5x,
+            height: Spacing.$16x + Spacing.$5x,
             width: double.infinity,
             child: FadeTransition(
               opacity: Animation.fromValueListenable(footerOpacity),
@@ -103,32 +95,41 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             ),
           ),
         ),
-        outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
-        outsideOpacityDelegate: (controller) {
-          final aspectRatio = controller.aspectRatio;
-          final interpolation = controller.interpolation;
+        backgroundColorDelegate: StatefulSheetDelegateFunction(function: (controller) {
           final state = controller.state;
+          if (state == ThreeStateBottomSheet.expanded) {
+            return Colors.black.withOpacity(.4);
+          }
+          return null;
+        }),
+        outside: MapDashboardControls(widget.bottomSheetController, key: const ValueKey('MapDashboardControls')),
+        outsideOpacityDelegate: StatefulSheetDelegateFunction<double, ThreeStateBottomSheet>(
+          function: (controller) {
+            final aspectRatio = controller.aspectRatio;
+            final interpolation = controller.interpolation;
+            final state = controller.state;
 
-          final freeRoamState = ref.watch(freeRoamStarterProvider);
-          final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
+            final freeRoamState = ref.watch(freeRoamStarterProvider);
+            final isGoToNavigatorShown = freeRoamState.canStart && !freeRoamState.isAutorun;
 
-          final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
-          final isSheetStateOpen = state == uikit.ThreeStateBottomSheet.open;
-          final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
+            final isSheetCoversHalfOfTheScreen = aspectRatio > 0.4;
+            final isSheetStateOpen = state == ThreeStateBottomSheet.open;
+            final isSheetScrolledForHalfOfTheState = interpolation > 0.4;
 
-          final isFull = isGoToNavigatorShown ||
-              (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
-              isSheetCoversHalfOfTheScreen;
+            final isFull = isGoToNavigatorShown ||
+                (!widget.bottomSheetController.isEnabled && isSheetStateOpen && isSheetScrolledForHalfOfTheState) ||
+                isSheetCoversHalfOfTheScreen;
 
-          return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
-        },
+            return !isFull ? 1.0 : max(0.0, 1 - (aspectRatio - 0.4) * 9);
+          },
+        ),
         sliverBeforeContent: SliverPersistentHeader(
           delegate: DashboardHeaderDelegate(vsync: this),
           pinned: true,
           floating: true,
         ),
         content: [
-          const SizedBox(height: uikit.Spacing.$3x),
+          const SizedBox(height: Spacing.$3x),
           FeedbackBannerCardV2(
             path: Assets.images.feedbackDashboard.keyName,
             onTap: () {
@@ -143,20 +144,20 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
             title: context.l10n.contribute,
             subtitle: context.l10n.buildBaladyTogether,
           ),
-          const SizedBox(height: uikit.Spacing.$6x),
+          const SizedBox(height: Spacing.$6x),
           StoriesWidget(
             titleWidget: Padding(
-              padding: const EdgeInsets.only(bottom: uikit.Spacing.$3x),
+              padding: const EdgeInsets.only(bottom: Spacing.$3x),
               child: DashboardTitle(context.l10n.whatIsNewInBalady),
             ),
           ),
-          const SizedBox(height: uikit.Spacing.$6x),
+          const SizedBox(height: Spacing.$6x),
           DashboardTitle(context.l10n.quickActions),
-          const SizedBox(height: uikit.Spacing.$4x),
+          const SizedBox(height: Spacing.$4x),
           ScrollConfiguration(
             behavior: NoGlowingScrollBehavior(),
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: uikit.Spacing.$4x, vertical: uikit.Spacing.$0_5x),
+              padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x, vertical: Spacing.$0_5x),
               scrollDirection: Axis.horizontal,
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -167,37 +168,37 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
                     icon: General32Icons.locationAction,
                     onTap: _openMyLocation,
                   ),
-                  const SizedBox(width: uikit.Spacing.$2x),
+                  const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.freeRoam,
-                    icon: uikit.TransportIcons.locationDirectionNavigator,
+                    icon: TransportIcons.locationDirectionNavigator,
                     onTap: _openFreeRoam,
                   ),
-                  const SizedBox(width: uikit.Spacing.$2x),
+                  const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.parkingAction,
                     icon: General32Icons.parkingAction,
                     onTap: _openParking,
                   ),
-                  const SizedBox(width: uikit.Spacing.$2x),
+                  const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.snapAndSendAction,
                     icon: General32Icons.snapAndSendAction,
                     onTap: _openSnapAndSend,
                   ),
-                  const SizedBox(width: uikit.Spacing.$2x),
+                  const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.qibla,
                     icon: General32Icons.qiblaAction,
                     onTap: () => _openQibla(context),
                   ),
-                  const SizedBox(width: uikit.Spacing.$2x),
+                  const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.quaranAction,
                     icon: General32Icons.quaranAction,
                     onTap: () => _openQuran(context),
                   ),
-                  const SizedBox(width: uikit.Spacing.$2x),
+                  const SizedBox(width: Spacing.$2x),
                   QuickActionButton(
                     text: context.l10n.athkarAction,
                     icon: General32Icons.athkarAction,
@@ -207,15 +208,15 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
               ),
             ),
           ),
-          const SizedBox(height: uikit.Spacing.$4x),
+          const SizedBox(height: Spacing.$4x),
           const DriveBackHomeCard(),
-          const SizedBox(height: uikit.Spacing.$6x),
+          const SizedBox(height: Spacing.$6x),
           DashboardTitle(context.l10n.exploreNearby),
-          const SizedBox(height: uikit.Spacing.$4x),
+          const SizedBox(height: Spacing.$4x),
           const PlacePreview(),
-          const SizedBox(height: uikit.Spacing.$6x),
+          const SizedBox(height: Spacing.$6x),
           const DashboardFeedbackCard(),
-          const SizedBox(height: uikit.Spacing.$6x),
+          const SizedBox(height: Spacing.$6x),
         ],
       ),
     );
@@ -224,7 +225,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
   void _openParking() {
     ref.read(appAnalyticsProvider).quickActionSelected('parking');
     widget.bottomSheetController.position.animateTo(0, duration: Durations.medium1, curve: Curves.easeOutQuart);
-    widget.bottomSheetController.setState(uikit.ThreeStateBottomSheet.hidden);
+    widget.bottomSheetController.setState(ThreeStateBottomSheet.hidden);
     ref.read(layersControlsProvider.notifier).enableParking();
   }
 
@@ -291,7 +292,7 @@ class _DashboardState extends ConsumerState<Dashboard> with SingleTickerProvider
     footerOpacity.value = min(1.0, (1 - widget.bottomSheetController.aspectRatio) * 2);
 
     Future.delayed(Duration.zero, () {
-      if (widget.bottomSheetController.state != uikit.ThreeStateBottomSheet.hidden) {
+      if (widget.bottomSheetController.state != ThreeStateBottomSheet.hidden) {
         ref.read(mapControlsProvider.notifier).update(
               MapControlsStateDashboard(),
             );

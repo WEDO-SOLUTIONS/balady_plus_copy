@@ -39,38 +39,30 @@ class FeedbackChips extends StatelessWidget {
             builder: (fieldState) => Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: field.variants
-                  .map(
-                    (variant) => Chips(
-                      title: variant.label,
-                      isSelected: fieldState.value == variant.id,
-                      leadingIcon: variant.iconUrl == null
-                          ? null
-                          : iconBuilder(
-                              context: context,
-                              iconUrl: variant.iconUrl!,
+              children: field.variants.map((variant) {
+                final isSelected = fieldState.value == variant.id;
+                return ChipsElement(
+                  options: ChipsLabelOptions(
+                    labelFirst: variant.label,
+                    leadingIcon: variant.iconUrl == null
+                        ? null
+                        : ChipIconWidgetV2(
+                            ({color}) => SvgPicture.network(
+                              variant.iconUrl!,
+                              colorFilter: ColorFilter.mode(
+                                isSelected ? context.color.surfaceBasePrimary : context.color.textAndIconsBasePrimary,
+                                BlendMode.srcIn,
+                              ),
                             ),
-                      onTap: () => fieldState.didChange(fieldState.value == variant.id ? null : variant.id),
-                      style: ChipsStyle.colorfulBackground,
-                    ),
-                  )
-                  .toList(),
+                          ),
+                  ),
+                  isSelected: isSelected,
+                  onPressed: () => fieldState.didChange(isSelected ? null : variant.id),
+                  type: isSelected ? ChipsType.accent : ChipsType.map,
+                );
+              }).toList(),
             ),
           ),
         ],
-      );
-
-  ChipIconWidget iconBuilder({
-    required BuildContext context,
-    required String iconUrl,
-  }) =>
-      ChipIconWidget(
-        ({required isSelected}) => SvgPicture.network(
-          iconUrl,
-          colorFilter: ColorFilter.mode(
-            isSelected ? context.color.textAndIconsStatusAccent : context.color.textAndIconsBasePrimary,
-            BlendMode.srcIn,
-          ),
-        ),
       );
 }

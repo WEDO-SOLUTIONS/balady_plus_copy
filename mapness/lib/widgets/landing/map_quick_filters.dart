@@ -6,8 +6,6 @@ import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
 import 'package:mapness/features/app_analytics/app_analytics.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
-import 'package:mapness/features/landing/search_by_rubrics.dart';
 import 'package:mapness/features/quick_filters/ui/quick_filters.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -25,13 +23,11 @@ class MapQuickFilters extends ConsumerStatefulWidget {
   final List<FilterItem>? customFilters;
   final void Function(FilterItem)? onCustomTap;
   final bool forMap;
-  final QuickFilterScreen id;
 
   final double? height;
   final ItemScrollController? itemScrollController;
 
   const MapQuickFilters({
-    required this.id,
     super.key,
     this.customFilters,
     this.onCustomTap,
@@ -55,7 +51,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedQuickFilter = ref.watch(searchByRubricsQueryProvider);
     final settings = MapObjectManagerSettings.search();
     final searchObjectManager = ref.watch(
       mapObjectManagerProvider(
@@ -65,7 +60,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
     );
 
     return QuickFilters(
-      id: widget.id,
       height: widget.height,
       itemScrollController: widget.itemScrollController,
       onFavouritesBookmarkTap: () => ref.read(authMethodsProvider.notifier).authAndOpen(
@@ -102,32 +96,6 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
         WidgetsBinding.instance.addPostFrameCallback((_) {
           ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
         });
-        // TODO(Sergei): remove commented code when quick search feature is approved
-        // _debouncer.run(
-        //   () {
-        //     final isSame = quickFilter.type == selectedQuickFilter?.type;
-        //     if (isSame) {
-        //       ref.read(searchByRubricsQueryProvider.notifier).update(null);
-        //       searchObjectManager.removeAllMarkers();
-        //     } else {
-        //       // TODO(Sergei): we should call removeAllMarkers() because quick filter updating in sdk is slow,
-        //       // remove this when quick filters performance will be fixed
-        //       searchObjectManager.removeAllMarkers();
-        //       ref.read(layersControlsProvider.notifier).disable();
-        //       ref.read(quickFiltersRequestSourceScreenProvider.notifier).setSourceScreen(widget.id);
-        //       ref.read(searchByRubricsQueryProvider.notifier).update(quickFilter);
-        //     }
-        //     Metrics.logEventAdvanced(
-        //       MetricsConstants.exploreKeys.quickFilter,
-        //       action: MetricAction.tap.name,
-        //       group: MetricsConstants.exploreTag,
-        //       props: {
-        //         'filter': quickFilter.title,
-        //         'toggle_state': isSame,
-        //       },
-        //     );
-        //   },
-        // );
       },
       onFavouritesTap: () {
         _debouncer.run(() {
@@ -137,11 +105,9 @@ class _MapQuickFiltersState extends ConsumerState<MapQuickFilters> {
             group: MetricsConstants.exploreTag,
           );
 
-          ref.read(searchByRubricsQueryProvider.notifier).update(null);
           searchObjectManager.removeAllMarkers();
         });
       },
-      selectedQuickFilter: selectedQuickFilter,
       customFilters: widget.customFilters,
       onCustomTap: widget.onCustomTap,
       padding: widget.forMap ? const EdgeInsets.symmetric(horizontal: 12) : const EdgeInsets.symmetric(horizontal: 16),

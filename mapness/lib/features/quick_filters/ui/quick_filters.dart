@@ -8,22 +8,18 @@ import 'package:mapness/entities/quick_filters/quick_filter.dart' as models;
 import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/features/favourites/providers/favourite_cache.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/widgets/quick_filters/models/filter_item.dart';
 import 'package:mapness/widgets/quick_filters/ui/quick_filters.dart' as widgets;
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class QuickFilters extends ConsumerWidget {
-  final models.QuickFilter? selectedQuickFilter;
   final List<FilterItem>? customFilters;
   final ValueChanged<models.QuickFilter> onQuickFilterTap;
   final void Function() onFavouritesTap;
   final void Function() onFavouritesBookmarkTap;
   final void Function(FilterItem)? onCustomTap;
   final EdgeInsets padding;
-  final QuickFilterScreen id;
-
   final double? height;
   final ItemScrollController? itemScrollController;
 
@@ -31,10 +27,8 @@ class QuickFilters extends ConsumerWidget {
     required this.onQuickFilterTap,
     required this.onFavouritesTap,
     required this.onFavouritesBookmarkTap,
-    required this.id,
     this.height,
     super.key,
-    this.selectedQuickFilter,
     this.padding = const EdgeInsets.only(bottom: 16.0),
     this.customFilters,
     this.onCustomTap,
@@ -47,6 +41,7 @@ class QuickFilters extends ConsumerWidget {
 
     final favourites = <FilterItem>[
       if (favouritesState.valueOrNull?.home != null)
+
         FilterItemConfig(
           filterType: FilterType.home,
           title: context.l10n.home,
@@ -94,7 +89,6 @@ class QuickFilters extends ConsumerWidget {
             (filter) => FilterItemConfig(
               filterType: FilterType.quick,
               title: filter.title(context.l10n),
-              selected: filter == selectedQuickFilter,
               icon: filter.icon,
               onTap: () => onQuickFilterTap(filter),
             ),
@@ -105,7 +99,6 @@ class QuickFilters extends ConsumerWidget {
       padding: padding,
       filters: items,
       height: height,
-      id: id,
       itemScrollController: itemScrollController,
     );
   }

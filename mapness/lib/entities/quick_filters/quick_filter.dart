@@ -45,11 +45,11 @@ extension QuickFilterExtension on QuickFilter {
       };
 
   IconData? get icon => switch (this) {
-        QuickFilter.eatOut => PlacesIcons.restaurant,
-        QuickFilter.mosques => PlacesIcons.mosques,
-        QuickFilter.markets => PlacesIcons.markets,
-        QuickFilter.hotels => PlacesIcons.hotels,
-        QuickFilter.fuel => PlacesIcons.gasstation,
+        QuickFilter.eatOut => PlacesIcons.restaurantFilled,
+        QuickFilter.mosques => PlacesIcons.mosquesFilled,
+        QuickFilter.markets => PlacesIcons.marketsFilled,
+        QuickFilter.hotels => PlacesIcons.hotelsFilled,
+        QuickFilter.fuel => PlacesIcons.gasstationFilled,
       };
 
   MapMarkersType? get markerType => switch (this) {
@@ -79,7 +79,7 @@ extension QuickFilterExtension on QuickFilter {
           },
         QuickFilter.eatOut => {
             Language.english: 'Eat out',
-            Language.arabic: 'تناول الطعام بالخارج',
+            Language.arabic: 'مطاعم',
           },
       };
 

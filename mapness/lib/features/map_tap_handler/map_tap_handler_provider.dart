@@ -99,7 +99,12 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
         ),
         closestPoint: event.latLng,
       ),
-      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, RoutingRoutesRoute.page],
+      toCompareRoutes: [
+        ShareMyLocationRoute.page,
+        PoiCardWidgetRoute.page,
+        RoutingRoutesRoute.page,
+        HajjPoiCardRoute.page
+      ],
     );
   }
 
@@ -112,14 +117,14 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
     );
 
     final router = ref.read(appRouterProvider);
+
+    // BSA-2431: We don't need description here, we don't use it according to the design
+    // If we will need it, we can add it in the future
     final roadClosedRoute = RoadClosedRoute(
       id: event.id,
       title: event.title,
-      description: event.description,
       startTime: event.startTime,
       finishTime: event.finishTime,
-      latitude: event.latLng.latitude,
-      longitude: event.latLng.longitude,
     );
     if (router.isRouteActive(RoadClosedRoute.name)) {
       router.popAndPush(
@@ -150,7 +155,7 @@ class MapTapHandler extends _$MapTapHandler with GuardTapEventMixin {
             ? LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude)
             : event.latLng,
       ),
-      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page],
+      toCompareRoutes: [ShareMyLocationRoute.page, PoiCardWidgetRoute.page, HajjPoiCardRoute.page],
     );
   }
 }

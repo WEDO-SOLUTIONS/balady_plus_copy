@@ -21,6 +21,7 @@ import 'package:mapness/shared/providers/map/follow_state.dart';
 import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/buttons/app_close_button.dart';
 import 'package:mapness/shared/ui/markers/markers.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 
 @RoutePage()
 class RoutingMapSelectPage extends StatefulHookConsumerWidget {
@@ -68,7 +69,7 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
       return () => scrollController.removeListener(updateCameraPadding);
     }, [scrollController]);
 
-    return SafeArea(
+    return SafeAreaPadding(
       child: uikit.StatelessBottomSheet(
         scrollController: scrollController,
         backgroundColor: context.colorsV3.backgroundSurface4,
@@ -160,7 +161,6 @@ class _RoutingMapSelectState extends ConsumerState<RoutingMapSelectPage> {
               ),
             ),
           ),
-          uikit.Spacing.$4x.heightBox,
         ],
       ),
     );
