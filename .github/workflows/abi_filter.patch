@@ -1,11 +1,11 @@
 diff --git a/android/app/build.gradle b/android/app/build.gradle
-index 6bb9abf64a..4105d39b17 100644
+index 4cfd4643f6..e81450c574 100644
 --- a/android/app/build.gradle
 +++ b/android/app/build.gradle
 @@ -71,6 +71,9 @@ android {
          ]
-         manifestPlaceholders = [partner:"baladyappuat"]
-
+         manifestPlaceholders = [partner:"baladyapp"]
+ 
 +        ndk {
 +            abiFilters 'arm64-v8a'
 +        }

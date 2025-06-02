@@ -46,7 +46,7 @@ Map<String, dynamic> _$CalculateCostToJson(CalculateCost instance) =>
     <String, dynamic>{
       "cityId": instance.cityId,
       "subactivityId": instance.subactivityId,
-      "value": instance.value.toString(),
+      "value": instance.value,
       "accommodationTypeId": instance.accommodationTypeId,
       "period": instance.period,
       "unit": instance.unit,

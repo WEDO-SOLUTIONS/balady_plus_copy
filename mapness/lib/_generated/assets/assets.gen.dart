@@ -382,6 +382,9 @@ class $AssetsIconsSvgGen {
   /// Directory path: assets/icons/svg/places_new
   $AssetsIconsSvgPlacesNewGen get placesNew => const $AssetsIconsSvgPlacesNewGen();
 
+  /// Directory path: assets/icons/svg/profile
+  $AssetsIconsSvgProfileGen get profile => const $AssetsIconsSvgProfileGen();
+
   /// Directory path: assets/icons/svg/quick_filters
   $AssetsIconsSvgQuickFiltersGen get quickFilters => const $AssetsIconsSvgQuickFiltersGen();
 
@@ -789,6 +792,37 @@ class $AssetsIconsSvgPlacesNewGen {
         icWaterPlaces,
         icWc
       ];
+}
+
+class $AssetsIconsSvgProfileGen {
+  const $AssetsIconsSvgProfileGen();
+
+  /// File path: assets/icons/svg/profile/call.svg
+  SvgGenImage get call => const SvgGenImage('assets/icons/svg/profile/call.svg');
+
+  /// File path: assets/icons/svg/profile/email.svg
+  SvgGenImage get email => const SvgGenImage('assets/icons/svg/profile/email.svg');
+
+  /// File path: assets/icons/svg/profile/ic_language_change.svg
+  SvgGenImage get icLanguageChange => const SvgGenImage('assets/icons/svg/profile/ic_language_change.svg');
+
+  /// File path: assets/icons/svg/profile/info.svg
+  SvgGenImage get info => const SvgGenImage('assets/icons/svg/profile/info.svg');
+
+  /// File path: assets/icons/svg/profile/question_circle.svg
+  SvgGenImage get questionCircle => const SvgGenImage('assets/icons/svg/profile/question_circle.svg');
+
+  /// File path: assets/icons/svg/profile/rate.svg
+  SvgGenImage get rate => const SvgGenImage('assets/icons/svg/profile/rate.svg');
+
+  /// File path: assets/icons/svg/profile/settings.svg
+  SvgGenImage get settings => const SvgGenImage('assets/icons/svg/profile/settings.svg');
+
+  /// File path: assets/icons/svg/profile/website.svg
+  SvgGenImage get website => const SvgGenImage('assets/icons/svg/profile/website.svg');
+
+  /// List of all assets
+  List<SvgGenImage> get values => [call, email, icLanguageChange, info, questionCircle, rate, settings, website];
 }
 
 class $AssetsIconsSvgQuickFiltersGen {

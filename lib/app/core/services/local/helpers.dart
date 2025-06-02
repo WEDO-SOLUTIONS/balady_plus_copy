@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:balady_plus/app/core/services/services_exports.dart' show NavigationService;
+import 'package:balady_plus/app/core/services/services_exports.dart'
+    show NavigationService;
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 import 'package:dgis_map/library.dart';
@@ -39,7 +40,8 @@ class Helpers {
 
   static String translatingWord(String key) => key.tr();
 
-  static bool isArabic(BuildContext context) => translator.isDirectionRTL(context);
+  static bool isArabic(BuildContext context) =>
+      translator.isDirectionRTL(context);
 
   static bool isRTL() => translator.activeLanguageCode == 'ar';
 
@@ -54,7 +56,8 @@ class Helpers {
 
   static void backNavigationToHomeScreen({int index = 0}) {
     sl<BottomNavBarCubit>().onChangeBottomNavBar(index);
-    NavigationService.navigatorKey.currentState!.popUntil(ModalRoute.withName(RouteName.bottomNavigation));
+    NavigationService.navigatorKey.currentState!
+        .popUntil(ModalRoute.withName(RouteName.bottomNavigation));
   }
 
 /*
@@ -85,7 +88,7 @@ class Helpers {
     );
   }
 
-
+ 
 
 
 
@@ -102,24 +105,32 @@ class Helpers {
 
 */
 
-  static Future<LatLng?> getMapLocation() {
-    return getCurrentLocation(accuracy: geo_locator.LocationAccuracy.medium, duration: const Duration(seconds: 5));
+  static Future<LatLng?> getMapLocation() async {
+    return await getCurrentLocation(
+        accuracy: geo_locator.LocationAccuracy.medium,
+        duration: const Duration(seconds: 5));
   }
 
-  static Future<LatLng?> getCurrentLocation({geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
+  static Future<LatLng?> getCurrentLocation(
+      {geo_locator.LocationAccuracy? accuracy, Duration? duration}) async {
     try {
       bool isHuawei = await CommonFunctions.isHuaweiDevice();
       if (isHuawei) {
         final latLng = await CommonFunctions.getCurrentLocationHuawei();
+        debugPrint(
+            'amr from getCurrentLocation with huawei location ${latLng?.latitude}, ${latLng?.longitude}');
         return latLng;
       }
-      geo_locator.Position position = await geo_locator.Geolocator.getCurrentPosition(
+      debugPrint('amr from  getCurrentLocation but with geo locator');
+      //  EasyLoading.show();
+      geo_locator.Position position =
+          await geo_locator.Geolocator.getCurrentPosition(
         locationSettings: LocationSettings(
             accuracy: accuracy ?? geo_locator.LocationAccuracy.high,
             timeLimit: duration ?? const Duration(seconds: 13)),
       );
       //    EasyLoading.dismiss();
-      return LatLng(latitude:position.latitude, longitude:position.longitude);
+      return LatLng(latitude:position.latitude,longitude: position.longitude);
     } catch (error, stackTrace) {
       return CommonFunctions.handelLocationCatch(false, error, stackTrace);
     }
@@ -129,7 +140,8 @@ class Helpers {
     var status = await Permission.photos.request();
 
     if (status == PermissionStatus.permanentlyDenied) {
-      showDialog(context: context, builder: (ctx) => const PhotoPermissionDialog());
+      showDialog(
+          context: context, builder: (ctx) => const PhotoPermissionDialog());
       return false;
     } else if (status != PermissionStatus.granted) {
       Permission.photos.request();
@@ -196,6 +208,17 @@ class Helpers {
     }
   }
 
+
+  static String? validateIBAN(String? iban) {
+    RegExp phoneReg = RegExp(r'^(SA)([0-9]{22})$');
+
+    if (!phoneReg.hasMatch(iban ?? "")) {
+      return ('please_enter_valid_iban').tr();
+    }
+
+    return null;
+  }
+
   static String? validateMobile(String? phone) {
     RegExp phoneReg = RegExp(r'^(05)([0-9]{8})$');
 
@@ -206,13 +229,13 @@ class Helpers {
     return null;
   }
 
-  static String? validateEmail(String email) {
+  static String? validateEmail(String? email) {
     RegExp emailPattern = RegExp(
         r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$');
-    String e = email;
+    String e = email ?? "";
     e = e.replaceAll("\u200e", '').replaceAll("\u200f", '').trim();
     if (e.isEmpty) {
-      return ('empty_mail_field_error').tr();
+      return ('lbl_email_err1').tr();
     } else if (!emailPattern.hasMatch(e)) {
       return ('lbl_email_err1').tr();
     }
@@ -299,17 +322,25 @@ class Helpers {
   }*/
 
   static void sendLog(
-      {String? url, String? qeuryParms, dynamic data, dynamic body, int? statusCode, String? errorMsg}) async {
+      {String? url,
+      String? qeuryParms,
+      dynamic data,
+      dynamic body,
+      int? statusCode,
+      String? errorMsg}) async {
     try {
       SentryRequest request = SentryRequest(
           url: url,
           queryString: qeuryParms,
           data: body != null ? body.toString() : "",
           other: {"StatusCode": (statusCode ?? 0).toString()});
-      SentryMessage sentryMessage = SentryMessage(data != null ? data.toString() : "");
+      SentryMessage sentryMessage =
+          SentryMessage(data != null ? data.toString() : "");
 
-      SentryUser sentryUser =
-          SentryUser(id: CommonProperties.userInfo?.idNo, name: CommonProperties.userInfo?.arName, email: "");
+      SentryUser sentryUser = SentryUser(
+          id: CommonProperties.userInfo?.idNo,
+          name: CommonProperties.userInfo?.arName,
+          email: "");
 
       SentryEvent event = SentryEvent(
         user: sentryUser,
@@ -334,8 +365,11 @@ class Helpers {
           FlutterUxcam.logEventWithProperties(url ?? "Error", {
             "Url": URL.length <= 1024 ? URL : URL.substring(0, 1023),
             "Data": data.length <= 1024 ? data : data.substring(0, 1023),
-            "QueryString": queryString.length <= 1024 ? queryString : queryString.substring(0, 1023),
-            "Message": message.length <= 1024 ? message : message.substring(0, 1023),
+            "QueryString": queryString.length <= 1024
+                ? queryString
+                : queryString.substring(0, 1023),
+            "Message":
+                message.length <= 1024 ? message : message.substring(0, 1023),
             "Environment": sl<EnvType>().name
           });
         }
@@ -554,11 +588,13 @@ class Helpers {
   }*/
 
   static openFile(Uint8List bytes, {String? contentType}) async {
-    String extension = contentType != null ? ("." + contentType.split("/").last) : "";
+    String extension =
+        contentType != null ? ("." + contentType.split("/").last) : "";
     try {
       if (extension.isNotEmpty) {
         String dir = (await getTemporaryDirectory()).path;
-        File filetemp = File("$dir/" + "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
+        File filetemp = File("$dir/" +
+            "${DateTime.now().millisecondsSinceEpoch.toString()}$extension");
         await filetemp.writeAsBytes(bytes);
         //print(filetemp.path);
         OpenFile.open(filetemp.path);
@@ -579,7 +615,8 @@ class Helpers {
     try {
       CommonFunctions.showError("session_ended_error".tr());
       NavigationService.navigatorKey.currentState!.popUntil((route) {
-        if (route.settings.name == RouteName.bottomNavigation || route.settings.name == null) {
+        if (route.settings.name == RouteName.bottomNavigation ||
+            route.settings.name == null) {
           return true;
         }
         return false;

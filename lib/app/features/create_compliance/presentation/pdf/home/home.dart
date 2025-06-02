@@ -187,7 +187,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 16,
-                      fontFamily: 'Frutiger',
+                      fontFamily: 'packages/balady_uikit/Frutiger',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -224,7 +224,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 16,
-                      fontFamily: 'Frutiger',
+                      fontFamily: 'packages/balady_uikit/Frutiger',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -264,7 +264,7 @@ class _CompliancePDFHomePageState extends State<CompliancePDFHomePage> {
                     style: TextStyle(
                       color: Color(0xFF145E75),
                       fontSize: 17,
-                      fontFamily: 'Frutiger',
+                      fontFamily: 'packages/balady_uikit/Frutiger',
                       fontWeight: FontWeight.w700,
                     ),
                   ),

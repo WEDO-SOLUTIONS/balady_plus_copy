@@ -23,7 +23,8 @@ void checkIfLogin(BuildContext context, Service service) {
           tackYouAction(context, service);
         } else {
           showDialog(
-            context: context,
+            
+            context: NavigationService.navigatorKey.currentState!.context,
             builder: (ctx) => NeedLoginDialog(
               onSuccessLogin: (bool? isSuccess) async {
                 if (isSuccess ?? false) {
@@ -51,8 +52,11 @@ void tackYouAction(BuildContext context, Service service) async {
       isFullHeight: false,
       dialogKeyName: DialogName.notAuthorizedIndivisualDialog,
       currentRouteName: RouteName.postersStartService,
-      child: const NotAuthorizedIndivisualDialog(),
+      child: NotAuthorizedIndivisualDialog(),
     );
+    if (CommonProperties.selectedDelegator != null) {
+      tackYouAction(context, service);
+    }
     return;
   }
 

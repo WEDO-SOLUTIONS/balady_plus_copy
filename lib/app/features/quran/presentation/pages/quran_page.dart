@@ -60,7 +60,6 @@ class _QuranPageState extends State<QuranPage> {
                     state.currentTitle ?? "",
                     fontColor: AppColor.white,
                     fontSize: 20,
-                    fontFamily: "uthmanic",
                     textAlign: TextAlign.center,
                   ),
                   leading: GestureDetector(

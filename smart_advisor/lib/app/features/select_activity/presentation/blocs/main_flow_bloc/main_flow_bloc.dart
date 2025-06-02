@@ -4,21 +4,36 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:smart_advisor/app/core/services/local/navigation_services.dart';
 import 'package:smart_advisor/app/features/details/domain/entities/entity_activity_details_request_params.dart';
-import 'package:smart_advisor/app/features/map/domain/entities/gis_data_request.dart';
+import 'package:smart_advisor/app/features/manage_license_flow/presentation/dialogs/follow_journey.dart';
 import 'package:smart_advisor/app/features/map/domain/entities/gis_data_response.dart';
+import 'package:smart_advisor/app/features/map/domain/entities/gis_data_request.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/entities/suggested_area_model.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/entities/work_flow_request_params.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/use_cases/get_cities.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/use_cases/get_districts.dart';
 import 'package:smart_advisor/app/features/select_activity/domain/use_cases/get_work_flow.dart';
+// import 'package:smart_advisor/app/features/select_activity/presentation/pages/main_flow_page.dart';
 import 'package:smart_advisor/app/features/select_activity/presentation/pages/steps/step1.dart';
 import 'package:smart_advisor/app/features/select_activity/presentation/pages/steps/step12.dart';
 import 'package:smart_advisor/app/features/self_rating/presentation/dialogs/rating_dialog.dart';
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 import '../../../../../core/services/local/use_case.dart';
+import '../../../../../core/utils/common_functions.dart';
 import '../../../../details/domain/entities/entity_activity_details_response.dart';
 import '../../../../details/domain/use_cases/get_entity_activity_details.dart';
+import '../../../../manage_license_flow/data/model/license_details_model.dart'
+    hide MainActivity;
+import '../../../../manage_license_flow/data/model/license_model.dart';
+import '../../../../manage_license_flow/domain/entities/commercial_license_model.dart';
+import '../../../../manage_license_flow/domain/entities/delegator_entity.dart';
+import '../../../../manage_license_flow/domain/entities/license_request_params.dart';
+import '../../../../manage_license_flow/domain/use-cases/get_delegators.dart';
+import '../../../../manage_license_flow/domain/use-cases/get_license_details.dart';
+import '../../../../manage_license_flow/domain/use-cases/get_licenses.dart';
+import '../../../../manage_license_flow/domain/use-cases/issue_license.dart';
 import '../../../../map/domain/use_cases/get_gis_data.dart';
+import '../../../../self_rating/presentation/dialogs/login_dialog.dart';
 import '../../../data/models/activity_item_model.dart';
 import '../../../data/models/work_flow_model.dart';
 import '../../../domain/entities/activity_details_page_params.dart';
@@ -38,6 +53,8 @@ import '../../../domain/use_cases/get_sectors.dart';
 import '../../pages/steps/new_select_steps/step1.dart';
 import '../../pages/steps/new_select_steps/step2.dart';
 import '../../pages/steps/new_select_steps/step3.dart';
+import '../../pages/steps/select_license_steps/step1.dart';
+import '../../pages/steps/select_license_steps/step2.dart';
 import '../../pages/steps/step10.dart';
 import '../../pages/steps/step13.dart';
 import '../../pages/steps/step2.dart';
@@ -62,6 +79,7 @@ import '../../../../../core/errors/errors_exports.dart' show ServerFailure;
 
 import '../../../../../core/utils/utils_exports.dart'
     show BlocStatus, RouteName;
+import 'package:balady_plus/app/features/_shared_feature_/balady_features/services/services.dart';
 
 part 'main_flow_event.dart';
 
@@ -69,21 +87,34 @@ part 'main_flow_state.dart';
 
 class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
   final List<Widget> steps = [
-    Step1Page(),
+    const Step1Page(),
+
+    // const RenweLicensePage(),
+    // const EditLicensePage(),
+    // const TransfarOwnerLicensePage(),
+    // const CancelLicensePage(),
+    // const Step1(),
+    // const MainFlowPageManageLicense(),
+
     // Step2Page(),
-    NewStep1Page(),
-    NewStep2Page(),
-    NewStep3Page(),
+    const NewStep1Page(),
+    const NewStep2Page(),
+    const NewStep3Page(),
     // Step3Page(), categories
     //Step4Page(),
     // Step5Page(),
     // Step6Page(),
-    Step8Page(),
+    const Step8Page(),
     Step10Page(),
-    Step9Page(),
-    Step11Page(),
-    Step12page(),
-    Step13page(),
+    const Step9Page(),
+    const Step11Page(),
+    const Step12page(),
+    const Step13page(),
+  ];
+
+  final List<Widget> loggedInSteps = [
+    SelectDelagatorStep(),
+    SelectLicenseStep()
   ];
   PageController controller = PageController();
 
@@ -100,6 +131,10 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
   final GetEntityActivityDetailssUc _getEntityActivityDetailssUc;
   final GetGISDataUC _getGISDataUC;
   final GetActivityDetailsInfo _getActivityDetailsInfo;
+  final GetDelegators getDelegators;
+  final GetLicenses getLicenses;
+  final GetLicenseDetails getLicenseDetails;
+  final IssueCommercialDraft issueCommercialDraft;
 
   ActivitesPageParams? args;
 
@@ -118,6 +153,10 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         _getActivityDetailsInfo = GetActivityDetailsInfo(repository: sl()),
         _getEntityActivityDetailssUc =
             GetEntityActivityDetailssUc(repository: sl()),
+        getDelegators = GetDelegators(sl()),
+        getLicenseDetails = GetLicenseDetails(sl()),
+        getLicenses = GetLicenses(sl()),
+        issueCommercialDraft = IssueCommercialDraft(sl()),
         super(const MainFlowState()) {
     on<GetActivityInfoDetails>(getActivityDetails);
     on<NextPageEvent>(nextPageHandler);
@@ -173,7 +212,7 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
           int currentPage = state.currentPage + 1;
           if (success.length == 1) {
             currentPage++;
-            print("GGSDSDSD ${success}");
+            print("GGSDSDSD $success");
             add(ChangeValuesEvent(selectedCategory: success.first));
             add(const GetActivitesEvent());
           }
@@ -379,10 +418,101 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
     on<GetDistricts>(getDistrictsEventHanlder);
     on<GetWorkFlowEvent>(getWorkFlowHandler);
     on<GetDetailsEvent>(getDetailsHandler);
+
+    on<GetDelegatorsEvent>(getDelegatorsHandler);
+    on<GetLicensesEvent>(getLicensesHanlder);
+    on<SelectLicenseEvent>(selectLicenseHandler);
+    on<SelectDelegatorEvent>(selectDelegatorHandler);
+    on<ChangeAddetionalActivityEvent>(changeAddetionalActivityArea);
+
+    on<ChangeAreaValueEvent>(changeAreaValue);
+    on<ChangeShopAreaValueEvent>(changeShopAreaValue);
+
+    on<ChangeUnitCountEvent>(changeUnitCount);
+    on<ChangeAccomodationTypeEvent>(changeAccomodationType);
+    on<ChangeWorkerTypeEvent>(changeWorkerType);
+
     // add(const GetSectorEvent());
     add(const GetCitiesEvent());
     loadData();
     // add(const GetDetailsEvent());
+  }
+
+  void changeShopAreaValue(ChangeShopAreaValueEvent event, Emitter emit) async {
+    emit(state.copyWith(shopArea: int.tryParse(event.data)));
+  }
+
+  void changeAreaValue(ChangeAreaValueEvent event, Emitter emit) async {
+    emit(state.copyWith(area: int.tryParse(event.data)));
+  }
+
+  void changeAddetionalActivityArea(
+      ChangeAddetionalActivityEvent event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    List<AddetionalActivityItem> addetionalActivitesResponse =
+        state.addetionalActivitesResponse ?? [];
+    int index = addetionalActivitesResponse
+        .indexWhere((e) => e.activityId == event.index);
+
+    addetionalActivitesResponse[index].area = double.tryParse(event.area);
+    emit(state.copyWith(
+        status: BlocStatus.success,
+        addetionalActivitesResponse: addetionalActivitesResponse));
+  }
+
+  void changeAccomodationType(
+      ChangeAccomodationTypeEvent event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(
+        status: BlocStatus.success, acomodationType: event.item));
+  }
+
+  void changeWorkerType(ChangeWorkerTypeEvent event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(status: BlocStatus.success, workerType: event.item));
+  }
+
+  void changeUnitCount(ChangeUnitCountEvent event, Emitter emit) async {
+    emit(state.copyWith(unitCount: event.data));
+  }
+
+  void openAddetioanlData() async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    final failureOrSuccess = await issueCommercialDraft((CommercialLicenseModel(
+      site: Site(
+          krokiUrl: state.gisResponse?.locationUrl,
+          landNumber: state.gisResponse?.parcelNo,
+          latitude: state.request?.lat.toString(),
+          longitude: state.request?.lon.toString(),
+          mapNumber: state.gisResponse?.planNo),
+      crNumber: int.tryParse(state.selectedDelegator?.crNumber ?? "") ?? 0,
+      crType: int.tryParse(state.selectedDelegator?.crType ?? "") ?? 0,
+      activities: Activities(
+          unitCount: state.unitCount,
+          accommodationTypeId: state.acomodationType?.id,
+          addedActivities: state.addetionalActivitesResponse
+              ?.where((e) => e.isSelected == true)
+              .toList(),
+          isAtmFeesPaid: state.atmOption == "ATTACH",
+          workerTypeId: state.workerType?.id,
+          mainActivity: MainActivity(
+              detailedActivityId: state.selectedActivity?.id,
+              area: state.getTotalArea()),
+          shopArea: state.shopArea),
+    )));
+
+    failureOrSuccess.fold((l) {
+      CommonFunctions.showError((l as ServerFailure).errorMessage);
+    }, (r) async {
+      BaladyServices.navigateToLicenseMangments();
+      CommonFunctions.showSuccess("تم انشاء الطلب رقم ${r}");
+    });
+
+    emit(state.copyWith(status: BlocStatus.success));
   }
 
   void loadData() async {
@@ -421,6 +551,38 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         categoryCount: categoryList,
         isicsCount: isicsList,
         detailedCount: detailsList));
+  }
+
+  void selectLicenseHandler(SelectLicenseEvent event, Emitter emit) async {
+    emit(state.copyWith(licenseDetailsStatus: BlocStatus.loading));
+
+    //  emit(state.copyWith(
+    //    status: BlocStatus.success, selectedLicense: event.license));
+
+    final failureOrSuccess =
+        await getLicenseDetails(event.license.licenseNo.toString());
+    await failureOrSuccess.fold(
+      (failure) async {
+        print(failure);
+        emit(state.copyWith(licenseDetailsStatus: BlocStatus.closeLoading));
+        emit(state.copyWith(
+          licenseDetailsStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) async {
+        emit(state.copyWith(
+            licenseDetailsStatus: BlocStatus.success,
+            selectedLicense: event.license,
+            selectedLicenseDetails: success));
+
+        add(GetGISDataEvent(
+          fromRating: true,
+          lat: double.tryParse(success.locationInfo?.latitude ?? "") ?? 0,
+          lon: double.tryParse(success.locationInfo?.longitude ?? "") ?? 0,
+        ));
+      },
+    );
   }
 
   void getActivityDetails(GetActivityInfoDetails event, Emitter emit) async {
@@ -494,7 +656,7 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         requestTypeId: 1004,
         additionalActivities: state.addetionalActivitesResponse
                 ?.where((e) => e.isSelected == true)
-                ?.map((e) => e.activityId.toString())
+                .map((e) => e.activityId.toString())
                 .toList() ??
             [],
         entityType: "SHOP",
@@ -520,6 +682,7 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         NavigationService.navigatorKey.currentState!.pushNamed(
             RouteName.newDetails,
             arguments: ActivityDetailsPageParams(
+                mainFlowBloc: this,
                 workFlow: success,
                 activityId: state.selectedActivity,
                 addetionalActivites: state.addetionalActivitesResponse,
@@ -583,7 +746,6 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
 
   void togglePermits(TogglePermitEvent event, Emitter emit) async {
     emit(state.copyWith(status: BlocStatus.loading));
-    print("GGG");
     List<PermitItem> addetionalActivitesResponse = state.permits ?? [];
 
     bool isSelected =
@@ -624,7 +786,8 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         contractOption: event.contractOption,
         contractType: event.contractType,
         atmOption: event.atmOption,
-        step1Selection: event.step1Selection));
+        step1Selection: event.step1Selection,
+        raingSelectScenario: event.raingSelectScenario));
 
     if (event.district != null) {}
   }
@@ -652,13 +815,68 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
     }
   }
 
-  void nextPageHandler(NextPageEvent event, Emitter emit) async {
-    print("ffefe ${state.currentPage}");
+  void showRatingLoggedIn() async {
+    NavigationService.navigatorKey.currentState?.pop();
+    await showModalBottomSheet(
+      backgroundColor: const Color(0xff000000),
+      isScrollControlled: true,
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (BuildContext ctx) {
+        return RatingDialog(
+            isGuest: false,
+            onSelection: () async {
+              add(ChangeValuesEvent(raingSelectScenario: 1));
+            });
+      },
+    );
+  }
 
-    if (state.step1Selection == 1 && state.currentPage == 0) {
+  void showRatingNotLoggedIn() async {
+    NavigationService.navigatorKey.currentState?.pop();
+    await showModalBottomSheet(
+      backgroundColor: const Color(0xff000000),
+      isScrollControlled: true,
+      context: NavigationService.navigatorKey.currentContext!,
+      builder: (BuildContext ctx) {
+        return RatingDialog(
+            isGuest: true,
+            onSelection: () async {
+              int currentPage = state.currentPage + 1;
+              controller.jumpToPage(
+                currentPage,
+              );
+              emit(state.copyWith(
+                  status: BlocStatus.success, currentPage: currentPage));
+
+              add(const GetSectorEvent());
+            });
+      },
+    );
+  }
+
+  void nextPageHandler(NextPageEvent event, Emitter emit) async {
+    if (state.step1Selection == 1 &&
+        state.currentPage == 0 &&
+        state.raingSelectScenario == null) {
       await showModalBottomSheet(
         backgroundColor: const Color(0xff000000),
         isScrollControlled: true,
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (BuildContext ctx) {
+          return LoginDialog(onSelection: (bool isLogin) async {
+            if (isLogin) {
+              showRatingLoggedIn();
+            } else {
+              showRatingNotLoggedIn();
+              add(ChangeValuesEvent(raingSelectScenario: 2));
+            }
+          });
+        },
+      );
+
+      /*  await showModalBottomSheet(
+        backgroundColor: const Color(0xff000000),
+        isScrollControlled: true, 
         context: NavigationService.navigatorKey.currentContext!,
         builder: (BuildContext ctx) {
           return RatingDialog(onSelection: () async {
@@ -672,8 +890,26 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
                 status: BlocStatus.success, currentPage: currentPage));
           });
         },
+      );*/
+    } else if (state.step1Selection == 2 && state.currentPage == 0) {
+      await showModalBottomSheet(
+        backgroundColor: const Color(0xff000000),
+        isScrollControlled: true,
+        context: NavigationService.navigatorKey.currentContext!,
+        builder: (BuildContext ctx) {
+          return FollowJourney(onSelection: () async {
+            // add(const GetSectorEvent());
+
+            int currentPage = state.currentPage + 1;
+            controller.jumpToPage(
+              currentPage,
+            );
+            emit(state.copyWith(
+                status: BlocStatus.success, currentPage: currentPage));
+          });
+        },
       );
-    } else if (state.currentPage == 1) {
+    } else if (state.currentPage == 1 && getStepsPages().length != 2) {
       add(const GetCategoriesEvent());
     }
     /*else if (state.currentPage == 3 && state.step1Selection == 1) {
@@ -682,17 +918,25 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
       controller.jumpToPage(
         currentPage,
       );
-      emit(
+      emit( 
           state.copyWith(status: BlocStatus.success, currentPage: currentPage));
     }*/
-    else if (state.currentPage == 3 && state.step1Selection == 1) {
+    else if ((state.currentPage == 3 && state.step1Selection == 1) ||
+        ((state.currentPage == 1 &&
+            state.step1Selection == 1 &&
+            state.raingSelectScenario == 1 &&
+            (state.selectedLicense != null)))) {
       NavigationService.navigatorKey.currentState!
           .pushNamed(RouteName.ratingItemsPage,
               arguments: ActivityDetailsPageParams(
                 workFlow: [],
                 isFromHome: true,
-                activityId: state.selectedActivity,
+                activityId: state.selectedActivity ??
+                    LookUpItem(
+                        id: state.selectedLicense?.activityId ?? 0,
+                        name: state.selectedLicense?.activityName ?? ""),
                 gisData: state.gisResponse,
+                licenseNo: state.selectedLicense?.licenseNo,
                 gisRequest: state.request,
               ));
     } else if (state.currentPage == 3 && state.step1Selection == 0) {
@@ -713,7 +957,7 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
       controller.jumpToPage(
         currentPage,
       );
-
+      print("GGGGGGG ${currentPage}");
       if (currentPage == 1) {
         add(const GetSectorEvent());
       }
@@ -769,19 +1013,19 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         return state.selectedSector?.name ?? "";
       case 3:
         return state.selectedCategory?.name ?? "";
-        ;
+        {}
       case 4:
         return state.selectedActivity?.name ?? "";
       case 5:
         return "تفاصيل الموقع";
       case 6:
-        return "تفاصيل الموقع";
+        return "فتح محل/منشأة تجارية";
       case 7:
-        return "تفاصيل الموقع";
+        return "فتح محل/منشأة تجارية";
       case 8:
-        return "تفاصيل الموقع";
+        return "فتح محل/منشأة تجارية";
       case 9:
-        return "تفاصيل الموقع";
+        return "فتح محل/منشأة تجارية";
       default:
         return "فتح محل/منشأة تجارية";
     }
@@ -808,5 +1052,72 @@ class MainFlowBloc extends Bloc<MainFlowEvent, MainFlowState> {
         final countB = countMap[b.activityId] ?? 0;
         return countB.compareTo(countA); // Sort in descending order by count
       });
+  }
+
+  void getDelegatorsHandler(GetDelegatorsEvent event, Emitter emit) async {
+    emit(state.copyWith(delegatorsStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await getDelegators(NoParams());
+    await failureOrSuccess.fold(
+      (failure) async {
+        print(failure);
+        emit(state.copyWith(delegatorsStatus: BlocStatus.closeLoading));
+        emit(state.copyWith(
+          delegatorsStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) async {
+        print(success);
+        emit(state.copyWith(
+          delegatorsStatus: BlocStatus.success,
+          delegators: success,
+        ));
+      },
+    );
+  }
+
+  void selectDelegatorHandler(SelectDelegatorEvent event, Emitter emit) async {
+    emit(state.copyWith(status: BlocStatus.loading));
+
+    emit(state.copyWith(
+        status: BlocStatus.success,
+        selectedDelegator: event.delegator,
+        licenses: []));
+  }
+
+  void getLicensesHanlder(GetLicensesEvent event, Emitter emit) async {
+    emit(state.copyWith(licenseStatus: BlocStatus.loading));
+
+    final failureOrSuccess = await getLicenses(LicenseRequestParams(
+        crNumber: state.selectedDelegator?.crNumber ?? "",
+        crType: state.selectedDelegator?.crType ?? "",
+        licenseType: event.licenseType,
+        role: state.selectedDelegator?.getRole() ?? ""));
+    await failureOrSuccess.fold(
+      (failure) async {
+        print(failure);
+        emit(state.copyWith(delegatorsStatus: BlocStatus.closeLoading));
+        emit(state.copyWith(
+          licenseStatus: BlocStatus.failure,
+          errorMessage: (failure as ServerFailure).errorMessage,
+        ));
+      },
+      (success) async {
+        print(success);
+        emit(state.copyWith(
+          licenseStatus: BlocStatus.success,
+          licenses: success,
+        ));
+      },
+    );
+  }
+
+  List<Widget> getStepsPages() {
+    if (state.step1Selection == 1 && state.raingSelectScenario == 1) {
+      return loggedInSteps;
+    }
+
+    return steps;
   }
 }

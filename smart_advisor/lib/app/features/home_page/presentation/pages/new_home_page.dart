@@ -14,6 +14,7 @@ import 'package:smart_advisor/app/features/home_page/presentation/pages/select_a
 import 'package:smart_advisor/app/features/home_page/presentation/widgets/widgetsNew/chatGPT_widget.dart';
 import 'package:smart_advisor/app/features/home_page/presentation/widgets/widgetsNew/home_card_items.dart';
 import 'package:smart_advisor/app/features/home_page/presentation/widgets/widgetsNew/recently_card.dart';
+import 'package:smart_advisor/app/features/manage_license_flow/presentation/pages/main_flow_page.dart';
 
 import '../../../../../smart_advisor.dart';
 import '../../../../core/services/local/navigation_services.dart';
@@ -22,6 +23,7 @@ import '../../../select_activity/domain/entities/activity_details_page_params.da
 import '../../domain/entities/Home_card_item_model.dart';
 import '../bloc/home_bloc.dart';
 import '../bloc/home_state.dart';
+import '../widgets/chat_bot_widget.dart';
 
 class NewHomePage extends StatefulWidget {
   const NewHomePage({super.key});
@@ -47,24 +49,15 @@ class _NewHomePageState extends State<NewHomePage> {
                 children: [
                   Container(
                     height: 400,
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          const Color(0xFFF8FFEC)
-                              .withOpacity(0.73), // Lightest color with opacity
-                          const Color(0xFFEBE9FF)
-                              .withOpacity(0.52), // Mid color with opacity
-                          const Color(0xFFEAF6D8).withOpacity(0.73),
-                        ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                        stops: const [
-                          0.0,
-                          0.5,
-                          1.0
-                        ], // Adjust the stop points for smooth gradient transition
+                    decoration: const BoxDecoration(
+                      // color: Colors.red,
+                      image: DecorationImage(
+                        image: AssetImage(
+                            'packages/smart_advisor/smart_advisor_assets/images/backshadow.png'), // Correct way to reference the asset image
+                        fit: BoxFit
+                            .cover, // Adjust the fit of the image if needed
                       ),
-                      borderRadius: const BorderRadius.only(
+                      borderRadius: BorderRadius.only(
                         bottomLeft: Radius.circular(20),
                         bottomRight: Radius.circular(20),
                       ),
@@ -89,10 +82,10 @@ class _NewHomePageState extends State<NewHomePage> {
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 16),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 // (Balady logo and arrow)
-                                GestureDetector(
+                                /* GestureDetector(
                                   onTap: () {
                                     Navigator.pop(SmartAdvisor.ctx);
                                   },
@@ -106,21 +99,22 @@ class _NewHomePageState extends State<NewHomePage> {
                                       SvgPicture.asset(IconPath.baladyLogo),
                                     ],
                                   ),
-                                ),
+                                ),*/
                                 // (QR code )
                                 GestureDetector(
                                     onTap: () {
-                                      NavigationService
+                                      /*  NavigationService
                                           .navigatorKey.currentState!
-                                          .pushNamed(RouteName.qrDetails);
+                                          .pushNamed(RouteName.qrDetails);*/
+
+                                      Navigator.pop(SmartAdvisor.ctx);
                                     },
-                                    child:
-                                        SvgPicture.asset(IconPath.QrCodeScan)),
+                                    child: SvgPicture.asset(IconPath.close)),
                               ],
                             ),
                           ),
                           const SizedBox(
-                            height: 50,
+                            height: 20,
                           ),
                           Expanded(
                             child: SingleChildScrollView(
@@ -131,13 +125,13 @@ class _NewHomePageState extends State<NewHomePage> {
                                     margin: const EdgeInsets.symmetric(
                                         horizontal: 16),
                                     child: Text(
-                                      'welcome'.tr(),
+                                      'smartAdvisor'.tr(),
                                       style: AppStyle.headingBoldStyle.copyWith(
                                           color: AppColor.textPrimaryColor),
                                     ),
                                   ),
                                   const SizedBox(
-                                    height: 8,
+                                    height: 3,
                                   ),
                                   Container(
                                     margin: const EdgeInsets.symmetric(
@@ -169,10 +163,10 @@ class _NewHomePageState extends State<NewHomePage> {
                                                 RouteName.mainFlowPage,
                                               );
 
-                                              //   Navigator.of(context).pushNamed(
+                                              // Navigator.of(context).pushNamed(
                                               //     RouteName.newDetails,
-                                              //      arguments:
-                                              //          ActivityDetailsPageParams());
+                                              //     arguments:
+                                              //         ActivityDetailsPageParams());
                                             },
                                             child: HomeCardItems(
                                               title: homeCardItems[0].title,
@@ -262,7 +256,7 @@ class _NewHomePageState extends State<NewHomePage> {
                                               color: AppColor.textPrimaryColor),
                                     ),
                                   ),
-                                  const SizedBox(height: 12),
+                                  //  const SizedBox(height: 6),
 
                                   SizedBox(
                                     height: 129,
@@ -291,6 +285,7 @@ class _NewHomePageState extends State<NewHomePage> {
                       ),
                     ),
                   ),
+                  const ChatBotWidget()
                 ],
               ),
             );

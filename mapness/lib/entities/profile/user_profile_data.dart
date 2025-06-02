@@ -25,32 +25,33 @@ class UserProfileData {
 
 extension LocalizedName on SsoUserInfo {
   String getLocalizedFirstName(Language lang) {
-    String? sname;
+    String? firstName;
     if (lang == Language.arabic) {
-      sname = arName;
+      final names = arName?.split(' ') ?? [''];
+      firstName = names.first;
     } else {
-      sname = enName;
+      final names = enName?.split(' ') ?? [''];
+      firstName = names.first;
     }
 
-    final names = sname?.split(' ') ?? [''];
-
-    return names.first;
+    return firstName;
   }
 
   String getLocalizedLastName(Language lang) {
-    String? sname;
+    String? lastName;
     if (lang == Language.arabic) {
-      sname = arName;
+      final names = sname?.split(',') ?? [''];
+      lastName = names.last;
     } else {
-      sname = enName;
+      final names = enName?.split(' ') ?? [''];
+      lastName = names.last;
     }
 
-    final names = sname?.split(' ') ?? [''];
-
-    return names.last;
+    return lastName;
   }
 
-  String getLocalizedFirstAndLastName(Language lang) => '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
+  String getLocalizedFirstAndLastName(Language lang) =>
+      '${getLocalizedFirstName(lang)} ${getLocalizedLastName(lang)}';
 
   String getLocalizedAbbreviatedName(Language lang) {
     final firstName = getLocalizedFirstName(lang);

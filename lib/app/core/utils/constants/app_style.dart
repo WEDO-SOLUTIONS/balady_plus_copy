@@ -294,7 +294,7 @@ class AppStyle {
   );
 
   static final dropDownTitleTextStyle = TextStyle(
-    fontSize: 16.0,
+    fontSize: 15.0,
     fontWeight: AppFontWeight.bold.fontWeight,
     color: AppColor.blackModern700Light,
     fontFamily: fontFamily,
@@ -851,7 +851,7 @@ class AppStyle {
   static const textFieldSuffixTextStyle = TextStyle(
     color: Color(0x7F1A1A1A),
     fontSize: 12,
-    fontFamily: 'Frutiger',
+    fontFamily: 'packages/balady_uikit/Frutiger',
     fontWeight: FontWeight.w600,
   );
 

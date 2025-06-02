@@ -45,7 +45,50 @@ class _Step11PageState extends State<Step11Page> {
                     style: AppStyle.textRegularStyle
                         .copyWith(color: AppColor.textSecondaryColor),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: const Color(
+                          0xFFF9F5F4), // Light background color similar to the image
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: const Color(
+                            0xFFE7DAD9), // Border color similar to the image
+                        width: 1,
+                      ),
+                    ),
+                    child: Column(
+                      children: [
+                        /* Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            SvgPicture.asset(
+                                'packages/smart_advisor/smart_advisor_assets/icons/svg/warning.svg'),
+                            const SizedBox(
+                              width: 8,
+                            ),
+                            Text(
+                              'تنبيه',
+                              style: AppStyle.textRegularRomanStyle
+                                  .copyWith(color: AppColor.textPrimaryColor),
+                            ),
+                          ],
+                        ),*/
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          ' يشترط نشاط "${state.selectedActivity?.name}..." '
+                          'الذي قمت باختياره أن لا تقل مساحة المحل عن ${state.selectedActivity?.minArea} وان لا تزيد عن ${state.selectedActivity?.maxArea}',
+                          style: AppStyle.footNoteRomanStyle
+                              .copyWith(color: AppColor.textSecondaryColor),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   MediaQuery.removePadding(
                     removeTop: true,
                     context: context,
@@ -71,51 +114,6 @@ class _Step11PageState extends State<Step11Page> {
                             ],
                           );
                         }),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: const Color(
-                          0xFFF9F5F4), // Light background color similar to the image
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: const Color(
-                            0xFFE7DAD9), // Border color similar to the image
-                        width: 1,
-                      ),
-                    ),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SvgPicture.asset(
-                                'packages/smart_advisor/smart_advisor_assets/icons/svg/warning.svg'),
-                            const SizedBox(
-                              width: 8,
-                            ),
-                            Text(
-                              'تنبيه',
-                              style: AppStyle.textRegularRomanStyle
-                                  .copyWith(color: AppColor.textPrimaryColor),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 4,
-                        ),
-                        Text(
-                          ' يشترط نشاط "${state.selectedActivity?.name}..." '
-                          'الذي قمت باختياره أن لا تقل مساحة المحل عن ${state.selectedActivity?.minArea} وان لا تزيد عن ${state.selectedActivity?.maxArea}',
-                          style: AppStyle.footNoteRomanStyle
-                              .copyWith(color: AppColor.textSecondaryColor),
-                          textAlign: TextAlign.right,
-                        ),
-                      ],
-                    ),
                   ),
                   const SizedBox(
                     height: 20,

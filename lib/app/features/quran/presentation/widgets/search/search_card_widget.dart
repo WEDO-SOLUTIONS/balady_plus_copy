@@ -40,7 +40,6 @@ class QuranSearchCardWidget extends StatelessWidget {
                             "سورة ${item.suraName}",
                             fontWeight: AppFontWeight.semiBold,
                             fontSize: 12,
-                            fontFamily: "sura_juza_names",
                             fontColor: AppColor.primary800Light,
                           ),
                           CustomVerticalSpace(height: 16),

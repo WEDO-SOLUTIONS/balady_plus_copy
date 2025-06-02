@@ -59,7 +59,7 @@ class _TermsAndDefinitionsState extends State<TermsAndDefinitions> {
                   style: TextStyle(
                     color: Color(0xFF145E75),
                     fontSize: 17,
-                    fontFamily: 'Frutiger',
+                    fontFamily: 'packages/balady_uikit/Frutiger',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -68,7 +68,7 @@ class _TermsAndDefinitionsState extends State<TermsAndDefinitions> {
                   style: TextStyle(
                     color: Color(0xFF52525B),
                     fontSize: 14,
-                    fontFamily: 'Frutiger',
+                    fontFamily: 'packages/balady_uikit/Frutiger',
                     fontWeight: FontWeight.w600,
                   ),
                 ),
