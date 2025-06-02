@@ -343,9 +343,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
     var file = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
+      type: FileType.media,
       allowMultiple: false,
-       allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
+      // allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
     );
     late BaseResponse response;
     try {
@@ -678,19 +678,21 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void downloadAndExtractInAssets(dynamic data, CompletionHandler handler) async {
+  void downloadAndExtractInAssets(
+      dynamic data, CompletionHandler handler) async {
     if (data != null && data is Map) {
       try {
-        String? exratctPath= data['pathFile'];
+        String? exratctPath = data['pathFile'];
         var tempDir = await getTemporaryDirectory();
         String fullPath = "${tempDir.path}/quran.zip'";
         File file = File(fullPath);
         if (await file.exists()) {
-          await unarchiveAndSave(exratctPath,file, handler);
+          await unarchiveAndSave(exratctPath, file, handler);
         } else {
           WebService webService = sl();
 
-          Response response = await webService.dio.get(data['url'],
+          Response response = await webService.dio.get(
+            data['url'],
 
             //Received data with List<int>
             options: Options(
@@ -698,8 +700,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
                 followRedirects: false,
                 validateStatus: (status) {
                   return (status ?? 501) < 500;
-                }
-            ),
+                }),
           );
 
           File file = File(fullPath);
@@ -708,37 +709,34 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           raf.writeFromSync(response.data);
           await raf.close();
 
-          await unarchiveAndSave(exratctPath,file, handler);
+          await unarchiveAndSave(exratctPath, file, handler);
         }
+      } catch (e) {
+        BaseResponse response = BaseResponse(
+          code: 500,
+          eventName: "downloadAndExtractInAssets",
+          message: "failure",
+          data: null,
+        );
+        handler.complete(response.jsonEncodeModel());
       }
-      catch (e) {
-          BaseResponse response = BaseResponse(
-            code: 500,
-            eventName: "downloadAndExtractInAssets",
-            message: "failure",
-            data: null,
-          );
-          handler.complete(response.jsonEncodeModel());
-        }
-
-
     }
   }
 
-
-  unarchiveAndSave(String? extractPath,var zippedFile,CompletionHandler handler) async {
+  unarchiveAndSave(
+      String? extractPath, var zippedFile, CompletionHandler handler) async {
     try {
       extractPath ??= "assets/quran";
       var bytes = zippedFile.readAsBytesSync();
       var archive = ZipDecoder().decodeBytes(bytes);
-      String? filesPath= null;
-      int counter=0;
+      String? filesPath = null;
+      int counter = 0;
       for (var file in archive) {
-
         if (file.isFile && !file.name.contains("__MACOSX")) {
-          var outFile = File('${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
+          var outFile = File(
+              '${CommonProperties.currentLocalServerDirectory}/assets/$extractPath/${file.name}');
           outFile = await outFile.create(recursive: true);
-          if(counter==0) {
+          if (counter == 0) {
             filesPath = outFile.path;
             counter++;
           }
@@ -746,14 +744,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         }
       }
 
-      if(filesPath != null) {
+
+      if (filesPath != null) {
         filesPath = filesPath.replaceAll(
             "${CommonProperties.currentLocalServerDirectory}/assets/", "");
         final lastIndex = filesPath.lastIndexOf('/');
         if (lastIndex != -1) {
-          filesPath= filesPath.substring(0, lastIndex);
+          filesPath = filesPath.substring(0, lastIndex);
         }
-
       }
 
       BaseResponse response = BaseResponse(
@@ -774,8 +772,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
     // return indexFilePath;
   }
-
-
 }
 
 Event buildEvent({
@@ -798,7 +794,3 @@ Event buildEvent({
     ),
   );
 }
-
-
-
-
