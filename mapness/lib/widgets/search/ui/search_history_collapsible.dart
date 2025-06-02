@@ -38,10 +38,10 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
   @override
   Widget build(BuildContext context) {
     final hasManyResults = widget.history.length > 10;
-    final contentColor = widget.contentColor ?? context.colorsV2.backgroundSurface4;
+    final contentColor = widget.contentColor ?? context.colorsV2.backgroundSurface1;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x).copyWith(top: Spacing.$3x),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -74,7 +74,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
                             },
                             leading: AppIcons(
                               iconData: GeneralIcons.timeQuarter,
-                              color: widget.iconColor ?? context.colorsV2.foregroundDefault,
+                              color: widget.iconColor ?? context.colorsV2.foregroundSoft,
                               size: 24,
                             ),
                             text: ContentRowTextOptions(
@@ -102,7 +102,7 @@ class _MapSearchHistoryCollapsibleState extends ConsumerState<SearchHistoryColla
               ],
             ),
           ),
-          if (_collapsed) const SizedBox(height: 16),
+          if (_collapsed) const SizedBox(height: Spacing.$4x),
           if (!_collapsed)
             Padding(
               padding: const EdgeInsets.symmetric(

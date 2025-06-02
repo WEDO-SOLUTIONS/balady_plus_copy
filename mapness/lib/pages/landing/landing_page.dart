@@ -14,6 +14,7 @@ import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
 import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:mapness/shared/providers/media_query.dart';
+import 'package:mapness/widgets/hajj/hajj_wrapper_listeners.dart';
 import 'package:mapness/widgets/landing/dashboard/dashboard.dart';
 
 @RoutePage()
@@ -100,30 +101,32 @@ class _LandingPageState extends ConsumerState<LandingPage> with WidgetsBindingOb
       ..watch(mapObjectManagerProvider(named: metro.name, layerId: metro.layerId).notifier)
       ..watch(mapObjectManagerProvider(named: myLocation.name, layerId: myLocation.layerId).notifier);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle.dark,
-      child: Directionality(
-        textDirection: Directionality.of(context),
-        child: Material(
-          type: MaterialType.transparency,
-          child: Stack(
-            children: [
-              ListenableBuilder(
-                listenable: _bottomSheetController,
-                builder: (_, __) {
-                  if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
-                    return const SizedBox.shrink();
-                  }
+    return HajjWrapperListeners(
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle.dark,
+        child: Directionality(
+          textDirection: Directionality.of(context),
+          child: Material(
+            type: MaterialType.transparency,
+            child: Stack(
+              children: [
+                ListenableBuilder(
+                  listenable: _bottomSheetController,
+                  builder: (_, __) {
+                    if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+                      return const SizedBox.shrink();
+                    }
 
-                  return GestureDetector(
-                    onTapDown: (_) => _hideBottomSheet(),
-                    onTapUp: (_) => _hideBottomSheet(),
-                    onTap: _hideBottomSheet,
-                  );
-                },
-              ),
-              Dashboard(bottomSheetController: _bottomSheetController),
-            ],
+                    return GestureDetector(
+                      onTapDown: (_) => _hideBottomSheet(),
+                      onTapUp: (_) => _hideBottomSheet(),
+                      onTap: _hideBottomSheet,
+                    );
+                  },
+                ),
+                Dashboard(bottomSheetController: _bottomSheetController),
+              ],
+            ),
           ),
         ),
       ),

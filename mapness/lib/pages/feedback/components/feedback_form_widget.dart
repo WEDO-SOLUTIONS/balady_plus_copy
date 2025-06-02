@@ -20,7 +20,7 @@ class FeedbackFormWidget extends ConsumerWidget {
       padding: EdgeInsets.zero,
       primary: true,
       shrinkWrap: true,
-      separatorBuilder: (context, index) => Spacing.$4x.heightBox,
+      separatorBuilder: (context, index) => Spacing.$3x.heightBox,
       itemCount: fields.length,
       itemBuilder: (context, index) => FeedbackFieldWidget(
         field: fields[index],

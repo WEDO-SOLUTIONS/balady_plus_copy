@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
+import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/entities/app_feedback/app_feedback_payload.dart';
@@ -8,6 +9,7 @@ import 'package:mapness/features/app_feedback/app_feedback_source_provider.dart'
 import 'package:mapness/features/app_feedback/send_feedback.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/hooks/stateless_botomsheet_controller_hook.dart';
+import 'package:mapness/shared/ui/safe_area_padding.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_error.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_loading.dart';
 import 'package:mapness/widgets/app_feedback/app_feedback_success.dart';
@@ -77,38 +79,40 @@ class AppFeedbackSheet extends HookConsumerWidget {
 
     return FeedbackSourceProvider(
       source: source,
-      child: StatelessBottomSheet(
-        scrollController: scrollController,
-        resizeToAvoidBottomPadding: false,
-        onWillPop: Future.value(false),
-        content: [
-          sendFeedbackState.when(
-            data: (data) => switch (data) {
-              AppFeedbackState.initial => AppFeedbackMain(
-                  initialRating: initialRating,
-                  onNeedPopConfirm: () => _showConfirmDialog(context),
-                ),
-              AppFeedbackState.loading => const AppFeedbackLoading(),
-              AppFeedbackState.success => const Padding(
-                  padding: _sheetPadding,
-                  child: AppFeedbackSuccess(),
-                ),
-              AppFeedbackState.error => Padding(
-                  padding: _sheetPadding,
-                  child: AppFeedbackError(
-                    onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+      child: SafeAreaPadding(
+        child: StatelessBottomSheet(
+          scrollController: scrollController,
+          safeAreaColor: context.colorsV3.backgroundSurface1,
+          onWillPop: Future.value(false),
+          content: [
+            sendFeedbackState.when(
+              data: (data) => switch (data) {
+                AppFeedbackState.initial => AppFeedbackMain(
+                    initialRating: initialRating,
+                    onNeedPopConfirm: () => _showConfirmDialog(context),
                   ),
+                AppFeedbackState.loading => const AppFeedbackLoading(),
+                AppFeedbackState.success => const Padding(
+                    padding: _sheetPadding,
+                    child: AppFeedbackSuccess(),
+                  ),
+                AppFeedbackState.error => Padding(
+                    padding: _sheetPadding,
+                    child: AppFeedbackError(
+                      onRetry: ref.read(sendFeedbackProvider.notifier).retry,
+                    ),
+                  ),
+              },
+              loading: () => const AppFeedbackLoading(),
+              error: (_, __) => Padding(
+                padding: _sheetPadding,
+                child: AppFeedbackError(
+                  onRetry: ref.read(sendFeedbackProvider.notifier).retry,
                 ),
-            },
-            loading: () => const AppFeedbackLoading(),
-            error: (_, __) => Padding(
-              padding: _sheetPadding,
-              child: AppFeedbackError(
-                onRetry: ref.read(sendFeedbackProvider.notifier).retry,
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

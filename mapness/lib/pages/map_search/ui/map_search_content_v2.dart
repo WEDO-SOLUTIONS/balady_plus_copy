@@ -12,16 +12,14 @@ import 'package:mapness/pages/map_search/ui/map_search_empty.dart';
 import 'package:mapness/pages/map_search/ui/map_search_history.dart';
 import 'package:mapness/pages/map_search/ui/map_search_results.dart';
 import 'package:mapness/pages/map_search/ui/map_suggest_list.dart';
-import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/urbi_analytics.dart';
 import 'package:mapness/shared/ui/error_widget/base_error_widget.dart';
 import 'package:provider/provider.dart';
 
 class MapSearchContent extends ConsumerStatefulWidget {
-  final ScrollController scrollController;
-
+  final ScrollController bottomSheetContentScrollController;
   const MapSearchContent({
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     super.key,
   });
 
@@ -61,6 +59,7 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.sizeOf(context).height;
     _hasConnection = ref.watch(networkStatusProvider);
     final scope = context.read<SearchScope>();
     final searchState = ref.watch(searchProvider(scope.value));
@@ -83,73 +82,57 @@ class _MapSearchContentState extends ConsumerState<MapSearchContent> {
       );
 
     if (!_hasConnection) {
-      return SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: MapLostInternet(
-              onTap: () async {
-                await ref.read(networkStatusProvider.notifier).update();
-                _updateInternetStatus(context, ref.read(networkStatusProvider));
-              },
-            ),
+      return SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          child: MapLostInternet(
+            onTap: () async {
+              await ref.read(networkStatusProvider.notifier).update();
+              _updateInternetStatus(context, ref.read(networkStatusProvider));
+            },
           ),
         ),
       );
     }
 
     return searchState.map(
-      empty: () => const SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: MapSearchEmpty(),
-        ),
+      empty: () => const SafeArea(
+        top: false,
+        child: MapSearchEmpty(),
       ),
-      history: () => const SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSearchHistory(),
-        ),
+      history: () => const SafeArea(
+        top: false,
+        child: MapSearchHistory(),
       ),
-      loading: () => SliverFillRemaining(
-        hasScrollBody: false,
-        child: SafeArea(
-          top: false,
-          child: Center(
-            child: Loading(
-              orientation: Axis.vertical,
-              size: LoaderSize.large,
-              title: context.l10n.loading,
-            ),
+      loading: () => SizedBox(
+        height: height * .8,
+        child: const Center(
+          child: Loading(
+            orientation: Axis.vertical,
+            backgroundColor: Colors.transparent,
+            size: LoaderSize.large,
           ),
         ),
       ),
-      suggest: (suggest) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSuggestList(
-            suggest: suggest,
-          ),
+      suggest: (suggest) => SafeArea(
+        top: false,
+        child: MapSuggestList(
+          suggest: suggest,
         ),
       ),
-      results: (results) => SliverToBoxAdapter(
-        child: SafeArea(
-          top: false,
-          child: MapSearchResults(
-            results: results,
-            scrollController: widget.scrollController,
-          ),
+      results: (results) => SafeArea(
+        top: false,
+        child: MapSearchResults(
+          results: results,
+          bottomSheetContentScrollController: widget.bottomSheetContentScrollController,
         ),
       ),
-      failure: (query, errorMessage) => SliverToBoxAdapter(
-        child: BaseErrorWidget(
-          errorLabel: errorMessage,
-          onRetry: () {
-            ref.read(searchProvider(scope.value).notifier).searchByText(query);
-          },
-        ),
+      failure: (query, errorMessage) => BaseErrorWidget(
+        errorLabel: errorMessage,
+        onRetry: () {
+          ref.read(searchProvider(scope.value).notifier).searchByText(query);
+        },
       ),
     );
   }

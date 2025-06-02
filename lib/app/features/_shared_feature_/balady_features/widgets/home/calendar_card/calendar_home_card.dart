@@ -8,7 +8,6 @@
 // import 'package:balady_plus/app/features/calendar/presentation/bloc/calendar_state.dart';
 // import 'package:balady_plus/etmam_app/core/dependency_injection/injection_container.dart';
 // import 'package:balady_plus/etmam_app/features/_shared_feature_/shared/presentation/widgets/custom_shimmer_widget.dart';
-// import 'package:balady_uikit/core/colors/app_color_scheme.dart';
 // import 'package:balady_uikit/core/typography/text_theme_styles.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,11 +15,9 @@
 //
 // class CalendarHomeCard extends StatelessWidget {
 //   final VoidCallback? onShowAll;
-//   final AppColorScheme colorScheme;
 //
 //   const CalendarHomeCard({
 //     super.key,
-//     required this.colorScheme,
 //     this.onShowAll,
 //   });
 //
@@ -93,7 +90,6 @@
 //                       width: MediaQuery.of(context).size.width - 60,
 //                       padding: const EdgeInsets.only(top: 0, right: 16),
 //                       item: state.searchItems[index],
-//                       colorScheme: colorScheme,
 //                     );
 //                   },
 //                 ),

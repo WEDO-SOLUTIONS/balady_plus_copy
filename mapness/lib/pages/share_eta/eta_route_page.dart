@@ -14,6 +14,7 @@ import 'package:mapness/features/share_eta/providers/websocker_error_handler_por
 import 'package:mapness/features/share_eta/ui/eta_arrival_card/eta_arrival_card.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/camera_padding.dart';
+import 'package:mapness/shared/providers/media_query.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
 
@@ -43,7 +44,9 @@ class _EtaRoutePageState extends ConsumerState<EtaRoutePage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref.read(cameraPaddingProvider.notifier).resetPadding();
       // Prevents the user from interacting with the map
-      ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+      if (ref.read(mediaQueryInfoProvider)?.orientation == Orientation.landscape) {
+        ref.read(mapTapHandlerProvider.notifier).disableTapOnMap = true;
+      }
     });
   }
 

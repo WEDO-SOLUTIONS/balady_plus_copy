@@ -209,10 +209,10 @@ packages:
     dependency: "direct main"
     description:
       name: balady_uikit
-      sha256: "743a000d18d862b4dd02fc3b701c9873055baa0ee986b827b191b7cb8f23f26b"
+      sha256: c512054f4be11ecbe9dbbc52ef2ec8a22dc949b3bcdafee2e21b385bcd51e688
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "3.4.3"
+    version: "4.0.0"
   barcode:
     dependency: transitive
     description:
@@ -2141,10 +2141,10 @@ packages:
     dependency: "direct main"
     description:
       name: map_styles
-      sha256: "244245abe55a1e5f74858526ccbaab9bafcfa1e26560cd03f9cb98ef2a94c93c"
+      sha256: "614cbaecdc9629ac1beb79fe9b2b9a2b9c0206b95edf5c08892aaaf52c94007e"
       url: "https://baladyapp-unpub.urbi.ae"
     source: hosted
-    version: "1.1.2"
+    version: "1.1.6"
   mask_text_input_formatter:
     dependency: "direct main"
     description:

@@ -196,7 +196,7 @@ dependencies:
   # Mapness
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.4.3
+    version: 4.0.0
 
   mapness:
     path: mapness
@@ -231,7 +231,7 @@ dependencies:
   ############################################################
   balady_authorization:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: ^0.0.58
+    version: ^0.0.59
   #path: /Users/mhamed/work/projects/Balady/BaladyAuthorization
   # git:
   #   url: https://tfs.momra.gov.sa/tfs/MOMRACollection/MobileApps/_git/BaladyAuthorization

@@ -36,7 +36,7 @@ class FeedbackTypeItemWidget extends ConsumerWidget {
           titleMaxlines: 2,
           actionWidget: ContentRowActionOptions(
             actionIcon: AppIcons(
-              iconData: SystemIcons.arrowCornerRightLarge,
+              iconData: SystemIcons.arrowCornerRightSmall,
               color: context.colorsV2.neutralDefault,
             ),
           ),

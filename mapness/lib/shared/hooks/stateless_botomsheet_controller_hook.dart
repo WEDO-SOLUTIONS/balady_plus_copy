@@ -11,6 +11,8 @@ StatelessBottomSheetController useStatelessBottomsheetController({
   List<Object?>? keys,
   double? durationMultiplier,
   bool isInteractive = true,
+  bool clipByHeader = false,
+  bool resetContentScrollOnClosed = false,
   BottomSheetHeightModel? heightModel,
 }) =>
     use(
@@ -18,8 +20,10 @@ StatelessBottomSheetController useStatelessBottomsheetController({
         keys: keys,
         durationMultiplier: durationMultiplier,
         onClose: onClose,
+        resetContentScrollOnClosed: resetContentScrollOnClosed,
         isInteractive: isInteractive,
         heightModel: heightModel,
+        clipByHeader: clipByHeader,
       ),
     );
 
@@ -28,11 +32,15 @@ class _StatelessBottomSheetControllerHook extends Hook<StatelessBottomSheetContr
   final BottomSheetOnCloseCallback? onClose;
   final bool isInteractive;
   final BottomSheetHeightModel? heightModel;
+  final bool clipByHeader;
+  final bool resetContentScrollOnClosed;
 
   const _StatelessBottomSheetControllerHook({
     this.onClose,
     this.durationMultiplier,
     this.isInteractive = true,
+    this.clipByHeader = false,
+    this.resetContentScrollOnClosed = false,
     this.heightModel,
     List<Object?>? keys,
   }) : super(keys: keys);
@@ -49,12 +57,16 @@ class _StatelessBottomSheetControllerHookState
           durationMultiplier: hook.durationMultiplier ?? 1.0,
           isInteractive: hook.isInteractive,
           heightModel: hook.heightModel,
+          clipByHeader: hook.clipByHeader,
+          resetContentScrollOnClosed: hook.resetContentScrollOnClosed,
         )
       : StatelessBottomSheetController(
           durationMultiplier: hook.durationMultiplier ?? 1.0,
           onClose: hook.onClose!,
           isInteractive: hook.isInteractive,
           heightModel: hook.heightModel,
+          clipByHeader: hook.clipByHeader,
+          resetContentScrollOnClosed: hook.resetContentScrollOnClosed,
         );
 
   @override

@@ -7,9 +7,9 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/routing/route_point.dart';
 import 'package:mapness/features/lifestyle_layers/configs/layers_consts.dart';
@@ -18,11 +18,9 @@ import 'package:mapness/features/parking_spot/parking_image.dart';
 import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/parking_spot/parking_spot_map.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
-import 'package:mapness/shared/lib/deeplink_functions.dart';
 import 'package:mapness/shared/ui/toast/toast_overlay.dart';
 import 'package:mapness/shared/ui/urbi_map.dart';
 import 'package:mapness/widgets/parking_spot/selected_images.dart';
-import 'package:share_plus/share_plus.dart';
 
 @RoutePage()
 class ParkingSpotPage extends ConsumerStatefulWidget {
@@ -42,7 +40,7 @@ class ParkingSpotPage extends ConsumerStatefulWidget {
 }
 
 class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
-
+  final _keyMapParkingSpot = 'ParkingSpotDGISMapKey';
   late final TextEditingController _textEditingController = TextEditingController();
   late final ValueNotifier<String> _addressNotifier = ValueNotifier(widget.address ?? '');
   final _isDirty = ValueNotifier(false);
@@ -90,7 +88,10 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     return Scaffold(
       backgroundColor: context.colorsV3.backgroundSurface4,
       appBar: BaladyTopBar(
-        textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(color: context.colorsV3.foregroundDefault),
+        systemUiOverlayStyle: SystemUiOverlayStyle.dark,
+        textStyle: context.textStyleV3.bodyLargeSemiBold.copyWith(
+          color: context.colorsV3.foregroundDefault,
+        ),
         title: widget.isEdit ? context.l10n.edit : context.l10n.addParking,
         leading: Container(
           padding: const EdgeInsetsDirectional.only(start: Spacing.$4x),
@@ -105,16 +106,15 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                context.l10n.feedbackAddress,
-                style: context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault),
-              ),
               Spacing.$2x.heightBox,
               SizedBox(
-                height: 84,
+                height: 108,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                  child: UrbiMap(onMapCreated: _onMapCreated),
+                  child: UrbiMap(
+                    onMapCreated: _onMapCreated,
+                    key: Key(_keyMapParkingSpot),
+                  ),
                 ),
               ),
               Spacing.$2x.heightBox,
@@ -145,9 +145,9 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
               Spacing.$4x.heightBox,
               BaladyTextInput(
                 label: BaladyInputLabel(
-                  text: context.l10n.comment,
-                  style: context.textStyleV3.captionMediumRegular,
-                ),
+                    text: context.l10n.comment,
+                    style:
+                        context.textStyleV3.captionMediumRegular.copyWith(color: context.colorsV3.foregroundDefault)),
                 controller: _textEditingController,
                 config: BaladyInputConfig(
                   isDisposed: false,
@@ -158,7 +158,9 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
                 ),
               ),
               Spacing.$4x.heightBox,
-              SelectedImages(isEdit: widget.isEdit),
+              SelectedImages(
+                isEdit: widget.isEdit,
+              ),
               const Spacer(),
               ValueListenableBuilder<bool>(
                 valueListenable: _isDirty,
@@ -188,7 +190,6 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
   }
 
   Future<void> _onTapChangeLocation(BuildContext context) async {
-    await ref.read(parkingSpotMapProvider.notifier).deleteMarkers();
     final result = await context.router.push(const RoutingMapSelectRoute());
 
     if (result == null || result is! RoutePoint) {
@@ -213,6 +214,9 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
           elevation: 0,
         ),
       );
+
+      await ref.read(parkingSpotMapProvider.notifier).deleteMarkers();
+
       await dgisMapController.addMarker(
         Marker(
           id: parkingId,
@@ -283,30 +287,33 @@ class _ParkingSpotState extends ConsumerState<ParkingSpotPage> {
     ToastOverlay.of(context).show(
       title: context.l10n.parkingSuccessfullySaved,
       firstText: context.l10n.feedbackBreaksSheetClose,
-      secondText: context.l10n.share,
+
       iconAsset: Assets.icons.svg.parkingControl.keyName,
-      onSecondTap: () async {
-        if (_latLng == null) {
-          return;
-        }
 
-        final baseUri = BaldayDeeplink.basePoiUri;
-        final query = <String, String>{};
+      /// BSA-2479: Uncomment to enable sharing functionality
+      // secondText: context.l10n.share,
+      // onSecondTap: () async {
+      //   if (_latLng == null) {
+      //     return;
+      //   }
 
-        query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
+      //   final baseUri = BaldayDeeplink.basePoiUri;
+      //   final query = <String, String>{};
 
-        query[BaldayDeeplink.latitudeKey] = _latLng!.latitude.toString();
-        query[BaldayDeeplink.longitudeKey] = _latLng!.longitude.toString();
+      //   query[BaldayDeeplink.dgisObjectIdKey] = parkingObjectId.toString();
 
-        await Share.share(
-            '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
-      },
+      //   query[BaldayDeeplink.latitudeKey] = _latLng!.latitude.toString();
+      //   query[BaldayDeeplink.longitudeKey] = _latLng!.longitude.toString();
+
+      //   await Share.share(
+      //       '${rootNavigatorKey.currentContext?.l10n.leftMyCarHere} ${BaldayDeeplink.urlWithQuery(baseUri, query)}');
+      // },
     );
   }
 
   void _checkDirty() {
     final stored = ref.read(parkingManageProvider).valueOrNull;
-    final images = ref.read(parkingImageProvider());
+    final images = ref.read(parkingImageProvider(isEdit: widget.isEdit));
 
     final imagesDirty = !const ListEquality().equals(images.map((e) => e.path).toList(), stored?.imagesPaths ?? []);
 

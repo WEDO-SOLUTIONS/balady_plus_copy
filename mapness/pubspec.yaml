@@ -40,7 +40,7 @@ dependencies:
 
   balady_uikit:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 3.4.3
+    version: 4.0.0
 
   urbi_analytics:
     hosted: https://baladyapp-unpub.urbi.ae/
@@ -142,7 +142,7 @@ dependencies:
 
   map_styles:
     hosted: https://baladyapp-unpub.urbi.ae/
-    version: 1.1.2
+    version: 1.1.6
   equatable: 2.0.7
   flutter_insider: ^3.15.2
 
