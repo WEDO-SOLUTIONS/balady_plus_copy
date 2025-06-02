@@ -13,6 +13,7 @@ import 'package:mapness/widgets/landing/follow_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 
 class MapSearchSheetControls extends ConsumerStatefulWidget {
   // In percent of the screen
@@ -100,6 +101,8 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                           const LayersControl(),
                           const SizedBox(height: 8),
                           const TrafficControl(),
+                          const SizedBox(height: uikit.Spacing.$2x),
+                          const DimensionControl(),
                           const Spacer(),
                           const ZoomControl(),
                           const Spacer(),
@@ -127,7 +130,6 @@ class MapSearchSheetControlsState extends ConsumerState<MapSearchSheetControls> 
                   ),
                 ),
               ),
-              SizedBox(height: widget.collapsedSize),
             ],
           ),
         ),

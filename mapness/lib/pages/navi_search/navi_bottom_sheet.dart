@@ -9,9 +9,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
-import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/landing/search_in_rect.dart';
-import 'package:mapness/features/map_tap_handler/map_tap_handler_provider.dart';
 import 'package:mapness/features/search/models/search_state.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
@@ -42,12 +40,12 @@ class NaviBottomSheet extends ConsumerStatefulWidget {
 }
 
 class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsBindingObserver {
+  late final StatefulBottomSheetController<ThreeStateBottomSheet> _statefulBottomSheetController;
+  double currentSize = 0.1;
   late final StreamSubscription<bool> _keyboardVisible;
   final _kbVisibilityController = KeyboardVisibilityController();
   final _settings = MapObjectManagerSettings.search();
   StreamSubscription<TapEvent>? _streamSubscription;
-
-  late final StatefulBottomSheetController<ThreeStateBottomSheet> _bottomSheetController;
 
   @override
   void initState() {
@@ -62,7 +60,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     ref.read(dgisControllerProvider).valueOrNull?.stopFollowNavigation();
     ref.read(dgisControllerProvider).value?.setCameraPositionPoint(CameraPositionPointMessage(x: 0.5, y: 0.5));
 
-    _bottomSheetController = StatefulBottomSheetController<ThreeStateBottomSheet>(
+    _statefulBottomSheetController = StatefulBottomSheetController<ThreeStateBottomSheet>(
       behavior: MultiSnappingBehavior(
         models: [
           AspectRatioSnappingModel({.7, .931}),
@@ -74,11 +72,10 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     );
 
     _keyboardVisible = _kbVisibilityController.onChange.listen(_onKeyboardToggle);
-    _setupTapListener();
     WidgetsBinding.instance.addObserver(this);
 
-    _bottomSheetController.addListener(() {
-      if (_bottomSheetController.state == ThreeStateBottomSheet.hidden) {
+    _statefulBottomSheetController.addListener(() {
+      if (_statefulBottomSheetController.state == ThreeStateBottomSheet.hidden) {
         _unfocusSearchField();
       }
     });
@@ -109,7 +106,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       ]);
     }
 
-    _bottomSheetController.dispose();
+    _statefulBottomSheetController.dispose();
     _keyboardVisible.cancel();
 
     _streamSubscription?.cancel();
@@ -133,38 +130,42 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
       },
     );
 
-    return Stack(
-      alignment: Alignment.bottomLeft,
-      children: [
-        Listener(
-          behavior: HitTestBehavior.translucent,
-          onPointerDown: (_) {
-            _unfocusSearchField();
-            _collapseBottomSheet();
-          },
-        ),
-
-        ///
-        SearchScope(
-          named: SearchScopeEnum.map,
-          child: StatefulBottomSheet<ThreeStateBottomSheet>(
-            outsideOpacityDelegate: _bottomSheetController.defaultOpacityDelegate,
-            outside: NaviSearchSheetControls(_bottomSheetController),
-            scrollController: _bottomSheetController,
-            safeAreaColor: context.colorsV3.backgroundSurface2,
-            displayDragger: false,
-            backgroundColor: context.colorsV3.backgroundSurface4,
-            header: NaviSearchHeader(
-              backgroundColor: context.colorsV3.backgroundSurface2,
-              requestFocus: false,
-              onClose: () => context.router.popForced(),
-            ),
-            sliverBeforeContent: NaviSearchContent(
-              scrollController: _bottomSheetController,
+    return SearchScope(
+      named: SearchScopeEnum.navi,
+      child: Stack(
+        alignment: Alignment.bottomLeft,
+        children: [
+          Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              _unfocusSearchField();
+              _collapseBottomSheet();
+            },
+          ),
+          NotificationListener<ScrollNotification>(
+            onNotification: _onNotification,
+            child: StatefulBottomSheet<ThreeStateBottomSheet>(
+              animateOpening: false,
+              keepContentBehindFooter: true,
+              scrollController: _statefulBottomSheetController,
+              outsideOpacityDelegate: _statefulBottomSheetController.defaultOpacityDelegate,
+              outside: NaviSearchSheetControls(_statefulBottomSheetController),
+              safeAreaColor: context.colorsV3.backgroundSurface2,
+              displayDragger: false,
+              backgroundColor: context.colorsV3.backgroundSurface4,
+              key: const ValueKey('NAVI SEARCH SHEET'),
+              header: NaviSearchHeader(
+                backgroundColor: context.colorsV3.backgroundSurface2,
+                requestFocus: false,
+                onClose: () => context.router.popForced(),
+              ),
+              sliverBeforeContent: NaviSearchContent(
+                bottomSheetContentScrollController: _statefulBottomSheetController,
+              ),
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -196,27 +197,33 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     }
   }
 
+  bool _onNotification(ScrollNotification notification) {
+    if (notification is ScrollStartNotification) {
+      // BSA-1103
+      // We need to check if the user is dragging the sheet
+      // If not we don't need to unfocus the search field
+      //
+      // This check is necessary because the [ScrollStartNotification] is called even on the scroll of the TextField
+      // when the user is typing a long text and the TextField is scrolling to show it
+      if (notification.dragDetails != null) {
+        _unfocusSearchField();
+      }
+    }
+    return true;
+  }
+
   void _unfocusSearchField() {
-    if (_kbVisibilityController.isVisible && _bottomSheetController.interpolation == 0) {
+    if (_kbVisibilityController.isVisible && _statefulBottomSheetController.interpolation == 0) {
       FocusManager.instance.primaryFocus?.unfocus();
     }
   }
 
   void _onKeyboardToggle(bool kbState) {
-    if (!kbState) {
+    if (!kbState || _statefulBottomSheetController.state == ThreeStateBottomSheet.expanded) {
       return;
     }
-    final currentExp = _bottomSheetController.state;
-    if (currentExp == ThreeStateBottomSheet.expanded || currentExp == ThreeStateBottomSheet.open) {
-      return;
-    }
-    // We need to wait because of the rebuild the sheet state
-    // At the build method we recalculate [collapsedHeight] and we secretly call the [didUpdateWidget] method
-    // of [_dgisSheetController]. And if we call the [animateTo] method before the [didUpdateWidget] method
-    // we will get set wrong [Expansion] value
-    Future.delayed(Durations.short4).then((_) {
-      _bottomSheetController.setState(ThreeStateBottomSheet.expanded);
-    });
+
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.expanded);
   }
 
   void onClose() {
@@ -241,16 +248,7 @@ class _NaviBottomSheetState extends ConsumerState<NaviBottomSheet> with WidgetsB
     context.router.popForced();
   }
 
-  void _setupTapListener() {
-    _streamSubscription = ref.read(mapTapHandlerProvider.notifier).listen((_) {
-      if (context.router.isRouteActive(SearchRoute.name)) {
-        _unfocusSearchField();
-        _collapseBottomSheet();
-      }
-    });
-  }
-
   void _collapseBottomSheet() {
-    _bottomSheetController.setState(ThreeStateBottomSheet.hidden);
+    _statefulBottomSheetController.setState(ThreeStateBottomSheet.hidden);
   }
 }

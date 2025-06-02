@@ -118,4 +118,20 @@ extension SearchCategoryData on SearchCategoryMessage {
       SearchCategoryMessage.beaches => Colors.amber,
     };
   }
+
+  List<int> get rubrics => switch (this) {
+        SearchCategoryMessage.mousques => const [13374],
+        SearchCategoryMessage.gasStations => const [18547],
+        SearchCategoryMessage.cafe => const [159, 162],
+        SearchCategoryMessage.restaurants => const [161,165,161,9786,162,469,58871],
+        SearchCategoryMessage.parks => const [168],
+        SearchCategoryMessage.beaches => const [168],
+        SearchCategoryMessage.hospitals => const [201],
+        SearchCategoryMessage.schools => const [245],
+        SearchCategoryMessage.pharmacies => const [207],
+        SearchCategoryMessage.dentalCenters => const [222],
+        SearchCategoryMessage.hotels => const [269],
+        SearchCategoryMessage.beautyCenters => const [56759,110351,382,4521,4517,5603,651,58858,4518,652,13726,110355,13102,53986,110352],
+        SearchCategoryMessage.recreationCenters => const [537,169,169,170,110358,51001,24472,173,110300,630,110388,110358,190,110358],
+      };
 }

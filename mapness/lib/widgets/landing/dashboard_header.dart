@@ -8,8 +8,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/advert_metrics/advert_metrics.dart';
-import 'package:mapness/features/landing/quick_filter_request_source_screen.dart';
-import 'package:mapness/features/landing/search_by_rubrics.dart';
 import 'package:mapness/features/search/providers/search.dart';
 import 'package:mapness/features/search/ui/search_scope.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
@@ -85,15 +83,16 @@ class _DashboardMenu extends ConsumerWidget {
             child: SizedBox(
               height: QuickFilters.defaultHeight,
               child: MapQuickFilters(
-                id: QuickFilterScreen.dashboard,
                 customFilters: [
                   FilterItemConfig(
                     filterType: FilterType.custom,
                     icon: TransportIcons.locationDirectionNavigator,
-                    onTap: () {
-                      ref.read(locationProvider.notifier).checkLocationPermission();
-                      ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
-                      context.router.push(const FreeRoamRoute());
+                    onTap: () async {
+                      final isAllowed = await ref.read(locationProvider.notifier).checkLocationPermission();
+                      if (isAllowed) {
+                        ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreLandingEngagement);
+                        await context.router.push(const FreeRoamRoute());
+                      }
                     },
                   ),
                 ],
@@ -125,12 +124,11 @@ class DashboardHeader extends ConsumerWidget {
 
               ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
 
-              ref.read(searchByRubricsQueryProvider.notifier).update(null);
               // Here we clean the search query on tap on the search field
               // So the user can see the search history, not previous search results
               ref.read(searchProvider(SearchScopeEnum.map.value).notifier).clear();
 
-              ref.read(urbiAnalyticsProvider).track(
+              ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
                     '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.uniqueSearchInitialized}',
                   );
               context.router.push(SearchRoute(expansion: Expansion.expanded));

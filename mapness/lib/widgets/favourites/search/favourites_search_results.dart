@@ -24,7 +24,7 @@ class FavouritesSearchResults extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final contentColor = context.colorsV2.backgroundSurface4;
+    final contentColor = context.colorsV2.backgroundSurface1;
 
     final items = results.firstPage?.items;
     final length = items?.length ?? 0;

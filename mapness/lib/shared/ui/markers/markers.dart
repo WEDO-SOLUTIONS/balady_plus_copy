@@ -1,6 +1,6 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/_generated/assets/assets.gen.dart';
-import 'package:mapness/shared/utils/common_function.dart';
+import 'package:mapness/shared/extensions/string_ext.dart';
 
 class Markers {
   static const double defaultWidth = 70;
@@ -16,6 +16,7 @@ class Markers {
     double? height,
     String? text,
     MarkerTextStyleMessage? textStyle,
+    int maxCharsPerLine = 40,
   }) =>
       Marker(
         id: id ?? 'PIN-MARKER',
@@ -25,7 +26,7 @@ class Markers {
             svgPath: icon ?? Assets.icons.svg.icPinNew.keyName,
             width: width ?? defaultWidth,
           ),
-          text: breakMarkerLabel(text),
+          text: text?.breakMarkerLabel(maxCharsPerLine: maxCharsPerLine),
           textStyle: textStyle,
           anchor: MarkerAnchorMessage(x: 0.5, y: 1),
           animatedAppearance: true,

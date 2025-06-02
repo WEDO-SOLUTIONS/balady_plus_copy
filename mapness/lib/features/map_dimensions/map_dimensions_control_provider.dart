@@ -5,10 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'map_dimensions_control_provider.g.dart';
 
-enum MapDimensionsState {
-  twoDimensional,
-  threeDimensional,
-}
+enum MapDimensionsState { twoDimensional, threeDimensional, hide }
 
 @Riverpod(keepAlive: true)
 class MapDimensionsControl extends _$MapDimensionsControl {
@@ -19,10 +16,15 @@ class MapDimensionsControl extends _$MapDimensionsControl {
     final cameraPoint = ref.watch(cameraPositionProvider);
 
     if (cameraPoint == null) {
-      return MapDimensionsState.threeDimensional;
+      return MapDimensionsState.hide;
     }
 
-    if (cameraPoint.zoom.ceil() >= 17 && cameraPoint.tilt != 0) {
+    if (cameraPoint.zoom.floor() <= 16) {
+      return MapDimensionsState.hide;
+    }
+
+    // Zoom level is greater than 16 tilt is greater then 5 degrees
+    if (cameraPoint.zoom.floor() > 16 && (cameraPoint.tilt.abs() > 5)) {
       return MapDimensionsState.threeDimensional;
     }
 
@@ -47,15 +49,13 @@ class MapDimensionsControl extends _$MapDimensionsControl {
     if (newState == MapDimensionsState.threeDimensional) {
       _cameraMoveOperation = CancelableOperation.fromFuture(ref.read(cameraPositionProvider.notifier).animateTo(
             cameraPoint.copyWith(
-              tilt: 100,
-              zoom: cameraPoint.zoom >= 17 ? cameraPoint.zoom : 17,
+              tilt: 90,
             ),
           ));
     } else {
       _cameraMoveOperation = CancelableOperation.fromFuture(ref.read(cameraPositionProvider.notifier).animateTo(
             cameraPoint.copyWith(
               tilt: 0,
-              zoom: cameraPoint.zoom <= 16 ? cameraPoint.zoom : 16,
             ),
           ));
     }

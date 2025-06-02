@@ -4,7 +4,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
@@ -105,7 +104,7 @@ class ProfilePage extends HookConsumerWidget {
                                       ContentRowV2(
                                         onTap: () => context.router.push(const SettingsRoute()),
                                         trailing: trailing,
-                                        leading: SvgPicture.asset('assets/icons/svg/profile/settings.svg', height: 24, width: 24) ,
+                                        leading: leadingIconBuilder(SystemIcons.settings),
                                         text: ContentRowTextOptions(
                                           title: context.l10n.settings,
                                         ),
@@ -121,7 +120,7 @@ class ProfilePage extends HookConsumerWidget {
                                       isDividerEnabled: true,
                                       onTap: () => context.router.push(const HelpCenterRoute()),
                                       trailing: trailing,
-                                      leading:SvgPicture.asset('assets/icons/svg/profile/question_circle.svg', height: 24, width: 24) ,//leadingIconBuilder(GeneralIcons.questionCircle),
+                                      leading: leadingIconBuilder(GeneralIcons.questionCircle),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.helpCenter,
                                       ),
@@ -132,7 +131,7 @@ class ProfilePage extends HookConsumerWidget {
                                         context.router.push(const AboutBaladyRoute());
                                       },
                                       trailing: trailing,
-                                      leading: SvgPicture.asset('assets/icons/svg/profile/info.svg', height: 24, width: 24) ,
+                                      leading: leadingIconBuilder(GeneralIcons.infoSquare),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.aboutApp,
                                       ),
@@ -144,7 +143,7 @@ class ProfilePage extends HookConsumerWidget {
                                         );
                                       },
                                       trailing: trailing,
-                                      leading: SvgPicture.asset('assets/icons/svg/profile/rate.svg', height: 24, width: 24) ,
+                                      leading: leadingIconBuilder(GeneralIcons.star),
                                       text: ContentRowTextOptions(
                                         title: context.l10n.rateBaladyApp,
                                       ),
@@ -167,15 +166,10 @@ class ProfilePage extends HookConsumerWidget {
                                                   baseColor: context.colorsV3.errorDefault,
                                                 ),
                                               ),
-                                              leading: SvgPicture.asset(
-                                                'assets/icons/svg/ic_profile_logout.svg',
-                                                height: 24,
-                                                width: 24,
-                                                matchTextDirection: true,
-                                                colorFilter: ColorFilter.mode(
-                                                  context.colorsV3.errorDefault,
-                                                  BlendMode.srcIn,
-                                                ),
+                                              leading: Icon(
+                                                GeneralIcons.doorEntrance,
+                                                size: AppSizes.xxs,
+                                                color: context.colorsV3.errorDefault,
                                               ),
                                             ),
                                           ],

@@ -9,6 +9,7 @@ import 'package:mapness/widgets/landing/indoor_control.dart';
 import 'package:mapness/widgets/landing/layers_control.dart';
 import 'package:mapness/widgets/landing/traffic_control.dart';
 import 'package:mapness/widgets/landing/zoom_control.dart';
+import 'package:mapness/widgets/map_dimensions_control/dimension_contrtol.dart';
 import 'package:mapness/widgets/weather/weather_control.dart';
 
 class RoutingMapControls extends ConsumerWidget {
@@ -54,9 +55,8 @@ class RoutingMapControls extends ConsumerWidget {
                           LayersControl(),
                           SizedBox(height: 8),
                           TrafficControl(),
-                          //TODO(scroollocker): Enable when prepare release
-                          // SizedBox(height: uikit.Spacing.$2x),
-                          // DimensionContrtol(),
+                          SizedBox(height: uikit.Spacing.$2x),
+                          DimensionControl(),
                           Spacer(),
                           ZoomControl(),
                           Spacer(),

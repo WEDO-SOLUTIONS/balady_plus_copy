@@ -24,6 +24,7 @@ class PoiCardFooter extends HookConsumerWidget {
   final VoidCallback? onEntranceTap;
   final VoidCallback onTapCar;
   final void Function(FavouriteItem? favouriteItem) onTapFavorite;
+  final LatLng? closestPoint;
   final StatefulBottomSheetController<PoiCardBottomSheetState>? bottomSheetController;
 
   const PoiCardFooter({
@@ -33,6 +34,7 @@ class PoiCardFooter extends HookConsumerWidget {
     this.callPhone,
     this.onEntranceTap,
     this.data,
+    this.closestPoint,
     this.bottomSheetController,
     super.key,
   });
@@ -106,31 +108,32 @@ class PoiCardFooter extends HookConsumerWidget {
               label: hasContactsAndHasEntrances ? null : context.l10n.save,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
-          ItemActionBar(
-            icon: SystemIcons.share,
-            buttonType: BaladyButtonType.secondary,
-            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
-            onPressed: throttledShare,
-          ),
-          // TODO(Ayat): temporarily hides
-          // if (!parkingPoi)
-          //   ItemActionBar(
-          //     icon: SystemIcons.parkingAdd,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => _onParkingTab(ref, context),
-          //   ),
-          // if (parkingPoi)
-          //   ItemActionBar(
-          //     icon: SystemIcons.edit,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
-          //   ),
-          // if (parkingPoi)
-          //   ItemActionBar(
-          //     icon: GeneralIcons.trash,
-          //     buttonType: BaladyButtonType.secondary,
-          //     onPressed: () => _onTrashTab(ref, context),
-          //   ),
+          // BSA-2479: Hide share button for parking spot POI
+          if (!parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.share,
+              buttonType: BaladyButtonType.secondary,
+              label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
+              onPressed: throttledShare,
+            ),
+          if (!parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.parkingAdd,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: () => _onParkingTab(ref, context),
+            ),
+          if (parkingPoi)
+            ItemActionBar(
+              icon: SystemIcons.edit,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: () => context.router.push(ParkingSpotRoute(isEdit: true)),
+            ),
+          if (parkingPoi)
+            ItemActionBar(
+              icon: GeneralIcons.trash,
+              buttonType: BaladyButtonType.secondary,
+              onPressed: () => _onTrashTab(ref, context),
+            ),
         ],
       ),
     );
@@ -144,16 +147,35 @@ class PoiCardFooter extends HookConsumerWidget {
           title: context.l10n.createNewParkingSpot,
           desc: context.l10n.currentParkingSpaceRemoved,
           onAcceptTab: () {
-            context.router.popAndPush(ParkingSpotRoute(
-              address: data?.title,
-              markerPosition: data?.markerPosition,
-            ));
+            context.router.popAndPush(
+              ParkingSpotRoute(
+                address: data?.title,
+                markerPosition: closestPoint != null
+                    ? GeoPointWithElevationMessage(
+                        latitude: closestPoint!.latitude,
+                        longitude: closestPoint!.longitude,
+                        elevation: 0,
+                      )
+                    : data?.markerPosition,
+              ),
+            );
           },
           onCancelTab: context.router.popForced,
         ),
       );
     } else {
-      context.router.push(ParkingSpotRoute(address: data?.title, markerPosition: data?.markerPosition));
+      context.router.push(
+        ParkingSpotRoute(
+          address: data?.title,
+          markerPosition: closestPoint != null
+              ? GeoPointWithElevationMessage(
+                  latitude: closestPoint!.latitude,
+                  longitude: closestPoint!.longitude,
+                  elevation: 0,
+                )
+              : data?.markerPosition,
+        ),
+      );
     }
   }
 

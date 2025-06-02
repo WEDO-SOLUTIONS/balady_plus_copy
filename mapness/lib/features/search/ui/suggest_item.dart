@@ -69,7 +69,7 @@ class SuggestItem extends ConsumerWidget {
         final objectItem = object.item;
         final historyItem = SearchHistoryItem.fromDirectoryObject(objectItem);
         ref.read(searchHistoryProvider(scope.value).notifier).put(historyItem);
-        ref.read(urbiAnalyticsProvider).track(
+        ref.read(urbiAnalyticsProvider.notifier).trackWithPrint(
               '${MetricsConstants.searchTag}::${MetricsConstants.searchKeys.suggestionPressed}',
             );
         onObjectTap(objectItem);
@@ -80,7 +80,7 @@ class SuggestItem extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       onTap: _onSuggestTap,
       isDividerEnabled: !isLast,
-      leading: SystemIcons.search.icon(color: iconColor ?? context.colorsV3.foregroundMuted),
+      leading: SystemIcons.search.icon(color: iconColor ?? context.colorsV3.foregroundSoft),
       text: ContentRowTextOptions(
         title: suggest.title.text,
         titleOptions: ContentRowTextOption(

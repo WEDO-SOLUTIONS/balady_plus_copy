@@ -65,7 +65,7 @@ class SearchHandler(
 
     fun search(
         queryText: String,
-        categories: List<RubricId>?,
+        rubricIds: List<RubricId>?,
         spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
@@ -75,8 +75,8 @@ class SearchHandler(
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         val queryBuilder =
-                if (categories != null)
-                        SearchQueryBuilder.fromQueryTextAndRubricIds(queryText, categories!!)
+                if (rubricIds != null)
+                        SearchQueryBuilder.fromQueryTextAndRubricIds(queryText, rubricIds)
                 else SearchQueryBuilder.fromQueryText(queryText)
 
         val query =
@@ -132,8 +132,8 @@ class SearchHandler(
         )
     }
 
-    fun searchByCategories(
-        categories: List<RubricId>,
+    fun searchByRubrics(
+        rubricIds: List<RubricId>,
         spatialRestriction: List<GeoPoint>?,
         searchGeoRect: GeoRect?,
         weekTimeMessage: WeekTimeSearchMessage? = null,
@@ -143,65 +143,9 @@ class SearchHandler(
         callback: (Result<SearchResultMessage>)->Unit
     ) {
         val query =
-                SearchQueryBuilder.fromRubricIds(categories)
+                SearchQueryBuilder.fromRubricIds(rubricIds)
                         .setSortingType(sortingType.toSortingType())
                         .setPageSize(pageSize)
-                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
-                        .setDirectoryFilter(
-                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
-                        )
-                        .setAreaOfInterest(searchGeoRect)
-                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-                        .build()
-
-        performSearch(
-            query = query,
-            callback = callback
-        )
-    }
-
-    fun searchByParkCategory(
-        searchGeoRect: GeoRect?,
-        spatialRestriction: List<GeoPoint>?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        locale: String?,
-        callback: (Result<SearchResultMessage>)->Unit
-    ) {
-        val query =
-                SearchQueryBuilder.fromQueryText("park")
-                        .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
-                        .setSortingType(sortingType.toSortingType())
-                        .setPageSize(pageSize.toInt())
-                        .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
-                        .setDirectoryFilter(
-                                DirectoryFilter(weekTimeMessage.toFilter(), emptyList())
-                        )
-                        .setAreaOfInterest(searchGeoRect)
-                        .setSpatialRestriction(spatialRestriction ?: saRestrictions)
-                        .build()
-
-        performSearch(
-            query = query,
-            callback = callback
-        )
-    }
-
-    fun searchByBeachCategory(
-        searchGeoRect: GeoRect?,
-        spatialRestriction: List<GeoPoint>?,
-        weekTimeMessage: WeekTimeSearchMessage? = null,
-        sortingType: SortingTypeMessage,
-        pageSize: Int,
-        locale: String?,
-        callback: (Result<SearchResultMessage>)->Unit
-    ) {
-        val query =
-                SearchQueryBuilder.fromQueryText("beach")
-                        .setAllowedResultTypes(listOf(ObjectType.ATTRACTION))
-                        .setSortingType(sortingType.toSortingType())
-                        .setPageSize(pageSize.toInt())
                         .setLocale(if(locale != null) Locale.makeLocale(localeStr = locale) else null)
                         .setDirectoryFilter(
                                 DirectoryFilter(weekTimeMessage.toFilter(), emptyList())

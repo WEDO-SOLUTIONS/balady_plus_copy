@@ -4,11 +4,9 @@ class _PortraitLayout extends StatelessWidget {
   final RouteSearchOptionsMessage navType;
   final ValueNotifier<double> bottomHeightNotifier;
   final ValueNotifier<PathNavState> navigationState;
-  final ValueNotifier<bool> expansionNotifier;
   final ValueNotifier<bool> showControls;
   final Widget maneuverAndLimitWidget;
   final Widget compassControlWidget;
-  final VoidCallback toggleExpansionNotifier;
   final VoidCallback? onRoutePressed;
   final VoidCallback? onUserActivity;
   final Widget pathNavFollowControlWidget;
@@ -17,14 +15,12 @@ class _PortraitLayout extends StatelessWidget {
   const _PortraitLayout({
     required this.bottomHeightNotifier,
     required this.navigationState,
-    required this.expansionNotifier,
     required this.maneuverAndLimitWidget,
     required this.compassControlWidget,
     required this.showControls,
     required this.pathNavFollowControlWidget,
     required this.padding,
     required this.navType,
-    required this.toggleExpansionNotifier,
     this.onRoutePressed,
     this.onUserActivity,
   });
@@ -34,19 +30,6 @@ class _PortraitLayout extends StatelessWidget {
         bottom: false,
         child: Stack(
           children: [
-            ValueListenableBuilder(
-              valueListenable: navigationState,
-              builder: (context, state, child) {
-                if (state == PathNavState.finished) {
-                  return GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: toggleExpansionNotifier,
-                    child: const SizedBox.expand(),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
@@ -72,12 +55,11 @@ class _PortraitLayout extends StatelessWidget {
                                       padding: padding,
                                       child: const TrafficParkingControl(trafficVisible: false),
                                     ),
-                                    //TODO(scroollocker): Enable when prepare release
-                                    // const SizedBox(height: uikit.Spacing.$2x),
-                                    // Padding(
-                                    //   padding: padding,
-                                    //   child: const DimensionContrtol(),
-                                    // ),
+                                    const SizedBox(height: uikit.Spacing.$2x),
+                                    Padding(
+                                      padding: padding,
+                                      child: const DimensionControl(),
+                                    ),
                                     const Spacer(),
                                     Padding(
                                       padding: padding,
@@ -129,7 +111,7 @@ class _PortraitLayout extends StatelessWidget {
                 ),
                 ValueListenableBuilder(
                   valueListenable: bottomHeightNotifier,
-                  builder: (context, value, _) => min(value, 120.0).heightBox,
+                  builder: (context, value, _) => value.heightBox,
                 )
               ],
             ),

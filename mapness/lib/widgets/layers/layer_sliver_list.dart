@@ -3,7 +3,6 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mapness/features/landing/search_by_rubrics.dart';
 import 'package:mapness/features/lifestyle_layers/helpers/layers_type_extension.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_state.dart' as layers_state;
@@ -38,8 +37,6 @@ class LayerSliverList extends ConsumerWidget {
 
         return ContentRow(
           onTap: () async {
-            ref.read(searchByRubricsQueryProvider.notifier).update(null);
-
             if (value == layers_state.LayerType.favourites) {
               await ref.read(authMethodsProvider.notifier).authOrOpen(
                 context,

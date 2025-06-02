@@ -5,6 +5,7 @@ class BaldayDeeplink {
   static const String longitudeKey = 'lon';
   static const String fieldsKey = 'fields';
   static const String keyKey = 'key';
+  static const String qKey = 'q';
   static const String typeKey = 'type';
   static const String dgisObjectIdKey = 'dgis-object-id';
   static const String baseAuthority = 'apps.balady.gov.sa';
@@ -21,8 +22,10 @@ class BaldayDeeplink {
   static const vendorConfigKey = 'dgis/native-sdk/keys/user_web_api_key_for_on_premise';
   static const catalogKey = 'Modules/directory/webapi_url';
   static String geocodeUrl(String catalogApi) => '$catalogApi/3.0/items/geocode';
+  static String searchBoundRegion(String catalogApi) => '$catalogApi/2.0/region/search';
 
   static const String fieldsValuePoints = 'items.point';
+  static const String fieldsValueBounds = 'items.bounds';
 
   // Momrah
   static String twinsUrl(String twinsApi) => '$twinsApi/twins/search/partners';

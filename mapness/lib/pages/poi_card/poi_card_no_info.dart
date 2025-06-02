@@ -22,7 +22,7 @@ class _PoiCardNoInfo extends HookConsumerWidget {
 
     final poiActions = ref.read(poiCardActionsProvider.notifier);
 
-    return SafeArea(
+    return SafeAreaPadding(
       child: StatelessBottomSheet(
         safeAreaColor: context.colorsV2.backgroundSurface2,
         draggerColor: context.colorsV2.backgroundSurface2,

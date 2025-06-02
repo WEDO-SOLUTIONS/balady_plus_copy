@@ -15,13 +15,13 @@ import 'package:provider/provider.dart';
 
 class RoutingSearchContent extends ConsumerWidget {
   const RoutingSearchContent({
-    required this.scrollController,
+    required this.bottomSheetContentScrollController,
     required this.showMyLocation,
     super.key,
   });
 
   final bool showMyLocation;
-  final ScrollController scrollController;
+  final ScrollController bottomSheetContentScrollController;
 
   @override
   Widget build(
@@ -72,7 +72,7 @@ class RoutingSearchContent extends ConsumerWidget {
         top: false,
         child: RoutingSearchResults(
           results: results,
-          scrollController: scrollController,
+          bottomSheetContentScrollController: bottomSheetContentScrollController,
         ),
       ),
       failure: (query, errorMessage) => BaseErrorWidget(
