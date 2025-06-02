@@ -22,51 +22,47 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
     
     static private(set) var map: Map?
     static var delegate: CarPlayConnectionSceneDelegate?
-
+    private var mainScreen: MainScreen?
+    
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
         didConnect interfaceController: CPInterfaceController,
         to window: CPWindow
     ) {
+        Bundle.swizzleLocalization()
+        Bundle.syncLanguage()
+        
         // TODO(Sergei): load config from Firebase remote config
         DgisMapInitializer.shared.initialize(configMessage: .momrahProd, contentMessage: nil)
         
-        let mapTemplate = CPMapTemplate()
-        if let maneuverColor = UIColor(named: "CarPlayManueverBackgroung") {
-            mapTemplate.guidanceBackgroundColor = maneuverColor
+        let sdk = DgisMapInitializer.shared.getSdkContainer()
+        
+        guard let mapFactory = try? sdk.makeMapFactory(options: MapOptions.default), let context = try? sdk.context else {
+            fatalError("Plugin has not been initialized")
         }
-        mapTemplate.hidesButtonsWithNavigationBar = false
+        
+        let map = mapFactory.map
+        let dgisCarPlayMapView = DgisCarPlayMapView(map: map, mapView: mapFactory.mapView)
+        let mainScreen = MainScreen(
+            map: map,
+            interfaceController: interfaceController,
+            dgisCarPlayMapView: dgisCarPlayMapView,
+            window: window,
+            eventProcessor: mapFactory.mapEventProcessor,
+            userDefaultsPublished: UserDefaultsPublished()
+        )
+        let mapTemplate = mainScreen.createTemplate()
+        
         FlutterCarPlaySceneDelegate.mapTemplate = mapTemplate
         
-        let mapView = DgisCarPlayMapView()
-        mapView.carWindowScreenNativeBounds = templateApplicationScene.carWindow.screen.nativeBounds
-        mapView.delegate = self
-        FlutterCarPlaySceneDelegate.mapView = mapView
-        
-        mapTemplate.mapDelegate = mapView
-        window.rootViewController = mapView
-        
-        window.isUserInteractionEnabled = true
-        window.isMultipleTouchEnabled = true
-        
-        mapTemplate.mapButtons = [
-            makeZoomInButton(),
-            makeZoomOutButton(),
-            makeMyLocationButton()
-        ]
-        
-        mapTemplate.leadingNavigationBarButtons = [
-            makeSearchButton(interfaceController: interfaceController),
-        ]
-        
-        mapTemplate.trailingNavigationBarButtons = [
-            makePanHeaderButton(),
-            makeTrafficButton(),
-        ]
+        dgisCarPlayMapView.carWindowScreenNativeBounds = templateApplicationScene.carWindow.screen.nativeBounds
+        dgisCarPlayMapView.delegate = self
+        FlutterCarPlaySceneDelegate.mapView = dgisCarPlayMapView
         
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
         
         Self.delegate?.onConnectionStateChanged(connected: true)
+        self.mainScreen = mainScreen
     }
     
     func viewDidLoad(with map: DGis.Map) {
@@ -97,113 +93,9 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
+        self.mainScreen = nil
         FlutterCarPlaySceneDelegate.map = nil
         Self.delegate?.onConnectionStateChanged(connected: false)
-    }
-    
-    private var searchTemplateDelegate: CarPlaySearchTemplateDelegate?
-    
-    func makeSearchButton(interfaceController: CPInterfaceController) -> CPBarButton {
-        let searchImage = UIImage(named: "Search")!
-        return CPBarButton(image: searchImage) { _ in
-            guard let map = FlutterCarPlaySceneDelegate.map else { return }
-            self.searchTemplateDelegate = CarPlaySearchTemplateDelegate(
-                interfaceController: interfaceController,
-                map: map
-            )
-            let searchTemplate = CPSearchTemplate()
-            searchTemplate.delegate = self.searchTemplateDelegate
-            interfaceController.pushTemplate(searchTemplate, animated: true) { _, __ in }
-        }
-    }
-}
-
-extension FlutterCarPlaySceneDelegate {
-    func makeTrafficButton() -> CPBarButton {
-        let image = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(.alwaysOriginal)
-        let button = CPBarButton(image: image) { _ in
-            FlutterCarPlaySceneDelegate.mapView?.trafficClicked()
-        }
-        FlutterCarPlaySceneDelegate.mapView?.trafficButton = button
-        button.isEnabled = true
-        
-        return button
-    }
-    
-    func makeZoomInButton() -> CPMapButton {
-        let button = CPMapButton { _ in
-            FlutterCarPlaySceneDelegate.mapView?.zoomIn()
-        }
-        button.isHidden = false
-        button.isEnabled = true
-        button.image = UIImage(named: "ZoomIn")!
-        button.focusedImage = UIImage(named: "ZoomIn")!
-        
-        return button
-    }
-    
-    func makeZoomOutButton() -> CPMapButton {
-        let button = CPMapButton { _ in
-            FlutterCarPlaySceneDelegate.mapView?.zoomOut()
-        }
-        button.isHidden = false
-        button.isEnabled = true
-        button.image = UIImage(named: "ZoomOut")!
-        button.focusedImage = UIImage(named: "ZoomOut")!
-        
-        return button
-    }
-    
-    func makeMyLocationButton() -> CPMapButton {
-        let button = CPMapButton { _ in
-            FlutterCarPlaySceneDelegate.mapView?.myLocation()
-        }
-        button.isHidden = false
-        button.isEnabled = true
-        button.image = UIImage(named: "FollowOn")!
-        button.focusedImage = UIImage(named: "FollowOn")!
-        
-        return button
-    }
-    
-    func makeAcceptHeaderButton() -> CPBarButton {
-        let button = CPBarButton(title: "Accept") { _ in
-            FlutterCarPlaySceneDelegate.mapTemplate?.dismissPanningInterface(animated: true)
-            FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
-                self.makePanHeaderButton(),
-                self.makeTrafficButton()
-            ]
-            FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = []
-        }
-        button.isEnabled = true
-        
-        return button
-    }
-    
-    func makePanHeaderButton() -> CPBarButton {
-        let image = UIImage(named: "Pan")!.withRenderingMode(.alwaysOriginal)
-        let button = CPBarButton(image: image) { _ in
-            FlutterCarPlaySceneDelegate.mapTemplate?.showPanningInterface(animated: true)
-            FlutterCarPlaySceneDelegate.mapTemplate?.trailingNavigationBarButtons = [
-                self.makeMyLocationHeaderButton()
-            ]
-            FlutterCarPlaySceneDelegate.mapTemplate?.leadingNavigationBarButtons = [
-                self.makeAcceptHeaderButton()
-            ]
-        }
-        button.isEnabled = true
-        
-        return button
-    }
-    
-    func makeMyLocationHeaderButton() -> CPBarButton {
-        let image = UIImage(named: "MyLocation")!.withRenderingMode(.alwaysOriginal)
-        let button = CPBarButton(image: image) { _ in
-            FlutterCarPlaySceneDelegate.mapView?.myLocation()
-        }
-        button.isEnabled = true
-        
-        return button
     }
 }
 
