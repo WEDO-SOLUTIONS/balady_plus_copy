@@ -83,16 +83,19 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
       ),
     );
 
-    return (state.municipalAppBloc != null &&
-            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey)
-        ? BlocProvider.value(
-            value: state.municipalAppBloc!
-              ..add(
-                OpenServerEngineEvent(miniApp: data),
-              ),
-            child: body,
-          )
-        : BlocProvider<MiniAppsEngineBloc>(
+    return
+      // (state.municipalAppBloc != null &&
+      //       state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey)
+      //   ? BlocProvider.value(
+      //       value: state.municipalAppBloc!
+      //         ..add(
+      //           OpenServerEngineEvent(miniApp: data),
+      //         ),
+      //       child: body,
+      //     )
+      //   :
+
+      BlocProvider<MiniAppsEngineBloc>(
             create: (context) {
               return MiniAppsEngineBloc(miniApp: data);
             },
