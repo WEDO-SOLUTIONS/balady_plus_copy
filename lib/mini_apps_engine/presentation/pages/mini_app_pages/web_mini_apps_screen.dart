@@ -1,19 +1,14 @@
 import 'dart:io';
 import 'package:balady_plus/super_app_js_bridge/js_bridge_listener.dart';
 import 'package:dsbridge_flutter/dsbridge_flutter.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-// import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../app/core/services/local/navigation_services.dart';
 import '../../../../app/core/utils/common_functions.dart';
-import '../../../../app/features/_shared_feature_/presentation/dialogs/camera_permission_dialog.dart';
-import '../../../../app/features/_shared_feature_/presentation/dialogs/location_permission_dialog.dart';
-import '../../../../app/features/_shared_feature_/presentation/dialogs/location_service_dialog.dart';
 
 class WebMiniAppsScreen extends StatefulWidget {
   String servicePath;
@@ -36,22 +31,22 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
     if (widget.servicePath.contains("index.html")) {
       // #docregion platform_features
       late final PlatformWebViewControllerCreationParams params;
-      // if (WebViewPlatform.instance is WebKitWebViewPlatform) {
-      //   params = WebKitWebViewControllerCreationParams(
-      //     allowsInlineMediaPlayback: true,
-      //     mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-      //
-      //   );
-      // } else {
-      params = const PlatformWebViewControllerCreationParams();
-      // }
+      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+        params = WebKitWebViewControllerCreationParams(
+          allowsInlineMediaPlayback: true,
+          mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+        );
+      } else {
+        params = const PlatformWebViewControllerCreationParams();
+      }
+
       final DWebViewController controller =
           DWebViewController.fromPlatformCreationParams(
         params,
         onPermissionRequest: (request) {
-          try{
+          try {
             request.grant();
-          }catch(e){
+          } catch (e) {
             print(e);
           }
         },
@@ -85,9 +80,9 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
             _injectPermissionHandlingScript();
           },
           onWebResourceError: (WebResourceError error) {
-          setState(() {
-            _isLoading = false;
-          });
+            setState(() {
+              _isLoading = false;
+            });
           },
         ));
 
@@ -115,42 +110,25 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // return   InAppWebView(
-    //   initialSettings: InAppWebViewSettings(
-    //     useHybridComposition: true,
-    //     javaScriptEnabled: true,
-    //     useShouldOverrideUrlLoading: true,
-    //   ),
-    //   shouldOverrideUrlLoading: (controller, action) async {
-    //     return NavigationActionPolicy.ALLOW;
-    //   },
-    //   onWebViewCreated: (InAppWebViewController controller) {
-    //     // _controller = controller;
-    //   },
-    //   initialUrlRequest: URLRequest(
-    //     // url: Uri.parse('https://flutter.dev/'),
-    //     url: WebUri(widget.servicePath),
-    //   ),
-    // );
     return DWebViewWidget(controller: _controller);
-    return Stack(children: [
-      DWebViewWidget(controller: _controller),
-      if (_isLoading)
-        Column(
-          children: [
-            LinearProgressIndicator(
-              value: _progress,
-              backgroundColor: Colors.grey[200],
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-            ),
-            const Expanded(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            ),
-          ],
-        ),
-    ]);
+    // return Stack(children: [
+    //   DWebViewWidget(controller: _controller),
+    //   if (_isLoading)
+    //     Column(
+    //       children: [
+    //         LinearProgressIndicator(
+    //           value: _progress,
+    //           backgroundColor: Colors.grey[200],
+    //           valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+    //         ),
+    //         const Expanded(
+    //           child: Center(
+    //             child: CircularProgressIndicator(),
+    //           ),
+    //         ),
+    //       ],
+    //     ),
+    // ]);
   }
 
   void _injectPermissionHandlingScript() {
