@@ -52,20 +52,22 @@ class HajjWrapperListenersState extends ConsumerState<HajjWrapperListeners> {
     );
 
     ref
-      ..listen(hajjRcmcProvider, (prevState, newState) async {
+      ..listen(hajjRcmcProvider.future, (prevState, newState) async {
         final isDarkMode = ref.read(darkModeProvider).value?.isDark ?? false;
 
         final hasVisualNotChange = _previousIsDarkMode == isDarkMode;
         _previousIsDarkMode = isDarkMode;
 
-        final dataNotChanged = _eqList(prevState?.value, newState.value);
+        final prevValue = await prevState;
+        final nextValue = await newState;
+        final dataNotChanged = _eqList(prevValue, nextValue);
 
         if (dataNotChanged && hasVisualNotChange) {
           return;
         }
 
         final isRtl = ref.read(appLanguageProvider) == Language.arabic;
-        final markers = (newState.value ?? []).map((item) => _createMarker(item, isRtl, isDarkMode)).toList();
+        final markers = nextValue.map((item) => _createMarker(item, isRtl, isDarkMode)).toList();
 
         await objectManager.removeAllMarkers();
         await objectManager.addMarkers(markers);

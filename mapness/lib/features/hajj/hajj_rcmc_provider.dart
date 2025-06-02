@@ -6,6 +6,7 @@ import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
 import 'package:mapness/shared/providers/dgis_environment.dart';
 import 'package:mapness/shared/providers/map/camera_position.dart';
+import 'package:mapness/shared/providers/map/object_manager.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -23,11 +24,18 @@ class _HajjRcmc extends _$HajjRcmc {
   Language? _cacheLanguage;
   Timer? _timer;
 
-  Dio get dio => ref.read(baseDioProvider)
+  Dio get _dio => ref.read(baseDioProvider)
     ..interceptors.clear()
     ..interceptors.add(
       PrettyDioLogger(responseBody: false),
     );
+
+  MapObjectManager get _objectManager => ref.watch(
+        mapObjectManagerProvider(
+          named: _settings.name,
+          layerId: _settings.layerId,
+        ).notifier,
+      );
 
   @override
   Future<List<PoiMarkerRcmc>> build() async {
@@ -53,18 +61,24 @@ class _HajjRcmc extends _$HajjRcmc {
         return _cached ?? [];
       }
 
+      if (_cacheLanguage != appLanguage) {
+        await _objectManager.removeAllMarkers();
+      }
+
       _cached = [];
       _cacheLanguage = appLanguage;
 
-      dio.options.headers = {'X-Language': appLanguage.baladyCompat};
-      final response = await dio.get(url);
+      _dio.options.headers = {'X-Language': appLanguage.baladyCompat};
+      final response = await _dio.get(url);
 
       final List<dynamic> jsonList = response.data;
       final result = jsonList.map((e) => PoiMarkerRcmc.fromJson(e)).toList();
       _cached = result;
 
+      state = AsyncValue.data(result);
       return result;
     } catch (e) {
+      state = const AsyncValue.data([]);
       return _cached = [];
     }
   }
