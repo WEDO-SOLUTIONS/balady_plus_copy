@@ -58,8 +58,6 @@ class _UrbiMapSectionState extends State<UrbiMapSection> {
 
   @override
   Widget build(BuildContext context) {
-    // setMapCircle(widget.currentUserLocation);
-
     return UrbiMap(onMapCreated: (DgisMapController controller) {
       controller.initialize().then((_) {
         // Setup listeners and initialize map
