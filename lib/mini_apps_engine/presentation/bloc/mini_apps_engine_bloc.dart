@@ -203,7 +203,7 @@ class MiniAppsEngineBloc
       if (retryCounter < 3) {
         // Retry downloading the file up to 3 times
         return _downloadFile(
-          fileId,
+          urlDownload,
           downloadPath,
           serviceKey,
           emitter,
