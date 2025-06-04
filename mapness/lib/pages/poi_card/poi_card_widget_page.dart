@@ -34,11 +34,11 @@ import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_heade
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';
 import 'package:mapness/features/poi_card/widgets/poi_inbuilding_sliver.dart';
-import 'package:mapness/features/poi_card/widgets/poi_loading_sheet.dart';
 import 'package:mapness/features/poi_card/widgets/poi_photo_card_sliver.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/pages/poi_card/parking_content.dart';
+import 'package:mapness/pages/poi_card/poi_card_error_or_loading.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/entities/coordinates.dart';
 import 'package:mapness/shared/extensions/brief_route_info_message_ext.dart';
@@ -55,8 +55,6 @@ import 'package:mapness/shared/providers/map/point_of_interest.dart';
 import 'package:mapness/shared/providers/map/selected_marker.dart';
 import 'package:mapness/shared/ui/dashboard_feedback/feedback_banner_card.dart';
 import 'package:mapness/shared/ui/safe_area_padding.dart';
-import 'package:mapness/shared/ui/sheets/error_sheet.dart';
-import 'package:mapness/shared/ui/sheets/error_sheet_v2.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:urbi_utils/urbi_utils.dart';
 
