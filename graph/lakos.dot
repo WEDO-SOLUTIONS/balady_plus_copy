@@ -3100,6 +3100,7 @@ digraph "" {
   "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/base_dio.dart";
   "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/dgis_environment.dart";
   "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/map/camera_position.dart";
+  "/lib/features/hajj/hajj_rcmc_provider.dart" -> "/lib/shared/providers/map/object_manager.dart";
   "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/features/routing/providers/routes.dart";
   "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/shared/constants/constants.dart";
   "/lib/features/parking_spot/parking_spot_map.dart" -> "/lib/shared/providers/app_language.dart";
