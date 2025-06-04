@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
@@ -76,8 +77,9 @@ class AppFeedbackSheet extends HookConsumerWidget {
     }
 
     final scrollController = useStatelessBottomsheetController(onClose: onCloseBottomSheet);
-    Color backgroundColorDelegate(StatelessBottomSheetController controller) => context.colorsV3.screenOverlayDimming40
-        .withOpacity(Curves.easeIn.transform(controller.aspectRatio * 2.clamp(0, 1)));
+    final backgroundColorDelegate = StatelessSheetDelegateFunction<Color?>(
+      function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
+    );
     final backgroundColor = context.colorsV3.backgroundSurface4;
 
     return FeedbackSourceProvider(

@@ -1,3 +1,4 @@
+import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
@@ -29,12 +30,11 @@ class CitySelectionDialogViewWidget extends HookWidget {
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
-    Color backgroundColorDelegate(StatelessBottomSheetController controller) => context.colorsV3.screenOverlayDimming40
-        .withOpacity(Curves.easeIn.transform(controller.aspectRatio.clamp(0, 1)) * 0.7);
-
     return SafeArea(
       child: StatelessBottomSheet(
-        backgroundColorDelegate: backgroundColorDelegate,
+        backgroundColorDelegate: StatelessSheetDelegateFunction<Color?>(
+          function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
+        ),
         startConfig: BottomSheetStart.instant,
         scrollController: scrollController,
         header: Padding(

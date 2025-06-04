@@ -31,11 +31,23 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
+  /// File path: assets/images/basket.png
+  AssetGenImage get basket => const AssetGenImage('assets/images/basket.png');
+
+  /// File path: assets/images/books.png
+  AssetGenImage get books => const AssetGenImage('assets/images/books.png');
+
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
+  /// File path: assets/images/car.png
+  AssetGenImage get car => const AssetGenImage('assets/images/car.png');
+
   /// File path: assets/images/city_expert.png
   AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
+
+  /// File path: assets/images/clock.png
+  AssetGenImage get clock => const AssetGenImage('assets/images/clock.png');
 
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
@@ -61,6 +73,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
 
+  /// File path: assets/images/hearts.png
+  AssetGenImage get hearts => const AssetGenImage('assets/images/hearts.png');
+
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
 
@@ -84,6 +99,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/onboarding_story_3.png
   AssetGenImage get onboardingStory3 => const AssetGenImage('assets/images/onboarding_story_3.png');
+
+  /// File path: assets/images/plane.png
+  AssetGenImage get plane => const AssetGenImage('assets/images/plane.png');
 
   /// File path: assets/images/qibla.png
   AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.png');
@@ -117,8 +135,12 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
+        basket,
+        books,
         calendarCard,
+        car,
         cityExpert,
+        clock,
         darkMapPreview,
         driveHomeArrow,
         driveHomeBackground,
@@ -127,6 +149,7 @@ class $AssetsImagesGen {
         favoritesExampleEnglish,
         feedbackDashboard,
         feedbackEyes,
+        hearts,
         icArrowFeedback,
         icFlipsContinue,
         ishanSeefromtheskyUnsplash,
@@ -135,6 +158,7 @@ class $AssetsImagesGen {
         onboardingStory1,
         onboardingStory2,
         onboardingStory3,
+        plane,
         qibla,
         regionNotAvailable,
         routeStory1,
@@ -192,6 +216,9 @@ class $AssetsImagesSvgGen {
   /// File path: assets/images_svg/illustration_notifications.svg
   SvgGenImage get illustrationNotifications => const SvgGenImage('assets/images_svg/illustration_notifications.svg');
 
+  /// File path: assets/images_svg/illustration_percent.svg
+  SvgGenImage get illustrationPercent => const SvgGenImage('assets/images_svg/illustration_percent.svg');
+
   /// File path: assets/images_svg/illustration_thanks.svg
   SvgGenImage get illustrationThanks => const SvgGenImage('assets/images_svg/illustration_thanks.svg');
 
@@ -203,6 +230,9 @@ class $AssetsImagesSvgGen {
 
   /// File path: assets/images_svg/sad_face.svg
   SvgGenImage get sadFace => const SvgGenImage('assets/images_svg/sad_face.svg');
+
+  /// File path: assets/images_svg/union.svg
+  SvgGenImage get union => const SvgGenImage('assets/images_svg/union.svg');
 
   /// List of all assets
   List<SvgGenImage> get values => [
@@ -220,10 +250,12 @@ class $AssetsImagesSvgGen {
         happyFace,
         illustrationError,
         illustrationNotifications,
+        illustrationPercent,
         illustrationThanks,
         inactiveStar,
         lostLocation,
-        sadFace
+        sadFace,
+        union
       ];
 }
 
@@ -373,6 +405,9 @@ class $AssetsIconsSvgGen {
   /// File path: assets/icons/svg/parking_control.svg
   SvgGenImage get parkingControl => const SvgGenImage('assets/icons/svg/parking_control.svg');
 
+  /// File path: assets/icons/svg/percent.svg
+  SvgGenImage get percent => const SvgGenImage('assets/icons/svg/percent.svg');
+
   /// File path: assets/icons/svg/photo_gallery.svg
   SvgGenImage get photoGallery => const SvgGenImage('assets/icons/svg/photo_gallery.svg');
 
@@ -461,6 +496,7 @@ class $AssetsIconsSvgGen {
         icSearchClear,
         icShare,
         parkingControl,
+        percent,
         photoGallery,
         saFlag,
         tagArrival,
