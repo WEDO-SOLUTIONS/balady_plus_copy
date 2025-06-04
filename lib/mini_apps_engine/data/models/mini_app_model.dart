@@ -4,6 +4,7 @@ class MiniAppModel {
     this.serviceName,
     this.description,
     this.entity,
+    this.requirements,
     this.logoKey,
     this.latestVersion,});
 
@@ -15,9 +16,16 @@ class MiniAppModel {
     entity = json['entity'];
     logoKey = json['logoKey'];
     latestVersion = json['latestVersion'] != null ? LatestVersion.fromJson(json['latestVersion']) : null;
+    if (json['requirements'] != null) {
+      requirements = [];
+      json['requirements'].forEach((v) {
+        requirements?.add(Requirements.fromJson(v));
+      });
+    }
   }
   String? id;
   String? serviceName;
+  List<Requirements>? requirements;
   String? serviceKey;
   String? description;
   String? entity;
@@ -28,11 +36,13 @@ class MiniAppModel {
     String? description,
     String? entity,
     String? logoKey,
+    List<Requirements>? requirements,
     LatestVersion? latestVersion,
   }) => MiniAppModel(  id: id ?? this.id,
     serviceName: serviceName ?? this.serviceName,
     description: description ?? this.description,
     entity: entity ?? this.entity,
+    requirements:requirements??this.requirements,
     logoKey: logoKey ?? this.logoKey,
     latestVersion: latestVersion ?? this.latestVersion,
   );
@@ -46,7 +56,8 @@ class LatestVersion {
     this.versionDescription,
     this.versionNumber,
     this.serviceUrl,
-    this.needLogin,
+    this.nafathLogin,
+    this.otpLogin,
     this.forceUpdate,
     this.packageMetaDataDto,
     this.status,
@@ -57,7 +68,8 @@ class LatestVersion {
     versionDescription = json['versionDescription'];
     versionNumber = json['versionNumber'];
     serviceUrl = json['serviceUrl'];
-    needLogin = json['needLogin'];
+    nafathLogin = json['nafathLogin'];
+    otpLogin = json['otpLogin'];
     forceUpdate = json['forceUpdate'];
     packageMetaDataDto = json['packageMetaDataDto'] != null ? PackageMetaDataDto.fromJson(json['packageMetaDataDto']) : null;
     status = json['status'];
@@ -67,7 +79,8 @@ class LatestVersion {
   String? versionDescription;
   String? versionNumber;
   dynamic serviceUrl;
-  bool? needLogin;
+  bool? nafathLogin;
+  bool? otpLogin;
   bool? forceUpdate;
   PackageMetaDataDto? packageMetaDataDto;
   int? status;
@@ -76,7 +89,8 @@ class LatestVersion {
     String? versionDescription,
     String? versionNumber,
     dynamic serviceUrl,
-    bool? needLogin,
+    bool? nafathLogin,
+    bool? otpLogin,
     bool? forceUpdate,
     PackageMetaDataDto? packageMetaDataDto,
     int? status,
@@ -85,7 +99,8 @@ class LatestVersion {
     versionDescription: versionDescription ?? this.versionDescription,
     versionNumber: versionNumber ?? this.versionNumber,
     serviceUrl: serviceUrl ?? this.serviceUrl,
-    needLogin: needLogin ?? this.needLogin,
+    nafathLogin: nafathLogin ?? this.nafathLogin,
+    otpLogin: otpLogin ?? this.otpLogin,
     forceUpdate: forceUpdate ?? this.forceUpdate,
     packageMetaDataDto: packageMetaDataDto ?? this.packageMetaDataDto,
     status: status ?? this.status,
@@ -123,5 +138,30 @@ class PackageMetaDataDto {
     name: name ?? this.name,
   );
 
+
+}
+
+class Requirements {
+  Requirements({
+    this.requirementKey,
+    this.name,});
+
+  Requirements.fromJson(dynamic json) {
+    requirementKey = json['requirementKey'];
+    name = json['name'];
+  }
+  String? requirementKey;
+  String? name;
+  Requirements copyWith({  String? requirementKey,
+    String? name,
+  }) => Requirements(  requirementKey: requirementKey ?? this.requirementKey,
+    name: name ?? this.name,
+  );
+  Map<String, dynamic> toJson() {
+    final map = <String, dynamic>{};
+    map['requirementKey'] = requirementKey;
+    map['name'] = name;
+    return map;
+  }
 
 }

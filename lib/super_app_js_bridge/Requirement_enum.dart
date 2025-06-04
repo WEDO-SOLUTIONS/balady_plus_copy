@@ -1,0 +1,19 @@
+enum RequirementEnum {
+  accessToken,
+  userProfile,
+  cookies,
+  appPreferences,
+  navigateToSuperAppScreen,
+  location,
+  camera,
+  filePicker,
+  share,
+  launchUri,
+  trackEvent,
+  trackLogsErrors,
+  directionsMap,
+  checkPermission,
+  sendToCalender,
+  downloadAndExtractInAssets,
+  openWebView
+}

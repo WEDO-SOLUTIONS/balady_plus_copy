@@ -19,7 +19,7 @@ class MiniAppsItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-      if (miniApp.latestVersion?.needLogin == false || CommonProperties.isLoggedInMunicipality) {
+      if (miniApp.latestVersion?.nafathLogin == false || CommonProperties.isLoggedInMunicipality) {
         NavigationService.pushNamed(
           routeName: RouteName.miniAppsMainScreen,
           args: miniApp,

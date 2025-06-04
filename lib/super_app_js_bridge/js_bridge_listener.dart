@@ -30,6 +30,9 @@ import '../app/core/services/global/web_service.dart';
 import '../app/features/entry_point/domain/use_cases/get_cookie.dart';
 import 'package:add_2_calendar/add_2_calendar.dart';
 
+import '../mini_apps_engine/data/models/mini_app_model.dart';
+import '../mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
+import 'Requirement_enum.dart';
 import 'model/download_file_paths_model.dart';
 
 class JsBridgeListener extends JavaScriptNamespaceInterface {
@@ -57,50 +60,85 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   // Done
+
+  bool checkAppRequirment(String serviceKey,String requirementKey )
+  {
+    if(sl<HomeMiniAppsListCubit>().state  is HomeMiniAppsListSuccessState) {
+      List<MiniAppModel>? lst = ((sl<HomeMiniAppsListCubit>()
+          .state) as HomeMiniAppsListSuccessState).miniAppsList;
+
+
+      if (lst.isNotEmpty ) {
+
+        int index=lst.indexWhere((it) => it.serviceKey == serviceKey);
+
+        if (index != -1 && (lst[index].requirements?.singleWhere((it) => it.requirementKey == requirementKey)) != null) {
+
+          return true;
+        }
+
+      }
+    }
+
+    return false;
+  }
+
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
-    late BaseResponse response;
-    if (CommonProperties.isLoggedIn) {
-      response = BaseResponse(
-        code: 200,
-        message: "success",
-        eventName: "getAccessToken",
-        data: AccessTokenModel(
-          accessToken: CommonProperties.token,
-        ),
-      );
+    //  openFilePicker(msg,handler);
+
+
+      late BaseResponse response;
+      if (CommonProperties.isLoggedIn) {
+        response = BaseResponse(
+          code: 200,
+          message: "success",
+          eventName: "getAccessToken",
+          data: AccessTokenModel(
+            accessToken: CommonProperties.token,
+          ),
+        );
+        handler.complete(response.jsonEncodeModel());
+      } else {
+        await showDialog(
+          context: NavigationService.navigatorKey.currentContext!,
+          builder: (ctx) =>
+              NeedLoginDialog(
+                onSuccessLogin: (bool? isSuccess) async {
+                  if (isSuccess ?? false) {
+                    response = BaseResponse(
+                      code: 200,
+                      message: "success",
+                      eventName: "getAccessToken",
+                      data: AccessTokenModel(
+                        accessToken: CommonProperties.token,
+                      ),
+                    );
+                  } else {
+                    BaseResponse response = BaseResponse(
+                      code: 401,
+                      eventName: "getAccessToken",
+                      message: "Unauthorized",
+                      data: null,
+                    );
+                  }
+                },
+              ),
+        );
+      }
       handler.complete(response.jsonEncodeModel());
-    } else {
-      await showDialog(
-        context: NavigationService.navigatorKey.currentContext!,
-        builder: (ctx) => NeedLoginDialog(
-          onSuccessLogin: (bool? isSuccess) async {
-            if (isSuccess ?? false) {
-              response = BaseResponse(
-                code: 200,
-                message: "success",
-                eventName: "getAccessToken",
-                data: AccessTokenModel(
-                  accessToken: CommonProperties.token,
-                ),
-              );
-            } else {
-              BaseResponse response = BaseResponse(
-                code: 401,
-                eventName: "getAccessToken",
-                message: "Unauthorized",
-                data: null,
-              );
-            }
-          },
-        ),
-      );
-    }
-    handler.complete(response.jsonEncodeModel());
+
+
+
+
+
   }
 
   @pragma('vm:entry-point')
   void getUserProfile(dynamic msg, CompletionHandler handler) {
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.userProfile.name) == true) {
+
     if (CommonProperties.isLoggedIn) {
       BaseResponse response = BaseResponse(
         code: 200,
@@ -118,11 +156,26 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     }
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "getUserProfile",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void getCookies(dynamic msg, CompletionHandler handler) async {
-    late BaseResponse response;
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.cookies.name) == true) {
+
+
+      late BaseResponse response;
     if (CommonProperties.isLoggedIn) {
       GetCookie getCookie = GetCookie(repository: sl());
       final failureOrSuccessForCookie = await getCookie(false);
@@ -157,7 +210,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               response = BaseResponse(
                 code: 200,
                 message: "success",
-                eventName: "getAccessToken",
+                eventName: "getCookies",
                 data: AccessTokenModel(
                   accessToken: CommonProperties.token,
                 ),
@@ -168,10 +221,24 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     }
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "getCookies",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.appPreferences.name) == true) {
+
     BaseResponse response = BaseResponse(
       code: 200,
       message: "success",
@@ -190,14 +257,30 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         },
       ),
     );
-    var dataJson = response.toJson();
+
     var dataJsonString = response.jsonEncodeModel();
     handler.complete(dataJsonString);
+
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "AppPreferences",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+
   }
 
   @pragma('vm:entry-point')
   void navigateToSuperAppScreen(dynamic msg, CompletionHandler handler) {
-    late BaseResponse response;
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.navigateToSuperAppScreen.name) == true) {
+
+      late BaseResponse response;
     if (msg != null && msg is String && msg.isNotEmpty) {
       Map<String, dynamic> data = jsonDecode(msg);
       response = BaseResponse(
@@ -220,11 +303,25 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
 
     handler.complete(response.jsonEncodeModel());
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "navigateToSuperAppScreen",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void checkPermission(dynamic data, CompletionHandler handler) async {
-    if (data != null && data is Map) {
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.checkPermission.name) == true) {
+
+      if (data != null && data is Map) {
       String permissionName = data["permission_name"];
       bool state = false;
       BaseResponse response;
@@ -243,7 +340,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
           response = BaseResponse(
             code: 400,
             message: "Invalid permission name",
-            eventName: "checkPermission",
+            eventName: "getPermissionResponse",
             data: null,
           );
           handler.complete(response.jsonEncodeModel());
@@ -253,24 +350,38 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         response = BaseResponse(
           code: 200,
           message: "success",
-          eventName: "checkPermission",
+          eventName: "getPermissionResponse",
           data: null,
         );
       } else {
         response = BaseResponse(
           code: 401,
           message: "Permission denied",
-          eventName: "checkPermission",
+          eventName: "getPermissionResponse",
           data: null,
         );
       }
+      handler.complete(response.jsonEncodeModel());
+    }
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "getPermissionResponse",
+        data: null,
+      );
       handler.complete(response.jsonEncodeModel());
     }
   }
 
   @pragma('vm:entry-point')
   void getLocation(dynamic msg, CompletionHandler handler) async {
-    LatLng? latLng = await Helpers.getMapLocation();
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.location.name) == true) {
+
+      LatLng? latLng = await Helpers.getMapLocation();
     if (latLng != null) {
       BaseResponse response = BaseResponse(
         code: 200,
@@ -291,11 +402,25 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     }
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "getLocation",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void openCamera(dynamic msg, CompletionHandler handler) async {
-    final XFile? image = await ImagePicker().pickImage(
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.camera.name) == true) {
+
+      final XFile? image = await ImagePicker().pickImage(
       source: ImageSource.camera,
     );
     late BaseResponse response;
@@ -336,13 +461,28 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     }
 
-
     handler.complete(response.jsonEncodeModel());
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openImagePicker",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+
+
   }
 
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
-    var file = await FilePicker.platform.pickFiles(
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.filePicker.name) == true) {
+
+      var file = await FilePicker.platform.pickFiles(
       type: FileType.media,
       allowMultiple: false,
       // allowedExtensions: ['jpg', 'pdf', 'jpeg', 'png'],
@@ -389,12 +529,27 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
     }
     handler.complete(response.jsonEncodeModel());
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openFilePicker",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   /// TODO: Need To Test
   @pragma('vm:entry-point')
   void openShare(dynamic msg, CompletionHandler handler) {
-    late BaseResponse response;
+
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.share.name) == true) {
+
+      late BaseResponse response;
     if (msg != null && msg is String && msg.isNotEmpty) {
       Share.share(msg);
       response = BaseResponse(
@@ -413,11 +568,24 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     }
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openShare",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void jsLaunchUri(dynamic msg, CompletionHandler handler) async {
-    if (msg != null && msg is Map) {
+    if (checkAppRequirment("municipalservice",RequirementEnum.launchUri.name) == true) {
+
+      if (msg != null && msg is Map) {
       bool canLaunch = await canLaunchUrl(Uri.parse(msg['uri']));
       if (canLaunch) {
         await launchUrl(Uri.parse(msg['uri']));
@@ -431,11 +599,27 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         handler.complete(response.jsonEncodeModel());
       }
     }
+
+
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "jsLaunchUri",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
   }
 
   @pragma('vm:entry-point')
   void openWebView(dynamic dataUri, CompletionHandler handler) async {
-    if (dataUri != null && dataUri is Map) {
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.openWebView.name) == true) {
+
+      if (dataUri != null && dataUri is Map) {
       if (dataUri["url"] != null) {
         CommonFunctions.openBaladyWebView(dataUri["url"]);
       } else {
@@ -447,6 +631,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         );
         handler.complete(response.jsonEncodeModel());
       }
+    }
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openWebView",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
     }
   }
 
@@ -497,7 +692,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openDirectionsMap(dynamic data, CompletionHandler handler) {
-    if (data != null && data is Map) {
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.directionsMap.name) == true) {
+
+      if (data != null && data is Map) {
       BaseResponse response = BaseResponse(
         code: 200,
         eventName: "openDirectionsMap",
@@ -520,11 +718,29 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       );
       handler.complete(response.jsonEncodeModel());
     }
+
+
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openDirectionsMap",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+
+
   }
 
   @pragma('vm:entry-point')
   void sendToCalender(dynamic data, CompletionHandler handler) {
-    if (data != null && data is Map) {
+    if (checkAppRequirment("municipalservice",RequirementEnum.sendToCalender.name) == true) {
+
+
+      if (data != null && data is Map) {
       BaseResponse response = BaseResponse(
         code: 200,
         eventName: "sendToCalender",
@@ -562,6 +778,19 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
       print('data: $data');
       handler.complete(response.jsonEncodeModel());
     }
+
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "sendToCalender",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+
   }
 
   @pragma('vm:entry-point')
@@ -678,9 +907,11 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   }
 
   @pragma('vm:entry-point')
-  void downloadAndExtractInAssets(
-      dynamic data, CompletionHandler handler) async {
-    if (data != null && data is Map) {
+  void downloadAndExtractInAssets(dynamic data, CompletionHandler handler) async {
+
+    if (checkAppRequirment("municipalservice",RequirementEnum.downloadAndExtractInAssets.name) == true) {
+
+      if (data != null && data is Map) {
       try {
         String? exratctPath = data['pathFile'];
         var tempDir = await getTemporaryDirectory();
@@ -725,6 +956,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         handler.complete(response.jsonEncodeModel());
       }
     }
+
+    }
+
+    else{
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "downloadAndExtractInAssets",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+
+
   }
 
   unarchiveAndSave(
