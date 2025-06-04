@@ -50,4 +50,42 @@ class MiniAppsRepository {
       );
     }
   }
+
+  Future<Either<Failure, String>> getMiniAppAcessToken(String serviceId) async {
+
+    try {
+      String accessToken = await localDataSource.getMiniAppAcessToken(serviceId);
+      return Right(accessToken);
+    } on ServerException catch  (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+        ServerFailure(
+          error.errorMessage,
+          statusCode: 500,
+          errorCode: null,
+        ),
+      );
+    } catch  (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      return Left(
+        ServerFailure(
+          "errors_server_error_1".tr(),
+          statusCode: 500,
+          errorCode: null,
+        ),
+      );
+    }
+  }
 }

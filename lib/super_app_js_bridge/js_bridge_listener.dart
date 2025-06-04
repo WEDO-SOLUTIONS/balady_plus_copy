@@ -64,20 +64,20 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
-    //  openFilePicker(msg,handler);
 
 
+    String serviceKey = "IslamicServices";//for testing only
+    //String serviceKey =  msg["serviceKey"];
       late BaseResponse response;
       if (CommonProperties.isLoggedIn) {
-        response = BaseResponse(
-          code: 200,
-          message: "success",
-          eventName: "getAccessToken",
-          data: AccessTokenModel(
-            accessToken: CommonProperties.token,
-          ),
-        );
-        handler.complete(response.jsonEncodeModel());
+
+        await sl<HomeMiniAppsListCubit>().getMiniAppAcessToken(serviceKey).then((result){
+
+          response = result!;
+          handler.complete(response.jsonEncodeModel());
+        });
+
+
       } else {
         await showDialog(
           context: NavigationService.navigatorKey.currentContext!,
@@ -85,14 +85,17 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
               NeedLoginDialog(
                 onSuccessLogin: (bool? isSuccess) async {
                   if (isSuccess ?? false) {
-                    response = BaseResponse(
-                      code: 200,
-                      message: "success",
-                      eventName: "getAccessToken",
-                      data: AccessTokenModel(
-                        accessToken: CommonProperties.token,
-                      ),
-                    );
+
+                    await sl<HomeMiniAppsListCubit>().getMiniAppAcessToken(serviceKey).then((result){
+
+                      response = result!;
+
+                      handler.complete(response.jsonEncodeModel());
+                    });
+
+
+
+
                   } else {
                     BaseResponse response = BaseResponse(
                       code: 401,
@@ -115,8 +118,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getUserProfile(dynamic msg, CompletionHandler handler) {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.userProfile.name) == true) {
+    String serviceKey = "municipalservice";//for testing only 
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.userProfile.name) == true) {
 
     if (CommonProperties.isLoggedIn) {
       BaseResponse response = BaseResponse(
@@ -150,8 +154,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getCookies(dynamic msg, CompletionHandler handler) async {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.cookies.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.cookies.name) == true) {
 
 
       late BaseResponse response;
@@ -215,8 +220,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.appPreferences.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.appPreferences.name) == true) {
 
     BaseResponse response = BaseResponse(
       code: 200,
@@ -256,8 +262,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void navigateToSuperAppScreen(dynamic msg, CompletionHandler handler) {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.navigateToSuperAppScreen.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.navigateToSuperAppScreen.name) == true) {
 
       late BaseResponse response;
     if (msg != null && msg is String && msg.isNotEmpty) {
@@ -297,8 +304,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void checkPermission(dynamic data, CompletionHandler handler) async {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.checkPermission.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.checkPermission.name) == true) {
 
       if (data != null && data is Map) {
       String permissionName = data["permission_name"];
@@ -357,8 +365,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getLocation(dynamic msg, CompletionHandler handler) async {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.location.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.location.name) == true) {
 
       LatLng? latLng = await Helpers.getMapLocation();
     if (latLng != null) {
@@ -396,8 +405,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openCamera(dynamic msg, CompletionHandler handler) async {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.camera.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.camera.name) == true) {
 
       final XFile? image = await ImagePicker().pickImage(
       source: ImageSource.camera,
@@ -458,8 +468,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void openFilePicker(dynamic msg, CompletionHandler handler) async {
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.filePicker.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.filePicker.name) == true) {
 
       var file = await FilePicker.platform.pickFiles(
       type: FileType.media,
@@ -525,8 +536,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void openShare(dynamic msg, CompletionHandler handler) {
 
-
-    if (checkAppRequirment("municipalservice",RequirementEnum.share.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.share.name) == true) {
 
       late BaseResponse response;
     if (msg != null && msg is String && msg.isNotEmpty) {
@@ -562,7 +574,10 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void jsLaunchUri(dynamic msg, CompletionHandler handler) async {
-    if (checkAppRequirment("municipalservice",RequirementEnum.launchUri.name) == true) {
+
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.launchUri.name) == true) {
 
       if (msg != null && msg is Map) {
       bool canLaunch = await canLaunchUrl(Uri.parse(msg['uri']));
@@ -596,7 +611,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void openWebView(dynamic dataUri, CompletionHandler handler) async {
 
-    if (checkAppRequirment("municipalservice",RequirementEnum.openWebView.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.openWebView.name) == true) {
 
       if (dataUri != null && dataUri is Map) {
       if (dataUri["url"] != null) {
@@ -672,7 +689,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void openDirectionsMap(dynamic data, CompletionHandler handler) {
 
-    if (checkAppRequirment("municipalservice",RequirementEnum.directionsMap.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.directionsMap.name) == true) {
 
       if (data != null && data is Map) {
       BaseResponse response = BaseResponse(
@@ -716,7 +735,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void sendToCalender(dynamic data, CompletionHandler handler) {
-    if (checkAppRequirment("municipalservice",RequirementEnum.sendToCalender.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.sendToCalender.name) == true) {
 
 
       if (data != null && data is Map) {
@@ -888,7 +909,9 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
   @pragma('vm:entry-point')
   void downloadAndExtractInAssets(dynamic data, CompletionHandler handler) async {
 
-    if (checkAppRequirment("municipalservice",RequirementEnum.downloadAndExtractInAssets.name) == true) {
+    String serviceKey = "municipalservice";//for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey,RequirementEnum.downloadAndExtractInAssets.name) == true) {
 
       if (data != null && data is Map) {
       try {

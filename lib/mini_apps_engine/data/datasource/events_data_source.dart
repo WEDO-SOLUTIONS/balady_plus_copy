@@ -10,6 +10,7 @@ import '../../../app/events_logs/models/error_exception_model.dart';
 
 abstract class MiniAppsLocalDataSource {
   Future<List<MiniAppModel>> getAllServices();
+  Future<String> getMiniAppAcessToken(String serviceId);
 }
 
 class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
@@ -27,6 +28,53 @@ class MiniAppsDataSourceImplementation implements MiniAppsLocalDataSource {
       List<MiniAppModel> list =
           result.map<MiniAppModel>((e) => MiniAppModel.fromJson(e)).toList();
       return list;
+    } on DioError catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+
+      var errorCode = error.response?.data;
+      throw ServerException(
+        error.toString(),
+        errorCode: errorCode,
+        statusCode: error.response?.statusCode,
+        dioError: error,
+      );
+    } catch (error, stackTrace) {
+      LogsViewModel().sendEventFromModel(
+        event: ErrorExceptionModel(
+          nameEvent: EventsName.handledException,
+          message: error.toString(),
+          stackTrace: stackTrace.toString(),
+        ),
+      );
+      if (error is ServerException)
+        throw error;
+      else {
+        throw ServerException(
+          "errors_server_error_2".tr(),
+          exception: APIException(
+            errorMessage: error.toString(),
+          ),
+          response: response,
+        );
+      }
+    }
+  }
+
+  @override
+  Future<String> getMiniAppAcessToken(String serviceId) async {
+    var response;
+    try {
+      response = await webServices.dio.post("/v1/balady-mini-apps/services/5D9B75C5-4F10-4D2D-A8EB-08DD972A4B5A/token");
+
+      var result = response.data["data"]["result"]['token'];
+
+      return result;
     } on DioError catch (error, stackTrace) {
       LogsViewModel().sendEventFromModel(
         event: ErrorExceptionModel(
