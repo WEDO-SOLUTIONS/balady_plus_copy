@@ -72,3 +72,20 @@ class OpenHours {
     this.closeHour,
   });
 }
+
+enum WorkTimeType {
+  open,
+  almostClosed,
+  closed,
+  unknown,
+}
+
+class ContentWorkTimeModel {
+  final WorkTimeType workTimeType;
+  final PoiContentWorkTimeModel poiContentWorkTime;
+
+  const ContentWorkTimeModel({
+    required this.poiContentWorkTime,
+    required this.workTimeType,
+  });
+}

@@ -15,7 +15,7 @@ class PoiContentContactsModel {
   final void Function(String email)? onEmailTap;
 
   /// List of social media
-  final List<PoiContentSocialMedia>? socialMediaList;
+  final List<PoiContentSocialMediaModel>? socialMediaList;
 
   /// Callback for social media tap
   final Function(String link)? onSocialMediaTap;
@@ -31,14 +31,14 @@ class PoiContentContactsModel {
 }
 
 /// [PoiContentSocialMedia] is a model for the social media section of a POI card.
-class PoiContentSocialMedia {
+class PoiContentSocialMediaModel {
   /// Type of the social media
-  final PoiContentSocialMediaType type;
+  final PoiContentSocialMediaTypes type;
 
   /// Link to the social media
   final String link;
 
-  const PoiContentSocialMedia({
+  const PoiContentSocialMediaModel({
     required this.type,
     required this.link,
   });
@@ -64,7 +64,7 @@ class ContactsInfoModel {
   });
 }
 
-enum PoiContentSocialMediaType {
+enum PoiContentSocialMediaTypes {
   website,
   instagram,
   facebook,
