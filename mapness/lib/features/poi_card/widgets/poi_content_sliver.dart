@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/feedback/page_params/feedback_route_params.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
+import 'package:mapness/features/favourites/providers/favourite_cache.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
 import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
@@ -13,7 +14,9 @@ import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dar
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 
 class PoiContentSliver extends ConsumerWidget {
@@ -74,6 +77,19 @@ class PoiContentSliver extends ConsumerWidget {
           // Accessibility info
           final accessibilityInfo = data.getAccessibility(context.l10n, poiCardState?.qrTradeLicense);
 
+          // Favourite
+          final favouritesState = ref.watch(favouriteCacheProvider);
+          final void Function() onFavouritePressed = () {
+            Metrics.logEventAdvanced(
+              MetricsConstants.poiKeys.favorites,
+              group: MetricsConstants.poiTag,
+              action: MetricAction.tap.toString(),
+            );
+
+            context.router.push(const FavouritesRoute());
+          };
+          final favourites = data.getFavourites(favouritesState, context.l10n, onFavouritePressed);
+
           // Feedback
           final feedback = PoiContentDataIncorrectModel(
             onFeedbackTap: () {
@@ -122,12 +138,11 @@ class PoiContentSliver extends ConsumerWidget {
                   padding: itemPadding,
                   child: PoiContentContactsCard(data: contacts),
                 ),
-              // TODO: add favourite
-              // if (data.favourite != null) //
-              //   Padding(
-              //     padding: itemPadding,
-              //     child: _PoiContentFavouritesWidget(favourite: data.favourite!),
-              //   ),
+              if (favourites != null) //
+                Padding(
+                  padding: itemPadding,
+                  child: PoiContentFavouritesCard(data: favourites),
+                ),
               if (parking != null) //
                 Padding(
                   padding: itemPadding,

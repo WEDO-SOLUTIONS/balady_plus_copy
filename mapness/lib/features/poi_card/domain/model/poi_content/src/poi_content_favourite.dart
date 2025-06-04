@@ -1,11 +1,11 @@
-enum PoiContentFavouriteType {
+enum PoiContentFavouriteTypes {
   favourites,
   home,
   work,
 }
 
 class PoiContentFavouriteModel {
-  final PoiContentFavouriteType type;
+  final PoiContentFavouriteTypes type;
   final String title;
   final void Function() onTap;
 
