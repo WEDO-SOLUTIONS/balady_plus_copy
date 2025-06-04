@@ -121,7 +121,7 @@ class PlaceListScreen(
                         }
                     }
                 } else {
-                    itemList.setNoItemsMessage(getString(R.string.searchNothingFound))
+                    itemList.setNoItemsMessage(getString(R.string.search_nothing_found))
                 }
                 template.setItemList(itemList.build())
             }
@@ -187,7 +187,7 @@ class PlaceListScreen(
 }
 
 sealed class PlaceListScreenState {
-    object Loading : PlaceListScreenState()
-    object Error : PlaceListScreenState()
-    class Result(val items: List<DirectoryObject>) : PlaceListScreenState()
+    data object Loading : PlaceListScreenState()
+    data object Error : PlaceListScreenState()
+    data class Result(val items: List<DirectoryObject>) : PlaceListScreenState()
 }
