@@ -61,27 +61,6 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   // Done
 
-  bool checkAppRequirment(String serviceKey,String requirementKey )
-  {
-    if(sl<HomeMiniAppsListCubit>().state  is HomeMiniAppsListSuccessState) {
-      List<MiniAppModel>? lst = ((sl<HomeMiniAppsListCubit>()
-          .state) as HomeMiniAppsListSuccessState).miniAppsList;
-
-
-      if (lst.isNotEmpty ) {
-
-        int index=lst.indexWhere((it) => it.serviceKey == serviceKey);
-
-        if (index != -1 && (lst[index].requirements?.singleWhere((it) => it.requirementKey == requirementKey)) != null) {
-
-          return true;
-        }
-
-      }
-    }
-
-    return false;
-  }
 
   @pragma('vm:entry-point')
   void getAccessToken(dynamic msg, CompletionHandler handler) async {
@@ -1021,6 +1000,33 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     }
     // return indexFilePath;
   }
+}
+
+
+
+
+bool checkAppRequirment(String serviceKey,String requirementKey )
+{
+
+  return true;
+  if(sl<HomeMiniAppsListCubit>().state  is HomeMiniAppsListSuccessState) {
+    List<MiniAppModel>? lst = ((sl<HomeMiniAppsListCubit>()
+        .state) as HomeMiniAppsListSuccessState).miniAppsList;
+
+
+    if (lst.isNotEmpty ) {
+
+      int index=lst.indexWhere((it) => it.serviceKey == serviceKey);
+
+      if (index != -1 && (lst[index].requirements?.singleWhere((it) => it.requirementKey == requirementKey)) != null) {
+
+        return true;
+      }
+
+    }
+  }
+
+  return false;
 }
 
 Event buildEvent({
