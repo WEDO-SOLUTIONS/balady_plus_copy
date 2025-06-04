@@ -5,10 +5,10 @@ import 'package:dgis_map/library.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mapness/entities/routing/route_search_point.dart';
-import 'package:mapness/features/poi_card/domain/model/work_time_model.dart';
+import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/enums/poi_card_bottom_sheet_state.dart';
-import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/features/poi_card/extensions/geopoint_mapper.dart';
+import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/content_transition.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
@@ -45,8 +45,8 @@ class HeaderInfoComponent extends ConsumerWidget {
 }
 
 class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
-  final PoiContentFullAddress fullAddress;
-  final WorkTimeModel? worktime;
+  final PoiContentFullAddressModel fullAddress;
+  final ContentWorkTimeModel? worktime;
 
   const _HeaderInfoWidget({
     required this.fullAddress,
@@ -79,22 +79,24 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
           children: [
             ContentRow(
               options: ContentRowOptions(
-                subtitle: fullAddress.address,
+                subtitle: fullAddress.fullAddress,
                 subtitleStyle: context.textStyleV3.bodyLargeRegular,
                 padding: const EdgeInsets.only(bottom: Spacing.$0_5x),
                 subtitleMaxlines: 1,
-                actionWidget: ContentRowActionOptions(
-                  actionText: fullAddress.distance,
-                ),
+                // This file will be deleted in the nearest future
+                // actionWidget: ContentRowActionOptions(
+                //   actionText: fullAddress.distance,
+                // ),
                 crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
             if (worktime?.poiContentWorkTime != null)
               Text(
-                worktime!.poiContentWorkTime.title,
+                worktime!.poiContentWorkTime.workHours,
                 style: context.textStyle.footNoteBold.copyWith(
-                  color: worktime!.color,
-                ),
+                    // This file will be deleted in the nearest future
+                    // color: worktime!.color,
+                    ),
               )
             else
               Spacing.$5x.heightBox,

@@ -1,7 +1,7 @@
 import 'package:dgis_map/library.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_full_address.dart';
-import 'package:mapness/features/poi_card/extensions/directory_object_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
+import 'package:mapness/shared/lib/make_address.dart';
 
 extension PoiContentFullAddressExt on DirectoryObjectMessage {
   /// Generate address content. Address can't be null and we have to return any information about the object
