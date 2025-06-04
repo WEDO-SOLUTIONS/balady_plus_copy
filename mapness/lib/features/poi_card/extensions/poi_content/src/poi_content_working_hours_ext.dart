@@ -256,7 +256,7 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
           final weekDay = e.weekDay;
           return PoiContentWorkTimeDayModel(
             dayTitle: weekDay,
-            workHours: e.isWeekend ? l10n.weekend : '${e.openHour!} - ${e.closeHour!}',
+            workHours: e.isWeekend ? l10n.weekend : '${e.openHour!}–${e.closeHour!}',
           );
         },
       ).toList();
