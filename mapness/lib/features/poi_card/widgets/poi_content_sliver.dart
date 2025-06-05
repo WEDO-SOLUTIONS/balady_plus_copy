@@ -51,8 +51,8 @@ class PoiContentSliver extends ConsumerWidget {
     );
     return SliverPadding(
       padding: const EdgeInsets.only(top: Spacing.$4x, bottom: Spacing.$4x),
-      sliver: SliverToBoxAdapter(
-        child: Builder(builder: (context) {
+      sliver: SliverList(
+        delegate: SliverChildBuilderDelegate(childCount: 1, (context, index) {
           if (data == null) {
             return const SizedBox.shrink();
           }
