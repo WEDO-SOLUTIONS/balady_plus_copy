@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
@@ -34,23 +36,23 @@ class HeaderInfoComponent extends ConsumerWidget {
       ),
     );
 
-    final worktime = data.getOpeningHoursHeader(context);
+    final workTime = data.getOpeningHoursHeader(context);
 
     final fullAddress = data.getFullAddress(briefInfo, context.l10n);
     return _HeaderInfoWidget(
       fullAddress: fullAddress,
-      worktime: worktime,
+      workTime: workTime,
     );
   }
 }
 
 class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetState> {
   final PoiContentFullAddressModel fullAddress;
-  final ContentWorkTimeModel? worktime;
+  final ContentWorkTimeModel? workTime;
 
   const _HeaderInfoWidget({
     required this.fullAddress,
-    required this.worktime,
+    required this.workTime,
   }) : super(
           defaultState: PoiCardBottomSheetState.halfOpen,
         );
@@ -90,9 +92,9 @@ class _HeaderInfoWidget extends BottomSheetStateComponent<PoiCardBottomSheetStat
                 crossAxisAlignment: CrossAxisAlignment.start,
               ),
             ),
-            if (worktime?.poiContentWorkTime != null)
+            if (workTime?.poiContentWorkTime != null)
               Text(
-                worktime!.poiContentWorkTime.workHours,
+                workTime!.poiContentWorkTime.workHours,
                 style: context.textStyle.footNoteBold.copyWith(
                     // This file will be deleted in the nearest future
                     // color: worktime!.color,

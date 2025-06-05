@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/common_functions.dart';
@@ -70,32 +69,30 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
   Widget build(BuildContext context) => Column(
         children: [
           ContentWrapper(color: context.color.surfaceBaseSecondary, children: [
-            ContentRow(
-              options: ContentRowOptions(
-                leadingIcon: AppIcons(
-                  iconData: SocialIcons.twitter,
-                  color: context.color.textAndIconsStatusAccent,
-                ),
-                actionWidget: ContentRowActionOptions(
-                  actionIcon: SystemIcons.arrowCornerRightLarge.icon(
-                    color: context.color.textAndIconsBaseSecondary,
-                  ),
-                ),
+            ContentRowV2(
+              onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
+              leading: AppIcons(
+                iconData: SocialIcons.twitter,
+                color: context.color.textAndIconsStatusAccent,
+              ),
+              text: ContentRowTextOptions(
                 // text hack for rtl @ symbol, it's not supported in flutter
                 title: context.isLTR ? '@$momrahTwitter' : '$momrahTwitter@',
                 subtitle: context.l10n.twitterAccount,
               ),
-              onTap: () => CommonFunctions.launch('https://twitter.com/Balady_saudi'),
+              trailing: const ContentRowTextTrailingOptions(
+                icon: SystemIcons.arrowCornerRightLarge,
+              ),
             ),
-            ContentRow(
-              options: ContentRowOptions(
-                leadingIcon: AppIcons(
-                  iconData: switch (Directionality.of(context)) {
-                    TextDirection.ltr => GeneralIcons.phoneLTR,
-                    TextDirection.rtl => GeneralIcons.phoneRTL,
-                  },
-                  color: context.color.textAndIconsStatusAccent,
-                ),
+            ContentRowV2(
+              leading: AppIcons(
+                iconData: switch (Directionality.of(context)) {
+                  TextDirection.ltr => GeneralIcons.phoneLTR,
+                  TextDirection.rtl => GeneralIcons.phoneRTL,
+                },
+                color: context.color.textAndIconsStatusAccent,
+              ),
+              text: ContentRowTextOptions(
                 title: momrahPoneNumber,
                 subtitle: context.l10n.profileContactInformation,
               ),
@@ -103,22 +100,21 @@ class _ContactInfoState extends State<ContactInfo> with SingleTickerProviderStat
             ),
             AnimatedBuilder(
               animation: _animationController,
-              builder: (_, __) => ContentRow(
-                options: ContentRowOptions(
-                  actionWidget: ContentRowActionOptions(
-                      actionPressed: _onCopyEmailTap,
-                      actionIcon: AppIcons(
-                        iconData: SystemIcons.copy,
-                        color: _animation.value,
-                      )),
-                  leadingIcon: AppIcons(
-                    iconData: GeneralIcons.mail,
-                    color: context.color.textAndIconsStatusAccent,
-                  ),
+              builder: (_, __) => ContentRowV2(
+                onTap: () => CommonFunctions.email(momrahEmail),
+                leading: AppIcons(
+                  iconData: GeneralIcons.mail,
+                  color: context.color.textAndIconsStatusAccent,
+                ),
+                text: ContentRowTextOptions(
                   title: momrahEmail,
                   subtitle: context.l10n.email,
                 ),
-                onTap: () => CommonFunctions.email(momrahEmail),
+                trailing: ContentRowTextTrailingOptions(
+                  onPressed: _onCopyEmailTap,
+                  icon: SystemIcons.copy,
+                  iconColor: _animation.value,
+                ),
               ),
             ),
           ]),

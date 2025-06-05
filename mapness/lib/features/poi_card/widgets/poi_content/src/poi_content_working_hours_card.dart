@@ -48,6 +48,7 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
         ContentRowExpandable(
           padding: EdgeInsets.zero,
           expandIconColor: context.colorsV3.foregroundMuted,
+          // ignore: deprecated_member_use
           options: ContentRowOptions(
             title: data.workHours,
             subtitle: data.breakHours,

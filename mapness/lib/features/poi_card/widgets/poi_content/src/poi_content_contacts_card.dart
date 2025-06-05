@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:balady_uikit/balady_uikit.dart' hide PoiContentContacts, PoiContentSocialMediaType;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
@@ -160,7 +162,7 @@ class _EmailItemWidget extends StatelessWidget {
         onTap: () => onTap?.call(emails.first),
       );
     }
-    // TODO: Refactoring of Expandable
+    // TODO: Refactor [ContentRowExpandable] to support [ContentRowV2] options
     return ContentRowExpandable(
       expandIconColor: context.colorsV3.foregroundMuted,
       options: ContentRowOptions(
