@@ -26,9 +26,6 @@ class LocationSetupHelper with WidgetsBindingObserver {
     }
   }
 
-  // ──────────────────────────────────────────────────────────────────────────────
-  // App lifecycle
-  // ──────────────────────────────────────────────────────────────────────────────
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (state == AppLifecycleState.resumed && !_completer.isCompleted) {
@@ -38,9 +35,6 @@ class LocationSetupHelper with WidgetsBindingObserver {
     }
   }
 
-  // ──────────────────────────────────────────────────────────────────────────────
-  // Main logic
-  // ──────────────────────────────────────────────────────────────────────────────
   Future<void> _tryActivate() async {
     // don't access PermissionManager concurrently
     if (_requestInProgress) return; // don't access PermissionManager concurrently
