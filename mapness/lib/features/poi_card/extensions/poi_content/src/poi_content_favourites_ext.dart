@@ -11,9 +11,8 @@ extension PoiContentFavouritesExt on DirectoryObjectMessage {
     AppLocalizations l10n,
     void Function() onPressed,
   ) =>
-      state.map(
-        data: (result) {
-          final value = result.value;
+      state.whenOrNull(
+        data: (value) {
           final objectId = id?.objectId;
 
           // If [objectId] is null in some case we don't want to break the app and return null
@@ -55,7 +54,5 @@ extension PoiContentFavouritesExt on DirectoryObjectMessage {
           // Otherwise return null
           return null;
         },
-        error: (_) => null,
-        loading: (_) => null,
       );
 }

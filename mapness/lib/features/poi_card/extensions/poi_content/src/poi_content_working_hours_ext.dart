@@ -1,9 +1,9 @@
 import 'package:balady_plus/app/core/utils/extensions/str_conversion.dart';
+import 'package:collection/collection.dart';
 import 'package:dgis_map/library.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/src/poi_content_working_time.dart';
 import 'package:mapness/features/poi_card/extensions/date_time_ext.dart';
-import 'package:mapness/features/poi_card/extensions/directory_message_ext.dart';
 import 'package:mapness/features/poi_card/extensions/opening_hours_message_ext.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -260,4 +260,14 @@ extension PoiContentWorkingHoursExt on DirectoryObjectMessage {
           );
         },
       ).toList();
+}
+
+extension PoiContentExt on OpeningHoursModel {
+  OpenHours? getTodayOpeningInfo(AppLocalizations locale) {
+    final todayName = DateTime.now().weekDayName(locale);
+
+    return openingHours?.firstWhereOrNull(
+      (e) => e.weekDay.toLowerCase() == todayName.toLowerCase(),
+    );
+  }
 }

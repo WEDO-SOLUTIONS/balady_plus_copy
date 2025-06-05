@@ -22,6 +22,7 @@ class PoiContentAboutCard extends StatefulWidget {
 }
 
 class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTickerProviderStateMixin {
+  static const _heightOfGradient = 36.0;
   // This manages height and label "Show more"/"Show less"
   bool isFullVisible = false;
   bool truncateText = false;
@@ -135,7 +136,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                                 begin: Alignment.topCenter,
                                 end: Alignment.bottomCenter,
                                 // TODO: Change to gradientBackgroundSurface0 and gradientBackgroundSurface80
-                                // When it will be added to UIKit
+                                // When this colors will be added to UIKit
                                 colors: [
                                   context.colorsV3.gradientBackgroundCardGradient0,
                                   context.colorsV3.gradientBackgroundCardGradient80
@@ -144,7 +145,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                             ),
                             child: SizedBox(
                               width: double.infinity,
-                              height: Curves.easeOutCubic.transform(1 - _animation.value) * 36,
+                              height: Curves.easeOutCubic.transform(1 - _animation.value) * _heightOfGradient,
                             ),
                           ),
                       ],

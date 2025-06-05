@@ -187,9 +187,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     'objectId': widget.objectId,
                   });
 
-              final phoneNumber = widget.data.getContactsInfoModels().firstWhereOrNull(
-                    (element) => element.type == ContactsInfoType.phone,
-                  );
+              final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
+                (element) => element.type == ContactsInfoType.phone,
+              );
               if (phoneNumber?.value != null) {
                 poiActions.callPhone(phoneNumber!.value!);
               }

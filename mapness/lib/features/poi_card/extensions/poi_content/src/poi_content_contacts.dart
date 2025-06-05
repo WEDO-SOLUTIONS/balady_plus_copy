@@ -47,13 +47,15 @@ extension PoiContentContactsExt on DirectoryObjectMessage {
       onSocialMediaTap: onSocialMediaTap,
     );
   }
-}
 
-extension ContactInfoExt on ContactInfoMessage {
-  ContactsInfoModel contactsInfo() => ContactsInfoModel(
-        comment: comment,
-        displayText: displayText,
-        type: ContactsInfoTypeExt.fromString(type),
-        value: value,
-      );
+  List<ContactsInfoModel> get getContactsInfoModels => contactInfos.nonNulls
+      .map(
+        (e) => ContactsInfoModel(
+          comment: e.comment,
+          displayText: e.displayText,
+          type: ContactsInfoTypeExt.fromString(e.type),
+          value: e.value,
+        ),
+      )
+      .toList();
 }
