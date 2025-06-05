@@ -101,7 +101,7 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
       if ((state.hasError && widget.objectId.objectId != parkingObjectId) || objectId == null) {
         // sometimes error code is in message and sometimes in code, idk, probably changed in releases
         final isPlatformException = state.error is PlatformException &&
-            ((state.error! as PlatformException).code == 'NotFoundException' ||
+            ((state.error! as PlatformException).code == PoiError.platformExceptionCode ||
                 (state.error! as PlatformException).message == 'NotFoundException');
 
         if (isPlatformException) {
@@ -131,7 +131,6 @@ class _WrapperState extends ConsumerState<_PoiCardWrapper> {
     }();
     if (dataAndError != null) {
       return PoiLoadingOrErrorSheet(
-        objectId: widget.objectId,
         sheetHeight: 360,
         contentHeight: 300,
         data: dataAndError,
