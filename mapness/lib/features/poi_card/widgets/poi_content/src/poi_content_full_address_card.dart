@@ -75,7 +75,6 @@ class _ActionButton extends StatelessWidget {
     required this.title,
     this.count,
     this.onTap,
-    super.key,
   });
 
   @override
