@@ -68,12 +68,12 @@ extension Bundle {
     @objc private func swizzled_localizedString(
         forKey key: String, value: String?, table tableName: String?
     ) -> String {
-        // Используем кастомный бандл, если он задан
+        // Use a custom bundle if specified
         if let bundle = Bundle.localizedBundle {
             return bundle.swizzled_localizedString(
                 forKey: key, value: value, table: tableName)
         } else {
-            // Вызов оригинального метода (после swizzling это swizzled_localizedString)
+            // Calling the original method (after swizzling it's swizzled_localizedString)
             return swizzled_localizedString(
                 forKey: key, value: value, table: tableName)
         }
