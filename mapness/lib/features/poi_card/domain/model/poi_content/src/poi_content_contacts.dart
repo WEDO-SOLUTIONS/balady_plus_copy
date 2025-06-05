@@ -6,27 +6,27 @@ class PoiContentContactsModel {
   final List<String>? phones;
 
   /// Callback for phone number tap
-  final void Function(String phone)? onPhoneTap;
+  final void Function(String phone) onPhoneTap;
 
   /// List of emails
   final List<String>? emails;
 
   /// Callback for email tap
-  final void Function(String email)? onEmailTap;
+  final void Function(String email) onEmailTap;
 
   /// List of social media
   final List<PoiContentSocialMediaModel>? socialMediaList;
 
   /// Callback for social media tap
-  final Function(String link)? onSocialMediaTap;
+  final Function(String link) onSocialMediaTap;
 
   const PoiContentContactsModel({
+    required this.onPhoneTap,
+    required this.onEmailTap,
+    required this.onSocialMediaTap,
     this.phones,
-    this.onPhoneTap,
     this.emails,
-    this.onEmailTap,
     this.socialMediaList,
-    this.onSocialMediaTap,
   });
 }
 

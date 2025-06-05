@@ -26,7 +26,7 @@ extension PoiContentContactsExt on DirectoryObjectMessage {
         )
         .map((e) => e.displayText)
         .toList();
-    final list_ = contactInfos
+    final socialMedias = contactInfos
         .map((e) {
           final type = ContactsInfoTypeExt.fromString(e.type);
           final v = type.poiContentSocialMediaType;
@@ -40,10 +40,10 @@ extension PoiContentContactsExt on DirectoryObjectMessage {
 
     return PoiContentContactsModel(
       phones: phones,
-      onPhoneTap: phones.isNotEmpty ? (phone) => onPhoneTap(phone) : null,
+      onPhoneTap: (phone) => onPhoneTap(phone),
       emails: emails,
-      onEmailTap: emails.isNotEmpty ? (email) => onEmailTap(email) : null,
-      socialMediaList: list_,
+      onEmailTap: (email) => onEmailTap(email),
+      socialMediaList: socialMedias,
       onSocialMediaTap: onSocialMediaTap,
     );
   }

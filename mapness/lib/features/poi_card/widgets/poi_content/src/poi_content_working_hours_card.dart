@@ -15,15 +15,16 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final data = this.data;
-    if (data == null) {
+    final days = data?.days;
+    if (data == null || days == null || days.isEmpty) {
       return const SizedBox.shrink();
     }
 
-    final workTimeDays = data.days?.map((e) => _WorkTimeItemWidget(
+    final workTimeDays = days.map((e) => _WorkTimeItemWidget(
           workTimeDay: e,
-          showDivider: data.days?.last != e,
+          showDivider: days.last != e,
         ));
-    if (workTimeDays == null && data.additionalInfo == null) {
+    if (data.additionalInfo == null) {
       return ContentWrapper(
         color: context.color.surfaceBasePrimary,
         children: [
@@ -59,20 +60,19 @@ class PoiContentWorkingHoursCard extends StatelessWidget {
           ),
           content: Column(
             children: <Widget>[
-              if (workTimeDays != null) ...workTimeDays,
-              if (data.additionalInfo != null)
-                ContentRowV2(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  leading: GeneralIcons.infoSquare.icon(
-                    color: context.colorsV3.foregroundMuted,
-                  ),
-                  text: ContentRowTextOptions(
-                    title: context.l10n.extraInformation,
-                    titleOptions: const ContentRowTextOption(maxLines: 99),
-                    subtitle: data.additionalInfo,
-                    subtitleOptions: const ContentRowTextOption(maxLines: 99),
-                  ),
+              ...workTimeDays,
+              ContentRowV2(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                leading: GeneralIcons.infoSquare.icon(
+                  color: context.colorsV3.foregroundMuted,
                 ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.extraInformation,
+                  titleOptions: const ContentRowTextOption(maxLines: 99),
+                  subtitle: data.additionalInfo,
+                  subtitleOptions: const ContentRowTextOption(maxLines: 99),
+                ),
+              ),
             ],
           ),
         ),

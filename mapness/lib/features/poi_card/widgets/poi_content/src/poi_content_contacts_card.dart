@@ -5,6 +5,7 @@ import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/tmp/content_row_expandable.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/utils/copy_to_clipboard.dart';
 
@@ -59,7 +60,7 @@ class PoiContentContactsCard extends StatelessWidget {
               children: data.socialMediaList!
                   .map((e) => _SocialMediaItemWidget(
                         icon: _getIconData(e.type),
-                        onTap: () => data.onSocialMediaTap?.call(e.link),
+                        onTap: () => data.onSocialMediaTap.call(e.link),
                       ))
                   .toList(),
             ),
@@ -81,12 +82,16 @@ class PoiContentContactsCard extends StatelessWidget {
 
 class _PhoneItemWidget extends StatelessWidget {
   final List<String> phones;
-  final void Function(String phone)? onTap;
+  final void Function(String phone) onTap;
 
-  const _PhoneItemWidget({required this.phones, this.onTap});
+  const _PhoneItemWidget({required this.phones, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    if (phones.isEmpty) {
+      assert(phones.isNotEmpty, 'Phones must not be empty');
+      return const SizedBox.shrink();
+    }
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     final phoneIcon = isRtl ? GeneralIcons.phoneRTL : GeneralIcons.phoneLTR;
     if (phones.length == 1) {
@@ -99,56 +104,65 @@ class _PhoneItemWidget extends StatelessWidget {
           ),
         ),
         leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
-        onTap: () => onTap?.call(phones.first),
+        onTap: () => onTap.call(phones.first),
       );
     }
-    return ContentRowExpandable(
+    return ContentRowExpandableTmp(
       expandIconColor: context.colorsV3.foregroundMuted,
-      options: ContentRowOptions(
-        supportTitleRTL: false,
+      supportTitleRTL: false,
+      leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
+      onTitleTap: () => onTap.call(phones.first),
+      text: ContentRowTextOptions(
         title: phones.first,
-        leadingIcon: phoneIcon.icon(color: context.colorsV3.accentDefault),
-        actionWidget: ContentRowActionOptions(
-          actionText: '${phones.length}',
+        titleOptions: ContentRowTextOption(
+          baseColor: context.colorsV3.foregroundDefault,
         ),
       ),
-      content: phones.length > 1
-          ? Column(
-              children: [
-                for (final phone in phones.sublist(1))
-                  GestureDetector(
-                    onLongPress: () async {
-                      await onCopyToClipboard(
-                        phone,
-                        toastText: context.l10n.phoneCopied,
-                      );
-                    },
-                    child: ContentRowV2(
-                      onTap: () => onTap?.call(phone),
-                      leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
-                      text: ContentRowTextOptions(
-                        title: phone,
-                        titleOptions: ContentRowTextOption(
-                          baseColor: context.colorsV3.foregroundDefault,
-                        ),
-                      ),
-                    ),
+      trailing: Text(
+        '${phones.length}',
+        style: context.textStyleV3.bodySmallSemiBold.copyWith(
+          color: context.colorsV3.foregroundMuted,
+        ),
+      ),
+      content: Column(
+        children: [
+          for (final phone in phones.sublist(1))
+            GestureDetector(
+              onLongPress: () async {
+                await onCopyToClipboard(
+                  phone,
+                  toastText: context.l10n.phoneCopied,
+                );
+              },
+              child: ContentRowV2(
+                onTap: () => onTap.call(phone),
+                leading: phoneIcon.icon(color: context.colorsV3.accentDefault),
+                text: ContentRowTextOptions(
+                  title: phone,
+                  titleOptions: ContentRowTextOption(
+                    baseColor: context.colorsV3.foregroundDefault,
                   ),
-              ],
-            )
-          : const SizedBox.shrink(),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
 
 class _EmailItemWidget extends StatelessWidget {
   final List<String> emails;
-  final void Function(String email)? onTap;
+  final void Function(String email) onTap;
 
-  const _EmailItemWidget({required this.emails, this.onTap});
+  const _EmailItemWidget({required this.emails, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    if (emails.isEmpty) {
+      assert(emails.isNotEmpty, 'Emails must not be empty');
+      return const SizedBox.shrink();
+    }
     if (emails.length == 1) {
       return ContentRowV2(
         supportTitleRTL: false,
@@ -159,55 +173,59 @@ class _EmailItemWidget extends StatelessWidget {
           ),
         ),
         leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
-        onTap: () => onTap?.call(emails.first),
+        onTap: () => onTap.call(emails.first),
       );
     }
-    // TODO: Refactor [ContentRowExpandable] to support [ContentRowV2] options
-    return ContentRowExpandable(
+    return ContentRowExpandableTmp(
+      onTitleTap: () => onTap.call(emails.first),
       expandIconColor: context.colorsV3.foregroundMuted,
-      options: ContentRowOptions(
+      leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
+      text: ContentRowTextOptions(
         title: emails.first,
-        leadingIcon: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
-        actionWidget: ContentRowActionOptions(
-          actionText: '${emails.length}',
+        titleOptions: ContentRowTextOption(
+          baseColor: context.colorsV3.foregroundDefault,
         ),
       ),
-      content: emails.length > 1
-          ? Column(
-              children: [
-                for (final email in emails.sublist(1))
-                  GestureDetector(
-                    onLongPress: () async {
-                      await onCopyToClipboard(
-                        email,
-                        toastText: context.l10n.emailHasBeenCopied,
-                      );
-                    },
-                    child: ContentRowV2(
-                      onTap: () => onTap?.call(email),
-                      leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
-                      text: ContentRowTextOptions(
-                        title: email,
-                        titleOptions: ContentRowTextOption(
-                          baseColor: context.colorsV3.foregroundDefault,
-                        ),
-                      ),
-                    ),
+      trailing: Text(
+        '${emails.length}',
+        style: context.textStyleV3.bodySmallSemiBold.copyWith(
+          color: context.colorsV3.foregroundMuted,
+        ),
+      ),
+      content: Column(
+        children: [
+          for (final email in emails.sublist(1))
+            GestureDetector(
+              onLongPress: () async {
+                await onCopyToClipboard(
+                  email,
+                  toastText: context.l10n.emailHasBeenCopied,
+                );
+              },
+              child: ContentRowV2(
+                onTap: () => onTap.call(email),
+                leading: GeneralIcons.web.icon(color: context.colorsV3.accentDefault),
+                text: ContentRowTextOptions(
+                  title: email,
+                  titleOptions: ContentRowTextOption(
+                    baseColor: context.colorsV3.foregroundDefault,
                   ),
-              ],
-            )
-          : const SizedBox.shrink(),
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }
 
 class _SocialMediaItemWidget extends StatelessWidget {
   final IconData icon;
-  final void Function()? onTap;
+  final void Function() onTap;
 
   const _SocialMediaItemWidget({
     required this.icon,
-    this.onTap,
+    required this.onTap,
   });
 
   @override

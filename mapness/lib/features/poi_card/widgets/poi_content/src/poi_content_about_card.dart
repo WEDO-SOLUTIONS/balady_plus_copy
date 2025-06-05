@@ -22,13 +22,14 @@ class PoiContentAboutCard extends StatefulWidget {
 }
 
 class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTickerProviderStateMixin {
+  // This manages height and label "Show more"/"Show less"
   bool isFullVisible = false;
+  bool truncateText = false;
   double _maxWidth = 100;
-  double _textHeight = 0;
-  double _textHeightTruncated = 0;
-  int _linesCount = 0;
+  // ignore: prefer_const_constructors
+  _AboutTextModel _textHeight = _AboutTextModel(height: 0, heightTruncated: 0, linesCount: 0);
 
-  bool get _showExpandButton => _linesCount > widget.collapsedLinesCount;
+  bool get _showExpandButton => _textHeight.linesCount > widget.collapsedLinesCount;
 
   late final AnimationController _animationController;
   late final Animation<double> _animation;
@@ -45,6 +46,9 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
     );
 
     _animationController.addListener(() {
+      if (truncateText != (_animationController.value == 0)) {
+        setState(() => truncateText = _animationController.value == 0);
+      }
       if (_animationController.value == 0 && isFullVisible) {
         setState(() => isFullVisible = false);
       } else if (_animationController.value == 1 && !isFullVisible) {
@@ -65,11 +69,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
           builder: (context, constraints) {
             if (_maxWidth != constraints.maxWidth) {
               _maxWidth = constraints.maxWidth;
-              final (height, heightTruncated, linesCount) =
-                  _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
-              _textHeight = height;
-              _textHeightTruncated = heightTruncated;
-              _linesCount = linesCount;
+              _textHeight = _calculateTextHeight(context, widget.data.text, constraints.maxWidth);
             }
             return ContentRowV2(
               text: ContentRowTextOptions(
@@ -80,17 +80,11 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                         isBold: true,
                         builder: (context) => GestureDetector(
                           onTap: () {
-                            setState(() => isFullVisible = !isFullVisible);
-                            if (isFullVisible) {
+                            if (!isFullVisible) {
                               _animationController.forward();
                             } else {
                               _animationController.reverse();
                             }
-                            _animationController.addListener(() {
-                              if (_animationController.value == 0) {
-                                setState(() => isFullVisible = !isFullVisible);
-                              }
-                            });
                           },
                           child: AnimatedBuilder(
                             animation: _animation,
@@ -123,11 +117,12 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
                       alignment: AlignmentDirectional.bottomStart,
                       children: [
                         SizedBox(
-                          height: _textHeightTruncated + (_textHeight - _textHeightTruncated) * _animation.value,
+                          height: _textHeight.heightTruncated +
+                              (_textHeight.height - _textHeight.heightTruncated) * _animation.value,
                           width: _maxWidth,
                           child: Text(
                             widget.data.text,
-                            maxLines: isFullVisible ? 99 : widget.collapsedLinesCount,
+                            maxLines: truncateText ? widget.collapsedLinesCount : 99,
                             overflow: TextOverflow.ellipsis,
                             style:
                                 context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundSoft),
@@ -162,7 +157,7 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
         ),
       );
 
-  (double, double, int) _calculateTextHeight(BuildContext context, String text, double maxWidth) {
+  _AboutTextModel _calculateTextHeight(BuildContext context, String text, double maxWidth) {
     final textDirection = Directionality.of(context);
     final span = TextSpan(
       text: text,
@@ -178,6 +173,28 @@ class _PoiContentAboutCardState extends State<PoiContentAboutCard> with SingleTi
       maxLines: 3,
     )..layout(maxWidth: maxWidth);
 
-    return (painter.height, painterTruncated.height, painter.computeLineMetrics().length);
+    return _AboutTextModel(
+      height: painter.height,
+      heightTruncated: painterTruncated.height,
+      linesCount: painter.computeLineMetrics().length,
+    );
   }
+}
+
+/// Model for text height and lines count
+class _AboutTextModel {
+  /// Height of the text when it is not truncated
+  final double height;
+
+  /// Height of the text when it is truncated, for example when it is collapsed (max lines is 3)
+  final double heightTruncated;
+
+  /// Number of lines in the text if it is not truncated
+  final int linesCount;
+
+  const _AboutTextModel({
+    required this.height,
+    required this.heightTruncated,
+    required this.linesCount,
+  });
 }
