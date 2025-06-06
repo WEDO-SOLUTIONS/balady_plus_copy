@@ -28,8 +28,8 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       StatefulBottomSheetController(
     behavior: MultiSnappingBehavior(
       models: [
-        AspectRatioSnappingModel({0.0, 1.0}),
-        OffsetSnappingModel({photosMaxHeight + Spacing.$2x}),
+        AspectRatioSnappingModel({0.0, .931}),
+        OffsetSnappingModel({HeaderComponent.photosMaxHeight - PoiHeader.poiHeaderBorderRadius}),
         ComponentsSnappingModel(componentsDescriptions: [
           SnapComponent.merge(
             a: const SnapComponent.size(component: Components.header),
@@ -149,8 +149,12 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
     return Directionality(
       textDirection: Directionality.of(context),
       child: SafeArea(
+        top: false,
         child: StatefulBottomSheet(
           displayDragger: false,
+          // We use it to explicitly set corner radius for bottom sheet and use it in header component
+          // ignore: avoid_redundant_argument_values
+          cornerRadius: PoiHeader.poiHeaderBorderRadius,
           scrollController: _bottomSheetController,
           offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
           safeAreaColor: context.colorsV2.backgroundSurface2,
@@ -162,6 +166,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
               // we should not use objectIdForIndoorLevels if POI has levelId
               objectIdForIndoorLevels: poiCardState?.gisObjectIdMessage?.levelId != null ? null : widget.objectId),
           topHeader: PoiPhotosHeader(objectId: widget.objectId),
+          topHeaderOffset: PoiCardStateMapper.topHeaderOffsetDelegate,
           footer: PoiCardFooter(
             closestPoint: widget.closestPoint,
             bottomSheetController: _bottomSheetController,
@@ -262,7 +267,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
             builder: (context, tabType, _) => DecoratedSliver(
               decoration: BoxDecoration(
                 color: context.colorsV2.backgroundSurface4,
-                borderRadius: const BorderRadius.vertical(top: Radius.circular(RadiusBorder.xxl)),
+                borderRadius: const BorderRadius.vertical(top: Radius.circular(PoiHeader.poiHeaderBorderRadius)),
               ),
               sliver: SliverFillAfter(
                 sliver: SliverAnimatedSwitcher(

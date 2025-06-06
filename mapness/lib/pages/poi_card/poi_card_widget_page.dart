@@ -30,6 +30,7 @@ import 'package:mapness/features/poi_card/provider/poi_card_closing.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_photo_provider.dart';
 import 'package:mapness/features/poi_card/widgets/footer/poi_card_footer.dart';
+import 'package:mapness/features/poi_card/widgets/photos_header/header_component.dart';
 import 'package:mapness/features/poi_card/widgets/photos_header/poi_photos_header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_header/header.dart';
 import 'package:mapness/features/poi_card/widgets/poi_card_map_controls_wrapper.dart';

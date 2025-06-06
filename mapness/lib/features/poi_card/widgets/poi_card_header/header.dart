@@ -18,9 +18,10 @@ import 'package:mapness/shared/ui/sheets/card_header.dart';
 import 'package:mapness/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart';
 import 'package:mapness/widgets/search/ui/search_item.dart';
 
-const poiHeaderHeight = 210.0;
-
 class PoiHeader extends ConsumerWidget {
+  static const poiHeaderHeight = 210.0;
+  static const poiHeaderBorderRadius = RadiusBorder.xl;
+
   final String title;
   final String subTitle;
   final List<InlineSpan> subTitleExtraInlineSpans;
