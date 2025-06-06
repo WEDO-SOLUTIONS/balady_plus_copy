@@ -1,19 +1,23 @@
-/// [PoiContentWorkTimeModel] is a model for the working time section of a POI card.
+/// Domain entity that represents working hours of a POI
+/// [workHours] - information about today working hours
+/// [breakHours] - information about today breaks or additional info
+/// [days] - list of days with working hours to show it if needed
+/// [additionalInfo] - additional info about working hours (Ramadan, etc.)
 class PoiContentWorkTimeModel {
-  /// Work hours
-  /// Example: "Daily: 10:00 - 18:00"
+  /// Title of the working hours
+  /// Example: "Daily 19:00 - 23:00"
   final String workHours;
 
-  /// Break hours
-  /// Example: "13:00 - 14:00"
+  /// Subtitle of the working hours
+  /// Example: "Break: 12:00 - 13:00"
   final String? breakHours;
 
-  /// List of days
-  /// Example: [PoiContentWorkTimeDay(dayTitle: "Monday", workHours: "10:00 - 18:00", breakHours: "13:00 - 14:00")]
+  /// List of days with working hours to show it if needed
+  /// Example: [PoiContentWorkTimeDay(dayTitle: "Monday", workHours: "10:00 - 18:00"), PoiContentWorkTimeDay(dayTitle: "Tuesday", workHours: "10:00 - 18:00")]
   final List<PoiContentWorkTimeDayModel>? days;
 
-  /// Additional info
-  /// Example: "This building is closed on weekends"
+  /// Additional info about working hours (Ramadan, etc.)
+  /// Example: "Solemn registration of marriages: Wed, Fri, Sat. Reception of citizens: Tue-Sat. Closed day: first working day of the month"
   final String? additionalInfo;
 
   const PoiContentWorkTimeModel({

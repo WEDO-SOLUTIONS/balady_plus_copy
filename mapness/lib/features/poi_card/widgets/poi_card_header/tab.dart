@@ -20,14 +20,12 @@ class TabComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
         );
 
   @override
-  Widget build(BuildContext context, PoiCardBottomSheetState state,
-      double interpolation) {
+  Widget build(BuildContext context, PoiCardBottomSheetState state, double interpolation) {
     if (state == PoiCardBottomSheetState.hidden) {
       return const SizedBox.shrink();
     }
-    var scale = interpolation;
-    if (state == PoiCardBottomSheetState.expanded ||
-        state == PoiCardBottomSheetState.open) {
+    var scale = Curves.easeOutQuart.transform(interpolation);
+    if (state == PoiCardBottomSheetState.expanded || state == PoiCardBottomSheetState.open) {
       scale = 1;
     }
 
@@ -35,8 +33,7 @@ class TabComponent extends BottomSheetStateComponent<PoiCardBottomSheetState> {
       interpolation: scale,
       child: Padding(
         padding: const EdgeInsets.only(
-          top: Spacing.$2x,
-          bottom: Spacing.$3x,
+          bottom: Spacing.$4x,
         ),
         child: PoiTabs(
           tabController: tabController,

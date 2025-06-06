@@ -150,6 +150,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
       textDirection: Directionality.of(context),
       child: SafeArea(
         child: StatefulBottomSheet(
+          displayDragger: false,
           scrollController: _bottomSheetController,
           offsetOutsideWidgetByTopheader: !isPhotosNotEmpty,
           safeAreaColor: context.colorsV2.backgroundSurface2,

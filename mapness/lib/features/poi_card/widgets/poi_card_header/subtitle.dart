@@ -11,7 +11,7 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
 
   const SubtitleComponent({
     required this.subtitle,
-    required this.subtitleIcon,
+    this.subtitleIcon,
     this.inlineSpans = const [],
     super.key,
   }) : super(
