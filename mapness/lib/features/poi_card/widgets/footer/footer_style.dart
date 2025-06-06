@@ -1,15 +1,6 @@
-import 'package:balady_uikit/core/colors/non_theme_colors.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
-const colorShadow = NonThemeColor.color71;
-const colorIconPositive = NonThemeColor.color3;
-const colorIconError = NonThemeColor.color1;
-
-const headerHeight = 124.0;
-const footerHeight = 50.0;
-const gapHeight = 16.0;
 
 const borderRadius = BorderRadius.all(Radius.circular(8));
 const customBoxDecoration = BoxDecoration(borderRadius: borderRadius);

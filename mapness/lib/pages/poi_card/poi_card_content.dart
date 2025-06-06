@@ -187,9 +187,9 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                     'objectId': widget.objectId,
                   });
 
-              final phoneNumber = widget.data.getContactsInfoModels().firstWhereOrNull(
-                    (element) => element.type == ContactsInfoType.phone,
-                  );
+              final phoneNumber = widget.data.getContactsInfoModels.firstWhereOrNull(
+                (element) => element.type == ContactsInfoType.phone,
+              );
               if (phoneNumber?.value != null) {
                 poiActions.callPhone(phoneNumber!.value!);
               }
@@ -267,34 +267,7 @@ class _ContentState extends ConsumerState<_PoiCardContent> with SingleTickerProv
                 sliver: SliverAnimatedSwitcher(
                   duration: Durations.medium2,
                   child: switch (tabType) {
-                    PoiTabsType.info => SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            const SizedBox(height: Spacing.$4x),
-                            FeedbackBannerCard(
-                              path: Assets.images.cityExpert.keyName,
-                              title: context.l10n.cityExpert,
-                              subtitle: context.l10n.cityExpertDescription,
-                              gradientColors: const [Color(0xFF3AB7AE), Color(0xFF238A82)],
-                              onTap: () {
-                                context.router.push(QuickFeedbackRoute(
-                                  type: QuickFeedbackType.editCompany,
-                                  params: FeedbackObjectIdParams(widget.objectId),
-                                ));
-                              },
-                            ),
-                            InfoWidget(
-                              objectInfo: poiCardState?.gisObjectIdMessage,
-                              qrTradeLicense: poiCardState?.qrTradeLicense,
-                              onEntrancesTap: () => poiActions.toggleEntrances(
-                                widget.data,
-                                () => _bottomSheetController.setState(PoiCardBottomSheetState.halfOpen),
-                                widget.closestPoint,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    PoiTabsType.info => PoiContentSliver(poiCardState: poiCardState),
                     PoiTabsType.photos => PoiPhotoCardSliver(objectId: widget.data.id?.objectId ?? 0),
                     PoiTabsType.organizations => PoiOrganizationsSliver(
                         state: poiCardState,
