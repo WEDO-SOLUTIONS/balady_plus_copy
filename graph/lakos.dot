@@ -268,13 +268,20 @@ digraph "" {
   "/lib/features/road_events/ui/widgets/closed_card.dart" [label="closed_card"];
   "/lib/features/road_events/ui/widgets/closed_controls.dart" [label="closed_controls"];
   "/lib/features/road_events/ui/road_closed_page.dart" [label="road_closed_page"];
+  "/lib/features/poi_card/widgets/poi_photos_stories.dart" [label="poi_photos_stories"];
   "/lib/features/poi_card/widgets/poi_tabs.dart" [label="poi_tabs"];
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" [label="poi_photos_row"];
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" [label="poi_favorite_dialog"];
   "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart" [label="poi_card_map_controls_wrapper"];
   "/lib/features/poi_card/widgets/footer/footer_style.dart" [label="footer_style"];
   "/lib/features/poi_card/widgets/footer/poi_card_footer.dart" [label="poi_card_footer"];
   "/lib/features/poi_card/widgets/poi_photo_button.dart" [label="poi_photo_button"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_few.dart" [label="poi_photo_few"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" [label="poi_photos_row"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" [label="poi_photo_row_builder"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_one.dart" [label="poi_photo_one"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_many.dart" [label="poi_photo_many"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_loading.dart" [label="poi_photo_loading"];
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_failure.dart" [label="poi_photo_failure"];
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" [label="poi_photo_card_sliver"];
   "/lib/features/poi_card/widgets/photos_header/poi_photos_header.dart" [label="poi_photos_header"];
   "/lib/features/poi_card/widgets/photos_header/header_component.dart" [label="header_component"];
@@ -333,7 +340,6 @@ digraph "" {
   "/lib/features/poi_card/domain/model/qr_trade_license.dart" [label="qr_trade_license"];
   "/lib/features/poi_card/domain/model/poi_camera_config.dart" [label="poi_camera_config"];
   "/lib/features/poi_card/domain/model/organizations_response.dart" [label="organizations_response"];
-  "/lib/features/poi_card/domain/model/work_time_model.dart" [label="work_time_model"];
   "/lib/features/poi_card/domain/model/organization_item.dart" [label="organization_item"];
   "/lib/features/poi_card/domain/model/poi_sheet_sizes.dart" [label="poi_sheet_sizes"];
   "/lib/features/poi_card/domain/model/poi_padding_config.dart" [label="poi_padding_config"];
@@ -690,6 +696,7 @@ digraph "" {
   "/lib/shared/ui/photo_viewer/photo_view_pager.dart" [label="photo_view_pager"];
   "/lib/shared/ui/photo_viewer/custom_scroll_physics.dart" [label="custom_scroll_physics"];
   "/lib/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart" [label="feedback_banner_card_v2"];
+  "/lib/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart" [label="header_info_wrapper"];
   "/lib/shared/ui/measure_size.dart" [label="measure_size"];
   "/lib/shared/ui/error_widget/fullscreen_error_widget.dart" [label="fullscreen_error_widget"];
   "/lib/shared/ui/error_widget/error_sheet_dialog_page.dart" [label="error_sheet_dialog_page"];
@@ -1386,8 +1393,8 @@ digraph "" {
           label="poi_card";
           subgraph "cluster~/lib/features/poi_card/widgets" {
             label="widgets";
+            "/lib/features/poi_card/widgets/poi_photos_stories.dart";
             "/lib/features/poi_card/widgets/poi_tabs.dart";
-            "/lib/features/poi_card/widgets/poi_photos_row.dart";
             "/lib/features/poi_card/widgets/poi_favorite_dialog.dart";
             "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart";
             "/lib/features/poi_card/widgets/poi_photo_button.dart";
@@ -1399,6 +1406,16 @@ digraph "" {
               label="footer";
               "/lib/features/poi_card/widgets/footer/footer_style.dart";
               "/lib/features/poi_card/widgets/footer/poi_card_footer.dart";
+            }
+            subgraph "cluster~/lib/features/poi_card/widgets/photo_row" {
+              label="photo_row";
+              "/lib/features/poi_card/widgets/photo_row/poi_photo_few.dart";
+              "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart";
+              "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart";
+              "/lib/features/poi_card/widgets/photo_row/poi_photo_one.dart";
+              "/lib/features/poi_card/widgets/photo_row/poi_photo_many.dart";
+              "/lib/features/poi_card/widgets/photo_row/poi_photo_loading.dart";
+              "/lib/features/poi_card/widgets/photo_row/poi_photo_failure.dart";
             }
             subgraph "cluster~/lib/features/poi_card/widgets/photos_header" {
               label="photos_header";
@@ -1495,7 +1512,6 @@ digraph "" {
               "/lib/features/poi_card/domain/model/qr_trade_license.dart";
               "/lib/features/poi_card/domain/model/poi_camera_config.dart";
               "/lib/features/poi_card/domain/model/organizations_response.dart";
-              "/lib/features/poi_card/domain/model/work_time_model.dart";
               "/lib/features/poi_card/domain/model/organization_item.dart";
               "/lib/features/poi_card/domain/model/poi_sheet_sizes.dart";
               "/lib/features/poi_card/domain/model/poi_padding_config.dart";
@@ -2260,6 +2276,10 @@ digraph "" {
           subgraph "cluster~/lib/shared/ui/dashboard_feedback" {
             label="dashboard_feedback";
             "/lib/shared/ui/dashboard_feedback/feedback_banner_card_v2.dart";
+          }
+          subgraph "cluster~/lib/shared/ui/statefull_bottom_sheet" {
+            label="statefull_bottom_sheet";
+            "/lib/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart";
           }
           subgraph "cluster~/lib/shared/ui/error_widget" {
             label="error_widget";
@@ -3109,7 +3129,7 @@ digraph "" {
   "/lib/widgets/scopes/global_scopes.dart" -> "/lib/shared/providers/map/traffic_state.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/domain/dto/dgis_photos_dto.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
-  "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/widgets/poi_photos_row.dart";
+  "/lib/widgets/search/ui/search_item.dart" -> "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/lib/common_functions.dart";
   "/lib/widgets/search/ui/search_item.dart" -> "/lib/shared/lib/make_address.dart";
@@ -3219,18 +3239,15 @@ digraph "" {
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/providers/map/highlight.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/features/road_events/ui/road_closed_page.dart" -> "/lib/shared/utils/language_detector.dart";
+  "/lib/features/poi_card/widgets/poi_photos_stories.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/features/poi_card/widgets/poi_photos_stories.dart" -> "/lib/features/stories/models/story_frame_theme_data.dart";
+  "/lib/features/poi_card/widgets/poi_photos_stories.dart" -> "/lib/features/stories/ui/frame/story_frame_widget.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/extensions/organizations_ext.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/shared/constants/metrics_constants.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_tabs.dart" -> "/lib/shared/lib/urbi_metrics.dart";
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/features/parking_spot/parking_manage.dart";
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/shared/constants/metrics_constants.dart";
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/shared/lib/urbi_metrics.dart";
-  "/lib/features/poi_card/widgets/poi_photos_row.dart" -> "/lib/shared/ui/loading_image/loading_shimmer_image.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/features/favourites/providers/favourite_cache.dart";
   "/lib/features/poi_card/widgets/poi_favorite_dialog.dart" -> "/lib/shared/extensions/build_context_ext.dart";
@@ -3250,6 +3267,20 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_photo_button.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/features/poi_card/widgets/poi_photo_button.dart" -> "/lib/features/poi_card/domain/dto/dgis_photos_dto.dart";
   "/lib/features/poi_card/widgets/poi_photo_button.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/features/parking_spot/parking_manage.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/features/poi_card/widgets/photo_row/poi_photo_failure.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/features/poi_card/widgets/photo_row/poi_photo_loading.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart" -> "/lib/shared/extensions/build_context_ext.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" -> "/lib/features/poi_card/widgets/photos_header/header_component.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" -> "/lib/features/poi_card/widgets/poi_photos_stories.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" -> "/lib/shared/constants/metrics_constants.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" -> "/lib/shared/lib/urbi_metrics.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_row_builder.dart" -> "/lib/shared/ui/loading_image/loading_shimmer_image.dart";
+  "/lib/features/poi_card/widgets/photo_row/poi_photo_failure.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_feedback.dart";
   "/lib/features/poi_card/widgets/poi_photo_card_sliver.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
@@ -3262,8 +3293,8 @@ digraph "" {
   "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/features/parking_spot/parking_manage.dart";
   "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
-  "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/features/poi_card/widgets/photos_header/poi_photos_header.dart";
-  "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/features/poi_card/widgets/poi_photos_row.dart";
+  "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/features/poi_card/widgets/photo_row/poi_photos_row.dart";
+  "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/features/poi_card/widgets/poi_card_header/header.dart";
   "/lib/features/poi_card/widgets/photos_header/header_component.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_about_card.dart" [style=dashed];
   "/lib/features/poi_card/widgets/poi_content/poi_content.dart" -> "/lib/features/poi_card/widgets/poi_content/src/poi_content_accessability_card.dart" [style=dashed];
@@ -3310,12 +3341,15 @@ digraph "" {
   "/lib/features/poi_card/widgets/poi_card_header/header_info_component.dart" -> "/lib/shared/providers/map/find_brief_route_info.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/_features/common/providers/ui_direction.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/parking_spot/parking_manage.dart";
+  "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
+  "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/extensions/poi_content/poi_content_ext.dart";
+  "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/extensions/week_day_ext.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
-  "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/header_info_component.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/subtitle.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/tab.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/title.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/shared/ui/sheets/card_header.dart";
+  "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart";
   "/lib/features/poi_card/widgets/poi_card_header/header.dart" -> "/lib/widgets/search/ui/search_item.dart";
   "/lib/features/poi_card/widgets/poi_card_header/tab.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/features/poi_card/widgets/poi_card_header/tab.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
@@ -3385,6 +3419,7 @@ digraph "" {
   "/lib/features/poi_card/provider/poi_photo_provider.dart" -> "/lib/shared/providers/base_dio.dart";
   "/lib/features/poi_card/provider/poi_photo_provider.dart" -> "/lib/shared/providers/dgis_environment.dart";
   "/lib/features/poi_card/enums/contacts_info_type.dart" -> "/lib/features/poi_card/domain/model/poi_content/src/poi_content_contacts.dart";
+  "/lib/features/poi_card/extensions/week_day_ext.dart" -> "/lib/features/poi_card/domain/model/poi_content/poi_content.dart";
   "/lib/features/poi_card/extensions/organizations_ext.dart" -> "/lib/features/poi_card/domain/model/organization_item.dart";
   "/lib/features/poi_card/extensions/organizations_ext.dart" -> "/lib/features/poi_card/domain/model/organizations_response.dart";
   "/lib/features/poi_card/extensions/poi_content/poi_content_ext.dart" -> "/lib/features/poi_card/extensions/poi_content/src/poi_content_about_ext.dart" [style=dashed];
@@ -4154,7 +4189,7 @@ digraph "" {
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/domain/poi_card_state_mapper.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/provider/poi_card_actions_provider.dart";
-  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/photos_header/poi_photos_header.dart";
+  "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/photos_header/header_component.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/pages/hajj/hajj_poi_card_widget_page.dart" -> "/lib/shared/providers/map/object_manager.dart";
@@ -4175,7 +4210,6 @@ digraph "" {
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/shared/ui/urbi_map.dart";
   "/lib/pages/parking_spot/parking_spot_page.dart" -> "/lib/widgets/parking_spot/selected_images.dart";
   "/lib/pages/parking_spot/parking_dialog_page.dart" -> "/lib/shared/extensions/build_context_ext.dart";
-  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/entities/favourites/favourite_item.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/entities/feedback/page_params/feedback_route_params.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/entities/routing/route_params_point.dart";
@@ -4197,6 +4231,7 @@ digraph "" {
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/provider/poi_card_provider.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/provider/poi_photo_provider.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/footer/poi_card_footer.dart";
+  "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/photos_header/header_component.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/photos_header/poi_photos_header.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/poi_card_header/header.dart";
   "/lib/pages/poi_card/poi_card_widget_page.dart" -> "/lib/features/poi_card/widgets/poi_card_map_controls_wrapper.dart";
@@ -4942,6 +4977,7 @@ digraph "" {
   "/lib/shared/ui/photo_viewer/photo_viewer.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/ui/photo_viewer/photo_viewer.dart" -> "/lib/shared/ui/photo_viewer/custom_scroll_physics.dart";
   "/lib/shared/ui/photo_viewer/photo_viewer.dart" -> "/lib/shared/ui/photo_viewer/photo_view_pager.dart";
+  "/lib/shared/ui/statefull_bottom_sheet/header_info_wrapper.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
   "/lib/shared/ui/error_widget/fullscreen_error_widget.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/ui/error_widget/fullscreen_error_widget.dart" -> "/lib/shared/ui/error_widget/base_error_widget.dart";
   "/lib/shared/ui/error_widget/error_sheet_dialog_page.dart" -> "/lib/shared/ui/sheets/error_sheet.dart";
@@ -4978,6 +5014,8 @@ digraph "" {
   "/lib/shared/ui/sheets/error_sheet_v2.dart" -> "/lib/_generated/assets/assets.gen.dart";
   "/lib/shared/ui/sheets/error_sheet_v2.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/shared/ui/sheets/error_sheet_v2.dart" -> "/lib/shared/ui/buttons/labeled_elevated_button.dart";
+  "/lib/shared/ui/sheets/card_header.dart" -> "/lib/features/poi_card/enums/poi_card_bottom_sheet_state.dart";
+  "/lib/shared/ui/sheets/card_header.dart" -> "/lib/features/poi_card/widgets/poi_card_header/content_transition.dart";
   "/lib/shared/ui/sheets/card_header.dart" -> "/lib/shared/ui/buttons/app_close_button.dart";
   "/lib/shared/ui/sheets/loading_thanks_sheet.dart" -> "/lib/shared/extensions/build_context_ext.dart";
   "/lib/shared/ui/markers/markers.dart" -> "/lib/_generated/assets/assets.gen.dart";
