@@ -49,6 +49,7 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             dgisCarPlayMapView: dgisCarPlayMapView,
             window: window,
             eventProcessor: mapFactory.mapEventProcessor,
+            navigationManager: DgisMapInitializer.shared.getNavigationManager(),
             userDefaultsPublished: UserDefaultsPublished()
         )
         let mapTemplate = mainScreen.createTemplate()

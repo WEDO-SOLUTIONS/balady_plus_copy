@@ -9,6 +9,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
     private let window: CPWindow
     private let eventProcessor: IMapEventProcessor
     private let userDefaultsPublished: UserDefaultsPublished
+    private let navigationManager: NavigationManager
 
     init(
         map: Map,
@@ -16,6 +17,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         dgisCarPlayMapView: DgisCarPlayMapView,
         window: CPWindow,
         eventProcessor: IMapEventProcessor,
+        navigationManager: NavigationManager,
         userDefaultsPublished: UserDefaultsPublished
     ) {
         self.map = map
@@ -25,23 +27,30 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         self.window = window
         self.eventProcessor = eventProcessor
         self.userDefaultsPublished = userDefaultsPublished
+        self.navigationManager = navigationManager
+        self.model = navigationManager.uiModel
         self.mapTemplate = CPMapTemplate()
     }
 
     private let mapTemplate: CPMapTemplate
     private lazy var zoomControlModel = ZoomControlModel(map: map)
     private let trafficControlModel: TrafficControlModel
+    private let model: Model
     private var trafficStateCancellable: DGis.Cancellable?
     private var rebuildUiCancellable: Combine.AnyCancellable?
+    private var navigatorStateCancelable: DGis.Cancellable?
+    private var navigationSessionManeuvers: NavigationSessionManeuvers?
 
     deinit {
         trafficStateCancellable?.cancel()
         rebuildUiCancellable?.cancel()
+        navigatorStateCancelable?.cancel()
     }
-    
+
     private var leadingNavigationBarButtonFactories = [() -> CPBarButton]() {
         didSet {
-            mapTemplate.leadingNavigationBarButtons = leadingNavigationBarButtonFactories.map { make in make() }
+            mapTemplate.leadingNavigationBarButtons =
+                leadingNavigationBarButtonFactories.map { make in make() }
         }
     }
 
@@ -72,19 +81,49 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         ]
 
         mapTemplate.mapDelegate = self
-        
-        rebuildUiCancellable = userDefaultsPublished.$languageString.sink(receiveValue: whenLanguageUpdated)
-        
+
+        rebuildUiCancellable = userDefaultsPublished.$languageString.sink(
+            receiveValue: whenLanguageUpdated
+        )
+
+        navigatorStateCancelable = model.stateChannel.sink(
+            receiveValue: navigatorStateListener
+        )
+
         return mapTemplate
     }
-    
+
     private func whenLanguageUpdated(language: String?) {
         let value = leadingNavigationBarButtonFactories
         leadingNavigationBarButtonFactories = value
     }
-    
+
     private func buildFromFactories() {
-        mapTemplate.leadingNavigationBarButtons = leadingNavigationBarButtonFactories.map { make in make() }
+        mapTemplate.leadingNavigationBarButtons =
+            leadingNavigationBarButtonFactories.map { make in make() }
+    }
+
+    private func navigatorStateListener(state: State) {
+        switch state {
+        case .disabled:
+            navigationSessionManeuvers?.disable()
+            navigationSessionManeuvers = nil
+        case .navigation:
+            if model.isFreeRoam { break }
+
+            navigationSessionManeuvers = NavigationSessionManeuvers(
+                model: model,
+                mapTemplate: mapTemplate,
+                routeInfo: model.route
+            )
+            navigationSessionManeuvers?.navigate()
+        case .routeSearch:
+            break
+        case .finished:
+            navigationSessionManeuvers?.finish()
+        @unknown default:
+            break
+        }
     }
 
     private func onSearchBarTap(_: CPBarButton) {
