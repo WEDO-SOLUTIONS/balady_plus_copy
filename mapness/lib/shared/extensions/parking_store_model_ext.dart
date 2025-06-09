@@ -17,6 +17,7 @@ extension ParkingStoreModelExt on ParkingStoreModel {
         buildingInfo: BuildingInfoMessage(),
         entrances: [],
         rubricIds: [],
+        routeInfos: [],
         id: DgisObjectIdMessage(
           objectId: parkingObjectId,
           entranceId: 0,

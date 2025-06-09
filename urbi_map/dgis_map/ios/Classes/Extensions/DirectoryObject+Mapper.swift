@@ -33,7 +33,8 @@ extension DirectoryObject {
             tradeLicense: self.tradeLicense?.toMessage(),
             rubricIds: self.rubricIds.map {
                 Int64($0.value)
-            }
+            },
+            routeInfos: self.routeInfos.map { $0.toMessage() },
         )
     }
 }
@@ -75,6 +76,10 @@ extension ObjectType {
             return .stationEntrance
         case .street:
             return .street
+        case .stationMetro:
+            return .stationMetro
+        case .stationPlatform:
+            return .stationPlatform    
         default:
             return .unknown
         }
@@ -481,5 +486,119 @@ extension TradeLicense {
             legalForm: self.legalForm,
             endDate: self.endDate
         )
+    }
+}
+
+extension PublicTransportDirectoryRouteInfo {
+    func toMessage() -> PublicTransportDirectoryRouteInfoMessage {
+        PublicTransportDirectoryRouteInfoMessage(
+            id: self.id.toMessage(),
+            name: self.name,
+            color: self.color != nil ? Int64(self.color!) : nil,
+            fromToStationNames: self.fromToStationNames?.toMessage(),
+            directions: self.directions.map { $0.toMessage() }
+        )
+    }
+}
+
+extension PublicTransportDirectoryRouteDirectionNamesInfo {
+    func toMessage() -> PublicTransportDirectoryRouteDirectionNamesInfoMessage {
+        PublicTransportDirectoryRouteDirectionNamesInfoMessage(
+            fromName: self.fromName,
+            toName: self.toName
+        )
+    }
+}
+
+extension PublicTransportRouteDirection {
+    func toMessage() -> PublicTransportRouteDirectionMessage {
+        PublicTransportRouteDirectionMessage(
+            id: self.id.toMessage(),
+            type: self.type.toMessage(),
+            geometry: self.geometry?.toMessage(),
+            platforms: self.platforms.map { $0.toMessage() }
+        )
+    }
+}
+
+extension PublicTransportRouteDirectionId {
+    func toMessage() -> PublicTransportRouteDirectionIdMessage {
+        PublicTransportRouteDirectionIdMessage(value: Int64(self.value))
+    }
+}
+
+extension PublicTransportRouteDirectionType {
+    func toMessage() -> PublicTransportRouteDirectionTypeMessage {
+        switch self {
+        case .forward: return .forward
+        case .backward: return .backward
+        case .additional: return .additional
+        case .circular: return .circular
+        case .loop: return .loop
+        @unknown default: return .forward
+        }
+    }
+}
+
+extension PublicTransportRouteGeometry {
+    func toMessage() -> PublicTransportRouteGeometryMessage {
+        PublicTransportRouteGeometryMessage(
+            line: self.line.toMessage(),
+            centroid: self.centroid?.toMessage()
+        )
+    }
+}
+
+extension PolylineGeometry {
+    func toMessage() -> PolylineGeometryMessage {
+        PolylineGeometryMessage(points: self.points.map { $0.toMessage() })
+    }
+}
+
+extension PublicTransportPlatform {
+    func toMessage() -> PublicTransportPlatformMessage {
+        PublicTransportPlatformMessage(
+            id: self.id.toMessage(),
+            stationId: self.stationId.toMessage(),
+            name: self.name,
+            description: self.description,
+            transitions: self.transitions.map { $0.toMessage() },
+            position: self.position?.toMessage()
+        )
+    }
+}
+
+extension PublicTransportPlatformTransition {
+    func toMessage() -> PublicTransportPlatformTransitionMessage {
+        PublicTransportPlatformTransitionMessage(
+            routeId: self.routeId.toMessage(),
+            routeName: self.routeName,
+            routeType: self.routeType.toMessage(),
+            color: self.color != nil ? Int64(self.color!) : nil,
+            stationId: self.stationId.toMessage(),
+            stationName: self.stationName
+        )
+    }
+}
+
+extension PublicTransportRouteType {
+    func toMessage() -> PublicTransportRouteTypeMessage {
+        switch self {
+        case .bus: return .bus
+        case .trolleybus: return .trolleybus
+        case .tram: return .tram
+        case .shuttleBus: return .shuttleBus
+        case .metro: return .metro
+        case .suburbanTrain: return .suburbanTrain
+        case .funicularRailway: return .funicularRailway
+        case .monorail: return .monorail
+        case .riverTransport: return .riverTransport
+        case .cableCar: return .cableCar
+        case .lightRail: return .lightRail
+        case .premetro: return .premetro
+        case .lightMetro: return .lightMetro
+        case .aeroexpress: return .aeroexpress
+        @unknown default: return .bus
+        }
     }
 }

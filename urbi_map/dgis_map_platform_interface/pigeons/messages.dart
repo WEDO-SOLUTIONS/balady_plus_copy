@@ -431,6 +431,7 @@ class DirectoryObjectMessage {
     this.entrances,
     this.tradeLicense,
     this.rubricIds,
+    this.routeInfos,
   );
 
   final List<ObjectTypeItemMessage> types;
@@ -457,6 +458,144 @@ class DirectoryObjectMessage {
   final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
   final List<int> rubricIds;
+  final List<PublicTransportDirectoryRouteInfoMessage> routeInfos;
+}
+
+/// Информация о наименованиях начальной и конечной остановках маршрута.
+class PublicTransportDirectoryRouteDirectionNamesInfoMessage {
+  PublicTransportDirectoryRouteDirectionNamesInfoMessage({
+    required this.fromName,
+    required this.toName,
+  });
+
+  final String fromName;
+  final String toName;
+}
+
+/// Идентификатор направления маршрута общественного транспорта.
+class PublicTransportRouteDirectionIdMessage {
+  PublicTransportRouteDirectionIdMessage({
+    required this.value,
+  });
+
+  final int value;
+}
+
+/// Тип направления маршрута общественного транспорта.
+enum PublicTransportRouteDirectionTypeMessage {
+  forward,
+  backward,
+  additional,
+  circular,
+  loop,
+}
+
+/// Тип маршрута общественного транспорта.
+enum PublicTransportRouteTypeMessage {
+  bus,
+  trolleybus,
+  tram,
+  shuttleBus,
+  metro,
+  suburbanTrain,
+  funicularRailway,
+  monorail,
+  riverTransport,
+  cableCar,
+  lightRail,
+  premetro,
+  lightMetro,
+  aeroexpress,
+}
+
+/// Справочная информация о маршруте общественного транспорта, на который можно пересесть на остановочной платформе.
+class PublicTransportPlatformTransitionMessage {
+  PublicTransportPlatformTransitionMessage({
+    required this.routeId,
+    required this.routeName,
+    required this.routeType,
+    this.color,
+    required this.stationId,
+    required this.stationName,
+  });
+
+  final DgisObjectIdMessage routeId;
+  final String routeName;
+  final PublicTransportRouteTypeMessage routeType;
+  final int? color;
+  final DgisObjectIdMessage stationId;
+  final String stationName;
+}
+
+/// Ломаная линия (геометрия маршрута).
+class PolylineGeometryMessage {
+  PolylineGeometryMessage({
+    required this.points,
+  });
+
+  final List<GeoPointMessage> points;
+}
+
+/// Геометрия направления маршрута общественного транспорта.
+class PublicTransportRouteGeometryMessage {
+  PublicTransportRouteGeometryMessage({
+    required this.line,
+    this.centroid,
+  });
+
+  final PolylineGeometryMessage line;
+  final GeoPointMessage? centroid;
+}
+
+/// Справочная информация об остановочной платформе.
+class PublicTransportPlatformMessage {
+  PublicTransportPlatformMessage({
+    required this.id,
+    required this.stationId,
+    required this.name,
+    this.description,
+    required this.transitions,
+    this.position,
+  });
+
+  final DgisObjectIdMessage id;
+  final DgisObjectIdMessage stationId;
+  final String name;
+  final String? description;
+  final List<PublicTransportPlatformTransitionMessage> transitions;
+  final GeoPointMessage? position;
+}
+
+/// Направление маршрута общественного транспорта.
+class PublicTransportRouteDirectionMessage {
+  PublicTransportRouteDirectionMessage({
+    required this.id,
+    required this.type,
+    this.geometry,
+    required this.platforms,
+  });
+
+  final PublicTransportRouteDirectionIdMessage id;
+  final PublicTransportRouteDirectionTypeMessage type;
+  final PublicTransportRouteGeometryMessage? geometry;
+  final List<PublicTransportPlatformMessage> platforms;
+}
+
+/// Справочная информация о маршруте общественного транспорта.
+class PublicTransportDirectoryRouteInfoMessage {
+  PublicTransportDirectoryRouteInfoMessage({
+    required this.id,
+    required this.name,
+    this.color,
+    this.fromToStationNames,
+    required this.directions,
+  });
+
+  final DgisObjectIdMessage id;
+  final String name;
+  final int? color;
+  final PublicTransportDirectoryRouteDirectionNamesInfoMessage? fromToStationNames;
+  final List<PublicTransportRouteDirectionMessage> directions;
 }
 
 enum SortingTypeMessage {
