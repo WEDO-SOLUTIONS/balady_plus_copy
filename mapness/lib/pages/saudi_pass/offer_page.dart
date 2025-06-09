@@ -142,6 +142,7 @@ class _Content extends HookConsumerWidget {
                               imageId: offerImage,
                               description: offer.description,
                               discount: discount,
+                              offer: offer,
                             )
                           else
                             _OfferPreviewByGroup(
@@ -443,19 +444,33 @@ class _OfferPreviewByBusiness extends StatelessWidget {
   final String? imageId;
   final String description;
   final TextSpan? discount;
+  final OfferDetails offer;
 
   const _OfferPreviewByBusiness({
     required this.imageId,
     required this.description,
     this.discount,
+    required this.offer,
   });
 
   @override
   Widget build(BuildContext context) {
     final hasDiscount = discount != null;
     return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: offer.offerGroup.color,
+            begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+            end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
+          ),
+          image: DecorationImage(
+            alignment: Alignment.centerRight,
+            image: AssetImage(
+              offer.offerGroup.imagePath,
+            ),
+            fit: BoxFit.contain,
+          )),
       height: 141,
-      color: context.colorsV3.staticDarkblue,
       padding: const EdgeInsets.all(Spacing.$4x),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -487,10 +502,10 @@ class _OfferPreviewByBusiness extends StatelessWidget {
           ),
           Spacing.$3x.widthBox,
           ClipRRect(
-            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
+            borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),
             child: SizedBox(
-              width: 103,
-              height: 109,
+              width: 48,
+              height: 48,
               child: imageId != null ? SaudiPassImage(imageId: imageId!) : const SizedBox.shrink(),
             ),
           ),

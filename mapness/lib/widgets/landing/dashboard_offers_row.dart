@@ -44,9 +44,9 @@ class DashboardOffersRow extends ConsumerWidget {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: OffersGroup.values.length,
+                itemCount: OffersGroupExtension.mainCategories.length,
                 itemBuilder: (context, i) {
-                  final group = OffersGroup.values[i];
+                  final group = OffersGroupExtension.mainCategories[i];
                   return _DashboardOffersCard(
                       offersGroup: group,
                       onTap: () {

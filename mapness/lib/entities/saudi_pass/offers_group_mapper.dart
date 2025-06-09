@@ -3,10 +3,10 @@ import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 
 extension OffersGroupMapper on OffersGroup {
   static OffersGroup fromCategoryIds(List<String> categoryIds) {
-    const fallbackGroup = OffersGroup.services;
+    const fallbackGroup = OffersGroup.others;
 
     final mainCategory = categoryIds.firstOrNull;
-    if (mainCategory == null) {
+    if (categoryIds.length > 1 || mainCategory == null) {
       return fallbackGroup;
     }
 
@@ -28,5 +28,6 @@ extension OffersGroupMapper on OffersGroup {
         OffersGroup.beautyAndHealth => Category.beautyAndHealth,
         OffersGroup.entertainment => Category.entertainment,
         OffersGroup.services => Category.services,
+        OffersGroup.others => Category.services,
       };
 }

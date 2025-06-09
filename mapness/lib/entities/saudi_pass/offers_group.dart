@@ -9,9 +9,19 @@ enum OffersGroup {
   beautyAndHealth,
   entertainment,
   services,
+  others,
 }
 
 extension OffersGroupExtension on OffersGroup {
+  static List<OffersGroup> get mainCategories => [
+        OffersGroup.food,
+        OffersGroup.shopping,
+        OffersGroup.homeAndAuto,
+        OffersGroup.beautyAndHealth,
+        OffersGroup.entertainment,
+        OffersGroup.services,
+      ];
+
   String title(AppLocalizations locale) => switch (this) {
         OffersGroup.food => locale.tastyDeals,
         OffersGroup.shopping => locale.styleForLess,
@@ -19,6 +29,7 @@ extension OffersGroupExtension on OffersGroup {
         OffersGroup.beautyAndHealth => locale.selfCare,
         OffersGroup.entertainment => locale.timeToRelax,
         OffersGroup.services => locale.usefulServices,
+        OffersGroup.others => '',
       };
 
   String description(AppLocalizations locale) => switch (this) {
@@ -28,10 +39,11 @@ extension OffersGroupExtension on OffersGroup {
         OffersGroup.beautyAndHealth => locale.selfCareDescription,
         OffersGroup.entertainment => locale.timeToRelaxDescription,
         OffersGroup.services => locale.usefulServicesDescription,
+        OffersGroup.others => '',
       };
 
   String get imagePath {
-    const pathPrefix = 'packages/mapness/assets/images';
+    const pathPrefix = 'packages/mapness/assets/images/saudi_pass';
     return switch (this) {
       OffersGroup.food => '$pathPrefix/basket.png',
       OffersGroup.shopping => '$pathPrefix/clock.png',
@@ -39,6 +51,7 @@ extension OffersGroupExtension on OffersGroup {
       OffersGroup.beautyAndHealth => '$pathPrefix/hearts.png',
       OffersGroup.entertainment => '$pathPrefix/plane.png',
       OffersGroup.services => '$pathPrefix/books.png',
+      OffersGroup.others => '$pathPrefix/others.png',
     };
   }
 
@@ -66,6 +79,10 @@ extension OffersGroupExtension on OffersGroup {
         OffersGroup.services => const [
             Color(0xFF58A768),
             Color(0xFF277035),
+          ],
+        OffersGroup.others => const [
+            Color(0xFF19B4A8),
+            Color(0xFF9547E9),
           ],
       };
 }
