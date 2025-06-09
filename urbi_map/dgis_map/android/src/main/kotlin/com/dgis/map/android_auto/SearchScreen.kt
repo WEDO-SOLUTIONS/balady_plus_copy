@@ -54,7 +54,9 @@ class SearchScreen(
             .setInitialSearchText(initialQuery ?: "")
 
         when (val state = this.state) {
-            SearchScreenState.Initial -> {}
+            SearchScreenState.Initial -> {
+                template.setLoading(false)
+            }
 
             SearchScreenState.Loading -> {
                 template.setLoading(true)
@@ -105,7 +107,7 @@ class SearchScreen(
                 val itemList = ItemList.Builder()
 
                 if (items.isEmpty()) {
-                    SearchScreenState.Initial
+                    state = SearchScreenState.Initial
                     invalidate()
                     return@onResult
                 }
@@ -130,7 +132,7 @@ class SearchScreen(
                 invalidate()
             }
             onError {
-                SearchScreenState.Initial
+                state = SearchScreenState.Initial
                 invalidate()
             }
         }
