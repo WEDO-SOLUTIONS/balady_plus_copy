@@ -108,6 +108,11 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         case .disabled:
             navigationSessionManeuvers?.disable()
             navigationSessionManeuvers = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.dgisCarPlayMapView.myLocation()
+                // await for following to be disabled in SDK when navigation is stopped
+                FlutterCarPlayDashboardSceneDelegate.mapView?.myLocation()
+            }
         case .navigation:
             if model.isFreeRoam { break }
 

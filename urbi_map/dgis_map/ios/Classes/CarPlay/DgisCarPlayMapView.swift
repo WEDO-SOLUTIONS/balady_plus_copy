@@ -12,8 +12,6 @@ class DgisCarPlayMapView: UIViewController {
     static let defaultCameraPosition = GeoPoint(latitude: 24.712301, longitude: 46.674175)
     static let defaultCameraZoom = Zoom(value: 17)
     
-    var delegate: DgisCarPlayMapViewDelegate?
-    
     private let map: Map
     private let mapView: (UIView & IMapView)
     
@@ -87,7 +85,6 @@ class DgisCarPlayMapView: UIViewController {
         ])
         addSpeedControl()
         DgisMapInitializer.shared.getNavigationManager().mapManager.addMap(map: map)
-        self.delegate?.viewDidLoad(with: map)
         
         if let styleFactory = try? sdk.styleFactory, let cancellable = map.loadStyle(styleFactory: styleFactory) {
             cancellables.insert(cancellable)
