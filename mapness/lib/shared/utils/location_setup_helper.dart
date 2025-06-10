@@ -37,19 +37,23 @@ class LocationSetupHelper with WidgetsBindingObserver {
 
   Future<void> _tryActivate() async {
     // don't access PermissionManager concurrently
-    if (_requestInProgress) return; // don't access PermissionManager concurrently
+    if (_requestInProgress) {
+      return;
+    }
 
     var status = await Permission.location.status;
     _log('current status: $status'); // current status
 
     // if not yet granted – request
-    if (!status.isGranted) { // if not yet granted – request
+    if (!status.isGranted) {
+      // if not yet granted – request
       _requestInProgress = true;
       try {
         status = await Permission.location.request();
-      } on PlatformException catch (e) {
+      } on PlatformException catch (_) {
         // another request already running – just exit and wait for RESUMED
-        _log('another request already running → waiting'); // another request already running – just exit and wait for RESUMED
+        _log(
+            'another request already running → waiting'); // another request already running – just exit and wait for RESUMED
         return;
       } finally {
         _requestInProgress = false;
@@ -58,11 +62,17 @@ class LocationSetupHelper with WidgetsBindingObserver {
 
     if (status.isGranted) {
       await _activateLocation();
-      if (!_completer.isCompleted) _completer.complete();
+    }
+    if (!_completer.isCompleted) {
+      _completer.complete();
     }
   }
 
   Future<void> _activateLocation() async {
+    if (WidgetsBinding.instance.lifecycleState != AppLifecycleState.resumed) {
+      return;
+    }
+
     _log('permission granted → enabling follow-location'); // permission granted → enabling follow-location
     await controller.onLocationPermissionGranted(
       desiredAccuracy: DesiredAccuracyMessage.high,
