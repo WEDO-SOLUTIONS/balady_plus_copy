@@ -190,6 +190,7 @@ flutter:
     - assets/icons/svg/places_big_new/
     - assets/icons/svg/places_new/
     - assets/images/
+    - assets/images/saudi_pass/
     - assets/images_svg/
     - assets/maps/configs/
     - packages/map_styles/src/styles.2gis
