@@ -230,6 +230,48 @@ class AppRouter extends RootStackRouter {
               opaque: false,
               customRouteBuilder: RouteBuilders.modalSheetBuilder,
             ),
+            CustomRoute(
+              path: 'saudi_pass_offers_screen',
+              page: OffersScreenViewRoute.page,
+            ),
+            AppRoute(
+              path: 'saudi_pass_favourite_offers_screen',
+              page: FavouriteOffersScreenViewRoute.page,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_type_selection_dialog',
+              page: TypeSelectionDialogViewRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_category_selection_dialog',
+              page: CategorySelectionDialogViewRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_sorting_selection_dialog',
+              page: SortingSelectionDialogRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
+            AppRoute(
+              path: 'saudi_pass_settings_screen',
+              page: SettingsScreenViewRoute.page,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_offer_page',
+              page: OfferRoute.page,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_offer_feedback',
+              page: AppFeedbackSheet.page,
+              opaque: false,
+              transitionsBuilder: TransitionsBuilders.slideBottom,
+            ),
+            CustomRoute(
+              path: 'saudi_pass_offer_favorites_removing_sheet',
+              page: OfferFavoritesRemovingSheetRoute.page,
+              customRouteBuilder: RouteBuilders.modalSheetBuilder,
+            ),
           ],
         ),
         ...Routes.upperRoutesMap,

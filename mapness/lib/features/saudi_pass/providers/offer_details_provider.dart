@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:dgis_map/library.dart';
 import 'package:mapness/entities/saudi_pass/offer_feedback.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_favorites_provider.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_redeem_provider.dart';
@@ -7,6 +8,7 @@ import 'package:mapness/features/saudi_pass/providers/saudi_pass_repository_rive
 import 'package:mapness/features/saudi_pass/repo/offer_details_body.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_location.dart';
 import 'package:mapness/shared/providers/location.dart';
+import 'package:mapness/shared/providers/map/dgis_controller.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'offer_details_provider.g.dart';
@@ -39,8 +41,26 @@ class _OfferDetails extends _$OfferDetails {
 
     final repository = await ref.read(saudiPassRepositoryProvider.future);
     final offerDetails = await repository.getOfferDetails(offerId: offerId);
+
+    final controller = ref.watch(dgisControllerProvider);
+    final duration = await controller.value?.findBriefRouteInfos(
+      options: RouteSearchOptionsMessage.car,
+      finishPoint: RouteSearchPointMessage(
+          coordinates: GeoPointMessage(
+            latitude: double.tryParse(offerDetails.location.latitude) ?? 0,
+            longitude: double.tryParse(offerDetails.location.longitude) ?? 0,
+          ),
+          objectId: DgisObjectIdMessage(
+            objectId: 0,
+            entranceId: 0,
+          )),
+    );
+
     unawaited(_sendOfferView());
-    return offerDetails;
+
+    return offerDetails.copyWith(
+      briefDurationTo: duration?.firstOrNull?.duration,
+    );
   }
 
   void _updateStateValue(OfferDetails offer) {

@@ -31,23 +31,11 @@ class $AssetsImagesGen {
   /// File path: assets/images/add_photo.png
   AssetGenImage get addPhoto => const AssetGenImage('assets/images/add_photo.png');
 
-  /// File path: assets/images/basket.png
-  AssetGenImage get basket => const AssetGenImage('assets/images/basket.png');
-
-  /// File path: assets/images/books.png
-  AssetGenImage get books => const AssetGenImage('assets/images/books.png');
-
   /// File path: assets/images/calendar_card.png
   AssetGenImage get calendarCard => const AssetGenImage('assets/images/calendar_card.png');
 
-  /// File path: assets/images/car.png
-  AssetGenImage get car => const AssetGenImage('assets/images/car.png');
-
   /// File path: assets/images/city_expert.png
   AssetGenImage get cityExpert => const AssetGenImage('assets/images/city_expert.png');
-
-  /// File path: assets/images/clock.png
-  AssetGenImage get clock => const AssetGenImage('assets/images/clock.png');
 
   /// File path: assets/images/dark_map_preview.jpg
   AssetGenImage get darkMapPreview => const AssetGenImage('assets/images/dark_map_preview.jpg');
@@ -73,9 +61,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/feedback_eyes.png
   AssetGenImage get feedbackEyes => const AssetGenImage('assets/images/feedback_eyes.png');
 
-  /// File path: assets/images/hearts.png
-  AssetGenImage get hearts => const AssetGenImage('assets/images/hearts.png');
-
   /// File path: assets/images/ic_arrow_feedback.svg
   SvgGenImage get icArrowFeedback => const SvgGenImage('assets/images/ic_arrow_feedback.svg');
 
@@ -100,9 +85,6 @@ class $AssetsImagesGen {
   /// File path: assets/images/onboarding_story_3.png
   AssetGenImage get onboardingStory3 => const AssetGenImage('assets/images/onboarding_story_3.png');
 
-  /// File path: assets/images/plane.png
-  AssetGenImage get plane => const AssetGenImage('assets/images/plane.png');
-
   /// File path: assets/images/qibla.png
   AssetGenImage get qibla => const AssetGenImage('assets/images/qibla.png');
 
@@ -117,6 +99,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/route_story_3.png
   AssetGenImage get routeStory3 => const AssetGenImage('assets/images/route_story_3.png');
+
+  /// Directory path: assets/images/saudi_pass
+  $AssetsImagesSaudiPassGen get saudiPass => const $AssetsImagesSaudiPassGen();
 
   /// File path: assets/images/success_app_feedback.png
   AssetGenImage get successAppFeedback => const AssetGenImage('assets/images/success_app_feedback.png');
@@ -135,12 +120,8 @@ class $AssetsImagesGen {
   List<dynamic> get values => [
         addCompany,
         addPhoto,
-        basket,
-        books,
         calendarCard,
-        car,
         cityExpert,
-        clock,
         darkMapPreview,
         driveHomeArrow,
         driveHomeBackground,
@@ -149,7 +130,6 @@ class $AssetsImagesGen {
         favoritesExampleEnglish,
         feedbackDashboard,
         feedbackEyes,
-        hearts,
         icArrowFeedback,
         icFlipsContinue,
         ishanSeefromtheskyUnsplash,
@@ -158,7 +138,6 @@ class $AssetsImagesGen {
         onboardingStory1,
         onboardingStory2,
         onboardingStory3,
-        plane,
         qibla,
         regionNotAvailable,
         routeStory1,
@@ -509,6 +488,34 @@ class $AssetsIconsSvgGen {
         tagTraffic,
         ukFlag
       ];
+}
+
+class $AssetsImagesSaudiPassGen {
+  const $AssetsImagesSaudiPassGen();
+
+  /// File path: assets/images/saudi_pass/basket.png
+  AssetGenImage get basket => const AssetGenImage('assets/images/saudi_pass/basket.png');
+
+  /// File path: assets/images/saudi_pass/books.png
+  AssetGenImage get books => const AssetGenImage('assets/images/saudi_pass/books.png');
+
+  /// File path: assets/images/saudi_pass/car.png
+  AssetGenImage get car => const AssetGenImage('assets/images/saudi_pass/car.png');
+
+  /// File path: assets/images/saudi_pass/clock.png
+  AssetGenImage get clock => const AssetGenImage('assets/images/saudi_pass/clock.png');
+
+  /// File path: assets/images/saudi_pass/hearts.png
+  AssetGenImage get hearts => const AssetGenImage('assets/images/saudi_pass/hearts.png');
+
+  /// File path: assets/images/saudi_pass/others.png
+  AssetGenImage get others => const AssetGenImage('assets/images/saudi_pass/others.png');
+
+  /// File path: assets/images/saudi_pass/plane.png
+  AssetGenImage get plane => const AssetGenImage('assets/images/saudi_pass/plane.png');
+
+  /// List of all assets
+  List<AssetGenImage> get values => [basket, books, car, clock, hearts, others, plane];
 }
 
 class $AssetsMapsConfigsGen {

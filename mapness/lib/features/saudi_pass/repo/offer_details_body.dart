@@ -30,6 +30,8 @@ class OfferDetails extends Offer {
   @JsonKey(defaultValue: '')
   final String terms;
 
+  final double? briefDurationTo;
+
   OfferDetails({
     required super.id,
     required super.number,
@@ -52,6 +54,7 @@ class OfferDetails extends Offer {
     required super.redeemed,
     required super.typeDetails,
     required this.terms,
+    required this.briefDurationTo,
   });
 
   OfferDetails copyWith({
@@ -76,6 +79,7 @@ class OfferDetails extends Offer {
     bool? redeemed,
     TypeDetails? typeDetails,
     String? terms,
+    double? briefDurationTo,
   }) =>
       OfferDetails(
         id: id ?? this.id,
@@ -99,6 +103,7 @@ class OfferDetails extends Offer {
         redeemed: redeemed ?? this.redeemed,
         typeDetails: typeDetails ?? this.typeDetails,
         terms: terms ?? this.terms,
+        briefDurationTo: briefDurationTo ?? this.briefDurationTo,
       );
 
   factory OfferDetails.fromJson(Map<String, dynamic> json) => _$OfferDetailsFromJson(json);

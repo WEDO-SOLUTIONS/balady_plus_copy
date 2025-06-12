@@ -45,7 +45,7 @@ class DashboardOffersRow extends ConsumerWidget {
                 scrollDirection: Axis.horizontal,
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 itemCount: OffersGroupExtension.mainCategories.length,
-                itemBuilder: (context, i) {
+                itemBuilder: (_, i) {
                   final group = OffersGroupExtension.mainCategories[i];
                   return _DashboardOffersCard(
                       offersGroup: group,

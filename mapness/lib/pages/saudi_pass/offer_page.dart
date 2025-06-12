@@ -8,8 +8,10 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide IconButton;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
+import 'package:mapness/entities/routing/route_params_point.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/functions/create_amount_or_ratio_text_span.dart';
 import 'package:mapness/features/saudi_pass/providers/offer_details_provider.dart';
@@ -201,7 +203,44 @@ class _Content extends HookConsumerWidget {
                             ),
                           ),
                           if (showCode.value) _OfferCode(code: offer.code!),
-                          Spacing.$4x.heightBox,
+                          Spacing.$3x.heightBox,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: BaladyAppButton(
+                                    primaryIcon: TransportIcons.locationDirectionNavigator,
+                                    iconColor: context.colorsV3.accentSecondaryOnContainer,
+                                    primaryLabel: '${context.l10n.poiCardDirections} ${offer.briefDurationTo?.toStringAsFixed(0)} m',
+                                    color: context.colorsV3.accentSecondaryContainerDefault,
+                                    textColor: context.colorsV3.accentSecondaryOnContainer,
+                                    buttonColorScheme: BaladyButtonColorScheme.accent,
+                                    onTap: () {
+                                      ref.read(appRouterProvider).push(
+                                            RoutingRoutesRoute(
+                                              points: [
+                                                RouteParamsPointWithLabel(
+                                                  value: null,
+                                                  label: context.l10n.myLocation,
+                                                ),
+                                                RouteParamsPointWithLabel(
+                                                  value: RouteParamsPoint(
+                                                    latitude: double.parse(offer.location.latitude),
+                                                    longitude: double.parse(offer.location.longitude),
+                                                  ),
+                                                  label: offer.name,
+                                                ),
+                                              ],
+                                            ),
+                                          );
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Spacing.$3x.heightBox,
                         ],
                       ),
                     ),

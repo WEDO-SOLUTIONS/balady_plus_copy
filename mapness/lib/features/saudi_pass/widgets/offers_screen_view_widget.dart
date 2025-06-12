@@ -1,6 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/features/saudi_pass/views/offers_screen_view.dart';
 import 'package:mapness/features/saudi_pass/widgets/offers_view_widget.dart';
 import 'package:mapness/features/saudi_pass/widgets/prefs_content_widget.dart';
@@ -18,7 +20,7 @@ class OffersScreenViewWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) => Padding(
         padding: const EdgeInsets.only(top: Spacing.$4x),
         child: SaudiPassScaffold(
-          onBackButton: offersScreenView.tapBack,
+          onBackButton: ()=> context.router.popForced(),
           title: context.l10n.saudiPassOffersPageTitle,
           body: ListenableBuilder(
             listenable: offersScreenView,
