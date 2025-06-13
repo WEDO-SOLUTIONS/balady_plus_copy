@@ -107,8 +107,13 @@ class _Content extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colors = context.colorsV3;
-    final titleStyle = context.textStyleV3.captionSmallRegular.copyWith(color: context.colorsV3.foregroundSoft);
-    final subtitleStyle = context.textStyleV3.bodySmallRegular.copyWith(color: context.colorsV3.foregroundDefault);
+    final textStyle = context.textStyleV3;
+    final titleStyle = textStyle.captionSmallRegular.copyWith(
+      color: context.colorsV3.foregroundSoft,
+    );
+    final subtitleStyle = textStyle.bodySmallRegular.copyWith(
+      color: context.colorsV3.foregroundDefault,
+    );
     final l10n = context.l10n;
 
     final offerProvider = ref.watch(offerDetailsProvider(offerId));
@@ -124,6 +129,7 @@ class _Content extends HookConsumerWidget {
     final offerImage = offer.images.firstOrNull;
     final showCode = useState(code != null && redeemed);
     final discount = _getDiscount(offer, language, context);
+    final duration = offer.briefDurationTo?.toStringAsFixed(0);
 
     return Column(
       children: [
@@ -154,7 +160,11 @@ class _Content extends HookConsumerWidget {
                               companyLogoId: offer.provider.logo,
                             ),
                           Padding(
-                            padding: const EdgeInsets.only(left: Spacing.$4x, top: Spacing.$4x, right: Spacing.$4x),
+                            padding: const EdgeInsets.only(
+                              left: Spacing.$4x,
+                              top: Spacing.$4x,
+                              right: Spacing.$4x,
+                            ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -187,8 +197,9 @@ class _Content extends HookConsumerWidget {
                                     children: [
                                       Text(
                                         l10n.termAndConditions,
-                                        style:
-                                            context.textStyleV3.bodySmallMedium.copyWith(color: colors.accentDefault),
+                                        style: textStyle.bodySmallMedium.copyWith(
+                                          color: colors.accentDefault,
+                                        ),
                                       ),
                                       AppIcons(
                                         iconData: context.isLTR
@@ -212,7 +223,7 @@ class _Content extends HookConsumerWidget {
                                   child: BaladyAppButton(
                                     primaryIcon: TransportIcons.locationDirectionNavigator,
                                     iconColor: context.colorsV3.accentSecondaryOnContainer,
-                                    primaryLabel: '${context.l10n.poiCardDirections} ${offer.briefDurationTo?.toStringAsFixed(0)} m',
+                                    primaryLabel: '${l10n.poiCardDirections} $duration ${l10n.meter}',
                                     color: context.colorsV3.accentSecondaryContainerDefault,
                                     textColor: context.colorsV3.accentSecondaryOnContainer,
                                     buttonColorScheme: BaladyButtonColorScheme.accent,
@@ -222,7 +233,7 @@ class _Content extends HookConsumerWidget {
                                               points: [
                                                 RouteParamsPointWithLabel(
                                                   value: null,
-                                                  label: context.l10n.myLocation,
+                                                  label: l10n.myLocation,
                                                 ),
                                                 RouteParamsPointWithLabel(
                                                   value: RouteParamsPoint(
@@ -248,7 +259,11 @@ class _Content extends HookConsumerWidget {
                   Spacing.$6x.heightBox,
                   _OfferFeedback(
                     offerId: offerId,
-                    onRatingChanged: (rating) => _showFeedback(offerId: offerId, context: context, rating: rating),
+                    onRatingChanged: (rating) => _showFeedback(
+                      offerId: offerId,
+                      context: context,
+                      rating: rating,
+                    ),
                   ),
                   Spacing.$4x.heightBox,
                 ],
@@ -265,7 +280,7 @@ class _Content extends HookConsumerWidget {
                         buttonColorScheme: ButtonColorScheme.primary,
                         onTap: () => _useCode(context, ref, offer.id, code, showCode),
                         primaryIcon: SystemIcons.code,
-                        primaryLabel: context.l10n.useCode,
+                        primaryLabel: l10n.useCode,
                       ),
                     ),
                     Spacing.$2x.widthBox,
