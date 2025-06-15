@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:adjust_sdk/adjust.dart';
+import 'package:adjust_sdk/adjust_attribution.dart';
 import 'package:adjust_sdk/adjust_config.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:balady_plus/app/core/services/local/shared_prefs_manager.dart';
@@ -43,6 +44,9 @@ abstract class AppEnv {
           ? AdjustEnvironment.production
           : AdjustEnvironment.sandbox,
     );
+
+    config.logLevel = AdjustLogLevel.verbose;
+
     config.fbAppId = "1668346683733303";
     if (Platform.isIOS) {
       if (status == TrackingStatus.authorized) {
