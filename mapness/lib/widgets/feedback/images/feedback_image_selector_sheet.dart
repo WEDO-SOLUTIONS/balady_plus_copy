@@ -1,7 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
-import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -45,55 +44,58 @@ class FeedbackImageSelectorSheet extends HookWidget {
           ),
         ),
         const SizedBox(height: Spacing.$4x),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-          child: ContentWrapper(color: context.colorsV3.backgroundSurface1, children: [
-            ContentRowV2(
-              isDividerEnabled: true,
-              onTap: () => onSelect != null
-                  ? onSelect?.call(FeedbackImageSelectorType.camera)
-                  : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
-              leading: AppIcons(
-                iconData: GeneralIcons.photo,
-                color: context.colorsV3.accentDefault,
-              ),
-              text: ContentRowTextOptions(
-                title: context.l10n.takePhoto,
-              ),
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: AppIcons(
-                    iconData: SystemIcons.arrowCornerRightLarge,
-                    color: context.colorsV3.foregroundMuted,
+        SafeArea(
+          top: false,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+            child: ContentWrapper(color: context.colorsV3.backgroundSurface1, children: [
+              ContentRowV2(
+                isDividerEnabled: true,
+                onTap: () => onSelect != null
+                    ? onSelect?.call(FeedbackImageSelectorType.camera)
+                    : Navigator.of(context).pop(FeedbackImageSelectorType.camera),
+                leading: AppIcons(
+                  iconData: GeneralIcons.photo,
+                  color: context.colorsV3.accentDefault,
+                ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.takePhoto,
+                ),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    child: AppIcons(
+                      iconData: SystemIcons.arrowCornerRightLarge,
+                      color: context.colorsV3.foregroundMuted,
+                    ),
                   ),
                 ),
               ),
-            ),
-            ContentRowV2(
-              onTap: () => onSelect != null
-                  ? onSelect?.call(FeedbackImageSelectorType.gallery)
-                  : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
-              leading: AppIcons(
-                iconData: SystemIcons.images,
-                color: context.colorsV3.accentDefault,
-              ),
-              text: ContentRowTextOptions(
-                title: context.l10n.chooseFromGallery,
-              ),
-              trailing: ContentRowCustomTrailingOptions(
-                builder: (context) => Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
-                  child: AppIcons(
-                    iconData: SystemIcons.arrowCornerRightLarge,
-                    color: context.colorsV3.foregroundMuted,
+              ContentRowV2(
+                onTap: () => onSelect != null
+                    ? onSelect?.call(FeedbackImageSelectorType.gallery)
+                    : Navigator.of(context).pop(FeedbackImageSelectorType.gallery),
+                leading: AppIcons(
+                  iconData: SystemIcons.images,
+                  color: context.colorsV3.accentDefault,
+                ),
+                text: ContentRowTextOptions(
+                  title: context.l10n.chooseFromGallery,
+                ),
+                trailing: ContentRowCustomTrailingOptions(
+                  builder: (context) => Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Spacing.$4x),
+                    child: AppIcons(
+                      iconData: SystemIcons.arrowCornerRightLarge,
+                      color: context.colorsV3.foregroundMuted,
+                    ),
                   ),
                 ),
               ),
-            ),
-          ]),
+            ]),
+          ),
         ),
-        Spacing.$4x.heightBox
+        // Spacing.$4x.heightBox
       ],
     );
   }
