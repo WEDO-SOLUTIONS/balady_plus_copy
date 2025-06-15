@@ -81,27 +81,44 @@ class _SplashScreenAnimatorState extends State<SplashScreenAnimator>
                 );
               }
               if (state is OfflineSplashState) {
-                return Gif(
-                  image: const AssetImage('assets/images/splash-screen.gif'),
-                  fps: 10,
-                  fit: BoxFit.cover,
-                  autostart: Autostart.once,
-                  onFetchCompleted: () async {
-                    // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
-                    Future.delayed(const Duration(milliseconds: 3000))
-                        .then((e) {
-                      if (context.read<ForceUpdateCubit>().state
-                          is NotHaveForceUpdateState) {
-                        takeActionChickLogin();
-                      } else if (context.read<ForceUpdateCubit>().state
-                          is HaveForceUpdateState) {
-                        NavigationService.pushAndReplaceForceUpdate();
-                      } else {
-                        context.read<SplashCubit>().emitCompletedSplashState();
-                      }
-                    });
-                  },
-                );
+                Future.delayed(const Duration(milliseconds: 0))
+                    .then((e) {
+                  if (context.read<ForceUpdateCubit>().state
+                  is NotHaveForceUpdateState) {
+                    takeActionChickLogin();
+                  } else if (context.read<ForceUpdateCubit>().state
+                  is HaveForceUpdateState) {
+                    NavigationService.pushAndReplaceForceUpdate();
+                  } else {
+                    context.read<SplashCubit>().emitCompletedSplashState();
+                  }
+                });
+
+
+                return const SizedBox.shrink();
+
+
+                // return Gif(
+                //   image: const AssetImage('assets/images/splash-screen.gif'),
+                //   fps: 10,
+                //   fit: BoxFit.cover,
+                //   autostart: Autostart.once,
+                //   onFetchCompleted: () async {
+                //     // wating for 1.3 seconds to hide the splash screen to make shower is splash screen is completed
+                //     Future.delayed(const Duration(milliseconds: 3000))
+                //         .then((e) {
+                //       if (context.read<ForceUpdateCubit>().state
+                //           is NotHaveForceUpdateState) {
+                //         takeActionChickLogin();
+                //       } else if (context.read<ForceUpdateCubit>().state
+                //           is HaveForceUpdateState) {
+                //         NavigationService.pushAndReplaceForceUpdate();
+                //       } else {
+                //         context.read<SplashCubit>().emitCompletedSplashState();
+                //       }
+                //     });
+                //   },
+                // );
               }
               return const SizedBox.shrink();
             },
