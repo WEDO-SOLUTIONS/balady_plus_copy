@@ -121,7 +121,7 @@ class BaseErrorWidget extends StatelessWidget {
               SafeArea(
                 top: false,
                 child: Padding(
-                  padding: const EdgeInsets.only(top: Spacing.$6x, bottom: Spacing.$3x),
+                  padding: const EdgeInsets.only(top: Spacing.$6x),
                   child: AppButton(
                     onTap: onRetry,
                     buttonColorScheme: buttonColorScheme,

@@ -75,39 +75,46 @@ class PoiLoadingOrErrorSheet extends HookConsumerWidget {
                       right: Spacing.$4x,
                       bottom: bottomPadding,
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SvgPicture.asset(Assets.imagesSvg.illustrationError.keyName),
-                        const SizedBox(height: Spacing.$4x),
-                        Text(
-                          error.errorTitle,
-                          textAlign: TextAlign.center,
-                          style: context.textStyleV3.h3SemiBold.copyWith(
-                            color: context.colorsV2.foregroundDefault,
-                          ),
-                        ),
-                        if (error.errorContent != null)
-                          Padding(
-                            padding: const EdgeInsets.only(top: Spacing.$2x),
-                            child: Text(
-                              error.errorContent ?? '',
+                    child: SingleChildScrollView(
+                      child: IntrinsicHeight(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            SvgPicture.asset(Assets.imagesSvg.illustrationError.keyName),
+                            const SizedBox(height: Spacing.$4x),
+                            Text(
+                              error.errorTitle,
                               textAlign: TextAlign.center,
-                              style: context.textStyleV3.bodyLargeRegular.copyWith(
-                                color: context.colorsV2.foregroundSoft,
+                              style: context.textStyleV3.h3SemiBold.copyWith(
+                                color: context.colorsV2.foregroundDefault,
                               ),
                             ),
-                          ),
-                        Spacing.$6x.heightBox,
-                        BaladyAppButton(
-                          onTap: error.onRetry,
-                          buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
-                          size: BaladyButtonSize.large,
-                          primaryLabel: error.buttonLabel ?? context.l10n.tryAgain,
+                            if (error.errorContent != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: Spacing.$2x),
+                                child: Text(
+                                  error.errorContent ?? '',
+                                  textAlign: TextAlign.center,
+                                  style: context.textStyleV3.bodyLargeRegular.copyWith(
+                                    color: context.colorsV2.foregroundSoft,
+                                  ),
+                                ),
+                              ),
+                            Spacing.$6x.heightBox,
+                            SafeArea(
+                              top: false,
+                              child: BaladyAppButton(
+                                onTap: error.onRetry,
+                                buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
+                                size: BaladyButtonSize.large,
+                                primaryLabel: error.buttonLabel ?? context.l10n.tryAgain,
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
                   );
                 }),
