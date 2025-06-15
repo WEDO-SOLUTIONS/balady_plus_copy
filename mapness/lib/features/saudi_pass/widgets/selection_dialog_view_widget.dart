@@ -32,6 +32,11 @@ class SelectionDialogViewWidget<T> extends HookWidget {
     return StatelessBottomSheet(
       scrollController: scrollController,
       backgroundColor: backgroundColor,
+      outside: GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+      ),
       draggerColor: backgroundColor,
       header: Padding(
         padding: horizontalPadding.copyWith(bottom: Spacing.$4x),
