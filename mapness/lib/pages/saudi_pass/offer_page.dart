@@ -8,7 +8,6 @@ import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/material.dart' hide IconButton;
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/app_feedback/feedback_source.dart';
 import 'package:mapness/entities/routing/route_params_point.dart';
@@ -23,6 +22,7 @@ import 'package:mapness/features/saudi_pass/widgets/offer_code_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_favorites_removing_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/offer_terms_sheet.dart';
 import 'package:mapness/features/saudi_pass/widgets/saudi_pass_image.dart';
+import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
 import 'package:mapness/shared/lib/auth/auth_methods.dart';
 import 'package:mapness/shared/providers/app_language.dart';
@@ -109,10 +109,10 @@ class _Content extends HookConsumerWidget {
     final colors = context.colorsV3;
     final textStyle = context.textStyleV3;
     final titleStyle = textStyle.captionSmallRegular.copyWith(
-      color: context.colorsV3.foregroundSoft,
+      color: colors.foregroundSoft,
     );
     final subtitleStyle = textStyle.bodySmallRegular.copyWith(
-      color: context.colorsV3.foregroundDefault,
+      color: colors.foregroundDefault,
     );
     final l10n = context.l10n;
 
@@ -142,7 +142,7 @@ class _Content extends HookConsumerWidget {
                   ClipRRect(
                     borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.xl)),
                     child: ColoredBox(
-                      color: context.colorsV3.backgroundSurface1,
+                      color: colors.backgroundSurface1,
                       child: Column(
                         children: [
                           if (offerImage != null)
@@ -222,30 +222,12 @@ class _Content extends HookConsumerWidget {
                                 Expanded(
                                   child: BaladyAppButton(
                                     primaryIcon: TransportIcons.locationDirectionNavigator,
-                                    iconColor: context.colorsV3.accentSecondaryOnContainer,
+                                    iconColor: colors.accentSecondaryOnContainer,
                                     primaryLabel: '${l10n.poiCardDirections} $duration ${l10n.meter}',
-                                    color: context.colorsV3.accentSecondaryContainerDefault,
-                                    textColor: context.colorsV3.accentSecondaryOnContainer,
+                                    color: colors.accentSecondaryContainerDefault,
+                                    textColor: colors.accentSecondaryOnContainer,
                                     buttonColorScheme: BaladyButtonColorScheme.accent,
-                                    onTap: () {
-                                      ref.read(appRouterProvider).push(
-                                            RoutingRoutesRoute(
-                                              points: [
-                                                RouteParamsPointWithLabel(
-                                                  value: null,
-                                                  label: l10n.myLocation,
-                                                ),
-                                                RouteParamsPointWithLabel(
-                                                  value: RouteParamsPoint(
-                                                    latitude: double.parse(offer.location.latitude),
-                                                    longitude: double.parse(offer.location.longitude),
-                                                  ),
-                                                  label: offer.name,
-                                                ),
-                                              ],
-                                            ),
-                                          );
-                                    },
+                                    onTap: () => _openNavigationPage(context, l10n, offer),
                                   ),
                                 ),
                               ],
@@ -296,6 +278,26 @@ class _Content extends HookConsumerWidget {
                 ),
         ),
       ],
+    );
+  }
+
+  void _openNavigationPage(BuildContext context, AppLocalizations l10n, OfferDetails offer) {
+    context.router.push(
+      RoutingRoutesRoute(
+        points: [
+          RouteParamsPointWithLabel(
+            value: null,
+            label: l10n.myLocation,
+          ),
+          RouteParamsPointWithLabel(
+            value: RouteParamsPoint(
+              latitude: double.parse(offer.location.latitude),
+              longitude: double.parse(offer.location.longitude),
+            ),
+            label: offer.name,
+          ),
+        ],
+      ),
     );
   }
 
