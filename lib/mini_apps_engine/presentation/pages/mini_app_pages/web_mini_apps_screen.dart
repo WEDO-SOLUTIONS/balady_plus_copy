@@ -69,9 +69,9 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
             // setState(() {
             //   _isLoading = true;
             // });
-            await CommonFunctions.checkCameraSettings(
-              NavigationService.navigatorKey.currentContext!,
-            );
+            // await CommonFunctions.checkCameraSettings(
+            //   NavigationService.navigatorKey.currentContext!,
+            // );
           },
           onPageFinished: (url) {
             // setState(() {
