@@ -33,12 +33,12 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
               miniAppsList: listMiniApps,
             );
             for (var element in listMiniApps) {
-              // if (element.serviceKey == "municipalservice") {
-              //   state = HomeMiniAppsListSuccessState(
-              //     miniAppsList: listMiniApps,
-              //     municipalAppBloc: MiniAppsEngineBloc(miniApp: element),
-              //   );
-              // }
+              if (element.serviceKey == "municipalservice") {
+                state = HomeMiniAppsListSuccessState(
+                  miniAppsList: listMiniApps,
+                  municipalAppBloc: MiniAppsEngineBloc(miniApp: element),
+                );
+              }
             }
             emit(state);
           },
