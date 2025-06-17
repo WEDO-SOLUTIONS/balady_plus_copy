@@ -84,7 +84,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
     );
 
     return (state.municipalAppBloc != null &&
-            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! OpenServerEngineEvent)
+            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! MiniAppsEngineLoadedState)
         ? BlocProvider.value(
             value: state.municipalAppBloc!
               ..add(
