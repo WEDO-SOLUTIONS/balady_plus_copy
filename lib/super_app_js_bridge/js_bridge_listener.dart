@@ -690,13 +690,14 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         );
         try {
           Add2Calendar.addEvent2Cal(
-            buildEvent(
+            Event(
               title: data["title"] ?? "",
-              desc: "",
-              url: "",
-              city: "",
+              description: "",
+              location: "",
               startDate: DateTime.parse(data["startDate"]),
               endDate: DateTime.parse(data["endDate"]),
+              iosParams: const IOSParams(url: ""),
+              allDay: false,
             ),
           );
         } catch (e) {
@@ -978,25 +979,4 @@ bool checkAppRequirment(String serviceKey, String requirementKey) {
   }
 
   return false;
-}
-
-Event buildEvent({
-  required String title,
-  required String desc,
-  required String city,
-  required DateTime startDate,
-  required DateTime endDate,
-  required String url,
-}) {
-  return Event(
-    title: title,
-    description: desc,
-    location: city,
-    startDate: startDate,
-    endDate: endDate,
-    allDay: false,
-    iosParams: IOSParams(
-      url: url,
-    ),
-  );
 }
