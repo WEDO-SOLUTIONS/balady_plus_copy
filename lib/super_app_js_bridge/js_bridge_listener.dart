@@ -198,40 +198,26 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 
   @pragma('vm:entry-point')
   void getAppPreferences(dynamic msg, CompletionHandler handler) {
-    String serviceKey = "municipalservice"; //for testing only
-    //String serviceKey =  msg["serviceKey"];
-    if (checkAppRequirment(serviceKey, RequirementEnum.appPreferences.name) ==
-        true) {
-      BaseResponse response = BaseResponse(
-        code: 200,
-        message: "success",
-        eventName: "AppPreferences",
-        data: JsPreferencesModel(
-          language: 'locale'.tr(),
-          themeType: "dark",
-          colors: {
-            "primary": AppColor.primary900Light.value,
-            "secondary": AppColor.secondary900Light.value,
-            // "background": AppColor.backgroundColor,
-            // "text": AppColor.textColor,
-            // "error": AppColor.errorColor,
-            // "warning": AppColor.warningColor,
-            // "success": AppColor.successColor,
-          },
-        ),
-      );
-
-      var dataJsonString = response.jsonEncodeModel();
-      handler.complete(dataJsonString);
-    } else {
-      BaseResponse response = BaseResponse(
-        code: 500,
-        message: "you do not have permission to access this functionality",
-        eventName: "AppPreferences",
-        data: null,
-      );
-      handler.complete(response.jsonEncodeModel());
-    }
+    BaseResponse response = BaseResponse(
+      code: 200,
+      message: "success",
+      eventName: "AppPreferences",
+      data: JsPreferencesModel(
+        language: 'locale'.tr(),
+        themeType: "dark",
+        colors: {
+          "primary": AppColor.primary900Light.value,
+          "secondary": AppColor.secondary900Light.value,
+          // "background": AppColor.backgroundColor,
+          // "text": AppColor.textColor,
+          // "error": AppColor.errorColor,
+          // "warning": AppColor.warningColor,
+          // "success": AppColor.successColor,
+        },
+      ),
+    );
+    var dataJsonString = response.jsonEncodeModel();
+    handler.complete(dataJsonString);
   }
 
   @pragma('vm:entry-point')
@@ -959,7 +945,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
 }
 
 bool checkAppRequirment(String serviceKey, String requirementKey) {
-  // return true;
+  return true;
   if (sl<HomeMiniAppsListCubit>().state is HomeMiniAppsListSuccessState) {
     List<MiniAppModel>? lst =
         ((sl<HomeMiniAppsListCubit>().state) as HomeMiniAppsListSuccessState)
