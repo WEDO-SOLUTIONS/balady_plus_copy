@@ -1,5 +1,7 @@
 "mainScreenBarAccept" = "قبول";
 "searchScreenGridHistory" = "تاريخ";
+"keyboardSearchScreenEmptyPlaceholderTitle" = "لم يتم العثور على شيء";
+"keyboardSearchScreenEmptyPlaceholderSubtitle" = "حاول تغيير استفسارك قليلا";
 "anyScreenBackButton" = "رجوع";
 "historyScreenEmptyPlaceholderTitle" = "لا يوجد شيء هنا بعد";
 "historyScreenSearchBackButton" = "بحث";

@@ -34,7 +34,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
         _ searchTemplate: CPSearchTemplate,
         updatedSearchText searchText: String
     ) async -> [CPListItem] {
-        if (searchText.isEmpty) {
+        if searchText.isEmpty {
             var cancellable: Cancellable?
 
             let items = await withUnsafeContinuation { continuation in
@@ -72,7 +72,19 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
                 }
             }
         }
-        return items
+
+        if !items.isEmpty { return items }
+
+        return [
+            CPListItem(
+                text: NSLocalizedString(
+                    "keyboardSearchScreenEmptyPlaceholderTitle", comment: ""
+                ),
+                detailText: NSLocalizedString(
+                    "keyboardSearchScreenEmptyPlaceholderSubtitle", comment: ""
+                )
+            )
+        ]
     }
 
     private func mapCPListItem(searchHistoryItem: SearchHistoryItem)
@@ -123,7 +135,7 @@ class KeyboardSearchScreen: NSObject, CPSearchTemplateDelegate {
     func searchTemplate(
         _ searchTemplate: CPSearchTemplate, selectedResult item: CPListItem
     ) async {
-        let userInfo = item.userInfo
+        guard let userInfo = item.userInfo else { return }
 
         if userInfo is SearchHistoryItem {
             onHistoryTap(searchHistoryItem: userInfo as! SearchHistoryItem)
