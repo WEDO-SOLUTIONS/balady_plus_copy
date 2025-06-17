@@ -19,37 +19,29 @@ class MiniAppsItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-      if (miniApp.latestVersion?.nafathLogin == false || CommonProperties.isLoggedInMunicipality) {
-        NavigationService.pushNamed(
-          routeName: RouteName.miniAppsMainScreen,
-          args: miniApp,
-        );
-      } else {
-        showDialog(
-          context: context,
-          builder: (ctx) =>
-              NeedLoginDialog(
-                onSuccessLogin: (bool? isSuccess) async {
-                  if (isSuccess ?? false) {
-                    NavigationService.pushNamed(
-                      routeName: RouteName.miniAppsMainScreen,
-                      args: miniApp,
-                    );
-                  }
-                },
-              ),
-        );
-      }
-        // if (service.actionValue == "smart_advisor") {
-        //   checkIfLogin(
-        //     context,
-        //     service.copyWith(
-        //       actionValue: RouteName.chatbot,
-        //     ),
-        //   );
-        // } else {
-        //   checkIfLogin(context, service);
-        // }
+        if(miniApp.latestVersion?.nafathLogin == true && !CommonProperties.isLoggedInMunicipality){
+          showDialog(
+            context: context,
+            builder: (ctx) =>
+                NeedLoginDialog(
+                  onSuccessLogin: (bool? isSuccess) async {
+                    if (isSuccess ?? false) {
+                      NavigationService.pushNamed(
+                        routeName: RouteName.miniAppsMainScreen,
+                        args: miniApp,
+                      );
+                    }
+                  },
+                ),
+          );
+        } else if(miniApp.latestVersion?.otpLogin == true){
+          CommonFunctions.onLogin();
+        } else{
+          NavigationService.pushNamed(
+            routeName: RouteName.miniAppsMainScreen,
+            args: miniApp,
+          );
+        }
       },
       child: Card(
         shape: RoundedRectangleBorder(
