@@ -1,4 +1,4 @@
-import 'dart:convert' show base64Decode, base64Encode, jsonDecode, utf8;
+import 'dart:convert' show base64, base64Decode, base64Encode, jsonDecode, utf8;
 import 'dart:io' show File, Platform;
 import 'dart:typed_data' show Uint8List;
 import 'dart:ui';
@@ -29,6 +29,7 @@ import 'package:hijri/hijri_calendar.dart';
 import 'package:intl/intl.dart' show DateFormat;
 import 'package:localize_and_translate/localize_and_translate.dart';
 import 'package:mapness/export/mapness_functions.dart';
+import 'package:mime/mime.dart' as mime;
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart'
     show getExternalStorageDirectory, getTemporaryDirectory;
@@ -196,6 +197,19 @@ class CommonFunctions {
     request.device = device;
     request.appVersion = info.version;
     manager.updateNotificationSettings(request);
+  }
+
+  String? guessMimeTypeFromBase64(String base64String) {
+    // Compute the minimum length of the base64 string we need to decode
+    // [mime.defaultMagicNumbersMaxLength] bytes.  base64 encodes 3 bytes of
+    // binary data to 4 characters.
+    var minimumBase64Length =
+        (mime.defaultMagicNumbersMaxLength / 3).ceil() * 4;
+    return mime.lookupMimeType(
+      '',
+      headerBytes:
+      base64.decode(base64String.substring(0, minimumBase64Length)),
+    );
   }
 
   static EventTransformer<Event> debounce<Event>([Duration? duration]) =>

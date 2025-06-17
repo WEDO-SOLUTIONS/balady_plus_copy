@@ -17,6 +17,7 @@ import 'package:flutter/material.dart'
         RouteSettings,
         Scaffold,
         Widget;
+import '../../../super_app_js_bridge/camera/camera_page.dart';
 import '../../core/utils/utils_exports.dart' show EtmamRoutesNames, RouteName;
 import '../../features/_shared_feature_/presentation/pages/qiblah_webview_page.dart';
 import '../../features/_shared_feature_/presentation/pages/view_apigee_image_screen.dart';
@@ -49,6 +50,7 @@ class Routes {
   static Map<String, Widget Function(BuildContext)> routesApp = {
     RouteName.bottomNavigation: (context) => const b.BottomNavigationPage(),
     RouteName.splashScreen: (context) => const SplashPage(),
+    RouteName.vdCameraPage: (context) => VDCameraPage(),
 
 
 

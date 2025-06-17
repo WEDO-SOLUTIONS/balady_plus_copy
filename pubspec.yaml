@@ -33,7 +33,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  async: ^2.11.0
+  async: 2.11.0
   # Localization app to support multiple languages
   localize_and_translate:
     git:
