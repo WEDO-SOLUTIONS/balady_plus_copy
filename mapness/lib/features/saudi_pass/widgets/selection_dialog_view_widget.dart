@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:collection/collection.dart';
@@ -33,9 +34,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
       scrollController: scrollController,
       backgroundColor: backgroundColor,
       outside: GestureDetector(
-        onTap: () {
-          Navigator.pop(context);
-        },
+        onTap: context.router.popForced,
       ),
       draggerColor: backgroundColor,
       header: Padding(
