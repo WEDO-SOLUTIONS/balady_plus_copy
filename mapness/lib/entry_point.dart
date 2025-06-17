@@ -34,13 +34,17 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
+import 'package:mapness/features/stories/models/story_types.dart';
+import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
 import 'package:mapness/l10n/generated/app_localizations_ar.dart';
 import 'package:mapness/l10n/generated/app_localizations_en.dart';
 import 'package:mapness/pages/debug_overlay/debug_overlay.dart';
 import 'package:mapness/pages/path_nav/path_nav_page.dart';
 import 'package:mapness/shared/constants/constants.dart';
+import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/lib/deeplink_functions.dart';
+import 'package:mapness/shared/lib/urbi_metrics.dart';
 import 'package:mapness/shared/lib/urbi_metrics_utils.dart';
 import 'package:mapness/shared/providers/app_language.dart';
 import 'package:mapness/shared/providers/base_dio.dart';
@@ -399,9 +403,43 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await Future.delayed(const Duration(seconds: 8));
       }
       CommonFunctions.openMovingViolations(uri);
+<<<<<<< HEAD
     } else if (url.toString().isNotEmpty) {
       await ref.watch(appRouterProvider).pushNamed(url.toString());
+=======
+    } else if (url.toString().isNotEmpty && !url.toString().contains("insiderbaladyapp")) {
+      final AppRouter router = await ref.watch(appRouterProvider);
+
+      final params = url.queryParameters;
+      if (url.path == '/stories') {
+        final id = params['id'];
+        if (id != null) {
+          await _openStories(id);
+        }
+      } else {
+        await router.pushNamed(url.toString());
+      }
+>>>>>>> 5b73623018 (fix(stories): make stories deeplink)
     }
+  }
+
+  Future<void> _openStories(String id) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.storyBanner,
+      group: MetricsConstants.exploreTag,
+      action: MetricAction.tap.name,
+      props: {'id': id},
+    );
+
+    ref.read(storiesOpenStateProvider.notifier).open();
+
+    await router.push(StoriesRoute(
+      type: StoryTypes.network,
+      initialStoryId: id,
+      onClose: ref.read(storiesOpenStateProvider.notifier).close,
+    ));
   }
 
   Future<void> _poiDeeplinkById(int dgisObjectId, [LatLng? location]) async {
