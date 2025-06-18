@@ -26,7 +26,10 @@ import 'package:mapness/app/auto_route/app_routes.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/app/auto_route/others/routes_observer.dart';
 import 'package:mapness/app/auto_route/poi_card_ext.dart';
+import 'package:mapness/entities/quick_filters/quick_filter.dart';
 import 'package:mapness/entities/search/models/search_history.dart';
+import 'package:mapness/features/advert_metrics/advert_metrics.dart';
+import 'package:mapness/features/app_analytics/app_analytics.dart';
 import 'package:mapness/features/car/car_enable_free_roam.dart';
 import 'package:mapness/features/favourites/data/models/favorite_cache_item.dart';
 import 'package:mapness/features/lifestyle_layers/providers/layers_controls.dart';
@@ -34,6 +37,7 @@ import 'package:mapness/features/parking_spot/parking_manage.dart';
 import 'package:mapness/features/path_nav/lib/extensions.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_camera_config.dart';
 import 'package:mapness/features/share_eta/helpers/utils.dart';
+import 'package:mapness/features/statistic/providers/statistics_provider.dart';
 import 'package:mapness/features/stories/models/story_types.dart';
 import 'package:mapness/features/stories/providers/stories_open_state.dart';
 import 'package:mapness/l10n/generated/app_localizations.dart';
@@ -64,6 +68,9 @@ import 'package:mixpanel_flutter/mixpanel_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart' as provider;
 import 'package:share_plus/share_plus.dart';
+
+import 'features/search/providers/search.dart';
+import 'features/search/ui/search_scope.dart';
 
 Mixpanel? mixpanel;
 
@@ -411,16 +418,43 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
-      if (url.path == '/stories') {
+      if (url.path == '/stories' && params['id'] != null) {
         final id = params['id'];
-        if (id != null) {
-          await _openStories(id);
-        }
+        await _openStories(id!);
+      } else if (url.path == '/search' && params['filter'] != null) {
+        final filter = params['filter'];
+        await _openQuickFilter(filter!);
       } else {
         await router.pushNamed(url.toString());
       }
 >>>>>>> 5b73623018 (fix(stories): make stories deeplink)
     }
+  }
+
+  Future<void> _openQuickFilter(String filter) async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    final quickFilter = QuickFilter.values.firstWhere(
+      (element) => element.name == filter,
+    );
+    unawaited(ref.read(urbiAnalyticsProvider).track(
+      'quickFilterSearch',
+      properties: {
+        'filter': quickFilter.name,
+      },
+    ));
+    ref.read(appAnalyticsProvider).categorySelected(quickFilter.name);
+    ref.read(advertMetricsProvider.notifier).sendEvent(AdvertMetricsKeys.exploreSearch);
+
+    final language = ref.read(appLanguageProvider);
+
+    final query = quickFilter.query[language];
+    if (query != null) {
+      unawaited(ref.read(SendStatisticProvider(query).future));
+    }
+    unawaited(router.push(SearchRoute(requestFocus: false)));
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(searchProvider(SearchScopeEnum.map.value).notifier).quickSearch(quickFilter);
+    });
   }
 
   Future<void> _openStories(String id) async {
