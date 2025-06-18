@@ -662,6 +662,7 @@ class MarkerTextStyleMessage {
     this.textPlacement,
     this.textOffset,
     this.fontName,
+    this.suppressOnOverlap,
   });
 
   final double? fontSize;
@@ -671,6 +672,7 @@ class MarkerTextStyleMessage {
   final MarkerTextPlacementMessage? textPlacement;
   final double? textOffset;
   final String? fontName;
+  final bool? suppressOnOverlap;
 }
 
 /// Don't use this class directly. Use [SvgMarkerIcon], [PngMarkerIcon], [PngBytesMarkerIcon] instead.
