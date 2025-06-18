@@ -76,6 +76,8 @@ abstract class OfferView implements Listenable {
 
   bool get isByDateRed;
 
+  String get branchName;
+
   ({String url, Map<String, String> headers}) get logo;
 
   OffersGroup get offersGroup;
