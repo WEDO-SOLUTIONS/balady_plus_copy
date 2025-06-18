@@ -5,6 +5,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:app_links/app_links.dart';
+import 'package:balady_plus/app/core/services/services_exports.dart';
+import 'package:balady_plus/app/core/utils/constants/ux_cam_events.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/colors/app_static_colors_theme.dart';
@@ -338,6 +340,14 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
     });
   }
 
+  Future<void> _delayIfFirstRun(
+      {required bool isFirstRun, Duration duration = const Duration(milliseconds: 300)}) async {
+    // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
+    if (isFirstRun) {
+      await Future.delayed(duration);
+    }
+  }
+
   Future<void> openAppLink(Uri uri, {bool isFirstRun = false}) async {
     await initCameraPositionPoint();
     final decodeFull = Uri.decodeFull(uri.toString());
@@ -387,10 +397,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (id != null) {
         final location =
             (latitude == null || longitude == null) ? null : LatLng(latitude: latitude, longitude: longitude);
-        if (isFirstRun) {
-          // TODO(ilyasov): Remove this delay after implementing the new poi bottom sheet
-          await Future.delayed(const Duration(milliseconds: 300));
-        }
+        await _delayIfFirstRun(isFirstRun: isFirstRun);
 
         await _poiDeeplinkById(id, location);
       }
@@ -398,23 +405,15 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       if (type != null && type == BaldayDeeplink.typeValueMyLocation) {
         _myLocationDeepLinkHandler(latitude, longitude);
       } else {
-        if (isFirstRun) {
-          await Future.delayed(const Duration(milliseconds: 300));
-        }
+        await _delayIfFirstRun(isFirstRun: isFirstRun);
         await _poiDeepLinkByCoords(latitude, longitude);
       }
     } else if (momrahId != null) {
       await _momrahDeepLinkHandler(momrahId);
     } else if (homeWidget != null) {
-      if (isFirstRun) {
-        await Future.delayed(const Duration(seconds: 8));
-      }
+      await _delayIfFirstRun(isFirstRun: isFirstRun, duration: const Duration(seconds: 8));
       CommonFunctions.openMovingViolations(uri);
-<<<<<<< HEAD
-    } else if (url.toString().isNotEmpty) {
-      await ref.watch(appRouterProvider).pushNamed(url.toString());
-=======
-    } else if (url.toString().isNotEmpty && !url.toString().contains("insiderbaladyapp")) {
+    } else if (url.toString().isNotEmpty && !url.toString().contains('insiderbaladyapp')) {
       final AppRouter router = await ref.watch(appRouterProvider);
 
       final params = url.queryParameters;
@@ -426,11 +425,83 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
         await _openQuickFilter(filter!);
       } else if (url.path == '/quickFeedback') {
         await router.push(QuickFeedbackRoute());
+      } else if (url.path == '/freeRoam') {
+        await _freeRoam();
+      } else if (url.path == '/qibla') {
+        await _openQibla();
+      } else if (url.path == '/shareMyLocation') {
+        await _shareMyLocation();
+      } else if (url.path == '/athkar') {
+        await _openAthkar();
+      } else if (url.path == '/quran') {
+        await _openQuran();
+      } else if (url.path == '/snapSend') {
+        await _openSnapSend();
+      } else if (url.path == '/parking') {
+        _openParking();
       } else {
         await router.pushNamed(url.toString());
       }
->>>>>>> 5b73623018 (fix(stories): make stories deeplink)
     }
+  }
+
+  void _openParking() {
+    ref.read(appAnalyticsProvider).quickActionSelected('parking');
+    ref.read(layersControlsProvider.notifier).enableParking();
+  }
+
+  Future<void> _freeRoam() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    ref.read(appAnalyticsProvider).quickActionSelected('free_roam');
+    await router.push(const FreeRoamRoute());
+  }
+
+  Future<void> _shareMyLocation() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    final userLocation = ref.read(locationProvider);
+    if (userLocation != null) {
+      await router.push(
+        ShareMyLocationRoute(
+          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
+          closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
+        ),
+      );
+    }
+  }
+
+  Future<void> _openQibla() async {
+    final AppRouter router = await ref.watch(appRouterProvider);
+    ref.read(appAnalyticsProvider).quickActionSelected('qibla');
+    Metrics.logEventAdvanced(
+      MetricsConstants.exploreKeys.qibla,
+      action: MetricAction.tap.name,
+      group: MetricsConstants.exploreTag,
+    );
+    final location = ref.read(locationProvider.notifier);
+
+    await location.checkLocationPermission().then((allowed) async {
+      if (allowed) {
+        await router.push(const KiblahRoute());
+      }
+    });
+  }
+
+  Future<void> _openQuran() async {
+    ref.read(appAnalyticsProvider).quickActionSelected('quran');
+    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.menuQuranPage);
+  }
+
+  Future<void> _openAthkar() async {
+    ref.read(appAnalyticsProvider).quickActionSelected('athkar');
+    await NavigationService.navigatorKey.currentState?.pushNamed(RouteName.mainAthkarPage);
+  }
+
+  Future<void> _openSnapSend() async {
+    CommonFunctions.sendUXCamEvent(UXCamEvents.SnapAndSend_Open_From_Home_Event);
+
+    await NavigationService.navigatorKey.currentState!.pushNamed(
+      RouteName.vDAllTypesScreen,
+    );
   }
 
   Future<void> _openQuickFilter(String filter) async {
