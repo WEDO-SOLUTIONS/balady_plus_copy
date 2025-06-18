@@ -95,7 +95,6 @@ class FeedbackImageSelectorSheet extends HookWidget {
             ]),
           ),
         ),
-        // Spacing.$4x.heightBox
       ],
     );
   }
