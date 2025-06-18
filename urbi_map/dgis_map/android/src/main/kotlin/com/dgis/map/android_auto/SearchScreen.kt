@@ -51,11 +51,15 @@ class SearchScreen(
             })
             .setHeaderAction(Action.BACK)
             .setShowKeyboardByDefault(false)
+            .setSearchHint(getString(R.string.search_hint))
             .setInitialSearchText(initialQuery ?: "")
 
         when (val state = this.state) {
             SearchScreenState.Initial -> {
                 template.setLoading(false)
+                val itemList = ItemList.Builder()
+                    .setNoItemsMessage(getString(R.string.search_suggestion))
+                template.setItemList(itemList.build())
             }
 
             SearchScreenState.Loading -> {

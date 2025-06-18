@@ -19,8 +19,10 @@
 
   <!-- Search -->
   <string name="search_history">تاريخ</string>
+  <string name="search_hint">كافيه</string>
+  <string name="search_suggestion">أدخل عنوانًا أو اسم مكان مثل مركز تجاري أو مطعم</string>
   <string name="search_nothing_found">لم يتم العثور على شيء</string>
-  <string name="enter_from_keyboard">أدخل من لوحة المفاتيح</string>
+  <string name="enter_from_keyboard">لوحة المفاتيح</string>
   <string name="empty_trips_history_message">هنا ستجد قائمة برحلاتك</string>
 
   <!-- Common -->
