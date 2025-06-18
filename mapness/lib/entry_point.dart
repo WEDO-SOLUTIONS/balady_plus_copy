@@ -424,6 +424,8 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/search' && params['filter'] != null) {
         final filter = params['filter'];
         await _openQuickFilter(filter!);
+      } else if (url.path == '/quickFeedback') {
+        await router.push(QuickFeedbackRoute());
       } else {
         await router.pushNamed(url.toString());
       }
