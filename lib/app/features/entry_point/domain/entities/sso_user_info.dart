@@ -66,12 +66,13 @@ class SsoUserInfo extends Equatable {
   }
 
   String getFirstName() {
-    // List<String> names = sname?.split(',') ?? [""];
-    return name ?? "";
+    List<String> names = arName?.split(' ') ?? [""];
+
+    return names.first;
   }
 
   String getLastName() {
-    List<String> names = sname?.split(',') ?? [""];
+    List<String> names = arName?.split(' ') ?? [""];
 
     return names.last;
   }
