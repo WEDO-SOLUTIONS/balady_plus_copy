@@ -16,7 +16,6 @@ import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dar
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
-import 'package:mapness/features/saudi_pass/mocks.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
