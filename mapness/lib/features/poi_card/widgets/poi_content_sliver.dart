@@ -123,8 +123,6 @@ class PoiContentSliver extends ConsumerWidget {
             title: context.l10n.dataIsIncorrect,
           );
 
-          final lookupsBody = PromotionsBody.fromJson(jsonDecode(offerJsonMock));
-
           return Column(
             children: [
               const PoiContentFeedbackCard(
@@ -164,12 +162,12 @@ class PoiContentSliver extends ConsumerWidget {
                   child: PoiContentParkingCard(data: parking),
                 ),
 
-              // TODO: add offers
-              if (true)
-                PoiContentOffersCard(
-                  offers: lookupsBody.data?.result?.records.toList() ?? [],
-                  contentPadding: itemPadding,
-                ),
+              // // TODO: add offers
+              // if (true)
+              //   PoiContentOffersCard(
+              //     offers: lookupsBody.data?.result?.records.toList() ?? [],
+              //     contentPadding: itemPadding,
+              //   ),
 
               if (accessibilityInfo != null)
                 Padding(
@@ -189,46 +187,6 @@ class PoiContentSliver extends ConsumerWidget {
           );
         }),
       ),
-    );
-  }
-
-  Offer mockOffer(String id, String name) {
-    return Offer(
-      id: '6805fa1ec128a52ca8df1906-67696213c6a12d0f58f20866',
-      number: 'PROMO-2504-23',
-      name: 'A H',
-      description: 'Promotion Offer Description in English',
-      type: OfferType.fromJson(jsonDecode('''{
-                  "id": "vouchers",
-                  "name": "Vouchers"
-              }''')),
-      provider: OfferProvider(
-        logo: '6811d6c30d067c4eb8a3f8f2',
-        id: '63c6a7942fac9a1c4020ad9c',
-        name: "شركة الاتحاد الهندسي السعودية للاستشارات الهندسية  خطيب وعلمي",
-      ),
-      categories: [
-        Category.fromJson(jsonDecode('''{
-        "id": "$id",
-        "name": "$name"
-    }'''))
-      ],
-      images: ['6805fa1987e8b6248807ca8e'],
-      publishStartDate: DateTime.parse('2025-04-21 04:54:52'),
-      publishEndDate: DateTime.parse('2025-07-30 21:00:00'),
-      lastUpdateTime: DateTime.parse('2025-04-21 11:48:24'),
-      branchId: '67696213c6a12d0f58f20866',
-      branchName: 'ركة جمرة عرب للتعدين شركة شخص واح',
-      city: City(id: '1', name: 'Riyadh'),
-      location: OfferLocation(
-        latitude: "24.69152019225905",
-        longitude: "46.665802245405544",
-      ),
-      commercialLicenseNumber: '46049856285',
-      crNumber: '7000011051',
-      favorite: true,
-      redeemed: true,
-      typeDetails: TypeDetails(amount: 7000, number: '123456'),
     );
   }
 }
