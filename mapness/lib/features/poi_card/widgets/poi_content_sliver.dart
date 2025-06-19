@@ -16,6 +16,7 @@ import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dar
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
+import 'package:mapness/features/saudi_pass/mocks.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
 import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
 import 'package:mapness/features/saudi_pass/repo/offer_location.dart';
@@ -122,7 +123,7 @@ class PoiContentSliver extends ConsumerWidget {
             title: context.l10n.dataIsIncorrect,
           );
 
-          ///TODO: temporary mock
+          final lookupsBody = PromotionsBody.fromJson(jsonDecode(offerJsonMock));
 
           return Column(
             children: [
@@ -166,12 +167,7 @@ class PoiContentSliver extends ConsumerWidget {
               // TODO: add offers
               if (true)
                 PoiContentOffersCard(
-                  offers: [
-                    mockOffer("food", "Food"),
-                    mockOffer("shopping", "Shopping"),
-                    mockOffer("entertainment", "Entertainment"),
-                    mockOffer("homeAndAuto", "HomeAndAuto")
-                  ],
+                  offers: lookupsBody.data?.result?.records.toList() ?? [],
                   contentPadding: itemPadding,
                 ),
 
