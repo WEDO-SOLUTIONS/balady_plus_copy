@@ -39,7 +39,6 @@ class OfferViewWidget extends ConsumerWidget {
       onTap: offerView.onTap,
       child: OfferViewDecorationWidget(
         child: Row(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             ClipRRect(
               borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.m)),

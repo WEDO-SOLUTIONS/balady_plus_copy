@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
@@ -13,6 +15,11 @@ import 'package:mapness/features/poi_card/extensions/poi_content/poi_content_ext
 import 'package:mapness/features/poi_card/provider/poi_card_actions_provider.dart';
 import 'package:mapness/features/poi_card/provider/poi_card_provider.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
+import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
+import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
+import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
+import 'package:mapness/features/saudi_pass/repo/offer_location.dart';
+import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -22,6 +29,7 @@ import 'package:mapness/shared/providers/map/find_brief_route_info.dart';
 class PoiContentSliver extends ConsumerWidget {
   final PoiCardState? poiCardState;
   final void Function()? onEntrancesTap;
+
   const PoiContentSliver({
     this.poiCardState,
     this.onEntrancesTap,
@@ -32,6 +40,9 @@ class PoiContentSliver extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final data = poiCardState?.gisObjectIdMessage;
     const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
+
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(poiCardState?.tradeLicense?.license.trim());
 
     final finishPoint = data != null
         ? RouteSearchPoint(
@@ -110,6 +121,9 @@ class PoiContentSliver extends ConsumerWidget {
             },
             title: context.l10n.dataIsIncorrect,
           );
+
+          ///TODO: temporary mock
+
           return Column(
             children: [
               const PoiContentFeedbackCard(
@@ -148,9 +162,18 @@ class PoiContentSliver extends ConsumerWidget {
                   padding: itemPadding,
                   child: PoiContentParkingCard(data: parking),
                 ),
+
               // TODO: add offers
-              // if (data.offers != null) //
-              //   _PoiContentOffersWidget(offers: data.offers!, contentPadding: itemPadding),
+              if (true)
+                PoiContentOffersCard(
+                  offers: [
+                    mockOffer("food", "Food"),
+                    mockOffer("shopping", "Shopping"),
+                    mockOffer("entertainment", "Entertainment"),
+                    mockOffer("homeAndAuto", "HomeAndAuto")
+                  ],
+                  contentPadding: itemPadding,
+                ),
 
               if (accessibilityInfo != null)
                 Padding(
@@ -170,6 +193,46 @@ class PoiContentSliver extends ConsumerWidget {
           );
         }),
       ),
+    );
+  }
+
+  Offer mockOffer(String id, String name) {
+    return Offer(
+      id: '6805fa1ec128a52ca8df1906-67696213c6a12d0f58f20866',
+      number: 'PROMO-2504-23',
+      name: 'A H',
+      description: 'Promotion Offer Description in English',
+      type: OfferType.fromJson(jsonDecode('''{
+                  "id": "vouchers",
+                  "name": "Vouchers"
+              }''')),
+      provider: OfferProvider(
+        logo: '6811d6c30d067c4eb8a3f8f2',
+        id: '63c6a7942fac9a1c4020ad9c',
+        name: "شركة الاتحاد الهندسي السعودية للاستشارات الهندسية  خطيب وعلمي",
+      ),
+      categories: [
+        Category.fromJson(jsonDecode('''{
+        "id": "$id",
+        "name": "$name"
+    }'''))
+      ],
+      images: ['6805fa1987e8b6248807ca8e'],
+      publishStartDate: DateTime.parse('2025-04-21 04:54:52'),
+      publishEndDate: DateTime.parse('2025-07-30 21:00:00'),
+      lastUpdateTime: DateTime.parse('2025-04-21 11:48:24'),
+      branchId: '67696213c6a12d0f58f20866',
+      branchName: 'ركة جمرة عرب للتعدين شركة شخص واح',
+      city: City(id: '1', name: 'Riyadh'),
+      location: OfferLocation(
+        latitude: "24.69152019225905",
+        longitude: "46.665802245405544",
+      ),
+      commercialLicenseNumber: '46049856285',
+      crNumber: '7000011051',
+      favorite: true,
+      redeemed: true,
+      typeDetails: TypeDetails(amount: 7000, number: '123456'),
     );
   }
 }
