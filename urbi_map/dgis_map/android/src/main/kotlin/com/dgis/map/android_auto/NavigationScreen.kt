@@ -33,6 +33,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.dgis.map.R
 import com.dgis.map.android_auto.custom_renderer.CustomRenderer
 import com.dgis.map.android_auto.custom_renderer.CustomRendererData
+import com.dgis.map.android_auto.settings.SettingsScreen
 import kotlin.math.floor
 import kotlin.math.max
 import kotlin.math.round
@@ -73,7 +74,6 @@ class NavigationScreen(
         )
     }
 
-    private var isTrafficEnabled: Boolean = false
     private var isEndTripShown: Boolean = false
 
     private var navigationState = NavigationState.DISABLED
@@ -96,22 +96,6 @@ class NavigationScreen(
 
     override fun onGetTemplate(): Template {
         val actionStrip = ActionStrip.Builder()
-        val trafficAction =
-            Action.Builder()
-                .setIcon(
-                    CarIcon.Builder(
-                        IconCompat.createWithResource(
-                            carContext,
-                            if (isTrafficEnabled)
-                                R.drawable.traffic_active
-                            else R.drawable.traffic
-                        )
-                    )
-                        .build()
-                )
-                .setOnClickListener { toggleTrafficControl() }
-                .build()
-        actionStrip.addAction(trafficAction)
         if (!isNavigation) {
             //            TODO(Sergei): add favourite screen
             //            actionStrip.addAction(favouriteAction)
@@ -119,8 +103,7 @@ class NavigationScreen(
             actionStrip.addAction(routeOverviewAction)
         }
         actionStrip.addAction(searchAction)
-        //        TODO(Sergei): add settings screens
-        //        actionStrip.addAction(settingsAction)
+        actionStrip.addAction(settingsAction)
         if (isNavigation) {
             actionStrip.addAction(buildStopNavigationAction())
         }
@@ -367,13 +350,7 @@ class NavigationScreen(
     }
 
     private fun openSettings() {
-        // TODO(Sergei): open settings screen
-    }
-
-    private fun toggleTrafficControl() {
-        mapController.toggleTrafficControl()
-        isTrafficEnabled = !isTrafficEnabled
-        invalidate()
+        screenManager.push(SettingsScreen(carContext, mapController))
     }
 
     private fun showEndTrip() {

@@ -45,9 +45,11 @@ import ru.dgis.sdk.routing.RouteEditorRoutesInfo
 import ru.dgis.sdk.routing.RouteSearchOptions
 import ru.dgis.sdk.routing.RouteSearchPoint
 import ru.dgis.sdk.traffic.TrafficControlModel
+import ru.dgis.sdk.traffic.TrafficControlStatus
 import java.lang.Exception
 import java.util.Locale
 import ru.dgis.sdk.map.Map as DgisMap
+import com.dgis.map.map_api.SoundToggleType
 
 class CarMapController(
     private val sharedPrefs: SharedPrefs,
@@ -58,7 +60,7 @@ class CarMapController(
     private val locationSource = DgisMapInitializer.getLocationSource()
     private val searchHandler = CarSearchHandler(SearchManager.createOnlineManager(sdkContext))
     private var navigationHandler =
-        CarNavigationHandler(DgisMapInitializer.getNavigationManager(), searchHandler)
+        CarNavigationHandler(DgisMapInitializer.getNavigationManager(), searchHandler, sharedPrefs)
     private val routeEditor = RouteEditor(sdkContext)
     private val routeEditorSource = RouteEditorSource(sdkContext, routeEditor).apply {
         setShowOnlyActiveRoute(true)
@@ -70,6 +72,8 @@ class CarMapController(
     private var myLocationControlModel: MyLocationControlModel? = null
     private var zoomControlModel: ZoomControlModel? = null
     private var trafficControlModel: TrafficControlModel? = null
+
+    private val parkingAttrName = "parkingOn"
 
     init {
         closeables.add(
@@ -106,6 +110,7 @@ class CarMapController(
         )
 
         setStyle()
+        settingsInit()
     }
 
     private fun setStyle() {
@@ -234,9 +239,108 @@ class CarMapController(
         searchHandler.suggest(queryText, limit, resultCallback, errorCallback)
     }
 
+
+    private fun settingsInit() {
+        // Voice instructions
+        navigationHandler.toggleVoiceInstruction(sharedPrefs.voiceInstructionsValue)
+
+        // Traffic
+        val trafficStatus = trafficControlModel?.stateChannel?.value?.status ?: TrafficControlStatus.DISABLED
+        val currentTrafficValue = trafficStatus == TrafficControlStatus.ENABLED
+        if (sharedPrefs.trafficValue != currentTrafficValue) {
+            trafficControlModel?.onClicked()
+        }
+
+        // Parking
+        if (sharedPrefs.parkingValue != isParkingOnNow) {
+            onParkingClicked()
+        }
+
+        // Volume
+        val volumeLevels = listOf(10, 30, 60) // Minimum, Quiet, Standard
+        val volumeIndex = sharedPrefs.volumeValue
+        val volume = volumeLevels.getOrElse(volumeIndex) { 30 }
+        navigationHandler.setNavigatorVolume(volume)
+
+        // Better road
+        navigationHandler.setBetterRouteEnabled(sharedPrefs.suggestBetterRoad)
+    }
+
+    // -- Voice Instructions
+    var voiceInstructions: SoundToggleType
+        get() {
+            return sharedPrefs.voiceInstructionsValue
+        }
+        set(value) {
+            sharedPrefs.voiceInstructionsValue = value
+            navigationHandler.toggleVoiceInstruction(value)
+        }
+
+    // -- Traffic
+    val trafficEnabled: Boolean
+        get() {
+            return sharedPrefs.trafficValue
+        }
+
     fun toggleTrafficControl() {
         trafficControlModel?.onClicked()
+        sharedPrefs.trafficValue = !sharedPrefs.trafficValue
     }
+
+    // -- Parking
+    private var DgisMap.isParkingOn: Boolean
+        get() {
+            return attributes.getAttributeValue(parkingAttrName).asBoolean == true
+        }
+        private set(value) {
+            attributes.setAttributeValue(parkingAttrName, AttributeValue(value))
+        }
+
+    val isParkingOnNow: Boolean?
+        get() {
+          val value = map?.isParkingOn
+          if (value != sharedPrefs.parkingValue) {
+              sharedPrefs.parkingValue = value == true
+          }
+            return value
+        }
+
+    fun onParkingClicked() {
+        if (map != null) {
+            sharedPrefs.parkingValue = !map!!.isParkingOn
+            map!!.isParkingOn = !map!!.isParkingOn
+        }
+    }
+
+    // -- Volume
+    var volumeValue: Int
+        get() {
+            return sharedPrefs.volumeValue
+        }
+        set(value) {
+            sharedPrefs.volumeValue = value
+            val volumeLevels = listOf(10, 30, 60) // Minimum, Quiet, Standard
+            val volume = volumeLevels.getOrElse(value) { 30 }
+            navigationHandler.setNavigatorVolume(volume)
+        }
+
+    // -- Route Settings
+    var avoidTollRoads: Boolean
+        get() = sharedPrefs.avoidTollRoads
+        set(value) {  sharedPrefs.avoidTollRoads = value }
+
+    var avoidUnpavedRoads: Boolean
+        get() = sharedPrefs.avoidUnpavedRoads
+        set(value) { sharedPrefs.avoidUnpavedRoads = value }
+
+    var suggestBetterRoad: Boolean
+        get() {
+            return sharedPrefs.suggestBetterRoad
+        }
+        set(value) {
+            sharedPrefs.suggestBetterRoad = value
+            navigationHandler.setBetterRouteEnabled(sharedPrefs.suggestBetterRoad)
+        }
 
     fun setRouteParams(latitude: Double, longitude: Double, objectId: DgisObjectId? = null) {
         val startPoint = locationSource.lastLocation?.let {
@@ -249,7 +353,13 @@ class CarMapController(
         ) else RouteSearchPoint(
             GeoPoint(latitude, longitude)
         )
-        val options = RouteSearchOptions(CarRouteSearchOptions())
+
+        val options = RouteSearchOptions(
+            CarRouteSearchOptions(
+                avoidTollRoads = sharedPrefs.avoidTollRoads,
+                avoidUnpavedRoads = sharedPrefs.avoidUnpavedRoads
+            )
+        )
         routeEditor.setRouteParams(
             RouteEditorRouteParams(startPoint, finishPoint, options)
         )

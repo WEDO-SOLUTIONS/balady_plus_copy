@@ -31,4 +31,27 @@
   <string name="meter">m</string>
   <string name="kilometer">km</string>
   <string name="back">Back</string>
+
+  <!-- Settings -->
+  <string name="settings_title">Settings</string>
+  <string name="settings_voice_instructions">Voice Instructions</string>
+  <string name="settings_traffic">Traffic</string>
+  <string name="settings_parking">Parking</string>
+  <string name="settings_route">Route</string>
+  <string name="settings_prompts_volume">Prompts volume</string>
+  
+  <!-- Voice Instructions -->
+  <string name="voice_instructions_all">All events</string>
+  <string name="voice_instructions_important">Important</string>
+  <string name="voice_instructions_none">Off</string>
+
+  <!-- Volume Settings -->
+  <string name="volume_minimum">Minimum</string>
+  <string name="volume_quiet">Quiet</string>
+  <string name="volume_standard">Standard</string>
+
+  <!-- Route Settings -->
+  <string name="route_avoid_toll_roads">Avoid toll roads</string>
+  <string name="route_avoid_unpaved_roads">Avoid unpaved roads</string>
+  <string name="route_suggest_better_route">Suggest a route better</string>
 </resources>

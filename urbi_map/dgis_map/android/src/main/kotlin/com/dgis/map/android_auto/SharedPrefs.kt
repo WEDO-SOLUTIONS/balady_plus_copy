@@ -2,6 +2,9 @@ package com.dgis.map.android_auto
 
 import android.content.Context
 import android.content.SharedPreferences
+import org.json.JSONObject
+import androidx.core.content.edit
+import com.dgis.map.map_api.SoundToggleType
 
 class SharedPrefs(context: Context) : AutoCloseable {
 
@@ -22,8 +25,89 @@ class SharedPrefs(context: Context) : AutoCloseable {
     }
 
     fun putString(key: String, value: String?) {
-        sharedPreferences.edit().putString("$keyPrefix$key", value).apply()
+        sharedPreferences.edit { putString("$keyPrefix$key", value) }
     }
+
+    // Amount of instructions that user will hear during the driving
+    // 0: All events, 1: Important, 2: Off
+    var voiceInstructionsValue: SoundToggleType
+        get() {
+            val name = sharedPreferences.getString(
+                "$keyPrefix$voiceInstructionsKey",
+                SoundToggleType.ALL.name
+            )
+            return try {
+                SoundToggleType.valueOf(name!!)
+            } catch (e: IllegalArgumentException) {
+                SoundToggleType.ALL
+            }
+        }
+        set(value) {
+            sharedPreferences.edit { putString("$keyPrefix$voiceInstructionsKey", value.name) }
+        }
+
+    // If traffic value shown by default
+    var trafficValue: Boolean
+        get() {
+            return sharedPreferences.getBoolean("$keyPrefix$trafficKey", false)
+        }
+        set(value) {
+            sharedPreferences.edit { putBoolean("$keyPrefix$trafficKey", value) }
+        }
+
+    // Is parking lots shown by default
+    var parkingValue: Boolean
+        get() {
+            return sharedPreferences.getBoolean("$keyPrefix$parkingKey", false)
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean("$keyPrefix$parkingKey", value)
+            }
+        }
+
+    // Avoid Toll Road setting to use across Android Auto. Use it as the source of truth
+    // to initialize and set up all others settings
+    var avoidTollRoads: Boolean
+        get() {
+            return sharedPreferences.getBoolean("$keyPrefix$avoidTollRoadKey", false)
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean("$keyPrefix$avoidTollRoadKey", value)
+            }
+        }
+
+    // Avoid Unpaved Road setting to use across Android Auto. Use it as the source of truth
+    // to initialize and set up all others settings
+    var avoidUnpavedRoads: Boolean
+        get() {
+            return sharedPreferences.getBoolean("$keyPrefix$avoidUnpavedRoadsKey", false)
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean("$keyPrefix$avoidUnpavedRoadsKey", value)
+            }
+        }
+
+    var suggestBetterRoad: Boolean
+        get() {
+            return sharedPreferences.getBoolean("$keyPrefix$suggestBetterRoadKey", false)
+        }
+        set(value) {
+            sharedPreferences.edit {
+                putBoolean("$keyPrefix$suggestBetterRoadKey", value)
+            }
+        }
+    // Volume of the navigator voice during the navigation
+    // 0: Full Volume, 1: Quiet, 2: Minimum
+    var volumeValue: Int
+        get() {
+            return sharedPreferences.getInt("$keyPrefix$volumeKey", 0)
+        }
+        set(value) {
+            sharedPreferences.edit { putInt("$keyPrefix$volumeKey", value) }
+        }
 
     fun setSharedPrefsChangeListener(sharedPrefsChangeListener: (key: String) -> Unit) {
         this.sharedPrefsChangeListener = sharedPrefsChangeListener
@@ -40,6 +124,15 @@ class SharedPrefs(context: Context) : AutoCloseable {
         private const val keyPrefix = "flutter."
         const val languageKey = "settings.language"
         const val navigatorVoiceKey = "navigator.voice"
+        private const val voiceInstructionsKey = "auto.voiceInstructions"
+        private const val trafficKey = "auto.traffic"
+        private const val parkingKey = "auto.parking"
+
+        private const val avoidTollRoadKey = "auto.navigation.avoidTollRoads"
+        private const val avoidUnpavedRoadsKey = "auto.navigation.avoidUnpavedRoads"
+        private const val suggestBetterRoadKey = "auto.navigation.suggestBetterRoad"
+
+        private const val volumeKey = "auto.volume"
     }
 
     override fun close() {
