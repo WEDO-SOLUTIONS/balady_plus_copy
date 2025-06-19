@@ -38,10 +38,8 @@ class PoiContentSliver extends ConsumerWidget {
     final data = poiCardState?.gisObjectIdMessage;
     const itemPadding = EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x);
 
-    final offers = ref.watch(poiOffersProvider.notifier);
-
-    // final hasOffers = offers.containsKey(poiCardState?.tradeLicense?.license.trim());
-    final hasOffers = false;
+    final offers = ref.watch(poiOffersProvider);
+    final hasOffers = offers.containsKey(poiCardState?.tradeLicense?.license.trim());
 
 
     final finishPoint = data != null
@@ -160,10 +158,10 @@ class PoiContentSliver extends ConsumerWidget {
                   child: PoiContentParkingCard(data: parking),
                 ),
               if (hasOffers)
-                // PoiContentOffersCard(
-                //   offers: offers[poiCardState?.tradeLicense?.license.trim()] ?? [],
-                //   contentPadding: itemPadding,
-                // ),
+                PoiContentOffersCard(
+                  offers: offers[poiCardState?.tradeLicense?.license.trim()] ?? [],
+                  contentPadding: itemPadding,
+                ),
               if (accessibilityInfo != null)
                 Padding(
                   padding: itemPadding,
