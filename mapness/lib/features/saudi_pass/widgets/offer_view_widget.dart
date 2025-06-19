@@ -95,6 +95,12 @@ class OfferViewWidget extends ConsumerWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
+                    offerView.branchName,
+                    style: textStyles.captionMediumRegular,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
                     '${context.l10n.saudiPassOfferBy} $byDate',
                     style: byDateStyle,
                     maxLines: 1,

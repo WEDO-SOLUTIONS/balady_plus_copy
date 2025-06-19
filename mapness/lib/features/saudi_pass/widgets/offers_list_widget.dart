@@ -48,7 +48,7 @@ class _OffersListWidgetState extends State<OffersListWidget> {
                 builder: (_, s) => ConstraintsTransformBox(
                   constraintsTransform: (constraints) {
                     final noLoadedItems = index == 0 && widget.asyncIterableOffers.length == 0;
-                    return noLoadedItems ? listConstraints : constraints.tighten(height: 78);
+                    return noLoadedItems ? listConstraints : constraints.tighten(height: 82);
                   },
                   child: Builder(
                     builder: (context) {

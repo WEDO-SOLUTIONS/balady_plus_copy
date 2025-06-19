@@ -231,6 +231,9 @@ class OfferViewImpl extends ChangeNotifier implements OfferView {
   num? get amount => offer.typeDetails.amount;
 
   @override
+  String get branchName => offer.branchName;
+
+  @override
   num? get ratio {
     final ratio = offer.typeDetails.ratio;
     if (ratio != null) {
