@@ -18,9 +18,6 @@ import 'package:mapness/features/poi_card/widgets/poi_content/poi_content.dart';
 import 'package:mapness/features/poi_card/widgets/poi_content/src/poi_content_offer_card.dart';
 import 'package:mapness/features/saudi_pass/mocks.dart';
 import 'package:mapness/features/saudi_pass/providers/poi_offers_provider.dart';
-import 'package:mapness/features/saudi_pass/repo/lookups_body.dart';
-import 'package:mapness/features/saudi_pass/repo/offer_location.dart';
-import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/pages/feedback/quick_feedback_page.dart';
 import 'package:mapness/shared/constants/metrics_constants.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -135,7 +132,6 @@ class PoiContentSliver extends ConsumerWidget {
                   data: data.getFullAddress(briefInfo, context.l10n, onEntrancesTap),
                 ),
               ),
-
               if (about != null)
                 Padding(
                   padding: itemPadding,
@@ -161,14 +157,11 @@ class PoiContentSliver extends ConsumerWidget {
                   padding: itemPadding,
                   child: PoiContentParkingCard(data: parking),
                 ),
-
-              // // TODO: add offers
-              // if (true)
-              //   PoiContentOffersCard(
-              //     offers: lookupsBody.data?.result?.records.toList() ?? [],
-              //     contentPadding: itemPadding,
-              //   ),
-
+              if (hasOffers)
+                PoiContentOffersCard(
+                  offers: offers[poiCardState?.tradeLicense?.license.trim()] ?? [],
+                  contentPadding: itemPadding,
+                ),
               if (accessibilityInfo != null)
                 Padding(
                   padding: itemPadding,
