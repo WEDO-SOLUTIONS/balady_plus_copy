@@ -458,15 +458,7 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
 
   Future<void> _shareMyLocation() async {
     final AppRouter router = await ref.watch(appRouterProvider);
-    final userLocation = ref.read(locationProvider);
-    if (userLocation != null) {
-      await router.push(
-        ShareMyLocationRoute(
-          cameraConfig: const PoiCameraConfig(zoom: 17, bearing: 0, tilt: 0),
-          closestPoint: LatLng(latitude: userLocation.latitude, longitude: userLocation.longitude),
-        ),
-      );
-    }
+    await router.push(ShareMyLocationRoute());
   }
 
   Future<void> _openQibla() async {
