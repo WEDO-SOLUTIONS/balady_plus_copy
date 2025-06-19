@@ -61,14 +61,8 @@ class _OfferCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final hasDiscount = offer.discount != null;
-    ///TODO: uncomment later
-    // final repository = ref.watch(saudiPassRepositoryProvider).valueOrNull;
-    // final imageUri = repository.getPromotionsImagesUri(imageId: imageId);
-
 
     return GestureDetector(
-      ///TODO: uncomment later
-      // onTap: offer.onTap,
       child: SizedBox(
         height: height,
         width: width,
@@ -131,24 +125,6 @@ class _OfferCard extends StatelessWidget {
                     ),
                   ),
                 )
-                ///TODO: uncomment later
-                // ClipRRect(
-                //   borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
-                //   child: SizedBox(
-                //     width: 103,
-                //     height: 103,
-                //     child: offer.images != null
-                //         ? CachedNetworkImage(
-                //       imageUrl: offer.images.first.url,
-                //       httpHeaders: offer.image!.headers,
-                //       fit: BoxFit.cover,
-                //       errorWidget: (context, _, __) {
-                //         return _FallbackImage(image: offer.fallbackImage);
-                //       },
-                //     )
-                //         : _FallbackImage(image: offer.fallbackImage),
-                //   ),
-                // ),
               ],
             ),
           ),
