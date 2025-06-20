@@ -948,7 +948,7 @@ extension PublicTransportPlatformTransitionMessageExt on PublicTransportPlatform
 
 extension GroupItemMessageExt on GroupItemMessage {
   Map<String, dynamic> toJson() => {
-        'id': DgisObjectIdMessageExt(this.id).toJson(),
+        'id': DgisObjectIdMessageExt(id).toJson(),
         'type': type.toString().split('.').last,
       };
 
