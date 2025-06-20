@@ -7,7 +7,6 @@ class CategorySelectionDialogViewNotifier extends SelectionDialogViewNotifier<Ca
       : super(
           all: parent.lookups.categories,
           selected: parent.categoriesSelected,
-          stackRouter: parent.stackRouter,
           selectionDialogApply: parent.applyCategories,
           createSelectionView: CategorySelectionView.new,
         );

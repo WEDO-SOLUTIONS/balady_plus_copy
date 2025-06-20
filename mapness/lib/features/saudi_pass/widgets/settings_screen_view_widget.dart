@@ -14,7 +14,7 @@ class SettingsScreenViewWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SaudiPassScaffold(
-        onBackButton: settingsScreenView.tapBack,
+        onBackButton: () => settingsScreenView.tapBack(context),
         title: context.l10n.saudiPassSettingsPageTitle,
         body: SafeArea(
           child: ListenableBuilder(
@@ -27,7 +27,10 @@ class SettingsScreenViewWidget extends StatelessWidget {
                   Expanded(
                     child: ListView(
                       children: [
-                        SaudiPassCitySelection(title: settingsScreenView.cityTitle, onTap: settingsScreenView.tapCity),
+                        SaudiPassCitySelection(
+                          title: settingsScreenView.cityTitle,
+                          onTap: () => settingsScreenView.tapCity(context),
+                        ),
                         const SizedBox(height: Spacing.$3x),
                         SettingsCardWidget(
                           title: context.l10n.saudiPassOffersPageFilterType,

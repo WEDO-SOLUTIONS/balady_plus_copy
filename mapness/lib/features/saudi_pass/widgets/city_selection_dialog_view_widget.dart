@@ -1,3 +1,4 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
@@ -16,7 +17,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final scrollController = useStatelessBottomsheetController(
-      onClose: (_) => citySelectionDialogView.onCrossTap(),
+      onClose: (_) => context.router.popForced(),
       heightModel: BottomSheetAspectRatioHeightModel(1.0),
     );
 
@@ -31,6 +32,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
     return SafeArea(
+      bottom: false,
       child: StatelessBottomSheet(
         backgroundColorDelegate: StatelessSheetDelegateFunction<Color?>(
           function: (controller) => AppColor.black.withOpacity(0.4 * (1 - controller.interpolation)),
@@ -43,7 +45,7 @@ class CitySelectionDialogViewWidget extends HookWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(context.l10n.saudiPassCitySelectionPageTitle, style: context.textStyleV3.h2SemiBold),
-              CustomCloseButton(onClose: citySelectionDialogView.onCrossTap),
+              CustomCloseButton(onClose: context.router.popForced),
             ],
           ),
         ),
@@ -104,7 +106,7 @@ class SearchViewWidget extends StatelessWidget {
   Widget build(BuildContext context) => SizedBox(
         height: AppSizes.l,
         child: ContentRowV2(
-          onTap: view.onTap,
+          onTap: () => view.onTap(context),
           leading: Icon(
             SystemIcons.search,
             color: view.isMagnifierVisible ? context.colorsV2.foregroundMuted : Colors.transparent,

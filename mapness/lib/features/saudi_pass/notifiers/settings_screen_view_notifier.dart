@@ -1,5 +1,5 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter/widgets.dart';
 import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/features/saudi_pass/notifiers/category_selection_dialog_view_notifier.dart';
 import 'package:mapness/features/saudi_pass/notifiers/city_selection_dialog_view_notifier.dart';
@@ -12,8 +12,6 @@ class SettingsScreenViewNotifier extends ChangeNotifier implements SettingsScree
   final OffersFiltersViewNotifier parent;
 
   SettingsScreenViewNotifier(this.parent);
-
-  StackRouter get stackRouter => parent.stackRouter;
 
   late City citySelected = parent.citySelected;
   late final recommendedTypesSelected = Set.of(parent.recommendedTypesSelected);
@@ -30,15 +28,15 @@ class SettingsScreenViewNotifier extends ChangeNotifier implements SettingsScree
   );
 
   @override
-  void tapBack() => stackRouter.popForced();
+  void tapBack(BuildContext context) => context.router.popForced();
 
   @override
   String get cityTitle => citySelected.name;
 
   @override
-  Future<void> tapCity() async {
-    final citySelectionDialog = CitySelectionDialogViewNotifier(parent.lookups.cities, stackRouter);
-    final city = await stackRouter.push<City>(
+  Future<void> tapCity(BuildContext context) async {
+    final citySelectionDialog = CitySelectionDialogViewNotifier(parent.lookups.cities);
+    final city = await context.router.push<City>(
       CitySelectionDialogViewRoute(citySelectionDialogView: citySelectionDialog),
     );
     if (city != null) {
@@ -56,8 +54,8 @@ class SettingsScreenViewNotifier extends ChangeNotifier implements SettingsScree
   }
 
   @override
-  void tapSave() {
+  void tapSave(BuildContext context) {
     parent.applySettings(citySelected, recommendedTypesSelected, categoriesSelected);
-    stackRouter.popForced();
+    context.router.popForced();
   }
 }

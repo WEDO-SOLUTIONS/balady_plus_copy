@@ -58,7 +58,7 @@ class OffersFiltersViewNotifier extends ChangeNotifier implements OffersFiltersV
 
   @override
   Future<void> tapCity() async {
-    final citySelectionDialog = CitySelectionDialogViewNotifier(lookups.cities, stackRouter);
+    final citySelectionDialog = CitySelectionDialogViewNotifier(lookups.cities);
 
     final city = await stackRouter.push<City>(
       CitySelectionDialogViewRoute(citySelectionDialogView: citySelectionDialog),
