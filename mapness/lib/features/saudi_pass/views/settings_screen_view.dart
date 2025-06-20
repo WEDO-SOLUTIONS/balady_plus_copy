@@ -1,19 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 
 abstract class SettingsScreenView implements ResetSaveView, Listenable {
   String get cityTitle;
 
-  void tapCity();
+  void tapCity(BuildContext context);
 
   Iterable<SelectionView<String>> get typeSelectionViews;
 
   Iterable<SelectionView<String>> get categorySelectionViews;
 
-  void tapBack();
+  void tapBack(BuildContext context);
 
   @override
-  void tapSave();
+  void tapSave(BuildContext context);
 
   @override
   void tapReset();

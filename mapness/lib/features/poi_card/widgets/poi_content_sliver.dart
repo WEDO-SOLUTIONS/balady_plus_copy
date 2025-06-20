@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:dgis_map/library.dart';
@@ -40,7 +38,6 @@ class PoiContentSliver extends ConsumerWidget {
 
     final offers = ref.watch(poiOffersProvider);
     final hasOffers = offers.containsKey(poiCardState?.tradeLicense?.license.trim());
-
 
     final finishPoint = data != null
         ? RouteSearchPoint(

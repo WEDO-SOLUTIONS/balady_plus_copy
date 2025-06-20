@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 abstract class CitySelectionDialogView implements Listenable {
   Iterable<SearchView> get searchViews;
@@ -6,8 +6,6 @@ abstract class CitySelectionDialogView implements Listenable {
   String get search;
 
   void onSearchInput(String input);
-
-  void onCrossTap();
 }
 
 abstract class SearchView {
@@ -15,5 +13,5 @@ abstract class SearchView {
 
   bool get isMagnifierVisible;
 
-  void onTap();
+  void onTap(BuildContext context);
 }

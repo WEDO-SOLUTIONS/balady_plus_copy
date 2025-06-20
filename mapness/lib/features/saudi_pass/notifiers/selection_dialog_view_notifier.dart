@@ -1,20 +1,17 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flutter/foundation.dart' hide Category;
+import 'package:flutter/widgets.dart';
 import 'package:mapness/features/saudi_pass/views/selection_dialog_view.dart';
 
 abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implements SelectionDialogView<S> {
   SelectionDialogViewNotifier({
     required this.all,
     required Set<T> selected,
-    required this.stackRouter,
     required this.createSelectionView,
     required this.selectionDialogApply,
   }) : selected = Set.of(selected);
 
   final Iterable<T> all;
   final Set<T> selected;
-
-  final StackRouter stackRouter;
 
   final void Function(Set<T> updates) selectionDialogApply;
 
@@ -30,13 +27,13 @@ abstract class SelectionDialogViewNotifier<T, S> extends ChangeNotifier implemen
   }
 
   @override
-  void tapSave() {
+  void tapSave(BuildContext context) {
     selectionDialogApply(selected);
-    stackRouter.popForced();
+    context.router.popForced();
   }
 
   @override
-  void tapCross() => stackRouter.popForced();
+  void tapCross(BuildContext context) => context.router.popForced();
 }
 
 abstract class BaseSelectionView<T, S> extends ChangeNotifier implements SelectionView<S> {
@@ -51,7 +48,7 @@ abstract class BaseSelectionView<T, S> extends ChangeNotifier implements Selecti
   bool get isHighlighted => selected.contains(object);
 
   @override
-  void onTap() {
+  void onTap(BuildContext context) {
     selectionStrategy(selected, object);
     notifyListeners();
   }

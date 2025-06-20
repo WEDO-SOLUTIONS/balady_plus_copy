@@ -1,19 +1,19 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
 abstract class SelectionDialogView<T> implements ResetSaveView, Listenable {
   Iterable<SelectionView<T>> get selectionViews;
 
-  void tapCross();
+  void tapCross(BuildContext context);
 
   @override
-  void tapSave();
+  void tapSave(BuildContext context);
 
   @override
   void tapReset();
 }
 
 abstract class ResetSaveView {
-  void tapSave();
+  void tapSave(BuildContext context);
 
   void tapReset();
 }
@@ -23,7 +23,7 @@ abstract class SelectionView<T> implements Listenable {
 
   T get title;
 
-  void onTap();
+  void onTap(BuildContext context);
 }
 
 enum Sorting { byRecency, byRating }

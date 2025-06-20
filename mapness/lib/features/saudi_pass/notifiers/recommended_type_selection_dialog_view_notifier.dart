@@ -8,7 +8,6 @@ class RecommendedTypeSelectionDialogViewNotifier extends SelectionDialogViewNoti
           createSelectionView: RecommendedTypeSelectionView.new,
           selected: parent.recommendedTypesSelected,
           all: parent.lookups.recommendedTypes,
-          stackRouter: parent.stackRouter,
           selectionDialogApply: parent.applyRecommendedTypes,
         );
 }

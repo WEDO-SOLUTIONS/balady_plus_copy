@@ -8,7 +8,6 @@ class SortingSelectionDialogViewNotifier extends SelectionDialogViewNotifier<Sor
           all: Sorting.values,
           createSelectionView: SortingSelectionView.new,
           selected: parent.sortingSelected,
-          stackRouter: parent.stackRouter,
           selectionDialogApply: parent.applySorting,
         );
 }

@@ -25,7 +25,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialogView.tapCross());
+    final scrollController = useStatelessBottomsheetController(onClose: (_) => selectionDialogView.tapCross(context));
 
     const horizontalPadding = EdgeInsets.symmetric(horizontal: Spacing.$4x);
 
@@ -39,7 +39,7 @@ class SelectionDialogViewWidget<T> extends HookWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(title, style: context.textStyleV3.h2SemiBold),
-            CustomCloseButton(onClose: selectionDialogView.tapCross),
+            CustomCloseButton(onClose: () => selectionDialogView.tapCross(context)),
           ],
         ),
       ),
@@ -80,7 +80,7 @@ class ResetSaveWidget extends StatelessWidget {
 
     final saveButton = BaladyAppButton(
       primaryLabel: context.l10n.saudiPassDialogSave,
-      onTap: resetSaveView.tapSave,
+      onTap: () => resetSaveView.tapSave(context),
       size: BaladyButtonSize.large,
       buttonColorScheme: BaladyButtonColorScheme.accentSecondary,
     );
@@ -140,7 +140,7 @@ class StringItemViewWidget extends StatelessWidget {
         builder: (context, _) => SmallChipWidget(
           title: view.title,
           isHighlighted: view.isHighlighted,
-          onTap: view.onTap,
+          onTap: () => view.onTap(context),
         ),
       );
 }
@@ -167,7 +167,7 @@ class SortingItemViewWidget extends StatelessWidget {
               Sorting.byRating => context.l10n.saudiPassSortingByRating
             },
           ),
-          onTap: view.onTap,
+          onTap: () => view.onTap(context),
           isDividerEnabled: hasDivider,
           supportTitleRTL: true,
           backgroundColor: context.colorsV3.backgroundSurface1,

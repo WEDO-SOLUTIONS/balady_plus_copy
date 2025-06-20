@@ -142,7 +142,7 @@ class _Content extends ConsumerWidget {
 
   Future<void> _selectCity(BuildContext context, WidgetRef ref) async {
     final lookups = await ref.read(getAllLookupsProvider.future);
-    final notifier = CitySelectionDialogViewNotifier(lookups.cities, context.router);
+    final notifier = CitySelectionDialogViewNotifier(lookups.cities);
     final city = await context.router.push<City>(CitySelectionDialogViewRoute(citySelectionDialogView: notifier));
     if (city != null) {
       ref.read(profilePreferencesProvider.notifier).setCity(city);
