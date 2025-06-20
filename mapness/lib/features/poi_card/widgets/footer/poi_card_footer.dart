@@ -108,14 +108,12 @@ class PoiCardFooter extends HookConsumerWidget {
               label: hasContactsAndHasEntrances ? null : context.l10n.save,
               onPressed: () => onTapFavorite(favouriteItem),
             ),
-          // BSA-2479: Hide share button for parking spot POI
-          if (!parkingPoi)
-            ItemActionBar(
-              icon: SystemIcons.share,
-              buttonType: BaladyButtonType.secondary,
-              label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
-              onPressed: throttledShare,
-            ),
+          ItemActionBar(
+            icon: SystemIcons.share,
+            buttonType: BaladyButtonType.secondary,
+            label: hasContactsAndHasEntrances || parkingPoi ? null : context.l10n.share,
+            onPressed: throttledShare,
+          ),
           if (!parkingPoi)
             ItemActionBar(
               icon: SystemIcons.parkingAdd,
