@@ -18,6 +18,7 @@ extension ParkingStoreModelExt on ParkingStoreModel {
         entrances: [],
         rubricIds: [],
         routeInfos: [],
+        group: [],
         id: DgisObjectIdMessage(
           objectId: parkingObjectId,
           entranceId: 0,

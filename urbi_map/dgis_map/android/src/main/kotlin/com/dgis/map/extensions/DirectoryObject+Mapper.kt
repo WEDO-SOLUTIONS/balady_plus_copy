@@ -31,7 +31,8 @@ fun DirectoryObject.toMessage(): DirectoryObjectMessage {
             entrances = this.entrances.map { it.toMessage() },
             tradeLicense = this.tradeLicense?.toMessage(),
             rubricIds = this.rubricIds.map { it.value },
-            routeInfos = this.routeInfos.map { it.toMessage() }
+            routeInfos = this.routeInfos.map { it.toMessage() },
+            group = this.group.map { it.toMessage() }
     )
 }
 
@@ -390,3 +391,7 @@ fun PublicTransportRouteType.toMessage(): PublicTransportRouteTypeMessage =
             PublicTransportRouteType.LIGHT_METRO -> PublicTransportRouteTypeMessage.LIGHT_METRO
             PublicTransportRouteType.AEROEXPRESS -> PublicTransportRouteTypeMessage.AEROEXPRESS
         }
+
+fun GroupItem.toMessage(): GroupItemMessage {
+    return GroupItemMessage(id = this.id.toMessage(), type = this.type.toMessage())
+}

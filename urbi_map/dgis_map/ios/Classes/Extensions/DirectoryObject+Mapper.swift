@@ -35,6 +35,7 @@ extension DirectoryObject {
                 Int64($0.value)
             },
             routeInfos: self.routeInfos.map { $0.toMessage() },
+            group: self.group.map { $0.toMessage() }
         )
     }
 }
@@ -600,5 +601,14 @@ extension PublicTransportRouteType {
         case .aeroexpress: return .aeroexpress
         @unknown default: return .bus
         }
+    }
+}
+
+extension GroupItem {
+    func toMessage() -> GroupItemMessage {
+        return GroupItemMessage(
+            id: self.id.toMessage(),
+            type: self.type.toMessage()
+        )
     }
 }

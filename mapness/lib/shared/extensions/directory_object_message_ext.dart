@@ -22,6 +22,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
     }).toList();
     final tradeLicenseJson = tradeLicense?.toJson();
     final routeInfosList = routeInfos.map((item) => item.toJson()).toList();
+    final groupList = group.map((item) => item.toJson()).toList();
     return {
       'types': typesList,
       'title': title,
@@ -48,6 +49,7 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
       'tradeLicense': tradeLicenseJson,
       'rubricIds': rubricIds,
       'routeInfos': routeInfosList,
+      'group': groupList,
     };
   }
 
@@ -105,6 +107,10 @@ extension DirectoryObjectMessageExt on DirectoryObjectMessage {
         rubricIds: (json['rubricIds'] as List<dynamic>).map((e) => e as int).toList(),
         routeInfos: (json['routeInfos'] as List<dynamic>?)
                 ?.map((e) => PublicTransportDirectoryRouteInfoMessageExt.fromJson(e as Map<String, dynamic>))
+                .toList() ??
+            [],
+        group: (json['group'] as List<dynamic>?)
+                ?.map((e) => GroupItemMessageExt.fromJson(e as Map<String, dynamic>))
                 .toList() ??
             [],
       );
@@ -937,5 +943,17 @@ extension PublicTransportPlatformTransitionMessageExt on PublicTransportPlatform
         color: json['color'] as int?,
         stationId: DgisObjectIdMessageExt.fromJson(json['stationId'] as Map<String, dynamic>),
         stationName: json['stationName'] as String,
+      );
+}
+
+extension GroupItemMessageExt on GroupItemMessage {
+  Map<String, dynamic> toJson() => {
+        'id': DgisObjectIdMessageExt(this.id).toJson(),
+        'type': type.toString().split('.').last,
+      };
+
+  static GroupItemMessage fromJson(Map<String, dynamic> json) => GroupItemMessage(
+        id: DgisObjectIdMessageExt.fromJson(json['id'] as Map<String, dynamic>),
+        type: ObjectTypeMessage.values.firstWhere((e) => e.toString().split('.').last == json['type']),
       );
 }
