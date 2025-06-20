@@ -27,7 +27,7 @@ extension OffersGroupExtension on OffersGroup {
         OffersGroup.shopping => locale.styleForLess,
         OffersGroup.homeAndAuto => locale.homeAndAuto,
         OffersGroup.beautyAndHealth => locale.selfCare,
-        OffersGroup.entertainment => '${locale.timetorelax_str1} ${locale.ampersand}\n${locale.timetorelax_str2}',
+        OffersGroup.entertainment => locale.timeToRelax,
         OffersGroup.services => locale.usefulServices,
         OffersGroup.others => '',
       };

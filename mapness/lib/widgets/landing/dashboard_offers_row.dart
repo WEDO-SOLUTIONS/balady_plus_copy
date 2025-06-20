@@ -117,7 +117,7 @@ class _DashboardOffersCard extends StatelessWidget {
                           children: [
                             Text(
                               offersGroup.title(context.l10n),
-                              style: context.textStyleV3.h2SemiBold.copyWith(color: context.colorsV3.staticWhite),
+                              style: context.textStyleV3.h3SemiBold.copyWith(color: context.colorsV3.staticWhite),
                             ),
                             Padding(
                               padding: const EdgeInsetsDirectional.only(end: 2),
