@@ -1,10 +1,12 @@
 import 'dart:math';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:balady_uikit/balady_uikit.dart';
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mapness/_features/common/scroll/no_glowing_scroll_behavior.dart';
+import 'package:mapness/app/auto_route/app_routes.gr.dart';
 import 'package:mapness/entities/saudi_pass/offers_group.dart';
 import 'package:mapness/features/saudi_pass/repo/promotions_body.dart';
 import 'package:mapness/shared/extensions/build_context_ext.dart';
@@ -20,30 +22,30 @@ class PoiContentOffersCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => offers.length == 1
-        ? Padding(
-      padding: contentPadding,
-      child: _OfferCard(offer: offers.first, height: offerCardHeight, width: double.infinity),
-    )
-        : SizedBox(
-      height: offerCardHeight,
-      child: ScrollConfiguration(
-        behavior: NoGlowingScrollBehavior(),
-        child: ListView.separated(
-          scrollDirection: Axis.horizontal,
+      ? Padding(
           padding: contentPadding,
-          itemCount: offers.length,
-          itemBuilder: (context, i) {
-            final offer = offers[i];
-            return _OfferCard(
-              offer: offer,
-              height: offerCardHeight,
-              width: offerCardWidth,
-            );
-          },
-          separatorBuilder: (context, index) => Spacing.$2x.widthBox,
-        ),
-      ),
-    );
+          child: _OfferCard(offer: offers.first, height: offerCardHeight, width: double.infinity),
+        )
+      : SizedBox(
+          height: offerCardHeight,
+          child: ScrollConfiguration(
+            behavior: NoGlowingScrollBehavior(),
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              padding: contentPadding,
+              itemCount: offers.length,
+              itemBuilder: (context, i) {
+                final offer = offers[i];
+                return _OfferCard(
+                  offer: offer,
+                  height: offerCardHeight,
+                  width: offerCardWidth,
+                );
+              },
+              separatorBuilder: (context, index) => Spacing.$2x.widthBox,
+            ),
+          ),
+        );
 }
 
 class _OfferCard extends StatelessWidget {
@@ -63,6 +65,7 @@ class _OfferCard extends StatelessWidget {
     final hasDiscount = offer.discount != null;
 
     return GestureDetector(
+      onTap: () => context.router.push(OfferRoute(offerId: offer.id)),
       child: SizedBox(
         height: height,
         width: width,
@@ -78,7 +81,7 @@ class _OfferCard extends StatelessWidget {
                 Expanded(
                   child: Padding(
                     padding:
-                    const EdgeInsetsDirectional.only(start: Spacing.$2x, top: Spacing.$2x, bottom: Spacing.$2x),
+                        const EdgeInsetsDirectional.only(start: Spacing.$2x, top: Spacing.$2x, bottom: Spacing.$2x),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -105,13 +108,13 @@ class _OfferCard extends StatelessWidget {
                 ClipRRect(
                   borderRadius: const BorderRadius.all(Radius.circular(RadiusBorder.l)),
                   child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: offer.offerGroup.color,
-                          begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-                          end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
-                        ),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: offer.offerGroup.color,
+                        begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
+                        end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
                       ),
+                    ),
                     child: SizedBox(
                       height: 103,
                       child: Transform(
