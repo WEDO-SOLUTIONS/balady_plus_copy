@@ -75,6 +75,11 @@ class PoiCardFooter extends HookConsumerWidget {
     final callPhone = this.callPhone;
     final onEntranceTap = this.onEntranceTap;
 
+    final isMetroType = data?.types.firstOrNull?.type == ObjectTypeMessage.stationMetro ||
+        data?.types.firstOrNull?.type == ObjectTypeMessage.station ||
+        data?.types.firstOrNull?.type == ObjectTypeMessage.stationPlatform ||
+        data?.types.firstOrNull?.type == ObjectTypeMessage.stationEntrance;
+
     final parkingPoi = objectId == parkingObjectId;
 
     return ThrottledCallbackWidget(
@@ -95,7 +100,7 @@ class PoiCardFooter extends HookConsumerWidget {
                 buttonType: BaladyButtonType.secondary,
                 label: hasContactsAndHasEntrances ? null : context.l10n.call,
                 onPressed: callPhone),
-          if (hasEntrances && onEntranceTap != null)
+          if (hasEntrances && onEntranceTap != null && !isMetroType)
             ItemActionBar(
               icon: SystemIcons.turnRight,
               buttonType: BaladyButtonType.secondary,

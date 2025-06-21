@@ -1,3 +1,5 @@
+import 'package:dgis_map/library.dart';
+
 /// Model for full address content. It is used in the address card
 class PoiContentFullAddressModel {
   /// Title of the card
@@ -12,6 +14,9 @@ class PoiContentFullAddressModel {
   /// Entrances of the object
   final PoiContentEntrancesModel? entrances;
 
+  /// Type of the object
+  final List<ObjectTypeItemMessage>? types;
+
   /// Network logo url. Now we do not use it, but we keep it for future use
   /// We are not sure that it will be used in the future, so if we do not use it for a long time, feel free to remove it
   final String? networkLogoUrl;
@@ -22,6 +27,7 @@ class PoiContentFullAddressModel {
     this.floors,
     this.entrances,
     this.networkLogoUrl,
+    this.types
   });
 }
 

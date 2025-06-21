@@ -1,6 +1,7 @@
 import 'package:balady_uikit/balady_uikit.dart' hide PoiContentFullAddress;
 import 'package:balady_uikit/core/extensions/build_context_ext.dart';
 import 'package:balady_uikit/core/extensions/layout_extension.dart';
+import 'package:dgis_map/library.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:mapness/features/poi_card/domain/model/poi_content/poi_content.dart';
 import 'package:urbi_utils/urbi_utils.dart';
@@ -12,6 +13,10 @@ class PoiContentFullAddressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showButtonsRow = data.floors != null || (data.entrances != null && data.entrances!.count > 0);
+    final isMetroType = data.types?.firstOrNull?.type == ObjectTypeMessage.stationMetro ||
+        data.types?.firstOrNull?.type == ObjectTypeMessage.station ||
+        data.types?.firstOrNull?.type == ObjectTypeMessage.stationPlatform ||
+        data.types?.firstOrNull?.type == ObjectTypeMessage.stationEntrance;
 
     return ContentWrapper(
       color: context.color.surfaceBasePrimary,
@@ -42,7 +47,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
               : null,
           crossAxisAlignment: CrossAxisAlignment.start,
         ),
-        if (showButtonsRow)
+        if (showButtonsRow && !isMetroType)
           Padding(
             padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
             child: Row(
