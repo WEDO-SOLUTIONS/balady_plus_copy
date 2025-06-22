@@ -438,16 +438,18 @@ class _MapnessEntryPointState extends ConsumerState<MapnessEntryPoint> {
       } else if (url.path == '/snapSend') {
         await _openSnapSend();
       } else if (url.path == '/parking') {
-        _openParking();
+        await _openParking();
       } else {
         await router.pushNamed(url.toString());
       }
     }
   }
 
-  void _openParking() {
-    ref.read(appAnalyticsProvider).quickActionSelected('parking');
-    ref.read(layersControlsProvider.notifier).enableParking();
+  Future<void> _openParking() async {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      ref.read(appAnalyticsProvider).quickActionSelected('parking');
+      await ref.read(layersControlsProvider.notifier).enableParking(isFromDeepLink: true);
+    });
   }
 
   Future<void> _freeRoam() async {
