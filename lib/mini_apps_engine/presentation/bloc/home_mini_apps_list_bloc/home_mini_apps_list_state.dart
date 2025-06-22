@@ -15,15 +15,16 @@ class HomeMiniAppsListLoadingState extends HomeMiniAppsListState {
 class HomeMiniAppsListSuccessState extends HomeMiniAppsListState {
   final List<MiniAppModel> miniAppsList;
   final MiniAppsEngineBloc? municipalAppBloc;
-
+  final String serverPath;
   const HomeMiniAppsListSuccessState({
     required this.miniAppsList,
+    required this.serverPath,
     this.municipalAppBloc,
   });
 
   @override
   // TODO: implement props
-  List<Object?> get props => [miniAppsList, municipalAppBloc];
+  List<Object?> get props => [miniAppsList, municipalAppBloc,serverPath];
 }
 
 class HomeMiniAppsListFiledState extends HomeMiniAppsListState {

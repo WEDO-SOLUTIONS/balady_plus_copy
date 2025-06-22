@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/remote_services/pega_web_service.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/reload_widget.dart';
 import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/bloc/home_mini_apps_list_bloc/home_mini_apps_list_cubit.dart';
@@ -21,6 +20,7 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
   @override
   void initState() {
     super.initState();
+
   }
 
   @override
@@ -83,8 +83,8 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
       ),
     );
 
-    return (state.municipalAppBloc != null &&
-            state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! MiniAppsEngineLoadedState)
+
+    return (state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! MiniAppsEngineLoadedState)
         ? BlocProvider.value(
             value: state.municipalAppBloc!
               ..add(
@@ -93,8 +93,11 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
             child: body,
           )
         : BlocProvider<MiniAppsEngineBloc>(
-            create: (context) {
-              return MiniAppsEngineBloc(miniApp: data);
+            create: (context)  {
+              if(state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && !state.municipalAppBloc!.isClosed) {
+               state.municipalAppBloc!.close();
+              }
+              return MiniAppsEngineBloc(miniApp: data,serverPath: state.serverPath);
             },
             child: body,
           );

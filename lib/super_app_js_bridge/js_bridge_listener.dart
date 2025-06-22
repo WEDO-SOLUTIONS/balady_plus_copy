@@ -6,7 +6,9 @@ import 'package:balady_plus/app/core/services/local/navigation_services.dart';
 import 'package:balady_plus/app/core/services/local/notification_service.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
 import 'package:balady_plus/app/core/utils/constants/app_colors.dart';
+import 'package:balady_plus/app/core/utils/constants/route_names.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/dialogs/need_login_dialog.dart';
+import 'package:balady_plus/super_app_js_bridge/camera/entities/camera/attachment_item.dart';
 import 'package:balady_plus/super_app_js_bridge/model/access_token_model.dart';
 import 'package:balady_plus/super_app_js_bridge/model/base_response.dart';
 import 'package:balady_plus/super_app_js_bridge/model/js_file_model.dart';
@@ -56,6 +58,7 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
     registerFunction(sendToCalender);
     registerFunction(getPrayerTime);
     registerFunction(downloadAndExtractInAssets);
+    registerFunction(openCameraWithUI);
   }
 
   // Done
@@ -409,6 +412,45 @@ class JsBridgeListener extends JavaScriptNamespaceInterface {
         code: 500,
         message: "you do not have permission to access this functionality",
         eventName: "openImagePicker",
+        data: null,
+      );
+      handler.complete(response.jsonEncodeModel());
+    }
+  }
+
+  @pragma('vm:entry-point')
+  void openCameraWithUI(dynamic msg, CompletionHandler handler) async {
+    String serviceKey = "municipalservice"; //for testing only
+    //String serviceKey =  msg["serviceKey"];
+    if (checkAppRequirment(serviceKey, RequirementEnum.camera.name) == true) {
+      late BaseResponse response;
+      var fileData = await NavigationService.navigatorKey.currentState!.pushNamed(
+        RouteName.vdCameraPage,
+      );
+      if(fileData != null) {
+        response = BaseResponse(
+          code: 200,
+          eventName: "openCameraWithUI",
+          message: "success",
+          data: fileData is AttachmentItem
+              ? fileData
+              : null,
+        );
+      } else {
+        response = BaseResponse(
+          code: 300,
+          eventName: "openCameraWithUI",
+          message: "Not Selected File",
+          data: null,
+        );
+      }
+      // String data = response.jsonEncodeModel();
+      handler.complete(response.jsonEncodeModel());
+    } else {
+      BaseResponse response = BaseResponse(
+        code: 500,
+        message: "you do not have permission to access this functionality",
+        eventName: "openCameraWithUI",
         data: null,
       );
       handler.complete(response.jsonEncodeModel());

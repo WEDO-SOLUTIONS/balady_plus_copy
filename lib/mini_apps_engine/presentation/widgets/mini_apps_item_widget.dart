@@ -7,6 +7,9 @@ import 'package:balady_plus/mini_apps_engine/data/models/mini_app_model.dart';
 import 'package:balady_plus/mini_apps_engine/presentation/widgets/network_icon_based_type_widget.dart';
 import 'package:flutter/material.dart';
 
+import '../../../app/core/utils/constants/remote_config.dart';
+import '../../../super_app_js_bridge/camera/camera_page.dart';
+
 class MiniAppsItemWidget extends StatelessWidget {
   final MiniAppModel miniApp;
 
@@ -19,6 +22,15 @@ class MiniAppsItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
+        NavigationService.navigatorKey.currentState!.pushNamed(
+            RouteName.vdCameraPage,
+            arguments: CameraParamsPage(
+              selectedCategory: CategoryItem(
+                  categoryId:
+                  RemoteConfig.movingVeichleCategoryKey), /*isFromHome: true*/
+            ));
+
+        return;
         if(miniApp.latestVersion?.nafathLogin == true && !CommonProperties.isLoggedInMunicipality){
           showDialog(
             context: context,
