@@ -12,13 +12,8 @@ import '../../../app/features/_shared_feature_/presentation/widgets/buttons/cust
 import '../../../app/features/_shared_feature_/presentation/widgets/custom_circular_loading_widget.dart';
 import '../camera_bloc/camera_bloc.dart';
 
-class photoPreviewWidgetNew extends StatefulWidget {
-  @override
-  _photoPreviewWidgetState createState() => _photoPreviewWidgetState();
-}
-
-class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
-  bool showPhoto = false;
+class PhotoPreviewWidgetNew extends StatelessWidget {
+  const PhotoPreviewWidgetNew({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -31,12 +26,10 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
               height: double.infinity,
               color: AppColor.black200,
               child: !(state.showCamera ?? true)
-                  ?
-
-                  Image.memory(
-                    state.files!.first.encodeImage!,
-                    // Image.file(
-                    //   File(state.files?.first.filePath ?? ""),
+                  ? Image.memory(
+                      state.files!.encodeImage!,
+                      // Image.file(
+                      //   File(state.files?.first.filePath ?? ""),
                       fit: BoxFit.cover,
                     )
                   : Container(),
@@ -82,9 +75,12 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                       child: EnhancedCustomElevatedButtonWidget(
                         btnPressed: () {
                           // CreateVDParamsPage
-                          context.read<CameraBloc>().add(
-                                GetUserLocationEvent(),
-                              );
+
+                          /// TODO: Back With the data of the photo
+                          Navigator.of(context).pop(context.read<CameraBloc>().state.files);
+                          // context.read<CameraBloc>().add(
+                          //       GetUserLocationEvent(),
+                          //     );
                         },
                         btnText: ("next").tr(),
                         btnColor: AppColor.primary800Light,
@@ -109,7 +105,6 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                 ],
               ),
             ),
-
             Align(
               alignment: AlignmentDirectional.topStart,
               child: Padding(
@@ -127,7 +122,6 @@ class _photoPreviewWidgetState extends State<photoPreviewWidgetNew> {
                 ),
               ),
             ),
-
             if (state.status == BlocStatus.loading)
               const Align(
                 alignment: Alignment.center,

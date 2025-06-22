@@ -7,27 +7,6 @@ abstract class CameraEvent extends Equatable {
   List<Object> get props => [];
 }
 
-/*class GetSplListEvent extends CameraEvent {
-  final SplParams params;
-  CreateVDBloc createVDBloc;
-  GetSplListEvent({required this.params, required this.createVDBloc});
-}*/
-
-class NavigateToDetailsScreenEvent extends CameraEvent {
-  NavigateToDetailsScreenEvent();
-}
-
-class GetUserLocationEvent extends CameraEvent {
-  GetUserLocationEvent();
-}
-
-class GetGISEvent extends CameraEvent {
-  final GISParams params;
-  GetGISEvent({
-    required this.params,
-  });
-}
-
 class TakePhoto extends CameraEvent {
   // final AttachmentItem? file;
   TakePhoto();

@@ -1,31 +1,17 @@
 import 'dart:convert';
-
-import 'package:balady_plus/app/core/services/services_exports.dart'
-    show NavigationService;
-import 'package:balady_plus/app/core/utils/animators/route_animator.dart';
 import 'package:balady_plus/app/core/utils/common_functions.dart';
-
-import 'package:balady_plus/app/core/errors/errors_exports.dart'
-    show ServerFailure;
-import 'package:balady_plus/app/core/utils/enums/enums.dart';
 import 'package:bloc/bloc.dart';
 import 'package:camera/camera.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:balady_plus/app/core/utils/enums/bloc_status.dart';
-import 'package:geolocator/geolocator.dart';
 
 import 'package:balady_plus/app/events_logs/balady_logs.dart';
 
 import 'package:image/image.dart' as myImage;
 import 'package:http/http.dart' as http;
 
-import '../../../app/features/location/domain/entities/gis/gis_params.dart';
-import '../../../app/features/location/domain/entities/gis/gis_response.dart';
-import '../../../app/features/location/domain/use_cases/get_gis_data.dart';
-import '../camera_page.dart';
 import '../entities/camera/attachment_item.dart';
-import '../special_classifications/special_classifications_response.dart';
 
 part 'camera_event.dart';
 
@@ -34,51 +20,14 @@ part 'camera_state.dart';
 class CameraBloc extends Bloc<CameraEvent, CameraState> {
   List<CameraDescription>? cameras;
   CameraController? cameraController;
-  final GetGISData _getGisData;
   bool initializingCamera = false;
 
-  CameraBloc(
-      {required GetGISData getGisData,
-      required CameraParamsPage params})
-      :_getGisData = getGisData,
-        super(CameraState(
-          location: (params.lat != null && params.lon != null)
-              ? GISParams(x: params.lon!, y: params.lat!)
-              : null,
-          qrCodeFlow: params.qrCodeFlow,
-          pageType: params.pageType,
-          selectedCattegory: params.selectedCategory!,
-          // isFromHome: params.isFromHome,
-        )) {
-    on<InitCameraEvent>((event, emit) async {
-      emit(state.copyWith(status: BlocStatus.loading));
-      try {
-        cameras = await availableCameras();
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-        error.toString();
-      }
-      if (cameras?.isNotEmpty ?? false) {
+  CameraBloc() : super(CameraState()) {
+    on<InitCameraEvent>(
+      (event, emit) async {
+        emit(state.copyWith(status: BlocStatus.loading));
         try {
-          // Find back camera in the available cameras
-          CameraDescription backCamera = cameras!.firstWhere(
-            (camera) => camera.lensDirection == CameraLensDirection.back,
-            orElse: () => cameras![0],
-          );
-
-          cameraController = CameraController(
-              backCamera, ResolutionPreset.medium,
-              enableAudio: false);
-          initializingCamera = true;
-          await cameraController?.initialize();
-          initializingCamera = false;
-          cameraController?.setFlashMode(FlashMode.off);
+          cameras = await availableCameras();
         } catch (error, stackTrace) {
           LogsViewModel().sendEventFromModel(
             event: ErrorExceptionModel(
@@ -87,106 +36,50 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
               stackTrace: stackTrace.toString(),
             ),
           );
+          error.toString();
         }
-      }
-      emit(state.copyWith(
-          isFlashOn: false,
-          status: BlocStatus.success,
-          isCameraInitialized: cameraController?.value.isInitialized));
-    });
-    //on<GetSplListEvent>(_getVDSplListHandler);
+        if (cameras?.isNotEmpty ?? false) {
+          try {
+            CameraDescription backCamera = cameras!.firstWhere(
+              (camera) => camera.lensDirection == CameraLensDirection.back,
+              orElse: () => cameras![0],
+            );
+
+            cameraController = CameraController(
+              backCamera,
+              ResolutionPreset.medium,
+              enableAudio: false,
+            );
+            initializingCamera = true;
+            await cameraController?.initialize();
+            initializingCamera = false;
+            cameraController?.setFlashMode(FlashMode.off);
+          } catch (error, stackTrace) {
+            LogsViewModel().sendEventFromModel(
+              event: ErrorExceptionModel(
+                nameEvent: EventsName.handledException,
+                message: error.toString(),
+                stackTrace: stackTrace.toString(),
+              ),
+            );
+          }
+        }
+        emit(
+          state.copyWith(
+            isFlashOn: false,
+            status: BlocStatus.success,
+            isCameraInitialized: cameraController?.value.isInitialized,
+          ),
+        );
+      },
+    );
     on<TakePhoto>(_takePhotoHandler);
     on<ShowLoading>(_showLoadingHandler);
     on<OnNewCameraSelected>(_onNewCameraSelectedHandler);
     on<SetZoomLevelEvent>(_onSetZoomHandler);
     on<UpdateScaleLevelEvent>(_onUpdateScaleLevelHandler);
-
     on<ToggleCameraFlashEvent>(_onToggleCameraFlashHandler);
     on<ReTakePhotoEvent>(_onReTakePhotoHandler);
-
-    on<NavigateToDetailsScreenEvent>(_onNavigateToDetailsScreen);
-
-    on<GetGISEvent>(_getGisDataHandler);
-    on<GetUserLocationEvent>(_getCurrenttUserLocationHandler);
-  }
-
-  Future<void> _getGisDataHandler(GetGISEvent e, Emitter emitter) async {
-    emitter(state.copyWith(status: BlocStatus.loading));
-    final failureOrSuccess = await _getGisData(e.params);
-
-    failureOrSuccess.fold((failure) {
-      emitter(state.copyWith(
-        status: BlocStatus.failure,
-        errorMessage: (failure as ServerFailure).errorMessage,
-      ));
-      ///TODO: send action to js bridge
-      // navigateToCreateVDPage();
-    }, (success) {
-      emitter(state.copyWith(
-        status: BlocStatus.success,
-        gisResponse: success,
-        location: e.params,
-        errorMessage: "",
-      ));
-      ///TODO: send action to js bridge
-      // navigateToCreateVDPage(location: e.params, gisResponse: success);
-    });
-  }
-
-  Future<void> _getCurrenttUserLocationHandler(
-      GetUserLocationEvent e, Emitter emitter) async {
-    if (state.location == null) {
-      Position? position;
-      try {
-        emitter(state.copyWith(status: BlocStatus.loading));
-        position = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.best,
-          timeLimit: const Duration(seconds: 20),
-        );
-        emitter(state.copyWith(status: BlocStatus.success));
-      } catch (error, stackTrace) {
-        LogsViewModel().sendEventFromModel(
-          event: ErrorExceptionModel(
-            nameEvent: EventsName.handledException,
-            message: error.toString(),
-            stackTrace: stackTrace.toString(),
-          ),
-        );
-        try {
-          position = await Geolocator.getLastKnownPosition();
-        } catch (error, stackTrace) {
-          LogsViewModel().sendEventFromModel(
-            event: ErrorExceptionModel(
-              nameEvent: EventsName.handledException,
-              message: error.toString(),
-              stackTrace: stackTrace.toString(),
-            ),
-          );
-        }
-        if (position != null) {
-          emitter(state.copyWith(
-            status: BlocStatus.success,
-          ));
-        }
-      }
-      if (position != null) {
-        add(GetGISEvent(
-            params: GISParams(x: position.longitude, y: position.latitude)));
-      } else {
-        ///TODO: send action to js bridge
-        // navigateToCreateVDPage();
-      }
-    } else {
-      if (state.qrCodeFlow == true &&
-          state.location?.x != null &&
-          state.location?.x != null) {
-        add(GetGISEvent(
-            params: GISParams(x: state.location!.x, y: state.location!.y)));
-      } else {
-        ///TODO: send action to js bridge
-        // navigateToCreateVDPage();
-      }
-    }
   }
 
   Future<void> _takePhotoHandler(TakePhoto e, Emitter emitter) async {
@@ -215,30 +108,25 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         );
         var encodeImage = myImage.encodeJpg(decodeImg, quality: 100);
         String base64Image = base64.encode(encodeImage);
-        String? miniType =
-            CommonFunctions().guessMimeTypeFromBase64(base64Image);
+        // String? miniType =
+        //     CommonFunctions().guessMimeTypeFromBase64(base64Image);
         ///////////////////////////////////////////////////////////
         AttachmentItem item = AttachmentItem(
           base64: base64Image,
           encodeImage: encodeImage,
-          filePath: "${file!.path}.${miniType?.split('/').last ?? "jpeg"}",
+          filePath: file!.path,
         );
         emitter(state.copyWith(status: BlocStatus.loading));
-
-        List<AttachmentItem> items = state.files ?? [];
-        if (!(state.multi ?? false)) {
-          items.clear();
-          item.index = items.length;
-          items.add(item);
-        }
         bool showCamera = !(state.multi ?? false) ? false : true;
-        emitter(state.copyWith(
-          status: BlocStatus.success,
-          files: items,
-          showCamera: showCamera,
-          isFlashOn: false,
-          errorMessage: "",
-        ));
+        emitter(
+          state.copyWith(
+            status: BlocStatus.success,
+            files: item,
+            showCamera: showCamera,
+            isFlashOn: false,
+            errorMessage: "",
+          ),
+        );
         //  await cameraController?.dispose();
       } else {
         emitter(state.copyWith(status: BlocStatus.failure, errorMessage: ""));
@@ -251,8 +139,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
           stackTrace: stackTrace.toString(),
         ),
       );
-      emitter(state.copyWith(
-          status: BlocStatus.failure, errorMessage: error.toString()));
+      emitter(
+        state.copyWith(
+          status: BlocStatus.failure,
+          errorMessage: error.toString(),
+        ),
+      );
     }
   }
 
@@ -279,9 +171,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
 
   Future<void> _onNewCameraSelectedHandler(
       OnNewCameraSelected e, Emitter emitter) async {
-    emitter(state.copyWith(
+    emitter(
+      state.copyWith(
         status: BlocStatus.loading,
-        isCameraInitialized: cameraController?.value.isInitialized));
+        isCameraInitialized: cameraController?.value.isInitialized,
+      ),
+    );
     try {
       if (cameraController != null) {
         await cameraController?.dispose();
@@ -289,8 +184,10 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
       emitter(state.copyWith(status: BlocStatus.loading));
 
       final CameraController _controller = CameraController(
-          cameraController!.description, ResolutionPreset.medium,
-          enableAudio: false);
+        cameraController!.description,
+        ResolutionPreset.medium,
+        enableAudio: false,
+      );
       cameraController = _controller;
       initializingCamera = true;
       await _controller.initialize();
@@ -305,9 +202,12 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
         ),
       );
     }
-    emitter(state.copyWith(
+    emitter(
+      state.copyWith(
         status: BlocStatus.success,
-        isCameraInitialized: cameraController?.value.isInitialized));
+        isCameraInitialized: cameraController?.value.isInitialized,
+      ),
+    );
   }
 
   Future<void> _onSetZoomHandler(SetZoomLevelEvent e, Emitter emitter) async {
@@ -351,7 +251,7 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
   Future<void> _onReTakePhotoHandler(
       ReTakePhotoEvent e, Emitter emitter) async {
     emitter(
-      state.copyWith(showCamera: true, files: [], isCameraInitialized: false),
+      state.copyWith(showCamera: true, isCameraInitialized: false),
     );
   }
 
@@ -361,11 +261,6 @@ class CameraBloc extends Bloc<CameraEvent, CameraState> {
     } else {
       emitter(state.copyWith(status: BlocStatus.success));
     }
-  }
-
-  Future<bool> _onNavigateToDetailsScreen(
-      NavigateToDetailsScreenEvent e, Emitter emitter) async {
-    return true;
   }
 
   @override

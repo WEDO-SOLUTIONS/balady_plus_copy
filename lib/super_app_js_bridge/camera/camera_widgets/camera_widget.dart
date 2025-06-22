@@ -1,4 +1,3 @@
-import 'package:balady_plus/app/core/utils/enums/app_font_weights.dart';
 import 'package:balady_plus/app/core/utils/utils_exports.dart';
 import 'package:balady_plus/app/features/_shared_feature_/presentation/widgets/buttons/custom_buttons_widgets.dart';
 import 'package:camera/camera.dart';
@@ -23,6 +22,7 @@ class CameraWidget extends StatefulWidget {
 class _CameraWidgetState extends State<CameraWidget>
     with WidgetsBindingObserver {
   late CameraBloc bloc;
+
   @override
   void dispose() async {
     WidgetsBinding.instance.removeObserver(this);
@@ -51,13 +51,11 @@ class _CameraWidgetState extends State<CameraWidget>
           stackTrace: stackTrace.toString(),
         ),
       );
-      print("EXXXXXXX $error");
     }
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
@@ -86,23 +84,28 @@ class _CameraWidgetState extends State<CameraWidget>
                           .add(UpdateScaleLevelEvent(scale: details.scale));
                     },
                     child: SizedBox(
-                        height: double.infinity,
-                        child: Container(
-                            child: CameraPreview(
-                                context.read<CameraBloc>().cameraController!))),
+                      height: double.infinity,
+                      child: CameraPreview(
+                        context.read<CameraBloc>().cameraController!,
+                      ),
+                    ),
                   )
                 : const Center(),
             GestureDetector(
               behavior: HitTestBehavior.translucent,
               onScaleStart: (details) {
-                context
-                    .read<CameraBloc>()
-                    .add(SetZoomLevelEvent(zoom: state.scaleFactor));
+                context.read<CameraBloc>().add(
+                      SetZoomLevelEvent(
+                        zoom: state.scaleFactor,
+                      ),
+                    );
               },
               onScaleUpdate: (details) {
-                context
-                    .read<CameraBloc>()
-                    .add(UpdateScaleLevelEvent(scale: details.scale));
+                context.read<CameraBloc>().add(
+                      UpdateScaleLevelEvent(
+                        scale: details.scale,
+                      ),
+                    );
               },
               child: Align(
                 alignment: Alignment.center,
@@ -112,14 +115,17 @@ class _CameraWidgetState extends State<CameraWidget>
                     Container(
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height / 1.9,
-                      margin: EdgeInsets.symmetric(horizontal: 24),
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
                       decoration: BoxDecoration(
-                          border: Border.all(color: AppColor.white, width: 2),
-                          borderRadius: BorderRadius.circular(24)),
+                        border: Border.all(color: AppColor.white, width: 2),
+                        borderRadius: BorderRadius.circular(
+                          24,
+                        ),
+                      ),
                     ),
-                    CustomVerticalSpace(height: 24),
+                    const CustomVerticalSpace(height: 24),
                     Container(
-                      margin: EdgeInsets.symmetric(horizontal: 24),
+                      margin: const EdgeInsets.symmetric(horizontal: 24),
                       child: CustomTextWidget(
                         ("vd_camera").tr(),
                         fontSize: 14,
@@ -147,19 +153,21 @@ class _CameraWidgetState extends State<CameraWidget>
                           height: 72,
                           width: 72,
                         )),
-                    CustomVerticalSpace(height: 30)
+                    const CustomVerticalSpace(height: 30)
                   ],
                 ),
               ),
             if (state.status == BlocStatus.loading)
-              Align(
-                  alignment: Alignment.center,
-                  child: CustomCircularLoadingWidget()),
+              const Align(
+                alignment: Alignment.center,
+                child: CustomCircularLoadingWidget(),
+              ),
             Padding(
               padding: EdgeInsets.only(
-                  top: MediaQuery.of(context).padding.top + 16,
-                  left: 16,
-                  right: 16),
+                top: MediaQuery.of(context).padding.top + 16,
+                left: 16,
+                right: 16,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
