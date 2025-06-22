@@ -516,11 +516,12 @@ class _OfferPreviewByBusiness extends StatelessWidget {
       decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: offer.offerGroup.color,
-            begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-            end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
+            begin: AlignmentDirectional.topStart,
+            end: AlignmentDirectional.bottomEnd,
           ),
           image: DecorationImage(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
+            matchTextDirection: true,
             image: AssetImage(
               offer.offerGroup.imagePath,
             ),
