@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cached_network_svg_image/cached_network_svg_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:mapness/shared/utils/common_function.dart';
 
 
 class ImageIconBasedTypeWidget extends StatelessWidget {
@@ -49,6 +50,9 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
             height: 40,
             child: CircularProgressIndicator(),
           ),
+          headers: {
+            "verifyingKEY": hashRequest(icon, "GET"),
+          },
           errorWidget: ImageIconBasedTypeWidget(
             icon: IconPath.serviceIcon(icon.split("/").last),
             iconSize: iconSize,
@@ -63,6 +67,9 @@ class ImageIconBasedTypeWidget extends StatelessWidget {
       } else {
         return CachedNetworkImage(
           imageUrl: icon,
+          httpHeaders: {
+            "verifyingKEY": hashRequest(icon, "GET",),
+          },
           progressIndicatorBuilder: (context, url, downloadProgress) {
             return SizedBox(
               width: 40,
