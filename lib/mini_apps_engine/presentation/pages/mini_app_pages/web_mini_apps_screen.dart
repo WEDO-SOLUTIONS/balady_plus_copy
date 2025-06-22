@@ -28,18 +28,44 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
   void initState() {
     super.initState();
 
-    if (widget.servicePath.contains("index.html")) {
+    // _controller = WebViewController()
+    //   ..loadRequest(Uri.parse(widget.servicePath))
+    //   ..setJavaScriptMode(JavaScriptMode.unrestricted)
+    //   ..setBackgroundColor(Colors.white)
+    //   ..setNavigationDelegate(
+    //     NavigationDelegate(
+    //       onPageStarted: (url) {
+    //         print("onPageStarted");
+    //         setState(() {
+    //           _isLoading = true;
+    //         });
+    //       },
+    //       onPageFinished: (url) {
+    //         print("onPageFinished");
+    //         setState(() {
+    //           _isLoading = false;
+    //         });
+    //       },
+    //       onWebResourceError: (error) {
+    //         print("onWebResourceError");
+    //         setState(() {
+    //           _isLoading = false;
+    //         });
+    //       },
+    //     ),
+    //   );
+
+    // if (widget.servicePath.contains("index.html")) {
       // #docregion platform_features
       late final PlatformWebViewControllerCreationParams params;
-      if (WebViewPlatform.instance is WebKitWebViewPlatform) {
+      // if (WebViewPlatform.instance is WebKitWebViewPlatform) {
         params = WebKitWebViewControllerCreationParams(
           allowsInlineMediaPlayback: true,
           mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
         );
-      } else {
-        params = const PlatformWebViewControllerCreationParams();
-      }
-
+      // } else {
+      //   params = const PlatformWebViewControllerCreationParams();
+      // }
       final DWebViewController controller =
           DWebViewController.fromPlatformCreationParams(
         params,
@@ -55,7 +81,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
       controller
         ..setBackgroundColor(Colors.white)
-        ..clearCache()
+        // ..clearCache()
         ..loadRequest(Uri.parse(widget.servicePath))
         ..setJavaScriptMode(JavaScriptMode.unrestricted)
         ..addJavaScriptObject(JsBridgeListener())
@@ -64,19 +90,25 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
             setState(() {
               _progress = progress / 100;
             });
+
+            print("onProgress : $_progress");
           },
           onPageStarted: (url) async {
+            print("onPageStarted");
             // setState(() {
             //   _isLoading = true;
             // });
             // await CommonFunctions.checkCameraSettings(
             //   NavigationService.navigatorKey.currentContext!,
             // );
+            _injectPermissionHandlingScript();
           },
           onPageFinished: (url) {
-            // setState(() {
-            //   _isLoading = false;
-            // });
+            print("onPageFinished");
+            setState(() {
+              _isLoading = false;
+            });
+
             _injectPermissionHandlingScript();
           },
           onWebResourceError: (WebResourceError error) {
@@ -105,45 +137,59 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
         (_controller.platform as AndroidWebViewController)
             .setAllowFileAccess(true);
       }
-    }
+    // }
   }
 
   @override
   Widget build(BuildContext context) {
-    return DWebViewWidget(controller: _controller);
-    // return Stack(children: [
-    //   DWebViewWidget(controller: _controller),
-    //   if (_isLoading)
-    //     Column(
-    //       children: [
-    //         LinearProgressIndicator(
-    //           value: _progress,
-    //           backgroundColor: Colors.grey[200],
-    //           valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-    //         ),
-    //         const Expanded(
-    //           child: Center(
-    //             child: CircularProgressIndicator(),
-    //           ),
-    //         ),
-    //       ],
-    //     ),
-    // ]);
+    return Stack(
+      children: [
+        WebViewWidget(controller: _controller),
+        if (_isLoading)
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 10,
+                  child: LinearProgressIndicator(
+                    value: _progress,
+                    backgroundColor: Colors.grey[200],
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.blue),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'سيتم فتحه خلال لحظات',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+          ),
+      ],
+    );
   }
 
   void _injectPermissionHandlingScript() {
-    _controller.runJavaScript('''
-      // This helps some websites recognize permissions are granted
-      navigator.mediaDevices.getUserMedia =
-        navigator.mediaDevices.getUserMedia ||
-        navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
-    ''');
+    // _controller.runJavaScript('''
+    //   // This helps some websites recognize permissions are granted
+    //   navigator.mediaDevices.getUserMedia =
+    //     navigator.mediaDevices.getUserMedia ||
+    //     navigator.webkitGetUserMedia ||
+    //     navigator.mozGetUserMedia;
+    // ''');
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     super.dispose();
   }
 }

@@ -16,9 +16,10 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../server/CustomInAppLocalhostServer.dart';
 
-String serviceURL = 'https://drive.usercontent.google.com/download?id=1nCHiqUkWnA7ggGd5yMsK2D9aflgfnoEL&export=download&authuser=0&confirm=t&uuid=4519e96c-167c-4120-a5ec-d816cda1e493&at=ALoNOglcT6ZG9LHGPHeowbRWow_T:1748774205254';
+String serviceURL =
+    'https://drive.usercontent.google.com/download?id=11jVBQLiw9912Kw41QHk_5KM-6dBeu00E&export=download&authuser=0&confirm=t&uuid=bea8aa66-2816-4ca3-8919-a01381519ae4&at=AN8xHoqbsCnJGZHQo1_hzyO3bB3k:1750323190803';
 String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=1nCHiqUkWnA7ggGd5yMsK2D9aflgfnoEL&export=download&authuser=0&confirm=t&uuid=4519e96c-167c-4120-a5ec-d816cda1e493&at=ALoNOglcT6ZG9LHGPHeowbRWow_T:1748774205254';
+    'https://drive.usercontent.google.com/download?id=11jVBQLiw9912Kw41QHk_5KM-6dBeu00E&export=download&authuser=0&confirm=t&uuid=bea8aa66-2816-4ca3-8919-a01381519ae4&at=AN8xHoqbsCnJGZHQo1_hzyO3bB3k:1750323190803';
 
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
@@ -26,11 +27,13 @@ int portNumber = 8080;
 class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniAppModel miniApp;
-  CustomInAppLocalhostServer? localhostServer;
+
+  // CustomInAppLocalhostServer? localhostServer;
   String? serviceDownloadPath;
   late String basePathService;
+  String serverPath;
 
-  MiniAppsEngineBloc({required this.miniApp})
+  MiniAppsEngineBloc({required this.miniApp, required this.serverPath})
       : super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
@@ -43,15 +46,25 @@ class MiniAppsEngineBloc
   void _checkMiniAppsEngine(
       CheckMiniAppsEngineEvent event, Emitter emit) async {
     // await prepareServerPath();
-    basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
-    String dir =
-        '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
-    File file = File('$dir/index.html');
-    bool exists = await file.exists();
-    if (exists) {
-      add(OpenServerEngineEvent(miniApp: miniApp));
+
+    if (event.miniApp.latestVersion?.serviceUrl != null) {
+      emit(
+        MiniAppsEngineLoadedState(
+          servicePath: event.miniApp.latestVersion!.serviceUrl!,
+        ),
+      );
     } else {
-      add(DownloadMiniAppsEngineEvent(miniApp: event.miniApp));
+      basePathService =
+          "${(await getApplicationDocumentsDirectory()).path}/www/";
+      String dir =
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      File file = File('$dir/index.html');
+      bool exists = await file.exists();
+      if (exists) {
+        add(OpenServerEngineEvent(miniApp: miniApp));
+      } else {
+        add(DownloadMiniAppsEngineEvent(miniApp: event.miniApp));
+      }
     }
     return;
   }
@@ -129,34 +142,32 @@ class MiniAppsEngineBloc
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
-      if(state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
-        if(!tempState.progress.contains("100")) {
+      if (state is MiniAppsEngineLoadingState) {
+        MiniAppsEngineLoadingState tempState =
+            state as MiniAppsEngineLoadingState;
+        if (!tempState.progress.contains("100")) {
           return;
         }
       }
       String pathService =
-          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
-      CommonProperties.currentLocalServerDirectory=pathService;
-      localhostServer ??= CustomInAppLocalhostServer(
-        PlatformInAppLocalhostServerCreationParams(
-          documentRoot: pathService,
-          port: generateRandomPort(portNumber),
-          shared: true,
-        ),
-      );
-      bool isRunning = localhostServer!.isRunning();
-      if (isRunning) {
-        await localhostServer?.close();
-        await localhostServer!.start();
-      } else {
-        await localhostServer!.start();
-      }
+          '$serverPath${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      // CommonProperties.currentLocalServerDirectory=pathService;
+      // localhostServer ??= CustomInAppLocalhostServer(
+      //   PlatformInAppLocalhostServerCreationParams(
+      //     documentRoot: pathService,
+      //     port: generateRandomPort(portNumber),
+      //     shared: true,
+      //   ),
+      // );
+      // bool isRunning = localhostServer!.isRunning();
+      // if (isRunning) {
+      //   await localhostServer?.close();
+      //   await localhostServer!.start();
+      // } else {
+      //   await localhostServer!.start();
+      // }
 
-      String servicePath = '$pathService/index.html'.replaceAll(
-        pathService,
-        "http://localhost:${localhostServer!.port}",
-      );
+      String servicePath = '$pathService/index.html';
 
       emit(MiniAppsEngineLoadedState(servicePath: servicePath));
     } catch (e) {
@@ -174,9 +185,8 @@ class MiniAppsEngineBloc
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        // urlDownload,
-        // "v1/dms-mobile/files/downloadPath",
-        serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
+        urlDownload,
+        // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
         // "https://drive.usercontent.google.com/download?id=1BXCyidB55xqOX9TaixFCV07Al084Agwa&export=download&authuser=0&confirm=t&uuid=5d1ecff5-ae7c-49c8-81d7-e00a25065d0c&at=ALoNOglgrG9Np4CKDSc8lOKCfzeH:1748344450449",
         onReceiveProgress: (received, total) {
           if (total != -1) {
@@ -285,7 +295,7 @@ class MiniAppsEngineBloc
 
   @override
   Future<void> close() async {
-    await localhostServer?.close();
+    // await localhostServer?.close();
     return super.close();
   }
 }
