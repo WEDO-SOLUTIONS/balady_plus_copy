@@ -22,15 +22,6 @@ class MiniAppsItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {
-        NavigationService.navigatorKey.currentState!.pushNamed(
-            RouteName.vdCameraPage,
-            arguments: CameraParamsPage(
-              selectedCategory: CategoryItem(
-                  categoryId:
-                  RemoteConfig.movingVeichleCategoryKey), /*isFromHome: true*/
-            ));
-
-        return;
         if(miniApp.latestVersion?.nafathLogin == true && !CommonProperties.isLoggedInMunicipality){
           showDialog(
             context: context,
