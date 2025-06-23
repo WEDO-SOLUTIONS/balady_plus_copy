@@ -71,6 +71,7 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
 
     controller
       ..setBackgroundColor(Colors.white)
+      ..clearCache()
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setNavigationDelegate(NavigationDelegate(
         onProgress: (progress) {
@@ -120,17 +121,66 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
     MiniAppsEngineLoadedState state =
         miniAppsEngineBloc.state as MiniAppsEngineLoadedState;
 
-    return PopScope(
-      canPop: false,
-      onPopInvokedWithResult: (didPop, result) async {
-        bool canGoBack = await _controller.canGoBack();
-        if (canGoBack) {
-          await _controller.goBack();
-          return;
-        } else {
-          Navigator.of(context).pop();
-        }
-      },
+    return Stack(
+      children: [
+        //DWebViewWidget
+        DWebViewWidget(
+          controller: _controller
+            ..loadRequest(Uri.parse(state.servicePath))
+            ..addJavaScriptObject(
+              JsBridgeListener(
+                miniAppsEngineBloc: miniAppsEngineBloc,
+                isLoading: _isLoading,
+              ),
+            ),
+        ),
+
+        /// When Open Url From Sevrver Side Not Show Loading Indicator
+        miniAppsEngineBloc.miniApp.latestVersion?.serviceUrl == null
+            ? ValueListenableBuilder(
+          valueListenable: _isLoading,
+          builder: (context, value, _) {
+            return value
+                ? Container(
+              height: double.infinity,
+              width: double.infinity,
+              color: Colors.white,
+              margin: EdgeInsets.zero,
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(
+                    "service_will_available_shortly".tr(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            )
+                : const SizedBox.shrink();
+          },
+        )
+            : const SizedBox(),
+      ],
+    );
+      // PopScope(
+      // canPop: false,
+      // onPopInvokedWithResult: (didPop, result) async {
+      //   bool canGoBack = await _controller.canGoBack();
+      //   if (canGoBack) {
+      //     await _controller.goBack();
+      //     return;
+      //   } else {
+      //     Navigator.of(context).pop();
+      //   }
+      // },
       // onPopInvoked: (didPop) async {
       //   bool canGoBack = await _controller.canGoBack();
       //   if (canGoBack) {
@@ -140,56 +190,8 @@ class _WebMiniAppsScreenState extends State<WebMiniAppsScreen> {
       //   }
       //
       // },
-      child: Stack(
-        children: [
-          //DWebViewWidget
-          DWebViewWidget(
-            controller: _controller
-              ..loadRequest(Uri.parse(state.servicePath))
-              ..addJavaScriptObject(
-                JsBridgeListener(
-                  miniAppsEngineBloc: miniAppsEngineBloc,
-                  isLoading: _isLoading,
-                ),
-              ),
-          ),
-
-          /// When Open Url From Sevrver Side Not Show Loading Indicator
-          miniAppsEngineBloc.miniApp.latestVersion?.serviceUrl == null
-              ? ValueListenableBuilder(
-                  valueListenable: _isLoading,
-                  builder: (context, value, _) {
-                    return value
-                        ? Container(
-                            height: double.infinity,
-                            width: double.infinity,
-                            color: Colors.white,
-                            margin: EdgeInsets.zero,
-                            padding: const EdgeInsets.all(24.0),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                const CircularProgressIndicator(),
-                                const SizedBox(height: 16),
-                                Text(
-                                  "service_will_available_shortly".tr(),
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )
-                        : const SizedBox.shrink();
-                  },
-                )
-              : const SizedBox(),
-        ],
-      ),
-    );
+      // child: ,
+    // );
   }
 
   void _injectPermissionHandlingScript() {
