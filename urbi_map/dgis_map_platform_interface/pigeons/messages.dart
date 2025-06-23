@@ -405,6 +405,16 @@ class TradeLicenseMessage {
   final String endDate;
 }
 
+class GroupItemMessage {
+  GroupItemMessage({
+    required this.id,
+    required this.type,
+  });
+
+  final DgisObjectIdMessage id;
+  final ObjectTypeMessage type;
+}
+
 class DirectoryObjectMessage {
   DirectoryObjectMessage(
     this.types,
@@ -431,6 +441,8 @@ class DirectoryObjectMessage {
     this.entrances,
     this.tradeLicense,
     this.rubricIds,
+    this.routeInfos,
+    this.group,
   );
 
   final List<ObjectTypeItemMessage> types;
@@ -457,6 +469,135 @@ class DirectoryObjectMessage {
   final List<EntranceInfoMessage> entrances;
   final TradeLicenseMessage? tradeLicense;
   final List<int> rubricIds;
+  final List<PublicTransportDirectoryRouteInfoMessage> routeInfos;
+  final List<GroupItemMessage> group;
+}
+
+class PublicTransportDirectoryRouteDirectionNamesInfoMessage {
+  PublicTransportDirectoryRouteDirectionNamesInfoMessage({
+    required this.fromName,
+    required this.toName,
+  });
+
+  final String fromName;
+  final String toName;
+}
+
+class PublicTransportRouteDirectionIdMessage {
+  PublicTransportRouteDirectionIdMessage({
+    required this.value,
+  });
+
+  final int value;
+}
+
+enum PublicTransportRouteDirectionTypeMessage {
+  forward,
+  backward,
+  additional,
+  circular,
+  loop,
+}
+
+enum PublicTransportRouteTypeMessage {
+  bus,
+  trolleybus,
+  tram,
+  shuttleBus,
+  metro,
+  suburbanTrain,
+  funicularRailway,
+  monorail,
+  riverTransport,
+  cableCar,
+  lightRail,
+  premetro,
+  lightMetro,
+  aeroexpress,
+}
+
+class PublicTransportPlatformTransitionMessage {
+  PublicTransportPlatformTransitionMessage({
+    required this.routeId,
+    required this.routeName,
+    required this.routeType,
+    this.color,
+    required this.stationId,
+    required this.stationName,
+  });
+
+  final DgisObjectIdMessage routeId;
+  final String routeName;
+  final PublicTransportRouteTypeMessage routeType;
+  final int? color;
+  final DgisObjectIdMessage stationId;
+  final String stationName;
+}
+
+class PolylineGeometryMessage {
+  PolylineGeometryMessage({
+    required this.points,
+  });
+
+  final List<GeoPointMessage> points;
+}
+
+class PublicTransportRouteGeometryMessage {
+  PublicTransportRouteGeometryMessage({
+    required this.line,
+    this.centroid,
+  });
+
+  final PolylineGeometryMessage line;
+  final GeoPointMessage? centroid;
+}
+
+class PublicTransportPlatformMessage {
+  PublicTransportPlatformMessage({
+    required this.id,
+    required this.stationId,
+    required this.name,
+    this.description,
+    required this.transitions,
+    this.position,
+  });
+
+  final DgisObjectIdMessage id;
+  final DgisObjectIdMessage stationId;
+  final String name;
+  final String? description;
+  final List<PublicTransportPlatformTransitionMessage> transitions;
+  final GeoPointMessage? position;
+}
+
+class PublicTransportRouteDirectionMessage {
+  PublicTransportRouteDirectionMessage({
+    required this.id,
+    required this.type,
+    this.geometry,
+    required this.platforms,
+  });
+
+  final PublicTransportRouteDirectionIdMessage id;
+  final PublicTransportRouteDirectionTypeMessage type;
+  final PublicTransportRouteGeometryMessage? geometry;
+  final List<PublicTransportPlatformMessage> platforms;
+}
+
+class PublicTransportDirectoryRouteInfoMessage {
+  PublicTransportDirectoryRouteInfoMessage({
+    required this.id,
+    required this.name,
+    this.color,
+    this.fromToStationNames,
+    required this.directions,
+  });
+
+  final DgisObjectIdMessage id;
+  final String name;
+  final int? color;
+  final PublicTransportDirectoryRouteDirectionNamesInfoMessage? fromToStationNames;
+  final List<PublicTransportRouteDirectionMessage> directions;
 }
 
 enum SortingTypeMessage {

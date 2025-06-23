@@ -15,6 +15,7 @@ class Routes {
           ),
         ),
         CustomRoute(
+          path: '/stories',
           page: StoriesRoute.page,
           opaque: false,
           transitionsBuilder: (_, __, ___, child) => StoriesTransition(
