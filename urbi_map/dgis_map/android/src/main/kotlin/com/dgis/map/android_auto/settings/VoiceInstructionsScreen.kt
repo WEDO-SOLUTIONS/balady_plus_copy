@@ -52,7 +52,7 @@ class VoiceInstructionsScreen(
                     .build()
             )
         }
-        itemListBuilder.setSelectedIndex(currentSoundType.raw)
+        itemListBuilder.setSelectedIndex(entries.indexOf(currentSoundType))
         itemListBuilder.setOnSelectedListener { index ->
             updateSoundType(entries[index])
         }
