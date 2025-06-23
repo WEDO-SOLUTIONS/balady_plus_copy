@@ -19,55 +19,54 @@ class PoiEntrancesMetro extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => ContentWrapper(
-        color: context.color.surfaceBasePrimary,
-        children: [
-          ContentRowExpandableTmp(
-            expandIconColor: context.colorsV3.foregroundMuted,
-            count: entrancesDirectoryObject.length,
-            onTitleTap: () {
-              context.router.replaceOrPush(
-                route: PoiCardWidgetRoute(objectId: entrancesDirectoryObject.first.id),
-                toCompareRoutes: [
-                  ShareMyLocationRoute.page,
-                  PoiCardWidgetRoute.page,
-                  RoutingRoutesRoute.page,
-                  HajjPoiCardRoute.page
-                ],
-              );
-            },
-            text: ContentRowTextOptions(
-              title: '${context.l10n.exit} 1',
-              subtitle: entrancesDirectoryObject.firstOrNull?.makeAddress(),
-            ),
-            leading: GeneralIcons.doorEntrance.icon(color: context.colorsV3.accentDefault),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: entrancesDirectoryObject
-                  .skip(1)
-                  .mapIndexed(
-                    (index, data) => ContentRowV2(
-                      onTap: () {
-                        context.router.replaceOrPush(
-                          route: PoiCardWidgetRoute(objectId: data.id),
-                          toCompareRoutes: [
-                            ShareMyLocationRoute.page,
-                            PoiCardWidgetRoute.page,
-                            RoutingRoutesRoute.page,
-                            HajjPoiCardRoute.page
-                          ],
-                        );
-                      },
-                      text: ContentRowTextOptions(
-                        title: '${context.l10n.exit} ${index + 2}',
-                        subtitle: data.makeAddress(),
-                      ),
-                      leading: GeneralIcons.doorEntrance.icon(color: context.colorsV3.accentDefault),
-                    ),
-                  )
-                  .toList(),
-            ),
+  Widget build(BuildContext context) {
+    final toCompareRoutes = [
+      ShareMyLocationRoute.page,
+      PoiCardWidgetRoute.page,
+      RoutingRoutesRoute.page,
+      HajjPoiCardRoute.page
+    ];
+
+    return ContentWrapper(
+      color: context.color.surfaceBasePrimary,
+      children: [
+        ContentRowExpandableTmp(
+          expandIconColor: context.colorsV3.foregroundMuted,
+          count: entrancesDirectoryObject.length,
+          onTitleTap: () {
+            context.router.replaceOrPush(
+              route: PoiCardWidgetRoute(objectId: entrancesDirectoryObject.firstOrNull?.id),
+              toCompareRoutes: toCompareRoutes,
+            );
+          },
+          text: ContentRowTextOptions(
+            title: '${context.l10n.exit} 1',
+            subtitle: entrancesDirectoryObject.firstOrNull?.makeAddress(),
           ),
-        ],
-      );
+          leading: GeneralIcons.doorEntrance.icon(color: context.colorsV3.accentDefault),
+          content: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: entrancesDirectoryObject
+                .skip(1)
+                .mapIndexed(
+                  (index, data) => ContentRowV2(
+                    onTap: () {
+                      context.router.replaceOrPush(
+                        route: PoiCardWidgetRoute(objectId: data.id),
+                        toCompareRoutes: toCompareRoutes,
+                      );
+                    },
+                    text: ContentRowTextOptions(
+                      title: '${context.l10n.exit} ${index + 2}',
+                      subtitle: data.makeAddress(),
+                    ),
+                    leading: GeneralIcons.doorEntrance.icon(color: context.colorsV3.accentDefault),
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
+    );
+  }
 }

@@ -51,7 +51,7 @@ class PoiLinesMetro extends StatelessWidget {
                       const SizedBox(width: 40),
                       Text(
                         _platformsInfo[index].name,
-                        style: const TextStyle(fontSize: 16),
+                        style: context.textStyleV3.bodyLargeRegular
                       ),
                       if (transitionRoute.isNotEmpty)
                         Row(

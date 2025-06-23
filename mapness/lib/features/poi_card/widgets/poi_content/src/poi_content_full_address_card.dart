@@ -13,10 +13,11 @@ class PoiContentFullAddressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final showButtonsRow = data.floors != null || (data.entrances != null && data.entrances!.count > 0);
-    final isMetroType = data.types?.firstOrNull?.type == ObjectTypeMessage.stationMetro ||
-        data.types?.firstOrNull?.type == ObjectTypeMessage.station ||
-        data.types?.firstOrNull?.type == ObjectTypeMessage.stationPlatform ||
-        data.types?.firstOrNull?.type == ObjectTypeMessage.stationEntrance;
+    final type = data.types?.firstOrNull?.type;
+    final hasMetro = type == ObjectTypeMessage.stationMetro ||
+        type == ObjectTypeMessage.station ||
+        type == ObjectTypeMessage.stationPlatform ||
+        type == ObjectTypeMessage.stationEntrance;
 
     return ContentWrapper(
       color: context.color.surfaceBasePrimary,
@@ -47,7 +48,7 @@ class PoiContentFullAddressCard extends StatelessWidget {
               : null,
           crossAxisAlignment: CrossAxisAlignment.start,
         ),
-        if (showButtonsRow && !isMetroType)
+        if (showButtonsRow && !hasMetro)
           Padding(
             padding: const EdgeInsets.only(left: Spacing.$4x, right: Spacing.$4x, bottom: Spacing.$3x),
             child: Row(

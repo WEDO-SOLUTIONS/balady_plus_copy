@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:mapness/features/poi_card/domain/model/organization_item.dart';
 import 'package:mapness/features/poi_card/domain/model/organizations_response.dart';
@@ -41,8 +40,6 @@ class _PoiDataService implements PoiDataService {
           'items.floors,'
           'items.floor_id,'
           'items.links.database_entrances.apartments_info,'
-          'items.links.database_entrances,'
-          'items.entrance_display_name,'
           'items.locale,items.flags,search_attributes,items.adm_div,items.city_alias,items.region_id,'
           'items.segment_id,items.reviews,items.point,request_type,items.links,items.name_ex,items.name_back,items.org,'
           'items.group,items.external_content,items.comment,items.ads.options,items.stat,items.description,'
@@ -60,7 +57,6 @@ class _PoiDataService implements PoiDataService {
           'building_id': '$objectId',
           'fields': _fields,
           'locale': languageCode,
-          'subway': 30399904012001122,
           'page_size': '$pageSize',
           'page': '$page',
         },
