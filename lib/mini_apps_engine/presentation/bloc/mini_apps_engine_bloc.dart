@@ -16,11 +16,6 @@ import 'package:path_provider/path_provider.dart';
 
 import '../../server/CustomInAppLocalhostServer.dart';
 
-String serviceURL =
-    'https://drive.usercontent.google.com/download?id=11jVBQLiw9912Kw41QHk_5KM-6dBeu00E&export=download&authuser=0&confirm=t&uuid=bea8aa66-2816-4ca3-8919-a01381519ae4&at=AN8xHoqbsCnJGZHQo1_hzyO3bB3k:1750323190803';
-String serviceURLSnapAndSend =
-    'https://drive.usercontent.google.com/download?id=11jVBQLiw9912Kw41QHk_5KM-6dBeu00E&export=download&authuser=0&confirm=t&uuid=bea8aa66-2816-4ca3-8919-a01381519ae4&at=AN8xHoqbsCnJGZHQo1_hzyO3bB3k:1750323190803';
-
 // CustomInAppLocalhostServer? localhostServer;
 int portNumber = 8080;
 
@@ -28,12 +23,12 @@ class MiniAppsEngineBloc
     extends Bloc<MiniAppsEngineEvent, MiniAppsEngineState> {
   final MiniAppModel miniApp;
 
-  // CustomInAppLocalhostServer? localhostServer;
+  CustomInAppLocalhostServer? localhostServer;
   String? serviceDownloadPath;
   late String basePathService;
-  String serverPath;
+  // String serverPath;
 
-  MiniAppsEngineBloc({required this.miniApp, required this.serverPath})
+  MiniAppsEngineBloc({required this.miniApp, })//required this.serverPath
       : super(const MiniAppsEngineInitialState()) {
     on<CheckMiniAppsEngineEvent>(_checkMiniAppsEngine);
 
@@ -142,38 +137,41 @@ class MiniAppsEngineBloc
   void _openLocalHostServer(OpenServerEngineEvent event, Emitter emit) async {
     try {
       // await startLocalHostServer(serviceDownloadPath, event.miniApp.serviceKey);
-      if (state is MiniAppsEngineLoadingState) {
-        MiniAppsEngineLoadingState tempState =
-            state as MiniAppsEngineLoadingState;
-        if (!tempState.progress.contains("100")) {
+      if(state is MiniAppsEngineLoadingState) {
+        MiniAppsEngineLoadingState tempState = state as MiniAppsEngineLoadingState;
+        if(!tempState.progress.contains("100")) {
           return;
         }
       }
       String pathService =
-          '$serverPath${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
-      // CommonProperties.currentLocalServerDirectory=pathService;
-      // localhostServer ??= CustomInAppLocalhostServer(
-      //   PlatformInAppLocalhostServerCreationParams(
-      //     documentRoot: pathService,
-      //     port: generateRandomPort(portNumber),
-      //     shared: true,
-      //   ),
-      // );
-      // bool isRunning = localhostServer!.isRunning();
-      // if (isRunning) {
-      //   await localhostServer?.close();
-      //   await localhostServer!.start();
-      // } else {
-      //   await localhostServer!.start();
-      // }
+          '$basePathService${event.miniApp.serviceKey}/${event.miniApp.latestVersion!.versionNumber!}';
+      CommonProperties.currentLocalServerDirectory=pathService;
+      localhostServer ??= CustomInAppLocalhostServer(
+        PlatformInAppLocalhostServerCreationParams(
+          documentRoot: pathService,
+          port: generateRandomPort(portNumber),
+          shared: true,
+        ),
+      );
+      bool isRunning = localhostServer!.isRunning();
+      if (isRunning) {
+        await localhostServer?.close();
+        await localhostServer!.start();
+      } else {
+        await localhostServer!.start();
+      }
 
-      String servicePath = '$pathService/index.html';
+      String servicePath = '$pathService/index.html'.replaceAll(
+        pathService,
+        "http://localhost:${localhostServer!.port}",
+      );
 
       emit(MiniAppsEngineLoadedState(servicePath: servicePath));
     } catch (e) {
       print(e.toString());
     }
   }
+
 
   Future<File?> _downloadFile(
     String urlDownload,
@@ -185,9 +183,8 @@ class MiniAppsEngineBloc
     WebService webService = sl<WebService>();
     try {
       Response response = await webService.dio.get(
-        urlDownload,
-        // serviceKey == "municipalservice" ? serviceURL : serviceURLSnapAndSend,
-        // "https://drive.usercontent.google.com/download?id=1BXCyidB55xqOX9TaixFCV07Al084Agwa&export=download&authuser=0&confirm=t&uuid=5d1ecff5-ae7c-49c8-81d7-e00a25065d0c&at=ALoNOglgrG9Np4CKDSc8lOKCfzeH:1748344450449",
+        // urlDownload,
+        "https://drive.usercontent.google.com/download?id=1oJm5SMQe9xsTUIp6wEI0n0bYV-rxMGuV&export=download&authuser=0&confirm=t&uuid=dbcd2ee5-7489-4088-a00b-0b9a4536b22f&at=AN8xHop7Ib8Es6qW92exzajrG_ky:1750675435222",
         onReceiveProgress: (received, total) {
           if (total != -1) {
             emitter(
@@ -295,7 +292,7 @@ class MiniAppsEngineBloc
 
   @override
   Future<void> close() async {
-    // await localhostServer?.close();
+    await localhostServer?.close();
     return super.close();
   }
 }

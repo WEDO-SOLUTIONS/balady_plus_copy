@@ -59,29 +59,32 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
               },
             );
           } else if (state is MiniAppsEngineLoadingState) {
-            return Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 10,
-                  child: LinearProgressIndicator(
-                    value: state.progress.isEmpty ? null : double.parse(state.progress),
-                    backgroundColor: Colors.grey[200],
-                    valueColor:
-                    const AlwaysStoppedAnimation<Color>(Colors.blue),
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 10,
+                    child: LinearProgressIndicator(
+                      value: state.progress.isEmpty ? null : (double.parse(state.progress) / 100),
+                      backgroundColor: Colors.grey[200],
+                      valueColor:
+                      const AlwaysStoppedAnimation<Color>(Colors.blue),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 16),
-                Text(
-                  "loading".tr(),
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 16),
+                  Text(
+                    "loading".tr(),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             );
           }
           return const SizedBox.shrink();
@@ -89,21 +92,23 @@ class _MiniAppsMainScreenState extends State<MiniAppsMainScreen> {
       ),
     );
 
+    //(state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! MiniAppsEngineLoadedState)
+    //         ? BlocProvider.value(
+    //             value: state.municipalAppBloc!
+    //               ..add(
+    //                 OpenServerEngineEvent(miniApp: data),
+    //               ),
+    //             child: body,
+    //           )
+    //         :
 
-    return (state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && state.municipalAppBloc!.state is! MiniAppsEngineLoadedState)
-        ? BlocProvider.value(
-            value: state.municipalAppBloc!
-              ..add(
-                OpenServerEngineEvent(miniApp: data),
-              ),
-            child: body,
-          )
-        : BlocProvider<MiniAppsEngineBloc>(
+
+    return BlocProvider<MiniAppsEngineBloc>(
             create: (context)  {
               if(state.municipalAppBloc != null &&  state.municipalAppBloc!.miniApp.serviceKey == data.serviceKey && !state.municipalAppBloc!.isClosed) {
                state.municipalAppBloc!.close();
               }
-              return MiniAppsEngineBloc(miniApp: data,serverPath: state.serverPath);
+              return MiniAppsEngineBloc(miniApp: data,);//serverPath: state.serverPath
             },
             child: body,
           );

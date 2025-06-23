@@ -17,7 +17,7 @@ part 'home_mini_apps_list_state.dart';
 class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
   MiniAppsRepository homeServicesUseCases;
   // InAppLocalhostServer? localhostServer;
-  CustomInAppLocalhostServer? localhostServer;
+  // CustomInAppLocalhostServer? localhostServer;
 
   HomeMiniAppsListCubit({
     required this.homeServicesUseCases,
@@ -37,13 +37,13 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
             // String basePathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
             String pathService = "${(await getApplicationDocumentsDirectory()).path}/www/";
             CommonProperties.currentLocalServerDirectory = pathService;
-            localhostServer ??= CustomInAppLocalhostServer(
-              PlatformInAppLocalhostServerCreationParams(
-              documentRoot: pathService,
-              port: 7734,
-                shared: true,
-              ),
-            );
+            // localhostServer ??= CustomInAppLocalhostServer(
+            //   PlatformInAppLocalhostServerCreationParams(
+            //   documentRoot: pathService,
+            //   port: 7734,
+            //     shared: true,
+            //   ),
+            // );
             // localhostServer ??= InAppLocalhostServer(
             //   // PlatformInAppLocalhostServerCreationParams(
             //   documentRoot: pathService,
@@ -56,15 +56,15 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
             ////////////////////////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////
 
-            bool isRunning = localhostServer!.isRunning();
-            if (!isRunning) {
-              await localhostServer!.start();
-            }
-            String serverPath = "http://localhost:${localhostServer!.port}/";
+            // bool isRunning = localhostServer!.isRunning();
+            // if (!isRunning) {
+            //   await localhostServer!.start();
+            // }
+            // String serverPath = "http://localhost:${localhostServer!.port}/";
 
             HomeMiniAppsListState state = HomeMiniAppsListSuccessState(
               miniAppsList: listMiniApps,
-              serverPath: serverPath,
+              // serverPath: serverPath,
             );
 
             for (var element in listMiniApps) {
@@ -75,7 +75,7 @@ class HomeMiniAppsListCubit extends Cubit<HomeMiniAppsListState> {
                   //   miniApp: element,
                   //   serverPath: serverPath,
                   // ),
-                  serverPath: serverPath,
+                  // serverPath: serverPath,
                 );
               }
             }
