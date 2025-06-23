@@ -6,7 +6,8 @@ import AVFoundation
 final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationSceneDelegate {
     static private(set) var map: Map?
     static var delegate: CarPlayConnectionSceneDelegate?
-    private var mainScreen: MainScreen?
+    static var eventChannel: DgisStreamHandler?
+    static private var mainScreen: MainScreen?
     
     func templateApplicationScene(
         _ templateApplicationScene: CPTemplateApplicationScene,
@@ -34,7 +35,8 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
             window: window,
             eventProcessor: mapFactory.mapEventProcessor,
             navigationManager: DgisMapInitializer.shared.getNavigationManager(),
-            userDefaultsPublished: UserDefaultsPublished()
+            userDefaultsPublished: UserDefaultsPublished(),
+            eventChannel: FlutterCarPlaySceneDelegate.eventChannel
         )
         let mapTemplate = mainScreen.createTemplate()
         
@@ -43,7 +45,11 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         interfaceController.setRootTemplate(mapTemplate, animated: true, completion: nil)
         
         Self.delegate?.onConnectionStateChanged(connected: true)
-        self.mainScreen = mainScreen
+        FlutterCarPlaySceneDelegate.mainScreen = mainScreen
+        FlutterCarPlaySceneDelegate.map = map
+    }
+    
+    func viewDidLoad(with map: DGis.Map) {
         FlutterCarPlaySceneDelegate.map = map
     }
     
@@ -52,9 +58,13 @@ final class FlutterCarPlaySceneDelegate: UIResponder, CPTemplateApplicationScene
         didDisconnect interfaceController: CPInterfaceController,
         from window: CPWindow
     ) {
-        self.mainScreen = nil
+        FlutterCarPlaySceneDelegate.mainScreen = nil
         FlutterCarPlaySceneDelegate.map = nil
         Self.delegate?.onConnectionStateChanged(connected: false)
+    }
+    
+    static func toggleSounds(toggleType: SoundToggleType) {
+        self.mainScreen?.toggleSounds(toggleType: toggleType)
     }
 }
 

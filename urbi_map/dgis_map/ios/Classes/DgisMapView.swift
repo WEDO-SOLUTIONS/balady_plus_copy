@@ -1163,6 +1163,7 @@ class DgisMapView: NSObject, FlutterPlatformView, MapApi {
     
     func toggleVoiceInstruction( toggleType: SoundToggleType, completion: @escaping (Result<Void, any Error>) -> Void) {
         self.navigationHandler?.toggleSounds(toggleType: toggleType)
+        self.carPlayHandler?.toggleSounds(toggleType: toggleType)
          completion(Result.success(()))
     }
 

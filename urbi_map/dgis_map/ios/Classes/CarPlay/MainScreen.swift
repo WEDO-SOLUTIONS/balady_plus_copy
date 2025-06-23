@@ -10,6 +10,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
     private let eventProcessor: IMapEventProcessor
     private let userDefaultsPublished: UserDefaultsPublished
     private let navigationManager: NavigationManager
+    private let eventChannel: DgisStreamHandler?
 
     init(
         map: Map,
@@ -18,7 +19,8 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         window: CPWindow,
         eventProcessor: IMapEventProcessor,
         navigationManager: NavigationManager,
-        userDefaultsPublished: UserDefaultsPublished
+        userDefaultsPublished: UserDefaultsPublished,
+        eventChannel: DgisStreamHandler?
     ) {
         self.map = map
         self.dgisCarPlayMapView = dgisCarPlayMapView
@@ -29,6 +31,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         self.userDefaultsPublished = userDefaultsPublished
         self.navigationManager = navigationManager
         self.model = navigationManager.uiModel
+        self.eventChannel = eventChannel
         self.mapTemplate = CPMapTemplate()
     }
 
@@ -40,9 +43,9 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
     private var rebuildUiCancellable: Combine.AnyCancellable?
     private var navigatorStateCancelable: DGis.Cancellable?
     private var navigationSessionManeuvers: NavigationSessionManeuvers?
+    private var currentSettingsScreen: SettingsScreen?
 
     deinit {
-        trafficStateCancellable?.cancel()
         rebuildUiCancellable?.cancel()
         navigatorStateCancelable?.cancel()
     }
@@ -77,7 +80,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
 
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
-            makeTrafficButton(),
+            makeSettingsButton(),
         ]
 
         mapTemplate.mapDelegate = self
@@ -142,6 +145,28 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         screen.createTemplate().show(with: interfaceController)
     }
 
+    private func onSettingsBarTap(_: CPBarButton) {
+        let screen = SettingsScreen(
+            onBackTap: onBackTap,
+            userDefaultsPublished: userDefaultsPublished,
+            eventChannel: eventChannel,
+            map: map,
+            traitStyle: window.traitCollection.userInterfaceStyle
+        )
+        screen.createTemplate().show(with: interfaceController)
+        currentSettingsScreen = screen
+    }
+    
+    func toggleSounds(toggleType: SoundToggleType) {
+        // Update sound settings in the current settings screen if it exists
+        currentSettingsScreen?.toggleSoundsFromMobile(toggleType: toggleType)
+    }
+    
+    private func onBackTap(_: CPBarButton) {
+        interfaceController.popTemplate(animated: true, completion: nil)
+        currentSettingsScreen = nil
+    }
+
     private func onZoomInTap(_: CPMapButton) {
         zoomControlModel.setPressed(button: .zoomIn, value: true)
         zoomControlModel.setPressed(button: .zoomIn, value: false)
@@ -167,7 +192,7 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         ]
         mapTemplate.trailingNavigationBarButtons = [
             makePanHeaderButton(),
-            makeTrafficButton(),
+            makeSettingsButton(),
         ]
     }
 
@@ -179,10 +204,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         leadingNavigationBarButtonFactories = [
             makeAcceptHeaderButton
         ]
-    }
-
-    private func onTrafficBarTap(_: CPBarButton) {
-        trafficControlModel.onClicked()
     }
 
     private func processDirectEvent(event: DGis.Event) {
@@ -244,36 +265,6 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
         )
     }
 
-    private func makeTrafficButton() -> CPBarButton {
-        let imageOff = UIImage(named: "TrafficOffNavBar")!.withRenderingMode(
-            .alwaysOriginal
-        )
-        let imageOn = UIImage(named: "TrafficOnNavBar")!.withRenderingMode(
-            .alwaysOriginal
-        )
-
-        let trafficButton = CPBarButton(
-            image: imageOff, handler: onTrafficBarTap
-        )
-
-        trafficStateCancellable?.cancel()
-
-        func trafficStateChanged(_ state: TrafficControlState) {
-            switch state.status {
-            case .enabled, .loading:
-                trafficButton.image = imageOn
-            default:
-                trafficButton.image = imageOff
-            }
-        }
-
-        trafficStateCancellable = trafficControlModel.stateChannel.sink(
-            receiveValue: trafficStateChanged
-        )
-
-        return trafficButton
-    }
-
     private func makeSearchButton() -> CPBarButton {
         return CPBarButton(
             image: UIImage(named: "Search")!, handler: onSearchBarTap
@@ -326,5 +317,12 @@ class MainScreen: NSObject, CPMapTemplateDelegate {
             .alwaysOriginal)
         let button = CPBarButton(image: image, handler: onMyLocationBarTap)
         return button
+    }
+
+    private func makeSettingsButton() -> CPBarButton {
+        return CPBarButton(
+            image: UIImage(named: "Settings")!.withRenderingMode(.alwaysOriginal),
+            handler: onSettingsBarTap
+        )
     }
 }

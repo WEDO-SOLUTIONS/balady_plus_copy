@@ -10,7 +10,7 @@ class DashboardControlModel {
     private let navigationManager: NavigationManager
     private let eventChannel: DgisStreamHandler
     private var cancelable: Array<Cancellable> = []
-    private static let allCategories: SoundCategoryOptionSet = [
+    public static let allCategories: SoundCategoryOptionSet = [
         .crossroadCameras,
         .laneCameras,
         .noStoppingControlCameras,
