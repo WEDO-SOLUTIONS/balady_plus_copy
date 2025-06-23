@@ -39,14 +39,14 @@ class SubtitleComponent extends BottomSheetStateComponent<PoiCardBottomSheetStat
     }
 
     final currentRoute = routeInfo?.directions.firstOrNull?.platforms.firstWhereOrNull((e) => e.name == title);
-    final color = Color(routeInfo?.color ?? Colors.black.value);
+    final color = Color(routeInfo?.color ?? context.colorsV3.foregroundDefault.value);
     final platformsAndTransitions = currentRoute?.transitions
         .map(
           (e) => Row(
             children: [
               Spacing.$1x.widthBox,
               Assets.icons.svg.icMetroMarker.svg(
-                colorFilter: ColorFilter.mode(Color(e.color ?? Colors.black.value), BlendMode.srcIn),
+                colorFilter: ColorFilter.mode(Color(e.color ?? context.colorsV3.foregroundDefault.value), BlendMode.srcIn),
               ),
               Spacing.$1x.widthBox,
             ],
