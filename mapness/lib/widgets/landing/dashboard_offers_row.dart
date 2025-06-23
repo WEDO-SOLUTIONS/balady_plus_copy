@@ -30,7 +30,7 @@ class DashboardOffersRow extends ConsumerWidget {
                 ),
                 const SizedBox(width: 4),
                 AppIcons(
-                  iconData: context.isLTR ? SystemIcons.arrowCornerRightLarge : SystemIcons.arrowCornerLeftLarge,
+                  iconData: SystemIcons.arrowCornerRightLarge,
                   color: context.colorsV3.foregroundDefault,
                 )
               ],
@@ -131,7 +131,7 @@ class _DashboardOffersCard extends StatelessWidget {
                                   ),
                                   child: Center(
                                     child: Icon(
-                                      context.isLTR ? SystemIcons.arrowRight : SystemIcons.arrowLeft,
+                                      SystemIcons.arrowRight,
                                       color: context.colorsV3.staticWhite,
                                       size: Spacing.$5x,
                                     ),

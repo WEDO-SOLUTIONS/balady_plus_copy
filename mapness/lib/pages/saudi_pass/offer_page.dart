@@ -208,9 +208,7 @@ class _Content extends HookConsumerWidget {
                                         ),
                                       ),
                                       AppIcons(
-                                        iconData: context.isLTR
-                                            ? SystemIcons.arrowCornerRightSmall
-                                            : SystemIcons.arrowCornerLeftSmall,
+                                        iconData: SystemIcons.arrowCornerRightSmall,
                                         color: colors.accentDefault,
                                       )
                                     ],
