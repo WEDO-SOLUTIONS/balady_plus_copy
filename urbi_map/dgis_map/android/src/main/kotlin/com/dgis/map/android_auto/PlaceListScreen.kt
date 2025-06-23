@@ -55,9 +55,6 @@ class PlaceListScreen(
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 mapController.removeAllMarkers()
-                mapController.setCameraPadding(
-                    Padding(0, 0, 0, 0)
-                )
             }
         })
     }
@@ -143,7 +140,6 @@ class PlaceListScreen(
             )
             Marker(options)
         }
-        mapController.setCameraPadding(Padding(128, 0, 0, 0))
         mapController.addMarkers(markers)
         val firstObject = directoryObjectsWithMarker.first()
         moveToMarker(firstObject.markerPosition!!)

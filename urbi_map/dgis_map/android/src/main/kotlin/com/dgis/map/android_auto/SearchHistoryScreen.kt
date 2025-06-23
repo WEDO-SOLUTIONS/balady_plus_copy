@@ -78,9 +78,6 @@ class SearchHistoryScreen(
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onDestroy(owner: LifecycleOwner) {
                 mapController.removeAllMarkers()
-                mapController.setCameraPadding(
-                    Padding(0, 0, 0, 0)
-                )
             }
         })
     }
@@ -127,7 +124,6 @@ class SearchHistoryScreen(
                 )
                 Marker(options)
             }
-            mapController.setCameraPadding(Padding(128, 0, 0, 0))
             mapController.addMarkers(markers)
             val firstObject = items.first()
             moveToMarker(firstObject.markerPosition!!)

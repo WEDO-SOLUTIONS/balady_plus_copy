@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.graphics.Rect
 import android.net.Uri
 import android.util.Log
 import android.view.Surface
@@ -20,6 +21,7 @@ import ru.dgis.sdk.androidauto.AndroidAutoMapSession
 import ru.dgis.sdk.map.Map
 import ru.dgis.sdk.map.MapOptions
 import ru.dgis.sdk.map.MapTheme
+import ru.dgis.sdk.map.Padding
 import java.util.Locale
 
 /** Session class for the navigation car app  */
@@ -158,6 +160,15 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
 
     override fun onSurfaceDestroyed(surface: Surface) {
         customRenderer.resetSurface()
+    }
+
+    override fun onSurfaceStableAreaChanged(stableArea: Rect) {
+        val displayMetrics = carContext.resources.displayMetrics
+        val left = stableArea.left
+        val top = stableArea.top
+        val right = displayMetrics.widthPixels - stableArea.right
+        val bottom = displayMetrics.heightPixels - stableArea.bottom
+        carMapController.setCameraPadding(Padding(left, top, right, bottom))
     }
 
     private fun setMapTheme() {
