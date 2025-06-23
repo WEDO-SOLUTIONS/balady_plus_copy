@@ -3,6 +3,7 @@ package com.dgis.map.android_auto.settings
 import androidx.car.app.CarContext
 import androidx.car.app.Screen
 import androidx.car.app.model.Action
+import androidx.car.app.model.ActionStrip
 import androidx.car.app.model.ItemList
 import androidx.car.app.model.Row
 import androidx.car.app.model.Template
@@ -49,6 +50,7 @@ class SettingsScreen(
                         ).build(),
                         Row.IMAGE_TYPE_ICON
                     )
+                    .setBrowsable(true)
                     .setOnClickListener {
                         screenManager.push(VoiceInstructionsScreen(carContext, mapController))
                     }
@@ -56,7 +58,7 @@ class SettingsScreen(
             )
             .addItem(
                 Row.Builder()
-                    .setTitle(getString(R.string.settings_traffic)) 
+                    .setTitle(getString(R.string.settings_traffic))
                     .setImage(
                         CarIcon.Builder(
                             IconCompat.createWithResource(carContext, R.drawable.settings_traffic)
@@ -87,6 +89,7 @@ class SettingsScreen(
                         ).build(),
                         Row.IMAGE_TYPE_ICON
                     )
+                    .setBrowsable(true)
                     .setOnClickListener {
                         screenManager.push(RouteInstructionsScreen(carContext, mapController))
                     }
@@ -101,6 +104,7 @@ class SettingsScreen(
                         ).build(),
                         Row.IMAGE_TYPE_ICON
                     )
+                    .setBrowsable(true)
                     .setOnClickListener {
                         screenManager.push(VolumeSettingsScreen(carContext, mapController))
                     }

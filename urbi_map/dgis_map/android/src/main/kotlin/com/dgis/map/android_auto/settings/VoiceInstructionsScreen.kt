@@ -39,8 +39,9 @@ class VoiceInstructionsScreen(
     }
 
     override fun onGetTemplate(): Template {
+        val entries = SoundToggleType.entries.reversed()
         val itemListBuilder = ItemList.Builder()
-        for (option in SoundToggleType.entries.reversed()) {
+        for (option in entries) {
             itemListBuilder.addItem(
                 Row.Builder()
                     .setTitle(option.title())
@@ -51,9 +52,9 @@ class VoiceInstructionsScreen(
                     .build()
             )
         }
-        itemListBuilder.setSelectedIndex(currentSoundType.raw)
+        itemListBuilder.setSelectedIndex(entries.indexOf(currentSoundType))
         itemListBuilder.setOnSelectedListener { index ->
-            updateSoundType(SoundToggleType.entries[index])
+            updateSoundType(entries[index])
         }
 
         // Return the template

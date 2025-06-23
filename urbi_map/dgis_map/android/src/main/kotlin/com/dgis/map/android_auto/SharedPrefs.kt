@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import org.json.JSONObject
 import androidx.core.content.edit
+import com.dgis.map.android_auto.settings.NotificationVolume
 import com.dgis.map.map_api.SoundToggleType
 
 class SharedPrefs(context: Context) : AutoCloseable {
@@ -100,13 +101,17 @@ class SharedPrefs(context: Context) : AutoCloseable {
             }
         }
     // Volume of the navigator voice during the navigation
-    // 0: Full Volume, 1: Quiet, 2: Minimum
-    var volumeValue: Int
+    var volumeValue: NotificationVolume
         get() {
-            return sharedPreferences.getInt("$keyPrefix$volumeKey", 0)
+            val str = sharedPreferences.getString("$keyPrefix$volumeKey", NotificationVolume.Quiet.name)
+            return try {
+                NotificationVolume.valueOf(str!!)
+            } catch (e: IllegalArgumentException) {
+                NotificationVolume.Quiet
+            }
         }
         set(value) {
-            sharedPreferences.edit { putInt("$keyPrefix$volumeKey", value) }
+            sharedPreferences.edit { putString("$keyPrefix$volumeKey", value.name) }
         }
 
     fun setSharedPrefsChangeListener(sharedPrefsChangeListener: (key: String) -> Unit) {

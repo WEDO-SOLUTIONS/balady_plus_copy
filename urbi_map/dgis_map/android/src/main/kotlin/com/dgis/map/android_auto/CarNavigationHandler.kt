@@ -60,7 +60,6 @@ class CarNavigationHandler(
     private var instructions: InstructionRouteAttribute? = null
     private var speedLimits: FloatRouteLongAttribute? = null
     private val navigationCloseables = mutableListOf<AutoCloseable>()
-    private var betterRouteSubscription: AutoCloseable? = null
     private var navigationListener: NavigationListener? = null
     private var map: Map? = null
 
@@ -88,7 +87,7 @@ class CarNavigationHandler(
         navigationCloseables.add(navigationModel.locationChannel.connect(::locationListener))
         navigationCloseables.add(navigationModel.locationAvailableChannel.connect(::locationAvailableListener))
         navigationCloseables.add(navigationModel.exceedingMaxSpeedLimitChannel.connect(this::exceedLimitListener))
-        setBetterRouteEnabled(sharedPrefs.suggestBetterRoad)
+        navigationCloseables.add(navigationModel.betterRouteChannel.connect(::betterRouteListener))
     }
 
     private fun unsubscribeFromNavigation() {
@@ -175,6 +174,10 @@ class CarNavigationHandler(
     }
 
     private fun betterRouteListener(routeInfo: BetterRouteInfo?) {
+        if(!sharedPrefs.suggestBetterRoad) {
+            navigationListener?.onBetterRouteFound(durationProfit = null)
+            return
+        }
         val activeRouteDuration = navigationManager.uiModel.duration?.inSeconds
         val betterRouteDuration = routeInfo?.trafficRoute?.route?.geometry?.first?.point?.let {
             routeInfo.trafficRoute.traffic.durations.calculateDuration(
@@ -391,21 +394,6 @@ class CarNavigationHandler(
 
     fun setNavigatorVolume(volume: Int) {
         this.navigationManager.soundNotificationSettings.notificationVolume = volume
-    }
-
-    fun setBetterRouteEnabled(enabled: Boolean) {
-        if (enabled) {
-            if (betterRouteSubscription == null) {
-                betterRouteSubscription = navigationManager.uiModel.betterRouteChannel.connect(::betterRouteListener)
-                navigationCloseables.add(betterRouteSubscription!!)
-            }
-        } else {
-            betterRouteSubscription?.let {
-                it.close()
-                navigationCloseables.remove(it)
-                betterRouteSubscription = null
-            }
-        }
     }
 
     override fun close() {
