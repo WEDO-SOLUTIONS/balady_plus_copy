@@ -129,7 +129,13 @@ class _Content extends HookConsumerWidget {
     final offerImage = offer.images.firstOrNull;
     final showCode = useState(code != null && redeemed);
     final discount = _getDiscount(offer, language, context);
-    final duration = offer.briefDurationTo?.toStringAsFixed(0);
+    final duration = offer.briefDurationTo;
+
+    final durationString = switch (duration) {
+      null => '',
+      final n when n < 1 => '${(duration * 1000).toInt()} ${l10n.meter}',
+      final n => '${n.toInt()} ${l10n.km}',
+    };
 
     return Column(
       children: [
@@ -223,7 +229,7 @@ class _Content extends HookConsumerWidget {
                                   child: BaladyAppButton(
                                     primaryIcon: TransportIcons.locationDirectionNavigator,
                                     iconColor: colors.accentSecondaryOnContainer,
-                                    primaryLabel: '${l10n.poiCardDirections} $duration ${l10n.meter}',
+                                    primaryLabel: '${l10n.poiCardDirections} $durationString',
                                     color: colors.accentSecondaryContainerDefault,
                                     textColor: colors.accentSecondaryOnContainer,
                                     buttonColorScheme: BaladyButtonColorScheme.accent,
@@ -516,11 +522,12 @@ class _OfferPreviewByBusiness extends StatelessWidget {
       decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: offer.offerGroup.color,
-            begin: context.isLTR ? Alignment.topLeft : Alignment.topRight,
-            end: context.isLTR ? Alignment.bottomRight : Alignment.bottomLeft,
+            begin: AlignmentDirectional.topStart,
+            end: AlignmentDirectional.bottomEnd,
           ),
           image: DecorationImage(
-            alignment: Alignment.centerRight,
+            alignment: AlignmentDirectional.centerEnd,
+            matchTextDirection: true,
             image: AssetImage(
               offer.offerGroup.imagePath,
             ),
