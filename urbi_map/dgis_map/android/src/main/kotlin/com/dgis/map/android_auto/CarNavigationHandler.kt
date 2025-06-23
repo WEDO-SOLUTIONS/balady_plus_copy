@@ -322,6 +322,10 @@ class CarNavigationHandler(
         )
     }
 
+    fun startFreeroam() {
+        navigationManager.start()
+    }
+
     fun startNavigationSimulation() {
         val routeBuildOptions = navigationManager.uiModel.route.routeBuildOptions ?: return
         navigationManager.startSimulation(

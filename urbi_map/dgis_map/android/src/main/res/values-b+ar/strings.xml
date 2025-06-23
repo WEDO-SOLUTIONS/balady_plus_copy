@@ -11,7 +11,6 @@
   <string name="location_signal_lost_message">فقدنا الاتصال بك…</string>
   <string name="end_trip_alert_title">لقد وصلت</string>
   <string name="end_trip_alert_action">إنهاء الرحلة</string>
-  <string name="start_navigation_message">من فضلك أوقف السيارة وقم بتشغيل الملاحة في تطبيق بلدي على هاتفك</string>
 
   <!-- Permission request -->
   <string name="location_permission_request_message">يرجى إيقاف السيارة والسماح لتطبيق بلدي بالوصول إلى موقعك على هاتفك</string>

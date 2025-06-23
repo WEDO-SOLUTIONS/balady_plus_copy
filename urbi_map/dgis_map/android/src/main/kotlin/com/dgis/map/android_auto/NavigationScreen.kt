@@ -150,7 +150,6 @@ class NavigationScreen(
         navigationState = state
         when (state) {
             NavigationState.NAVIGATION -> {
-                tryPopStartNavigationMessageScreen()
                 navigationManager.navigationStarted()
             }
 
@@ -167,7 +166,6 @@ class NavigationScreen(
             }
 
             NavigationState.REROUTING -> {
-                tryPopStartNavigationMessageScreen()
                 val tripBuilder = Trip.Builder()
                 if (destination != null && destinationTravelEstimate != null) {
                     tripBuilder.addDestination(destination!!, destinationTravelEstimate!!)
@@ -185,13 +183,6 @@ class NavigationScreen(
             }
         }
         invalidate()
-    }
-
-    private fun tryPopStartNavigationMessageScreen() {
-        val topScreen = carContext.getCarService(ScreenManager::class.java).top
-        if (topScreen is StartNavigationMessageScreen) {
-            topScreen.finish()
-        }
     }
 
     override fun onEtaUpdated(eta: EtaModel?) {

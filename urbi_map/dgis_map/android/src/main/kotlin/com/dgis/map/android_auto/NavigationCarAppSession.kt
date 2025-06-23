@@ -38,12 +38,10 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
         lifecycle.addObserver(object : DefaultLifecycleObserver {
             override fun onCreate(owner: LifecycleOwner) {
                 sharedPrefs.setSharedPrefsChangeListener(::handlePrefsChanged)
-                MainAppScreenStateNotifier.addListener(::mainAppStateListener)
             }
 
             override fun onDestroy(owner: LifecycleOwner) {
                 sharedPrefs.resetSharedPrefsChangeListener()
-                MainAppScreenStateNotifier.removeListener(::mainAppStateListener)
             }
         })
     }
@@ -51,14 +49,9 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
     override fun onCreateScreen(intent: Intent): Screen {
         setupLocale()
         navigationScreen = NavigationScreen(carContext, carMapController, customRenderer)
-        val navigationState = carMapController.getCurrentNavigationState()
 
         if (carContext.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
-            if (navigationState == NavigationState.DISABLED && MainAppScreenStateNotifier.state == MainAppScreenState.HIDDEN) {
-                carContext.getCarService(ScreenManager::class.java)
-                    .push(StartNavigationMessageScreen(carContext))
-            }
             return RequestPermissionScreen(
                 carContext, carMapController::onLocationOPermissionGranted
             )
@@ -77,11 +70,6 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
                 carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
                 return PlaceListScreen(carContext, carMapController, query)
             }
-        }
-
-        if (navigationState == NavigationState.DISABLED && MainAppScreenStateNotifier.state == MainAppScreenState.HIDDEN) {
-            carContext.getCarService(ScreenManager::class.java).push(navigationScreen!!)
-            return StartNavigationMessageScreen(carContext)
         }
         return navigationScreen!!
     }
@@ -189,14 +177,6 @@ internal class NavigationCarAppSession(sessionInfo: SessionInfo, val context: Co
             ) Locale("en") else Locale("ar")
         }
         return locale
-    }
-
-    private fun mainAppStateListener(state: MainAppScreenState) {
-        val screenManager = carContext.getCarService(ScreenManager::class.java)
-        if (state == MainAppScreenState.SHOWN) {
-            screenManager.screenStack.find { it is StartNavigationMessageScreen }
-                ?.let { screenManager.remove(it) }
-        }
     }
 
     private companion object {
