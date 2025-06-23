@@ -65,10 +65,7 @@ class PoiLinesMetro extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const SizedBox(width: 40),
-                      Text(
-                        _platformsInfo[index].name,
-                        style: context.textStyleV3.bodyLargeRegular
-                      ),
+                      Text(_platformsInfo[index].name, style: context.textStyleV3.bodyLargeRegular),
                       if (transitionRoute.isNotEmpty)
                         Row(
                           children: transitionRoute

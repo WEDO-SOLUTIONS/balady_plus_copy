@@ -27,7 +27,7 @@ class PoiContentFullAddressModel {
     this.floors,
     this.entrances,
     this.networkLogoUrl,
-    this.types
+    this.types,
   });
 }
 
